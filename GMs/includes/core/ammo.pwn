@@ -141,7 +141,7 @@ GetMaxAmmoAllowed(playerid, iAmmoType) {
 
 ShowAmmunationDialog(playerid)
 {
-	return ShowPlayerDialog(playerid, DIALOG_AMMUNATION_MAIN, DIALOG_STYLE_LIST, "Ammunation Menu", "Weapons\nAmmo", "Select", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_AMMUNATION_MAIN, DIALOG_STYLE_LIST, "Ammunation Menu", "Weapons\nAmmo", "Select", "Cancel");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -160,11 +160,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0: { // weapons
 					format(szMiscArray, sizeof(szMiscArray), "Weapon\tPrice\n9mm Pistol\t$%s\nPump Shotgun\t$%s\nDeagle\t$%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[4]));
-					ShowPlayerDialog(playerid, DIALOG_AMMUNATION_GUNS, DIALOG_STYLE_TABLIST_HEADERS, "Ammunation Menu - Weapons", szMiscArray, "Select", "Back");
+					ShowPlayerDialogEx(playerid, DIALOG_AMMUNATION_GUNS, DIALOG_STYLE_TABLIST_HEADERS, "Ammunation Menu - Weapons", szMiscArray, "Select", "Back");
 				}
 				case 1: {// ammo
 					format(szMiscArray, sizeof(szMiscArray), "Ammo Type\tPrice\n9mm\t$%s\n12-Gauge\t$%s\n50AE\t$%s", number_format(GunPrices[2]), number_format(GunPrices[3]), number_format(GunPrices[5]));
-					ShowPlayerDialog(playerid, DIALOG_AMMUNATION_AMMO, DIALOG_STYLE_TABLIST_HEADERS, "Ammunation Menu - Ammo", szMiscArray, "Select", "Back");
+					ShowPlayerDialogEx(playerid, DIALOG_AMMUNATION_AMMO, DIALOG_STYLE_TABLIST_HEADERS, "Ammunation Menu - Ammo", szMiscArray, "Select", "Back");
 				} 
 			}
 		}
@@ -649,5 +649,5 @@ ShowAmmoDialog(playerid, dialogid, title[], arr[])
 	{
 		format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, GetAmmoName(i), arr[i]);
 	}
-	return ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Select", "Cancel");
+	return ShowPlayerDialogEx(playerid, dialogid, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Select", "Cancel");
 }

@@ -102,7 +102,7 @@ native IsValidVehicle(vehicleid);
 #define 		MAX_GATES 					(4000)
 #define 		MAX_EVENTPOINTS 			(100)
 #define 		INVALID_HOUSE_ID			(-1)
-#define			MAX_TURFS					(150)
+#define			MAX_TURFS					(400)
 #define			MAX_ARENAS					(15)
 #define			MAX_MAILBOXES				(50)
 #define 		MAX_3DLABELS 				(500)
@@ -140,7 +140,6 @@ native IsValidVehicle(vehicleid);
 #define 		PREMIUM_MAIL    			2
 #define 		GOVERNMENT_MAIL 			3
 #define			MAX_RFLTEAMS				200
-#define			MAX_GANGTAGS				150
 #define			MAX_DYNAMIC_BUSINESSES		(200)
 #define			MAX_DYNAMIC_BUSINESS_NAME	(32)
 #define			MAX_DYNAMIC_BUSINESS_RANKS	(6)
@@ -194,6 +193,7 @@ native IsValidVehicle(vehicleid);
 #define         MAX_DV_MODS                 15
 #define 		MAX_GROUP_LOCKERS           10
 #define 		MAX_GROUP_JURISDICTIONS     10
+#define			MAX_GROUP_RIVALS   			5
 
 #define			DYNAMIC_FAMILY_CLOTHES		1337
 
@@ -1140,6 +1140,36 @@ native IsValidVehicle(vehicleid);
 #define 		GCRATE_TRANSFER_WITHDRAW_P		(6125)
 #define 		GCRATE_TRANSFER_DEPOSIT_P		(6126)
 #define 		DIALOG_ZSCORES					(6127)
+#define 		DIALOG_TURFS_AREA				(6128)
+#define 		DIALOG_PVEHICLE_DRUGS			(6129)
+#define 		DIALOG_PVEHICLE_DRUGS2			(6130)
+#define 		DIALOG_TURFS_UPGRADE			(6131)
+#define 		DIALOG_GROUP_RIVALS				(6132)
+#define 		DIALOG_TOYS_GROUP				(6133)
+
+#define 		DIALOG_FURNITURE 				(6134)
+#define 		DIALOG_FURNITURE_BUY			(6135)	
+#define 		DIALOG_FURNITURE_BUYCONFIRM		(6136)
+#define 		DIALOG_FURNITURE_EDIT			(6137)
+#define 		DIALOG_FURNITURE_SELL			(6138)
+#define 		DIALOG_FURNITURE_PAINT 			(6139)
+#define 		DIALOG_FURNITURE_PAINT2			(6140)
+#define 		DIALOG_PERMITBUILDER			(6141)
+#define 		DIALOG_STAYPRISON				(6142)
+#define 		DIALOG_PRISONCREDS				(6143)
+
+#define 		DIALOG_GANGTAGS_LIST			(6144)
+#define 		DIALOG_GANGTAGS_INPUT			(6145)
+#define 		DIALOG_GANGTAGS_FONT			(6146)
+
+
+// GangTags
+#define 			GANGTAG_TIME				60000
+
+#define 			MAX_GANGTAGS 				100
+#define 			MAX_GANGTAGS_LEN			48
+#define 			GANGTAGS_OBJECTID			19464
+#define 			GANGTAGS_DEFAULTCOL			0xFF000000
 
 // Objects
 #define 		OBJ_POKER_TABLE 					19474
@@ -1357,14 +1387,19 @@ native IsValidVehicle(vehicleid);
 //General Timer Delays
 #define		CRATE_PRODUCTION_DELAY		5000
 
-#define 	MAX_GANG_CRATES				15
+#define 	MAX_GANG_CRATES				(15)
 #define 	REGISTER_SKINMODEL			(4810)
+#define 	ALIEN_ACTORMODEL 			(264)
 
+#define 	MAX_DYNPOINTS 				(50)
+#define 	MAX_PARKING_METERS 			(251)
+#define 	MAX_FURNITURE_SLOTS			(200)
+#define 	MAX_METALDETECTORS 			(40)
+#define 	MAX_UFOS					(10)
+#define 	MAX_CHATSETS 				(21)
 
-#define 	MAX_DYNPOINTS 				50
 
 /* PVARS */
-
 #define 			PVAR_DRUGS_MIXSLOT				"DRM_S"
 #define 			PVAR_MAKINGDRUG					"DRM_D"
 #define 			PVAR_INGREDIENT_ORDERING		"DING_O"
@@ -1373,15 +1408,17 @@ native IsValidVehicle(vehicleid);
 #define 			PVAR_ATDRUGPOINT				"PO_AP"
 #define 			PVAR_SMUGGLE_DELIVERINGTO		"SM_DT"
 #define 			PVAR_DRUGS_OVERDOSE				"DR_OD"
-
-
-
 #define 			PVAR_PLAYERPOS					"ac_PP"
 #define 			PVAR_CBUGCOUNT					"ac_CBC"
 #define 			PVAR_TEMPACTOR					"ac_TA"
 #define 			PVAR_TEMPTEXT					"ac_TT"
+#define 			PVAR_FURNITURE_EDITING			"PV_FE"
+#define 			PVAR_FURNITURE 					"PV_F"
+#define 			PVAR_FURNITURE_BUYMODEL			"PV_BM"
+#define 			PVAR_FURNITURE_SLOT				"PV_SLO"
+#define 			PVAR_INHOUSE					"PV_INH"
+#define				PVAR_EMETDET					"EMD"
 
-#define 		MAX_UFOS							10
-#define 		ALIEN_ACTORMODEL 					264
-
-#define 			MAX_CHATSETS 					21
+#define 			PVAR_GANGTAGID					"GT_ID"
+#define 			PVAR_GANGTAGEDITING				"GT_ED"
+#define 			PVAR_GANGTAGTEXT				"GT_TE"

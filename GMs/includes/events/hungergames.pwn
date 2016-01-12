@@ -391,7 +391,7 @@ CMD:joinhunger(playerid, params[])
 	
 	if(PlayerInfo[playerid][pHungerVoucher] > 0)
 	{
-		ShowPlayerDialog(playerid, DIALOG_HUNGERGAMES, DIALOG_STYLE_MSGBOX, "Hunger Games Voucher", "Would you like to use a Hunger Games Voucher?", "Yes", "No");
+		ShowPlayerDialogEx(playerid, DIALOG_HUNGERGAMES, DIALOG_STYLE_MSGBOX, "Hunger Games Voucher", "Would you like to use a Hunger Games Voucher?", "Yes", "No");
 	}
 	return true;
 }

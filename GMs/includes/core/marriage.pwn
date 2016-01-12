@@ -176,7 +176,7 @@ CMD:propose(playerid, params[])
 			format(string, sizeof(string), "* %s just proposed to you (type /accept marriage) to accept.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			ProposeOffer[giveplayerid] = playerid;
-			ShowPlayerDialog(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name", 
+			ShowPlayerDialogEx(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name", 
 			"As the proposer you have the initial option to keep your last name or use your spouse's.\n\
 			If you decide to keep your last name, your spouse will be given same option.\n\
 			Please use the buttons below to make your decision.", "Keep", "Use Their's");

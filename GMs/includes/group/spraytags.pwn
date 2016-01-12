@@ -280,7 +280,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if(listitem == 1)
 				{
-					ShowPlayerDialog(playerid, DIALOG_GANGTAG_ID, DIALOG_STYLE_INPUT, "Gang Tag ID", "Please specify a vaild tag id:", "Select", "Close");
+					ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_ID, DIALOG_STYLE_INPUT, "Gang Tag ID", "Please specify a vaild tag id:", "Select", "Close");
 				}
 			}
 		}
@@ -291,24 +291,24 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new gangtag = strval(inputtext);
 				if(gangtag < 0 || gangtag > MAX_GANGTAGS)
 				{
-					ShowPlayerDialog(playerid, DIALOG_GANGTAG_ID, DIALOG_STYLE_INPUT, "Gang Tag ID", "Please specify a vaild tag id:", "Select", "Close");
+					ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_ID, DIALOG_STYLE_INPUT, "Gang Tag ID", "Please specify a vaild tag id:", "Select", "Close");
 					SendClientMessageEx(playerid, COLOR_GREY, "You specified an invalid gang tag id.");
 					return 1;				
 				}
 				if(GangTags[gangtag][gt_Used] == 0)
 				{
-					ShowPlayerDialog(playerid, DIALOG_GANGTAG_ID, DIALOG_STYLE_INPUT, "Gang Tag ID", "Please specify a vaild tag id:", "Select", "Close");
+					ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_ID, DIALOG_STYLE_INPUT, "Gang Tag ID", "Please specify a vaild tag id:", "Select", "Close");
 					SendClientMessageEx(playerid, COLOR_GREY, "You specified an invalid gang tag id.");
 					return 1;
 				}
 				new szMessage[128];
 				SetPVarInt(playerid, "gt_ID", gangtag);
 				format(szMessage, sizeof(szMessage), "Editing Gang Tag %d", gangtag);
-				ShowPlayerDialog(playerid, DIALOG_GANGTAG_EDIT, DIALOG_STYLE_LIST, szMessage, "Set to my position\nEdit position\nDelete", "Choose", "Close");
+				ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_EDIT, DIALOG_STYLE_LIST, szMessage, "Set to my position\nEdit position\nDelete", "Choose", "Close");
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, DIALOG_GANGTAG_MAIN, DIALOG_STYLE_LIST, "Gang Tags", "Create new gang tag\nEdit gang tag", "Choose", "Close");
+				ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_MAIN, DIALOG_STYLE_LIST, "Gang Tags", "Create new gang tag\nEdit gang tag", "Choose", "Close");
 			}
 		}
 		case DIALOG_GANGTAG_EDIT:
@@ -334,7 +334,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							new szMessage[64];
 							format(szMessage, sizeof(szMessage), "Editing Gang Tag %d", gangtag);
-							ShowPlayerDialog(playerid, DIALOG_GANGTAG_EDIT, DIALOG_STYLE_LIST, szMessage, "Set to my position\nEdit position\nDelete", "Choose", "Close");
+							ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_EDIT, DIALOG_STYLE_LIST, szMessage, "Set to my position\nEdit position\nDelete", "Choose", "Close");
 							SendClientMessageEx(playerid, COLOR_GREY, "You are not in range of this gang tag!");
 						}
 					}
@@ -343,14 +343,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						new szMessage[64];
 						SetPVarInt(playerid, "gt_Edit", 3);
 						format(szMessage, sizeof(szMessage), "Are you sure that you want to delete gang tag %d?", GetPVarInt(playerid, "gt_ID"));
-						ShowPlayerDialog(playerid, DIALOG_GANGTAG_EDIT1, DIALOG_STYLE_MSGBOX, "Delete Gang Tag", szMessage, "Yes", "No");
+						ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_EDIT1, DIALOG_STYLE_MSGBOX, "Delete Gang Tag", szMessage, "Yes", "No");
 					}
 				}
 			}
 			else
 			{
 				DeletePVar(playerid, "gt_ID");
-				ShowPlayerDialog(playerid, DIALOG_GANGTAG_ID, DIALOG_STYLE_INPUT, "Gang Tag ID", "Please specify a vaild tag id:", "Select", "Close");
+				ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_ID, DIALOG_STYLE_INPUT, "Gang Tag ID", "Please specify a vaild tag id:", "Select", "Close");
 			}
 		}
 		case DIALOG_GANGTAG_EDIT1:
@@ -377,7 +377,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				DeletePVar(playerid, "gt_Edit");
 				format(szMessage, sizeof(szMessage), "Editing Gang Tag %d", GetPVarInt(playerid, "gt_ID"));
-				ShowPlayerDialog(playerid, DIALOG_GANGTAG_EDIT, DIALOG_STYLE_LIST, szMessage, "Set to my position\nEdit position\nDelete", "Choose", "Close");
+				ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_EDIT, DIALOG_STYLE_LIST, szMessage, "Set to my position\nEdit position\nDelete", "Choose", "Close");
 			}
 		}
 		case DIALOG_GANGTAG_FTAG:
@@ -391,37 +391,37 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						case 0: // Text
 						{
 							SetPVarInt(playerid, "gt_fEdit", 1);
-							ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Text", "Please enter the text below:", "Set", "Close");
+							ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Text", "Please enter the text below:", "Set", "Close");
 						}
 						case 1: // Color
 						{
 							SetPVarInt(playerid, "gt_fEdit", 2);
-							ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Color", "Please enter a hex color\nExample: 0xFFFFFFFF (aRGB)\nExample: 0xFF and then the RGB HEX", "Set", "Close");
+							ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Color", "Please enter a hex color\nExample: 0xFFFFFFFF (aRGB)\nExample: 0xFF and then the RGB HEX", "Set", "Close");
 						}
 						case 2: // Font
 						{
 							SetPVarInt(playerid, "gt_fEdit", 3);
-							ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_LIST, "Font", "Arial\nArial Black\nComic Sans MS\nImpact\nPalatino Linotype\nVerdana\nTimes New Roman\nLucida Console\nGeorgia", "Set", "Close");
+							ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_LIST, "Font", "Arial\nArial Black\nComic Sans MS\nImpact\nPalatino Linotype\nVerdana\nTimes New Roman\nLucida Console\nGeorgia", "Set", "Close");
 						}
 						case 3: // Font Size
 						{
 							SetPVarInt(playerid, "gt_fEdit", 4);
-							ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Font Size", "Please enter a size below:", "Set", "Close");
+							ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Font Size", "Please enter a size below:", "Set", "Close");
 						}
 						case 4: // Backcolor
 						{
 							SetPVarInt(playerid, "gt_fEdit", 5);
-							ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Color", "Please enter a hex color\nExample: 0xFFFFFFFF (aRGB)\nExample: 0xFF and then the RGB HEX", "Set", "Close");
+							ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Color", "Please enter a hex color\nExample: 0xFFFFFFFF (aRGB)\nExample: 0xFF and then the RGB HEX", "Set", "Close");
 						}
 						case 5: // Bold
 						{
 							SetPVarInt(playerid, "gt_fEdit", 6);
-							ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_MSGBOX, "Bold", "Would you like to toggle bold?", "Yes", "No");
+							ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_MSGBOX, "Bold", "Would you like to toggle bold?", "Yes", "No");
 						}
 						case 6: // SP Tags
 						{
 							SetPVarInt(playerid, "gt_fEdit", 7);
-							ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_LIST, "Single-Player Tags", "Frontyard Ballas 1\nFrontyard Ballas 2\nFrontyard Ballas 3\nSan Fierro Rifa\nRollin Heights Ballas\nSeville Blvd\nTemple Drive Ballas\nLos Santos Vagos\nVarrio Los Aztecas\nGrove Street 4Life\nDisable", "Choose", "Close");
+							ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_LIST, "Single-Player Tags", "Frontyard Ballas 1\nFrontyard Ballas 2\nFrontyard Ballas 3\nSan Fierro Rifa\nRollin Heights Ballas\nSeville Blvd\nTemple Drive Ballas\nLos Santos Vagos\nVarrio Los Aztecas\nGrove Street 4Life\nDisable", "Choose", "Close");
 						}
 					}
 				}
@@ -440,14 +440,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new fam = strval(inputtext);
 					if(fam < 1 || fam > MAX_FAMILY)
 					{
-						ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGSEL, DIALOG_STYLE_INPUT, "Family ID", "Specify a valid family id:", "Choose", "Close");
+						ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGSEL, DIALOG_STYLE_INPUT, "Family ID", "Specify a valid family id:", "Choose", "Close");
 						SendClientMessageEx(playerid, COLOR_GREY, "You specified an invalid family id!");
 						return 1;
 					}
 					SetPVarInt(playerid, "gt_Fam", fam);
 					new szMessage[32];
 					format(szMessage, sizeof(szMessage), "Gang Tag Edit - %s", FamilyInfo[fam][FamilyName]);
-					ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAG, DIALOG_STYLE_LIST, szMessage, "Text\nColor\nFont\nFont Size\nBackcolor\nBold\nSP Tags", "Choose", "Close");
+					ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAG, DIALOG_STYLE_LIST, szMessage, "Text\nColor\nFont\nFont Size\nBackcolor\nBold\nSP Tags", "Choose", "Close");
 				}
 			}
 		}
@@ -475,7 +475,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(sscanf(inputtext, "h", FamilyInfo[fam][gt_FontColor]))
 							{
-								ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Color", "Please enter a hex color (Example: \"0xFFFFFFFF\" ARGB Format)", "Set", "Close");
+								ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGEDIT, DIALOG_STYLE_INPUT, "Color", "Please enter a hex color (Example: \"0xFFFFFFFF\" ARGB Format)", "Set", "Close");
 								SendClientMessageEx(playerid, COLOR_GREY, "You specified an invalid hex color!");
 								return 1;
 							}
@@ -599,7 +599,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					DeletePVar(playerid, "gt_fEdit");
 					format(szMessage, sizeof(szMessage), "Gang Tag Edit - %s", FamilyInfo[fam][FamilyName]);
-					ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAG, DIALOG_STYLE_LIST, szMessage, "Text\nColor\nFont\nFont Size\nBackcolor\nBold\nSP Tags", "Choose", "Close");	
+					ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAG, DIALOG_STYLE_LIST, szMessage, "Text\nColor\nFont\nFont Size\nBackcolor\nBold\nSP Tags", "Choose", "Close");	
 				}
 			}	
 		}
@@ -610,7 +610,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 /*CMD:gtedit(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
-	ShowPlayerDialog(playerid, DIALOG_GANGTAG_MAIN, DIALOG_STYLE_LIST, "Gang Tags", "Create new gang tag\nEdit gang tag", "Choose", "Close");
+	ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_MAIN, DIALOG_STYLE_LIST, "Gang Tags", "Create new gang tag\nEdit gang tag", "Choose", "Close");
 	return 1;
 }
 
@@ -764,14 +764,14 @@ CMD:tagedit(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] >= 1)
 	{
-		ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAGSEL, DIALOG_STYLE_INPUT, "Family ID", "Specify a valid family id:", "Choose", "Close");
+		ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAGSEL, DIALOG_STYLE_INPUT, "Family ID", "Specify a valid family id:", "Choose", "Close");
 	}
 	else if(GetPVarInt(playerid, "gt_Perm") == 1 && PlayerInfo[playerid][pFMember] != INVALID_FAMILY_ID && PlayerInfo[playerid][pRank] >= 6)
 	{
 		new string[32];
 		format(string, sizeof(string), "Gang Tag Edit - %s", FamilyInfo[PlayerInfo[playerid][pFMember]][FamilyName]);
 		SetPVarInt(playerid, "gt_Fam", PlayerInfo[playerid][pFMember]);
-		ShowPlayerDialog(playerid, DIALOG_GANGTAG_FTAG, DIALOG_STYLE_LIST, string, "Text\nColor\nFont\nFont Size\nBackcolor\nBold\nSP Tags", "Choose", "Close");	
+		ShowPlayerDialogEx(playerid, DIALOG_GANGTAG_FTAG, DIALOG_STYLE_LIST, string, "Text\nColor\nFont\nFont Size\nBackcolor\nBold\nSP Tags", "Choose", "Close");	
 	}
 	else
 	{

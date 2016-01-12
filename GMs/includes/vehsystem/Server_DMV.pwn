@@ -415,7 +415,7 @@ ShowDMVMenu(playerid, menu = 0, iTargetID = INVALID_PLAYER_ID) {
 			if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && MAX_GROUP_RANKS > PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess]) format(szMiscArray, sizeof(szMiscArray), "Pay Tickets\nRenew License ($10,000)\nOther Licenses\nRelease Vehicles");
 			if(PlayerInfo[playerid][pCarLic] == 0 || PlayerInfo[playerid][pLevel] < 2) format(szMiscArray, sizeof(szMiscArray), "Pay Tickets\nDriving Test\nOther Licenses");
 			else format(szMiscArray, sizeof(szMiscArray), "Pay Tickets\nRenew Driver License\nPurchase Other License\n[LEO only] Release Impounded Vehicle");
-			return ShowPlayerDialog(playerid, DMV_MAIN, DIALOG_STYLE_LIST, "DMV Main Menu", szMiscArray, "Select", "Cancel");
+			return ShowPlayerDialogEx(playerid, DMV_MAIN, DIALOG_STYLE_LIST, "DMV Main Menu", szMiscArray, "Select", "Cancel");
 
 
 
@@ -445,14 +445,14 @@ ShowDMVMenu(playerid, menu = 0, iTargetID = INVALID_PLAYER_ID) {
 				}
 			}
 			if(icount) {
-				return ShowPlayerDialog(playerid, MPSPAYTICKETS, DIALOG_STYLE_LIST, "Vehicles", szMiscArray, "Release", "Cancel");
+				return ShowPlayerDialogEx(playerid, MPSPAYTICKETS, DIALOG_STYLE_LIST, "Vehicles", szMiscArray, "Release", "Cancel");
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have any tickets to be paid or vehicles to be released.");
 		}
 
 		case 2: {
 			if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess] && arrGroupData[PlayerInfo[playerid][pMember]][g_iDMVAccess] != INVALID_RANK)
-				return ShowPlayerDialog(playerid, DMVRELEASE_TARGET, DIALOG_STYLE_INPUT, "DMV Release Menu", "Enter the person's name whom you wish to release the vehicle for.", "Select", "Cancel");
+				return ShowPlayerDialogEx(playerid, DMVRELEASE_TARGET, DIALOG_STYLE_INPUT, "DMV Release Menu", "Enter the person's name whom you wish to release the vehicle for.", "Select", "Cancel");
 			else
 				return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Law Enforcement Officer!");
 
@@ -479,17 +479,17 @@ ShowDMVMenu(playerid, menu = 0, iTargetID = INVALID_PLAYER_ID) {
 				}
 				else format(szMiscArray, sizeof(szMiscArray), "%s\nNone", szMiscArray);
 			}
-			if(iCount) ShowPlayerDialog(playerid, MPSPAYTICKETSCOP, DIALOG_STYLE_LIST, "Vehicles", szMiscArray, "Release", "Cancel"), SetPVarInt(playerid, "vRel", iTargetID);
+			if(iCount) ShowPlayerDialogEx(playerid, MPSPAYTICKETSCOP, DIALOG_STYLE_LIST, "Vehicles", szMiscArray, "Release", "Cancel"), SetPVarInt(playerid, "vRel", iTargetID);
 			else SendClientMessageEx(playerid, COLOR_GRAD2, "This person doesn't have any tickets to be paid or vehicles to be released.");
 		}
 
 		case 4: {
 			if (PlayerInfo[playerid][pWantedLevel] > 0) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "You have an outstanding arrest warrant - acquisition of a license is prohibited.");
-			ShowPlayerDialog(playerid, DIALOG_LICENSE_BUY, DIALOG_STYLE_LIST, "Select the type of license you wish to acquire.", "Boating License ($5,000)\r\nPilot License ($25,000)\r\nTaxi License ($35,000)", "Purchase", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_LICENSE_BUY, DIALOG_STYLE_LIST, "Select the type of license you wish to acquire.", "Boating License ($5,000)\r\nPilot License ($25,000)\r\nTaxi License ($35,000)", "Purchase", "Cancel");
 		}
 
 		case 5: {
-			ShowPlayerDialog(playerid,
+			ShowPlayerDialogEx(playerid,
 			DIALOG_DSVEH_CAUTION,
 			DIALOG_STYLE_MSGBOX,
 			"DRIVING TEST",

@@ -218,7 +218,7 @@ CMD:ringtone(playerid, params[])
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 		SetPlayerAttachedObject(playerid, 9, 330, 6);
 	}
-	return ShowPlayerDialog(playerid,RTONEMENU,DIALOG_STYLE_LIST,"Ringtone - Change Your Ringtone:","Ringtone 1\nRingtone 2\nRingtone 3\nRingtone 4\nRingtone 5\nRingtone 6\nRingtone 7\nRingtone 8\nRingtone 9\nTurn Off","Select","Close");
+	return ShowPlayerDialogEx(playerid,RTONEMENU,DIALOG_STYLE_LIST,"Ringtone - Change Your Ringtone:","Ringtone 1\nRingtone 2\nRingtone 3\nRingtone 4\nRingtone 5\nRingtone 6\nRingtone 7\nRingtone 8\nRingtone 9\nTurn Off","Select","Close");
 }
 */
 
@@ -298,9 +298,9 @@ CMD:call(playerid, params[])
 
 			if(PlayerInfo[playerid][pJailTime] > 0 && !GetPVarType(playerid, "AtPayPhone")) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilst in prison!");
 			if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
-			else if(PlayerInfo[playerid][p911Muted] != 0) ShowPlayerDialog(playerid, 7955, DIALOG_STYLE_MSGBOX, "Call Blocked", "You are currently blocked from using 911 emergency services. This is generally caused by abuse of services.\n\n((Use /report to report for an unmute))", "Close", "");
+			else if(PlayerInfo[playerid][p911Muted] != 0) ShowPlayerDialogEx(playerid, 7955, DIALOG_STYLE_MSGBOX, "Call Blocked", "You are currently blocked from using 911 emergency services. This is generally caused by abuse of services.\n\n((Use /report to report for an unmute))", "Close", "");
 			else
-				ShowPlayerDialog(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)\nFire", "Select", "End Call");
+				ShowPlayerDialogEx(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)\nFire", "Select", "End Call");
 			return 1;
 		}
 		case 18004444, 18001800, 18008080, 18001111, 18001020: {
@@ -323,7 +323,7 @@ CMD:call(playerid, params[])
 				SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 				SetPVarInt(playerid, "GRPCALL", iGroupID);
 				format(szMiscArray, sizeof(szMiscArray), "{%s}%s's Hotline", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				ShowPlayerDialog(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "Please let us know briefly about your needs.", "Enter", "End Call");
+				ShowPlayerDialogEx(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "Please let us know briefly about your needs.", "Enter", "End Call");
 			}
 			return 1;
 		}
@@ -349,7 +349,7 @@ CMD:call(playerid, params[])
 
 			new i = GetPVarInt(playerid, "BUSICALL");
 			format(szMiscArray, sizeof(szMiscArray), "%s's Landline | %d", Businesses[i][bName], Businesses[i][bPhoneNr]);
-			ShowPlayerDialog(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "Please let us know briefly about your needs.", "Enter", "End Call");
+			ShowPlayerDialogEx(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "Please let us know briefly about your needs.", "Enter", "End Call");
 		}
 		return 1;
 	}
@@ -386,7 +386,7 @@ CMD:call(playerid, params[])
 
 					SetPVarInt(playerid, "BUSICALL", i);
 					format(szMiscArray, sizeof(szMiscArray), "%s's Company Line | %d", Businesses[i][bName], Businesses[i][bPhoneNr]);
-					ShowPlayerDialog(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "Please let us know briefly about your needs.", "Enter", "End Call");
+					ShowPlayerDialogEx(playerid, DIALOG_HOTLINE, DIALOG_STYLE_INPUT, szMiscArray, "Please let us know briefly about your needs.", "Enter", "End Call");
 				}
 				return 1;
 			}
@@ -570,6 +570,7 @@ CMD:sms(playerid, params[])
 					ChatTrafficProcess(giveplayerid, COLOR_YELLOW, szMiscArray, 7);
 					ChatTrafficProcess(playerid, COLOR_YELLOW, szMiscArray, 7);
 					ChatTrafficProcess(playerid, COLOR_YELLOW, "Text Message Delivered", 7);
+					FetchContact(giveplayerid, PlayerInfo[playerid][pPnumber]);
 					format(szMiscArray, sizeof(szMiscArray), "~r~$-%d", 25);
 					GameTextForPlayer(playerid, szMiscArray, 5000, 1);
 					GivePlayerCash(playerid,-25);
@@ -751,5 +752,31 @@ CMD:hangup(playerid,params[])
 		}
 	}
 	SendClientMessageEx(playerid,  COLOR_GRAD2, "   Your phone is in your pocket.");
+	return 1;
+}
+
+FetchContact(iReceiverID, iCallerNumber) {
+
+	format(szMiscArray, sizeof(szMiscArray), "SELECT `contactname` FROM `phone_contacts` WHERE `id` = '%d' AND `contactnr` = '%d' LIMIT 1", GetPlayerSQLId(iReceiverID), iCallerNumber);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnFetchContact", "i", iReceiverID);
+}
+
+forward OnFetchContact(iReceiverID);
+public OnFetchContact(iReceiverID) {
+
+	new
+		iRows, 
+		iFields,
+		szName[MAX_PLAYER_NAME];
+
+	szMiscArray[0] = 0;
+
+	cache_get_data(iRows, iFields, MainPipeline);
+
+	if(!iRows) return 1;
+
+	cache_get_field_content(0, "contactname", szName, MainPipeline);
+	format(szMiscArray, sizeof(szMiscArray), "[CONTACT]: %s", szName);
+	ChatTrafficProcess(iReceiverID, COLOR_GRAD1, szMiscArray, 7);
 	return 1;
 }

@@ -1,25 +1,5 @@
 #include <YSI\y_hooks>
 
-#define MAX_PARKING_METERS (251)
-
-#define PARKING_METER_TYPE_CREATE (0)
-
-enum ParkingMeterInfo
-{
-	MeterActive,
-	MeterRate,
-	Float:MeterRange,
-	Float:MeterPosition[6],
-	Float:ParkedPosition[4],
-	ParkingMeterObject,
-	Text3D:ParkingMeterText,
-	AssignedVehicle,
-	PaymentExpiry,
-};
-
-new EditingMeterID[MAX_PLAYERS];
-new ParkingMeterInformation[MAX_PARKING_METERS][ParkingMeterInfo];
-
 LoadParkingMeters()
 {
 	print("[LoadParkingMeters] Loading data from database...");

@@ -11,7 +11,7 @@ GovEditGroupBudget(playerid)
 		else format(szMiscArray, sizeof szMiscArray, "%s{%s}%s\t{FFFFFF}$%s\n", szMiscArray, Group_NumToDialogHex(arrGroupData[i][g_hDutyColour]), arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudgetPayment]));
 	}
 	format(szTitle, sizeof(szTitle), "{%s}%s {FFFFFF}| Budget Overview", Group_NumToDialogHex(arrGroupData[PlayerInfo[playerid][pLeader]][g_hDutyColour]), arrGroupData[PlayerInfo[playerid][pLeader]][g_szGroupName]);
-	return ShowPlayerDialog(playerid, DIALOG_GROUP_GOVLISTPAY, DIALOG_STYLE_TABLIST, "Edit Group Budget", szMiscArray, "Edit", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_GROUP_GOVLISTPAY, DIALOG_STYLE_TABLIST, "Edit Group Budget", szMiscArray, "Edit", "Cancel");
 }
 
 PlayerEditGroupPay(playerid)
@@ -23,7 +23,7 @@ PlayerEditGroupPay(playerid)
 		format(szMiscArray, sizeof szMiscArray, "%s(%i) %s\t$%s\n", szMiscArray, i, arrGroupRanks[iGroupID][i], number_format(arrGroupData[iGroupID][g_iPaycheck][i]));
 	}
 	format(szTitle, sizeof szTitle, "{%s}(%s) {FFFFFF}| Edit Paychecks", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-	return ShowPlayerDialog(playerid, DIALOG_GROUP_PLISTPAY, DIALOG_STYLE_TABLIST, szTitle, szMiscArray, "Edit", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_GROUP_PLISTPAY, DIALOG_STYLE_TABLIST, szTitle, szMiscArray, "Edit", "Cancel");
 }
 
 PayGroupMember(i, month, day, year)
@@ -63,7 +63,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				SetPVarInt(playerid, "Group_EditRank", listitem);
 				format(szTitle, sizeof szTitle, "Edit Rank (%i)'s Paycheck {%s}(%s)", listitem, Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-				return ShowPlayerDialog(playerid, DIALOG_GROUP_PEDITPAY, DIALOG_STYLE_INPUT, szTitle, "Specify a paycheck amount for this rank.", "Set", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_PEDITPAY, DIALOG_STYLE_INPUT, szTitle, "Specify a paycheck amount for this rank.", "Set", "Cancel");
 			}
 			return 1;
 		}
@@ -92,7 +92,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] != arrGroupData[listitem][g_iAllegiance]) return SendClientMessage(playerid, COLOR_GRAD1, "This instance is not part of your nation.");
 				SetPVarInt(playerid, "Gov_EditGroup", listitem);
 				format(szMiscArray, sizeof szMiscArray, "Edit Paycheck | {%s}%s {FFFFFF}(ID: %i)", Group_NumToDialogHex(arrGroupData[listitem][g_hDutyColour]), arrGroupData[listitem][g_szGroupName], listitem);
-				return ShowPlayerDialog(playerid, DIALOG_GROUP_GOVEDITPAY, DIALOG_STYLE_INPUT, szMiscArray, "Specify a budget for this group.", "Set", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_GOVEDITPAY, DIALOG_STYLE_INPUT, szMiscArray, "Specify a budget for this group.", "Set", "Cancel");
 			}
 			return 1;
 		}

@@ -71,7 +71,7 @@ CMD:resetupgrades(playerid, params[]) {
 
 		new	szMessage[73];
 
-		format(szMessage, sizeof(szMessage), "You have reset your upgrades - you now have %i unspent upgrade points.",PlayerInfo[playerid][gPupgrade]);
+		format(szMessage, sizeof(szMessage), "You have reset your upgrades - you now have %i unspent upgrade points.", PlayerInfo[playerid][gPupgrade]);
 		SendClientMessageEx(playerid, COLOR_GRAD2, szMessage);
 	}
 	return 1;

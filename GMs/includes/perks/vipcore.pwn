@@ -159,7 +159,7 @@ CMD:vipnum(playerid, params[])
     	SendClientMessageEx(playerid, COLOR_GRAD1, "You must be a Silver VIP or higher to use this function.");
      	return 1;
 	}
-	ShowPlayerDialog(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "New Phone Number","New phone number:", "Submit", "Cancel"); 
+	ShowPlayerDialogEx(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "New Phone Number","New phone number:", "Submit", "Cancel"); 
 	return 1;
 }
 
@@ -492,9 +492,9 @@ CMD:viplocker(playerid, params[]) {
 	|| IsPlayerInRangeOfPoint(playerid, 7.0, 1378.0017, 1747.4668, 927.3564) /*Olympics*/)
 	switch(PlayerInfo[playerid][pDonateRank]) {
 		case 0: SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a VIP.");
-		case 1: ShowPlayerDialog(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Free)\nKevlar Vest ($15000)\nWeapons\nClothes Corner\nJob Center\nVIP Color", "Select", "Cancel");
-		case 2: ShowPlayerDialog(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Free)\nKevlar Vest ($10000)\nWeapons\nClothes Corner\nJob Center\nVIP Color", "Select", "Cancel");
-		default: ShowPlayerDialog(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons\nClothes Corner\nJob Center\nVIP Color", "Select", "Cancel");
+		case 1: ShowPlayerDialogEx(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Free)\nKevlar Vest ($15000)\nWeapons\nClothes Corner\nJob Center\nVIP Color", "Select", "Cancel");
+		case 2: ShowPlayerDialogEx(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Free)\nKevlar Vest ($10000)\nWeapons\nClothes Corner\nJob Center\nVIP Color", "Select", "Cancel");
+		default: ShowPlayerDialogEx(playerid, 7483, DIALOG_STYLE_LIST, "VIP Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons\nClothes Corner\nJob Center\nVIP Color", "Select", "Cancel");
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not at the VIP locker.");
 	return 1;
@@ -626,7 +626,7 @@ CMD:sellvip(playerid, params[]) {
 			SetPVarInt(player, "VIPCost", price);
 			SetPVarString(player, "VIPSeller", GetPlayerNameEx(playerid));
 			format(string, sizeof(string), "Seller: %s\nVIP level: %s \nPrice: %d \nVIP ID: %d\nExpires: %s\n\nDo you wish to purchase %s VIP from %s for $%d?", GetPlayerNameEx(playerid), viptype, price, PlayerInfo[playerid][pVIPM], date(PlayerInfo[playerid][pVIPExpire], 2), viptype, GetPlayerNameEx(playerid), price);
-			ShowPlayerDialog(player, SELLVIP, DIALOG_STYLE_MSGBOX, "Purchase VIP", string, "Purchase", "Decline");
+			ShowPlayerDialogEx(player, SELLVIP, DIALOG_STYLE_MSGBOX, "Purchase VIP", string, "Purchase", "Decline");
 			format(string, sizeof(string), "You offered %s $%d for your %s VIP.", GetPlayerNameEx(player), price, viptype);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
@@ -1148,7 +1148,7 @@ CMD:spawnatvip(playerid, params[])
 	new string[128];
 	SetPVarInt(playerid, "MiscShop", 9);
 	format(string, sizeof(string), "Spawn at Gold VIP+ room\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[30][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[30][sItemPrice]));
-	ShowPlayerDialog(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Purchase a spawn at Gold VIP+ room", string, "Purchase", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Purchase a spawn at Gold VIP+ room", string, "Purchase", "Cancel");
 	return 1;
 }
 
@@ -1157,7 +1157,7 @@ CMD:pvipjob(playerid, params[])
 	if(PlayerInfo[playerid][pDonateRank] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Platinum VIP+");
 	if(PlayerInfo[playerid][pVIPJob] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have already used this feature.");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "You can select one job to be set to level 5 as a Platinum VIP+");
-	ShowPlayerDialog(playerid, DIALOG_VIPJOB, DIALOG_STYLE_LIST, "Job List", "Detective\nLawyer\nWhore\nDrugs Dealer\nDrug Smuggling\nArms Dealer\nCar Mechanic\nBoxer\nFishing\nShipment Contractor\nLock Picking", "Select", "Close");
+	ShowPlayerDialogEx(playerid, DIALOG_VIPJOB, DIALOG_STYLE_LIST, "Job List", "Detective\nLawyer\nWhore\nDrugs Dealer\nDrug Smuggling\nArms Dealer\nCar Mechanic\nBoxer\nFishing\nShipment Contractor\nLock Picking", "Select", "Close");
 	return 1;
 }
 

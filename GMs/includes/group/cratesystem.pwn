@@ -1020,7 +1020,7 @@ CMD:cgun(playerid, params[]) {
     		    else
     		    {
 	    		    SetPVarInt(playerid, "CrateGuns_CID", i);
-	    		    ShowPlayerDialog(playerid, CRATE_GUNMENU, DIALOG_STYLE_LIST, "Select a gun from the Crate",	"Desert Eagle - 4 HG Mats\nSPAS-12 - 8 HG Mats\nMP5 - 5 HG Mats\nM4A1 - 6 HG Mats\nAK-47 - 5 HG Mats\nSniper Rifle - 5 HG Mats\nShotgun - 3 HG Mats\n9mm - 1 HG Mats", "Select", "Cancel");
+	    		    ShowPlayerDialogEx(playerid, CRATE_GUNMENU, DIALOG_STYLE_LIST, "Select a gun from the Crate",	"Desert Eagle - 4 HG Mats\nSPAS-12 - 8 HG Mats\nMP5 - 5 HG Mats\nM4A1 - 6 HG Mats\nAK-47 - 5 HG Mats\nSniper Rifle - 5 HG Mats\nShotgun - 3 HG Mats\n9mm - 1 HG Mats", "Select", "Cancel");
 					CrateFound = 1;
 					break;
 				}
@@ -1140,7 +1140,7 @@ CMD:viewcrateorders(playerid, params[])
 			++iCount;
 		}
 		if(!szDialogStr[0]) format(szDialogStr, sizeof(szDialogStr), "No orders to fill.");
-		return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Group List", szDialogStr, "Select", "Cancel");
+		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Group List", szDialogStr, "Select", "Cancel");
 	}
     else return SendClientMessage(playerid, COLOR_GRAD2, " You're not authorized to use this command.");
 }

@@ -35,6 +35,125 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+new iBankVault = 1000000000;
+task Bank_VaultCheck[60000 * 15]() {
+
+	Bank_UpdateBank(iBankVault, 0);
+}
+
+
+Bank_LoadBank() {
+	// Current Main Server vault: 216.000.000.000. Above 32-bit int limit. Divide by 1000 from bigint column to get a readable number for SA:MP.
+	// mysql_function_query(MainPipeline, "SELECT money / 1000 FROM `bank` WHERE `id` = '1'", true, "Bank_OnLoadBank", "");
+}
+
+forward Bank_OnLoadBank();
+public Bank_OnLoadBank() {
+
+	new iRows,
+		iFields;
+
+	cache_get_data(iRows, iFields, MainPipeline);
+	// iBankVault = cache_get_field_content_int(0, "money / 1000", MainPipeline);
+	print("[LS Bank] - Loaded all the $$$");
+	return 1;
+}
+
+
+Bank_UpdateBank(iAmount, iChoiceID) {
+	
+	switch(iChoiceID) {
+		case 0: {
+
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `bank` SET `money` = money + %d - 1000000000 WHERE `id` = 1 AND `money` > 0", INVALID_PLAYER_ID, iBankVault);
+			mysql_function_query(MainPipeline, szMiscArray, true, "Bank_OnUpdateBank", "i", 0);
+		}
+		case 1: {
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `bank` SET `money` = money + %d + %d - 1000000000 WHERE `id` = 1 AND `money` > 0", iAmount, iBankVault);
+			mysql_function_query(MainPipeline, szMiscArray, true, "Bank_OnUpdateBank", "i", iAmount);
+		}
+	}
+}
+
+forward Bank_OnUpdateBank(iAmount);
+public Bank_OnUpdateBank(iAmount) {
+
+	new iRows,
+		iFields;
+
+	cache_get_data(iRows, iFields, MainPipeline);
+	iRows = cache_affected_rows(MainPipeline);
+	if(iRows) {
+		iBankVault = 1000000000;
+		Bank_ProcessMoney(iAmount);
+		printf("[LS BANK] Calculated %d and reset the IG cash flow.", iAmount);
+		format(szMiscArray, sizeof(szMiscArray), "[LS BANK] Calculated %d and reset the IG cash flow.", iAmount);
+		Log("logs/bank.log", szMiscArray);
+	}
+	//else Bank_Bankrupt();
+	return 1;
+}
+
+/*
+Bank_Bankrupt() {
+	if(!GetGVarInt("Bankrupt")) SendClientMessageToAll(COLOR_LIGHTRED, "[BANK]: We are terribly sorry. We are bankrupt. Goodbye!");
+	SetGVarInt("Bankrupt", 1);
+}
+*/
+
+forward Bank_FetchData(playerid);
+public Bank_FetchData(playerid) {
+
+	new iRows,
+		iFields,
+		szMoney[16];
+
+	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_field_content(0, "money", szMoney, MainPipeline, sizeof(szMoney));
+
+	format(szMiscArray, sizeof(szMiscArray), "[BANK]: Vault: {CCCCCC}$%s", szMoney);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), "(( IG-FLOW: $%s ))", number_format(iBankVault));
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	return 1;
+}
+
+Bank_TransferCheck(iAmount) {
+
+	if((-2147483647 < iBankVault + iAmount < 2147483647)) {
+
+		if(iBankVault > (iAmount * -1)) { // If you withdraw, the bank will always be happy.
+			Bank_ProcessMoney(iAmount);
+		}
+		else Bank_UpdateBank(iAmount, 1);
+	}
+	else {
+		Bank_UpdateBank(iAmount, 1);
+	}
+	if(GetGVarInt("Bankrupt")) return 0;
+	return 1;
+}
+
+Bank_ProcessMoney(iAmount) {
+
+	iBankVault += iAmount;
+}
+
+CMD:bankvault(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
+	mysql_function_query(MainPipeline, "SELECT `money` FROM `bank` WHERE `id` = '1'", true, "Bank_FetchData", "i", playerid);
+	return 1;
+}
+
+CMD:updatevault(playerid, parmas[]) {
+	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
+	Bank_UpdateBank(iBankVault, 0);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[BANK]: You updated the bank vault, resetting the cash flow.");
+	return 1;
+}
+
 PayDay(i) {
 	if(!gPlayerLogged{i}) return 1;
 	new
@@ -62,6 +181,7 @@ PayDay(i) {
 				SendClientMessageEx(i, COLOR_WHITE, "You have been evicted from your residence for failing to pay rent fees.");
 			}
 			else {
+				if(!Bank_TransferCheck(-HouseInfo[PlayerInfo[i][pRenting]][hRentFee])) return 1;
 				HouseInfo[PlayerInfo[i][pRenting]][hSafeMoney] += HouseInfo[PlayerInfo[i][pRenting]][hRentFee];
 				PlayerInfo[i][pAccount] -= HouseInfo[PlayerInfo[i][pRenting]][hRentFee];
 			}
@@ -80,6 +200,7 @@ PayDay(i) {
 				if(PlayerInfo[i][pDonateRank] < 4)
 				{
 					format(string, sizeof(string), "  Paycheck: $%s  |  SA Gov Tax: $%s (%d percent)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue), TaxValue);
+					if(!Bank_TransferCheck((PlayerInfo[i][pPayCheck] / 100) * TaxValue)) return 1;
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * TaxValue;
 					Tax += (PlayerInfo[i][pPayCheck] / 100) * TaxValue;
 				}
@@ -88,6 +209,7 @@ PayDay(i) {
 					pVIPTax = TaxValue - 15;
 					if(pVIPTax < 0) { pVIPTax = 0; }
 					format(string, sizeof(string), "  Paycheck: $%s  |  SA Gov Tax: $%s (%d percent) {FFFF00}(Platinum VIP: 15 percent off)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);
+					if(!Bank_TransferCheck((PlayerInfo[i][pPayCheck] / 100) * pVIPTax)) return 1;
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 					Tax += (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 				}
@@ -97,6 +219,7 @@ PayDay(i) {
 				if(PlayerInfo[i][pDonateRank] < 4)
 				{
 					format(string, sizeof(string), "  Paycheck: $%s  |  NE Gov Tax: $%s (%d percent)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue), TRTaxValue);	
+					if(!Bank_TransferCheck((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue)) return 1;
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * TRTaxValue;
 					TRTax += (PlayerInfo[i][pPayCheck] / 100) * TRTaxValue;
 				}
@@ -105,6 +228,7 @@ PayDay(i) {
 					pVIPTax = TRTaxValue - 15;
 					if(pVIPTax < 0) { pVIPTax = 0; }
 					format(string, sizeof(string), "  Paycheck: $%s  |  NE Gov Tax: $%s (%d percent) {FFFF00}(Platinum VIP: 15 percent off)", number_format(PlayerInfo[i][pPayCheck]), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax), pVIPTax);	
+					if(!Bank_TransferCheck((PlayerInfo[i][pPayCheck] / 100) * pVIPTax)) return 1;
 					PlayerInfo[i][pAccount] -= (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 					TRTax += (PlayerInfo[i][pPayCheck] / 100) * pVIPTax;
 				}
@@ -174,6 +298,7 @@ PayDay(i) {
 					}
 				}
 			}
+			if(!Bank_TransferCheck(-interest)) return 1;
 			PlayerInfo[i][pAccount] += interest;
 			format(string, sizeof(string), "  Interest gained: $%s", number_format(interest));
 			SendClientMessageEx(i, COLOR_GRAD3, string);
@@ -585,6 +710,7 @@ CMD:writecheck(playerid, params[])
 		{
 			//GivePlayerCashEx(playerid, TYPE_BANK, -monies);
 			//GivePlayerCashEx(giveplayerid, TYPE_BANK, monies);
+			if(!Bank_TransferCheck(-monies)) return 1;
 			PlayerInfo[playerid][pAccount] = PlayerInfo[playerid][pAccount] - monies;
      		PlayerInfo[giveplayerid][pCheckCash] = PlayerInfo[giveplayerid][pCheckCash]+monies;
        		if(PlayerInfo[playerid][pDonateRank] == 0)

@@ -47,15 +47,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if (SpeedCameras[MAX_SPEEDCAMERAS - 1][_scActive])
 					return SendClientMessageEx(playerid, COLOR_GREY, "No more static speed cameras can be created.");
-				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.", "OK", "Back");
 			}
 			case 1:
 			{
-				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.", "OK", "Back");
 			}
 			case 2:
 			{
-				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.", "OK", "Back");
 			}
 			case 3:
 			{
@@ -96,13 +96,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				if (lowest_index == -1) // no cameras exist, the closest cannot be calculated
 				{
-					ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Nearest speed camera", "{FFFFFF}No speed cameras exist, and thus the closest cannot be found.", "OK", "");
+					ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Nearest speed camera", "{FFFFFF}No speed cameras exist, and thus the closest cannot be found.", "OK", "");
 				}
 				else
 				{
 					new msg[128];
 					format(msg, sizeof(msg), "{FFFFFF}The nearest speed camera is: {FFFF00}%i\n\n{FFFFFF}With a distance of {FFFF00}%f", lowest_index, distances[lowest_index]);
-					ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Nearest speed camera", msg, "OK", "");
+					ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_GETNEAREST, DIALOG_STYLE_MSGBOX, "{FFFF00}Nearest speed camera", msg, "OK", "");
 				}
 			}
 		}
@@ -110,34 +110,34 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if (dialogid == SPEEDCAM_DIALOG_RANGEC)
 	{
 		if (!response)
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", \
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", \
 					"Create a speed camera\nEdit a speed camera\nDelete a speed camera\nGet nearest speedcamera", "Select", "Cancel");
 
 		new Float:range;
 		if (sscanf(inputtext, "f", range))
 		{
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.\
 					\n\n{FFFF00}Value must be a number (decimal places allowed).", "OK", "Back");
 		}
 		SetPVarFloat(playerid, "_scCacheRange", range);
-		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the limit of your camera (mph).", "OK", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the limit of your camera (mph).", "OK", "Back");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_LIMIT)
 	{
 		if (!response)
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.", "OK", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_RANGEC, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the range of your camera.", "OK", "Back");
 
 		new Float:limit;
 		if (sscanf(inputtext, "f", limit))
 		{
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the limit of your camera (mph).\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Create a speed camera", "{FFFFFF}Enter the limit of your camera (mph).\
 				\n\n{FFFF00}Value must be a number (decimal places allowed).", "OK", "Back");
 		}
 		SetPVarFloat(playerid, "_scCacheLimit", limit);
 		new Float:range = GetPVarFloat(playerid, "_scCacheRange");
 		new content[256];
 		format(content, sizeof(content), "{FFFF00}Range: {FFFFFF}%f\n{FFFF00}Limit: {FFFFFF}%f mph\n\nAre you sure you want to create this speed camera?", range, limit);
-		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_OVERVIEW, DIALOG_STYLE_MSGBOX, "{FFFF00}Speed camera overview", content, "Confirm", "Cancel");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_OVERVIEW, DIALOG_STYLE_MSGBOX, "{FFFF00}Speed camera overview", content, "Confirm", "Cancel");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_OVERVIEW)
 	{
@@ -176,32 +176,32 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if (dialogid == SPEEDCAM_DIALOG_EDIT)
 	{
 		if (!response)
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
 				Get nearest speedcamera", \
 				"Select", "Cancel");
 
 		new id;
 		if (sscanf(inputtext, "i", id))
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
 				{FFFF00}ID must be a number.", "OK", "Back");
 
 		if (id >= MAX_SPEEDCAMERAS || id < 0)
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
 				{FFFF00}ID must not be above the maximum or below 0.", "OK", "Back");
 
 		if (SpeedCameras[id][_scActive] == false)
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to edit.\n\n\
 				{FFFF00}No active speed camera with that ID.", "OK", "Back");
 
 		SetPVarInt(playerid, "_scCacheEditId", id);
-		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_EDIT_IDX)
 	{
 		if (!response)
 		{
 			DeletePVar(playerid, "_scCacheEditId");
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
 				Get nearest speedcamera", \
 				"Select", "Cancel");
 		}
@@ -231,19 +231,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scPosX], SpeedCameras[id][_scPosY], SpeedCameras[id][_scPosZ]);
 				Log("logs/speedcam.log", logText);
 
-				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
 			}
 			case 1:
 			{
-				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new (Z) angle of the speed camera.", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new (Z) angle of the speed camera.", "OK", "Back");
 			}
 			case 2:
 			{
-				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new range of the speed camera.", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new range of the speed camera.", "OK", "Back");
 			}
 			case 3:
 			{
-				ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new speed limit of the speed camera (mph).", "OK", "Back");
+				ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new speed limit of the speed camera (mph).", "OK", "Back");
 			}
 		}
 	}
@@ -251,13 +251,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if (!response)
 		{
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
 		}
 
 		new Float:angle;
 		if (sscanf(inputtext, "f", angle))
 		{
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new (Z) angle of the speed camera.\n\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_ROT, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new (Z) angle of the speed camera.\n\n\
 				{FFFF00}The angle must be a number (decimals allowed).", "OK", "Back");
 		}
 
@@ -271,17 +271,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		format(logText, sizeof(logText), "%s(%d) has changed speed camera %d's z-angle to %f",
 			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scRotation]);
 		Log("logs/speedcam.log", logText);
-		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_EDIT_RANGE)
 	{
 		if (!response)
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
 
 		new Float:range;
 		if (sscanf(inputtext, "f", range))
 		{
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new range of the speed camera.\n\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_RANGE, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new range of the speed camera.\n\n\
 				{FFFF00}Range must be a number (decimals allowed).", "OK", "Back");
 		}
 
@@ -294,17 +294,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		format(logText, sizeof(logText), "%s(%d) has changed speed camera %d's range to %f",
 			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scRange]);
 		Log("logs/speedcam.log", logText);
-		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_EDIT_LIMIT)
 	{
 		if (!response)
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
 
 		new Float:limit;
 		if (sscanf(inputtext, "f", limit))
 		{
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new speed limit of the speed camera (mph).\n\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_LIMIT, DIALOG_STYLE_INPUT, "{FFFF00}Edit a speed camera", "{FFFFFF}Enter the new speed limit of the speed camera (mph).\n\n\
 				{FFFF00}Limit must be a number (decimals allowed).", "OK", "Back");
 		}
 
@@ -321,29 +321,29 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		format(logText, sizeof(logText), "%s(%d) has changed speed camera %d's limit to %f",
 			GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), SpeedCameras[id][_scDatabase], SpeedCameras[id][_scLimit]);
 		Log("logs/speedcam.log", logText);
-		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_EDIT_IDX, DIALOG_STYLE_LIST, "{FFFF00}Edit a speed camera", "Move position to player\nSet angle\nSet range\nSet limit", "Select", "Back");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_DELETE)
 	{
 		if (!response)
 		{
 			DeletePVar(playerid, "_scCacheDeleteId");
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
 				Get nearest speedcamera (static only)", \
 				"Select", "Cancel");
 		}
 
 		new id;
 		if (sscanf(inputtext, "i", id))
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
 				{FFFF00}ID must be a number.", "OK", "Back");
 
 		if (id >= MAX_SPEEDCAMERAS || id < 0)
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
 				{FFFF00}ID must not be above the maximum or below 0.", "OK", "Back");
 
 		if (SpeedCameras[id][_scActive] == false)
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_DELETE, DIALOG_STYLE_INPUT, "{FFFF00}Delete a speed camera", "{FFFFFF}Enter the ID of the speed camera you wish to delete.\n\n\
 				{FFFF00}No active camera with that ID.", "OK", "Back");
 
 		SetPVarInt(playerid, "_scCacheDeleteId", id);
@@ -351,14 +351,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new msg[256];
 		format(msg, sizeof(msg), "{FFFFFF}Are you sure you want to delete speed camera %i?\n\n{FFFF00}Range: {FFFFFF}%f\n\
 			{FFFF00}Limit: {FFFFFF}%f", id, SpeedCameras[id][_scRange], SpeedCameras[id][_scLimit]);
-		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_CONFIRMDEL, DIALOG_STYLE_MSGBOX, "{FFFF00}Delete a speed camera", msg, "Delete", "Cancel");
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_CONFIRMDEL, DIALOG_STYLE_MSGBOX, "{FFFF00}Delete a speed camera", msg, "Delete", "Cancel");
 	}
 	if (dialogid == SPEEDCAM_DIALOG_CONFIRMDEL)
 	{
 		if (!response)
 		{
 			DeletePVar(playerid, "_scCacheDeleteId");
-			return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+			return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
 				Get nearest speedcamera", \
 				"Select", "Cancel");
 		}
@@ -381,7 +381,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if (dialogid == SPEEDCAM_DIALOG_GETNEAREST)
 	{
-		return ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+		return ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
 			Get nearest speedcamera", \
 			"Select", "Cancel");
 	}
@@ -460,7 +460,7 @@ CMD:speedcam(playerid, params[])
 
 	if (IsAGovernment(playerid) && PlayerInfo[playerid][pRank] == Group_GetMaxRank(PlayerInfo[playerid][pLeader]) || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
-		ShowPlayerDialog(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
+		ShowPlayerDialogEx(playerid, SPEEDCAM_DIALOG_MAIN, DIALOG_STYLE_LIST, "{FFFF00}Speed Cameras", "Create a speed camera\nEdit a speed camera\nDelete a speed camera\n\
 			Get nearest speedcamera", "Select", "Cancel");
 	}
 	else

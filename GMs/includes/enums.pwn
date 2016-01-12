@@ -124,7 +124,10 @@ enum eGroupData {
 	g_iCrimeType,
 	g_iAmmo[MAX_AMMO_TYPES],
 	g_iDrugs[sizeof(szDrugs)],
-	g_iIngredients[sizeof(szIngredients)]
+	g_iIngredients[sizeof(szIngredients)],
+	g_iGroupToyID,
+	g_iRivals[MAX_GROUP_RIVALS],
+	g_iTurfTax
 }
 
 enum eAmmoData {
@@ -1131,7 +1134,8 @@ enum pInfo
 	pWatchlistTime,
 	pBackpack, // 0 = no bckpk 1 = small 2 = med 3 = large
 	pBEquipped,
-	pBItems[12], // 0 = food 1 = pot 2 = crack 3 = heroin 4 = opium 5 = medkit 6 = gun1 7 = gun2 8 = gun3 9 = gun4 10 = gun5 11 = Energy Bars
+	pBItems[12], // 0 = food 5 = medkit 6 = gun1 7 = gun2 8 = gun3 9 = gun4 10 = gun5 11 = Energy Bars
+	pBDrugs[sizeof(szDrugs)],
 	pBStoredH,
 	pBStoredV,
 	pBugReportTimeout,
@@ -1180,6 +1184,21 @@ enum pInfo
 	pBAmmo[MAX_AMMO_TYPES],
 	pToggledChats[21], // see AccountSettings.pwn for coressponding chat IDs.
 	pChatbox[20], // see AccountSettings.pwn for coressponding chat IDs.
+	Float:pGroupToy[9],
+	pGroupToyBone,
+	pFurnitureSlots[MAX_FURNITURE_SLOTS],
+	pHouseBuilder,
+	pPrisonCredits,
+	pPrisonMaterials,
+	pPrisonWineTime,
+	pPrisonCell,
+	p_iPrisonDrug[sizeof(szDrugs)],
+	// FISHING
+	pFishWeight,
+	pFishingSkill,
+
+	// GARBAGE
+	pGarbageSkill
 };
 
 enum pvInfo
@@ -1224,7 +1243,8 @@ enum pvInfo
 	pvBeingPickLocked,
 	pvBeingPickLockedBy,
 	pvLastLockPickedBy[MAX_PLAYER_NAME],
-	pvLocksLeft
+	pvLocksLeft,
+	pvDrugs[sizeof(szDrugs)]
 };
 
 enum ptInfo
@@ -1314,6 +1334,7 @@ enum hInfo
 	ListingDescription[128],
 	LinkedGarage[2],
 	hAreaID[2]
+	// hFurniture[MAX_FURNITURE_SLOTS]
 };
 
 enum dmpInfo
@@ -1739,6 +1760,28 @@ enum eGCrateData {
 }
 new arrGCrateData[MAX_GANG_CRATES][eGCrateData];
 
+enum ParkingMeterInfo
+{
+	MeterActive,
+	MeterRate,
+	Float:MeterRange,
+	Float:MeterPosition[6],
+	Float:ParkedPosition[4],
+	ParkingMeterObject,
+	Text3D:ParkingMeterText,
+	AssignedVehicle,
+	PaymentExpiry,
+};
+
+new EditingMeterID[MAX_PLAYERS];
+new ParkingMeterInformation[MAX_PARKING_METERS][ParkingMeterInfo];
+
+
+enum eGangTags {
+	gt_iObjectID,
+	Text3D:gt_iTextID
+}
+new arrGangTags[MAX_GANGTAGS][eGangTags];
 
 enum e_JobData {
     job_iType,
@@ -1778,7 +1821,6 @@ enum eDynPoints {
 	po_szPointName[MAX_PLAYER_NAME],
 	Float:po_fPos[3],
 	po_iCaptureAble,
-	po_iPointTimer,
 	po_iGroupID,
 	po_iPickupID,
 	po_iZoneID,
@@ -1788,6 +1830,14 @@ enum eDynPoints {
 	Text3D:po_iDelTextID
 }
 new arrPoint[MAX_DYNPOINTS][eDynPoints];
+
+
+enum eMetDetData {
+	metdet_iObjectID,
+	metdet_iAreaID,
+	Text3D:metdet_iTextID
+}
+new arrMetalDetector[MAX_METALDETECTORS][eMetDetData];
 
 
 
@@ -1800,9 +1850,11 @@ enum PlayerBit:(<<= 1) {
 	phone_bitState,
 	phone_bitCamState,
 	phone_bitTraceState,
-	g_bFPS,
+	bitFPS,
+	f_bCursor,
+	pTurfRadar
 };
-new PlayerBit:g_PlayerBits[MAX_PLAYERS];
+new PlayerBit:arrPlayerBits[MAX_PLAYERS];
 
 /*
 enum AntiCheat:(<<= 1) {

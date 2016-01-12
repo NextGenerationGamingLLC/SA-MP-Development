@@ -68,7 +68,7 @@ stock PaintballEditMenu(playerid)
  	    }
 		format(szMiscArray,sizeof(szMiscArray),"%s%s - \t(%s)\n",szMiscArray,PaintBallArena[i][pbArenaName],status);
 	}
-	ShowPlayerDialog(playerid,PBEDITMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Menu:",szMiscArray,"Select","Back");
+	ShowPlayerDialogEx(playerid,PBEDITMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Menu:",szMiscArray,"Select","Back");
 }
 
 stock PaintballEditArenaMenu(playerid)
@@ -77,7 +77,7 @@ stock PaintballEditArenaMenu(playerid)
 
 	new arenaid = GetPVarInt(playerid, "ArenaNumber");
 	format(szMiscArray,sizeof(szMiscArray),"Edit Arena Name - (%s)\nEdit Deathmatch Positions...\nEdit Team Positions...\nEdit Flag Positions...\nEdit Hill Position...\nHill Radius (%f)\nInterior (%d)\nVirtual World (%d)\nWar Vehicle 1\nWar Vehicle 2\nWar Vehicle 3\nWar Vehicle 4\nWar Vehicle 5\nWar Vehicle 6",PaintBallArena[arenaid][pbArenaName],PaintBallArena[arenaid][pbHillRadius],PaintBallArena[arenaid][pbInterior],PaintBallArena[arenaid][pbVirtual]);
-	ShowPlayerDialog(playerid,PBEDITARENAMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Menu:",szMiscArray,"Select","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENAMENU,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Menu:",szMiscArray,"Select","Back");
 	return 1;
 }
 
@@ -87,49 +87,49 @@ stock PaintballEditArenaName(playerid)
 
 	new arenaid = GetPVarInt(playerid, "ArenaNumber");
 	format(szMiscArray,sizeof(szMiscArray),"Enter a new Arena Name for Arena Slot %d:",arenaid);
-	ShowPlayerDialog(playerid,PBEDITARENANAME,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Name:",szMiscArray,"Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENANAME,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Name:",szMiscArray,"Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaDMSpawns(playerid)
 {
     if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialog(playerid,PBEDITARENADMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena DM Spawns:","Deathmatch Spawn 1\nDeathmatch Spawn 2\nDeathmatch Spawn 3\nDeathmatch Spawn 4","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENADMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena DM Spawns:","Deathmatch Spawn 1\nDeathmatch Spawn 2\nDeathmatch Spawn 3\nDeathmatch Spawn 4","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaTeamSpawns(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialog(playerid,PBEDITARENATEAMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Team Spawns:","Red Team Spawn 1\nRed Team Spawn 2\nRed Team Spawn 3\nBlue Team Spawn 1\nBlue Team Spawn 2\nBlue Team Spawn 3","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENATEAMSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Team Spawns:","Red Team Spawn 1\nRed Team Spawn 2\nRed Team Spawn 3\nBlue Team Spawn 1\nBlue Team Spawn 2\nBlue Team Spawn 3","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaFlagSpawns(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialog(playerid,PBEDITARENAFLAGSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Flag Spawns:","Red Team Flag\nBlue Team Flag","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENAFLAGSPAWNS,DIALOG_STYLE_LIST,"Paintball Arena - Edit Arena Flag Spawns:","Red Team Flag\nBlue Team Flag","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaInt(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialog(playerid,PBEDITARENAINT,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Interior:","Please enter a new interior id to place on the Arena:","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENAINT,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Interior:","Please enter a new interior id to place on the Arena:","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaVW(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialog(playerid,PBEDITARENAVW,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Virtual World:","Please enter a new virtual world id to place on the Arena:","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENAVW,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Virtual World:","Please enter a new virtual world id to place on the Arena:","Change","Back");
 	return 1;
 }
 
 stock PaintballEditArenaHillRadius(playerid)
 {
 	if(!GetPVarType(playerid, "ArenaNumber")) { return 1; }
-	ShowPlayerDialog(playerid,PBEDITARENAHILLRADIUS,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Hill Radius:","Please enter a new hill radius for the Arena:","Change","Back");
+	ShowPlayerDialogEx(playerid,PBEDITARENAHILLRADIUS,DIALOG_STYLE_INPUT,"Paintball Arena - Edit Arena Hill Radius:","Please enter a new hill radius for the Arena:","Change","Back");
 	return 1;
 }
 
@@ -210,7 +210,7 @@ stock PaintballScoreboard(playerid, arenaid)
 		    format(titlestring,sizeof(titlestring),"(TKOTH) Scoreboard - Red: (%d) - Blue: (%d) - Time Left (%d)",PaintBallArena[arenaid][pbTeamRedScores],PaintBallArena[arenaid][pbTeamBlueScores],PaintBallArena[arenaid][pbTimeLeft]);
 		}
 	}
-	ShowPlayerDialog(playerid,PBARENASCORES,DIALOG_STYLE_LIST,titlestring,szMiscArray,"Update","Close");
+	ShowPlayerDialogEx(playerid,PBARENASCORES,DIALOG_STYLE_LIST,titlestring,szMiscArray,"Update","Close");
 	return 1;
 }
 
@@ -288,13 +288,13 @@ stock PaintballArenaSelection(playerid)
 		    format(szMiscArray,sizeof(szMiscArray),"%s{FFFFFF}%s - \t(%s) (%s) (%s) (%d/%d) ($%d) (%s)%s (PW)\n",szMiscArray,PaintBallArena[i][pbArenaName],PaintBallArena[i][pbOwner],status,gametype,count,limit,money,eperm,war);
 		}
 	}
-	ShowPlayerDialog(playerid,PBARENASELECTION,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Arena:",szMiscArray,"Select","Back");
+	ShowPlayerDialogEx(playerid,PBARENASELECTION,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Arena:",szMiscArray,"Select","Back");
 }
 
 stock PaintballTokenBuyMenu(playerid)
 {
 	format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}How many Paintball Tokens do you wish to purchase?\n\nEach token costs a total of $%d. You currently have {AA3333}%d{FFFFFF} Tokens.", 5000, PlayerInfo[playerid][pPaintTokens]);
-	ShowPlayerDialog(playerid,PBTOKENBUYMENU,DIALOG_STYLE_INPUT,"Paintball Arena - Paintball Tokens:",szMiscArray,"Buy","Back");
+	ShowPlayerDialogEx(playerid,PBTOKENBUYMENU,DIALOG_STYLE_INPUT,"Paintball Arena - Paintball Tokens:",szMiscArray,"Buy","Back");
 }
 
 stock PaintballSetupArena(playerid)
@@ -396,7 +396,7 @@ stock PaintballSetupArena(playerid)
 	        format(szMiscArray,sizeof(szMiscArray),"Password - (%s)\nGameType - (%s)\nLimit - (%d)\nTime Limit - (%d Minutes)\nBid Money - ($%d)\nHealth - (%.2f)\nArmor - (%.2f)\nWeapons Slot 1 - (%s)\nWeapons Slot 2 - (%s)\nWeapons Slot 3 - (%s)\nQS/CS - (%s)\nWar - (%s)\nBegin Arena",password,gametype,limit,timelimit,money,health,armor,wepname1,wepname2,wepname3,eperm,war);
 	    }
 	}
-	ShowPlayerDialog(playerid,PBSETUPARENA,DIALOG_STYLE_LIST,"Paintball Arena - Setup Arena:",szMiscArray,"Select","Leave");
+	ShowPlayerDialogEx(playerid,PBSETUPARENA,DIALOG_STYLE_LIST,"Paintball Arena - Setup Arena:",szMiscArray,"Select","Leave");
 }
 
 stock PaintballSwitchTeam(playerid)
@@ -404,7 +404,7 @@ stock PaintballSwitchTeam(playerid)
 	new arenaid = GetPVarInt(playerid, "IsInArena");
 	new teamlimit = PaintBallArena[arenaid][pbLimit]/2;
 	format(szMiscArray, sizeof(szMiscArray),"{FF0000}Red Team (%d/%d)\n{0000FF}Blue Team (%d/%d)",PaintBallArena[arenaid][pbTeamRed],teamlimit,PaintBallArena[arenaid][pbTeamBlue],teamlimit);
-	ShowPlayerDialog(playerid,PBSWITCHTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:", szMiscArray,"Switch","Cancel");
+	ShowPlayerDialogEx(playerid,PBSWITCHTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:", szMiscArray,"Switch","Cancel");
 }
 
 stock InitPaintballArenas()
@@ -1337,11 +1337,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						if(PlayerInfo[playerid][pAdmin] >= 1337)
 						{
-							ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+							ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 						}
 						else
 						{
-							ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+							ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
 							SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have authorization to access the admin panel.");
 							return 1;
 						}
@@ -1436,7 +1436,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 						format(szMiscArray, sizeof(szMiscArray), "* Admin %s has locked all Paintball Arenas for some short maintenance.", GetPlayerNameEx(playerid));
 						SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
-						ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 					}
 					case 2: // Unlock all Arenas
 					{
@@ -1451,19 +1451,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 						format(szMiscArray, sizeof(szMiscArray), "* Admin %s has unlocked all Paintball Arenas, you may join/create them now.", GetPlayerNameEx(playerid));
 						SendClientMessageToAllEx(COLOR_LIGHTBLUE, szMiscArray);
-						ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 					}
 					case 3: // Force Save Arenas
 					{
 						SendClientMessageEx(playerid, COLOR_WHITE, "You have forced saved all changes to the Painball Arenas.");
 						SavePaintballArenas();
-						ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+						ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 					}
 				}
 			}
 			else
 			{
-				ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+				ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
 			}
 		}
 		case PBARENASCORES:
@@ -1513,7 +1513,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				ShowPlayerDialog(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
+				ShowPlayerDialogEx(playerid,PBADMINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Admin Menu:","Edit Arena...\nLock All Arenas\nUnlock All Arenas\nSave Changes to All Arenas","Select","Back");
 			}
 		}
 		case PBEDITARENAMENU:
@@ -1971,13 +1971,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(PaintBallArena[i][pbGameType] == 2 || PaintBallArena[i][pbGameType] == 3 || PaintBallArena[i][pbGameType] == 5)
 							{
 								SetPVarInt(playerid, "ArenaEnterTeam", i);
-								ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+								ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
 								return 1;
 							}
 							if(strcmp(PaintBallArena[i][pbPassword], "None", false))
 							{
 								SetPVarInt(playerid, "ArenaEnterPass", i);
-								ShowPlayerDialog(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
+								ShowPlayerDialogEx(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
 								return 1;
 							}
 							JoinPaintballArena(playerid, i, "None");
@@ -1997,7 +1997,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+				ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
 			}
 		}
 		case PBTOKENBUYMENU:
@@ -2034,7 +2034,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+				ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
 			}
 		}
 		case PBSETUPARENA:
@@ -2048,62 +2048,62 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						case 0: // Password
 						{
-							ShowPlayerDialog(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Change Password:","Please enter your desired password, leave it empty if you do not want the arena passworded:","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Change Password:","Please enter your desired password, leave it empty if you do not want the arena passworded:","Change","Back");
 							return 1;
 						}
 						case 1: // GameType
 						{
-							ShowPlayerDialog(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
 							return 1;
 						}
 						case 2: // Limit
 						{
-							ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
 							return 1;
 						}
 						case 3: // Time Limit
 						{
-							ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
 							return 1;
 						}
 						case 4: // Bid Money
 						{
-							ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
 							return 1;
 						}
 						case 5: // Health
 						{
-							ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
 							return 1;
 						}
 						case 6: // Armor
 						{
-							ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
 							return 1;
 						}
 						case 7: // Weapons 1
 						{
-							ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 							return 1;
 						}
 						case 8: // Weapons 2
 						{
-							ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
 							return 1;
 						}
 						case 9: // Weapons 3
 						{
-							ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
 							return 1;
 						}
 						case 10: // Exploit Perm
 						{
-							ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
 							return 1;
 						}
 						case 11: // War
 						{
-							ShowPlayerDialog(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Change War:", "Do you wish to allow War in the room?", "Yes", "No");
+							ShowPlayerDialogEx(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Change War:", "Do you wish to allow War in the room?", "Yes", "No");
 							return 1;
 						}
 						case 12: // Begin Arena
@@ -2272,72 +2272,72 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						case 0: // Password
 						{
-							ShowPlayerDialog(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Change Password:","Please enter your desired password, leave it empty if you do not want the arena passworded:","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Change Password:","Please enter your desired password, leave it empty if you do not want the arena passworded:","Change","Back");
 							return 1;
 						}
 						case 1: // GameType
 						{
-							ShowPlayerDialog(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEGAMEMODE,DIALOG_STYLE_LIST,"Paintball Arena - Change Gamemode:","Deathmatch\nTeam Deathmatch\nCapture the Flag\nKing of the Hill\nTeam King of the Hill","Change","Back");
 							return 1;
 						}
 						case 2: // Limit
 						{
-							ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
 							return 1;
 						}
 						case 3: // Time Limit
 						{
-							ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a time limit for the round (5-15 minutes):","Change","Back");
 							return 1;
 						}
 						case 4: // Bid Money
 						{
-							ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each player ($0-$10000):","Change","Back");
 							return 1;
 						}
 						case 5: // Health
 						{
-							ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each player (1-100):","Change","Back");
 							return 1;
 						}
 						case 6: // Armor
 						{
-							ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each player (0-100):","Change","Back");
 							return 1;
 						}
 						case 7: // Weapons 1
 						{
-							ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 							return 1;
 						}
 						case 8: // Weapons 2
 						{
-							ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
 							return 1;
 						}
 						case 9: // Weapons 3
 						{
-							ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
 							return 1;
 						}
 						case 10: // Exploit Perm
 						{
-							ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
 							return 1;
 						}
 						case 11: // War
 						{
-							ShowPlayerDialog(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Change War:", "Do you wish to allow War in the room?", "Yes", "No");
+							ShowPlayerDialogEx(playerid,PBCHANGEWAR,DIALOG_STYLE_MSGBOX,"Paintball Arena - Change War:", "Do you wish to allow War in the room?", "Yes", "No");
 							return 1;
 						}
 						case 12: // Flag Instagib
 						{
-							ShowPlayerDialog(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
 							return 1;
 						}
 						case 13: // Flag No Weapons
 						{
-							ShowPlayerDialog(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
+							ShowPlayerDialogEx(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
 							return 1;
 						}
 						case 14: // Begin Arena
@@ -2515,12 +2515,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) < 2 || strval(inputtext) > 16)
 				{
-					ShowPlayerDialog(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGELIMIT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Limit:","Please enter a player limit (2-16):","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbLimit] = strval(inputtext);
@@ -2538,17 +2538,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
 					return 1;
 				}
 				if(strfind(".", inputtext, true) != -1)
 				{
-					ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) < 5 || strval(inputtext) > 15)
 				{
-					ShowPlayerDialog(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGETIMELEFT,DIALOG_STYLE_INPUT,"Paintball Arena - Change Time Limit:","Please enter a Time Limit for the round (5-15 Minutes):","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbTimeLeft] = strval(inputtext)*60;
@@ -2566,17 +2566,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) < 0 || strval(inputtext) > 10000)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) > GetPlayerCash(playerid))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEBIDMONEY,DIALOG_STYLE_INPUT,"Paintball Arena - Change Bid Money:","Please enter a bid amount for each person ($0-$10000):","Change","Back");
 					SendClientMessageEx(playerid, COLOR_WHITE, "You can't enter a bid amount greater than your current cash.");
 					return 1;
 				}
@@ -2595,12 +2595,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) < 1 || strval(inputtext) > 100)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEHEALTH,DIALOG_STYLE_INPUT,"Paintball Arena - Change Health:","Please enter a spawn health amount for each person (1-100):","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbHealth] = strval(inputtext);
@@ -2618,12 +2618,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) < 0 || strval(inputtext) > 99)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEARMOR,DIALOG_STYLE_INPUT,"Paintball Arena - Change Armor:","Please enter a spawn armor amount for each person (0-99):","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbArmor] = strval(inputtext);
@@ -2641,22 +2641,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) == 16 || strval(inputtext) == 18)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 					return 1;			
 				}
 				if(strval(inputtext) < 0||strval(inputtext) > 34)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbWeapons][0] = strval(inputtext);
@@ -2674,22 +2674,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) == 16 || strval(inputtext) == 18)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 					return 1;			
 				}			
 				if(strval(inputtext) < 0||strval(inputtext) > 34)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS2,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 2):","Please enter a weapon ID for slot 2 for each player (0-34):","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbWeapons][1] = strval(inputtext);
@@ -2707,22 +2707,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) == 16 || strval(inputtext) == 18)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS1,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 1):","Please enter a weapon ID for slot 1 for each player (0-34):","Change","Back");
 					return 1;			
 				}			
 				if(strval(inputtext) < 0||strval(inputtext) > 34)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) >= 19 && strval(inputtext) <= 21)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEWEAPONS3,DIALOG_STYLE_INPUT,"Paintball Arena - Change Weapons (Slot 3):","Please enter a weapon ID for slot 3 for each player (0-34):","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbWeapons][2] = strval(inputtext);
@@ -2740,12 +2740,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) < 0||strval(inputtext) > 1)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEEXPLOITPERM,DIALOG_STYLE_INPUT,"Paintball Arena - Change Exploit Permissions:","Do you wish to allow QS/CS in the room? (1 = Yes / 0 = No):","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbExploitPerm] = strval(inputtext);
@@ -2785,12 +2785,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) < 0||strval(inputtext) > 1)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEFLAGINSTAGIB,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag Instagib:","Do you wish to allow one-shot kills on the flag holder in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's health to 1 on pickup.","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbFlagInstagib] = strval(inputtext);
@@ -2808,12 +2808,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new arenaid = GetPVarInt(playerid, "ArenaNumber");
 				if(isnull(inputtext))
 				{
-					ShowPlayerDialog(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
 					return 1;
 				}
 				if(strval(inputtext) < 0||strval(inputtext) > 1)
 				{
-					ShowPlayerDialog(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
+					ShowPlayerDialogEx(playerid,PBCHANGEFLAGNOWEAPONS,DIALOG_STYLE_INPUT,"Paintball Arena - Change Flag No Weapons:","Do you wish to have the flag holder's weapons to be disabled in the room? (1 = Yes / 0 = No):\n\nHint: This set's the flag holder's weapons to fists on pickup.","Change","Back");
 					return 1;
 				}
 				PaintBallArena[arenaid][pbFlagNoWeapons] = strval(inputtext);
@@ -2955,20 +2955,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PaintBallArena[arenaid][pbTeamRed] >= teamlimit)
 						{
 							SendClientMessageEx(playerid, COLOR_WHITE, "Red Team is currently full, please choose another team.");
-							ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTeamRed] > PaintBallArena[arenaid][pbTeamBlue])
 						{
 							SendClientMessageEx(playerid, COLOR_WHITE, "Teams are un-even, please choose another team.");
-							ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
 							return 1;
 						}
 						SetPVarInt(playerid, "pbTeamChoice", 1);
 						if(strcmp(PaintBallArena[arenaid][pbPassword], "None", false))
 						{
 							SetPVarInt(playerid, "ArenaEnterPass", arenaid);
-							ShowPlayerDialog(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
+							ShowPlayerDialogEx(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
 							return 1;
 						}
 						JoinPaintballArena(playerid, arenaid, "None");
@@ -2979,20 +2979,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PaintBallArena[arenaid][pbTeamBlue] >= teamlimit)
 						{
 							SendClientMessageEx(playerid, COLOR_WHITE, "Blue Team is currently full, please choose another team.");
-							ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
 							return 1;
 						}
 						if(PaintBallArena[arenaid][pbTeamBlue] > PaintBallArena[arenaid][pbTeamRed])
 						{
 							SendClientMessageEx(playerid, COLOR_WHITE, "Teams are un-even, please choose another team.");
-							ShowPlayerDialog(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
+							ShowPlayerDialogEx(playerid,PBJOINTEAM,DIALOG_STYLE_LIST,"Paintball Arena - Choose a Team:","{FF0000}Red Team\n{0000FF}Blue Team","Enter","Leave");
 							return 1;
 						}
 						SetPVarInt(playerid, "pbTeamChoice", 2);
 						if(strcmp(PaintBallArena[arenaid][pbPassword], "None", false))
 						{
 							SetPVarInt(playerid, "ArenaEnterPass", arenaid);
-							ShowPlayerDialog(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
+							ShowPlayerDialogEx(playerid,PBJOINPASSWORD,DIALOG_STYLE_INPUT,"Paintball Arena - Password:","This Arena is currently passworded, please enter the password:","Enter","Leave");
 							return 1;
 						}
 						JoinPaintballArena(playerid, arenaid, "None");
@@ -3438,11 +3438,11 @@ CMD:joinarena(playerid, params[])
  		}
 		if(PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
         if(PlayerInfo[playerid][pAdmin] > 2) {
-            ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+            ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
             return 1;
         }
         if(IsPlayerInRangeOfPoint(playerid, 10.0, 1294.5062, -1445.0599, 0.4403)) {
-            ShowPlayerDialog(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
+            ShowPlayerDialogEx(playerid,PBMAINMENU,DIALOG_STYLE_LIST,"Paintball Arena - Main Menu:","Choose an Arena\nPaintball Tokens\nAdmin Menu","Select","Leave");
         }
         else {
             SendClientMessageEx(playerid, COLOR_WHITE, "You are not near the Paintball Arena!");

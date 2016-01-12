@@ -887,7 +887,7 @@ CMD:editevent(playerid, params[])
 				ConfigEventCPId[playerid] = 0;
 				new string[279];
 				format(string,sizeof(string),"Welcome to the race checkpoint configuration system!\nThis is a quick guide on the steps you need to follow to successfully get the race checkpoints done.\nFirst and most important you need to remember to make the checkpoints in order, from the start line to the end line.");
-				ShowPlayerDialog(playerid,RCPINTRO,DIALOG_STYLE_MSGBOX,"Race Checkpoints Introduction",string,"Next","Skip");
+				ShowPlayerDialogEx(playerid,RCPINTRO,DIALOG_STYLE_MSGBOX,"Race Checkpoints Introduction",string,"Next","Skip");
 			}
 			else if(strcmp(choice, "onfoot", true) == 0)
 			{

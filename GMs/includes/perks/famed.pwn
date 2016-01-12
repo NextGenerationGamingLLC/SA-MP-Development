@@ -340,13 +340,13 @@ CMD:famedlocker(playerid, params[]) {
 	    switch(PlayerInfo[playerid][pFamed])
 	    {
 			case 0: SendClientMessageEx(playerid, COLOR_GRAD2, "You're not part of famed!");
-			case 1: ShowPlayerDialog(playerid, DIALOG_LOCKER_OS, DIALOG_STYLE_LIST, "Old-School Locker", "First Aid Kit (Free)\nKevlar Vest ($10000)\nChange Skin ($3,000)\nJob Center", "Select", "Cancel");
-			case 2: ShowPlayerDialog(playerid, DIALOG_LOCKER_COS, DIALOG_STYLE_LIST, "Chartered Old-School Locker", "First Aid Kit (Free)\nKevlar Vest ($5000)\nChange Skin ($1,500)\nJob Center", "Select", "Cancel");
-			case 3: ShowPlayerDialog(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
-            case 4: ShowPlayerDialog(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Commissioner Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
-            case 5: ShowPlayerDialog(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Moderator Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
-            case 6: ShowPlayerDialog(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Vice-Chairman Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
-            case 7: ShowPlayerDialog(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Chairman Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
+			case 1: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_OS, DIALOG_STYLE_LIST, "Old-School Locker", "First Aid Kit (Free)\nKevlar Vest ($10000)\nChange Skin ($3,000)\nJob Center", "Select", "Cancel");
+			case 2: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_COS, DIALOG_STYLE_LIST, "Chartered Old-School Locker", "First Aid Kit (Free)\nKevlar Vest ($5000)\nChange Skin ($1,500)\nJob Center", "Select", "Cancel");
+			case 3: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
+            case 4: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Commissioner Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
+            case 5: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Moderator Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
+            case 6: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Vice-Chairman Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
+            case 7: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_FAMED, DIALOG_STYLE_LIST, "Famed Chairman Locker", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)\nChange Skin (Free)\nJob Center\nFamed Color", "Select", "Cancel");
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not at the famed locker!");
@@ -427,7 +427,7 @@ CMD:fmembers(playerid, params[])
 				format(string, sizeof(string), "%s\nLevel %d Famed %s", string, PlayerInfo[i][pFamed], GetPlayerNameEx(i));
 			}	
 		}
-		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Current Online Famed Members", string, "Close", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Current Online Famed Members", string, "Close", "");
 	}
 	else
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");

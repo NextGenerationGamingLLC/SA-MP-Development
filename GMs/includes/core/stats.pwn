@@ -150,7 +150,7 @@ stock ShowStats(playerid,targetid)
 		GetJobName(PlayerInfo[targetid][pJob3]),
 		GetJobLevel(targetid, PlayerInfo[targetid][pJob3]),
 		insur);
-		ShowPlayerDialog(playerid, DISPLAY_STATS, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
+		ShowPlayerDialogEx(playerid, DISPLAY_STATS, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
 	}
 	return 1;
 }

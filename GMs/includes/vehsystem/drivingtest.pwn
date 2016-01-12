@@ -273,7 +273,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response)
 			{
 				//1138.3353,1375.6553,10.4057
-				ShowPlayerDialog(playerid, 
+				ShowPlayerDialogEx(playerid, 
 				DIALOG_DSVEH_RULES,
 				DIALOG_STYLE_MSGBOX,
 				"Driving Rules", 
@@ -287,7 +287,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, 
+				ShowPlayerDialogEx(playerid, 
 				DIALOG_DSVEH_TESTBASE,
 				DIALOG_STYLE_LIST,
 				"{FF0000}If you crash into a vehicle, you must...",
@@ -300,7 +300,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(listitem == 2)
 				{
-					ShowPlayerDialog(playerid, 
+					ShowPlayerDialogEx(playerid, 
 					DIALOG_DSVEH_TESTBASE+1,
 					DIALOG_STYLE_LIST,
 					"{FF0000}You must drive on the LEFT side of the road..",
@@ -318,7 +318,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(listitem == 1)
 				{
-					ShowPlayerDialog(playerid, 
+					ShowPlayerDialogEx(playerid, 
 					DIALOG_DSVEH_TESTBASE+2,
 					DIALOG_STYLE_LIST,
 					"{FF0000}If the speed limit is 50mph, you must go..",
@@ -336,7 +336,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(listitem == 3)
 				{
-					ShowPlayerDialog(playerid, 
+					ShowPlayerDialogEx(playerid, 
 					DIALOG_DSVEH_TESTBASE+3,
 					DIALOG_STYLE_LIST,
 					"{FF0000}Your seatbelt must always be on.",

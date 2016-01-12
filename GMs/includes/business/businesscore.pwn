@@ -168,7 +168,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 		}
   		case ITEM_LOTTERYTICKET:
 		{
-			ShowPlayerDialog(playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Lottery Ticket Selection","Please enter a Lotto Number", "Select", "Cancel" );
+			ShowPlayerDialogEx(playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Lottery Ticket Selection","Please enter a Lotto Number", "Select", "Cancel" );
 		}
   		case ITEM_CHECKBOOK:
 		{
@@ -202,7 +202,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 					}
 				}
-				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
 			}
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
 		}
@@ -219,7 +219,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 					}
 				}
-				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
 			}
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
 		}
@@ -236,7 +236,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 					}
 				}
-				return ShowPlayerDialog(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
 			}
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
 		}
@@ -321,15 +321,15 @@ stock DisplayItemPricesDialog(businessid, playerid)
     else {
         if (Businesses[businessid][bType] == BUSINESS_TYPE_SEXSHOP)
         {
-			ShowPlayerDialog(playerid, SHOPMENU, DIALOG_STYLE_LIST, GetBusinessTypeName(Businesses[businessid][bType]), szDialog, "Buy", "Cancel");
+			ShowPlayerDialogEx(playerid, SHOPMENU, DIALOG_STYLE_LIST, GetBusinessTypeName(Businesses[businessid][bType]), szDialog, "Buy", "Cancel");
         }
 		else if (Businesses[businessid][bType] == BUSINESS_TYPE_RESTAURANT)
 		{
-			ShowPlayerDialog(playerid, RESTAURANTMENU2, DIALOG_STYLE_LIST, GetBusinessTypeName(Businesses[businessid][bType]), szDialog, "Buy", "Cancel");
+			ShowPlayerDialogEx(playerid, RESTAURANTMENU2, DIALOG_STYLE_LIST, GetBusinessTypeName(Businesses[businessid][bType]), szDialog, "Buy", "Cancel");
 		}
         else
         {
-    		ShowPlayerDialog(playerid, STOREMENU, DIALOG_STYLE_LIST, GetBusinessTypeName(Businesses[businessid][bType]), szDialog, "Buy", "Cancel");
+    		ShowPlayerDialogEx(playerid, STOREMENU, DIALOG_STYLE_LIST, GetBusinessTypeName(Businesses[businessid][bType]), szDialog, "Buy", "Cancel");
 		}
     }
 }
@@ -789,7 +789,7 @@ CMD:bonline(playerid, params[]) {
 		}	
 		if(!isnull(szDialog)) {
 		    strdel(szDialog, 0, 1);
-			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Online Members", szDialog, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Online Members", szDialog, "Select", "Cancel");
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "No members are online at this time.");
     }
@@ -2646,7 +2646,7 @@ CMD:offermenu(playerid, params[])
 	}
 
    	if(strlen(szDialog) == 0) SendClientMessageEx(playerid, COLOR_GRAD2, "   Store is not selling any items!");
-    else ShowPlayerDialog(playerid, RESTAURANTMENU, DIALOG_STYLE_LIST, "Menu", szDialog, "Buy", "Cancel");
+    else ShowPlayerDialogEx(playerid, RESTAURANTMENU, DIALOG_STYLE_LIST, "Menu", szDialog, "Buy", "Cancel");
     return 1;
 }
 
@@ -2690,7 +2690,7 @@ CMD:buyfood(playerid, params[])
     }
     else
 	{
-    	ShowPlayerDialog(playerid, RESTAURANTMENU, DIALOG_STYLE_LIST, "Menu", szDialog, "Buy", "Cancel");
+    	ShowPlayerDialogEx(playerid, RESTAURANTMENU, DIALOG_STYLE_LIST, "Menu", szDialog, "Buy", "Cancel");
     }
 
 	return 1;
@@ -3078,7 +3078,7 @@ CMD:editgasprice(playerid, params[])
 {
 	if (PlayerInfo[playerid][pBusiness] != INVALID_BUSINESS_ID && PlayerInfo[playerid][pBusinessRank] >= 5 && IsBusinessGasAble(Businesses[PlayerInfo[playerid][pBusiness]][bType]))
 	{
-		ShowPlayerDialog(playerid, DIALOG_GASPRICE, DIALOG_STYLE_INPUT, "Edit Gas Price", "Enter the new price per 1 gallon (e.g. 4.52)", "OK", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_GASPRICE, DIALOG_STYLE_INPUT, "Edit Gas Price", "Enter the new price per 1 gallon (e.g. 4.52)", "OK", "Cancel");
 		SetPVarInt(playerid, "EditingBusiness", PlayerInfo[playerid][pBusiness]);
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "Your are not the owner of a gas station!");
@@ -3097,32 +3097,32 @@ CMD:editprices(playerid, params[])
 			if(Businesses[iBusiness][bType] == BUSINESS_TYPE_STORE || Businesses[iBusiness][bType] == BUSINESS_TYPE_GASSTATION) {
 	    		new szDialog[912];
 				for (new i = 0; i < sizeof(StoreItems); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s) (Cost of Good: $%s)\n", szDialog, StoreItems[i], number_format(Businesses[iBusiness][bItemPrices][i]), number_format(floatround(StoreItemCost[i][ItemValue] * BUSINESS_ITEMS_COST)) );
-				ShowPlayerDialog(playerid, DIALOG_STOREPRICES, DIALOG_STYLE_LIST, "Edit 24/7 Prices", szDialog, "Edit", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_STOREPRICES, DIALOG_STYLE_LIST, "Edit 24/7 Prices", szDialog, "Edit", "Cancel");
 				SetPVarInt(playerid, "EditingBusiness", iBusiness);
 			}
 
 		    else if(Businesses[iBusiness][bType] == BUSINESS_TYPE_CLOTHING) {
-		    	ShowPlayerDialog(playerid, DIALOG_STORECLOTHINGPRICE, DIALOG_STYLE_INPUT, "Edit Price", "{FFFFFF}Enter the new sale price for clothing\n(Items with the price of $0 will not be for sale)", "Okay", "Cancel");
+		    	ShowPlayerDialogEx(playerid, DIALOG_STORECLOTHINGPRICE, DIALOG_STYLE_INPUT, "Edit Price", "{FFFFFF}Enter the new sale price for clothing\n(Items with the price of $0 will not be for sale)", "Okay", "Cancel");
                 SetPVarInt(playerid, "EditingBusiness", iBusiness);
 			}
 			else if(Businesses[iBusiness][bType] == BUSINESS_TYPE_GUNSHOP) {
 			    new szDialog[512];
 				for (new i = 0; i < sizeof(Weapons); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, GetWeaponNameEx(Weapons[i][WeaponId]), number_format(Businesses[iBusiness][bItemPrices][i]));
-				ShowPlayerDialog(playerid, DIALOG_GUNPRICES, DIALOG_STYLE_LIST, "Edit Weapon Prices", szDialog, "Edit", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_GUNPRICES, DIALOG_STYLE_LIST, "Edit Weapon Prices", szDialog, "Edit", "Cancel");
 				SetPVarInt(playerid, "EditingBusiness", iBusiness);
 			}
 			else if(Businesses[iBusiness][bType] == BUSINESS_TYPE_BAR || Businesses[iBusiness][bType] == BUSINESS_TYPE_CLUB /*|| Businesses[iBusiness][bType] == BUSINESS_TYPE_RESTAURANT*/)
 			{
 			    new szDialog[512];
 				for (new i; i < sizeof(Drinks); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, Drinks[i], number_format(Businesses[iBusiness][bItemPrices][i]));
-				ShowPlayerDialog(playerid, DIALOG_BARPRICE, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Edit", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_BARPRICE, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Edit", "Cancel");
 				SetPVarInt(playerid, "EditingBusiness", iBusiness);
 			}
 			else if(Businesses[iBusiness][bType] == BUSINESS_TYPE_SEXSHOP)
 			{
 			    new szDialog[512];
 				for (new i = 0; i < sizeof(SexItems); i++) format(szDialog, sizeof(szDialog), "%s%s  ($%s)\n", szDialog, SexItems[i], number_format(Businesses[iBusiness][bItemPrices][i]));
-				ShowPlayerDialog(playerid, DIALOG_SEXSHOP, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Edit", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_SEXSHOP, DIALOG_STYLE_LIST, "Edit Business Prices", szDialog, "Edit", "Cancel");
 				SetPVarInt(playerid, "EditingBusiness", iBusiness);
 			}
 			else if (Businesses[iBusiness][bType] == BUSINESS_TYPE_RESTAURANT)
@@ -3133,7 +3133,7 @@ CMD:editprices(playerid, params[])
 					format(buf, sizeof(buf), "%s%s  ($%s)\n", buf, RestaurantItems[i], number_format(Businesses[iBusiness][bItemPrices][i]));
 				}
 
-				ShowPlayerDialog(playerid, DIALOG_RESTAURANT, DIALOG_STYLE_LIST, "Edit Business Prices", buf, "Edit", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_RESTAURANT, DIALOG_STYLE_LIST, "Edit Business Prices", buf, "Edit", "Cancel");
 				SetPVarInt(playerid, "EditingBusiness", iBusiness);
 			}
 		}

@@ -408,10 +408,10 @@ public OnPlayerUpdate(playerid)
 }
 
 
-public OnPlayerEditAttachedObject( playerid, response, index, modelid, boneid,
+public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid,
                                    Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ,
                                    Float:fRotX, Float:fRotY, Float:fRotZ,
-                                   Float:fScaleX, Float:fScaleY, Float:fScaleZ )
+                                   Float:fScaleX, Float:fScaleY, Float:fScaleZ)
 {
 	if(response == EDIT_RESPONSE_FINAL)
 	{
@@ -452,25 +452,53 @@ public OnPlayerEditAttachedObject( playerid, response, index, modelid, boneid,
 			fScaleZ = 1.5;
 			SendClientMessage(playerid, COLOR_WHITE, "Maximum Z Scale exeeded, damped to maximum");
 		}
+		if(GetPVarType(playerid, "EditGToy")) {
 
-	    new slotid = GetPVarInt(playerid, "ToySlot");
-		PlayerToyInfo[playerid][slotid][ptPosX] = fOffsetX;
-		PlayerToyInfo[playerid][slotid][ptPosY] = fOffsetY;
-		PlayerToyInfo[playerid][slotid][ptPosZ] = fOffsetZ;
-		PlayerToyInfo[playerid][slotid][ptRotX] = fRotX;
-		PlayerToyInfo[playerid][slotid][ptRotY] = fRotY;
-		PlayerToyInfo[playerid][slotid][ptRotZ] = fRotZ;
-		PlayerToyInfo[playerid][slotid][ptScaleX] = fScaleX;
-		PlayerToyInfo[playerid][slotid][ptScaleY] = fScaleY;
-		PlayerToyInfo[playerid][slotid][ptScaleZ] = fScaleZ;
+			PlayerInfo[playerid][pGroupToy][0] = fOffsetX;
+			PlayerInfo[playerid][pGroupToy][1] = fOffsetY;
+			PlayerInfo[playerid][pGroupToy][2] = fOffsetZ;
+			PlayerInfo[playerid][pGroupToy][3] = fRotX;
+			PlayerInfo[playerid][pGroupToy][4] = fRotY;
+			PlayerInfo[playerid][pGroupToy][5] = fRotZ;
+			PlayerInfo[playerid][pGroupToy][6] = fScaleX;
+			PlayerInfo[playerid][pGroupToy][7] = fScaleY;
+			PlayerInfo[playerid][pGroupToy][8] = fScaleZ;
+			RemovePlayerAttachedObject(playerid, 9);
+			SetPlayerAttachedObject(playerid, 9, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
+				PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],
+				PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4], PlayerInfo[playerid][pGroupToy][5], 
+				PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);
 
-	    g_mysql_SaveToys(playerid,slotid);
-		ShowEditMenu(playerid);
+			DeletePVar(playerid, "EditGToy");
+			g_mysql_SaveGroupToy(playerid);
+			SendClientMessageEx(playerid, COLOR_GRAD1, "You have edited your group toy.");
+		}
+		else {
+		    new slotid = GetPVarInt(playerid, "ToySlot");
+			PlayerToyInfo[playerid][slotid][ptPosX] = fOffsetX;
+			PlayerToyInfo[playerid][slotid][ptPosY] = fOffsetY;
+			PlayerToyInfo[playerid][slotid][ptPosZ] = fOffsetZ;
+			PlayerToyInfo[playerid][slotid][ptRotX] = fRotX;
+			PlayerToyInfo[playerid][slotid][ptRotY] = fRotY;
+			PlayerToyInfo[playerid][slotid][ptRotZ] = fRotZ;
+			PlayerToyInfo[playerid][slotid][ptScaleX] = fScaleX;
+			PlayerToyInfo[playerid][slotid][ptScaleY] = fScaleY;
+			PlayerToyInfo[playerid][slotid][ptScaleZ] = fScaleZ;
+
+		    g_mysql_SaveToys(playerid,slotid);
+			ShowEditMenu(playerid);
+		}
 	}
 	else
 	{
-	    ShowEditMenu(playerid);
-		SendClientMessage(playerid, COLOR_WHITE, "You have stopped yourself from editing the toy.");
+		if(GetPVarType(playerid, "EditGToy")) {
+			DeletePVar(playerid, "EditGToy");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "You have stopped editing your group toy.");
+		}
+		else {
+		    ShowEditMenu(playerid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have stopped yourself from editing the toy.");
+		}
 	}
 	return 1;
 }
@@ -633,7 +661,7 @@ public OnPlayerPressButton(playerid, buttonid)
 			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
 			return 1;
 		}
-		//else ShowPlayerDialog( playerid, ELEVATOR3, DIALOG_STYLE_LIST, "Elevator", "Rooftop\nGarage", "Select", "Cancel");
+		//else ShowPlayerDialogEx( playerid, ELEVATOR3, DIALOG_STYLE_LIST, "Elevator", "Rooftop\nGarage", "Select", "Cancel");
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "This elevator is out of service.");
 	}
 	if(buttonid == garagekey)
@@ -643,7 +671,7 @@ public OnPlayerPressButton(playerid, buttonid)
 			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
 			return 1;
 		}
-		//else ShowPlayerDialog( playerid, ELEVATOR2, DIALOG_STYLE_LIST, "Elevator", "Rooftop\nInterior", "Select", "Cancel");
+		//else ShowPlayerDialogEx( playerid, ELEVATOR2, DIALOG_STYLE_LIST, "Elevator", "Rooftop\nInterior", "Select", "Cancel");
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "This elevator is out of service.");
 	}
 	if(buttonid == roofkey)
@@ -653,7 +681,7 @@ public OnPlayerPressButton(playerid, buttonid)
 			SendClientMessageEx(playerid,COLOR_GREY,"Access denied.");
 			return 1;
 		}
-		//else ShowPlayerDialog( playerid, ELEVATOR, DIALOG_STYLE_LIST, "Elevator", "Interior\nGarage", "Select", "Cancel");
+		//else ShowPlayerDialogEx( playerid, ELEVATOR, DIALOG_STYLE_LIST, "Elevator", "Interior\nGarage", "Select", "Cancel");
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "This elevator is out of service.");
 	}
 	if(buttonid == westin)
@@ -837,7 +865,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	    {
 	        if(modelid == 18647)
 	        {
-				ShowPlayerDialog(playerid, DIALOG_SHOPNEON, DIALOG_STYLE_LIST, "Neon Tubes", "Red Neon Tube\nBlue Neon Tube\nGreen Neon Tube\nYellow Neon Tube\nPink Neon Tube\nWhite Neon Tube", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_SHOPNEON, DIALOG_STYLE_LIST, "Neon Tubes", "Red Neon Tube\nBlue Neon Tube\nGreen Neon Tube\nYellow Neon Tube\nPink Neon Tube\nWhite Neon Tube", "Select", "Cancel");
 	        }
 	        else
 	        {
@@ -858,7 +886,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 					format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, z, name, HoldingBones[PlayerToyInfo[playerid][z][ptBone]]);
 				}
 				printf("MODELID: %d", modelid);
-				ShowPlayerDialog(playerid, DIALOG_SHOPBUYTOYS, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_SHOPBUYTOYS, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
 	  			SetPVarInt(playerid, "ToyID", modelid);
 			}
 	    }
@@ -872,7 +900,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			new string[128];
 			SetPVarInt(playerid, "VehicleID", modelid), SetPVarInt(playerid, "BoatShop", 1);
 			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", VehicleName[modelid-400], number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
-			ShowPlayerDialog(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
 		}
 	}
 	if(listid == PlaneList)
@@ -882,7 +910,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			new string[128];
 			SetPVarInt(playerid, "VehicleID", modelid);
 			format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", VehicleName[modelid-400], number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
-			ShowPlayerDialog(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
 		}
 	}
 	if(listid == CarList2 || listid == CarList)
@@ -908,14 +936,14 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 					new string[128];
 					SetPVarInt(playerid, "VehicleID", modelid);
 					format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", VehicleName[modelid-400], number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[5][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[5][sItemPrice]));
-					ShowPlayerDialog(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_CARSHOP, DIALOG_STYLE_MSGBOX, "Vehicle Shop", string, "Purchase", "Cancel");
 				}
 				else
 				{
 					new string[128];
 					SetPVarInt(playerid, "VehicleID", modelid);
 					format(string, sizeof(string), "Item: %s\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", VehicleName[modelid-400], number_format(PlayerInfo[playerid][pCredits]),number_format(ShopItems[20][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[20][sItemPrice]));
-					ShowPlayerDialog(playerid, DIALOG_RENTACAR, DIALOG_STYLE_MSGBOX, "Rent a Car", string, "Purchase", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_RENTACAR, DIALOG_STYLE_MSGBOX, "Rent a Car", string, "Purchase", "Cancel");
 				}
 			}
 			else if(GetPVarInt(playerid, "voucherdialog") == 1)
@@ -949,7 +977,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	        new string[128];
        		SetPVarInt(playerid, "VehicleID", modelid);
        		format(string, sizeof(string), "Item: %s\nCost: 1 Restricted Car Voucher", VehicleName[modelid-400]);
-   			ShowPlayerDialog(playerid, DIALOG_CARSHOP2, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Shop", string, "Purchase", "Cancel");
+   			ShowPlayerDialogEx(playerid, DIALOG_CARSHOP2, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Shop", string, "Purchase", "Cancel");
 	    }
 	}
 	if(listid == SkinList)
@@ -1021,6 +1049,23 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			}
 		}
 	}
+	/*
+	for(new i; i < sizeof(FurnitureList); ++i) {
+
+		if(listid == FurnitureList[i]) {
+
+			if(response) {
+				SetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL, modelid);
+				format(szMiscArray, sizeof(szMiscArray), "Would you like to buy this %s for $%s and %s materials?", GetFurnitureName(modelid), number_format(GetFurniturePrice(modelid)), number_format(GetFurniturePrice(modelid) / 10));
+				ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYCONFIRM, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm Purchase", szMiscArray, "Buy", "Cancel");
+			}
+			else {
+				FurnitureMenu(playerid, 0);
+			}
+			break;
+		}
+	}
+	*/
 	return 1;
 }
 
@@ -1325,7 +1370,6 @@ public OnPlayerConnect(playerid)
 	format(PlayerInfo[playerid][pPrisonReason],128,"None");
 	FishCount[playerid]=0;
 	HelpingNewbie[playerid]= INVALID_PLAYER_ID;
-	turfWarsRadar[playerid]=0;
 	courtjail[playerid]=0;
 	gLastCar[playerid]=0;
 	FirstSpawn[playerid]=0;
@@ -1475,6 +1519,14 @@ public OnPlayerConnect(playerid)
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 	SetHealth(playerid, 100);
 	SetArmour(playerid, 0);
+
+	Bit_Off(arrPlayerBits[playerid], dr_bitUsedDrug);
+	Bit_Off(arrPlayerBits[playerid], dr_bitInDrugEffect);
+	Bit_Off(arrPlayerBits[playerid], phone_bitState);
+	Bit_Off(arrPlayerBits[playerid], phone_bitCamState);
+	Bit_Off(arrPlayerBits[playerid], phone_bitTraceState);
+	Bit_Off(arrPlayerBits[playerid], bitFPS);
+	Bit_Off(arrPlayerBits[playerid], pTurfRadar);
 	return 1;
 }
 
@@ -2753,7 +2805,6 @@ public OnPlayerSpawn(playerid)
 	IsSpawned[playerid] = 1;
 	SpawnKick[playerid] = 0;
 	SetPlayerArmedWeapon(playerid, 0); // making sure players spawn with their fists.
-
 	if(PlayerInfo[playerid][pTut] < 2)
 	{
 		SetPlayerPos(playerid, 1715.1201,-1903.1711, 1113.5665);
@@ -2804,6 +2855,58 @@ public OnPlayerLeaveCheckpoint(playerid)
 
 public OnPlayerEnterCheckpoint(playerid)
 {
+	if(GetPVarInt(playerid, "MatDeliver") == 9090) {
+
+		if(GetPVarInt(playerid, "Packages") > 0)
+		{
+			if(IsPlayerInAnyVehicle(playerid))
+			{
+				if(PlayerInfo[playerid][pDonateRank] == 1)
+				{
+			    	TransferStorage(playerid, -1, -1, -1, 4, 450, -1, 2);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 450 materials for your 10 materials packages.");
+					SendClientMessageEx(playerid, COLOR_YELLOW,"Bronze VIP: You received 1.5x more materials than normal.");
+				}
+				else if(PlayerInfo[playerid][pDonateRank] == 2 || PlayerInfo[playerid][pDonateRank] == 3)
+				{
+			    	TransferStorage(playerid, -1, -1, -1, 4, 900, -1, 2);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 600 materials for your 10 materials packages.");
+					SendClientMessageEx(playerid, COLOR_YELLOW,"Silver & Gold VIP: You received 2x more materials than normal.");
+
+				}
+				else if(PlayerInfo[playerid][pDonateRank] >= 4)
+				{
+			    	TransferStorage(playerid, -1, -1, -1, 4, 750, -1, 2);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 750 materials for your 10 materials packages.");
+					SendClientMessageEx(playerid, COLOR_YELLOW,"Platinum VIP: You received 2.5x more materials than normal.");
+
+				}
+				else
+				{
+					TransferStorage(playerid, -1, -1, -1, 4, 300, -1, 2);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 300 materials for your 10 materials packages.");
+				}
+				DeletePVar(playerid, "Packages");
+				DeletePVar(playerid, "MatDeliver");
+				DisablePlayerCheckpoint(playerid);
+			}
+			else
+			{
+				GameTextForPlayer(playerid, "~r~You are not in a vehicle!", 3000, 1);
+				return 1;
+			}
+
+			if(GetPVarInt(playerid, "tpMatRunTimer") != 0)
+		    {
+				new string[128];
+		    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
+		    	ABroadCast( COLOR_YELLOW, string, 2 );
+		    	// format(string, sizeof(string), "%s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
+		    	// Log("logs/hack.log", string);
+			}
+			return 1;
+		}
+	}
     if(GetPVarInt(playerid, "EventToken") == 1)
 	{
 	    if(EventKernel[EventFootRace] == 1 && IsPlayerInAnyVehicle(playerid))
@@ -2933,7 +3036,8 @@ public OnPlayerEnterCheckpoint(playerid)
 			case 225 .. 349: RandAmount = Random(24000, 27000);
 			default: RandAmount = Random(27000, 33000);
 		}
-		PlayerInfo[playerid][pAccount]=PlayerInfo[playerid][pAccount]+RandAmount;
+		if(!Bank_TransferCheck(RandAmount)) return 1;
+		PlayerInfo[playerid][pAccount] += RandAmount;
 		format(szMessage, sizeof(szMessage), "SMS: Thank you for delivering a %s(%d) your reward is $%s, money will be transferred to your account, sender: Unknown", GetVehicleName(GetPVarInt(playerid, "LockPickVehicle")), GetPVarInt(playerid, "LockPickVehicle"), number_format(RandAmount));
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMessage);
 		PlayerPlaySound(playerid, 1057, 0.0, 0.0, 0.0);
@@ -3651,11 +3755,11 @@ public OnPlayerEnterCheckpoint(playerid)
 						{
 							switch(level) {
 								case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45, 10);
-								case 50 .. 100: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun", "Select", "");
-								case 101 .. 200: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5", "Select", "");
-								case 201 .. 400: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle", "Select", "");
-								case 401: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
-								default: ShowPlayerDialog(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
+								case 50 .. 100: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun", "Select", "");
+								case 101 .. 200: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5", "Select", "");
+								case 201 .. 400: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle", "Select", "");
+								case 401: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
+								default: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle\nAK-47", "Select", "");
 							}
 						}
 						else
@@ -3669,32 +3773,32 @@ public OnPlayerEnterCheckpoint(playerid)
 						if(level >= 0 && level <= 50)
 						{
 		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 2 pot & 1 crack as a bonus for taking the risk of transporting illegal drugs.");
-						    PlayerInfo[playerid][pPot] += 2;
-						    PlayerInfo[playerid][pCrack] += 1;
+						    PlayerInfo[playerid][p_iDrug][1] += 2;
+						    PlayerInfo[playerid][p_iDrug][5] += 1;
 						}
 						else if(level >= 51 && level <= 100)
 						{
 		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 4 pot & 2 crack as a bonus for taking the risk of transporting illegal drugs.");
-					    	PlayerInfo[playerid][pPot] += 4;
-					    	PlayerInfo[playerid][pCrack] += 2;
+					    	PlayerInfo[playerid][p_iDrug][1] += 4;
+						    PlayerInfo[playerid][p_iDrug][5] += 2;
 						}
 						else if(level >= 101 && level <= 200)
 						{
 		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 6 pot & 3 crack as a bonus for taking the risk of transporting illegal drugs.");
-					    	PlayerInfo[playerid][pPot] += 6;
-					    	PlayerInfo[playerid][pCrack] += 3;
+					    	PlayerInfo[playerid][p_iDrug][1] += 6;
+						    PlayerInfo[playerid][p_iDrug][5] += 3;
 						}
 						else if(level >= 201 && level <= 400)
 						{
 		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 8 pot & 4 crack as a bonus for taking the risk of transporting illegal drugs.");
-					  	  	PlayerInfo[playerid][pPot] += 8;
-					    	PlayerInfo[playerid][pCrack] += 4;
+					  	  	PlayerInfo[playerid][p_iDrug][1] += 8;
+						    PlayerInfo[playerid][p_iDrug][5] += 4;
 						}
 						else if(level >= 401)
 						{
 		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 10 pot & 5 crack as a bonus for taking the risk of transporting illegal drugs.");
-					   	 	PlayerInfo[playerid][pPot] += 10;
-					    	PlayerInfo[playerid][pCrack] += 5;
+					   	 	PlayerInfo[playerid][p_iDrug][1] += 10;
+						    PlayerInfo[playerid][p_iDrug][5] += 5;
 						}
 					}
 					if(truckdeliver == 7) // Illegal materials
@@ -3921,7 +4025,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(IsPlayerConnected(GetPVarInt(playerid, "ttSeller")))
 			{
-				ShowPlayerDialog(playerid, CONFIRMSELLTOY, DIALOG_STYLE_MSGBOX, "Please confirm your choice", "Are you sure you want to purchase this toy for the amount specified?", "Yes", "No");
+				ShowPlayerDialogEx(playerid, CONFIRMSELLTOY, DIALOG_STYLE_MSGBOX, "Please confirm your choice", "Are you sure you want to purchase this toy for the amount specified?", "Yes", "No");
 			}
 			else {
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "The seller has disconnected from the server, therefore you cannot proceed the trade.");
@@ -4164,7 +4268,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				}
 				ConfigEventCPs[playerid][1] = 3;
             	format(string,sizeof(string),"Race Checkpoint %d Size", ConfigEventCPId[playerid]);
-				ShowPlayerDialog(playerid,RCPSIZE,DIALOG_STYLE_INPUT,string,"You are now in stage 3, which means you will need to choose the size of the checkpoint\nYou now have a preview of the checkpoint(Step outside the checkpoint so you can see it)\nNote: Checkpoint is now made with the default settings,\nyou may choose not to continue checkpoint won't be affected.","Ok","Cancel");
+				ShowPlayerDialogEx(playerid,RCPSIZE,DIALOG_STYLE_INPUT,string,"You are now in stage 3, which means you will need to choose the size of the checkpoint\nYou now have a preview of the checkpoint(Step outside the checkpoint so you can see it)\nNote: Checkpoint is now made with the default settings,\nyou may choose not to continue checkpoint won't be affected.","Ok","Cancel");
 			}
 			else
 			{
@@ -4687,7 +4791,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					SetVehicleParamsEx(newcar,engine,lights,VEHICLE_PARAMS_ON,doors,bonnet,boot,objective);
 					SetTimerEx("DisableVehicleAlarm", 20000, 0, "d",  newcar);
 				}
-				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 2 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0) { // Electronic Lock System
+				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 2 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0 && !IsABike(newcar)) { // Electronic Lock System
 
 					new
 						string[49 + MAX_PLAYER_NAME];
@@ -4864,7 +4968,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				return 1;
 			}
 			format(string, sizeof(string), "Would you like to purchase this %s\nThis vehicle costs $%s.", GetVehicleName(newcar), number_format(Businesses[iBusiness][bPrice][iSlot]));
-		    ShowPlayerDialog(playerid,DIALOG_CDBUY,DIALOG_STYLE_MSGBOX,"Buy Vehicle",string,"Buy","Cancel");
+		    ShowPlayerDialogEx(playerid,DIALOG_CDBUY,DIALOG_STYLE_MSGBOX,"Buy Vehicle",string,"Buy","Cancel");
 		    TogglePlayerControllable(playerid, false);
 		    return 1;
         }
@@ -5695,7 +5799,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		}
 		format(szMiscArray, sizeof(szMiscArray),"Item: %s\nYour Credits: %s\nCost: {FFD700}150{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
 		SetPVarInt(playerid, "StPatrickToy", modelid);
-		ShowPlayerDialog(playerid, DIALOG_STPATRICKSSHOP, DIALOG_STYLE_MSGBOX, "St Patrick's Day Shop", szMiscArray, "Purchase", "Exit");
+		ShowPlayerDialogEx(playerid, DIALOG_STPATRICKSSHOP, DIALOG_STYLE_MSGBOX, "St Patrick's Day Shop", szMiscArray, "Purchase", "Exit");
 	}
 	else if(extraid == 0525) // Memorial's Day
 	{
@@ -5711,7 +5815,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		}
 		format(szMiscArray, sizeof(szMiscArray),"Item: %s\nYour Credits: %s\nCost: {FFD700}150{A9C4E4}\nCredits Left: %s", name, number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-150));
 		SetPVarInt(playerid, "MemorialToy", modelid);
-		ShowPlayerDialog(playerid, 0525, DIALOG_STYLE_MSGBOX, "Memorial's Day Shop", szMiscArray, "Purchase", "Exit");
+		ShowPlayerDialogEx(playerid, 0525, DIALOG_STYLE_MSGBOX, "Memorial's Day Shop", szMiscArray, "Purchase", "Exit");
 	}
 	if(extraid == REGISTER_SKINMODEL)
 	{
@@ -5733,7 +5837,7 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 		format(szString, sizeof(szString), "%i", clickedplayerid);
 		format(string, sizeof(string), "Are you sure you want to offer %s a free namechange?", GetPlayerNameEx(clickedplayerid));
 		SetPVarString(playerid, "nrn", szString);
-		ShowPlayerDialog(playerid, DIALOG_NRNCONFIRM, DIALOG_STYLE_MSGBOX, "Confirm this NRN", string, "Yes", "No");
+		ShowPlayerDialogEx(playerid, DIALOG_NRNCONFIRM, DIALOG_STYLE_MSGBOX, "Confirm this NRN", string, "Yes", "No");
 	}
 	return true;
 }

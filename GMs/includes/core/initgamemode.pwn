@@ -24,7 +24,7 @@ InitiateGamemode()
 	LoadGarages();
 	LoadCrimes();
 	LoadGCrates();
-	//Job_LoadJobs();
+
 	//loadSafes(); 
 		/*---[Shop Automation]---*/
 	
@@ -42,15 +42,12 @@ InitiateGamemode()
 	
 	/*---[Miscs]---*/
 	NGGShop = CreateDynamicPolygon(shop_vertices);
-	InitTurfWars();
-	LoadTurfWars();
 	InitPaintballArenas();
 	LoadPaintballArenas();
 	InitEventPoints();
 	LoadEventPoints();
 	LoadGates();
 	LoadElevatorStuff();
-	LoadPoints();
 	ClearCalls();
 	//LoadHelp();
 	Misc_Load();
@@ -74,8 +71,6 @@ InitiateGamemode()
 	FixServerTime();
 	LoadVactionsHelper();
 	RotateWheel();
-
-	//SetTimer("SyncTurfWarsMiniMap", 2500, 1);
 
 	LoadParkingMeters();
 	GovGuns_LoadCosts();
@@ -112,6 +107,11 @@ InitiateGamemode()
     Job_LoadJobs();
     GangTag_Load();
     DS_LoadDrugSystem();
+
+    TurfWars_LoadData();
+
+    Bank_LoadBank();
+    // LoadFurniture();
 
 	print("\n-------------------------------------------");
 	print("Next Generation Roleplay\n");

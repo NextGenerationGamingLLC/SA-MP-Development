@@ -78,9 +78,9 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.262"
+#define SERVER_GM_TEXT "NG:RP v3.0.266"
 
-#define AREA_DEBUG
+// #define AREA_DEBUG
 
 #include <a_samp>
 #undef  MAX_PLAYERS
@@ -121,6 +121,7 @@
 #include "./includes/streamer/pickups.pwn"
 #include "./includes/streamer/textlabels.pwn"
 #include "./includes/streamer/vehicles.pwn"
+#include "./includes/streamer/OnPlayerEditDynamicObject.pwn"
 
 //admin includes
 #include "./includes/admin/admin.pwn"
@@ -188,7 +189,7 @@
 #include "./includes/core/streamprep.pwn"
 #include "./includes/core/emailcheck.pwn"
 #include "./includes/core/AccountSettings.pwn"
-
+#include "./includes/core/tutorial_new.pwn"
 
 //WIP
 #include "./includes/core/deluxegps.pwn"
@@ -250,7 +251,7 @@
 #include "./includes/group/lea.pwn"
 #include "./includes/group/medic.pwn"
 #include "./includes/group/news.pwn"
-#include "./includes/group/prisonsystem.pwn"
+#include "./includes/group/prisonsystem.pwn" // - Bing replaced by WIP
 #include "./includes/group/racing.pwn"
 #include "./includes/group/taxi.pwn"
 #include "./includes/group/towing.pwn"
@@ -266,6 +267,8 @@
 #include "./includes/group/gangtags.pwn"
 #include "./includes/group/GunLicense.pwn"
 //#include "./includes/group/URLrace.pwn"
+#include "./includes/group/sanews.pwn" 
+#include "./includes/group/turfs2.pwn"
 
 //job system includes
 #include "./includes/jobs/bartender.pwn"
@@ -276,6 +279,7 @@
 #include "./includes/jobs/drugs.pwn"
 #include "./includes/jobs/fishing.pwn"
 #include "./includes/jobs/jobcore.pwn"
+#include "./includes/jobs/dynjobcore.pwn"
 #include "./includes/jobs/lawyer.pwn"
 #include "./includes/jobs/mechanic.pwn"
 #include "./includes/jobs/pizzaboy.pwn"
@@ -283,6 +287,7 @@
 #include "./includes/jobs/taxi.pwn"
 #include "./includes/jobs/treasure.pwn"
 #include "./includes/jobs/whore.pwn"
+
 
 //perk system includes
 #include "./includes/perks/boombox.pwn"
@@ -296,6 +301,10 @@
 #include "./includes/perks/vipcore.pwn"
 
 #include "./includes/core/ammo.pwn"
+#include "./includes/core/drugsystem.pwn"
+#include "./includes/core/phone_new.pwn"
+#include "./includes/core/payphones.pwn"
+
 
 // WIP
 #include "./includes/core/ATMs.pwn"
@@ -304,19 +313,22 @@
 #include "./includes/vehsystem/vehauto.pwn"
 #include "./includes/DBLog.pwn"
 #include "./includes/core/Player_Interact.pwn"
+#include "./includes/core/inactive2.pwn"
 
 
 // Jingles WIP
-#include "./includes/core/tutorial_new.pwn"
-#include "./includes/core/phone_new.pwn"
-#include "./includes/core/payphones.pwn"
-#include "./includes/jobs/dynjobcore.pwn"
-#include "./includes/drugsystem.pwn"
-#include "./includes/group/sanews.pwn"
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
-#include "./includes/streamer/OnPlayerEditDynamicObject.pwn"
+#include "./includes/group/rivalry.pwn"
 
+// #include "./includes/furniture.pwn"
+
+// Winterfield WIP
+/*
+#include "./includes/WIP/prisonsystem.pwn"
+#include "./includes/WIP/garbagesystem.pwn"
+#include "./includes/WIP/fishingsystem.pwn"
+*/
 
 #pragma unused DynamicBusiness
 

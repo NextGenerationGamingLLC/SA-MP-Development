@@ -9,7 +9,7 @@
 
 	if(PlayerInfo[playerid][pGunLic] > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "You already have a valid gun license");
 
-	ShowPlayerDialog(playerid, APPLY_GUN_LIC, DIALOG_STYLE_MSGBOX, 
+	ShowPlayerDialogEx(playerid, APPLY_GUN_LIC, DIALOG_STYLE_MSGBOX, 
 		"Gun License Application", 
 		"You are about to apply for a gun license\nYou will have a background check for crimes for the last 3 weeks\nThis process will cost $100,000", 
 		"Apply", 
@@ -57,13 +57,13 @@ public OnSubmitGunLicApp(iPlayerID) {
 		iRows = cache_get_row_count(MainPipeline);
 
 	if(iRows > 0)  {
-		ShowPlayerDialog(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Gun License Application - Denied", 
+		ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Gun License Application - Denied", 
 			"We have run a background check and found a history within the past 21 days\nPlease reapply once 21 days have past from your last crime!", 
 			"Close", ""
 		);
 	}
 	else {
-		ShowPlayerDialog(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Gun License Application - Approved", "Your gun license has been renewed for 30 days more.\nHave a good day!", "Close", "");
+		ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Gun License Application - Approved", "Your gun license has been renewed for 30 days more.\nHave a good day!", "Close", "");
 
 		PlayerInfo[iPlayerID][pGunLic] = gettime() + (86400*30); // 30 days.
 

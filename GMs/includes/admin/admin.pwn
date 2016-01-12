@@ -414,19 +414,6 @@ CMD:setarmorall(playerid, params[])
     return 1;
 }
 
-CMD:savecfgs(playerid, params[])
-{
-    if(PlayerInfo[playerid][pAdmin] < 1337) {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-        return 1;
-    }
-    SendClientMessageEx(playerid, COLOR_WHITE, "* Saving CFG Files..");
-    SaveTurfWars();
-    SendClientMessageEx(playerid, COLOR_WHITE, "* Done");
-    return 1;
-}
-
-
 CMD:loadcfgs(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 1337) {
@@ -923,7 +910,7 @@ CMD:netstats(playerid, params[]) {
 		new strStats[401], szTitle[64];
 		GetPlayerNetworkStats(playerid, strStats, sizeof(strStats));
 		format(szTitle, sizeof(szTitle), "Network Stats (ID: %d) - %s", playerid, GetPlayerNameEx(playerid));
-		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, szTitle, strStats, "Close", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, szTitle, strStats, "Close", "");
 	}
 	return 1;
 }
@@ -941,7 +928,7 @@ CMD:anetstats(playerid, params[])
 	if(gPlayerLogged{giveplayerid} != 0) {
 		GetPlayerNetworkStats(giveplayerid, strStats, sizeof(strStats));
 		format(szTitle, sizeof(szTitle), "Network Stats (ID: %d) - %s", giveplayerid, GetPlayerNameEx(giveplayerid));
-		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, szTitle, strStats, "Close", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, szTitle, strStats, "Close", "");
 	}
 	return 1;
 }
@@ -1034,7 +1021,7 @@ CMD:wepreset(playerid, params[])
 CMD:bigears(playerid, params[])
 {
     if( PlayerInfo[playerid][pAdmin] >= 2) {
-        ShowPlayerDialog(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nGroup OOC Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
+        ShowPlayerDialogEx(playerid, BIGEARS, DIALOG_STYLE_LIST, "Please choose an item to proceed", "Global Chat\nOOC Chat\nIC Chat\nGroup OOC Chat\nFamily Chat\nPlayer\nPrivate Messages\nDisable Bigears", "Select", "Cancel");
     }
     return 1;
 }
@@ -1079,7 +1066,7 @@ CMD:setcolor(playerid, params[])
 {
     if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{
-        ShowPlayerDialog(playerid, COLORMENU, DIALOG_STYLE_LIST, "Color Menu", "Blue\nBlack\nRed\nOrange\nPink\nPurple\nGreen\nYellow\nWhite\nOOC Prisoner Orange", "Select", "Cancel");
+        ShowPlayerDialogEx(playerid, COLORMENU, DIALOG_STYLE_LIST, "Color Menu", "Blue\nBlack\nRed\nOrange\nPink\nPurple\nGreen\nYellow\nWhite\nOOC Prisoner Orange", "Select", "Cancel");
     }
     else
 	{
@@ -1718,7 +1705,7 @@ CMD:removepvehicle(playerid, params[])
 		new string[64];
 		SetPVarInt(playerid, "vehcheck_giveplayerid", giveplayerid);
 		format(string, sizeof(string), "%s's Vehicle List", GetPlayerNameEx(giveplayerid));
-		ShowPlayerDialog(playerid, ADMIN_VEHCHECK, DIALOG_STYLE_LIST, string, szMiscArray, "Delete Car", "Cancel");
+		ShowPlayerDialogEx(playerid, ADMIN_VEHCHECK, DIALOG_STYLE_LIST, string, szMiscArray, "Delete Car", "Cancel");
 	}
 	return 1;
 }
@@ -2060,7 +2047,7 @@ CMD:gotopveh(playerid, params[]) {
 					else format(szVehString, sizeof(szVehString), "%s\n%s (ID %i) | Location: %s", szVehString, VehicleName[iModelID], PlayerVehicleInfo[iTargetID][i][pvId], szCarLocation);
 				}
 			}
-		    ShowPlayerDialog(playerid, GOTOPLAYERCAR, DIALOG_STYLE_LIST, "Vehicle Teleportation", szVehString, "Teleport", "Cancel");
+		    ShowPlayerDialogEx(playerid, GOTOPLAYERCAR, DIALOG_STYLE_LIST, "Vehicle Teleportation", szVehString, "Teleport", "Cancel");
        		SetPVarInt(playerid, "playeraffectedcarTP", iTargetID);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -2659,7 +2646,7 @@ CMD:ipcheck(playerid, params[])
 				format(string, sizeof(string), "%s has tried to check the IP address of a higher admin\nPlease report this to SIU/OED or an EA", GetPlayerNameEx(playerid));
 				foreach(new i : Player)
 				{
-					if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialog(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Report ASAP", string, "Close", "");
+					if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialogEx(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Report ASAP", string, "Close", "");
 				}
 			}
 			format(string, sizeof(string), "%s tried to IP check %s(%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
@@ -3173,7 +3160,7 @@ CMD:rcabuse(playerid, params[]) {
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
 						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your %s.\n\nAs this is your first warning, it will be restricted from use for 8 hours.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
-						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+						ShowPlayerDialogEx(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 
 					}
@@ -3196,7 +3183,7 @@ CMD:rcabuse(playerid, params[]) {
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
 						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your %s.\n\nAs this is your second warning, you will be unable to use restricted vehicles for two days.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
-						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+						ShowPlayerDialogEx(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 					}
 					case 3: {
@@ -3209,7 +3196,7 @@ CMD:rcabuse(playerid, params[]) {
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
 						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your %s.\n\nAs this is your third warning, you will be unable to use restricted vehicles for a week, and the vehicle in question has been removed.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
-						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+						ShowPlayerDialogEx(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 					}
 				}
@@ -3227,7 +3214,7 @@ CMD:rcabuse(playerid, params[]) {
 							SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
 							format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing %s's %s.\n\nAs this is your first warning, one of your restricted vehicles (if any) will not be able to be used for two days.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(iVehicleID));
-							ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+							ShowPlayerDialogEx(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 							SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 
 							for(new x = 0; x != MAX_PLAYERVEHICLES; ++x) if(IsRestrictedVehicle(PlayerVehicleInfo[iTargetID][iVehIndex][pvModelId])) {
@@ -3246,7 +3233,7 @@ CMD:rcabuse(playerid, params[]) {
 							SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
 							format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing %s's %s.\n\nAs this is your second warning, you will be unable to use restricted vehicles for two days.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(iVehicleID));
-							ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+							ShowPlayerDialogEx(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 							SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 						}
 						case 3: {
@@ -3258,12 +3245,12 @@ CMD:rcabuse(playerid, params[]) {
 							SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 
 							format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing %s's %s.\n\nAs this is your third warning, you will be unable to use restricted vehicles for a week.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(iVehicleID));
-							ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+							ShowPlayerDialogEx(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 							SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 						}
 					}
 					format(szMessage, sizeof szMessage, "%s has issued %s a warning for abusing your %s.\n\nThe vehicle in question has been respawned. Please be mindful of your restricted vehicles.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID), GetVehicleName(iVehicleID));
-					ShowPlayerDialog(i, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+					ShowPlayerDialogEx(i, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 					break;
 				}
@@ -3275,7 +3262,7 @@ CMD:rcabuse(playerid, params[]) {
 						GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your faction's %s.\n\nAs this is your first warning, you will face no punishment.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
-						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+						ShowPlayerDialogEx(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 					}
 					case 2: {
@@ -3285,7 +3272,7 @@ CMD:rcabuse(playerid, params[]) {
 						GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your faction's %s.\n\nAs this is your second warning, you will be unable to use restricted vehicles for two weeks and prisoned for two hours.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
-						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+						ShowPlayerDialogEx(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 
 						GameTextForPlayer(iTargetID, "~w~Welcome to ~n~~r~Fort DeMorgan", 5000, 3);
@@ -3316,7 +3303,7 @@ CMD:rcabuse(playerid, params[]) {
 						GetPlayerPos(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						SetPlayerPosFindZ(iTargetID, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
 						format(szMessage, sizeof szMessage, "%s has issued you a warning for abusing your faction's %s.\n\nAs this is your third warning, you will be unable to use restricted vehicles for three weeks, kicked from your faction and banned for two days.", GetPlayerNameEx(playerid), GetVehicleName(iVehicleID));
-						ShowPlayerDialog(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
+						ShowPlayerDialogEx(iTargetID, 0, DIALOG_STYLE_MSGBOX, "Restricted Vehicle Warning", szMessage, "Exit", "");
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You have warned this person for abusing their restricted vehicle.");
 
 						new playerip[32];
@@ -4360,7 +4347,7 @@ CMD:setvw(playerid, params[])
 	{
 		SetPVarInt(playerid, "tempPBP", giveplayerid);
 		format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);
-		ShowPlayerDialog(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
+		ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
 		return 1;
 	}
 	PlayerInfo[giveplayerid][pVW] =  vw;
@@ -4555,7 +4542,7 @@ CMD:sendtoid(playerid, params[])
 			{
 			    SetPVarInt(playerid, "tempPBP", giveplayerid);
 			    format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);
-			    return ShowPlayerDialog(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
+			    return ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
 			}
 			if(PlayerInfo[giveplayerid][pAdmin] == 99999 && !GetPVarType(giveplayerid, "EATeleportable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot teleport them");
 			if(PlayerInfo[targetplayerid][pAdmin] == 99999 && !GetPVarType(targetplayerid, "EATeleportable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot teleport to them");
@@ -4616,9 +4603,10 @@ CMD:gethere(playerid, params[])
 			    new string[128];
 			    SetPVarInt(playerid, "tempPBP", giveplayerid);
 			    format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);
-			    ShowPlayerDialog(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
+			    ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
 			    return 1;
 			}
+			// Furniture_ResetPVars(playerid);
 			GetPlayerPos(playerid, plocx, plocy, plocz);
 			SetPlayerVirtualWorld(giveplayerid, PlayerInfo[playerid][pVW]);
 			Streamer_UpdateEx(giveplayerid, plocx, plocy, plocz);
@@ -4971,6 +4959,7 @@ CMD:kick(playerid, params[])
 				DBLog(playerid, giveplayerid, "Kick", reason);
 				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
 				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
+				if(GetPVarType(giveplayerid, "RepFam_TL")) Rivalry_Toggle(giveplayerid, false);
 			}
 			return 1;
 		}
@@ -5325,7 +5314,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /noooc /nonewbie /fine /pfine /takeadminweapons /prisonaccount /entercar /getcar");
 		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /mole /setskin /countdown /release /forcedeath /rto(reset) /pg /mg /kos /nonrp");
 		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /gotoco /leaders /wepreset /owarn /ofine /okills /respawncar(s) /resetvw");
-		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /reloadpvehicles /apark /aimpound /dmrmute /dmrlookup /dmtokens /dm");
+		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /reloadpvehicles /apark /aimpound /dmrmute /dmrlookup /dmtokens /dm /createmetaldetector /metdets /metaldetector /aviewrivals");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4)
 	{
@@ -5346,7 +5335,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /permaban /setcolor /payday /clearallreports /eventreset /amotd /motd /vipmotd /givetoken /giftgvip");
 		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /vmute /vsuspend /gifts /rcreset /dvrespawnall /setarmorall /dynamicgift /asellhouse");
 		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /togfireworks /togshopnotices /spg /snonrp /smg /skos /undercover /makewatchdog /watchlistadd");
-		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /audiourl /audiostopurl");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /audiourl /audiostopurl /editgrouptoy /amanagerivals");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1338)
 	{
@@ -5420,7 +5409,7 @@ CMD:nrn(playerid, params[])
 				}
 			}		
 			ABroadCast( COLOR_YELLOW, string, 2);
-			ShowPlayerDialog(giveplayerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
+			ShowPlayerDialogEx(giveplayerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
 		}
 	}
 	else
@@ -5455,7 +5444,7 @@ CMD:mods(playerid, params[])
 				format(string, sizeof(string), "%s\nModerator %s (ID %i)", string, GetPlayerNameEx(i), i);
 			}
 		}	
-		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Current Online Moderators", string, "Close", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Current Online Moderators", string, "Close", "");
 	}
 	else
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
@@ -5672,16 +5661,16 @@ CMD:quickstats(playerid, params[])
 
 CMD:fps(playerid, params[])
 {
-	if(!Bit_State(g_PlayerBits[playerid], g_bFPS))
+	if(!Bit_State(arrPlayerBits[playerid], bitFPS))
 	{
 		ShowFPSCounter(playerid);
-		Bit_On(g_PlayerBits[playerid], g_bFPS);
+		Bit_On(arrPlayerBits[playerid], bitFPS);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have toggled on your FPS Counter.");
 	}
 	else
 	{
 		HideFPSCounter(playerid);
-		Bit_Off(g_PlayerBits[playerid], g_bFPS);
+		Bit_Off(arrPlayerBits[playerid], bitFPS);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have toggled off your FPS Counter.");
 	}
 	return true;
@@ -6061,7 +6050,7 @@ CMD:changepass(playerid, params[])
 {
 	if (gPlayerLogged{playerid})
 	{
-		ShowPlayerDialog(playerid, DIALOG_CHANGEPASS, DIALOG_STYLE_INPUT, "Password Change", "Please enter your new password!", "Change", "Exit" );
+		ShowPlayerDialogEx(playerid, DIALOG_CHANGEPASS, DIALOG_STYLE_INPUT, "Password Change", "Please enter your new password!", "Change", "Exit" );
 	}
 	return 1;
 }

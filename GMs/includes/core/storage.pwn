@@ -51,7 +51,7 @@ stock ShowStorageEquipDialog(playerid)
 		else format(dialogstring, sizeof(dialogstring), "%s (%s)\n", dialogstring, epstring[StorageInfo[playerid][i][sAttached]]);
 	}
 
-	ShowPlayerDialog(playerid, STORAGEEQUIP, DIALOG_STYLE_LIST, "Storage - Equip/Unequip", dialogstring, "Select", "Exit");
+	ShowPlayerDialogEx(playerid, STORAGEEQUIP, DIALOG_STYLE_LIST, "Storage - Equip/Unequip", dialogstring, "Select", "Exit");
 	return 1;
 }
 
@@ -161,7 +161,7 @@ stock ShowStorageEquipDialog(playerid)
 		}
 	}
 
-	ShowPlayerDialog(playerid, STORAGESTORE, DIALOG_STYLE_LIST, titlestring, dialogstring, "Choose", "Cancel");
+	ShowPlayerDialogEx(playerid, STORAGESTORE, DIALOG_STYLE_LIST, titlestring, dialogstring, "Choose", "Cancel");
 }
 
 stock DeathDrop(playerid)
@@ -328,7 +328,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
     if(special == 1 && itemid == 2) // Pot Special "Selling"
 	{
-		ExtortionTurfsWarsZone(PotOffer[playerid], 1, PotPrice[playerid]);
+		TurfWars_TurfTax(PotOffer[playerid], "cannabis", PotPrice[playerid]);
 
         GivePlayerCash(PotOffer[playerid], PotPrice[playerid]);
 		GivePlayerCash(playerid, -PotPrice[playerid]);
@@ -362,7 +362,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 	}
 	if(special == 1 && itemid == 3) // Crack Special "Selling"
 	{
-		ExtortionTurfsWarsZone(CrackOffer[playerid], 1, CrackPrice[playerid]);
+		TurfWars_TurfTax(CrackOffer[playerid], "Crack", CrackPrice[playerid]);
 
         GivePlayerCash(CrackOffer[playerid], CrackPrice[playerid]);
 		GivePlayerCash(playerid, -CrackPrice[playerid]);
@@ -1629,7 +1629,7 @@ stock ShowInventory(playerid,targetid)
 		PlayerInfo[targetid][pToolBox],
 		PlayerInfo[targetid][pCrowBar],
 		number_format(PlayerInfo[targetid][pGoldBoxTokens]));
-		ShowPlayerDialog(playerid, DISPLAY_INV, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
+		ShowPlayerDialogEx(playerid, DISPLAY_INV, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
 	}
 	return 1;
 }
@@ -1704,7 +1704,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					number_format(PlayerInfo[targetid][pVehicleSlot]),
 					number_format(PlayerInfo[targetid][pToySlot]));
 					if(zombieevent) format(resultline, sizeof(resultline), "%s\nCure Vials: %d\nScrap Metal: %d\n.50 Cal Ammo: %d\nAntibiotic Injections: %d\nSurvivor Kits: %d\nFuel Can: %d%% Fuel", resultline, PlayerInfo[targetid][pVials], PlayerInfo[targetid][mInventory][16], PlayerInfo[targetid][mInventory][17], PlayerInfo[targetid][mPurchaseCount][18], PlayerInfo[targetid][mInventory][19], PlayerInfo[targetid][zFuelCan]);
-					ShowPlayerDialog(playerid, DISPLAY_INV2, DIALOG_STYLE_MSGBOX, header, resultline, "First Page", "Close");
+					ShowPlayerDialogEx(playerid, DISPLAY_INV2, DIALOG_STYLE_MSGBOX, header, resultline, "First Page", "Close");
 				}
 				else DeletePVar(playerid, "ShowInventory");
 			}
@@ -1772,7 +1772,7 @@ CMD:trunkput(playerid, params[])
 	if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 
 	new string[128], weaponchoice[32], slot;
-	if(sscanf(params, "s[32]d", weaponchoice, slot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /trunkput [weapon] [slot]");
+	if(sscanf(params, "s[32]D(0)", weaponchoice, slot)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /trunkput [weapon/drugs] [slot]");
 
 	new pvid = -1, Float: x, Float: y, Float: z;
 
@@ -1793,11 +1793,16 @@ CMD:trunkput(playerid, params[])
 
 	new Float: Health;
 	GetHealth(playerid, Health);
-	if(Health < 80.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store weapons in a car when your health lower than 80.");
+	if(Health < 80.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store weapons or drugs in a car when your health lower than 80.");
 	if (GetPVarInt(playerid, "GiveWeaponTimer") > 0)
 	{
 		format(string, sizeof(string), "   You must wait %d seconds before depositing another weapon.", GetPVarInt(playerid, "GiveWeaponTimer"));
 		SendClientMessageEx(playerid,COLOR_GREY,string);
+		return 1;
+	}
+
+	if(strcmp(weaponchoice, "drugs", true) == 0) {
+		Drugs_ShowTrunkMenu(playerid, pvid, 1);
 		return 1;
 	}
 	
@@ -2074,7 +2079,7 @@ CMD:trunktake(playerid, params[]) {
 						format(szMessage, sizeof(szMessage), "Slot %d: %s", s+1, szWeapon);
 						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 					}
-					return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /trunktake [slot]");
+					return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /trunktake [drugs/slot]");
 				}
 				else if(GetVehicleModel(PlayerVehicleInfo[playerid][d][pvId]) == 481 || GetVehicleModel(PlayerVehicleInfo[playerid][d][pvId]) == 509) {
 					return SendClientMessageEx(playerid,COLOR_GREY,"That vehicle doesn't have a trunk.");
@@ -2088,7 +2093,13 @@ CMD:trunktake(playerid, params[]) {
 				if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET) {
 					return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't take weapons from the trunk if it's closed! /car trunk to open it.");
 				}
-				else if(!(1 <= iWeaponSlot <= PlayerVehicleInfo[playerid][d][pvWepUpgrade] + 1)) {
+
+				if(strcmp(params, "drugs", true) == 0) {
+					Drugs_ShowTrunkMenu(playerid, d, 0);
+					return 1;
+				}
+
+				if(!(1 <= iWeaponSlot <= PlayerVehicleInfo[playerid][d][pvWepUpgrade] + 1)) {
 					return SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot specified.");
 				}
 				else if(PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1] != 0) {
@@ -2861,7 +2872,7 @@ CMD:drop(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pBackpack] > 0)
 		{
-			ShowPlayerDialog(playerid, DIALOG_BDROP, DIALOG_STYLE_MSGBOX, "Drop Backpack Confirmation", "{FFFFFF}Are you sure you would like to drop your backpack?\n{FF8000}Note{FFFFFF}: This will {FF0000}permanently{FFFFFF} remove the backpack and all of its contents!", "Yes", "No");
+			ShowPlayerDialogEx(playerid, DIALOG_BDROP, DIALOG_STYLE_MSGBOX, "Drop Backpack Confirmation", "{FFFFFF}Are you sure you would like to drop your backpack?\n{FF8000}Note{FFFFFF}: This will {FF0000}permanently{FFFFFF} remove the backpack and all of its contents!", "Yes", "No");
 		}
 		else
 		{

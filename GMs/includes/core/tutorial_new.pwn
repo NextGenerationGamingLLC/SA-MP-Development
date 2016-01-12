@@ -195,12 +195,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_REGISTER_MENU:
 		{
-			if(!response) return ShowPlayerDialog(playerid, DIALOG_REGISTER_EXIT, DIALOG_STYLE_MSGBOX, "NG:RP Character Creation | Exit", "Are you sure you would like to exit the character creation menu?\nNote: This will {FF0000}delete {FFFFFF}your data!", "Continue", "Quit");
+			if(!response) return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_EXIT, DIALOG_STYLE_MSGBOX, "NG:RP Character Creation | Exit", "Are you sure you would like to exit the character creation menu?\nNote: This will {FF0000}delete {FFFFFF}your data!", "Continue", "Quit");
 			switch(listitem)
 			{
 				case 0: return Register_MainMenu(playerid);
-				case 1: return ShowPlayerDialog(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<");
-				case 2: return ShowPlayerDialog(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Select", "<<");
+				case 1: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<");
+				case 2: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Select", "<<");
 				case 3:
 				{
 					szMiscArray[0] = 0;
@@ -232,12 +232,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					French accent\n\
 					Korean accent\n\
 					Thai accent";
-					return ShowPlayerDialog(playerid, DIALOG_REGISTER_ACCENT, DIALOG_STYLE_LIST, "NG:RP Character Creation | Accent", szMiscArray, "Select", "<<");
+					return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_ACCENT, DIALOG_STYLE_LIST, "NG:RP Character Creation | Accent", szMiscArray, "Select", "<<");
 				}
 				case 4: return Register_MainMenu(playerid);
 				case 5:
 				{
-					if(PlayerInfo[playerid][pSex] == 0) { SendClientMessage(playerid, COLOR_YELLOW, "Please select your gender first."); return ShowPlayerDialog(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<"); }
+					if(PlayerInfo[playerid][pSex] == 0) { SendClientMessage(playerid, COLOR_YELLOW, "Please select your gender first."); return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<"); }
 					switch(PlayerInfo[playerid][pSex])
 					{
 	                    case 1: return ShowModelSelectionMenuEx(playerid, g_aMaleSkins, sizeof(g_aMaleSkins), "Skin Model", REGISTER_SKINMODEL, -16.0, 0.0, -55.0);
@@ -250,13 +250,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(PlayerInfo[playerid][pSex] == 0)
 					{
 						SendClientMessage(playerid, COLOR_YELLOW, "Please pick a gender.");
-						return ShowPlayerDialog(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<");
+						return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<");
 
 					}
 					if(strcmp(PlayerInfo[playerid][pBirthDate], "0000-00-00") == 0)
 					{
 						SendClientMessage(playerid, COLOR_YELLOW, "Please specify your birthdate.");
-						return ShowPlayerDialog(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Select", "<<");
+						return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Select", "<<");
 					}
 					else return Register_FinishSetup(playerid);
 				}
@@ -281,7 +281,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Register_MainMenu(playerid);
 				}
 			}
-			else ShowPlayerDialog(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "{FF0000}Is your character male or female?", "Male\nFemale", "Submit", "");
+			else ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "{FF0000}Is your character male or female?", "Male\nFemale", "Submit", "");
 		}
 		case DIALOG_REGISTER_MONTH:
 	    {
@@ -299,7 +299,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					format(szMiscArray, sizeof(szMiscArray), "%s%d\n", szMiscArray, x);
 				}
-				ShowPlayerDialog(playerid, DIALOG_REGISTER_DAY, DIALOG_STYLE_LIST, "{FF0000}Which day was your character born?", szMiscArray, "Submit", "");
+				ShowPlayerDialogEx(playerid, DIALOG_REGISTER_DAY, DIALOG_STYLE_LIST, "{FF0000}Which day was your character born?", szMiscArray, "Submit", "");
 			}
 			else return Register_MainMenu(playerid);
 		}
@@ -318,9 +318,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					format(szMiscArray, sizeof(szMiscArray), "%s%d\n", szMiscArray, x);
 				}
-				ShowPlayerDialog(playerid, DIALOG_REGISTER_YEAR, DIALOG_STYLE_LIST, "{FF0000}Which year was your character born?", szMiscArray, "Submit", "");
+				ShowPlayerDialogEx(playerid, DIALOG_REGISTER_YEAR, DIALOG_STYLE_LIST, "{FF0000}Which year was your character born?", szMiscArray, "Submit", "");
 			}
-			else ShowPlayerDialog(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
+			else ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
 		}
 		case DIALOG_REGISTER_YEAR:
 	    {
@@ -343,7 +343,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					format(szMiscArray, sizeof(szMiscArray), "%s%d\n", szMiscArray, x);
 				}
-				ShowPlayerDialog(playerid, DIALOG_REGISTER_YEAR, DIALOG_STYLE_LIST, "{FF0000}Which year was your character born?", szMiscArray, "Submit", "");
+				ShowPlayerDialogEx(playerid, DIALOG_REGISTER_YEAR, DIALOG_STYLE_LIST, "{FF0000}Which year was your character born?", szMiscArray, "Submit", "");
 			}
 		}
 		case DIALOG_REGISTER_ACCENT:
@@ -361,29 +361,29 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		    {
 		        if(IsNumeric(inputtext))
 		        {
-		            ShowPlayerDialog(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
+		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
 		            return 1;
 				}
 				if(strfind(inputtext, "_", true) == -1)
 				{
-				    ShowPlayerDialog(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
+				    ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
 		            return 1;
 		        }
 		        if(strlen(inputtext) > 20)
 		        {
-		            ShowPlayerDialog(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That name is too long\nPlease shorten the name.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
+		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That name is too long\nPlease shorten the name.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
 		            return 1;
 		        }
 		        if(strcmp(inputtext, GetPlayerNameExt(playerid), true) == 0)
 		        {
-		            ShowPlayerDialog(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error", "You can't add yourself as a referrer.\nPlease enter the referrer name or press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
+		            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error", "You can't add yourself as a referrer.\nPlease enter the referrer name or press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
 		            return 1;
 		        }
 				for(new sz = 0; sz < strlen(inputtext); sz++)
 				{
 				    if(inputtext[sz] == ' ')
 				    {
-					    ShowPlayerDialog(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
+					    ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Roleplay Name", "That is not a roleplay name\nPlease enter a proper roleplay name.\n\nExample: FirstName_LastName", "Enter", "Skip");
 			            return 1;
 			        }
 			    }
@@ -482,7 +482,7 @@ Tutorial_Stage(playerid) {
 			strcat(szMiscArray, "/b allows you to speak out of character, as if you were talking in real life\n");
 			strcat(szMiscArray, "and no longer acting as your in-game character.");
 			strcat(szMiscArray, "\n\n\n_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialog(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial", szMiscArray, szCount, "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial", szMiscArray, szCount, "");
 		}
 		case 1: {
 			szMiscArray = "_______________________________________________________________________________________________________________________________________________________\n\n\n";
@@ -493,7 +493,7 @@ Tutorial_Stage(playerid) {
 			strcat(szMiscArray, "{FF0000}Powergaming{FFFFFF}: Performing an action which your character is incapable of performing.\n(Ex. Having god-like abilities or forcing roleplay upon others.)");
 			strcat(szMiscArray, "A full list of server offences with their detailed explanation is available at ng-gaming.net\nHere you will also find a full list of In-Character laws.");
 			strcat(szMiscArray, "\n\n\n_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialog(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Server Offenses", szMiscArray, szCount, "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Server Offenses", szMiscArray, szCount, "");
 		}
 		case 2: {
 			szMiscArray = "_______________________________________________________________________________________________________________________________________________________\n\n\n";
@@ -503,7 +503,7 @@ Tutorial_Stage(playerid) {
 			strcat(szMiscArray, "{FF0000}Seeking Help{FFFFFF}: You can ask for help over /newb or /requesthelp\nYou can also report for an admin using /report.\n\n");
 			strcat(szMiscArray, "A full list of commands is available using /help.");
 			strcat(szMiscArray, "\n\n\n_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialog(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Basic Commands", szMiscArray, szCount, "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Basic Commands", szMiscArray, szCount, "");
 		}
 		case 3:	{
 			szMiscArray = "_______________________________________________________________________________________________________________________________________________________\n\n\n";
@@ -524,7 +524,7 @@ Tutorial_Stage(playerid) {
 				\t\t\tBeren\t\tKareemtastic\tSew Sumi\n\
 				\t\t\tRazbit\t");
 			strcat(szMiscArray, "\n\n_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialog(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Server Offenses", szMiscArray, szCount, "");
+			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Server Offenses", szMiscArray, szCount, "");
 		}
 		case 4:	{
 			Tutorial_End(playerid);
@@ -703,7 +703,7 @@ Tutorial_InitTextDraws()
 	TextDrawSetProportional(TutTextDraw[17], 1);
 	TextDrawSetSelectable(TutTextDraw[17], 0);
 
-	TutTextDraw[18] = TextDrawCreate(379.000000, 76.000000, "v3.01");
+	TutTextDraw[18] = TextDrawCreate(379.000000, 76.000000, SERVER_GM_TEXT);
 	TextDrawAlignment(TutTextDraw[18], 2);
 	TextDrawBackgroundColor(TutTextDraw[18], 255);
 	TextDrawFont(TutTextDraw[18], 2);
@@ -766,7 +766,7 @@ Register_Questions(playerid)
 	TogglePlayerControllable(playerid, false);
 	SetPlayerCameraPos(playerid, 13.7324, 8.2450, 1631.9706);
 	SetPlayerCameraLookAt(playerid, 12.9696, 8.8893, 1631.6460);
-	ShowPlayerDialog(playerid, DIALOG_REGISTER_QUESTIONMAIN, DIALOG_STYLE_MSGBOX, "NG:RP | RolePlay Questions", "\
+	ShowPlayerDialogEx(playerid, DIALOG_REGISTER_QUESTIONMAIN, DIALOG_STYLE_MSGBOX, "NG:RP | RolePlay Questions", "\
 		\n---------- Next Generation RolePlay | Questions ----------\n\
 		\n\
 		\n\
@@ -829,7 +829,7 @@ Register_GetQuestion(playerid, number)
 			SetPVarInt(playerid, "_AnswerKey", 3);
 		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_REGISTER_QUESTIONMAIN+number, DIALOG_STYLE_LIST, "NG:RP | RolePlay Questions", szMiscArray, "Select", "");
+	ShowPlayerDialogEx(playerid, DIALOG_REGISTER_QUESTIONMAIN+number, DIALOG_STYLE_LIST, "NG:RP | RolePlay Questions", szMiscArray, "Select", "");
 	return 1;
 }
 
@@ -881,7 +881,7 @@ Register_MainMenu(iPlayerID)
 		PlayerInfo[iPlayerID][pBirthDate],
 		GetPlayerAccent(iPlayerID),
 		PlayerInfo[iPlayerID][pModel]);
-	return ShowPlayerDialog(iPlayerID, DIALOG_REGISTER_MENU, DIALOG_STYLE_TABLIST, "NG:RP | Character Creation Menu", szMiscArray, "Select", "");
+	return ShowPlayerDialogEx(iPlayerID, DIALOG_REGISTER_MENU, DIALOG_STYLE_TABLIST, "NG:RP | Character Creation Menu", szMiscArray, "Select", "");
 }
 
 Register_FinishSetup(iPlayerID)
@@ -889,7 +889,7 @@ Register_FinishSetup(iPlayerID)
 	SendClientMessage(iPlayerID, COLOR_LIGHTBLUE, "Congratulations! You finished your character!");
 	InterpolateCameraPos(iPlayerID, 9.3954, 14.1742, 1629.3542, 2.1713, 15.4610, 1629.0417, 7000, CAMERA_MOVE);
 	InterpolateCameraLookAt(iPlayerID, 8.4057, 14.3070, 1629.2850, 1.1728, 15.4484, 1628.9325, 7000, CAMERA_MOVE);
-	ShowPlayerDialog(iPlayerID, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Referral System", "Have you been referred to our server by one of our players?\nIf so, please enter the player name below.\n\nIf you haven't been referred by anyone, you may press the skip button.\n\n{FF0000}Note: You must enter the player name with a underscore (Example: FirstName_LastName)", "Enter", "Skip");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Referral System", "Have you been referred to our server by one of our players?\nIf so, please enter the player name below.\n\nIf you haven't been referred by anyone, you may press the skip button.\n\n{FF0000}Note: You must enter the player name with a underscore (Example: FirstName_LastName)", "Enter", "Skip");
 	return 1;
 }
 
@@ -1115,6 +1115,18 @@ public Register_Finalize(playerid) {
 	return 1;
 }
 
+CMD:forcetut(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	new uPlayer;
+	if(sscanf(params, "u", uPlayer)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /forcetut [playerid / name]");
+	SetPVarInt(uPlayer, "pTut", 8);
+	Tutorial_Objectives(uPlayer);
+	format(szMiscArray, sizeof(szMiscArray),  "You forced %s out of the tutorial.", GetPlayerNameEx(uPlayer));
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	return 1;
+}
+
 forward Tutorial_Objectives(playerid);
 public Tutorial_Objectives(playerid) {
 
@@ -1197,21 +1209,24 @@ public Tutorial_Objectives(playerid) {
 
 			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 
-			new Float:iRange, smallest,
-				j;
+			new j;
 
 			for(new i; i < MAX_JOBPOINTS; ++i) {
 
+				/*
 				Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrJobData[i][job_iTextID][0], E_STREAMER_X, fPos[3]);
 				Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrJobData[i][job_iTextID][0], E_STREAMER_Y, fPos[4]);
 				Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrJobData[i][job_iTextID][0], E_STREAMER_Z, fPos[5]);
 
 				if(GetDistanceBetweenPoints(fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5]) < iRange) smallest = i;
-				strcat(szMiscArray, Job_GetJobName(arrJobData[smallest][job_iType]), sizeof(szMiscArray));
+				strcat(szMiscArray, GetJobName(arrJobData[smallest][job_iType]), sizeof(szMiscArray));
+				*/
+
+				format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, GetJobName(arrJobData[i][job_iType]));
 				ListItemTrackId[playerid][j++] = i;
 			}
 
-			ShowPlayerDialog(playerid, DIALOG_JOBS_NEAREST, DIALOG_STYLE_LIST, "All Jobs", szMiscArray, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_JOBS_NEAREST, DIALOG_STYLE_LIST, "All Jobs", szMiscArray, "Select", "Cancel");
 			return 1;
 		}
 		case 8:

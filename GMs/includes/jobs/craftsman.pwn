@@ -63,6 +63,34 @@ CMD:getmats(playerid, params[])
 			mydeliver = Points[i][MatPoint];
 		}
 	}
+
+	new iPointID = Point_GetPointID(playerid);
+	if(iPointID != -1 && arrPoint[iPointID][po_iType] == 0) {
+
+		if(GetPlayerCash(playerid) < 750) {
+			return SendClientMessageEx(playerid, COLOR_GREY," You can't afford $750 for some material packages.");
+		}
+		GivePlayerCash(playerid, -750);
+		SetPVarInt(playerid, "Packages", 10);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You bought 10 Materials Packages for $750.");
+
+		SetPVarInt(playerid, "MatDeliver", 9090);
+		SetPVarInt(playerid, "tpMatRunTimer", 10);
+		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPMATRUNTIMER);
+		
+		if(arrPoint[iPointID][po_iGroupID] != INVALID_GROUP_ID) {
+			arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] +=125;
+			Point_AddUsage(iPointID, 125);
+		}
+		new Float:fPos[3];
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[iPointID][po_iDelTextID], E_STREAMER_X, fPos[0]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[iPointID][po_iDelTextID], E_STREAMER_Y, fPos[1]);
+		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[iPointID][po_iDelTextID], E_STREAMER_Z, fPos[2]);
+
+		SetPlayerCheckpoint(playerid, fPos[0], fPos[1], fPos[2], 5);
+		return 1;
+	}
+
 	if (IsPlayerInRangeOfPoint(playerid, 10.0, 2102.71, -103.97, 2.28)) // Matrun 3
 	{
 		new vehicle = GetPlayerVehicleID(playerid);

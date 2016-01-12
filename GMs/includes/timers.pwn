@@ -814,7 +814,7 @@ task MoneyUpdate[1000]()
 						CopGetUp(GetPVarInt(i, "IsTackled"));
 					}
 					SetPVarInt(GetPVarInt(i, "IsTackled"), "CopTackleCooldown", 30);
-					ShowPlayerDialog(i, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+					ShowPlayerDialogEx(i, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
 					ClearTackle(i);
 				}
 			}
@@ -910,31 +910,6 @@ task MoneyUpdate[1000]()
 		}
 	}
 }*/
-
-// Timer Name: TurfWarsUpdate()
-// TickRate: 60 secs.
-task TurfWarsUpdate[60000]() // changed from 1 to 60 seconds - Jingles
-{
-	for(new i = 0; i < MAX_TURFS; i++)
-	{
-	    if(TurfWars[i][twActive] == 1)
-	    {
-	        if(TurfWars[i][twTimeLeft] > 0)
-	        {
-	            TurfWars[i][twTimeLeft] -= 60;
-	        }
-	        else
-	        {
-	            if(TurfWars[i][twAttemptId] != -1)
-	            {
-					CaptureTurfWarsZone(TurfWars[i][twAttemptId],i);
-	            }
-	            TurfWars[i][twVulnerable] = 12;
-				ResetTurfWarsZone(1, i);
-	        }
-	    }
-	}
-}
 
 // Timer Name: PaintballArenaUpdate()
 // TickRate: 1 secs.
@@ -1328,7 +1303,7 @@ ptask PlayerHeartBeat[1000](i) {
 					CopGetUp(GetPVarInt(i, "IsTackled"));
 				}
 				SetPVarInt(GetPVarInt(i, "IsTackled"), "CopTackleCooldown", 30);
-				ShowPlayerDialog(i, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+				ShowPlayerDialogEx(i, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
 				ClearTackle(i);
 			}
 		}
@@ -1405,7 +1380,10 @@ ptask PlayerHeartBeat[1000](i) {
 	if(PlayerInfo[i][pJudgeJailType] != 0 && PlayerInfo[i][pJudgeJailTime] > 0 && !PlayerInfo[i][pBeingSentenced]) PlayerInfo[i][pJudgeJailTime]--;
 	if(PlayerInfo[i][pJudgeJailTime] <= 0 && PlayerInfo[i][pJudgeJailType] != 0) PlayerInfo[i][pJudgeJailType] = 0;
 
+
 	if(playerTabbed[i] == 0) {
+		// Prison_PlayerUpdate(i); WINTERFIELD WIP
+		
 		if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0) {
 			if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1) {
 				SetPlayerInterior(i, 0);
@@ -3019,7 +2997,7 @@ ptask PlayerMicroBeat[500](i) {
 // Task Name: fpsCounterUpdate
 ptask fpsCounterUpdate[500](i)
 {
-	if(Bit_State(g_PlayerBits[i], g_bFPS)) {
+	if(Bit_State(arrPlayerBits[i], bitFPS)) {
 
 		format(szMiscArray, sizeof(szMiscArray), "%d", pFPS[i]);
 		PlayerTextDrawSetString(i, pFPSCounter[i], szMiscArray);

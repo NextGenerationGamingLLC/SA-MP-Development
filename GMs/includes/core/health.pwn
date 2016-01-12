@@ -35,8 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-static Float:PlayerHealth[MAX_PLAYERS];
-static Float:PlayerArmor[MAX_PLAYERS];
+new Float:PlayerHealth[MAX_PLAYERS],
+	Float:PlayerArmor[MAX_PLAYERS];
 
 forward SetHealth(playerid, Float:hp);
 public SetHealth(playerid, Float:hp)

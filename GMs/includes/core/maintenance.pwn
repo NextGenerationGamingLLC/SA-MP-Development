@@ -138,7 +138,8 @@ public FinishMaintenance()
 		SaveRelayForLifeTeams();
 	}
 	g_mysql_SavePrices();
-	SaveTurfWars();
+	TurfWars_SaveAll();
+	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Turfs...", 1);
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Streamer Plugin Shutting Down...", 1);
 	DestroyAllDynamicObjects();
 	DestroyAllDynamic3DTextLabels();

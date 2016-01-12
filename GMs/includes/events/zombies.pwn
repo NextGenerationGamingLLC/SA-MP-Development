@@ -493,7 +493,7 @@ CMD:trickortreat(playerid, params[])
 						if(GetPVarInt(playerid, "PinConfirmed"))
 						{
 							format(string, sizeof(string),"Item: Reset Trick or Treat Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(20), number_format(PlayerInfo[playerid][pCredits]-20));
-							ShowPlayerDialog( playerid, DIALOG_SHOPTOTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
+							ShowPlayerDialogEx( playerid, DIALOG_SHOPTOTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
 							SendClientMessageEx(playerid, COLOR_GRAD2, "You have already trick or treated in the last few hours!");
 							return 1;
 						}
@@ -716,7 +716,7 @@ CMD:givez(playerid, params[])
 CMD:zscores(playerid, params[]) {
 
 	if(!zombieevent) return SendClientMessageEx(playerid, COLOR_GREY, "The zombie event is not active!");
-	ShowPlayerDialog(playerid, DIALOG_ZSCORES, DIALOG_STYLE_LIST, "Zombie Scores", "Human Kills\nZombie Infections\nLongest Surviving\nLongest Zombies", "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_ZSCORES, DIALOG_STYLE_LIST, "Zombie Scores", "Human Kills\nZombie Infections\nLongest Surviving\nLongest Zombies", "Select", "Cancel");
 	return 1;
 }
 
@@ -789,8 +789,8 @@ public OnShowZombieScoreBoard(iPlayerID, iScoreType) {
 	}
 	
 	switch(iScoreType) {
-		case 0, 2: ShowPlayerDialog(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Survivor Scoreboard", szMiscArray, "Close", "");
-		case 1, 3: ShowPlayerDialog(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Zombie Scoreboard", szMiscArray, "Close", "");
+		case 0, 2: ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Survivor Scoreboard", szMiscArray, "Close", "");
+		case 1, 3: ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Zombie Scoreboard", szMiscArray, "Close", "");
 	}
 	
 

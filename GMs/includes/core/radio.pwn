@@ -68,7 +68,7 @@ stock PlayerFixRadio(playerid)
 forward RevisionListHTTP(index, response_code, data[]);
 public RevisionListHTTP(index, response_code, data[])
 {
-	ShowPlayerDialog(index, DIALOG_REVISION, DIALOG_STYLE_LIST, "Current Version: "SERVER_GM_TEXT" -- View full changes at http://dev.ng-gaming.net", data, "Close", "");
+	ShowPlayerDialogEx(index, DIALOG_REVISION, DIALOG_STYLE_LIST, "Current Version: "SERVER_GM_TEXT" -- View full changes at http://dev.ng-gaming.net", data, "Close", "");
 	return 1;
 }
 
@@ -117,7 +117,7 @@ public Top50HTTP(index, response_code, data[])
 	DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialog(index,TOP50LIST,DIALOG_STYLE_LIST,"Top 50 Stations",data,"Select", "Back");
+		ShowPlayerDialogEx(index,TOP50LIST,DIALOG_STYLE_LIST,"Top 50 Stations",data,"Select", "Back");
 	}
 	return 1;
 }
@@ -128,7 +128,7 @@ public Top50InfoHTTP(index, response_code, data[])
 	DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialog(index,TOP50LISTEN,DIALOG_STYLE_MSGBOX,"Station Info",data,"Listen", "Back");
+		ShowPlayerDialogEx(index,TOP50LISTEN,DIALOG_STYLE_MSGBOX,"Station Info",data,"Listen", "Back");
 	}
 	return 1;
 }
@@ -139,7 +139,7 @@ public GenreHTTP(index, response_code, data[])
 	DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialog(index,GENRES,DIALOG_STYLE_LIST,"Genres",data,"Select", "Back");
+		ShowPlayerDialogEx(index,GENRES,DIALOG_STYLE_LIST,"Genres",data,"Select", "Back");
 	}
 	return 1;
 }
@@ -150,7 +150,7 @@ public StationListHTTP(index, response_code, data[])
     DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialog(index,STATIONLIST,DIALOG_STYLE_LIST,"Stations",data,"Select", "Back");
+		ShowPlayerDialogEx(index,STATIONLIST,DIALOG_STYLE_LIST,"Stations",data,"Select", "Back");
 	}
 	return 1;
 }
@@ -161,7 +161,7 @@ public StationInfoHTTP(index, response_code, data[])
     DeletePVar(index, "pHTTPWait");
  	if(response_code == 200)
  	{
-		ShowPlayerDialog(index,STATIONLISTEN,DIALOG_STYLE_MSGBOX,"Station Info",data,"Listen", "Back");
+		ShowPlayerDialogEx(index,STATIONLISTEN,DIALOG_STYLE_MSGBOX,"Station Info",data,"Listen", "Back");
 	}
 	return 1;
 }
@@ -173,7 +173,7 @@ public StationSearchHTTP(index, response_code, data[])
     HideNoticeGUIFrame(index);
  	if(response_code == 200)
  	{
-		ShowPlayerDialog(index,STATIONSEARCHLIST,DIALOG_STYLE_LIST,"Stations",data,"Select", "Back");
+		ShowPlayerDialogEx(index,STATIONSEARCHLIST,DIALOG_STYLE_LIST,"Stations",data,"Select", "Back");
 	}
 	return 1;
 }
@@ -185,7 +185,7 @@ public StationSearchInfoHTTP(index, response_code, data[])
     HideNoticeGUIFrame(index);
  	if(response_code == 200)
  	{
-		ShowPlayerDialog(index,STATIONSEARCHLISTEN,DIALOG_STYLE_MSGBOX,"Station Info",data,"Listen", "Back");
+		ShowPlayerDialogEx(index,STATIONSEARCHLISTEN,DIALOG_STYLE_MSGBOX,"Station Info",data,"Listen", "Back");
 	}
 	return 1;
 }
@@ -236,7 +236,7 @@ stock ShowSetStation(playerid, title[] = "Radio Menu")
 {
 	new string[128];
 	format(string, sizeof(string), "Favorite Station\nGenres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\n%sTurn radio off", ((!isnull(PlayerInfo[playerid][pFavStation])) ? ("Favorite Station Settings\n") : ("")));
-	return ShowPlayerDialog(playerid, SETSTATION, DIALOG_STYLE_LIST, title, string, "Select", "Close");
+	return ShowPlayerDialogEx(playerid, SETSTATION, DIALOG_STYLE_LIST, title, string, "Select", "Close");
 }
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
@@ -260,8 +260,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(isnull(PlayerInfo[playerid][pFavStation]))
 				{
-					if(GetPVarType(playerid, "pAudioStream")) ShowPlayerDialog(playerid, STATIONFAV, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nWould you like to set the one that is currently playing?", "Select", "Back");
-					else ShowPlayerDialog(playerid, STATIONFAV2, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nPlease find a station and return to this menu to set a favorite station.", "Back", "");
+					if(GetPVarType(playerid, "pAudioStream")) ShowPlayerDialogEx(playerid, STATIONFAV, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nWould you like to set the one that is currently playing?", "Select", "Back");
+					else ShowPlayerDialogEx(playerid, STATIONFAV2, DIALOG_STYLE_MSGBOX, "Favorite Station", "You don't currently have a favorite station set.\n\nPlease find a station and return to this menu to set a favorite station.", "Back", "");
 				}
 				else
 				{
@@ -318,7 +318,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 3)
 			{
-				ShowPlayerDialog(playerid,STATIONSEARCH,DIALOG_STYLE_INPUT,"Station Search","Input a search criteria:","Search","Back");
+				ShowPlayerDialogEx(playerid,STATIONSEARCH,DIALOG_STYLE_INPUT,"Station Search","Input a search criteria:","Search","Back");
 			}
 			else if(listitem == 4)
 			{
@@ -384,11 +384,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 6)
 			{
-				ShowPlayerDialog(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "Custom URL", "Please insert a valid audio url stream.", "Enter", "Back");
+				ShowPlayerDialogEx(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "Custom URL", "Please insert a valid audio url stream.", "Enter", "Back");
 			}
 			else if(!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 7)
 			{
-				ShowPlayerDialog(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
+				ShowPlayerDialogEx(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
 			}
 			else if((isnull(PlayerInfo[playerid][pFavStation]) && listitem == 7) || (!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 8))
 			{
@@ -705,19 +705,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			case 0:
 			{
 				GetPVarString(playerid, "pAudioStream", PlayerInfo[playerid][pFavStation], 255);
-				ShowPlayerDialog(playerid, STATIONFAVMODIFY, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully modified your favorite station!", "Go Back", "Exit");
+				ShowPlayerDialogEx(playerid, STATIONFAVMODIFY, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully modified your favorite station!", "Go Back", "Exit");
 			}
 			case 1:
 			{
 				strcat((PlayerInfo[playerid][pFavStation][0] = 0, PlayerInfo[playerid][pFavStation]), "", 8);
-				ShowPlayerDialog(playerid, STATIONREMOVE, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully removed your favorite station!", "Go Back", "Exit");
+				ShowPlayerDialogEx(playerid, STATIONREMOVE, DIALOG_STYLE_MSGBOX, "Favorite Station", "You have successfully removed your favorite station!", "Go Back", "Exit");
 			}
 		}
 		if(!response) ShowSetStation(playerid);
 	}
 	else if(dialogid == STATIONFAVMODIFY)
 	{
-		if(response) ShowPlayerDialog(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
+		if(response) ShowPlayerDialogEx(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
 	}
 	else if(dialogid == STATIONREMOVE)
 	{
@@ -775,7 +775,7 @@ CMD:audiourl(playerid, params[])
         }
 
         SetPVarInt(playerid, "aURLrange", range);
-        ShowPlayerDialog(playerid, AUDIO_URL, DIALOG_STYLE_INPUT, "Audio URL", "Enter Audio URL", "OK", "Cancel");
+        ShowPlayerDialogEx(playerid, AUDIO_URL, DIALOG_STYLE_INPUT, "Audio URL", "Enter Audio URL", "OK", "Cancel");
     }
     else {
         SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not authorized to use that command !");

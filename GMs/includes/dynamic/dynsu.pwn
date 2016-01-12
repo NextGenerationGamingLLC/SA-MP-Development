@@ -130,11 +130,11 @@ stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DI
 				}
 			}
 			SetPVarInt(iPlayerID, "suspect_TargetID", iSuspectID);
-			ShowPlayerDialog(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a committed crime", szMiscArray, "Select", "Exit");
+			ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a committed crime", szMiscArray, "Select", "Exit");
 		}
 		case DIALOG_EDIT_CRIMES:
 		{
-			ShowPlayerDialog(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a Nation.", "SA\nNE", "Select", "Exit");
+			ShowPlayerDialogEx(iPlayerID, iDialogID, DIALOG_STYLE_LIST, "Select a Nation.", "SA\nNE", "Select", "Exit");
 		}
 	}
 	return 1;
@@ -216,7 +216,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			szMiscArray[0] = 0;
 			SetPVarInt(playerid, "iEditCrime", strval(inputtext));
 			format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s", arrCrimeData[strval(inputtext)-1][c_szName]);
-			ShowPlayerDialog(playerid, DIALOG_CRIMES_EDIT, DIALOG_STYLE_LIST, szMiscArray, "Edit Type\nnEdit Nation\nEdit Name\nEdit Time\nEdit Fine", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_CRIMES_EDIT, DIALOG_STYLE_LIST, szMiscArray, "Edit Type\nnEdit Nation\nEdit Name\nEdit Time\nEdit Fine", "Select", "Cancel");
 		}
 		case DIALOG_CRIMES_EDIT:
 		{
@@ -228,27 +228,27 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 0:
 				{
 					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT TYPE", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialog(playerid, DIALOG_CRIMES_TYPE, DIALOG_STYLE_LIST, szMiscArray, "Misdemeanor\nFelony", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_TYPE, DIALOG_STYLE_LIST, szMiscArray, "Misdemeanor\nFelony", "Select", "Cancel");
 				}	
 				case 1:
 				{
 					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT NATION", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialog(playerid, DIALOG_CRIMES_NATION, DIALOG_STYLE_LIST, szMiscArray, "San Andreas\nNew Eire", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_NATION, DIALOG_STYLE_LIST, szMiscArray, "San Andreas\nNew Eire", "Select", "Cancel");
 				}
 				case 2:
 				{
 					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT NAME", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialog(playerid, DIALOG_CRIMES_NAME, DIALOG_STYLE_INPUT, szMiscArray, "Please input a new name for the crime.", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_NAME, DIALOG_STYLE_INPUT, szMiscArray, "Please input a new name for the crime.", "Select", "Cancel");
 				}
 				case 3:
 				{
 					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT TIME", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialog(playerid, DIALOG_CRIMES_TIME, DIALOG_STYLE_INPUT, szMiscArray, "Please input a new time for the crime.", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_TIME, DIALOG_STYLE_INPUT, szMiscArray, "Please input a new time for the crime.", "Select", "Cancel");
 				}
 				case 4:
 				{
 					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT FINE", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialog(playerid, DIALOG_CRIMES_FINE, DIALOG_STYLE_INPUT, szMiscArray, "Please input a new fine for the crime.", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_FINE, DIALOG_STYLE_INPUT, szMiscArray, "Please input a new fine for the crime.", "Select", "Cancel");
 				}
 			}
 		}
@@ -354,5 +354,5 @@ ShowCrimesList(playerid)
 	{
 		format(szMiscArray, sizeof(szMiscArray), "%s\n%i\t%s\t%d\t$%s", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName], arrCrimeData[i][c_iJTime], number_format(arrCrimeData[i][c_iJFine]));
 	}
-	return ShowPlayerDialog(playerid, DIALOG_CRIMES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Select a crime to edit.", szMiscArray, "Select", "Exit");
+	return ShowPlayerDialogEx(playerid, DIALOG_CRIMES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Select a crime to edit.", szMiscArray, "Select", "Exit");
 }

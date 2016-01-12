@@ -132,7 +132,7 @@ CMD:garagepass(playerid, params[])
 		if (IsPlayerInRangeOfPoint(playerid, 3.0, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_ExteriorVW] || IsPlayerInRangeOfPoint(playerid, 3.0, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_InteriorVW])
 		{
 			if(strcmp(GarageInfo[i][gar_Pass], "None", true) == 0 || GarageInfo[i][gar_Pass] <= 1) return SendClientMessageEx(playerid, COLOR_GREY, "This garage isn't locked.");
-			ShowPlayerDialog(playerid, GARAGELOCK, DIALOG_STYLE_INPUT, "Garage Security", "Enter the password for this garage", "Login", "Cancel");
+			ShowPlayerDialogEx(playerid, GARAGELOCK, DIALOG_STYLE_INPUT, "Garage Security", "Enter the password for this garage", "Login", "Cancel");
 			SetPVarInt(playerid, "Garage", i);
 			break;
 		}

@@ -518,10 +518,15 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pBStoredH]				= cache_get_field_content_int(row,  "BStoredH", MainPipeline); 
 					PlayerInfo[extraid][pBStoredV]				= cache_get_field_content_int(row,  "BStoredV", MainPipeline); 
 					PlayerInfo[extraid][pBugReportTimeout]		= cache_get_field_content_int(row,  "BRTimeout", MainPipeline); 
-					for(new i = 0; i < 12; i++)
-					{
+					for(new i = 0; i < 12; i++)	{
+
 						format(szField, sizeof(szField), "BItem%d", i);
 						PlayerInfo[extraid][pBItems][i] = cache_get_field_content_int(row,  szField, MainPipeline);
+					}
+					for(new i = 0; i < sizeof(szDrugs); i++) {
+
+						format(szField, sizeof(szField), "BDrug%d", i);
+						PlayerInfo[extraid][pBDrugs][i] = cache_get_field_content_int(row,  szField, MainPipeline);
 					}
 					PlayerInfo[extraid][pDigCooldown] = cache_get_field_content_int(row,  "pDigCooldown", MainPipeline);
 					PlayerInfo[extraid][pToolBox]				= cache_get_field_content_int(row,  "ToolBox", MainPipeline); 
@@ -578,9 +583,21 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 					PlayerInfo[extraid][pVIPGuncount] = cache_get_field_content_int(row, "VIPGunsCount", MainPipeline);
 
+					PlayerInfo[extraid][pGroupToyBone] = cache_get_field_content_int(row, "GroupToyBone", MainPipeline);
+					PlayerInfo[extraid][pGroupToy][0] = cache_get_field_content_float(row, "GroupToy0", MainPipeline);
+					PlayerInfo[extraid][pGroupToy][1] = cache_get_field_content_float(row, "GroupToy1", MainPipeline);
+					PlayerInfo[extraid][pGroupToy][2] = cache_get_field_content_float(row, "GroupToy2", MainPipeline);
+					PlayerInfo[extraid][pGroupToy][3] = cache_get_field_content_float(row, "GroupToy3", MainPipeline);
+					PlayerInfo[extraid][pGroupToy][4] = cache_get_field_content_float(row, "GroupToy4", MainPipeline);
+					PlayerInfo[extraid][pGroupToy][5] = cache_get_field_content_float(row, "GroupToy5", MainPipeline);
+					PlayerInfo[extraid][pGroupToy][6] = cache_get_field_content_float(row, "GroupToy6", MainPipeline);
+					PlayerInfo[extraid][pGroupToy][7] = cache_get_field_content_float(row, "GroupToy7", MainPipeline);
+					PlayerInfo[extraid][pGroupToy][8] = cache_get_field_content_float(row, "GroupToy8", MainPipeline);
+
+
 					// Jingles' Drug System:
-					for(new d; d < sizeof(szDrugs); ++d) PlayerInfo[extraid][p_iDrug][d] = cache_get_field_content_int(row, DS_Drugs_GetSQLName(d), MainPipeline);
-					for(new d; d < sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);
+					for(new d; d != sizeof(szDrugs); ++d) PlayerInfo[extraid][p_iDrug][d] = cache_get_field_content_int(row, DS_Drugs_GetSQLName(d), MainPipeline);
+					for(new d; d != sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);
 
 					cache_get_field_content(row,  "DrugQuality", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);
@@ -828,6 +845,10 @@ public OnQueryFinish(resultid, extraid, handleid)
 							format(szMiscArray, sizeof(szMiscArray), "pvMod%d", m);
 							PlayerVehicleInfo[extraid][i][pvMods][m] = cache_get_field_content_int(i,  szMiscArray, MainPipeline);
 						}
+						for(new m = 0; m < sizeof(szDrugs); m++)
+						{
+							PlayerVehicleInfo[extraid][i][pvDrugs][m] = cache_get_field_content_int(i,   DS_Drugs_GetSQLName(m), MainPipeline);
+						}
 						
 						PlayerVehicleInfo[extraid][i][pvCrashFlag] 			= cache_get_field_content_int(i,  "pvCrashFlag", MainPipeline);
 						PlayerVehicleInfo[extraid][i][pvCrashVW] 			= cache_get_field_content_int(i, "pvCrashVW", MainPipeline);
@@ -970,7 +991,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 		    {
 		        format(szMiscArray, sizeof(szMiscArray), "Nobody");
 				strmid(PlayerInfo[extraid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
-		        ShowPlayerDialog(extraid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Player", "There is no player registered to our server with such name.\nPlease enter the full name of the player who referred you.\nExample: FirstName_LastName", "Enter", "Cancel");
+		        ShowPlayerDialogEx(extraid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Player", "There is no player registered to our server with such name.\nPlease enter the full name of the player who referred you.\nExample: FirstName_LastName", "Enter", "Cancel");
 			}
 			else {
 			    format(szMiscArray, sizeof(szMiscArray), "SELECT `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerInfo[extraid][pReferredBy]);
@@ -1279,15 +1300,15 @@ g_mysql_AccountAuthCheck(playerid)
 // g_mysql_AccountOnline(int playerid, int stateid)
 stock g_mysql_AccountOnline(playerid, stateid)
 {
-	new string[128];
-	format(string, sizeof(string), "UPDATE `accounts` SET `Online`=%d, `LastLogin` = NOW() WHERE `id` = %d", stateid, GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	new iTimeStamp = gettime();
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Online`=%d, `LastLogin` = NOW() WHERE `id` = %d", stateid, GetPlayerSQLId(playerid));
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid))
-		HouseInfo[PlayerInfo[playerid][pPhousekey]][hLastLogin] = gettime(), SaveHouse(PlayerInfo[playerid][pPhousekey]);
+		HouseInfo[PlayerInfo[playerid][pPhousekey]][hLastLogin] = iTimeStamp + Inactive_CalcTime(), SaveHouse(PlayerInfo[playerid][pPhousekey]);
 	if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid))
-		HouseInfo[PlayerInfo[playerid][pPhousekey2]][hLastLogin] = gettime(), SaveHouse(PlayerInfo[playerid][pPhousekey2]);
+		HouseInfo[PlayerInfo[playerid][pPhousekey2]][hLastLogin] = iTimeStamp + Inactive_CalcTime(), SaveHouse(PlayerInfo[playerid][pPhousekey2]);
 	if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid))
-		HouseInfo[PlayerInfo[playerid][pPhousekey3]][hLastLogin] = gettime(), SaveHouse(PlayerInfo[playerid][pPhousekey3]);
+		HouseInfo[PlayerInfo[playerid][pPhousekey3]][hLastLogin] = iTimeStamp, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hLastLogin] = iTimeStamp + Inactive_CalcTime(), SaveHouse(PlayerInfo[playerid][pPhousekey3]);
 	for(new i; i != MAX_DDOORS; i++)
 	{
 		if(DDoorsInfo[i][ddType] == 1 && DDoorsInfo[i][ddOwner] == GetPlayerSQLId(playerid)) DDoorsInfo[i][ddLastLogin] = gettime(), SaveDynamicDoor(i);
@@ -1297,9 +1318,8 @@ stock g_mysql_AccountOnline(playerid, stateid)
 
 stock g_mysql_AccountOnlineReset()
 {
-	new string[128];
-	format(string, sizeof(string), "UPDATE `accounts` SET `Online` = 0 WHERE `Online` = %d", servernumber);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Online` = 0 WHERE `Online` = %d", servernumber);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -1756,15 +1776,15 @@ public OnRequestDeleteFlag(playerid, flagid)
 	new rows, fields, string[256];
 	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
 	cache_get_data(rows, fields, MainPipeline);
-	if(!rows) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
-	if(cache_get_field_content_int(0, "type", MainPipeline) == 2 && PlayerInfo[playerid][pAdmin] < 4) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Only Senior Admins+ can remove administrative flags!", "Close", "");
+	if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
+	if(cache_get_field_content_int(0, "type", MainPipeline) == 2 && PlayerInfo[playerid][pAdmin] < 4) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Only Senior Admins+ can remove administrative flags!", "Close", "");
 	cache_get_field_content(0, "flag", FlagText, MainPipeline, 64);
 	cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
 	cache_get_field_content(0, "time", FlagDate, MainPipeline, 24);
 	SetPVarInt(playerid, "Flag_Delete_ID", flagid);
 	SetPVarString(playerid, "FlagText", FlagText);
 	format(string, sizeof(string), "Are you sure you want to delete:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Issued by:{BFC0C2} %s\n{FF6347}Date Issued: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate);
-	return ShowPlayerDialog(playerid, FLAG_DELETE2, DIALOG_STYLE_MSGBOX, "FLAG DELETION", string, "Yes", "No");
+	return ShowPlayerDialogEx(playerid, FLAG_DELETE2, DIALOG_STYLE_MSGBOX, "FLAG DELETION", string, "Yes", "No");
 }
 
 stock DeleteFlag(flagid, adminid)
@@ -2340,16 +2360,20 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BEquipped", PlayerInfo[playerid][pBEquipped]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredH", PlayerInfo[playerid][pBStoredH]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredV", PlayerInfo[playerid][pBStoredV]);
-	// Seriously, please save some lines! - Akatony
+
 	new szForLoop[16];
-	for(new x = 0; x < 12; x++)
-	{	
+	for(new x = 0; x < 12; x++) {
+
 		format(szForLoop, sizeof(szForLoop), "BItem%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBItems][x]);
 	}
+	for(new x = 0; x < sizeof(szDrugs); x++) {
 
-	for(new x = 0; x < 12; x++)
-	{
+		format(szForLoop, sizeof(szForLoop), "BDrug%d", x);
+		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBDrugs][x]);
+	}
+	for(new x = 0; x < 12; x++) {
+		
 		format(szForLoop, sizeof(szForLoop), "Gun%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pGuns][x]);
 	}
@@ -2547,7 +2571,7 @@ public OnPhoneNumberCheck(index, extraid)
 				else
 				{
 					format(string,sizeof(string),"The phone number requested, %d, will cost a total of $%s.\n\nTo confirm, press OK.", GetPVarInt(index, "WantedPh"), number_format(GetPVarInt(index, "PhChangeCost")));
-					ShowPlayerDialog(index, VIPNUMMENU2, DIALOG_STYLE_MSGBOX, "Confirmation", string, "OK", "Cancel");
+					ShowPlayerDialogEx(index, VIPNUMMENU2, DIALOG_STYLE_MSGBOX, "Confirmation", string, "OK", "Cancel");
 				}
 			}
 			case 2: {
@@ -2703,7 +2727,7 @@ public MailsQueryFinish(playerid)
 	cache_get_data(rows, fields, MainPipeline);
 
 	if (rows == 0) {
-		ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, " ", "Your mailbox is empty.", "OK", "");
+		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, " ", "Your mailbox is empty.", "OK", "");
 		return 1;
 	}
 
@@ -2721,7 +2745,7 @@ public MailsQueryFinish(playerid)
 		ListItemTrackId[playerid][i] = id;
 	}
 
-    ShowPlayerDialog(playerid, DIALOG_POMAILS, DIALOG_STYLE_LIST, "Your mails", string, "Read", "Close");
+    ShowPlayerDialogEx(playerid, DIALOG_POMAILS, DIALOG_STYLE_LIST, "Your mails", string, "Read", "Close");
 
 	return 1;
 }
@@ -2745,7 +2769,7 @@ public MailDetailsQueryFinish(playerid)
 	if (strlen(message) > 80) strins(message, "\n", 70);
 
 	format(string, sizeof(string), "{EEEEEE}%s\n\n{BBBBBB}Sender: {FFFFFF}%s\n{BBBBBB}Date: {EEEEEE}%s", message, sender,Date);
-	ShowPlayerDialog(playerid, DIALOG_PODETAIL, DIALOG_STYLE_MSGBOX, "Mail Content", string, "Back", "Trash");
+	ShowPlayerDialogEx(playerid, DIALOG_PODETAIL, DIALOG_STYLE_MSGBOX, "Mail Content", string, "Back", "Trash");
 
 	if (notify && !read) {
 		foreach(new i: Player)
@@ -2823,7 +2847,7 @@ public MDCQueryFinish(playerid, suspectid)
 			format(resultline, sizeof(resultline),"%s{FF6347}Crime: {BFC0C2}%s \t{FF6347}Charged by:{BFC0C2} %s\n",resultline, MDCInfo[i][mdcCrime], MDCInfo[i][mdcIssuer]);
 		}
 	}
-	ShowPlayerDialog(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Criminal History", resultline, "Back", "");
+	ShowPlayerDialogEx(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Criminal History", resultline, "Back", "");
 	return 1;
 }
 
@@ -2842,7 +2866,7 @@ public MDCReportsQueryFinish(playerid, suspectid)
 	    format(resultline, sizeof(resultline),"%s{FF6347}Report (%d) {FF7D7D}Arrested by: %s on %s\n",resultline, reportsid, copname,datetime);
 	}
 	if(!resultline[0]) format(resultline, sizeof(resultline),"No Arrest Reports on record.",resultline, reportsid, copname,datetime);
-	ShowPlayerDialog(playerid, MDC_SHOWREPORTS, DIALOG_STYLE_LIST, "MDC - Criminal History", resultline, "Back", "");
+	ShowPlayerDialogEx(playerid, MDC_SHOWREPORTS, DIALOG_STYLE_LIST, "MDC - Criminal History", resultline, "Back", "");
 	return 1;
 }
 
@@ -2860,7 +2884,7 @@ public MDCReportQueryFinish(playerid, reportid)
 	    cache_get_field_content(i, "shortreport", shortreport, MainPipeline, 200);
 	    format(resultline, sizeof(resultline),"{FF6347}Report #%d\n{FF7D7D}Arrested by: %s on %s\n{FF6347}Report:{BFC0C2} %s\n",reportid, copname,datetime, shortreport);
 	}
-	ShowPlayerDialog(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Arrest Report", resultline, "Back", "");
+	ShowPlayerDialogEx(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Arrest Report", resultline, "Back", "");
 	return 1;
 }
 
@@ -2881,12 +2905,12 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 			cache_get_field_content(0, "flag", FlagText, MainPipeline, 64);
 			cache_get_field_content(0, "time", FlagDate, MainPipeline, 24);
 			format(resultline, sizeof(resultline),"{FF6347}FlagID: {BFC0C2}%d\n{FF6347}Flag: {BFC0C2}%s\n{FF6347}Issued by:{BFC0C2} %s \n{FF6347}Date: {BFC0C2}%s", FlagID, FlagText, FlagIssuer, FlagDate);
-			ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Viewing Flag Info", resultline, "Close", "");
+			ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Viewing Flag Info", resultline, "Close", "");
 		}
 	    case Flag_Query_Display:
 	    {
 			format(header, sizeof(header), "{FF6347}Flag History for{BFC0C2} %s", GetPlayerNameEx(suspectid));
-			if(!rows) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, header, "{FF6347}No Flags on this account", "Close", "");
+			if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, header, "{FF6347}No Flags on this account", "Close", "");
 			for(new i; i < rows; i++)
 			{
 				cache_get_field_content(i, "fid", sResult, MainPipeline); FlagID = strval(sResult);
@@ -2894,7 +2918,7 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 				if(strlen(FlagText) > 60) strmid(FlagText, FlagText, 0, 58), format(FlagText, sizeof(FlagText), "%s[...]", FlagText);
 				format(resultline, sizeof(resultline),"%s{FF6347}(ID: %d): {BFC0C2}%s\n", resultline, FlagID, FlagText);
 			}
-			ShowPlayerDialog(playerid, FLAG_LIST, DIALOG_STYLE_LIST, header, resultline, "Select", "Close");
+			ShowPlayerDialogEx(playerid, FLAG_LIST, DIALOG_STYLE_LIST, header, resultline, "Select", "Close");
 		}
 		case Flag_Query_Offline:
 		{
@@ -2958,7 +2982,7 @@ public SkinQueryFinish(playerid, queryid)
 			    cache_get_field_content(i, "skinid", sResult, MainPipeline); skinid = strval(sResult);
 				format(resultline, sizeof(resultline),"%sSkin ID: %d\n",resultline, skinid);
 			}
-			ShowPlayerDialog(playerid, SKIN_LIST, DIALOG_STYLE_LIST, header, resultline, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, SKIN_LIST, DIALOG_STYLE_LIST, header, resultline, "Select", "Cancel");
 		}
 		case Skin_Query_Count:
 		{
@@ -2973,7 +2997,7 @@ public SkinQueryFinish(playerid, queryid)
 				{
 					SetPVarInt(playerid, "closetskinid", skinid);
 					SetPlayerSkin(playerid, skinid);
-					ShowPlayerDialog(playerid, SKIN_CONFIRM, DIALOG_STYLE_MSGBOX, "Closet", "Do you want to wear these clothes?", "Yes", "Go Back");
+					ShowPlayerDialogEx(playerid, SKIN_CONFIRM, DIALOG_STYLE_MSGBOX, "Closet", "Do you want to wear these clothes?", "Yes", "Go Back");
 				}
 			}
 		}
@@ -2988,7 +3012,7 @@ public SkinQueryFinish(playerid, queryid)
 			    cache_get_field_content(i, "skinid", sResult, MainPipeline); skinid = strval(sResult);
 				format(resultline, sizeof(resultline),"%sSkin ID: %d\n",resultline, skinid);
 			}
-			ShowPlayerDialog(playerid, SKIN_DELETE, DIALOG_STYLE_LIST, header, resultline, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, SKIN_DELETE, DIALOG_STYLE_LIST, header, resultline, "Select", "Cancel");
 		}
 		case Skin_Query_Delete_ID:
 		{
@@ -2998,7 +3022,7 @@ public SkinQueryFinish(playerid, queryid)
 				if(i == GetPVarInt(playerid, "closetchoiceid"))
 				{
 					SetPVarInt(playerid, "closetskinid", skinid);
-					ShowPlayerDialog(playerid, SKIN_DELETE2, DIALOG_STYLE_MSGBOX, "Closet", "Are you sure you want to remove these clothes?", "Yes", "Cancel");
+					ShowPlayerDialogEx(playerid, SKIN_DELETE2, DIALOG_STYLE_MSGBOX, "Closet", "Are you sure you want to remove these clothes?", "Yes", "Cancel");
 				}
 			}
 		}
@@ -3064,7 +3088,7 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 				cache_get_field_content(i, "date", sDate, MainPipeline, 32);
 				format(resultline, sizeof(resultline), "%s%s -- Date Submitted: %s\n", resultline, sResult, sDate);
 			}
-			ShowPlayerDialog(playerid, NATION_APP_LIST, DIALOG_STYLE_LIST, "Nation Applications", resultline, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, NATION_APP_LIST, DIALOG_STYLE_LIST, "Nation Applications", resultline, "Select", "Cancel");
 		}
 	    case AddQueue:
 	    {
@@ -3205,16 +3229,16 @@ public RecipientLookupFinish(playerid)
 	new rows,fields,szResult[16], admin, undercover, id;
 	cache_get_data(rows, fields, MainPipeline);
 
-	if (!rows) return ShowPlayerDialog(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Recipient", "{FF3333}Error: {FFFFFF}Invalid Recipient - Account does not exist!\n\nPlease type the name of the recipient (online or offline)", "Next", "Cancel");
+	if (!rows) return ShowPlayerDialogEx(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Recipient", "{FF3333}Error: {FFFFFF}Invalid Recipient - Account does not exist!\n\nPlease type the name of the recipient (online or offline)", "Next", "Cancel");
 
 	cache_get_field_content(0, "AdminLevel", szResult, MainPipeline); admin = strval(szResult);
 	cache_get_field_content(0, "TogReports", szResult, MainPipeline); undercover = strval(szResult);
 	cache_get_field_content(0, "id", szResult, MainPipeline); id = strval(szResult);
 
-	if (admin >= 2 && undercover == 0) return ShowPlayerDialog(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Recipient", "{FF3333}Error: {FFFFFF}You can't send a letter to admins!\n\nPlease type the name of the recipient (online or offline)", "Next", "Cancel");
+	if (admin >= 2 && undercover == 0) return ShowPlayerDialogEx(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Recipient", "{FF3333}Error: {FFFFFF}You can't send a letter to admins!\n\nPlease type the name of the recipient (online or offline)", "Next", "Cancel");
 
 	SetPVarInt(playerid, "LetterRecipient", id);
-	ShowPlayerDialog(playerid, DIALOG_POMESSAGE, DIALOG_STYLE_INPUT, "Send Letter", "{FFFFFF}Please type the message.", "Send", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_POMESSAGE, DIALOG_STYLE_INPUT, "Send Letter", "{FFFFFF}Please type the message.", "Send", "Cancel");
 
 	return 1;
 
@@ -3237,7 +3261,7 @@ public CheckSales(index)
    				format(szDialog, sizeof(szDialog), "%s\n%s ", szDialog, szResult);
    				Selected[index][i] = id;
 			}
-			ShowPlayerDialog(index, DIALOG_VIEWSALE, DIALOG_STYLE_LIST, "Select a time frame", szDialog, "View", "Exit");
+			ShowPlayerDialogEx(index, DIALOG_VIEWSALE, DIALOG_STYLE_LIST, "Select a time frame", szDialog, "View", "Exit");
 		}
 		else
 		{
@@ -3320,7 +3344,7 @@ public CheckSales2(index)
 			szDialog, Solds[33], number_format(Amount[33]), Solds[34], number_format(Amount[34]), Solds[35], number_format(Amount[35]), Solds[36], number_format(Amount[36]), Solds[37], number_format(Amount[37]), Solds[38], number_format(Amount[38]), Solds[39], number_format(Amount[39]), Solds[40], number_format(Amount[40]));
 			
 			format(szDialog, sizeof(szDialog), "%sCredits Transactions: %d | Total Credits %s", szDialog, Solds[21], number_format(Amount[21]));
-		 	ShowPlayerDialog(index, DIALOG_VIEWSALE2, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Next", "Exit");
+		 	ShowPlayerDialogEx(index, DIALOG_VIEWSALE2, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Next", "Exit");
 		}
 		else
 		{
@@ -3355,7 +3379,7 @@ public CheckSales3(index)
 				mTotal += mAmount[m];
 			}
 			format(szDialog, sizeof(szDialog), "%sTotal Amount of Credits spent: %s", szDialog, number_format(Total+mTotal));
-			ShowPlayerDialog(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Exit", "");
+			ShowPlayerDialogEx(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Shop Statistics", szDialog, "Exit", "");
 		}
 		else
 		{
@@ -4607,7 +4631,7 @@ public OnIPCheck(index)
 					format(string, sizeof(string), "%s has tried to offline check the IP address of a higher admin\nPlease report this to SIU/OED or an EA", GetPlayerNameEx(index));
 					foreach(new i: Player) 
 					{
-						if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialog(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Report ASAP", string, "Close", "");
+						if(PlayerInfo[i][pAdmin] >= 4) ShowPlayerDialogEx(i, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FFFF00}AdminWarning - {FF0000}Report ASAP", string, "Close", "");
 					}
 				}
 				format(string, sizeof(string), "%s tried to offline IP check %s", GetPlayerNameEx(index), name);
@@ -4906,7 +4930,7 @@ public OnPinCheck2(index)
 		    new Pin[256];
    			cache_get_field_content(0, "Pin", Pin, MainPipeline, 256);
    			if(isnull(Pin)) {
-   			    ShowPlayerDialog(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
+   			    ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
    			}
    			else
    			{
@@ -4927,13 +4951,13 @@ public OnPinCheck2(index)
 							number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
 							format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks\nDeluxe Car Alarm (Credits: {FFD700}%s{A9C4E4})", 
 							szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]), number_format(ShopItems[39][sItemPrice]));
-							ShowPlayerDialog(index, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
+							ShowPlayerDialogEx(index, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
 						}
 						case 2: SetPVarInt(index, "RentaCar", 1), ShowModelSelectionMenu(index, CarList2, "Rent a Car!");
 						case 3: ShowModelSelectionMenu(index, CarList2, "Car Shop");
-						case 4: ShowPlayerDialog( index, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Purchase House\nHouse Interior Change\nHouse Move\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Select", "Exit" );
-						case 5: ShowPlayerDialog( index, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Purchase VIP\nRenew Gold VIP","Continue", "Exit" );
-						case 6: ShowPlayerDialog(index, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Purchase Business\nRenew Business", "Select", "Exit");
+						case 4: ShowPlayerDialogEx( index, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Purchase House\nHouse Interior Change\nHouse Move\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Select", "Exit" );
+						case 5: ShowPlayerDialogEx( index, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Purchase VIP\nRenew Gold VIP","Continue", "Exit" );
+						case 6: ShowPlayerDialogEx(index, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Purchase Business\nRenew Business", "Select", "Exit");
 						case 7: ShowModelSelectionMenu(index, PlaneList, "Plane Shop");
 						case 8: ShowModelSelectionMenu(index, BoatList, "Boat Shop");
 						case 9: ShowModelSelectionMenu(index, CarList3, "Restricted Car Shop");
@@ -4944,7 +4968,7 @@ public OnPinCheck2(index)
 				}
 				else
 				{
-					ShowPlayerDialog(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "(INVALID PIN)\n\nEnter your pin number to access credit shops.", "Confirm", "Exit");
+					ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "(INVALID PIN)\n\nEnter your pin number to access credit shops.", "Confirm", "Exit");
 				}
 				DeletePVar(index, "PinNumber");
   			}
@@ -4969,11 +4993,11 @@ public OnPinCheck(index)
 		    new Pin[128];
    			cache_get_field_content(0, "Pin", Pin, MainPipeline, 128);
    			if(isnull(Pin)) {
-   			    ShowPlayerDialog(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
+   			    ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
    			}
    			else
    			{
-   			    ShowPlayerDialog(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "Enter your pin number to access credit shops.", "Confirm", "Exit");
+   			    ShowPlayerDialogEx(index, DIALOG_ENTERPIN, DIALOG_STYLE_INPUT, "Pin Number", "Enter your pin number to access credit shops.", "Confirm", "Exit");
    			}
 		}
 		else
@@ -5256,11 +5280,19 @@ public Group_QueryFinish(iType, iExtraID) {
 			arrGroupData[iIndex][g_iTurfTokens] = strval(szResult);
 
 			arrGroupData[iIndex][g_iCrimeType] = cache_get_field_content_int(iIndex, "CrimeType", MainPipeline);
+			arrGroupData[iIndex][g_iGroupToyID] = cache_get_field_content_int(iIndex, "GroupToyID", MainPipeline);
+			arrGroupData[iIndex][g_iTurfTax] = cache_get_field_content(iIndex, "TurfTax", szResult, MainPipeline);
 
 			for(i = 0; i < 5; ++i)
 			{
 				format(szResult, sizeof(szResult), "gAmmo%i", i);
 				arrGroupData[iIndex][g_iAmmo][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
+			}
+
+			for(i = 0; i < MAX_GROUP_RIVALS; ++i)
+			{
+				format(szResult, sizeof(szResult), "gRival%i", i);
+				arrGroupData[iIndex][g_iRivals][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
 			}
 
 			for(i = 0; i < MAX_GROUP_RANKS; ++i)
@@ -5595,7 +5627,7 @@ public ReferralSecurity(playerid)
 	    {
 	        format(szMiscArray, sizeof(szMiscArray), "Nobody");
 			strmid(PlayerInfo[playerid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
-            ShowPlayerDialog(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error", "This person has the same IP as you.\nPlease choose another player that is not on your network.\n\nIf you haven't been referred, press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
+            ShowPlayerDialogEx(playerid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error", "This person has the same IP as you.\nPlease choose another player that is not on your network.\n\nIf you haven't been referred, press 'Skip'.\n\nExample: FirstName_LastName (20 Characters Max)", "Enter", "Skip");
     	}
     	else {
     	    format(szMiscArray, sizeof(szMiscArray), " %s(%d) (IP:%s) has been referred by (Referred Account: %s (IP:%s))", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), currentIP, PlayerInfo[playerid][pReferredBy], newresult);
@@ -5737,13 +5769,13 @@ public OnRFLPScore(index, id)
 			}
 			if(i >= 15) {
 				SetPVarInt(index, "rflTemp", GetPVarInt(index, "rflTemp") + i);
-				ShowPlayerDialog(index, DIALOG_RFL_TEAMS, DIALOG_STYLE_LIST, "Relay For Life Teams", string, "Next", "Close");
+				ShowPlayerDialogEx(index, DIALOG_RFL_TEAMS, DIALOG_STYLE_LIST, "Relay For Life Teams", string, "Next", "Close");
 				return 1;
 			}
 			else
 			{
 				DeletePVar(index, "rflTemp");
-				ShowPlayerDialog(index, DIALOG_RFL_TEAMS, DIALOG_STYLE_LIST, "Relay For Life Teams", string, "Close", "");
+				ShowPlayerDialogEx(index, DIALOG_RFL_TEAMS, DIALOG_STYLE_LIST, "Relay For Life Teams", string, "Close", "");
 				return 1;
 			}
 		}
@@ -5756,7 +5788,7 @@ public OnRFLPScore(index, id)
 				i++;
 			}
 			if(i > 0) {
-				ShowPlayerDialog(index, DIALOG_RFL_PLAYERS, DIALOG_STYLE_LIST, "Relay For Life Player Top 25", string, "Close", "");
+				ShowPlayerDialogEx(index, DIALOG_RFL_PLAYERS, DIALOG_STYLE_LIST, "Relay For Life Player Top 25", string, "Close", "");
 			}
 			else {
 				SendClientMessageEx(index, COLOR_GREY, "No player has run any laps yet.");
@@ -6324,7 +6356,7 @@ public FetchWatchlist2(index, input[])
 		}
 	}
 	
-	ShowPlayerDialog(index, DIALOG_WATCHLIST, DIALOG_STYLE_LIST, "Current Watchlist", PublicSQLString, "Exit", "");
+	ShowPlayerDialogEx(index, DIALOG_WATCHLIST, DIALOG_STYLE_LIST, "Current Watchlist", PublicSQLString, "Exit", "");
 	FetchingWatchlist = 0;
 	return true;
 }
@@ -6433,11 +6465,11 @@ public OnRequestTransferFlag(playerid, flagid, to, from)
 	new rows, fields, string[512];
 	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
 	cache_get_data(rows, fields, MainPipeline);
-	if(!rows) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
+	if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
 	if(cache_get_field_content_int(0, "type", MainPipeline) == 2)
-		return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Administrative flags cannot be transferred!", "Close", "");
+		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Administrative flags cannot be transferred!", "Close", "");
 	if(cache_get_field_content_int(0, "id", MainPipeline) != GetPlayerSQLId(from))
-		return format(string, sizeof(string), "Flag is not owned by %s!", GetPlayerNameEx(from)), ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", string, "Close", "");
+		return format(string, sizeof(string), "Flag is not owned by %s!", GetPlayerNameEx(from)), ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", string, "Close", "");
 	cache_get_field_content(0, "flag", FlagText, MainPipeline);
 	cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
 	cache_get_field_content(0, "time", FlagDate, MainPipeline);
@@ -6446,7 +6478,7 @@ public OnRequestTransferFlag(playerid, flagid, to, from)
 	SetPVarInt(playerid, "Flag_Transfer_From", from);
 	SetPVarString(playerid, "FlagText", FlagText);
 	format(string, sizeof(string), "Are you sure you want to transfer:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Issued by:{BFC0C2} %s\n{FF6347}Date Issued: {BFC0C2}%s\n{FF6347}To: {BFC0C2}%s\n{FF6347}From: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate, GetPlayerNameEx(to), GetPlayerNameEx(from));
-	return ShowPlayerDialog(playerid, FLAG_TRANSFER, DIALOG_STYLE_MSGBOX, "FLAG TRANSFER", string, "Yes", "No");
+	return ShowPlayerDialogEx(playerid, FLAG_TRANSFER, DIALOG_STYLE_MSGBOX, "FLAG TRANSFER", string, "Yes", "No");
 }
 
 forward GetShiftInfo(playerid, szMessage[]);
@@ -6549,4 +6581,16 @@ public OnCheckPassAgain(playerid)
 		break;
 	}
 	return 1;
+}
+
+g_mysql_SaveGroupToy(playerid) {
+
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET\
+		`GroupToy0` = '%f', `GroupToy1` = '%f', `GroupToy2` = '%f', `GroupToy3` = '%f', `GroupToy4` = '%f', `GroupToy5` = '%f', `GroupToy6` = '%f', \
+		`GroupToy7` = '%f', `GroupToy8` = '%f' WHERE `id` = '%d'", PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1],
+		PlayerInfo[playerid][pGroupToy][2], PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4],
+		PlayerInfo[playerid][pGroupToy][5], PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7],
+		PlayerInfo[playerid][pGroupToy][8], GetPlayerSQLId(playerid));
+
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }

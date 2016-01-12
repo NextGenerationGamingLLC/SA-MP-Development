@@ -62,11 +62,11 @@ stock ShowNMuteFine(playerid)
 	{
 		new string[64];
 		format(string,sizeof(string),"Jail for %d Minutes\nCash Fine ($%d)",PlayerInfo[playerid][pNMuteTotal] * 15, fine);
-		ShowPlayerDialog(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:",string,"Select","Cancel");
+		ShowPlayerDialogEx(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:",string,"Select","Cancel");
 	}
-	else if(PlayerInfo[playerid][pNMuteTotal] == 4) ShowPlayerDialog(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:","Prison for 1 Hour","Select","Cancel");
-	else if(PlayerInfo[playerid][pNMuteTotal] == 5) ShowPlayerDialog(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:","Prison for 1 Hour and 15 Minutes","Select","Cancel");
-	else if(PlayerInfo[playerid][pNMuteTotal] == 6) ShowPlayerDialog(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:","Prison for 1 Hour and 30 Minutes","Select","Cancel");
+	else if(PlayerInfo[playerid][pNMuteTotal] == 4) ShowPlayerDialogEx(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:","Prison for 1 Hour","Select","Cancel");
+	else if(PlayerInfo[playerid][pNMuteTotal] == 5) ShowPlayerDialogEx(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:","Prison for 1 Hour and 15 Minutes","Select","Cancel");
+	else if(PlayerInfo[playerid][pNMuteTotal] == 6) ShowPlayerDialogEx(playerid,NMUTE,DIALOG_STYLE_LIST,"Newbie Chat Unmute - Select your Punishment:","Prison for 1 Hour and 30 Minutes","Select","Cancel");
 }
 
 stock SendAdvisorMessage(color, string[])
@@ -777,7 +777,7 @@ CMD:rhmute(playerid, params[])
 					format(string, sizeof(string), "*** %s has given %s their first warning about help request abuse", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					SendAdvisorMessage(COLOR_COMBINEDCHAT, string);
 
-					ShowPlayerDialog(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Help request abuse warning", "A Community Advisor has warned you not to abuse /requesthelp.\n\nNote that future abuse of /requesthelp could result in a mute from /requesthelp or loss of that privilege altogether.", "Next", "");
+					ShowPlayerDialogEx(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Help request abuse warning", "A Community Advisor has warned you not to abuse /requesthelp.\n\nNote that future abuse of /requesthelp could result in a mute from /requesthelp or loss of that privilege altogether.", "Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) has given %s(%d) their first warning about help request abuse", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 					Log("logs/mute.log", string);
@@ -790,7 +790,7 @@ CMD:rhmute(playerid, params[])
 					format(string, sizeof(string), "*** %s has temporarily blocked %s from using /requesthelp", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					SendAdvisorMessage(COLOR_COMBINEDCHAT, string);
 
-					ShowPlayerDialog(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Temporarily blocked from /requesthelp", "You have been temporarily blocked from using /requesthelp\n\nAs this is the first time you have been blocked from requesting help, you will not be able to use /requesthelp for 30 minutes.\n\nTwo more mute will result in a total loss in privilege of the command.", "Next", "");
+					ShowPlayerDialogEx(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Temporarily blocked from /requesthelp", "You have been temporarily blocked from using /requesthelp\n\nAs this is the first time you have been blocked from requesting help, you will not be able to use /requesthelp for 30 minutes.\n\nTwo more mute will result in a total loss in privilege of the command.", "Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(d) was temporarily blocked from /requesthelp by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/mute.log", string);
@@ -802,7 +802,7 @@ CMD:rhmute(playerid, params[])
 					format(string, sizeof(string), "*** %s has temporarily blocked %s from using /requesthelp", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					SendAdvisorMessage(COLOR_COMBINEDCHAT, string);
 
-					ShowPlayerDialog(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Temporarily blocked from /requesthelp", "You have been temporarily blocked from using /requesthelp\n\nAs this is the second time you have been blocked from requesting help, you will not be able to use /requesthelp for 1 hour and 30 minutes.\n\nOne more mute will result in a total loss in privilege of the command.", "Next", "");
+					ShowPlayerDialogEx(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Temporarily blocked from /requesthelp", "You have been temporarily blocked from using /requesthelp\n\nAs this is the second time you have been blocked from requesting help, you will not be able to use /requesthelp for 1 hour and 30 minutes.\n\nOne more mute will result in a total loss in privilege of the command.", "Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /requesthelp by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/mute.log", string);
@@ -813,7 +813,7 @@ CMD:rhmute(playerid, params[])
 					format(string, sizeof(string), "*** %s has permanently blocked %s from using /requesthelp", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					SendAdvisorMessage(COLOR_COMBINEDCHAT, string);
 
-					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX, "Permanently blocked from /requesthelp", "You have been permanently blocked from using /requesthelp.\n\nYou will need to contact an Administrator via /report to appeal this.", "Next", "");
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX, "Permanently blocked from /requesthelp", "You have been permanently blocked from using /requesthelp.\n\nYou will need to contact an Administrator via /report to appeal this.", "Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was permanently blocked from /requesthelp by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/mute.log", string);
@@ -900,7 +900,7 @@ CMD:findnewb(playerid, params[])
 					SetPlayerPos(playerid, Pos[0][0], Pos[1][0]+2, Pos[2][0]);
 					PlayerInfo[x][pHelpedBefore] = 1;
 					SetPVarInt(playerid, "HelpingSomeone", 1);
-					ShowPlayerDialog(x, 0, DIALOG_STYLE_MSGBOX, "Helper Alert", "A community advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
+					ShowPlayerDialogEx(x, 0, DIALOG_STYLE_MSGBOX, "Helper Alert", "A community advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
 					if(i[0] > 0 || vw[0] > 0) Player_StreamPrep(playerid, Pos[0][0], Pos[1][0], Pos[2][0], FREEZE_TIME);
 					format(Message, sizeof(Message), "You have been teleported to newbie %s, retype the command to be teleported back.", GetPlayerNameEx(x));
 					SendClientMessageEx(playerid, COLOR_WHITE, Message);

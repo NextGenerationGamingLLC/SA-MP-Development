@@ -670,7 +670,7 @@ CMD:shoporder(playerid, params[])
 		SendClientMessageEx(playerid,COLOR_GREY, string);
 		return 1;
 	}
-	ShowPlayerDialog(playerid, DIALOG_SHOPORDER, DIALOG_STYLE_INPUT, "Shop Order", "This is for shop orders from http://shop.ng-gaming.net\n\nIf you do not have a shop order then please cancel this dialog box now.\n\nWarning: Abuse of this feature may result to an indefinite block from this command.\n\nPlease enter your shop order ID (if you do not know it put 1):", "Submit", "Cancel" );
+	ShowPlayerDialogEx(playerid, DIALOG_SHOPORDER, DIALOG_STYLE_INPUT, "Shop Order", "This is for shop orders from http://shop.ng-gaming.net\n\nIf you do not have a shop order then please cancel this dialog box now.\n\nWarning: Abuse of this feature may result to an indefinite block from this command.\n\nPlease enter your shop order ID (if you do not know it put 1):", "Submit", "Cancel" );
 	return 1;
 }
 
@@ -811,7 +811,7 @@ CMD:miscshop(playerid, params[])
 			number_format(ShopItems[10][sItemPrice]), number_format(ShopItems[22][sItemPrice]));
 			format(szDialog, sizeof(szDialog), "%s\nRestricted Last Name (NEW) (Credits: {FFD700}%s{A9C4E4})\nRestricted Last Name (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (NEW) (Credits: {FFD700}%s{A9C4E4})\nCustom User Title (CHANGE) (Credits: {FFD700}%s{A9C4E4})\nTeamspeak User Channel (Credits: {FFD700}%s{A9C4E4})\nBackpacks\nDeluxe Car Alarm (Credits: {FFD700}%s{A9C4E4})", 
 			szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]), number_format(ShopItems[35][sItemPrice]), number_format(ShopItems[39][sItemPrice]));
-			ShowPlayerDialog(playerid, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP, DIALOG_STYLE_LIST, "Misc Shop", szDialog, "Select", "Cancel");
 		}
 		else
 		{
@@ -858,7 +858,7 @@ CMD:shopstats(playerid, params[])
 }
  
 CMD:shophelp(playerid, params[]) {
-    return ShowPlayerDialog(playerid, DIALOG_SHOPHELPMENU, DIALOG_STYLE_LIST, "Which shop do you want to learn more about?","VIP Shop\nHouse Shop\nBusiness Shop\nToy Shop\nMiscellaneous Shop\nCar Shop\nPlane Shop\nBoat Shop", "Select", "Exit");
+    return ShowPlayerDialogEx(playerid, DIALOG_SHOPHELPMENU, DIALOG_STYLE_LIST, "Which shop do you want to learn more about?","VIP Shop\nHouse Shop\nBusiness Shop\nToy Shop\nMiscellaneous Shop\nCar Shop\nPlane Shop\nBoat Shop", "Select", "Exit");
 }
 
 CMD:nggshop(playerid, params[]) {
@@ -906,7 +906,7 @@ CMD:buygiftreset(playerid, params[]) {
 	{
 		new string[128];
 		format(string, sizeof(string),"Item: Reset Gift Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
-		return ShowPlayerDialog( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
+		return ShowPlayerDialogEx( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
 	}
 	else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the gift reset purchase location.");
 }
@@ -914,7 +914,7 @@ CMD:buygiftreset(playerid, params[]) {
 CMD:buyhealthcare(playerid, params[]) {
 	if(IsPlayerInRangeOfPoint(playerid, 4.0, 2946.8672, -1484.9561, 11.0000))
 	{
-		return ShowPlayerDialog(playerid, DIALOG_HEALTHCARE, DIALOG_STYLE_LIST, "Health Care Purchase", "Advanced Health Care\nSuper Advanced Health Care", "Select", "Exit");
+		return ShowPlayerDialogEx(playerid, DIALOG_HEALTHCARE, DIALOG_STYLE_LIST, "Health Care Purchase", "Advanced Health Care\nSuper Advanced Health Care", "Select", "Exit");
 	}
 	return 1;
 }
@@ -1062,7 +1062,7 @@ CMD:changepin(playerid, params[])
     if(GetPVarInt(playerid, "PinConfirmed"))
 	{
 	    SetPVarInt(playerid, "ChangePin", 1);
-	    ShowPlayerDialog(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Change Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
+	    ShowPlayerDialogEx(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Change Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
 	}
 	else
 	{
@@ -1078,7 +1078,7 @@ CMD:houseshop(playerid, params[])
 	{
 		if(GetPVarInt(playerid, "PinConfirmed"))
 		{
-			ShowPlayerDialog( playerid, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Purchase House\nHouse Interior Change\nHouse Move\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Select", "Exit" );
+			ShowPlayerDialogEx( playerid, DIALOG_HOUSESHOP, DIALOG_STYLE_LIST, "House Shop", "Purchase House\nHouse Interior Change\nHouse Move\nGarage - Small\nGarage - Medium\nGarage - Large\nGarage - Extra Large","Select", "Exit" );
 		}
 		else
 		{
@@ -1172,7 +1172,7 @@ CMD:sellcredits(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 
 		format(szMessage, 200, "Seller: %s(%d)\nPrice: $%s\nCredits: {FFD700}%s{A9C4E4}\nTransaction Fee: {FFD700}%s{A9C4E4}\nCredits you will recieve: {FFD700}%s{A9C4E4}", GetPlayerNameEx(playerid), playerid, number_format(Amount), number_format(Credits+TransactionFee), number_format(TransactionFee), number_format(Credits));
-		ShowPlayerDialog(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
+		ShowPlayerDialogEx(Player, DIALOG_SELLCREDITS, DIALOG_STYLE_MSGBOX, "Purchase Credits", szMessage, "Purchase", "Decline");
 	}
 	return 1;
 }
@@ -1181,7 +1181,7 @@ CMD:togglehealthcare(playerid, params[])
 {
 	if(PlayerInfo[playerid][pHealthCare] == 0)
 	{
-		ShowPlayerDialog(playerid, DIALOG_HEALTHCARE, DIALOG_STYLE_LIST, "Health Care", "Advanced Health Care\nSuper Advanced Health Care", "Select", "Exit");
+		ShowPlayerDialogEx(playerid, DIALOG_HEALTHCARE, DIALOG_STYLE_LIST, "Health Care", "Advanced Health Care\nSuper Advanced Health Care", "Select", "Exit");
 	}
 	else
 	{
@@ -1201,7 +1201,7 @@ CMD:vipshop(playerid, params[])
 	{
  		if(GetPVarInt(playerid, "PinConfirmed"))
    		{
-			ShowPlayerDialog( playerid, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Purchase VIP\nRenew Gold VIP","Continue", "Exit" );
+			ShowPlayerDialogEx( playerid, DIALOG_VIPSHOP, DIALOG_STYLE_LIST, "VIP Shop", "Purchase VIP\nRenew Gold VIP","Continue", "Exit" );
 		}
 		else
 		{
@@ -1275,7 +1275,7 @@ CMD:editshop(playerid, params[])
 
 	if (strcmp(params, SecurityCode) == 0)
 	{
-		ShowPlayerDialog(playerid, DIALOG_EDITSHOPMENU, DIALOG_STYLE_LIST, "Edit Shop", "Edit Shop Prices\nEdit Business Shop\nEdit Micro Shop", "Select", "Exit");
+		ShowPlayerDialogEx(playerid, DIALOG_EDITSHOPMENU, DIALOG_STYLE_LIST, "Edit Shop", "Edit Shop Prices\nEdit Business Shop\nEdit Micro Shop", "Select", "Exit");
 	    if(GetPVarType(playerid, "CodeAttempts")) DeletePVar(playerid, "CodeAttempts");
 	}
 	else
@@ -1303,7 +1303,7 @@ CMD:businessshop(playerid, params[])
 
 	if(GetPVarInt(playerid, "PinConfirmed"))
 	{
-		ShowPlayerDialog(playerid, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Purchase Business\nRenew Business", "Select", "Exit");
+		ShowPlayerDialogEx(playerid, DIALOG_SHOPBUSINESS, DIALOG_STYLE_LIST, "Businesses Shop", "Purchase Business\nRenew Business", "Select", "Exit");
 	}
 	else
 	{
@@ -1347,7 +1347,7 @@ CMD:thanksgivingshop(playerid, params[])
    		{
 			new string[150];
 			format(string, sizeof(string), "Straw Hat (Cost: 150 Credits | Stock: %d)\nCluckin Bell Hat (Cost: 150 Credits | Stock: %d)", PumpkinStock, PumpkinStock);//\nSpiked Club Toy (Cost: 60 Credits)", PumpkinStock);
-			ShowPlayerDialog(playerid, DIALOG_HALLOWEENSHOP, DIALOG_STYLE_LIST, "Halloween Shop", string, "Select", "Exit");
+			ShowPlayerDialogEx(playerid, DIALOG_HALLOWEENSHOP, DIALOG_STYLE_LIST, "Halloween Shop", string, "Select", "Exit");
 			return 1;
 		}
 		else
@@ -1382,7 +1382,7 @@ CMD:chargeplayer(playerid, params[])
 
 			SetPVarInt(giveplayerid, "FineAmount", amount), SetPVarInt(giveplayerid, "FineBy", playerid), SetPVarString(giveplayerid, "FineReason", reason);
 			format(string, sizeof(string), "Admin: %s\nReason: %s\nCredits Available: %s\nFine Amount: %s", GetPlayerNameEx(playerid), reason, number_format(PlayerInfo[giveplayerid][pCredits]), number_format(amount));
-			ShowPlayerDialog(giveplayerid, DIALOG_CHARGEPLAYER, DIALOG_STYLE_MSGBOX, "Credit Fine", string, "Accept", "Decline");
+			ShowPlayerDialogEx(giveplayerid, DIALOG_CHARGEPLAYER, DIALOG_STYLE_MSGBOX, "Credit Fine", string, "Accept", "Decline");
 			return 1;
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
@@ -1519,7 +1519,7 @@ CMD:microshop(playerid, params[])
 	DeletePVar(playerid, "m_listitem");
 	DeletePVar(playerid, "m_Item");
 	DeletePVar(playerid, "m_Response");
-	if(GetPVarInt(playerid, "PinConfirmed")) ShowPlayerDialog(playerid, DIALOG_MICROSHOP, DIALOG_STYLE_LIST, "Microtransaction Shop", "Job & Experience\nVIP\nFood\nHouse\nVehicle\nMiscellaneous\nEvents", "Select", "Exit");
+	if(GetPVarInt(playerid, "PinConfirmed")) ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP, DIALOG_STYLE_LIST, "Microtransaction Shop", "Job & Experience\nVIP\nFood\nHouse\nVehicle\nMiscellaneous\nEvents", "Select", "Exit");
 	else SetPVarInt(playerid, "OpenShop", 11), PinLogin(playerid);
 	return 1;
 }
@@ -1615,7 +1615,7 @@ CMD:readsign(playerid, params[])
 		if(IsPlayerInRangeOfPoint(playerid, 5, HouseInfo[i][hSign][0], HouseInfo[i][hSign][1], HouseInfo[i][hSign][2]))
 		{
 			if(isnull(HouseInfo[i][hSignDesc])) format(HouseInfo[i][hSignDesc], 64, "None");
-			return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "House Sale Sign", HouseInfo[i][hSignDesc], "Close", "");
+			return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "House Sale Sign", HouseInfo[i][hSignDesc], "Close", "");
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREY, "You are not in range of any house sale sign.");
@@ -1737,7 +1737,7 @@ CMD:cooldowns(playerid, params[])
 CMD:managecredits(playerid, params[]) 
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pShopTech] >= 3)
-		return ShowPlayerDialog(playerid, DIALOG_MANAGECREDITS, DIALOG_STYLE_LIST, "Manage Credits",  "Credits Selling\nFree Weekend\nNon-VIP Credit Selling", "Okay", "Cancel");
+		return ShowPlayerDialogEx(playerid, DIALOG_MANAGECREDITS, DIALOG_STYLE_LIST, "Manage Credits",  "Credits Selling\nFree Weekend\nNon-VIP Credit Selling", "Okay", "Cancel");
 	return 0;
 }
 
@@ -1788,7 +1788,7 @@ public OnShopOrder(index)
 						    case 3: format(reason, sizeof(reason), "{00FF00}Shipped");
 						    case 5:
 							{
-								ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
+								ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
 								return 1;
 							}
 			    			case 7: format(reason, sizeof(reason), "{FF0000}Cancelled");
@@ -1801,7 +1801,7 @@ public OnShopOrder(index)
 				   			default: format(reason, sizeof(reason), "{FF0000}Unknown");
 						}
 						format(string, sizeof(string), "We are unable to process that order at this time,\nbecause the payment is currently marked as: %s", reason);
-						ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
+						ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
 	  					return 1;
 					}
 				}
@@ -1811,14 +1811,14 @@ public OnShopOrder(index)
 			    new email[256];
 			    cache_get_field_content(0, "email", email, ShopPipeline);
 			    SetPVarString(index, "ShopEmailVerify", email);
-			    ShowPlayerDialog(index, DIALOG_SHOPORDEREMAIL, DIALOG_STYLE_INPUT, "Shop Order Error", "We were unable to link your order to your IP,\nfor further verification of your identity please input your shop e-mail address:", "Submit", "Cancel");
+			    ShowPlayerDialogEx(index, DIALOG_SHOPORDEREMAIL, DIALOG_STYLE_INPUT, "Shop Order Error", "We were unable to link your order to your IP,\nfor further verification of your identity please input your shop e-mail address:", "Submit", "Cancel");
 			    return 1;
 			}
-			ShowPlayerDialog(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Shop Order List", string, "Select", "Cancel");
+			ShowPlayerDialogEx(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Shop Order List", string, "Select", "Cancel");
 		}
 		else
 		{
-		    ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
+		    ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
 		}
 	}
 	return 1;
@@ -1866,7 +1866,7 @@ public OnShopOrderEmailVer(index)
 					    case 3: format(reason, sizeof(reason), "{00FF00}Shipped");
 					    case 5:
 						{
-							ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
+							ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
 							return 1;
 						}
 			   			case 7: format(reason, sizeof(reason), "{FF0000}Cancelled");
@@ -1879,15 +1879,15 @@ public OnShopOrderEmailVer(index)
 					    default: format(reason, sizeof(reason), "{FF0000}Unknown");
 					}
 					format(string, sizeof(string), "We are unable to process that order at this time,\nbecause the payment is currently marked as: %s", reason);
-					ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
+					ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
 	 				return 1;
 				}
 			}
-			ShowPlayerDialog(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Shop Order List", string, "Select", "Cancel");
+			ShowPlayerDialogEx(index, DIALOG_SHOPORDER2, DIALOG_STYLE_LIST, "Shop Order List", string, "Select", "Cancel");
 		}
 		else
 		{
-		    ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
+		    ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
 		}
 	}
 	return 1;
@@ -1930,7 +1930,7 @@ public OnShopOrder2(index, extraid)
 						SetPVarString(index, "DShop_name", name);
 						SetPVarInt(index, "DShop_quantity", strval(quantity)-strval(delivered));
 
-						ShowPlayerDialog(index, DIALOG_SHOPDELIVER, DIALOG_STYLE_LIST, "Shop Order Info", string, "Deliver", "Cancel");
+						ShowPlayerDialogEx(index, DIALOG_SHOPDELIVER, DIALOG_STYLE_LIST, "Shop Order Info", string, "Deliver", "Cancel");
 						return 1;
 					}
 					else
@@ -1943,7 +1943,7 @@ public OnShopOrder2(index, extraid)
 						    case 3: format(reason, sizeof(reason), "{00FF00}Shipped");
 						    case 5:
 							{
-								ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
+								ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "This order has already been delivered", "OK", "");
 								return 1;
 							}
 				   			case 7: format(reason, sizeof(reason), "{FF0000}Cancelled");
@@ -1956,7 +1956,7 @@ public OnShopOrder2(index, extraid)
 						    default: format(reason, sizeof(reason), "{FF0000}Unknown");
 						}
 						format(string, sizeof(string), "We are unable to process that order at this time,\nbecause the payment is currently marked as: %s", reason);
-						ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
+						ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", string, "OK", "");
 	  					return 1;
 					}
 				}
@@ -1964,7 +1964,7 @@ public OnShopOrder2(index, extraid)
 		}
 		else
 		{
-		    ShowPlayerDialog(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
+		    ShowPlayerDialogEx(index, 0, DIALOG_STYLE_MSGBOX, "Shop Order Error", "Error: No orders were found by that Order ID\nIf you are sure that is the correct Order ID, please try again or input '1' for your order ID.", "OK", "");
 		}
 	}
 	return 1;

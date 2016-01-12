@@ -4,6 +4,89 @@
 
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
+	/*
+	switch(response) {
+
+		case EDIT_RESPONSE_CANCEL: {
+
+			if(GetPVarType(playerid, PVAR_FURNITURE_EDITING)) {
+				new iModelID = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+
+				GetDynamicObjectPos(objectid, x, y, z);
+				GetDynamicObjectRot(objectid, rx, ry, rz);
+				SetDynamicObjectPos(objectid, x, y, z);
+				SetDynamicObjectRot(objectid, rx, ry, rz);
+
+				DeletePVar(playerid, "PX");
+				DeletePVar(playerid, "PY");
+				DeletePVar(playerid, "PZ");
+				DeletePVar(playerid, "furnfirst");
+
+
+				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: You have cancelled placing the %s.", GetFurnitureName(iModelID));
+				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				DeletePVar(playerid, PVAR_FURNITURE_EDITING);
+				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
+				TextDrawSetPreviewModel(Furniture_TD[4], PlayerInfo[playerid][pModel]);
+				TextDrawSetPreviewRot(Furniture_TD[4], 345.000000, 0.000000, 320.000000, 1.000000);
+				SelectTextDraw(playerid, 0xF6FBFCFF);
+			}
+		}
+		case EDIT_RESPONSE_FINAL: {
+
+			if(GetPVarType(playerid, PVAR_FURNITURE_EDITING)) {
+
+				new iModelID = GetDynamicObjectModel(objectid),
+					iSlotID = GetPVarInt(playerid, PVAR_FURNITURE_SLOT),
+					iHouseID = GetHouseID(playerid);
+
+
+				TextDrawSetPreviewModel(Furniture_TD[4], PlayerInfo[playerid][pModel]);
+				TextDrawSetPreviewRot(Furniture_TD[4], 345.000000, 0.000000, 320.000000, 1.000000);
+				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: You have successfully placed the %s.", GetFurnitureName(iModelID));
+				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+				szMiscArray[0] = 0;
+
+				if(IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID]);
+				HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, x, y, z, rx, ry, rz, HouseInfo[iHouseID][hIntVW]);
+
+				if(IsADoor(iModelID)) {
+
+					new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_EXTRA_ID),
+						szData[3];
+
+					DestroyDynamicArea(iLocalDoorArea);
+
+					iLocalDoorArea = CreateDynamicSphere(x, y, z, 1.0, HouseInfo[iHouseID][hIntVW]),
+					szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
+					szData[2] = 0;
+					Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
+					Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
+				}
+
+				GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][iSlotID], x, y, z);
+				GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][iSlotID], rx, ry, rz);
+
+				format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' \
+					WHERE `houseid` = '%d' AND `slotid` = '%d'", x, y, z, rx, ry, rz, iHouseID, iSlotID);
+				mysql_function_query(MainPipeline, szMiscArray, false, "OnEditFurniture", "");
+
+
+
+				foreach(new i : Player) Streamer_Update(i);
+
+				DeletePVar(playerid, "furnfirst");
+				DeletePVar(playerid, "PX");
+				DeletePVar(playerid, "PY");
+				DeletePVar(playerid, "PZ");
+				DeletePVar(playerid, PVAR_FURNITURE_EDITING);
+				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
+				// printf("%d, %d, %d, %f, %f, %f, %f, %f, %f", playerid, objectid, response, x, y, z, rx, ry, rz);
+				// SelectTextDraw(playerid, 0xF6FBFCFF);
+			}
+		}
+	}
+	*/
 	if(response == EDIT_RESPONSE_FINAL)
 	{
 		szMiscArray[0] = 0;
@@ -52,9 +135,9 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			SendClientMessage(playerid, COLOR_WHITE, "You have stopped yourself from editing the gate.");
 		}
 	}
-	if(GetPVarType(playerid, PVAR_EditingMetDet))
+	if(GetPVarType(playerid, PVAR_EMETDET))
 	{
-		new id = GetPVarInt(playerid, PVAR_EditingMetDet),
+		new id = GetPVarInt(playerid, PVAR_EMETDET),
 			iAssignData[2],
 			Float:fPos[6];
 		
@@ -78,7 +161,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You have cancelled setting the metal detector's position.");
 			}
 		}
-		DeletePVar(playerid, PVAR_EditingMetDet);
+		DeletePVar(playerid, PVAR_EMETDET);
 	}
 	if(EditingMeterID[playerid] != 0)
 	{

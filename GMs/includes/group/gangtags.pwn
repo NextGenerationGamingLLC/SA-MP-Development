@@ -8,49 +8,6 @@ GangTag_Load();
 
 #include <YSI\y_hooks>
 
-#define 			DIALOG_GANGTAGS_LIST		9000
-#define 			DIALOG_GANGTAGS_INPUT		9001
-#define 			DIALOG_GANGTAGS_FONT		9002
-
-#define 			GANGTAG_TIME				60000
-
-#undef MAX_GANGTAGS // Still somewhere in defines.pwn
-#define 			MAX_GANGTAGS 				100
-#define 			MAX_GANGTAGS_LEN			48
-#define 			GANGTAGS_OBJECTID			19464
-#define 			GANGTAGS_DEFAULTCOL			0xFF000000
-
-
-#define 			PVAR_GANGTAGID				"GT_ID"
-#define 			PVAR_GANGTAGEDITING			"GT_ED"
-#define 			PVAR_GANGTAGTEXT			"GT_TE"
-
-#define 			JOB_STREETSWEEPER			15
-
-new const szFonts[][] = {
-	"Arial",
-	"Impact",
-	"Bombing",
-	"Real Chinese",
-	"Los Santos",
-	"Urban Riot",
-	"Black Jack",
-	"Gangland",
-	"WildStyle",
-	"Spray Day",
-	"Bonzai Grande",
-	"Big Daddy",
-	"Amsterdam Graffiti"
-};
-
-enum eGangTags {
-	gt_iObjectID,
-	Text3D:gt_iTextID
-}
-new arrGangTags[MAX_GANGTAGS][eGangTags];
-new Iterator:GangTags<MAX_GANGTAGS>;
-
-
 /* 
 Personally feel this is too much.
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
@@ -86,7 +43,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			SetPVarString(playerid, PVAR_GANGTAGTEXT, inputtext);
 			for(new i; i < sizeof(szFonts); ++i) format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szFonts[i]);
-			ShowPlayerDialog(playerid, DIALOG_GANGTAGS_FONT, DIALOG_STYLE_LIST, "Gang Tags | Font", szMiscArray, "Select", "");
+			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_FONT, DIALOG_STYLE_LIST, "Gang Tags | Font", szMiscArray, "Select", "");
 			return 1;
 		}
 		case DIALOG_GANGTAGS_FONT:
@@ -318,7 +275,7 @@ public OnGetGangTags(iPlayerID)
 			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (%d)\t%s\n", szMiscArray, idx, arrGroupData[i][g_szGroupName], i, szResult);
 			idx++;
 		}
-		ShowPlayerDialog(iPlayerID, DIALOG_GANGTAGS_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Gang Tags | List", szMiscArray, "Select", "");
+		ShowPlayerDialogEx(iPlayerID, DIALOG_GANGTAGS_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Gang Tags | List", szMiscArray, "Select", "");
 		return 1;
 	}
 	return SendClientMessage(iPlayerID, COLOR_GRAD1, "There are no gang tags in the database.");
@@ -334,10 +291,15 @@ CMD:gangtaghelp(playerid, params[])
 	return 1;
 }
 
+IsAStreetSweeper(playerid) {
+
+	if(PlayerInfo[playerid][pJob] == 15 || PlayerInfo[playerid][pJob2] == 15 || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 8) return 1;
+	return 0;
+}
+
 CMD:cleantag(playerid)
 {
-	if(PlayerInfo[playerid][pJob] == JOB_STREETSWEEPER || PlayerInfo[playerid][pJob2] == JOB_STREETSWEEPER || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 8)
-	{
+	if(IsAStreetSweeper(playerid)) {
 		new Float:gtPos[3];
 		for(new i; i < MAX_GANGTAGS; ++i)
 		{
@@ -379,7 +341,7 @@ CMD:tag(playerid, params[])
 			SetPVarInt(playerid, PVAR_GANGTAGID, i);
 			TogglePlayerControllable(playerid, 0);
 			ApplyAnimation(playerid, "SPRAYCAN", "spraycan_fire", 4.1, 1, 1, 1, 1, 0, 0);
-			ShowPlayerDialog(playerid, DIALOG_GANGTAGS_INPUT, DIALOG_STYLE_INPUT, "Gang Tag Point | Insert text", "Insert the text you would like to spray on the wall", "Spray", "");
+			ShowPlayerDialogEx(playerid, DIALOG_GANGTAGS_INPUT, DIALOG_STYLE_INPUT, "Gang Tag Point | Insert text", "Insert the text you would like to spray on the wall", "Spray", "");
 			return 1;
 		}
 	}

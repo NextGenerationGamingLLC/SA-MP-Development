@@ -41,6 +41,7 @@ stock vehicle_lock_doors(vehicle) {
 		vParamArr[7];
 
 	GetVehicleParamsEx(vehicle, vParamArr[0], vParamArr[1], vParamArr[2], vParamArr[3], vParamArr[4], vParamArr[5], vParamArr[6]);
+	if(IsABike(vehicle)) return SetVehicleParamsEx(vehicle, vParamArr[0], vParamArr[1], vParamArr[2], VEHICLE_PARAMS_OFF, vParamArr[4], vParamArr[5], vParamArr[6]);
 	return SetVehicleParamsEx(vehicle, vParamArr[0], vParamArr[1], vParamArr[2], VEHICLE_PARAMS_ON, vParamArr[4], vParamArr[5], vParamArr[6]);
 }
 
@@ -1799,7 +1800,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		    }
 		}
 	}
-	else if(!IsPlayerInRangeOfVehicle(playerid, vehicleid, 7.5) || LockStatus{vehicleid} >= 1) { // G-bugging fix
+	else if(!IsPlayerInRangeOfVehicle(playerid, vehicleid, 7.5) || (LockStatus{vehicleid} >= 1 && !IsABike(vehicleid))) { // G-bugging fix
 		ClearAnimations(playerid);
 	}
 
@@ -1841,6 +1842,7 @@ CMD:car(playerid, params[])
 		else if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 		{
 			if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while refueling.");
+			if(!Vehicle_LockCheck(playerid, vehicleid)) return 1;
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine starts.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");
@@ -2115,7 +2117,7 @@ CMD:vstorage(playerid, params[])
 			else strcat(szMiscArray, "\nEmpty");
 		}
 		format(szMiscArray, sizeof(szMiscArray), "%s\n{40FFFF}Additional Vehicle Slot {FFD700}(Credits: %s){A9C4E4}", szMiscArray, number_format(ShopItems[23][sItemPrice]));
-		ShowPlayerDialog(playerid, VEHICLESTORAGE, DIALOG_STYLE_LIST, "Vehicle storage", szMiscArray, "(De)spawn", "Cancel");
+		ShowPlayerDialogEx(playerid, VEHICLESTORAGE, DIALOG_STYLE_LIST, "Vehicle storage", szMiscArray, "(De)spawn", "Cancel");
 	}
 	else { return SendClientMessageEx(playerid, COLOR_GRAD2, "Your vehicle assets have been frozen by the Judiciary.  Consult your local courthouse to have this cleared"); }
 	return 1;
@@ -2124,7 +2126,7 @@ CMD:vstorage(playerid, params[])
 CMD:trackcar(playerid, params[])
 {
     if(GetPVarType(playerid, "RentedVehicle")) {
-        ShowPlayerDialog(playerid, TRACKCAR2, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", "Rented Vehicle\nOwned Vehicles", "Track", "Cancel");
+        ShowPlayerDialogEx(playerid, TRACKCAR2, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", "Rented Vehicle\nOwned Vehicles", "Track", "Cancel");
 	}
 	else
 	{
@@ -2148,7 +2150,7 @@ CMD:trackcar(playerid, params[])
 				else format(szMiscArray, sizeof(szMiscArray), "%s\n%s | Location: %s", szMiscArray, VehicleName[iModelID], szCarLocation);
 			}
 		}
-		ShowPlayerDialog(playerid, TRACKCAR, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", szMiscArray, "Track", "Cancel");
+		ShowPlayerDialogEx(playerid, TRACKCAR, DIALOG_STYLE_LIST, "Vehicle GPS Tracking", szMiscArray, "Track", "Cancel");
 	}
 	return 1;
 }
@@ -2177,7 +2179,7 @@ CMD:unmodcar(playerid, params[]) {
 		SetPVarInt(playerid, string, 999);
 		count++;
 		SetPVarInt(playerid, "modCount", count);
-		return ShowPlayerDialog(playerid, UNMODCARMENU, DIALOG_STYLE_LIST, "Remove Modifications", modList, "Select", "Cancel");
+		return ShowPlayerDialogEx(playerid, UNMODCARMENU, DIALOG_STYLE_LIST, "Remove Modifications", modList, "Select", "Cancel");
 	}
 	SendClientMessageEx(playerid, COLOR_GREY, " You need to be inside a vehicle that you own.");
  	return 1;
@@ -2197,7 +2199,7 @@ CMD:deletecar(playerid, params[])
 		}
 		else strcat(szMiscArray, "\nEmpty");
 	}
-	return ShowPlayerDialog(playerid, DIALOG_DELETECAR, DIALOG_STYLE_LIST, "Delete Vehicle", szMiscArray, "Delete", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_DELETECAR, DIALOG_STYLE_LIST, "Delete Vehicle", szMiscArray, "Delete", "Cancel");
 }
 
 CMD:parktrailer(playerid, params[]) {
@@ -2335,7 +2337,7 @@ CMD:carkeys(playerid, params[])
 	}
 	if(iValidVehicles != 0)
 	{
-		ShowPlayerDialog(playerid, REMOVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", szMiscArray, "Remove Keys", "Cancel");
+		ShowPlayerDialogEx(playerid, REMOVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", szMiscArray, "Remove Keys", "Cancel");
 	}
 	else
 	{
@@ -2453,7 +2455,7 @@ CMD:givekeys(playerid, params[])
             if(iValidVehicles != 0)
 			{
                 GiveKeysTo[playerid] = giveplayerid;
-                ShowPlayerDialog(playerid, GIVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", szMiscArray, "Give Keys", "Cancel");
+                ShowPlayerDialogEx(playerid, GIVEKEYS, DIALOG_STYLE_LIST, "Please select a vehicle.", szMiscArray, "Give Keys", "Cancel");
             }
             else
 			{
@@ -2727,7 +2729,7 @@ CMD:userimkit(playerid, params[])
 		{
 			if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
 			{
-				ShowPlayerDialog(playerid, DIALOG_RIMMOD, DIALOG_STYLE_LIST, "Rim Modification Kit", "Offroad\nShadow\nMega\nRimshine\nWires\nClassic\nTwist\nCutter\nSwitch\nGrove\nImport\nDollar\nTrance\nAtomic\nAhab\nVirtual\nAccess", "Select", "Exit");
+				ShowPlayerDialogEx(playerid, DIALOG_RIMMOD, DIALOG_STYLE_LIST, "Rim Modification Kit", "Offroad\nShadow\nMega\nRimshine\nWires\nClassic\nTwist\nCutter\nSwitch\nGrove\nImport\nDollar\nTrance\nAtomic\nAhab\nVirtual\nAccess", "Select", "Exit");
 				return 1;
 			}
 		}

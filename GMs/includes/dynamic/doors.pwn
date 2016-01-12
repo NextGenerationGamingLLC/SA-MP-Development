@@ -507,7 +507,7 @@ CMD:doorpass(playerid, params[])
          	if(strcmp(DDoorsInfo[i][ddPass], "None", true) == 0)
                 return SendClientMessageEx(playerid, COLOR_GREY, "This door isn't allowed to be locked");
 
-			ShowPlayerDialog(playerid, DOORLOCK, DIALOG_STYLE_INPUT, "Door Security","Enter the password for this door","Login","Cancel");
+			ShowPlayerDialogEx(playerid, DOORLOCK, DIALOG_STYLE_INPUT, "Door Security","Enter the password for this door","Login","Cancel");
 			SetPVarInt(playerid, "Door", i);
 		}
 	}

@@ -118,7 +118,7 @@ stock ClearTackle(playerid)
 	DeletePVar(playerid, "TackleCooldown");
 	DeletePVar(playerid, "TackledResisting");
 	DeletePVar(playerid, "IsFrozen");
-	ShowPlayerDialog(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+	ShowPlayerDialogEx(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
 	return 1;
 }
 
@@ -206,7 +206,7 @@ public CuffTackled(playerid, giveplayerid)
 	}
 	else
 	{
-	    ShowPlayerDialog(giveplayerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+	    ShowPlayerDialogEx(giveplayerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
 	    SetPVarInt(giveplayerid, "TackledResisting", 2);
 		CuffTackled(playerid, giveplayerid);
 	}
@@ -245,7 +245,7 @@ stock TacklePlayer(playerid, tacklee)
 	GetPlayerGroupInfo(playerid, group, rank, division);
 	GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~w~Push ~r~'~k~~CONVERSATION_YES~' ~n~~w~to get up off the suspect.", 15000, 3);
 	format(string, sizeof(string), "%s %s %s has tackled you.  Do you wish to comply or resist?", group, rank, GetPlayerNameEx(playerid));
-	ShowPlayerDialog(tacklee, DIALOG_TACKLED, DIALOG_STYLE_MSGBOX, "You've been tackled", string, "Comply", "Resist");
+	ShowPlayerDialogEx(tacklee, DIALOG_TACKLED, DIALOG_STYLE_MSGBOX, "You've been tackled", string, "Comply", "Resist");
 	if(GetPVarType(tacklee, "FixVehicleTimer")) KillTimer(GetPVarInt(tacklee, "FixVehicleTimer")), DeletePVar(tacklee, "FixVehicleTimer");
 	return 1;
 }
@@ -656,9 +656,9 @@ CMD:mdc(playerid, params[])
 {
     if(IsMDCPermitted(playerid))
 	{
-        if(IsPlayerInAnyVehicle(playerid) || Bit_State(g_PlayerBits[playerid], phone_bitState))
+        if(IsPlayerInAnyVehicle(playerid) || Bit_State(arrPlayerBits[playerid], phone_bitState))
 		{
-            ShowPlayerDialog(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Clear Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
+            ShowPlayerDialogEx(playerid, MDC_MAIN, DIALOG_STYLE_LIST, "MDC - Logged in", "*Civilian Information\n*Register Suspect\n*Clear Suspect\n*Vehicle registrations\n*Find LEO\n*Law Enforcement Agencies\n*MDC Message\n*SMS", "OK", "Cancel");
             ConnectedToPC[playerid] = 1337;
         }
         else SendClientMessageEx(playerid, COLOR_GREY, "You are not in a vehicle.");

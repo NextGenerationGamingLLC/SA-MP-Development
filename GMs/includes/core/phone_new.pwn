@@ -88,22 +88,12 @@ hook OnGameModeExit()
 	return 1;
 }
 
-hook OnPlayerConnect(playerid) {
-
-	Bit_Off(g_PlayerBits[playerid], dr_bitUsedDrug);
-	Bit_Off(g_PlayerBits[playerid], dr_bitInDrugEffect);
-	Bit_Off(g_PlayerBits[playerid], phone_bitState);
-	Bit_Off(g_PlayerBits[playerid], phone_bitCamState);
-	Bit_Off(g_PlayerBits[playerid], phone_bitTraceState);
-	Bit_Off(g_PlayerBits[playerid], g_bFPS);
-	return 1;
-}
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & KEY_ANALOG_RIGHT)
 	{
-		if(Bit_State(g_PlayerBits[playerid], phone_bitCamState)) {
+		if(Bit_State(arrPlayerBits[playerid], phone_bitCamState)) {
 
 			new Float:fPos[4],
 				Float:fCam[2];
@@ -125,7 +115,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	}
 	if(newkeys & KEY_ANALOG_LEFT)
 	{
-		if(Bit_State(g_PlayerBits[playerid], phone_bitCamState)) {
+		if(Bit_State(arrPlayerBits[playerid], phone_bitCamState)) {
 
 			new Float:fPos[4],
 				Float:fCam[2];
@@ -197,7 +187,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response) return DeletePVar(playerid, PVAR_PHONEDELCONTACT), 1;
 			switch(listitem)
 			{
-				case 0: ShowPlayerDialog(playerid, DIALOG_PHONE_YPAGES, DIALOG_STYLE_TABLIST_HEADERS, "Yellow Pages", "Name\tPhone Number\n\
+				case 0: ShowPlayerDialogEx(playerid, DIALOG_PHONE_YPAGES, DIALOG_STYLE_TABLIST_HEADERS, "Yellow Pages", "Name\tPhone Number\n\
 					--> Businesses\tMENU ->\n\
 					Government - City Hall/White House\t1-800-4444\n\
 					SA News\t1-800-1800\n\
@@ -228,14 +218,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 					if(isnull(szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no pay phones.");
-					ShowPlayerDialog(playerid, DIALOG_PHONE_PAYPHONES, DIALOG_STYLE_TABLIST_HEADERS, "Pay Phones", szMiscArray, "Call", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_PHONE_PAYPHONES, DIALOG_STYLE_TABLIST_HEADERS, "Pay Phones", szMiscArray, "Call", "Cancel");
 				}
 				case 2:	{
 
 					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
 					mysql_function_query(MainPipeline, szMiscArray, true, "Phone_OnGetContacts", "i", playerid);
 				}
-				case 3: ShowPlayerDialog(playerid, DIALOG_PHONE_ADDCONTACT, DIALOG_STYLE_INPUT, "Phone | Add Contact", "Please enter the name of the contact you would like to add.\nExample: John_Doe", "Add", "<<");
+				case 3: ShowPlayerDialogEx(playerid, DIALOG_PHONE_ADDCONTACT, DIALOG_STYLE_INPUT, "Phone | Add Contact", "Please enter the name of the contact you would like to add.\nExample: Sugar Daddy", "Add", "<<");
 				case 4: {
 
 					SetPVarInt(playerid, PVAR_PHONEDELCONTACT, 1);
@@ -251,7 +241,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				case 0: {
 
-					return ShowPlayerDialog(playerid, DIALOG_PHONE_BUSINESSES, DIALOG_STYLE_LIST, "Yellow Pages | Businesses", "\
+					return ShowPlayerDialogEx(playerid, DIALOG_PHONE_BUSINESSES, DIALOG_STYLE_LIST, "Yellow Pages | Businesses", "\
 						24/7\n\
 						Clothing Stores\n\
 						Restaurants\n\
@@ -275,7 +265,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if(!response) {
 
-				return ShowPlayerDialog(playerid, DIALOG_PHONE_YPAGES, DIALOG_STYLE_TABLIST_HEADERS, "Yellow Pages", "Name\tPhone Number\n\
+				return ShowPlayerDialogEx(playerid, DIALOG_PHONE_YPAGES, DIALOG_STYLE_TABLIST_HEADERS, "Yellow Pages", "Name\tPhone Number\n\
 					--> Businesses\tMENU ->\n\
 					SA News\t1-800-1800\n\
 					Government - City Hall/White House\t1-800-4444\n\
@@ -294,7 +284,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if(!response) {
 
-				return ShowPlayerDialog(playerid, DIALOG_PHONE_BUSINESSES, DIALOG_STYLE_LIST, "Yellow Pages | Businesses", "\
+				return ShowPlayerDialogEx(playerid, DIALOG_PHONE_BUSINESSES, DIALOG_STYLE_LIST, "Yellow Pages | Businesses", "\
 					24/7\n\
 					Clothing Stores\n\
 					Restaurants\n\
@@ -364,7 +354,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0:
 				{
-					ShowPlayerDialog(playerid, DIALOG_PHONE_RINGTONES, DIALOG_STYLE_LIST, "Phone | Ringtones", "\
+					ShowPlayerDialogEx(playerid, DIALOG_PHONE_RINGTONES, DIALOG_STYLE_LIST, "Phone | Ringtones", "\
 							Go Go Track!\n\
 							Dual Dual!\n\
 							Bee Bees\n\
@@ -375,7 +365,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 1:
 				{
-					Phone_ShowRingTones(playerid);
+					Phone_WallPaperMenu(playerid);
 				}
 			}
 		}
@@ -384,7 +374,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response) Phone_Settings(playerid);
 			PlayerPlaySound(playerid, iPhoneRingTone[listitem], 0.0, 0.0, 0.0);
 			SetPVarInt(playerid, PVAR_PLAYINGRINGTONE, listitem);
-			ShowPlayerDialog(playerid, DIALOG_PHONE_RINGTONES2, DIALOG_STYLE_MSGBOX, "Phone | Ringtones | Preview", "Press 'Select' to confirm.\nPress 'Cancel' to cancel.", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_PHONE_RINGTONES2, DIALOG_STYLE_MSGBOX, "Phone | Ringtones | Preview", "Press 'Select' to confirm.\nPress 'Cancel' to cancel.", "Select", "Cancel");
 		}
 		case DIALOG_PHONE_RINGTONES2:
 		{
@@ -400,6 +390,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				Phone_Settings(playerid);
 				return 1;
 			}
+			PlayerInfo[playerid][pWallpaper] = listitem;
 			Phone_ShowWallPaper(playerid, listitem);
 			Phone_Settings(playerid);
 		}
@@ -550,7 +541,7 @@ Phone_Businesses(playerid, btype)
 			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
 		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_PHONE_BUSINESSES2, DIALOG_STYLE_TABLIST, "San Andreas | Map | Businesses", szMiscArray, "Select", "Back");
+	ShowPlayerDialogEx(playerid, DIALOG_PHONE_BUSINESSES2, DIALOG_STYLE_TABLIST, "San Andreas | Map | Businesses", szMiscArray, "Select", "Back");
 	return 1;
 }
 
@@ -584,12 +575,12 @@ Phone_InitRadioTowers() {
 
 CMD:trace(playerid, params[]) {
 
-	if(Bit_State(g_PlayerBits[playerid], phone_bitTraceState)) {
+	if(Bit_State(arrPlayerBits[playerid], phone_bitTraceState)) {
 
 		DisablePlayerCheckpoint(playerid);
 		GangZoneDestroy(GetPVarInt(playerid, "PTR_GZ"));
 		DeletePVar(playerid, "PTR_GZ");
-		Bit_Off(g_PlayerBits[playerid], phone_bitTraceState);
+		Bit_Off(arrPlayerBits[playerid], phone_bitTraceState);
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "[Phone]: Quit GPS traceroute process. All geographical data has been deleted.");
 	}
 
@@ -647,7 +638,7 @@ CMD:trace(playerid, params[]) {
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot get a trace on this person.");
 
-			Bit_On(g_PlayerBits[playerid], phone_bitTraceState);
+			Bit_On(arrPlayerBits[playerid], phone_bitTraceState);
 			SetPVarInt(playerid, "TRC_STP", 0);
 			Phone_Trace(playerid, i);
 			return 1;
@@ -702,7 +693,7 @@ public Phone_Trace(playerid, i)
 		format(szMiscArray, sizeof(szMiscArray), "%s\n\
 			\n_____________________________________\n\n\
 			{FFFFFF}%d's position has been determined: {FFFF00}%s.", szMiscArray, PlayerInfo[i][pPnumber], arrRadioTowerData[x][rt_szName]);
-		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Trace Number", szMiscArray, "-----", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Trace Number", szMiscArray, "-----", "");
 		SendClientMessage(playerid, COLOR_YELLOW, "Use /trace again to stop tracing the number.");
 		DeletePVar(playerid, "TRC_STP");
 		DeletePVar(playerid, "TRC_STR");
@@ -734,7 +725,7 @@ public Phone_Trace(playerid, i)
 	else
 	{
 		format(szMiscArray, sizeof(szMiscArray), "%sRetrieving %d's cellular data from the %s tower \t|\t Signal: %s.{DDDDDD}\n\n", szMiscArray, PlayerInfo[playerid][pPnumber], arrRadioTowerData[x][rt_szName], szStrength);
-		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Trace Number", szMiscArray, "Tracing...", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Trace Number", szMiscArray, "Tracing...", "");
 	}
 	SetPVarString(playerid, "TRC_STR", szMiscArray);
 	SetPVarInt(playerid, "TRC_STP", x + 1);
@@ -775,8 +766,8 @@ public Phone_OnGetContacts(iPlayerID)
 		}	
 		idx++;
 	}
-	if(GetPVarType(iPlayerID, PVAR_PHONEDELCONTACT)) return ShowPlayerDialog(iPlayerID, DIALOG_PHONE_CONTACTLISTDEL, DIALOG_STYLE_TABLIST_HEADERS, "Phone | Delete Contact", szMiscArray, "Delete", "<<");
-	ShowPlayerDialog(iPlayerID, DIALOG_PHONE_CONTACTLIST, DIALOG_STYLE_TABLIST_HEADERS, "Phone | Contact List", szMiscArray, "Call", "<<");
+	if(GetPVarType(iPlayerID, PVAR_PHONEDELCONTACT)) return ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CONTACTLISTDEL, DIALOG_STYLE_TABLIST_HEADERS, "Phone | Delete Contact", szMiscArray, "Delete", "<<");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CONTACTLIST, DIALOG_STYLE_TABLIST_HEADERS, "Phone | Contact List", szMiscArray, "Call", "<<");
 	return 1;
 }
 
@@ -809,7 +800,7 @@ public Phone_CheckContacts(iPlayerID, name[])
 		SendClientMessage(iPlayerID, COLOR_GRAD1, "You cannot have more contacts stored in your phone.");
 		DeletePVar(iPlayerID, "PHN_CONTACT");
 	}
-	ShowPlayerDialog(iPlayerID, DIALOG_PHONE_ADDCONTACT1, DIALOG_STYLE_INPUT, "Add Contact | Number", "Please enter the number of the contact you would like to add.", "Add", "Cancel");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_ADDCONTACT1, DIALOG_STYLE_INPUT, "Add Contact | Number", "Please enter the number of the contact you would like to add.", "Add", "Cancel");
 	return 1;	
 }
 
@@ -837,16 +828,26 @@ Phone_ReceiveCall(iPlayerID)
 	}
 }
 
-Phone_PickupCall(iPlayerID, iCallerID)
-{
+Phone_PickupCall(iPlayerID, iCallerID) {
+	
+	/*
 	PlayerPlaySound(iPlayerID, iPhoneRingTone[PlayerInfo[iPlayerID][pRingtone]] + 1, 0.0, 0.0, 0.0);
 	PlayerPlaySound(iCallerID, iPhoneRingTone[PlayerInfo[iCallerID][pRingtone]] + 1, 0.0, 0.0, 0.0);
+	*/
+
+	PlayerPlaySound(iPlayerID, 1188, 0.0, 0.0, 0.0);
+	PlayerPlaySound(iCallerID, 1188, 0.0, 0.0, 0.0);
 }
 
-Phone_HangupCall(iPlayerID, iCallerID)
-{
+Phone_HangupCall(iPlayerID, iCallerID) {
+
+	/*
 	PlayerPlaySound(iPlayerID, iPhoneRingTone[PlayerInfo[iPlayerID][pRingtone]] + 1, 0.0, 0.0, 0.0);
 	PlayerPlaySound(iCallerID, iPhoneRingTone[PlayerInfo[iPlayerID][pRingtone]] + 1, 0.0, 0.0, 0.0);
+	*/
+
+	PlayerPlaySound(iPlayerID, 1188, 0.0, 0.0, 0.0);
+	PlayerPlaySound(iCallerID, 1188, 0.0, 0.0, 0.0);
 	for(new i = 32; i < 37; ++i)
 	{
 		TextDrawHideForPlayer(iPlayerID, PhoneTD[i]);
@@ -856,12 +857,12 @@ Phone_HangupCall(iPlayerID, iCallerID)
 
 Phone_Call(iPlayerID)
 {
-	ShowPlayerDialog(iPlayerID, DIALOG_PHONE_DIAL, DIALOG_STYLE_INPUT, "Phone | Dial Number", "Please insert the number you would like to dial.", "Dial", "<<");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_DIAL, DIALOG_STYLE_INPUT, "Phone | Dial Number", "Please insert the number you would like to dial.", "Dial", "<<");
 }
 
 Phone_Contacts(iPlayerID)
 {
-	ShowPlayerDialog(iPlayerID, DIALOG_PHONE_CONTACTS, DIALOG_STYLE_LIST, "Phone | Address Book", "\
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CONTACTS, DIALOG_STYLE_LIST, "Phone | Address Book", "\
 		Yellow Pages\n\
 		Pay Phones\n\
 		List contacts\n\
@@ -883,12 +884,12 @@ Phone_House(iPlayerID) {
 
 Phone_Camera(iPlayerID)
 {
-	ShowPlayerDialog(iPlayerID, DIALOG_PHONE_CAMERA, DIALOG_STYLE_LIST, "Phone | Camera", "Back camera\nFront camera\nReset", "Select", "<<");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_CAMERA, DIALOG_STYLE_LIST, "Phone | Camera", "Back camera\nFront camera\nReset", "Select", "<<");
 }
 
 Phone_Settings(iPlayerID)
 {
-	ShowPlayerDialog(iPlayerID, DIALOG_PHONE_SETTINGS, DIALOG_STYLE_LIST, "Phone | Settings", "Ringtone\nWallpaper", "Select", "<<");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_SETTINGS, DIALOG_STYLE_LIST, "Phone | Settings", "Ringtone\nWallpaper", "Select", "<<");
 }
 
 Phone_Music(iPlayerID)
@@ -919,9 +920,8 @@ Phone_MDC(iPlayerID)
 
 
 
-Phone_ShowWallPaper(iPlayerID, i)
-{	
-	PlayerInfo[iPlayerID][pWallpaper] = i;
+Phone_ShowWallPaper(iPlayerID, i) {
+
 	TextDrawHideForPlayer(iPlayerID, PhoneTD[17]);
 	TextDrawSetString(PhoneTD[17], szPhoneWP[i]);
 	TextDrawShowForPlayer(iPlayerID, PhoneTD[17]);
@@ -932,18 +932,14 @@ Phone_ShowWallPaper(iPlayerID, i)
 		TextDrawSetString(PhoneTD[29], szPhoneWP[i]);
 		TextDrawShowForPlayer(iPlayerID, PhoneTD[29]);
 	}
-
-
 }
 
-Phone_ShowRingTones(iPlayerID)
+Phone_WallPaperMenu(iPlayerID)
 {
-	ShowPlayerDialog(iPlayerID, DIALOG_PHONE_WALLPAPERS, DIALOG_STYLE_LIST, "Phone | WallPapers", "\
+	ShowPlayerDialogEx(iPlayerID, DIALOG_PHONE_WALLPAPERS, DIALOG_STYLE_LIST, "Phone | WallPapers", "\
 		Vice City 1\n\
 		Vice City 2\n\
 		Cop Art 1\n\
-		Cop Art 2\n\
-		Cop Art 3\n\
 		GTA:SA\n\
 		Gangster\n\
 		Ganster Car\n\
@@ -974,7 +970,7 @@ CMD:pcl(playerid)
 
 Phone_PhoneColorMenu(playerid)
 {
-	ShowPlayerDialog(playerid, DIALOG_PHONE_COLOR, DIALOG_STYLE_LIST, "Phone - Select color", "Black\nWhite\nRed\nPink\nOrange\nBrown\nYellow\nGreen\nBlue\nLight Baby Blue", "Choose", "");
+	ShowPlayerDialogEx(playerid, DIALOG_PHONE_COLOR, DIALOG_STYLE_LIST, "Phone - Select color", "Black\nWhite\nRed\nPink\nOrange\nBrown\nYellow\nGreen\nBlue\nLight Baby Blue", "Choose", "");
 }
 
 Phone_PhoneColor(playerid)
@@ -1012,9 +1008,9 @@ CMD:phone(playerid, params[])
 Phone_Main(playerid, click = 0) {
 
 	if(PlayerInfo[playerid][pPnumber] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have a cell phone.");
-	if(!Bit_State(g_PlayerBits[playerid], phone_bitState))
+	if(!Bit_State(arrPlayerBits[playerid], phone_bitState))
 	{
-		Bit_On(g_PlayerBits[playerid], phone_bitState);
+		Bit_On(arrPlayerBits[playerid], phone_bitState);
 		if(click) SelectTextDraw(playerid, 0xF6FBFCFF);
 		Phone_PhoneColor(playerid);
 		switch(PlayerInfo[playerid][pToggledChats][20]) {
@@ -1025,11 +1021,11 @@ Phone_Main(playerid, click = 0) {
 				for(new i = 29; i < sizeof(PhoneTD); ++i) TextDrawShowForPlayer(playerid, PhoneTD[i]);
 			}
 		}
-		
+		Phone_ShowWallPaper(playerid, PlayerInfo[playerid][pWallpaper]);		
 	}
 	else
 	{
-		Bit_Off(g_PlayerBits[playerid], phone_bitState);
+		Bit_Off(arrPlayerBits[playerid], phone_bitState);
 		if(click) CancelSelectTextDraw(playerid);
 		for(new i; i < sizeof(PhoneTD); ++i) TextDrawHideForPlayer(playerid, PhoneTD[i]);
 	}
@@ -1038,23 +1034,47 @@ Phone_Main(playerid, click = 0) {
 
 CMD:fpm(playerid, params[]) {
 
-	if(!Bit_State(g_PlayerBits[playerid], phone_bitCamState))
+	if(!Bit_State(arrPlayerBits[playerid], phone_bitCamState))
 	{
-		Bit_On(g_PlayerBits[playerid], phone_bitCamState);
+		Bit_On(arrPlayerBits[playerid], phone_bitCamState);
 		new iObjectID = CreateObject(19300, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		SetPVarInt(playerid, "FP_OBJ", iObjectID);
-        AttachObjectToPlayer(iObjectID,playerid, 0.0, 0.12, 0.7, 0.0, 0.0, 0.0);
+        AttachObjectToPlayer(iObjectID, playerid, 0.0, 0.12, 0.7, 0.0, 0.0, 0.0);
         AttachCameraToObject(playerid, iObjectID);
 	}
 	else {
 
-		Bit_Off(g_PlayerBits[playerid], phone_bitCamState);
+		Bit_Off(arrPlayerBits[playerid], phone_bitCamState);
 		DestroyObject(GetPVarInt(playerid, "FP_OBJ"));
 		DeletePVar(playerid, "FP_OBJ");
 		SetCameraBehindPlayer(playerid);
 	}
 	return 1;
 }
+/*
+hook OnPlayerStateChange(playerid, newstate, oldstate) {
+
+    if(oldstate == PLAYER_STATE_ONFOOT && (newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)) {
+    	new iVehicleID = GetPlayerVehicleID(playerid);
+        if(GetPVarType(playerid, "FP_OBJ")) {
+			new iObjectID = GetPVarInt(playerid, "FP_OBJ");
+			SetCameraBehindPlayer(playerid);
+			AttachPlayerObjectToVehicle(playerid, iObjectID, iVehicleID,-0.6, -0.3, 0.490000, 0.000000, 0.000000, 0.000000);
+			AttachCameraToPlayerObject(playerid, iObjectID);
+		}
+    }
+    if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER) {
+    	new iVehicleID = GetPlayerVehicleID(playerid);
+    	if(GetPVarType(playerid, "FP_OBJ")) {
+			new iObjectID = GetPVarInt(playerid, "FP_OBJ");
+			SetCameraBehindPlayer(playerid);
+			AttachObjectToPlayer(iObjectID, playerid, 0.0, 0.12, 0.7, 0.0, 0.0, 0.0);
+			AttachCameraToPlayerObject(playerid, iVehicleID);
+		}
+    }
+    return 1;
+}
+*/
 
 CMD:firstperson(playerid, params[]) {
 	return cmd_fpm(playerid, "");
@@ -1068,7 +1088,8 @@ CMD:picture(playerid, params[]) {
 
 CMD:selfie(playerid, params[]) {
 
-	if(!Bit_State(g_PlayerBits[playerid], phone_bitCamState))
+	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this inside a vehicle.");
+	if(!Bit_State(arrPlayerBits[playerid], phone_bitCamState))
 	{
 		new Float:fPos[4],
 			Float:fCam[2];
@@ -1087,14 +1108,12 @@ CMD:selfie(playerid, params[]) {
 	    TogglePlayerControllable(playerid, false);
 	    PlayAnimEx(playerid, "PED", "gang_gunstand", 4.1, 1, 1, 1, 1, 1, 1);
 	    SendClientMessage(playerid, COLOR_GRAD1, "{DDDDDD}Select the camera app or use /selfie to go back. Use {FFFF00}/headmove {DDDDDD}to disable your head movement (look straight).");
-	    Bit_On(g_PlayerBits[playerid], phone_bitCamState);
-	  
-
+	    Bit_On(arrPlayerBits[playerid], phone_bitCamState);
 	}
 	else
 	{
 		DeletePVar(playerid, "Flt");
-		Bit_Off(g_PlayerBits[playerid], phone_bitCamState);
+		Bit_Off(arrPlayerBits[playerid], phone_bitCamState);
 		ClearAnimations(playerid, 1);
 		TogglePlayerControllable(playerid, true);
 		SetCameraBehindPlayer(playerid);

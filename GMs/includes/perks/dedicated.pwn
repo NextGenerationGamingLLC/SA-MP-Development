@@ -385,7 +385,7 @@ CMD:dedicatedplayers(playerid, params[])
 				format(string, sizeof(string), "%s\nLevel %d Dedicated %s", string, PlayerInfo[i][pDedicatedPlayer], GetPlayerNameEx(i));
 			}
 		}
-		ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, "Online Dedicated Players", string, "Close", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Online Dedicated Players", string, "Close", "");
 	}
 	else
 	{

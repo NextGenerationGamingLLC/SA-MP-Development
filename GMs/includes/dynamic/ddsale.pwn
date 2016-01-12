@@ -43,7 +43,7 @@ ShowDynamicDoorDialog(playerid)
 	GetPlayerNameEx(DDSaleTarget[playerid]), number_format(DDSalePrice[playerid]), number_format(CalculatePercentage(DDSalePrice[playerid], 10, 1000000)),
 	ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][0]), ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][1]), ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][2]), 
 	ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][3]), ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][4]), ReturnGarageLineDetails(playerid, DDSaleDoors[playerid][5]), ReturnGarageLineDetails(playerid, DDSaleDoors[playerid][6]));
-	ShowPlayerDialog(playerid, DIALOG_DDSALEMAIN, DIALOG_STYLE_TABLIST_HEADERS, "Dynamic Door Selling", szMiscArray, "Okay", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_DDSALEMAIN, DIALOG_STYLE_TABLIST_HEADERS, "Dynamic Door Selling", szMiscArray, "Okay", "Cancel");
 	return 1;
 }
 
@@ -149,7 +149,7 @@ CMD:doorsaleinfo(playerid, params[])
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "General Information:\n\n  » Seller: %s\n  » Buyer: %s\n  » Price: $%s\n  » Fine: $%s\n\nDynamic Door(s):\n\n", GetPlayerNameEx(target), GetPlayerNameEx(DDSaleTarget[target]), number_format(DDSalePrice[target]), CalculatePercentage(DDSalePrice[target], 10, 1000000));
 	for(new i = 0; i < sizeof(DDSaleDoors[]); i ++) if(DDSaleDoors[target][i] != 0 && GetPlayerSQLId(target) == DDoorsInfo[DDSaleDoors[target][i]][ddOwner]) format(szMiscArray, sizeof(szMiscArray), "%s\n  » Door ID: %d (%s)", szMiscArray, DDSaleDoors[target][i], DDoorsInfo[DDSaleDoors[target][i]][ddDescription]);
-	ShowPlayerDialog(playerid, DIALOG_DDSALEINFO, DIALOG_STYLE_MSGBOX, "Dynamic Door Sale Details", szMiscArray, "Okay", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_DDSALEINFO, DIALOG_STYLE_MSGBOX, "Dynamic Door Sale Details", szMiscArray, "Okay", "Cancel");
 	return 1;
 }
 
@@ -253,8 +253,8 @@ CMD:approvedoorsale(playerid, params[])
 		}
 		if(count[1] == 0) strcat(szMiscArray, "\n  » None");
 		strcat(szMiscArray, "\n\nPress (F8) to take a screen-shot of this receipt for future reference.");
-		ShowPlayerDialog(target, DIALOG_DDSALERECIEPT, DIALOG_STYLE_MSGBOX, "Dynamic Door Sale Receipt", szMiscArray, "Okay", "Cancel");
-		ShowPlayerDialog(DDSaleTarget[target], DIALOG_DDSALERECIEPT, DIALOG_STYLE_MSGBOX, "Dynamic Door Sale Receipt", szMiscArray, "Okay", "Cancel");
+		ShowPlayerDialogEx(target, DIALOG_DDSALERECIEPT, DIALOG_STYLE_MSGBOX, "Dynamic Door Sale Receipt", szMiscArray, "Okay", "Cancel");
+		ShowPlayerDialogEx(DDSaleTarget[target], DIALOG_DDSALERECIEPT, DIALOG_STYLE_MSGBOX, "Dynamic Door Sale Receipt", szMiscArray, "Okay", "Cancel");
 		PlayerInfo[playerid][pAcceptReport] ++;
 		ReportCount[playerid] ++;
 		ReportHourCount[playerid] ++;
@@ -316,7 +316,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							SendClientMessageEx(playerid, COLOR_GREY, "To modify the buyer of your dynamic door(s), exit this dialog and use the command again.");
 							return 1;
 						}
-						case 1: return ShowPlayerDialog(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
+						case 1: return ShowPlayerDialogEx(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
 						case 2: 
 						{
 							SendClientMessageEx(playerid, COLOR_GREY, "The seller's fine is automatically determined by the total sale price. It cannot be modified.");
@@ -326,13 +326,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						case 3..7:
 						{
 							DDSaleTracking[playerid] = (listitem - 3);
-							ShowPlayerDialog(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 							return 1;
 						}
 						case 8, 9:
 						{
 							DDSaleTracking[playerid] = (listitem - 8);
-							ShowPlayerDialog(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
 							return 1;
 						}
 						case 10:
@@ -410,20 +410,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(sscanf(inputtext, "d", price))
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The specified dynamic door sale price must be numerical.");
-						ShowPlayerDialog(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
 						return 1;
 					}
 					if(price < 1 || price > 1000000000)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The specified dynamic door sale price cannot be under $1 or over $1,000,000,000.");
-						ShowPlayerDialog(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
 						return 1;
 					}
 					if(GetPlayerCash(DDSaleTarget[playerid]) < price)
 					{
 						format(string, sizeof(string), "%s does not have enough money for the transaction ($%s).", GetPlayerNameEx(DDSaleTarget[playerid]), number_format(price));
 						SendClientMessageEx(playerid, COLOR_GREY, string);
-						ShowPlayerDialog(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
 						return 1;
 					}
 					fine = CalculatePercentage(price, 10, 1000000);
@@ -431,7 +431,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						format(string, sizeof(string), "You do not have the sufficient funds for the transfer fine ($%s).", number_format(fine));
 						SendClientMessageEx(playerid, COLOR_GREY, string);
-						ShowPlayerDialog(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_DDSALEPRICE, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input the total price of the sale below.", "Okay", "Cancel");
 						return 1;
 					}
 					DDSalePrice[playerid] = price;
@@ -461,13 +461,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(sscanf(inputtext, "d", doorid))
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The specified door ID must be numerical.");
-						ShowPlayerDialog(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 						return 1;
 					}
 					if(doorid < 0 || doorid >= MAX_DDOORS)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "Invalid door ID specified.");
-						ShowPlayerDialog(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 						return 1;
 					}
 					for(new i = 0; i < sizeof(DDSaleDoors[]); i ++)
@@ -475,7 +475,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(DDSaleDoors[playerid][i] == doorid && doorid != 0)
 						{
 							SendClientMessageEx(playerid, COLOR_GREY, "The specified dynamic door is already linked to your sale.");
-							ShowPlayerDialog(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 							return 1;
 						}
 					}
@@ -486,7 +486,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(DDSaleDoors[playerid][DDSaleTracking[playerid]] == 0)
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You do not currently have a linked dynamic door in the specified slot.");
-								ShowPlayerDialog(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 								return 1;
 							}
 							DDSaleDoors[playerid][DDSaleTracking[playerid]] = 0;
@@ -499,7 +499,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(DDoorsInfo[doorid][ddOwner] != GetPlayerSQLId(playerid))
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You do not own the specified dynamic door.");
-								ShowPlayerDialog(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_DDSALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the dynamic door you would like to link to the sale. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 								return 1;
 							}
 							DDSaleDoors[playerid][DDSaleTracking[playerid]] = doorid;
@@ -532,13 +532,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(sscanf(inputtext, "d", garageid))
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The specified garage ID must be numerical.");
-						ShowPlayerDialog(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
 						return 1;
 					}
 					if(garageid < 0 || garageid >= MAX_GARAGES)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "Invalid garage ID specified.");
-						ShowPlayerDialog(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
 						return 1;
 					}
 					for(new i = 0; i < sizeof(DDSaleDoors[]); i ++)
@@ -546,7 +546,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(DDSaleDoors[playerid][i] == garageid && garageid != 0)
 						{
 							SendClientMessageEx(playerid, COLOR_GREY, "The specified garage is already linked to your sale.");
-							ShowPlayerDialog(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
 							return 1;
 						}
 					}
@@ -557,7 +557,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(DDSaleDoors[playerid][DDSaleTracking[playerid]] == 0)
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You do not currently have a linked garage in the specified slot.");
-								ShowPlayerDialog(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
 								return 1;
 							}
 							DDSaleDoors[playerid][DDSaleTracking[playerid]] = 0;
@@ -570,7 +570,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(GarageInfo[garageid][gar_Owner] != GetPlayerSQLId(playerid))
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You do not own the specified dynamic door.");
-								ShowPlayerDialog(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
 								return 1;
 							}
 							DDSaleDoors[playerid][DDSaleTracking[playerid]] = garageid;

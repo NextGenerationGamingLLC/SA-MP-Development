@@ -155,7 +155,7 @@ public LoginCheckEx(i)
 				format(string, sizeof(string), "%s(%d) [%s] has moved from the login screen position.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
 				Log("logs/security.log", string);
 				SendClientMessage(i, COLOR_WHITE, "SERVER: You have moved while being in the login screen!");
-				ShowPlayerDialog(i, -1, DIALOG_STYLE_MSGBOX, "", "", "", "");
+				ShowPlayerDialogEx(i, -1, DIALOG_STYLE_MSGBOX, "", "", "", "");
 				SetTimerEx("KickEx", 1000, 0, "i", i);
 				ok = 1;
 			}

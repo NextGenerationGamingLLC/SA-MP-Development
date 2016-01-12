@@ -59,13 +59,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(szMiscArray, sizeof(szMiscArray), "Sender: %s\n\nAction: %s (( %s ))\n\n\
 				Select 'Accept' to accept the action.\n\
 				Select 'Deny' to deny the action. You will need to provide a reason.", GetPlayerNameExt(playerid), szMessage, GetPlayerNameExt(playerid));
-			ShowPlayerDialog(iTargetID, DIALOG_ADO2, DIALOG_STYLE_MSGBOX, "Incoming Action Request", szMiscArray, "Accept", "Deny");
+			ShowPlayerDialogEx(iTargetID, DIALOG_ADO2, DIALOG_STYLE_MSGBOX, "Incoming Action Request", szMiscArray, "Accept", "Deny");
 		}
 		case DIALOG_ADO2: {
 
 			if(!response) {
 
-				return ShowPlayerDialog(playerid, DIALOG_ADO3, DIALOG_STYLE_INPUT, "Action Denied", "Please provide a reason for denying the action request", "Submit", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_ADO3, DIALOG_STYLE_INPUT, "Action Denied", "Please provide a reason for denying the action request", "Submit", "Cancel");
 			}
 			new iActionID = GetPVarInt(playerid, "actionplayer");
 			GetPVarString(iActionID, "actionstring", szMiscArray, sizeof(szMiscArray));
@@ -232,7 +232,7 @@ CMD:w(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/w)hisper [player] [text]");
 		return 1;
 	}
-	if(GetPVarInt(playerid, "WatchingTV") && PlayerInfo[playerid][pAdmin] < 2)
+	if(GetPVarType(playerid, "WatchingTV") && PlayerInfo[playerid][pAdmin] < 2)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do this while watching TV.");
 		return 1;
@@ -313,6 +313,7 @@ CMD:do(playerid, params[])
 	return 1;
 }
 
+/*
 CMD:attempt(playerid, params[]) {
 
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /attempt [action]");
@@ -339,9 +340,10 @@ CMD:attempt(playerid, params[]) {
 		}
 	}
 	if(isnull(szMiscArray)) return SendClientMessage(playerid, COLOR_GREY, "There is no one around you.");
-	ShowPlayerDialog(playerid, DIALOG_ADO, DIALOG_STYLE_LIST, "Perform an action", szMiscArray, "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_ADO, DIALOG_STYLE_LIST, "Perform an action", szMiscArray, "Select", "Cancel");
 	return 1;
 }
+*/
 
 CMD:ooc(playerid, params[])
 {
@@ -837,7 +839,7 @@ CMD:resetexamine(playerid, params[])
 }
 
 CMD:se(playerid, params[]) return cmd_setexamine(playerid, params);
-CMD:setexamine(playerid, params[]) return ShowPlayerDialog(playerid, DIALOG_SETEXAMINE, DIALOG_STYLE_INPUT, "Examine Description", "Please enter a description of yourself.\nExample: appears to be a white male, 6' 3 ..etc", "Set", "Cancel");
+CMD:setexamine(playerid, params[]) return ShowPlayerDialogEx(playerid, DIALOG_SETEXAMINE, DIALOG_STYLE_INPUT, "Examine Description", "Please enter a description of yourself.\nExample: appears to be a white male, 6' 3 ..etc", "Set", "Cancel");
 
 CMD:examine(playerid, params[])
 {

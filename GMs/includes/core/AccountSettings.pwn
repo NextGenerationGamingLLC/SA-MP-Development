@@ -22,7 +22,7 @@ ShowAccountSettings(playerid, menu = 0) {
 		case 0: {
 			format(szTitle, sizeof(szTitle), "Account Settings - %s", GetPlayerNameEx(playerid));
 			format(szMiscArray, sizeof(szMiscArray), "Toggle Menu\nChange Account Email\nAccount Password\nChange Shop Pin");
-			ShowPlayerDialog(playerid, ACCOUNT_SETTINGS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, ACCOUNT_SETTINGS, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
 		}
 
 		case 1: {
@@ -75,7 +75,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				(PlayerInfo[playerid][pToggledChats][17] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][18] == 0) ? ("{00FF00}On") : ("{FF0000}Off")
 			);
-			ShowPlayerDialog(playerid, ACCOUNT_TOGGLEMENU, DIALOG_STYLE_TABLIST_HEADERS, "Toggle Menu", szMiscArray, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, ACCOUNT_TOGGLEMENU, DIALOG_STYLE_TABLIST_HEADERS, "Toggle Menu", szMiscArray, "Select", "Cancel");
 		}
 		case 2: {
 			
@@ -117,22 +117,22 @@ ShowAccountSettings(playerid, menu = 0) {
 				PlayerInfo[playerid][pChatbox][17],
 				PlayerInfo[playerid][pChatbox][18]
 			);
-			ShowPlayerDialog(playerid, ACCOUNT_CHATBOX, DIALOG_STYLE_TABLIST_HEADERS, "Chat Preferences", szMiscArray, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, ACCOUNT_CHATBOX, DIALOG_STYLE_TABLIST_HEADERS, "Chat Preferences", szMiscArray, "Select", "Cancel");
 		}
 
 		case 3: { // account email 
-			ShowPlayerDialog(playerid, EMAIL_VALIDATION, DIALOG_STYLE_INPUT, "E-mail Registration", "Please enter a valid e-mail address to associate with your account.", "Submit", "");
+			ShowPlayerDialogEx(playerid, EMAIL_VALIDATION, DIALOG_STYLE_INPUT, "E-mail Registration", "Please enter a valid e-mail address to associate with your account.", "Submit", "");
 		}
 
 		case 4: { // account password
-			ShowPlayerDialog(playerid, DIALOG_CHANGEPASS, DIALOG_STYLE_INPUT, "Password Change", "Please enter your new password!\nStaff members will never ask for your password!", "Change", "Exit" );
+			ShowPlayerDialogEx(playerid, DIALOG_CHANGEPASS, DIALOG_STYLE_INPUT, "Password Change", "Please enter your new password!\nStaff members will never ask for your password!", "Change", "Exit" );
 		}
 
 		case 5: { // shop pin
 			
 			if(GetPVarInt(playerid, "PinConfirmed")) {
 			    SetPVarInt(playerid, "ChangePin", 1);
-			    ShowPlayerDialog(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Change Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
+			    ShowPlayerDialogEx(playerid, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Change Pin Number", "Enter a new pin number to change your current one.", "Change", "Cancel");
 			}
 			else PinLogin(playerid);
 		}
@@ -254,7 +254,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(id == -1) return ShowAccountSettings(playerid, 1);
 				// else if(strcmp(inputtext, "Admin", true) == 0) id = 18;
 				SetPVarInt(playerid, "ChatboxPref", id);
-				ShowPlayerDialog(playerid, ACCOUNT_CHATBOX, DIALOG_STYLE_INPUT, "Chatbox Preferences", "In which chatbox would you like this chat channel?\n\nAvailable options: Main (0), Bottom Right (1).", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, ACCOUNT_CHATBOX, DIALOG_STYLE_INPUT, "Chatbox Preferences", "In which chatbox would you like this chat channel?\n\nAvailable options: Main (0), Bottom Right (1).", "Select", "Cancel");
 			}
 		}
 	}

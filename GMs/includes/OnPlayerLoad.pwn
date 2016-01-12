@@ -61,7 +61,7 @@ public OnPlayerLoad(playerid)
 
 	if(PlayerInfo[playerid][pDisabled] == 2)
 	{
-		ShowPlayerDialog(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
+		ShowPlayerDialogEx(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
 		SetTimerEx("KickEx", 5000, 0, "i", playerid);
 		return 1;
 	}
@@ -384,6 +384,16 @@ public OnPlayerLoad(playerid)
 		SetArmour(playerid, 0);
 		PlayerInfo[playerid][pLastPass][0] = 0;
 		PlayerInfo[playerid][pEventTokens] = 0;
+		PlayerInfo[playerid][pGroupToyBone] = 1;
+		PlayerInfo[playerid][pGroupToy][0] = 0.0;
+		PlayerInfo[playerid][pGroupToy][1] = 0.0;
+		PlayerInfo[playerid][pGroupToy][2] = 0.0;
+		PlayerInfo[playerid][pGroupToy][3] = 0.0;
+		PlayerInfo[playerid][pGroupToy][4] = 0.0;
+		PlayerInfo[playerid][pGroupToy][5] = 0.0;
+		PlayerInfo[playerid][pGroupToy][6] = 1.0;
+		PlayerInfo[playerid][pGroupToy][7] = 1.0;
+		PlayerInfo[playerid][pGroupToy][8] = 1.0;
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)
@@ -1091,5 +1101,7 @@ public OnPlayerLoad(playerid)
 		}
 	}
 	//if(PlayerInfo[playerid][pChatbox][19] == 0) PlayerTextDrawShow(playerid, TD_ChatBox[0]);
+
+	if(PlayerInfo[playerid][pToggledChats][7]) PhoneOnline[playerid] = 1;
 	return 1;
 }

@@ -184,7 +184,7 @@ CMD:dmreport(playerid, params[])
 		if(gettime() - ShotPlayer[giveplayerid][playerid] < 300)
 	    {
 			SetPVarInt(playerid, "pDMReport", giveplayerid);
-			ShowPlayerDialog(playerid, DMRCONFIRM, DIALOG_STYLE_MSGBOX, "DM Report", "You personally witnessed the reported player death matching within the last 60 seconds. Abuse of this command could result in a temporary ban.", "Confirm", "Cancel");
+			ShowPlayerDialogEx(playerid, DMRCONFIRM, DIALOG_STYLE_MSGBOX, "DM Report", "You personally witnessed the reported player death matching within the last 60 seconds. Abuse of this command could result in a temporary ban.", "Confirm", "Cancel");
 		}
 		else
 		{
@@ -201,7 +201,7 @@ CMD:dmalert(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
 	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
 	if(!GetPVarType(playerid, "SpectatingWatch")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
-	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
+	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialogEx(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
 	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
 	JustReported[playerid]=25;
 	new giveplayerid = GetPVarInt(playerid, "SpectatingWatch");
@@ -215,7 +215,7 @@ CMD:dmalert(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Your DM report message was sent to the Admins & Watchdogs.");
 	SetPVarInt(playerid, "WDReport", 1);
 	format(string, sizeof(string), "Please write a brief report on what you watched %s do.\n * 30 characters min", GetPlayerNameEx(giveplayerid));
-	return ShowPlayerDialog(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report - DM Alert", string, "Submit", "");
+	return ShowPlayerDialogEx(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report - DM Alert", string, "Submit", "");
 }
 
 CMD:watchlistadd(playerid, params[])
@@ -433,7 +433,7 @@ CMD:refer(playerid, params[])
 	if(PlayerInfo[playerid][pWatchdog] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command!");
 	if(!GetPVarType(playerid, "SpectatingWatch")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only use this command when you are spectating someone!");
 	if(sscanf(params, "s[100]", reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /refer [details]");
-	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
+	if(PlayerInfo[playerid][pRMuted] != 0) return ShowPlayerDialogEx(playerid,7955,DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
  	if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time.");
 	JustReported[playerid] = 25;
 	new giveplayerid = GetPVarInt(playerid, "SpectatingWatch");
@@ -446,7 +446,7 @@ CMD:refer(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Your Watch Dog Alert was sent to the Admins & Watchdogs.");
 	SetPVarInt(playerid, "WDReport", 2);
 	format(string, sizeof(string), "Please write a brief report on what you watched %s do.\n * 30 characters min", GetPlayerNameEx(giveplayerid));
-	return ShowPlayerDialog(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report - Refer", string, "Submit", "");
+	return ShowPlayerDialogEx(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report - Refer", string, "Submit", "");
 }
 
 CMD:wdwhitelist(playerid, params[])

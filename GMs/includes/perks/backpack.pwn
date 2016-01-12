@@ -66,9 +66,10 @@ stock GetBackpackFreeSlotGun(playerid) {
 }
 
 ShowBackpackMenu(playerid, dialogid, extramsg[]) {
-	new dgString[312],
-		dgTitle[128],
+	new dgTitle[128],
 		string[15];
+
+	szMiscArray[0] = 0;
 	if(!IsBackpackAvailable(playerid)) {
 		DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 		return 1;
@@ -81,40 +82,35 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 	format(dgTitle, sizeof(dgTitle), "%s Items %s", GetBackpackName(PlayerInfo[playerid][pBackpack]), extramsg);
 	switch(dialogid) {
 		case DIALOG_OBACKPACK: {
-			format(dgString, sizeof(dgString), "Food ({FFF94D}%d Meals{FFFFFF})\nNarcotics ({FFF94D}%d Grams{FFFFFF})\nGuns\nAmmo\nEnergy Bars ({FFF94D}%d Bars{FFFFFF})", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid), PlayerInfo[playerid][pBItems][11]);
-			if(PlayerInfo[playerid][pBItems][5] != 0 && (IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))) format(dgString, sizeof(dgString), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{FFFFFF})",dgString, PlayerInfo[playerid][pBItems][5]);
-			ShowPlayerDialog(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "Food ({FFF94D}%d Meals{FFFFFF})\nNarcotics ({FFF94D}%d Grams{FFFFFF})\nGuns\nAmmo\nEnergy Bars ({FFF94D}%d Bars{FFFFFF})", PlayerInfo[playerid][pBItems][0], GetBackpackNarcoticsGrams(playerid), PlayerInfo[playerid][pBItems][11]);
+			if(PlayerInfo[playerid][pBItems][5] != 0 && (IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))) format(szMiscArray, sizeof(szMiscArray), "%s\nMedic & Kevlar Vest Kits ({FFF94D}%d{FFFFFF})",szMiscArray, PlayerInfo[playerid][pBItems][5]);
+			ShowPlayerDialogEx(playerid, DIALOG_OBACKPACK, DIALOG_STYLE_LIST, dgTitle, szMiscArray, "Select", "Cancel");
 		}
 		case DIALOG_BFOOD: {
-			ShowPlayerDialog(playerid, DIALOG_BFOOD, DIALOG_STYLE_MSGBOX, dgTitle, "Are you sure you want to use this meal now?", "Confirm", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_BFOOD, DIALOG_STYLE_MSGBOX, dgTitle, "Are you sure you want to use this meal now?", "Confirm", "Cancel");
 		}
 		case DIALOG_BMEDKIT: {
-			ShowPlayerDialog(playerid, DIALOG_BMEDKIT, DIALOG_STYLE_MSGBOX, dgTitle, "Are you sure you want to use this Medical & Kevlar Vest kit now?", "Confirm", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_BMEDKIT, DIALOG_STYLE_MSGBOX, dgTitle, "Are you sure you want to use this Medical & Kevlar Vest kit now?", "Confirm", "Cancel");
 		}
 		case DIALOG_BNARCOTICS: {
-			format(dgString, sizeof(dgString), "Pot({FFF94D}%d{A9C4E4} Grams)\nCrack({FFF94D}%d{A9C4E4} Grams)\nHeroin({FFF94D}%d{A9C4E4} Grams)\nOpium({FFF94D}%d{A9C4E4} Grams)", PlayerInfo[playerid][pBItems][1], PlayerInfo[playerid][pBItems][2], PlayerInfo[playerid][pBItems][3], PlayerInfo[playerid][pBItems][4]);
-			ShowPlayerDialog(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
+
+			for(new i; i < sizeof(szDrugs); ++i) {
+
+				format(szMiscArray, sizeof(szMiscArray), "%s%s({FFF94D}%d{A9C4E4} Grams)\n", szMiscArray, szDrugs[i], PlayerInfo[playerid][pBDrugs][i]);
+			}
+			ShowPlayerDialogEx(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, dgTitle, szMiscArray, "Select", "Cancel");
 		}
 		case DIALOG_BNARCOTICS2: {
 			new pbi = GetPVarInt(playerid, "pbitemindex");
-			switch(pbi) {
-				case 1: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-				case 2: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-				case 3: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-				case 4: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-			}
-			ShowPlayerDialog(playerid, DIALOG_BNARCOTICS2, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
+			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of %s ({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBDrugs][pbi], szDrugs[pbi], GetBackpackNarcoticsGrams(playerid));
+			ShowPlayerDialogEx(playerid, DIALOG_BNARCOTICS2, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
 		}
 		case DIALOG_BNARCOTICS3: {
 			new pbi = GetPVarInt(playerid, "pbitemindex");
-			switch(pbi) {
-				case 1: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Pot({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-				case 2: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Crack({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-				case 3: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Heroin({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-				case 4: format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of Raw Opium({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBItems][pbi], GetBackpackNarcoticsGrams(playerid));
-			}
-			format(dgString, sizeof(dgString), "%s\nEnter the amount to %s                                                        ", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
-			ShowPlayerDialog(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, dgTitle, dgString, "Select", "Cancel");
+
+			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of %s({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBDrugs][pbi], szDrugs[pbi], GetBackpackNarcoticsGrams(playerid));
+			format(szMiscArray, sizeof(szMiscArray), "%s\nEnter the amount to %s                                                        ", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
+			ShowPlayerDialogEx(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, dgTitle, szMiscArray, "Select", "Cancel");
 		}
 		
 		case DIALOG_BGUNS: {
@@ -124,24 +120,24 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 				if(PlayerInfo[playerid][pBItems][i] > 0)
 				{
 					GetWeaponName(PlayerInfo[playerid][pBItems][i], weapname, sizeof(weapname));
-					format(dgString, sizeof(dgString), "%s%s (%i)\n", dgString, weapname, i);
+					format(szMiscArray, sizeof(szMiscArray), "%s%s (%i)\n", szMiscArray, weapname, i);
 					format(string, sizeof(string), "ListItem%dSId", itemcount);
 					SetPVarInt(playerid, string, i);
 					itemcount++;
 				}
 			}
 			SetPVarInt(playerid, "DepositGunId", itemcount);
-			strcat(dgString, "Deposit a weapon");
-			ShowPlayerDialog(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, dgTitle, dgString, "Select", "Cancel");
+			strcat(szMiscArray, "Deposit a weapon");
+			ShowPlayerDialogEx(playerid, DIALOG_BGUNS, DIALOG_STYLE_LIST, dgTitle, szMiscArray, "Select", "Cancel");
 		}
 		case DIALOG_ENERGYBARS: {
 			DeletePVar(playerid, "bnwd");
-			ShowPlayerDialog(playerid, DIALOG_ENERGYBARS, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_ENERGYBARS, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
 		}
 		case DIALOG_ENERGYBARS*2: {
 			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d {02B0F5}Energy Bars%s", (GetPVarInt(playerid, "bnwd")) ? PlayerInfo[playerid][mInventory][4]:PlayerInfo[playerid][pBItems][11], (GetPVarInt(playerid, "bnwd")) ? (" on hand"):(""));
-			format(dgString, sizeof(dgString), "%s\nEnter the amount to %s:", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
-			ShowPlayerDialog(playerid, DIALOG_ENERGYBARS, DIALOG_STYLE_INPUT, dgTitle, dgString, "Select", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "%s\nEnter the amount to %s:", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
+			ShowPlayerDialogEx(playerid, DIALOG_ENERGYBARS, DIALOG_STYLE_INPUT, dgTitle, szMiscArray, "Select", "Cancel");
 		}
 		case DIALOG_BAMMO:
 		{
@@ -151,13 +147,13 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 		}
 		case DIALOG_BAMMO*2:
 		{
-			ShowPlayerDialog(playerid, DIALOG_BAMMO, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_BAMMO, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
 		}
 		case DIALOG_BAMMO*3:
 		{
 			format(dgTitle, sizeof(dgTitle), "%s Items - {02B0F5}Ammo", GetBackpackName(PlayerInfo[playerid][pBackpack]));
-			format(dgString, sizeof(dgString), "%s\nEnter the quantity you wish to %s:", extramsg, GetPVarInt(playerid, "bnwd") ? ("deposit") : ("withdraw"));
-			ShowPlayerDialog(playerid, DIALOG_BAMMO, DIALOG_STYLE_INPUT, dgTitle, dgString, GetPVarInt(playerid, "bnwd") ? ("Deposit") : ("Withdraw"), "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "%s\nEnter the quantity you wish to %s:", extramsg, GetPVarInt(playerid, "bnwd") ? ("deposit") : ("withdraw"));
+			ShowPlayerDialogEx(playerid, DIALOG_BAMMO, DIALOG_STYLE_INPUT, dgTitle, szMiscArray, GetPVarInt(playerid, "bnwd") ? ("Deposit") : ("Withdraw"), "Cancel");
 		}
 	}
 	return 1;
@@ -174,11 +170,16 @@ stock GetBackpackName(backpackid) {
 }
 
 stock GetBackpackNarcoticsGrams(playerid) {
+	
 	new grams;
-	grams = PlayerInfo[playerid][pBItems][1];
-	grams += PlayerInfo[playerid][pBItems][2];
-	grams += PlayerInfo[playerid][pBItems][3];
-	grams += PlayerInfo[playerid][pBItems][4];
+	for(new i; i < sizeof(szDrugs); ++i) grams += PlayerInfo[playerid][pBDrugs][i];
+	return grams;
+}
+
+stock GetBackpackIngredientsGrams(playerid) {
+	
+	new grams;
+	for(new i; i < sizeof(szIngredients); ++i) grams += PlayerInfo[playerid][pBIngredients][i];
 	return grams;
 }
 
@@ -349,7 +350,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 					return 1;
 				}
-				SetPVarInt(playerid, "pbitemindex", listitem+1);
+				SetPVarInt(playerid, "pbitemindex", listitem);
 				ShowBackpackMenu(playerid, DIALOG_BNARCOTICS2, "");
 			}
 			else {
@@ -375,15 +376,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 					return 1;
 				}
-				new TypeName[8];
-				
+
 				new pbi = GetPVarInt(playerid, "pbitemindex");	
-				switch(pbi) {
-					case 1: TypeName = "Pot";
-					case 2: TypeName = "Crack";
-					case 3: TypeName = "Heroin";
-					case 4: TypeName = "Opium";
-				}
 				if(GetPVarInt(playerid, "bnwd")) {
 					new namount, maxgrams, dInfo[135];
 					if(sscanf(inputtext, "d", namount)) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}");
@@ -399,30 +393,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, dInfo);
 						return 1;
 					}
-					switch(pbi) {
-						case 1: { 
-							if(PlayerInfo[playerid][pPot] >= namount) PlayerInfo[playerid][pPot] -= namount;
-							else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams");
-						}	
-						case 2: { 
-							if(PlayerInfo[playerid][pCrack] >= namount) PlayerInfo[playerid][pCrack] -= namount;
-							else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams");
-						}
-						case 3: { 
-							if(PlayerInfo[playerid][pHeroin] >= namount) PlayerInfo[playerid][pHeroin] -= namount;
-							else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams");
-						}
-						case 4: { 
-							if(PlayerInfo[playerid][pRawOpium] >= namount) PlayerInfo[playerid][pRawOpium] -= namount;
-							else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that much grams");
-						}
-					}
-					PlayerInfo[playerid][pBItems][pbi] += namount;
-					format(szMiscArray, sizeof(szMiscArray), "You have deposited %d grams of %s in your backpack.", namount, TypeName);
+
+					if(PlayerInfo[playerid][p_iDrug][pbi] >= namount) PlayerInfo[playerid][p_iDrug][pbi] -= namount;
+					else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that that amount of grams.");
+					
+					PlayerInfo[playerid][pBDrugs][pbi] += namount;
+					format(szMiscArray, sizeof(szMiscArray), "You have deposited %d grams of %s in your backpack.", namount, szDrugs[pbi]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 					new ip[MAX_PLAYER_NAME];
 					GetPlayerIp(playerid, ip, sizeof(ip));
-					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) deposited %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, TypeName, PlayerInfo[playerid][pBItems][pbi], PlayerInfo[playerid][pBackpack]);
+					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) deposited %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, szDrugs[pbi], PlayerInfo[playerid][p_iDrug][pbi], PlayerInfo[playerid][pBackpack]);
 					Log("logs/backpack.log", szMiscArray);
 					ShowBackpackMenu(playerid, DIALOG_BNARCOTICS, "- {02B0F5}Select a narcotic");
 				}
@@ -430,24 +410,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new namount, dInfo[135];
 					if(sscanf(inputtext, "d", namount)) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}");
 					if(namount < 1) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1");
-					if(namount > PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")]) 
+					if(namount > PlayerInfo[playerid][pBDrugs][pbi]) 
 					{
-						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you only have %d grams of %s{A9C4E4}\nGrams trying to withdraw {FFF600}%d{A9C4E4}\nEnter the amount to deposit", PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")], TypeName, namount);
+						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you only have %d grams of %s{A9C4E4}\nGrams trying to withdraw {FFF600}%d{A9C4E4}\nEnter the amount to deposit", PlayerInfo[playerid][pBDrugs][pbi], szDrugs[pbi], namount);
 						ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, dInfo);
 						return 1;
 					}
-					PlayerInfo[playerid][pBItems][GetPVarInt(playerid, "pbitemindex")] -= namount;
-					switch(pbi) {
-						case 1: PlayerInfo[playerid][pPot] += namount;
-						case 2: PlayerInfo[playerid][pCrack] += namount;
-						case 3: PlayerInfo[playerid][pHeroin] += namount;
-						case 4: PlayerInfo[playerid][pRawOpium] += namount;
-					}
-					format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d grams of %s in your backpack.", namount, TypeName);
+					PlayerInfo[playerid][pBDrugs][pbi] -= namount;
+					PlayerInfo[playerid][p_iDrug][pbi] += namount;
+					format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d grams of %s in your backpack.", namount, szDrugs[pbi]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 					new ip[MAX_PLAYER_NAME];
 					GetPlayerIp(playerid, ip, sizeof(ip));
-					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) withdrawn %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, TypeName, PlayerInfo[playerid][pBItems][pbi], PlayerInfo[playerid][pBackpack]);
+					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) withdrawn %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, szDrugs[pbi], PlayerInfo[playerid][pBDrugs][pbi], PlayerInfo[playerid][pBackpack]);
 					Log("logs/backpack.log", szMiscArray);
 					ShowBackpackMenu(playerid, DIALOG_BNARCOTICS, "- {02B0F5}Select a narcotic");
 				}
@@ -494,7 +469,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								SetPVarInt(playerid, szMiscArray, myweapons[0]);
 								itemcount++;
 							}
-							if(strlen(szDialog) > 0) ShowPlayerDialog(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
+							if(strlen(szDialog) > 0) ShowPlayerDialogEx(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
 							else {
 								ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon - No guns to store");
 							}
@@ -564,7 +539,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 								SetPVarInt(playerid, szMiscArray, myweapons[0]);
 								itemcount++;
 							}
-							if(strlen(szDialog) > 0) ShowPlayerDialog(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
+							if(strlen(szDialog) > 0) ShowPlayerDialogEx(playerid, DIALOG_BGUNS2, DIALOG_STYLE_LIST, "Select a weapon to deposit", szDialog, "Select", "Cancel");
 							else {
 								ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon - No guns to store");
 							}
@@ -917,30 +892,14 @@ CMD:listbitems(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
 			
-			if(PlayerInfo[giveplayerid][pBItems][1] > 0)
-			{
-				format(string, sizeof(string), "(Backpack) %d grams of pot.", PlayerInfo[giveplayerid][pBItems][1]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+			for(new i; i < sizeof(szDrugs); ++i) {
+
+				if(PlayerInfo[giveplayerid][pBDrugs][i] > 0) {
+
+					format(string, sizeof(string), "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], szDrugs[i]);
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
 			}
-			
-			if(PlayerInfo[giveplayerid][pBItems][2] > 0)
-			{
-				format(string, sizeof(string), "(Backpack) %d grams of crack.", PlayerInfo[giveplayerid][pBItems][2]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
-			}
-			
-			if(PlayerInfo[giveplayerid][pBItems][3] > 0)
-			{
-				format(string, sizeof(string), "(Backpack) %d grams of heroin.", PlayerInfo[giveplayerid][pBItems][3]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
-			}
-			
-			if(PlayerInfo[giveplayerid][pBItems][4] > 0)
-			{
-				format(string, sizeof(string), "(Backpack) %d grams of raw opium.", PlayerInfo[giveplayerid][pBItems][4]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
-			}
-			
 			if(PlayerInfo[giveplayerid][pBItems][5] > 0)
 			{
 				format(string, sizeof(string), "(Backpack) %d Medical Kits.", PlayerInfo[giveplayerid][pBItems][5]);
@@ -1014,28 +973,13 @@ CMD:bsearch(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
 			
-			if(PlayerInfo[giveplayerid][pBItems][1] > 0)
-			{
-				format(string, sizeof(string), "(Backpack) %d grams of pot.", PlayerInfo[giveplayerid][pBItems][1]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
-			}
-			
-			if(PlayerInfo[giveplayerid][pBItems][2] > 0)
-			{
-				format(string, sizeof(string), "(Backpack) %d grams of crack.", PlayerInfo[giveplayerid][pBItems][2]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
-			}
-			
-			if(PlayerInfo[giveplayerid][pBItems][3] > 0)
-			{
-				format(string, sizeof(string), "(Backpack) %d grams of heroin.", PlayerInfo[giveplayerid][pBItems][3]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
-			}
-			
-			if(PlayerInfo[giveplayerid][pBItems][4] > 0)
-			{
-				format(string, sizeof(string), "(Backpack) %d grams of raw opium.", PlayerInfo[giveplayerid][pBItems][4]);
-				SendClientMessageEx(playerid, COLOR_GREY, string);
+			for(new i; i < sizeof(szDrugs); ++i) {
+
+				if(PlayerInfo[giveplayerid][pBDrugs][i] > 0) {
+
+					format(string, sizeof(string), "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], szDrugs[i]);
+					SendClientMessageEx(playerid, COLOR_GREY, string);
+				}
 			}
 			
 			if(PlayerInfo[giveplayerid][pBItems][5] > 0)
@@ -1096,7 +1040,7 @@ CMD:bremove(playerid, params[])
     new string[128], giveplayerid, item[6], bptype[8];
 	if(sscanf(params, "us[6]", giveplayerid, item)) {
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bremove [player] [item]");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "ITEMS: Pot, Crack, Heroin, Opium, Guns, Ammo, Meals");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "ITEMS: [All drugs - see /mydrugs], Guns, Ammo, Meals");
 		return 1;
 	}
 	if(IsPlayerConnected(giveplayerid))
@@ -1111,45 +1055,17 @@ CMD:bremove(playerid, params[])
 				case 2: bptype = "Medium";
 				case 3: bptype = "Large";
 			}
-			if(strcmp(item,"pot",true) == 0)
-			{
-				format(string, sizeof(string), "* You have taken away %s's pot from their backpack.", GetPlayerNameEx(giveplayerid));
+
+			new iDrugID = Drug_GetID(item);
+			if(iDrugID != -1) {
+
+				format(string, sizeof(string), "* You have taken away %s's %s from their backpack.", GetPlayerNameEx(giveplayerid), szDrugs[iDrugID]);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away your pot from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* Officer %s has taken away your %s from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), szDrugs[iDrugID]);
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away %s's pot from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* Officer %s has taken away %s's %s from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), szDrugs[iDrugID]);
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				PlayerInfo[giveplayerid][pBItems][1] = 0;
-			}
-			else if(strcmp(item,"crack",true) == 0)
-			{
-				format(string, sizeof(string), "* You have taken away %s's crack from their backpack.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away your crack from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away %s's crack from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				PlayerInfo[giveplayerid][pBItems][2] = 0;
-			}
-			else if(strcmp(item,"heroin",true) == 0)
-			{
-				format(string, sizeof(string), "* You have taken away %s's heroin from their backpack.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away your heroin from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away %s's heroin from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				PlayerInfo[giveplayerid][pBItems][3] = 0;
-			}
-			else if(strcmp(item,"opium",true) == 0)
-			{
-				format(string, sizeof(string), "* You have taken away %s's opium from their backpack.", GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away your opium from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away %s's opium from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				PlayerInfo[giveplayerid][pBItems][4] = 0;
+				PlayerInfo[giveplayerid][pBDrugs][iDrugID] = 0;
 			}
 			else if(strcmp(item,"meals",true) == 0)
 			{
@@ -1422,14 +1338,14 @@ CMD:bopen(playerid, params[])
 	return 1;
 }
 
-CMD:backpackhelp(playerid, params[])
-{
-	new bdialog[565];
-	format(bdialog, sizeof(bdialog), "Item: Small Backpack\nFood Storage: 1 Meals\nNarcotics Storage: 40 Grams\nFirearms Storage: 2 Weapons(Handguns only)\nCost: {FFD700}%s{A9C4E4}\n\n", number_format(ShopItems[36][sItemPrice]));
-	format(bdialog, sizeof(bdialog), "%sItem: Medium Backpack\nFood Storage: 4 Meals\nNarcotics Storage: 100 Grams\nFirearms Storage: 3 Weapons(2 Handguns & 1 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n", bdialog, number_format(ShopItems[37][sItemPrice]));
-	format(bdialog, sizeof(bdialog), "%sItem: Large Backpack\nFood Storage: 5 Meals\nNarcotics Storage: 250 Grams\nFirearms Storage: 5 Weapons(2 Handguns & 3 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n\n", bdialog, number_format(ShopItems[38][sItemPrice]));
-	format(bdialog, sizeof(bdialog), "%sCommands available: /bstore /bwear /bopen /sellbackpack /drop backpack (/miscshop to buy one with credits)", bdialog);
+CMD:backpackhelp(playerid, params[]) {
+
+	szMiscArray[0] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "Item: Small Backpack\nFood Storage: 1 Meals\nNarcotics Storage: 40 Grams\nFirearms Storage: 2 Weapons(Handguns only)\nCost: {FFD700}%s{A9C4E4}\n\n", number_format(ShopItems[36][sItemPrice]));
+	format(szMiscArray, sizeof(szMiscArray), "%sItem: Medium Backpack\nFood Storage: 4 Meals\nNarcotics Storage: 100 Grams\nFirearms Storage: 3 Weapons(2 Handguns & 1 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n", szMiscArray, number_format(ShopItems[37][sItemPrice]));
+	format(szMiscArray, sizeof(szMiscArray), "%sItem: Large Backpack\nFood Storage: 5 Meals\nNarcotics Storage: 250 Grams\nFirearms Storage: 5 Weapons(2 Handguns & 3 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n\n", szMiscArray, number_format(ShopItems[38][sItemPrice]));
+	format(szMiscArray, sizeof(szMiscArray), "%sCommands available: /bstore /bwear /bopen /sellbackpack /drop backpack (/miscshop to buy one with credits)", szMiscArray);
 	
-	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Backpack Information", bdialog, "Exit", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Backpack Information", szMiscArray, "Exit", "");
     return 1;
 }

@@ -152,7 +152,7 @@ ListInteriors(playerid, iType)
 			);
 		}
 	}
-	return ShowPlayerDialog(playerid, DIALOG_LIST_INTERIORS2, DIALOG_STYLE_LIST, "Interior List", szMiscArray, "Goto", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_LIST_INTERIORS2, DIALOG_STYLE_LIST, "Interior List", szMiscArray, "Goto", "Cancel");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -179,6 +179,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 CMD:interiors(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
-	ShowPlayerDialog(playerid, DIALOG_LIST_INTERIORS, DIALOG_STYLE_LIST, "Select a category", "Small Interiors\nMedium Interiors\nLarge Interiors", "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_LIST_INTERIORS, DIALOG_STYLE_LIST, "Select a category", "Small Interiors\nMedium Interiors\nLarge Interiors", "Select", "Cancel");
 	return 1;
 }

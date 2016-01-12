@@ -65,7 +65,7 @@ stock ShowAdMuteFine(playerid)
 	{
 	    format(string,sizeof(string),"Prison for 1 Hour and 30 Minutes");
 	}
-	ShowPlayerDialog(playerid,ADMUTE,DIALOG_STYLE_LIST,"Advertisements Unmute - Select your Punishment:",string,"Select","Cancel");
+	ShowPlayerDialogEx(playerid,ADMUTE,DIALOG_STYLE_LIST,"Advertisements Unmute - Select your Punishment:",string,"Select","Cancel");
 }
 
 
@@ -100,13 +100,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				++iBreak;
 			}
-			if(!isnull(szMiscArray)) return ShowPlayerDialog(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szMiscArray, "Select", "Return");
-			ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+			if(!isnull(szMiscArray)) return ShowPlayerDialogEx(playerid, DIALOG_ADLIST, DIALOG_STYLE_LIST, "Advertisements - List", szMiscArray, "Select", "Return");
+			ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 			SendClientMessage(playerid, COLOR_GREY, "No advertisements have been posted.");
 		}
 		case DIALOG_ADMAIN: if(response) switch(listitem) {
-			case 0: ShowPlayerDialog(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
-			case 1: ShowPlayerDialog(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "Enter a search phrase.", "Search", "Return");
+			case 0: ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORY, DIALOG_STYLE_LIST, "Advertisements Categories", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+			case 1: ShowPlayerDialogEx(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "Enter a search phrase.", "Search", "Return");
 			case 2: {
 				if(PlayerInfo[playerid][pADMute] == 1) {
 					SendClientMessageEx(playerid, COLOR_GREY, "You are muted from advertisements.");
@@ -117,7 +117,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if(GetPVarType(playerid, "HasReport")) {
  					SendClientMessageEx(playerid, COLOR_GREY, "You must wait for you report to be answered or cancelled (/cancelreport) before placing an ad.");
  				}
-				else ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACE, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				else ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACE, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 			}
 			case 3: {
 				if(PlayerInfo[playerid][pADMute] == 1) {
@@ -138,10 +138,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(PlayerInfo[playerid][pAdvertVoucher] != 0)
 					{
-						ShowPlayerDialog(playerid, DIALOG_ADVERTVOUCHER, DIALOG_STYLE_MSGBOX, "Priority Advertisement Voucher", "We found a Priority Advertisement Voucher on your account, would you like to use it?\n\n{FF0000}Note: You will lose 1 voucher if you choose yes.{FFFFFF}", "Yes", "Nope");
+						ShowPlayerDialogEx(playerid, DIALOG_ADVERTVOUCHER, DIALOG_STYLE_MSGBOX, "Priority Advertisement Voucher", "We found a Priority Advertisement Voucher on your account, would you like to use it?\n\n{FF0000}Note: You will lose 1 voucher if you choose yes.{FFFFFF}", "Yes", "Nope");
 					}
 					else if(PlayerInfo[playerid][pAdvertVoucher] == 0)
-						return ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+						return ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 				}
 			}
 			case 4: cmd_houselistings(playerid, "");
@@ -150,27 +150,27 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response) switch(listitem) {
 				case 0: {
 					AdvertType[playerid] = 1;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
 					"Enter your Real Estate Advertisement! Keep it below 128 characters.", "Submit", "Return");
 				}
 				case 1: {
 					AdvertType[playerid] = 2;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
 					"Enter your Automobile Advertisement! Keep it below 128 characters.", "Submit", "Return");
 				}	
 				case 2: {
 					AdvertType[playerid] = 3;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
 					"Enter your Buying Advertisement! Keep it below 128 characters.", "Submit", "Return");
 				}
 				case 3: {
 					AdvertType[playerid] = 4;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
 					"Enter your Selling Advertisement! Keep it below 128 characters.", "Submit", "Return");
 				}
 				case 4: {
 					AdvertType[playerid] = 5;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACE, DIALOG_STYLE_INPUT, "Advertisements",
 					"Enter your Miscellaneous Advertisement! Keep it below 128 characters.", "Submit", "Return");
 				}
 			}
@@ -179,27 +179,27 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response) switch(listitem) {
 				case 0: {
 					AdvertType[playerid] = 1;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
 					"Enter your Real Estate Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
 				}
 				case 1: {
 					AdvertType[playerid] = 2;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
 					"Enter your Automobile Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
 				}	
 				case 2: {
 					AdvertType[playerid] = 3;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
 					"Enter your Buying Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
 				}
 				case 3: {
 					AdvertType[playerid] = 4;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
 					"Enter your Selling Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
 				}
 				case 4: {
 					AdvertType[playerid] = 5;
-					ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
 					"Enter your Miscellaneous Priority Advertisement! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
 				}
 			}
@@ -240,7 +240,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			
 				if(gettime() < iAdverTimer) {
 					SendClientMessageEx(playerid, COLOR_GREY, "Only one priority advertisement can be placed every 30 seconds.");
-					return ShowPlayerDialog(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
+					return ShowPlayerDialogEx(playerid, DIALOG_ADPLACEP, DIALOG_STYLE_INPUT, "Advertisements - Priority Advertisement",
 					"Enter your desired advertisement text! Keep it below 128 characters.\nAs this is a priority advertisement, it will be broadcasted, and will cost you $150,000.", "Submit", "Return");
 				}
 				if(!(2 <= strlen(inputtext) <= 79)) {
@@ -287,7 +287,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response) {
 
 				if(!(4 <= strlen(inputtext) <= 80)) {
-					return ShowPlayerDialog(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "Queries must be between 4\n and 80 characters in length.\n\nEnter a search phrase.", "Search", "Return");
+					return ShowPlayerDialogEx(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "Queries must be between 4\n and 80 characters in length.\n\nEnter a search phrase.", "Search", "Return");
 				}
 				else for(new x; x < 50; ++x) ListItemTrackId[playerid][x] = -1;
 
@@ -311,8 +311,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 					}
 				}	
-				if(!isnull(szDialog)) ShowPlayerDialog(playerid, DIALOG_ADSEARCHLIST, DIALOG_STYLE_LIST, "Advertisements - Search Results", szDialog, "Select", "Return");
-				else ShowPlayerDialog(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "No results found.\n\nEnter a search phrase.", "Search", "Return");
+				if(!isnull(szDialog)) ShowPlayerDialogEx(playerid, DIALOG_ADSEARCHLIST, DIALOG_STYLE_LIST, "Advertisements - Search Results", szDialog, "Select", "Return");
+				else ShowPlayerDialogEx(playerid, DIALOG_ADSEARCH, DIALOG_STYLE_INPUT, "Advertisements - Search", "No results found.\n\nEnter a search phrase.", "Search", "Return");
 
 			}
 			else ShowMainAdvertMenu(playerid);
@@ -326,7 +326,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(IsPlayerConnected(i) && !isnull(szAdvert[i])) {
 				SetPVarInt(playerid, "advertContact", PlayerInfo[i][pPnumber]);
 				format(szDialog, sizeof(szDialog), "%s\r\nContact: %i", szAdvert[i], PlayerInfo[i][pPnumber]);
-				ShowPlayerDialog(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Advertisements - Search Result", szDialog, "Call", "Exit");
+				ShowPlayerDialogEx(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Advertisements - Search Result", szDialog, "Call", "Exit");
 			}
 			else SendClientMessage(playerid, COLOR_GREY, "This person has either disconnected or withdrawn their advertisement.");
 		}
@@ -348,7 +348,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(IsPlayerConnected(i) && !isnull(szAdvert[i])) {
 					SetPVarInt(playerid, "advertContact", PlayerInfo[i][pPnumber]);
 					format(szDialog, sizeof(szDialog), "%s\r\nContact: %i", szAdvert[i], PlayerInfo[i][pPnumber]);
-					return ShowPlayerDialog(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Advertisements - Search Result", szDialog, "Call", "Exit");
+					return ShowPlayerDialogEx(playerid, DIALOG_ADFINAL, DIALOG_STYLE_MSGBOX, "Advertisements - Search Result", szDialog, "Call", "Exit");
 				}
 				else SendClientMessage(playerid, COLOR_GREY, "This person has either disconnected or withdrawn their advertisement.");
 			}
@@ -359,11 +359,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response) // Clicked Yes
 			{
 				SetPVarInt(playerid, "AdvertVoucher", 1);
-				ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 			}
 			else // Clicked No
 			{
-				ShowPlayerDialog(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACEP, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 			}
 		}
 	}
@@ -521,4 +521,4 @@ CMD:freeads(playerid, params[])
 }
 
 ShowMainAdvertMenu(playerid)
-	return ShowPlayerDialog(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement\nHouse Listings", "Select", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_ADMAIN, DIALOG_STYLE_LIST, "Advertisements", "List Advertisements\nSearch Advertisements\nPlace Advertisement\nPlace Priority Advertisement\nHouse Listings", "Select", "Cancel");

@@ -9,6 +9,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	szMiscArray[0] = 0;
 
 	if((newkeys & KEY_YES) && vehicleid != INVALID_VEHICLE_ID && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
+		if(!AC_KeySpamCheck(playerid)) return 1;
 		new engine,lights,alarm,doors,bonnet,boot,objective;
 		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510 || DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && GetVehicleModel(vehicleid) == 592) return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
 		if(WheelClamp{vehicleid}) return SendClientMessageEx(playerid,COLOR_WHITE,"(( This vehicle has a wheel camp on its front tire, you will not be able to drive away with it. ))");
@@ -23,6 +24,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		else if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 		{
 			if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while refueling.");
+			if(!Vehicle_LockCheck(playerid, vehicleid)) return 1;
 			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine starts.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");
@@ -39,6 +41,23 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		
 	}
 	return 1;
+}
+
+Vehicle_LockCheck(playerid, iVehID) {
+
+	new v;
+	foreach(new i: Player) {
+		v = GetPlayerVehicle(i, iVehID);
+		if(v != -1) {
+			if(IsABike(iVehID)) {
+				if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] > 0 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0) {
+					SendClientMessageEx(playerid, COLOR_WHITE, "This bike is currently locked.");
+					return 0;
+				}
+			}
+		}
+	}
+	return 1;	
 }
 
 ShowVehicleMenu(playerid, vehicleid) {
@@ -59,7 +78,7 @@ ShowVehicleMenu(playerid, vehicleid) {
 		((boot == VEHICLE_PARAMS_OFF) ? ("Closed") : ("Open"))
 	);
 
-	ShowPlayerDialog(playerid, VEHICLE_PARAMS_TOG, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle Options", szMiscArray, "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, VEHICLE_PARAMS_TOG, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle Options", szMiscArray, "Select", "Cancel");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {

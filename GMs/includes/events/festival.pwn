@@ -47,7 +47,7 @@ CMD:@@balloon@@(playerid, params[])
 	{
 		new string[128];
 		format(string, sizeof(string),"Item: Balloon Ride Ticket\nYour Credits: %s\nCost: {FFD700}5{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(PlayerInfo[playerid][pCredits]-5));
-		ShowPlayerDialog(playerid, DIALOG_BALLOON, DIALOG_STYLE_MSGBOX, "Purchase Balloon Ticket", string, "Purchase", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_BALLOON, DIALOG_STYLE_MSGBOX, "Purchase Balloon Ticket", string, "Purchase", "Cancel");
 		return 0;
 	}
 	return 1;

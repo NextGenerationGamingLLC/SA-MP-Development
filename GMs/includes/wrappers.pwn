@@ -64,15 +64,21 @@ Internal_SetPlayerArmour(playerid, Float:armour) {
 	return SetPlayerArmour(playerid, armour);
 }*/
 
+ShowPlayerDialogEx(playerid, dialogid, style, caption[], info[], button1[], button2[]) {
+
+	iLastDialogID[playerid] = dialogid;
+	return ShowPlayerDialog(playerid, dialogid, style, caption, info, button1, button2);
+}
+
 Internal_SetPlayerWeather(playerid, iWeatherID) {
 
-	if(Bit_State(g_PlayerBits[playerid], dr_bitInDrugEffect)) return 1;
+	if(Bit_State(arrPlayerBits[playerid], dr_bitInDrugEffect)) return 1;
 	return SetPlayerWeather(playerid, iWeatherID);
 }
 
 Internal_SetPlayerTime(playerid, iHour, iMinute) {
 
-	if(Bit_State(g_PlayerBits[playerid], dr_bitInDrugEffect)) return 1;
+	if(Bit_State(arrPlayerBits[playerid], dr_bitInDrugEffect)) return 1;
 	return SetPlayerTime(playerid, iHour, iMinute);
 }
 

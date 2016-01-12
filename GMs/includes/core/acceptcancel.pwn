@@ -136,7 +136,7 @@ CMD:accept(playerid, params[])
 			if(PlayerInfo[playerid][pGiftTime] > 0)
 			{
 				format(string, sizeof(string),"Item: Reset Gift Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
-				ShowPlayerDialog( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
+				ShowPlayerDialogEx( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You have already received a gift in the last 5 hours!");
 				return 1;
 			}
@@ -885,7 +885,7 @@ CMD:accept(playerid, params[])
                                     MarriageCeremoney[playerid] = 1;
 									if(GetPVarInt(ProposeOffer[playerid], "marriagelastname") == 1)
 									{
-										ShowPlayerDialog(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name",
+										ShowPlayerDialogEx(playerid, DIALOG_MARRIAGE, DIALOG_STYLE_MSGBOX, "Marriage Last Name",
 										"As your spouse decided to keep their last name you have the option to keep your last name or use your spouse's.\n\
 										Please use the buttons below to make your decision.", "Keep", "Use Their's");
 									}
@@ -1326,7 +1326,7 @@ CMD:accept(playerid, params[])
                             SendClientMessageEx(GuardOffer[playerid], COLOR_LIGHTBLUE, szMessage);
                             GivePlayerCash(GuardOffer[playerid], GuardPrice[playerid]);
                             GivePlayerCash(playerid, -GuardPrice[playerid]);
-                            ExtortionTurfsWarsZone(GuardOffer[playerid], 2, GuardPrice[playerid]);
+                            TurfWars_TurfTax(GuardOffer[playerid], "vest", GuardPrice[playerid]);
                             GuardOffer[playerid] = INVALID_PLAYER_ID;
                             GuardPrice[playerid] = 0;
                             return 1;
@@ -1423,7 +1423,7 @@ CMD:accept(playerid, params[])
 	                    GetPlayerName(playerid, sendername, sizeof(sendername));
 	                    format(szMessage, sizeof(szMessage), "* %s has bought your %d rim kits, $%d was added to your money.",sendername,GetPVarInt(playerid, "RimCount"),GetPVarInt(playerid, "RimPrice"));
 	                    SendClientMessageEx(GetPVarInt(playerid, "RimOffer"), COLOR_LIGHTBLUE, szMessage);
-	                    //ExtortionTurfsWarsZone(GetPVarInt(playerid, "RimOffer"), 5, GetPVarInt(playerid, "RimPrice"));
+	                    TurfWars_TurfTax(GetPVarInt(playerid, "RimOffer"), "rim kit", GetPVarInt(playerid, "RimPrice"));
 	                    PlayerInfo[GetPVarInt(playerid, "RimOffer")][pRimMod] -= GetPVarInt(playerid, "RimCount");
 	                    PlayerInfo[playerid][pRimMod] += GetPVarInt(playerid, "RimCount");
 
@@ -1648,6 +1648,7 @@ CMD:accept(playerid, params[])
                             SendClientMessageEx(playerid, COLOR_GREY, "You can't spawn a weapon whilst in Hospital.");
                             return 1;
                         }
+                        if(PlayerInfo[CraftOffer[playerid]][pMats] < CraftMats[playerid]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have sufficient materials. (Yeah, bye exploit).");
                         if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Please exit the vehicle, before using this command.");
 						if(CraftId[playerid] == 17)
 						{
@@ -1911,7 +1912,7 @@ CMD:accept(playerid, params[])
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
-                            ExtortionTurfsWarsZone(SexOffer[playerid], 4, SexPrice[playerid]);
+                            TurfWars_TurfTax(SexOffer[playerid], "sex", SexPrice[playerid]);
                             GivePlayerCash(SexOffer[playerid], SexPrice[playerid]);
                             GivePlayerCash(playerid, -SexPrice[playerid]);
 

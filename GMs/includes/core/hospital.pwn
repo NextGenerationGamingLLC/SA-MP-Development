@@ -59,7 +59,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & KEY_YES && (IsPlayerInDynamicArea(playerid, InsurancePoint[0]) || IsPlayerInDynamicArea(playerid, InsurancePoint[1]))) {
 		format(szMiscArray, sizeof(szMiscArray), "Level 1 Healthcare\t\t$1000\nLevel 2 Healthcare\t\t$2000\nLevel 3 Healthcare\t\t$3000\nLevel 4 Healthcare\t\t$4000\nBuy Insurance");
-		ShowPlayerDialog(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Hospital Menu", szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_HOSPITAL_MENU, DIALOG_STYLE_LIST, "Hospital Menu", szMiscArray, "Select", "Cancel");
 	}
 
 	return 1;
@@ -308,7 +308,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		{
 			// set them to their house entrance location....
 			// using house spawn system from previous insurance system
-			ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+			ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
 
 			/*for(new i = 0; i < sizeof(HouseInfo); i++)
 			{
@@ -519,8 +519,8 @@ CMD:buyinsurance(playerid, params[])
 	return 1;
 }
 
-CMD:kill(playerid, params[])
-{
+CMD:kill(playerid, params[]) {
+	
 	if(!IsPlayerConnected(playerid)) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	else if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
     else if(GetPVarInt( playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pBeingSentenced] != 0 || GetPVarInt(playerid, "Injured") != 0 || GetPVarInt(playerid, "IsFrozen") != 0 || PlayerCuffed[playerid] != 0 || PlayerTied[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
@@ -659,23 +659,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case SPAWNATHOME_CHOICE: {
 
-			if(!response) return ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+			if(!response) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
 
 			new i = INVALID_HOUSE_ID;
 
 			switch(listitem) {
 				case 0: {
-					if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+					if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
 
 					i = PlayerInfo[playerid][pPhousekey];
 				}
 				case 1: {
-					if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+					if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
 
 					i = PlayerInfo[playerid][pPhousekey2];
 				}
 				case 2: {
-					if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return ShowPlayerDialog(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
+					if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
 
 					i = PlayerInfo[playerid][pPhousekey3];
 				}

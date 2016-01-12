@@ -307,7 +307,7 @@ stock ShowElevatorDialog(playerid, elev)
   		format(string, sizeof(string), "%s%d - %s\n", string, (x+1), LAElevatorFloorData[0][x]);
 	}
 
-	ShowPlayerDialog(playerid, LAELEVATOR, DIALOG_STYLE_LIST, "Elevator", string, "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, LAELEVATOR, DIALOG_STYLE_LIST, "Elevator", string, "Select", "Cancel");
 }
 
 stock CallElevator(playerid, floorid)

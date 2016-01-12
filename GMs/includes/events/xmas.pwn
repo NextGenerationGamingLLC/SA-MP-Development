@@ -81,7 +81,7 @@ CMD:carol(playerid, params[]) // Christmas Event
 						if(GetPVarInt(playerid, "PinConfirmed"))
 						{
 							format(string, sizeof(string),"Item: Reset Caroling Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(20), number_format(PlayerInfo[playerid][pCredits]-20));
-							ShowPlayerDialog( playerid, DIALOG_SHOPTOTRESET, DIALOG_STYLE_MSGBOX, "Reset Timer", string, "Purchase", "Exit" );
+							ShowPlayerDialogEx( playerid, DIALOG_SHOPTOTRESET, DIALOG_STYLE_MSGBOX, "Reset Timer", string, "Purchase", "Exit" );
 							SendClientMessageEx(playerid, COLOR_GRAD2, "You have already sang in the last few hours!");
 							return 1;
 						}
@@ -144,7 +144,7 @@ CMD:christmasshop(playerid, params[]) {
 			Xmas Tree\t(150)"
 		);
 
-		ShowPlayerDialog(playerid, XMAS_SHOP, DIALOG_STYLE_LIST, "Xmas Shop", szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, XMAS_SHOP, DIALOG_STYLE_LIST, "Xmas Shop", szMiscArray, "Select", "Cancel");
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "Humbug! No presents available yet!");
 

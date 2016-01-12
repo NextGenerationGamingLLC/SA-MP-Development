@@ -163,7 +163,7 @@ PayPhone_Menu(playerid, i) {
 	SetPVarInt(playerid, "PayPhone", i);
 	GetPhoneZone(i, szMiscArray, sizeof(szMiscArray));
 	format(szMiscArray, sizeof(szMiscArray), "Number: %d\nArea Code: %d | {FFFF00}%s\n\n{FFFFFF}Please enter the number you would like to dial.", arrPayPhoneData[i][pp_iNumber], GetPhoneAreaCode(i), szMiscArray);
-	ShowPlayerDialog(playerid, DIALOG_PAYPHONE, DIALOG_STYLE_INPUT, "Pay Phone", szMiscArray, "Dial", "<<");
+	ShowPlayerDialogEx(playerid, DIALOG_PAYPHONE, DIALOG_STYLE_INPUT, "Pay Phone", szMiscArray, "Dial", "<<");
 }
 
 LoadPayPhones() {
@@ -295,13 +295,13 @@ CMD:phones(playerid, params[]) {
 		if(IsValidDynamicArea(arrPayPhoneData[i][pp_iAreaID])) {
 
 			GetPhoneZone(i, szZone, sizeof(szZone));
-			format(szMiscArray, sizeof(szMiscArray), "%d - Number: %d - Location: %s", i, arrPayPhoneData[i][pp_iNumber], szZone);
+			format(szMiscArray, sizeof(szMiscArray), "%s\n%d - Number: %d - Location: %s", szMiscArray, i, arrPayPhoneData[i][pp_iNumber], szZone);
 			ListItemTrackId[playerid][x] = i;
 			x++;
 		}
 	}
 	if(isnull(szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no pay phones.");
-	ShowPlayerDialog(playerid, DIALOG_PAYPHONE_ADMIN, DIALOG_STYLE_LIST, "Pay Phones", szMiscArray, "Teleport", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_PAYPHONE_ADMIN, DIALOG_STYLE_LIST, "Pay Phones", szMiscArray, "Teleport", "Cancel");
 	return 1;
 }
 

@@ -334,7 +334,7 @@ CMD:paintcar(playerid, params[]) {
 {
     if(IsAt247(playerid))
 	{
-	    ShowPlayerDialog(playerid, DIALOG_CDLOCKBUY, DIALOG_STYLE_LIST, "24/7", "Alarm Lock		$10000\nElectric Lock		$500000\nIndustrial Lock		$50000", "Buy", "Cancel");
+	    ShowPlayerDialogEx(playerid, DIALOG_CDLOCKBUY, DIALOG_STYLE_LIST, "24/7", "Alarm Lock		$10000\nElectric Lock		$500000\nIndustrial Lock		$50000", "Buy", "Cancel");
 		return 1;
 	}
 	else

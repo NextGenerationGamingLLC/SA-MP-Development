@@ -191,7 +191,7 @@ stock ShowEditMenu(playerid)
 		PlayerToyInfo[playerid][iIndex][ptScaleZ] = 1.0;
 	}
 	if(IsPlayerInAnyVehicle(playerid) && PlayerToyInfo[playerid][iIndex][ptSpecial] == 2)
-		return ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, "Edit your toy", "You cannot edit toys while you are inside a vehicle!", "Okay", "");
+		return ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Edit your toy", "You cannot edit toys while you are inside a vehicle!", "Okay", "");
 	new toycount = GetFreeToySlot(playerid);
 	if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You currently have 10 objects attached, please deattach an object.");
 	if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
@@ -205,7 +205,7 @@ stock ShowEditMenu(playerid)
 
     new stringg[128];
     format(stringg, sizeof(stringg), "Bone (%s)\nOffset", HoldingBones[PlayerToyInfo[playerid][iIndex][ptBone]]);
- 	ShowPlayerDialog(playerid, EDITTOYS2, DIALOG_STYLE_LIST, "Toy Menu: Edit", stringg, "Select", "Cancel");
+ 	ShowPlayerDialogEx(playerid, EDITTOYS2, DIALOG_STYLE_LIST, "Toy Menu: Edit", stringg, "Select", "Cancel");
 	return 1;
 }
 
@@ -353,7 +353,7 @@ CMD:listtoys(playerid, params[]) {
 				format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s%s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]], (PlayerToyInfo[giveplayerid][x][ptSpecial] > 1) ? (", Special") : (""));
 			}
 			format(string, sizeof(string), "Listing %s's Toys - Select a Slot", GetPlayerNameEx(giveplayerid));
-			ShowPlayerDialog(playerid, LISTTOYS_DELETETOY, DIALOG_STYLE_LIST, string, szMiscArray, "Delete", "Cancel");
+			ShowPlayerDialogEx(playerid, LISTTOYS_DELETETOY, DIALOG_STYLE_LIST, string, szMiscArray, "Delete", "Cancel");
 			SetPVarInt(playerid, "listtoys_giveplayerid", giveplayerid);
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
@@ -454,7 +454,7 @@ CMD:giveobject(playerid, params[])
 			}
 			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[giveplayerid][x][ptBone]]);
 		}
-   		ShowPlayerDialog(playerid, GIVETOY, DIALOG_STYLE_LIST, "Select a slot", szMiscArray, "Select", "Cancel");
+   		ShowPlayerDialogEx(playerid, GIVETOY, DIALOG_STYLE_LIST, "Select a slot", szMiscArray, "Select", "Cancel");
 	}
 	else {
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
@@ -466,7 +466,7 @@ CMD:shopobject(playerid, params[])
 {
 	if(PlayerInfo[playerid][pShopTech] >= 1)
 	{
-		ShowPlayerDialog(playerid, SHOPOBJECT_ORDERID, DIALOG_STYLE_INPUT, "Shop Objects - Order ID", "Please enter the Order ID", "OK", "Cancel");
+		ShowPlayerDialogEx(playerid, SHOPOBJECT_ORDERID, DIALOG_STYLE_INPUT, "Shop Objects - Order ID", "Please enter the Order ID", "OK", "Cancel");
 	}
 	else
 	{
@@ -486,7 +486,7 @@ CMD:buytoys(playerid, params[])
 		}
 		else
 		{
-			ShowPlayerDialog( playerid, BUYTOYSGOLD, DIALOG_STYLE_MSGBOX, "Toy Store", "Welcome to the VIP toy store! Here you can buy accessories to attach to your player.\n\nFirst, we will choose a slot to store the toy in.","Continue", "Cancel" );
+			ShowPlayerDialogEx( playerid, BUYTOYSGOLD, DIALOG_STYLE_MSGBOX, "Toy Store", "Welcome to the VIP toy store! Here you can buy accessories to attach to your player.\n\nFirst, we will choose a slot to store the toy in.","Continue", "Cancel" );
 		}
 	}
 	else
@@ -504,7 +504,7 @@ CMD:buytoys(playerid, params[])
 		    SendClientMessageEx(playerid, COLOR_GRAD2, "   This clothing store is closed!");
 		    return 1;
 		}
-		ShowPlayerDialog( playerid, BUYTOYS, DIALOG_STYLE_MSGBOX, "Toy Store", "Welcome to the toy store! Here you can buy accessories to attach to your player.\n\nFirst, we will choose a slot to store the toy in.","Continue", "Cancel" );
+		ShowPlayerDialogEx( playerid, BUYTOYS, DIALOG_STYLE_MSGBOX, "Toy Store", "Welcome to the toy store! Here you can buy accessories to attach to your player.\n\nFirst, we will choose a slot to store the toy in.","Continue", "Cancel" );
 	}
 	return 1;
 }
@@ -525,7 +525,7 @@ CMD:toyhelp(playerid, params[])
 CMD:toys(playerid, params[])
 {
 	if(GetPVarInt(playerid, "EventToken" ) == 1 || PlayerInfo[playerid][pJailTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command at the moment.");
-	ShowPlayerDialog( playerid, TOYS, DIALOG_STYLE_LIST, "Toy Menu", "Attach/Dettach a Toy\nEdit a Toy\nDelete a Toy","Select", "Cancel" );
+	ShowPlayerDialogEx( playerid, TOYS, DIALOG_STYLE_LIST, "Toy Menu", "Attach/Dettach a Toy\nEdit a Toy\nDelete a Toy","Select", "Cancel" );
 	return 1;
 }
 
@@ -681,6 +681,6 @@ CMD:selltoy(playerid, params[])
 		}
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s\n", szMiscArray, x+1, name);
 	}
-	ShowPlayerDialog(playerid, SELLTOY, DIALOG_STYLE_LIST, "Select a toy to sell", szMiscArray, "Sell", "Cancel"); // x+1 since toys list starts off from 1 (From players view)
+	ShowPlayerDialogEx(playerid, SELLTOY, DIALOG_STYLE_LIST, "Select a toy to sell", szMiscArray, "Sell", "Cancel"); // x+1 since toys list starts off from 1 (From players view)
 	return 1;
 }

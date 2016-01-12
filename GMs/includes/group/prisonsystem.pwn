@@ -68,7 +68,7 @@ ListDetainees(playerid)
 		}
 	}
 	if(iCount == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "No prisoners at this arrest point.");
-	return ShowPlayerDialog(playerid, DIALOG_LOAD_DETAINEES, DIALOG_STYLE_LIST, "Detainees List", szPrisoners, "Load", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_LOAD_DETAINEES, DIALOG_STYLE_LIST, "Detainees List", szPrisoners, "Load", "Cancel");
 }
 
 LoadPrisoner(iLoadingID, iPrisonerID, iVehicleID, iVehicleSeat, iNewVW, iNewIW)
@@ -95,13 +95,13 @@ ShowDocPrisonControls(playerid, icontrolid)
 		{
 			// main dialog
 			format(szMiscArray, sizeof(szMiscArray), "Cell-block A\nIsolation Cells\nArea Doors\nLockdown");
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Cancel");
 		}
 		case 1:
 		{
 			// sub-dialog 
 			format(szMiscArray, sizeof(szMiscArray), "Floor 1\nFloor 2\nAll Floor 1\nAll Floor 2");
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_SUB, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_SUB, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 		case 2:
 		{
@@ -139,7 +139,7 @@ ShowDocPrisonControls(playerid, icontrolid)
 			((bDocCellOpen[14] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocCellOpen[15] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
 			);
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_C1F1, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_C1F1, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 		case 3:
 		{
@@ -175,7 +175,7 @@ ShowDocPrisonControls(playerid, icontrolid)
 			((bDocCellOpen[29] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocCellOpen[30] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
 			);
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_C1F2, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_C1F2, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 		case 4:
 		{
@@ -218,7 +218,7 @@ ShowDocPrisonControls(playerid, icontrolid)
 			((bDocAreaOpen[17] == false) ? ("{FF0000}Closed"):("{00FF00}Open")),
 			((bDocAreaOpen[18] == false) ? ("{FF0000}Closed"):("{00FF00}Open"))
 			);
-			ShowPlayerDialog(playerid, DIALOG_DOC_CP_AREA, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
+			ShowPlayerDialogEx(playerid, DIALOG_DOC_CP_AREA, DIALOG_STYLE_LIST, "Doc Control Pannel", szMiscArray, "Select", "Back");
 		}
 	}
 	return 1;
@@ -847,7 +847,7 @@ CMD:docarrest(playerid, params[])
 			SetPVarInt(playerid, "Arrest_Suspect", suspect);
 			SetPVarInt(playerid, "Arrest_Type", 2);
 			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
-			ShowPlayerDialog(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
+			ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
 	    }
 	}
 	return 1;
@@ -886,7 +886,7 @@ CMD:arrest(playerid, params[])
 			SetPVarInt(playerid, "Arrest_Suspect", suspect);
 			SetPVarInt(playerid, "Arrest_Type", 0);
 			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
-			ShowPlayerDialog(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
+			ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
 	    }
 	}
 	return 1;
@@ -908,7 +908,7 @@ CMD:listprisoners(playerid, params[])
 	}
 	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "Holding cell empty!");
 	format(szString, sizeof(szString), "Holding Cell %d", id);
-	ShowPlayerDialog(playerid, DIALOG_DOC_INMATES, DIALOG_STYLE_LIST, szString, szInmates, "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_DOC_INMATES, DIALOG_STYLE_LIST, szString, szInmates, "Close", "");
 	
 	return 1;
 }
@@ -1256,7 +1256,7 @@ CMD:inmates(playerid, params[])
 		}
 	}
 	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "No inmates");
-	ShowPlayerDialog(playerid, DIALOG_DOC_INMATES, DIALOG_STYLE_LIST, "DOC Inmates Logbook", szInmates, "Close", "");
+	ShowPlayerDialogEx(playerid, DIALOG_DOC_INMATES, DIALOG_STYLE_LIST, "DOC Inmates Logbook", szInmates, "Close", "");
 	
 	return 1;
 }
@@ -1393,7 +1393,7 @@ CMD:docjudgesentence(playerid, params[])
 		SetPVarInt(playerid, "Arrest_Suspect", iSuspect);
 		SetPVarInt(playerid, "Arrest_Type", 3);
 		format(string, sizeof(string), "Please write a brief report on how %s acted during the process.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(iSuspect));
-		ShowPlayerDialog(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
+		ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "You must be in range of that player");
 	

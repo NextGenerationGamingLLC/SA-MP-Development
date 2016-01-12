@@ -53,7 +53,7 @@ CMD:help(playerid, params[])
 
 	switch(PlayerInfo[playerid][pJob])
 	{
-		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /find");
+		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
 		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted /offerappeal /finishappeal");
 		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
 		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getpot /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
@@ -73,7 +73,7 @@ CMD:help(playerid, params[])
 	}
 	switch(PlayerInfo[playerid][pJob2])
 	{
-		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /find");
+		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
 		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
 		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
 		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getpot /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
@@ -93,7 +93,7 @@ CMD:help(playerid, params[])
 	}
 	switch(PlayerInfo[playerid][pJob3])
 	{
-		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /find");
+		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
 		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
 		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
 		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getpot /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
@@ -186,7 +186,7 @@ CMD:help(playerid, params[])
 			}
 			case 10:
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /locker /gate /clothes");
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /locker /gate /clothes /repfam /repcheck /myrivals /grouptoy /turfhelp /drughelp /pointhelp");
 			}
 		}
 		if (0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
@@ -202,7 +202,7 @@ CMD:help(playerid, params[])
 			}
 			else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /adjustwithdrawrank");
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "*** GROUP LEADER *** /adjustwithdrawrank /myrivals");
 			}
 		}
 	}

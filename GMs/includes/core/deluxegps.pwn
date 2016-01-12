@@ -224,7 +224,7 @@ CMD:gpsfaves(playerid,params[])
 	{
 		format(string,sizeof(string), "%s\n%s", string, GPSFav[playerid][i][FavName]);
 	}
-	ShowPlayerDialog(playerid, DIALOG_GPS_SETFAV, DIALOG_STYLE_LIST, "Delux GPS - Save Favorite", string, "Save Favorite", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_GPS_SETFAV, DIALOG_STYLE_LIST, "Delux GPS - Save Favorite", string, "Save Favorite", "Cancel");
 	return 1;
 }
 */
@@ -232,7 +232,7 @@ CMD:gpsfaves(playerid,params[])
 CMD:mygps(playerid, params[])
 {
 	// if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
-	ShowPlayerDialog(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_LIST, "Doodle Maps | Main Menu", "Businesses\n\
+	ShowPlayerDialogEx(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_LIST, "Doodle Maps | Main Menu", "Businesses\n\
 		Jobs\n\
 		General Locations\n\
 		Business Address\n\
@@ -264,7 +264,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 		case CHECKPOINT_JOB:
 		{
 			new id = GetPVarInt(playerid,"gpsJob");
-			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", Job_GetJobName(arrJobData[id][job_iType]));
+			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", GetJobName(arrJobData[id][job_iType]));
 			SendClientMessageEx(playerid,COLOR_WHITE, szMiscArray);
 			DisablePlayerCheckpoint(playerid);
 		}
@@ -303,7 +303,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if(!response) {
 
-				return ShowPlayerDialog(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_LIST, "Doodle Maps | Main Menu", "Businesses\n\
+				return ShowPlayerDialogEx(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_LIST, "Doodle Maps | Main Menu", "Businesses\n\
 					Jobs\n\
 					General Locations\n\
 					Business Address\n\
@@ -318,7 +318,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			if(!response) {
 
-				return ShowPlayerDialog(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "San Andreas | Map | Businesses", "\
+				return ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "San Andreas | Map | Businesses", "\
 						24/7\n\
 						Clothing Stores\n\
 						Restaurants\n\
@@ -352,7 +352,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 0:
 				{
 					if(!response) return 1;
-					ShowPlayerDialog(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "San Andreas | Map | Businesses", "\
+					ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES, DIALOG_STYLE_LIST, "San Andreas | Map | Businesses", "\
 						24/7\n\
 						Clothing Stores\n\
 						Restaurants\n\
@@ -368,23 +368,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szJobNames[i]);
 					}
-					return ShowPlayerDialog(playerid, DIALOG_MAP_JOBS, DIALOG_STYLE_LIST, "San Andreas | Map | Jobs", szMiscArray, "Select", "Back");
+					return ShowPlayerDialogEx(playerid, DIALOG_MAP_JOBS, DIALOG_STYLE_LIST, "San Andreas | Map | Jobs", szMiscArray, "Select", "Back");
 				}
 				case 2: {
 					SetPVarInt(playerid, "gpsUsingID", 0);
-					ShowPlayerDialog(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_LIST, "General Locations", "Faction HQs\nBanks\nVIP Areas\nHospitals\nTierra Robada\nMiscellaneous", "Okay", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_LIST, "General Locations", "Faction HQs\nBanks\nVIP Areas\nHospitals\nTierra Robada\nMiscellaneous", "Okay", "Cancel");
 				}
 				case 3: {
 					SetPVarInt(playerid, "gpsUsingID", 1);
-					ShowPlayerDialog(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Find Business", "Enter the address of the business (ID)", "Okay", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Find Business", "Enter the address of the business (ID)", "Okay", "Cancel");
 				}
 				case 4: {
 					SetPVarInt(playerid, "gpsUsingID", 2);
-					ShowPlayerDialog(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Find House", "Enter the address of the house (ID)", "Okay", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Find House", "Enter the address of the house (ID)", "Okay", "Cancel");
 				}
 				case 5: {
 					SetPVarInt(playerid, "gpsUsingID", 3);
-					ShowPlayerDialog(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Find Door", "Enter the address of the building (ID)", "Okay", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GPS_TWO, DIALOG_STYLE_INPUT, "Find Door", "Enter the address of the building (ID)", "Okay", "Cancel");
 				}
 			}
 		}
@@ -399,25 +399,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPVarInt(playerid, "gpsUsingID", listitem);
 					switch(listitem) {
 						case 0: {
-							ShowPlayerDialog(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "HQs", "LSPD\nSASD\nSFPD\nFBI\nFBI SF\nDoC\nFDSA\nSAN NEWS\nRCTR", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "HQs", "LSPD\nSASD\nSFPD\nFBI\nFBI SF\nDoC\nFDSA\nSAN NEWS\nRCTR", "Okay", "Cancel");
 						}
 						case 1: {
-							ShowPlayerDialog(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Banks", "San Fierro\nMullholand\nLas Venturas\nRodeo\nDillimore", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Banks", "San Fierro\nMullholand\nLas Venturas\nRodeo\nDillimore", "Okay", "Cancel");
 						}
 						case 2:	{
-							ShowPlayerDialog(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "VIP", "San Fierro\nLos Santos\nLas Venturas\nGlen Park\nFamed Lounge", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "VIP", "San Fierro\nLos Santos\nLas Venturas\nGlen Park\nFamed Lounge", "Okay", "Cancel");
 						}
 						case 3:	{
-							ShowPlayerDialog(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Hospitals", "San Fierro\nCounty General\nAll Saints\nMontgomery Hospital", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Hospitals", "San Fierro\nCounty General\nAll Saints\nMontgomery Hospital", "Okay", "Cancel");
 						}
 						case 4:
 						{
-							ShowPlayerDialog(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Tierra Robada", "Bayside Hospital\nBayside Apartments\nBayside VIP\nCapitol\nTRES HQ\n\
+							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Tierra Robada", "Bayside Hospital\nBayside Apartments\nBayside VIP\nCapitol\nTRES HQ\n\
 								TRAF HQ\nTRES Recruitment\nEl Quebrados Hospital\nLas Barranca Bank\nFort Carsonal Hospital", "Okay", "Cancel");
 						}
 						case 5: 
 						{
-							ShowPlayerDialog(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Miscellaneous","LS City Hall\nSF City Hall\nSF Apartments\nNG Recruitment\nDonahue Condos SF\nGlen Park Community Center\n\
+							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "Miscellaneous","LS City Hall\nSF City Hall\nSF Apartments\nNG Recruitment\nDonahue Condos SF\nGlen Park Community Center\n\
 								Los Flores Hotel\nSeville Apartments\nGanton Apartments\nIdlewood\nRodeo Apartments\nFuente's Rodeo Apartments\n\
 								Mall Apartments\nMarket Apartments\nDonahue Apartments LS\nCommerce Apartments\nPershing Sq. Apartments", "Okay", "Cancel");
 						}
@@ -447,7 +447,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPVarInt(playerid, "gpsUsingID", 1);
 					SetPVarInt(playerid,"gpsBiz", id);
 					
-					ShowPlayerDialog(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - Business", szMiscArray, "Yes", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - Business", szMiscArray, "Yes", "Cancel");
 				}
 				case 2:
 				{
@@ -472,7 +472,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPVarInt(playerid, "gpsUsingID", 2);
 					format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}Would you like to set your destination to:\n\n\
 					house {33CCFF}#%i{FFFFFF} in the area of {FF0000}%s{FFFFFF}?", id, szMiscArray);
-					ShowPlayerDialog(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - House", szMiscArray, "Yes", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - House", szMiscArray, "Yes", "Cancel");
  				}
 				case 3:
 				{
@@ -498,7 +498,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szMiscArray,sizeof(szMiscArray),"{FFFFFF}Would you like to set your destination to:\n\n\
 					Door #%i ({33CCFF}%s{FFFFFF}) in the area of {FF0000}%s{FFFFFF}?", id, DDoorsInfo[id][ddDescription], szMiscArray);
 
-					ShowPlayerDialog(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - Door", szMiscArray, "Yes", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GPS_THREE, DIALOG_STYLE_MSGBOX, "{FF0000}Delux GPS - Door", szMiscArray, "Yes", "Cancel");
 				}
 			}
 		}
@@ -574,7 +574,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(!response) return 1;
 			SetPVarInt(playerid, "sFav", listitem);
-			ShowPlayerDialog(playerid, DIALOG_GPS_SETFAVNAME, DIALOG_STYLE_INPUT, "Enter Favorite Name", "Please enter a name for your favorite.\n\nIt will be saved in the slot you have selected.", "Submit", "Cancel"); 
+			ShowPlayerDialogEx(playerid, DIALOG_GPS_SETFAVNAME, DIALOG_STYLE_INPUT, "Enter Favorite Name", "Please enter a name for your favorite.\n\nIt will be saved in the slot you have selected.", "Submit", "Cancel"); 
 		}
 		case DIALOG_GPS_SETFAVNAME:
 		{
@@ -735,7 +735,7 @@ Map_ShowBusinesses(playerid, btype)
 			if(j == 0) return SendClientMessage(playerid, COLOR_GRAD1, "There are none.");
 		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_MAP_BUSINESSES2, DIALOG_STYLE_TABLIST, "San Andreas | Map | Businesses", szMiscArray, "Select", "Back");
+	ShowPlayerDialogEx(playerid, DIALOG_MAP_BUSINESSES2, DIALOG_STYLE_TABLIST, "San Andreas | Map | Businesses", szMiscArray, "Select", "Back");
 	return 1;
 }
 

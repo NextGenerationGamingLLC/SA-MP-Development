@@ -120,11 +120,11 @@ CMD:train(playerid, params[])
 	{
 		if(PlayerInfo[playerid][pDonateRank] >= 1)
 		{
-			ShowPlayerDialog(playerid, FIGHTMENU, DIALOG_STYLE_LIST, "Fighting Moves", "Boxing		$40000\nElbow		$40000\nKneehead	$40000\nKung-Fu	$40000\nGrabKick	$40000\nNormal", "Learn", "Cancel");
+			ShowPlayerDialogEx(playerid, FIGHTMENU, DIALOG_STYLE_LIST, "Fighting Moves", "Boxing		$40000\nElbow		$40000\nKneehead	$40000\nKung-Fu	$40000\nGrabKick	$40000\nNormal", "Learn", "Cancel");
 		}
 		else
 		{
-			ShowPlayerDialog(playerid, FIGHTMENU, DIALOG_STYLE_LIST, "Fighting Moves", "Boxing		$50000\nElbow		$50000\nKneehead	$50000\nKung-Fu	$50000\nGrabKick	$50000\nNormal", "Learn", "Cancel");
+			ShowPlayerDialogEx(playerid, FIGHTMENU, DIALOG_STYLE_LIST, "Fighting Moves", "Boxing		$50000\nElbow		$50000\nKneehead	$50000\nKung-Fu	$50000\nGrabKick	$50000\nNormal", "Learn", "Cancel");
 		}
 	}
 	else

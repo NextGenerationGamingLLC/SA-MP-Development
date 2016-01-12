@@ -1,19 +1,5 @@
 #include <YSI\y_hooks>
 
-#define 		MAX_METALDETECTORS 		40
-
-#define			PVAR_EditingMetDet		"EMD"
-
-#define			METAL_DETECTOR_OBJECTID	331
-
-enum eMetDetData {
-	metdet_iObjectID,
-	metdet_iAreaID,
-	Text3D:metdet_iTextID
-}
-new arrMetalDetector[MAX_METALDETECTORS][eMetDetData];
-
-
 hook OnPlayerEnterDynamicArea(playerid, areaid)
 {
 	new i = MetDet_GetIDFromArea(areaid);
@@ -122,7 +108,7 @@ public MetDet_OnCheckMetDets(playerid)
 	{
 		format(szMiscArray, sizeof(szMiscArray), "%sMetal Detector ID: %d\n", szMiscArray, cache_get_field_content_int(row, "id", MainPipeline));
 	}
-	ShowPlayerDialog(playerid, DIALOG_METDET_LIST, DIALOG_STYLE_LIST, "Metal Detectors | Listing all", szMiscArray, "Select", "");
+	ShowPlayerDialogEx(playerid, DIALOG_METDET_LIST, DIALOG_STYLE_LIST, "Metal Detectors | Listing all", szMiscArray, "Select", "");
 	return 1;
 }
 
@@ -252,7 +238,7 @@ CMD:metaldetector(playerid, params[])
 	{
 		GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 		if(!IsPlayerInRangeOfPoint(playerid, 10.0,  fPos[0], fPos[1], fPos[2])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in range of the metal detector.");
-		SetPVarInt(playerid, PVAR_EditingMetDet, id);
+		SetPVarInt(playerid, PVAR_EMETDET, id);
 		EditDynamicObject(playerid, arrMetalDetector[id][metdet_iObjectID]);
 	}
 	if(strcmp(choice, "delete", true) == 0)

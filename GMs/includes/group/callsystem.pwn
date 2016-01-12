@@ -57,7 +57,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 
 			SetPVarInt(playerid, "CALL_CHOICE", listitem);
-			ShowPlayerDialog(playerid, DIALOG_CALLS_MENU2, DIALOG_STYLE_INPUT, "Calls | Specify ID", "Please specify the caller ID (seen in /ac)", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU2, DIALOG_STYLE_INPUT, "Calls | Specify ID", "Please specify the caller ID (seen in /ac)", "Select", "Cancel");
 		}
 		case DIALOG_CALLS_MENU2: {
 
@@ -329,7 +329,7 @@ CMD:calls(playerid, params[])
 	
 	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
 	SetPVarInt(playerid, "Calls", 1);
-	ShowPlayerDialog(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
 	return 1;
 }
 
@@ -599,7 +599,7 @@ CMD:acceptcall(playerid, params[])
 {	
 	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
 	SetPVarInt(playerid, "AC", 1);
-	ShowPlayerDialog(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
 	return 1;
 }
 
@@ -612,7 +612,7 @@ CMD:ignorecall(playerid, params[])
 {
 	if(PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this feature.");
 	SetPVarInt(playerid, "IC", 1);
-	ShowPlayerDialog(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_CALLS_MENU, DIALOG_STYLE_LIST, "Landline Calls", "Group\nBusiness", "Select", "Cancel");
 	return 1;
 }
 

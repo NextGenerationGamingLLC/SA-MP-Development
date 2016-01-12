@@ -364,7 +364,7 @@ forward IdiotSound(playerid);
 public IdiotSound(playerid)
 {
     PlayAudioStreamForPlayerEx(playerid, "http://www.ng-gaming.net/users/farva/you-are-an-idiot.mp3");
-    ShowPlayerDialog(playerid,DIALOG_NOTHING,DIALOG_STYLE_MSGBOX,"BUSTED!","A 15 percent CLEO tax has been assessed to your account along with a 3 hour prison - future use could result in a ban","Exit","");
+    ShowPlayerDialogEx(playerid,DIALOG_NOTHING,DIALOG_STYLE_MSGBOX,"BUSTED!","A 15 percent CLEO tax has been assessed to your account along with a 3 hour prison - future use could result in a ban","Exit","");
 }
 
 forward SetCamBack(playerid);
@@ -400,7 +400,7 @@ public HttpCallback_ShopIDCheck(index, response_code, data[])
 			if(confirmed)
 			{
 				format(shopstring, sizeof(shopstring), "{FFFFFF}You are now waiting to receive shop order ID: %d (Confirmed)\n\nA shop tech will be with you as soon as possible.\n\nIf you have more than one order then please let the shop tech know once they are with you.\n\nShop Techs Online: %d\n\nNOTE: The shop order remains pending even if you go offline and log back in.", PlayerInfo[index][pOrder], shoptechs);
-				ShowPlayerDialog(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
+				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
 
 				format(string, sizeof(string), "Shop order ID %d (Confirmed) from %s (ID: %d) is now pending.", PlayerInfo[index][pOrder], GetPlayerNameEx(index), index);
 				ShopTechBroadCast(COLOR_SHOP, string);
@@ -408,7 +408,7 @@ public HttpCallback_ShopIDCheck(index, response_code, data[])
 			else
 			{
 				format(shopstring, sizeof(shopstring), "{FFFFFF}You are now waiting to receive shop order ID: %d (Invalid)\n\nA shop tech will be with you as soon as possible.\n\nIf you have more than one order then please let the shop tech know once they are with you.\n\nShop Techs Online: %d\n\nNOTE: The shop order remains pending even if you go offline and log back in.", PlayerInfo[index][pOrder], shoptechs);
-				ShowPlayerDialog(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
+				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
 
 				format(string, sizeof(string), "Shop order ID %d (Invalid) from %s (ID: %d) is now pending.", PlayerInfo[index][pOrder], GetPlayerNameEx(index), index);
 				ShopTechBroadCast(COLOR_SHOP, string);
@@ -419,12 +419,12 @@ public HttpCallback_ShopIDCheck(index, response_code, data[])
 			if(confirmed)
 			{
 				format(shopstring, sizeof(shopstring), "{FFFFFF}You are now waiting to receive shop order ID: %d (Confirmed)\n\nA shop tech will be with you as soon as possible.\n\nIf you have more than one order then please let the shop tech know once they are with you.\n\nThere are currently no shop techs online, you can resume normal gameplay and a shop tech will be with you when they log on.\n\nNOTE: The shop order remains pending even if you go offline and log back in.", PlayerInfo[index][pOrder]);
-				ShowPlayerDialog(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
+				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
 			}
 			else
 			{
 				format(shopstring, sizeof(shopstring), "{FFFFFF}You are now waiting to receive shop order ID: %d (Invalid)\n\nA shop tech will be with you as soon as possible.\n\nIf you have more than one order then please let the shop tech know once they are with you.\n\nThere are currently no shop techs online, you can resume normal gameplay and a shop tech will be with you when they log on.\n\nNOTE: The shop order remains pending even if you go offline and log back in.", PlayerInfo[index][pOrder]);
-				ShowPlayerDialog(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
+				ShowPlayerDialogEx(index, DIALOG_SHOPSENT, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order", shopstring, "Close", "");
 			}
 		}
 		new playerip[32];
@@ -436,7 +436,7 @@ public HttpCallback_ShopIDCheck(index, response_code, data[])
 	{
 		PlayerInfo[index][pOrder] = 0;
 		PlayerInfo[index][pOrderConfirmed] = 0;
-		ShowPlayerDialog(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order - Server Connection Error", "{FFFFFF}We are unable to process your order at this time.\n\nPlease try again later.", "Close", "");
+		ShowPlayerDialogEx(index, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{3399FF}Shop Order - Server Connection Error", "{FFFFFF}We are unable to process your order at this time.\n\nPlease try again later.", "Close", "");
 	}
 }
 
@@ -2277,7 +2277,7 @@ stock GetLastName(playerid)
 			format(szString, sizeof(szString), "%sN/A\n", szString);
 		}
 	}
-	return ShowPlayerDialog(playerid, DIALOG_HOLSTER, DIALOG_STYLE_LIST, "Holster Menu", szString, "Select", "Cancel"); 
+	return ShowPlayerDialogEx(playerid, DIALOG_HOLSTER, DIALOG_STYLE_LIST, "Holster Menu", szString, "Select", "Cancel"); 
 }*/
 
 stock randomString(strDest[], strLen = 10)

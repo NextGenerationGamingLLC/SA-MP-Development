@@ -78,7 +78,7 @@ ShowListingInformation(playerid, houseid, dialogid)
 		}
 	}
 	if(count[2] == 0) strcat(szMiscArray, "\n  » None");
-	ShowPlayerDialog(playerid, dialogid, DIALOG_STYLE_MSGBOX, "House Listing Information", szMiscArray, "Okay", "Cancel");
+	ShowPlayerDialogEx(playerid, dialogid, DIALOG_STYLE_MSGBOX, "House Listing Information", szMiscArray, "Okay", "Cancel");
 	return 1;
 }
 
@@ -99,7 +99,7 @@ ShowMainListingDialog(playerid)
 	ReturnDoorLineDetails(playerid, HouseInfo[houseid][LinkedDoor][1]), ReturnDoorLineDetails(playerid, HouseInfo[houseid][LinkedDoor][2]),
 	ReturnDoorLineDetails(playerid, HouseInfo[houseid][LinkedDoor][3]), ReturnDoorLineDetails(playerid, HouseInfo[houseid][LinkedDoor][4]), 
 	ReturnGarageLineDetails(playerid, HouseInfo[houseid][LinkedGarage][0]), ReturnGarageLineDetails(playerid, HouseInfo[houseid][LinkedGarage][1]), HouseInfo[houseid][ListingDescription]);
-	ShowPlayerDialog(playerid, DIALOG_LISTHOUSEMAIN, DIALOG_STYLE_TABLIST_HEADERS, "House Market", szMiscArray, "Okay", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEMAIN, DIALOG_STYLE_TABLIST_HEADERS, "House Market", szMiscArray, "Okay", "Cancel");
 	return 1;
 }
 
@@ -447,7 +447,7 @@ CMD:houselistings(playerid, params[])
 	}
 	if(count[0] == 0) return SendClientMessage(playerid, COLOR_GREY, "There are no active advertisements at this time.");
 	if(count[0] == MAX_LISTINGS_PER_PAGE) format(szMiscArray, sizeof(szMiscArray), "%s\n[Next Page...]", szMiscArray);
-	ShowPlayerDialog(playerid, DIALOG_LISTHOUSELISTINGS, DIALOG_STYLE_LIST, "House Listings", szMiscArray, "Okay", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSELISTINGS, DIALOG_STYLE_LIST, "House Listings", szMiscArray, "Okay", "Cancel");
 	return 1;
 }
 
@@ -476,20 +476,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(HouseInfo[houseid][Listed] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "This house is already listed on the house market.");
 					switch(listitem)
 					{
-						case 0: return ShowPlayerDialog(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
+						case 0: return ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
 						case 1..5:
 						{
 							HouseMarketTracking[playerid] = listitem - 1;
-							ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 							return 1;
 						}
 						case 6, 7:
 						{
 							HouseMarketTracking[playerid] = listitem - 6;
-							ShowPlayerDialog(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
 							return 1;
 						}
-						case 8: return ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "House Listings", "Input the description of your listing below.", "Okay", "Cancel");
+						case 8: return ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "House Listings", "Input the description of your listing below.", "Okay", "Cancel");
 						case 9:
 						{
 							if(HouseInfo[houseid][ListingPrice] == 0)
@@ -538,20 +538,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(sscanf(inputtext, "d", price))
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The specified price must be numerical.");
-						ShowPlayerDialog(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
 						return 1;
 					}
 					if(price < 100000 || price > 500000000)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The specified price cannot be under $100,000 or over $500,000,000.");
-						ShowPlayerDialog(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
 						return 1;
 					}
 					if(price == HouseInfo[houseid][ListingPrice])
 					{
 						format(string, sizeof(string), "Your listing price is already set to $%s.", number_format(price));
 						SendClientMessageEx(playerid, COLOR_GREY, string);
-						ShowPlayerDialog(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEPRICE, DIALOG_STYLE_INPUT, "House Listings", "Input the price of your listing below.", "Okay", "Cancel");
 						return 1;
 					}
 					HouseInfo[houseid][ListingPrice] = price;
@@ -584,13 +584,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(strlen(inputtext) < 1 || strlen(inputtext) > 128)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The listing description cannot be under 1 character or over 128 characters.");
-						ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "House Listings", "Input the description of your listing below.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "House Listings", "Input the description of your listing below.", "Okay", "Cancel");
 						return 1;
 					}
 					if(strcmp(inputtext, HouseInfo[houseid][ListingDescription], false) == 0)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The description you have specified is already set the set description.");
-						ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "House Listings", "Input the description of your listing below.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDESCRIPTION, DIALOG_STYLE_INPUT, "House Listings", "Input the description of your listing below.", "Okay", "Cancel");
 						return 1;
 					}
 					for(new i = 0; i < strlen(inputtext) - 7; i ++)
@@ -635,13 +635,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(sscanf(inputtext, "d", doorid))
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The specified door ID must be numerical.");
-						ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 						return 1;
 					}
 					if(doorid < 0 || doorid >= MAX_DDOORS)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "Invalid door ID specified.");
-						ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 						return 1;
 					}
 					for(new i = 0; i < 5; i ++)
@@ -649,7 +649,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(HouseInfo[houseid][LinkedDoor][i] == doorid && doorid != 0)
 						{
 							SendClientMessageEx(playerid, COLOR_GREY, "The specified dynamic door is already linked to your listing.");
-							ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 							return 1;
 						}
 					}
@@ -660,7 +660,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(HouseInfo[houseid][LinkedDoor][HouseMarketTracking[playerid]] == 0)
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You do not currently have a linked dynamic door in the specified slot.");
-								ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 								return 1;
 							}
 							HouseInfo[houseid][LinkedDoor][HouseMarketTracking[playerid]] = 0;
@@ -674,13 +674,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(DDoorsInfo[doorid][ddOwner] != GetPlayerSQLId(playerid))
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You do not own the specified dynamic door.");
-								ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 								return 1;
 							}
 							if(HouseInfo[houseid][hIntIW] != DDoorsInfo[doorid][ddInteriorInt] || HouseInfo[houseid][hIntVW] != DDoorsInfo[doorid][ddInteriorVW])
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "The specified dynamic door is not linked to your house.");
-								ShowPlayerDialog(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEDOORS, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a door to link it to your listing. Input \"0\" to remove a dynamic door.", "Okay", "Cancel");
 								return 1;
 							}
 							HouseInfo[houseid][LinkedDoor][HouseMarketTracking[playerid]] = doorid;
@@ -716,13 +716,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(sscanf(inputtext, "d", garageid))
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "The specified garage ID must be numerical.");
-						ShowPlayerDialog(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
 						return 1;
 					}
 					if(garageid < 0 || garageid >= MAX_GARAGES)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "Invalid garage ID specified.");
-						ShowPlayerDialog(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
 						return 1;
 					}
 					for(new i = 0; i < 2; i ++)
@@ -730,7 +730,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(HouseInfo[houseid][LinkedGarage][i] == garageid && garageid != 0)
 						{
 							SendClientMessageEx(playerid, COLOR_GREY, "The specified garage is already linked to your listing.");
-							ShowPlayerDialog(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
 							return 1;
 						}
 					}
@@ -741,7 +741,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(HouseInfo[houseid][LinkedGarage][HouseMarketTracking[playerid]] == 0)
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You do not currently have a linked garage in the specified slot.");
-								ShowPlayerDialog(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
 								return 1;
 							}
 							HouseInfo[houseid][LinkedGarage][HouseMarketTracking[playerid]] = 0;
@@ -755,7 +755,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(DDoorsInfo[garageid][ddOwner] != GetPlayerSQLId(playerid))
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You do not own the specified garage.");
-								ShowPlayerDialog(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSEGARAGES, DIALOG_STYLE_INPUT, "House Listings", "Input the ID of a garage to link it to your listing. Input \"0\" to remove a garage..", "Okay", "Cancel");
 								return 1;
 							}
 							HouseInfo[houseid][LinkedGarage][HouseMarketTracking[playerid]] = garageid;
@@ -804,7 +804,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					if(count[0] == 0) return SendClientMessage(playerid, COLOR_GREY, "There are no active advertisements at this time.");
 					if(count[0] == MAX_LISTINGS_PER_PAGE && AdditionalAdvertisements(AdTracking[playerid] + 1)) strcat(szMiscArray, "\n[Next Page...]");
-					ShowPlayerDialog(playerid, DIALOG_LISTHOUSELISTINGS, DIALOG_STYLE_LIST, "House Listings", szMiscArray, "Okay", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_LISTHOUSELISTINGS, DIALOG_STYLE_LIST, "House Listings", szMiscArray, "Okay", "Cancel");
 					return 1;
 				}
 				position[0] = strfind(inputtext, "(");
@@ -840,7 +840,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						cmd_houselistings(playerid, "");
 						return 1;
 					}
-					ShowPlayerDialog(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
 					return 1;
 				}
 			}
@@ -871,13 +871,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(GetPlayerSQLId(playerid) == HouseInfo[HouseMarketTracking[playerid]][hOwnerID])
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You cannot visit your own house through house listings, use (/home).");
-								ShowPlayerDialog(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
 								return 1;
 							}
 							if(HouseInfo[HouseMarketTracking[playerid]][hExtIW] != 0 || HouseInfo[HouseMarketTracking[playerid]][hExtVW] != 0)
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "The specified house's entry point is not outside. Contact the owner to visit it.");
-								ShowPlayerDialog(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
 								return 1;
 							}
 							DisablePlayerCheckpoint(playerid);
@@ -892,20 +892,20 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(GetPlayerSQLId(playerid) == HouseInfo[HouseMarketTracking[playerid]][hOwnerID])
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You cannot purchase your own house.");
-								ShowPlayerDialog(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
 								return 1;
 							}
 							if(Homes[playerid] >= MAX_OWNABLE_HOUSES)
 							{
 								SendClientMessageEx(playerid, COLOR_GREY, "You cannot own any more houses.");
-								ShowPlayerDialog(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
 								return 1;
 							}
 							if(GetPlayerCash(playerid) < HouseInfo[HouseMarketTracking[playerid]][ListingPrice])
 							{
 								format(string, sizeof(string), "You cannot afford this $%s house.", number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
 								SendClientMessageEx(playerid, COLOR_GREY, string);
-								ShowPlayerDialog(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
+								ShowPlayerDialogEx(playerid, DIALOG_LISTINGOPTIONS, DIALOG_STYLE_LIST, "House Listings", "Visit House\nPurchase House", "Okay", "Cancel");
 								return 1;
 							}
 							new name[24], bool:online;

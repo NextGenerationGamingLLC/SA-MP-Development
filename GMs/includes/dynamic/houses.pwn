@@ -449,6 +449,8 @@ public OnLoadHouses()
 		
 		HouseInfo[i][LinkedGarage][0] = cache_get_field_content_int(i, "LinkedGarage0", MainPipeline);
 		HouseInfo[i][LinkedGarage][1] = cache_get_field_content_int(i, "LinkedGarage1", MainPipeline);
+
+		if(HouseInfo[i][hInactive] && !HouseInfo[i][hIgnore]) HouseInfo[i][hValue] = 3000000; // Extra check.
 		
 		if(HouseInfo[i][hExteriorX] != 0.0) ReloadHousePickup(i);
 		if(HouseInfo[i][hClosetX] != 0.0) HouseInfo[i][hClosetTextID] = CreateDynamic3DTextLabel("Closet\n/closet to use", 0xFFFFFF88, HouseInfo[i][hClosetX], HouseInfo[i][hClosetY], HouseInfo[i][hClosetZ]+0.5,10.0, .testlos = 1, .worldid = HouseInfo[i][hIntVW], .interiorid = HouseInfo[i][hIntIW], .streamdistance = 10.0);
@@ -489,12 +491,18 @@ stock ReloadHousePickup(houseid)
 
 	if(HouseInfo[houseid][hExteriorX] == 0.0) return 1;
 	new string[128];
-	if(HouseInfo[houseid][hOwned])
+	if(HouseInfo[houseid][hOwned] && !HouseInfo[houseid][hInactive])
 	{
 		if(HouseInfo[houseid][hRentable])
 			format(string, sizeof(string), "This house is owned by\n%s\nRent: $%s\nLevel: %d\nID: %d\nType /rentroom to rent a room", StripUnderscore(HouseInfo[houseid][hOwnerName]), number_format(HouseInfo[houseid][hRentFee]), HouseInfo[houseid][hLevel], houseid);
 		else
 			format(string, sizeof(string), "This house is owned by\n%s\nLevel: %d\nID: %d", StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
+	}
+	else if(HouseInfo[houseid][hInactive] && !HouseInfo[houseid][hIgnore]) {
+		if(HouseInfo[houseid][hRentable])
+			format(string, sizeof(string), "[INACTIVE PROPERTY]\n\nCost: $%s\nThis house is owned by\n%s\nRent: $%s\nLevel: %d\nID: %d\nType /rentroom to rent a room", number_format(HouseInfo[houseid][hValue]), StripUnderscore(HouseInfo[houseid][hOwnerName]), number_format(HouseInfo[houseid][hRentFee]), HouseInfo[houseid][hLevel], houseid);
+		else
+			format(string, sizeof(string), "[INACTIVE PROPERTY]\n\nCost: $%s\nThis house is owned by\n%s\nLevel: %d\nID: %d", number_format(HouseInfo[houseid][hValue]), StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
 	}
 	else
 		format(string, sizeof(string), "This house is\n for sale!\n Description: %s\nCost: $%s\n Level: %d\nID: %d\nTo buy this house type /buyhouse", HouseInfo[houseid][hDescription], number_format(HouseInfo[houseid][hValue]), HouseInfo[houseid][hLevel], houseid);
@@ -625,8 +633,9 @@ CMD:buyhouse(playerid, params[])
         if(IsPlayerInRangeOfPoint(playerid, 2.0, HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ]) && GetPlayerInterior(playerid) == HouseInfo[h][hExtIW] && GetPlayerVirtualWorld(playerid) == HouseInfo[h][hExtVW])
 		{
 		    if(PlayerInfo[playerid][pFreezeHouse] == 1) return SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Your house assets are frozen, you cannot buy a house!");
-            if(HouseInfo[h][hOwned] == 0)
+            if(HouseInfo[h][hOwned] == 0 || HouseInfo[h][hInactive])
 			{
+				if(HouseInfo[h][hCustomInterior] && HouseInfo[h][hInactive]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house has a custom interior. You need an administrator to buy it.");
                 if(PlayerInfo[playerid][pLevel] < HouseInfo[h][hLevel])
 				{
                     format(string, sizeof(string), "   You must be Level %d to purchase this!", HouseInfo[h][hLevel]);
@@ -641,6 +650,9 @@ CMD:buyhouse(playerid, params[])
 					else if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) PlayerInfo[playerid][pPhousekey2] = h;
 					else if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID && PlayerInfo[playerid][pDonateRank] >= 4) PlayerInfo[playerid][pPhousekey3] = h;
 					else return SendClientMessageEx(playerid, COLOR_GREY, "You have no free house slot left.");
+					
+					Inactive_BuyProperty(playerid, h, 0);
+
 					HouseInfo[h][hOwned] = 1;
 					HouseInfo[h][hOwnerID] = GetPlayerSQLId(playerid);
 					strcat((HouseInfo[h][hOwnerName][0] = 0, HouseInfo[h][hOwnerName]), GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
@@ -1354,7 +1366,7 @@ CMD:houseinvite(playerid, params[])
 					format(hstring, sizeof(hstring), "%s\nHouse ID %d - Location: %s", hstring, i, zone);
 				}
 			}
-			ShowPlayerDialog(playerid, DIALOG_HOUSEINVITE, DIALOG_STYLE_LIST, title, hstring, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_HOUSEINVITE, DIALOG_STYLE_LIST, title, hstring, "Select", "Cancel");
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
 	}

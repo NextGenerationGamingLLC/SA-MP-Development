@@ -120,6 +120,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
 				
+				if(!Bank_TransferCheck(-iAmount)) return 1;
 				GivePlayerCash(playerid, iAmount);
 				PlayerInfo[playerid][pAccount] -= iAmount; 
 				format(szMiscArray, sizeof(szMiscArray), "  You have withdrawn $%s from your account. ", number_format(iAmount));
@@ -128,6 +129,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(PlayerInfo[playerid][pDonateRank] == 0) {
 					new fee;
 					fee = 3*iAmount/100;
+					if(!Bank_TransferCheck(-fee)) return 1;
 					PlayerInfo[playerid][pAccount] -= fee;
 					format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent withdraw fee: -$%d.", fee);
 					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
@@ -157,6 +159,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
 				
+				if(!Bank_TransferCheck(iAmount)) return 1;
 				GivePlayerCash(playerid, -iAmount);
 				PlayerInfo[playerid][pAccount] += iAmount; 
 				format(szMiscArray, sizeof(szMiscArray), "  You have deposited $%s to your account. ", number_format(iAmount));
@@ -165,6 +168,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(PlayerInfo[playerid][pDonateRank] == 0) {
 					new fee;
 					fee = 3*iAmount/100;
+					if(!Bank_TransferCheck(-fee)) return 1;
 					PlayerInfo[playerid][pAccount] -= fee;
 					format(szMiscArray, sizeof(szMiscArray), "  You have been charged a 3 percent deposit fee: -$%d.", fee);
 					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
@@ -283,31 +287,31 @@ ShowATMMenu(playerid, menu = 0) {
 
 	format(szTitle, sizeof(szTitle), "ATM Menu ($%s)", number_format(PlayerInfo[playerid][pAccount]));
 
-	if(PlayerInfo[playerid][pFreezeBank] == 1) return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, szTitle, "Your assets have been frozen! Contact judicial!", "Ok", "");
+	if(PlayerInfo[playerid][pFreezeBank] == 1) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, szTitle, "Your assets have been frozen! Contact judicial!", "Ok", "");
 
 	switch(menu) {
 
 		case 0: { // main menu
-			ShowPlayerDialog(playerid, ATM, DIALOG_STYLE_LIST, szTitle, "Withdraw\nDeposit\nTransfer", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, ATM, DIALOG_STYLE_LIST, szTitle, "Withdraw\nDeposit\nTransfer", "Select", "Cancel");
 		}
 
 		case 1: { // iAmount withdraw
-			ShowPlayerDialog(playerid, ATM_AMOUNT, DIALOG_STYLE_INPUT, szTitle, "Please input how much you wish to withdraw from your account.", "Withdraw", "Cancel");
+			ShowPlayerDialogEx(playerid, ATM_AMOUNT, DIALOG_STYLE_INPUT, szTitle, "Please input how much you wish to withdraw from your account.", "Withdraw", "Cancel");
 			SetPVarInt(playerid, "ATMWithdraw", 1);
 		}
 
 		case 2: { // iAmount deposit
-			ShowPlayerDialog(playerid, ATM_AMOUNT, DIALOG_STYLE_INPUT, szTitle, "Please input how much you wish to deposit to your account.", "Deposit", "Cancel");
+			ShowPlayerDialogEx(playerid, ATM_AMOUNT, DIALOG_STYLE_INPUT, szTitle, "Please input how much you wish to deposit to your account.", "Deposit", "Cancel");
 			SetPVarInt(playerid, "ATMDeposit", 1);
 		}
 
 		case 3: { // transfer to
-			ShowPlayerDialog(playerid, ATM_TRANSFER_TO, DIALOG_STYLE_INPUT, szTitle, "Please input the player id you wish to transfer money to.", "Next", "Cancel");
+			ShowPlayerDialogEx(playerid, ATM_TRANSFER_TO, DIALOG_STYLE_INPUT, szTitle, "Please input the player id you wish to transfer money to.", "Next", "Cancel");
 		}
 
 		case 4: { // transfer iAmount
 			format(szMiscArray, sizeof(szMiscArray), "Please input the amount you wish to transfer to {FF0000}%s", GetPlayerNameEx(GetPVarInt(playerid, "ATMTransferTo")));
-			ShowPlayerDialog(playerid, ATM_TRANSFER_AMT, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Transfer", "Cancel");
+			ShowPlayerDialogEx(playerid, ATM_TRANSFER_AMT, DIALOG_STYLE_INPUT, szTitle, szMiscArray, "Transfer", "Cancel");
 		}
 	}
 

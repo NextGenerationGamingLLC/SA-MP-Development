@@ -990,7 +990,7 @@ CMD:sendto(playerid, params[])
 		{
 		    SetPVarInt(playerid, "tempPBP", giveplayerid);
 		    format(string, sizeof(string), "%s (ID: %d) is currently in an active Paintball game.\n\nDo you want to force this player out?", GetPlayerNameEx(giveplayerid), giveplayerid);
-		    ShowPlayerDialog(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
+		    ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
 		    return 1;
 		}
 		if(strcmp(location,"glenpark",true) == 0 || strcmp(location,"gp",true) == 0)

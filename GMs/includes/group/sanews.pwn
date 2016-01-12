@@ -241,23 +241,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case 0:
 					{
-						ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS_NAME, DIALOG_STYLE_INPUT, "SAN Shows | Name", "Type the new name of the show.", "Enter", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_NAME, DIALOG_STYLE_INPUT, "SAN Shows | Name", "Type the new name of the show.", "Enter", "Cancel");
 					}
 					case 1:
 					{
-						ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS_HOST, DIALOG_STYLE_INPUT, "SAN Shows | Host", "Type the name of the show's host(s).", "Enter", "Cancel");				
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_HOST, DIALOG_STYLE_INPUT, "SAN Shows | Host", "Type the name of the show's host(s).", "Enter", "Cancel");				
 					}
 					case 2:
 					{
-						ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS_GLOBAL, DIALOG_STYLE_LIST, "SAN Shows | Global Channels", "Enable Global Channels\nDisable Global Channels", "Enter", "Cancel");				
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_GLOBAL, DIALOG_STYLE_LIST, "SAN Shows | Global Channels", "Enable Global Channels\nDisable Global Channels", "Enter", "Cancel");				
 					}
 					case 3:
 					{
-						ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS_TYPE, DIALOG_STYLE_LIST, "SAN Shows | Show Type", "TV Show\nRadio Show\nCustom Show", "Enter", "Cancel");				
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_TYPE, DIALOG_STYLE_LIST, "SAN Shows | Show Type", "TV Show\nRadio Show\nCustom Show", "Enter", "Cancel");				
 					}
 					case 4:
 					{
-						ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS_TOGGLE, DIALOG_STYLE_LIST, "SAN Shows | Start / Stop Broadcast", "{EEFFEE}START {FFFFFF}Broadcast\n{FFDDDD}STOP {FFFFFF}Broadcast", "Enter", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_TOGGLE, DIALOG_STYLE_LIST, "SAN Shows | Start / Stop Broadcast", "{EEFFEE}START {FFFFFF}Broadcast\n{FFDDDD}STOP {FFFFFF}Broadcast", "Enter", "Cancel");
 					}
 				}
 				return 1;
@@ -317,7 +317,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case 0: 
 					{
-						if(isnull(SANShows[channel][szChannelType])) return ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS_TYPE, DIALOG_STYLE_LIST, "SAN Shows | Show Type | FORGOTTEN!", "TV Show\nRadio Show\nCustom Show", "Enter", "Cancel");				
+						if(isnull(SANShows[channel][szChannelType])) return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_TYPE, DIALOG_STYLE_LIST, "SAN Shows | Show Type | FORGOTTEN!", "TV Show\nRadio Show\nCustom Show", "Enter", "Cancel");				
 						if(SANShows[channel][Global] == 0 && strfind(SANShows[channel][szChannelType], "[G]", true) == -1) format(SANShows[channel][szChannelType], 32, "[G] %s", SANShows[channel][szChannelType]);
 						SANShows[channel][ChannelActive] = 1;
 						SAN_Broadcast(playerid, channel);
@@ -387,7 +387,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							------------------------------------------\n\
 							Preview point-to-point camera\n\
 							Finish & Broadcast");
-						ShowPlayerDialog(playerid, DIALOG_SAN_DCAMERAMAN, DIALOG_STYLE_LIST, "SA News | Dynamic Camera Menu", szMiscArray, "Select", "Cancel");
+						ShowPlayerDialogEx(playerid, DIALOG_SAN_DCAMERAMAN, DIALOG_STYLE_LIST, "SA News | Dynamic Camera Menu", szMiscArray, "Select", "Cancel");
 					}
 					case 3:
 					{
@@ -564,7 +564,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "ListItemID_Cameras", ListItemTrackID_Cameras[playerid][listitem]);
 				format(szTitle, sizeof(szTitle), "SAN | Camera List | Channel %i", GetPVarInt(playerid, "ChannelID_FMEM"));
 				format(szMiscArray, sizeof(szMiscArray), "Preview %s's camera\nBroadcast %s's camera", GetPlayerNameEx(ListItemTrackID_Cameras[playerid][listitem]), GetPlayerNameEx(ListItemTrackID_Cameras[playerid][listitem]));
-				ShowPlayerDialog(playerid, DIALOG_SAN_CAMLIST2, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_SAN_CAMLIST2, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
 			}
 			else 
 			{
@@ -752,7 +752,7 @@ public SAN_Viewers(playerid)
 		}
 	}
 	if(isnull(szMiscArray)) return SendClientMessage(playerid, COLOR_GRAD1, "There are no viewers.");
-	else ShowPlayerDialog(playerid, DIALOG_SAN_VIEWERS, DIALOG_STYLE_LIST, "SAN | Viewer List", szMiscArray, "--", "--");
+	else ShowPlayerDialogEx(playerid, DIALOG_SAN_VIEWERS, DIALOG_STYLE_LIST, "SAN | Viewer List", szMiscArray, "--", "--");
 	return 1;
 }
 
@@ -813,14 +813,14 @@ public SAN_ShowsDialog(playerid, choice)
 	}
 	switch(choice)
 	{
-		case 0: return ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS, DIALOG_STYLE_LIST, "SAN Shows | Tune in", szMiscArray, "Select", "Cancel");
-		case 1: return ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS_EDIT, DIALOG_STYLE_LIST, "SAN Shows | Edit Console", szMiscArray, "Select", "Cancel");
-		case 2: return ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS_MENU, DIALOG_STYLE_LIST, "SAN Shows | Menu", szMiscArray, "Select", "Cancel");
+		case 0: return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS, DIALOG_STYLE_LIST, "SAN Shows | Tune in", szMiscArray, "Select", "Cancel");
+		case 1: return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_EDIT, DIALOG_STYLE_LIST, "SAN Shows | Edit Console", szMiscArray, "Select", "Cancel");
+		case 2: return ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_MENU, DIALOG_STYLE_LIST, "SAN Shows | Menu", szMiscArray, "Select", "Cancel");
 		case 3:
 		{
 			format(szTitle, sizeof(szTitle), "SAN | EDITING: Channel %i | %s", GetPVarInt(playerid, "SAN_EditingChannelID"), SANShows[GetPVarInt(playerid, "SAN_EditingChannelID")][ChannelName]);
 			format(szMiscArray, sizeof(szMiscArray), "Edit Show Name\nEdit Show Host\nEdit Global Channel Routing\nEdit Show Type\nStart / Stop Broadcast");
-			ShowPlayerDialog(playerid, DIALOG_SAN_SHOWS_EDIT2, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_SAN_SHOWS_EDIT2, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
 		}
 	}
 	return 1;
@@ -912,12 +912,12 @@ public SAN_Broadcast(playerid, channel)
 						SetPlayerFacingAngle(i, BroadcastFloats[i][0]);
 						SetCameraBehindPlayer(i);
 						TogglePlayerSpectating(i, 0);
-						DeletePVar(playerid, "ChannelID");
+						DeletePVar(i, "ChannelID");
 						Player_StreamPrep(i, BroadcastFloats[i][1],BroadcastFloats[i][2],BroadcastFloats[i][3], FREEZE_TIME);
 						DeletePVar(i, "WatchingTV");
 						SendClientMessage(playerid, COLOR_GRAD1, "The show has been ended by the producers.");
 						SendClientMessage(playerid, COLOR_GRAD1, "Fetching your character's old position...");
-						SetTimerEx("SAN_SetPos", 5000, false, "i", playerid);
+						SetTimerEx("SAN_SetPos", 5000, false, "i", i);
     				}
 				}
 			}
@@ -1186,7 +1186,7 @@ public SAN_Process_Login(playerid)
 	if(!GetPVarType(playerid, "ChannelID_FMEM"))
 	{
 		format(szMiscArray, sizeof(szMiscArray), "___________________________ {32CD80} SAN | LOGIN {FFFFFF}____________________\nClick Here to log in to a channel.");
-		ShowPlayerDialog(playerid, DIALOG_SAN_LOGIN, DIALOG_STYLE_LIST, "SAN | Channel Login Panel", szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_SAN_LOGIN, DIALOG_STYLE_LIST, "SAN | Channel Login Panel", szMiscArray, "Select", "Cancel");
 		return 0;
 	}
 	return 1;
@@ -1253,7 +1253,7 @@ public SAN_Process_ListCameras(playerid, channel)
 	if(!isnull(szMiscArray))
 	{
 		format(szTitle, sizeof(szTitle), "SAN | Camera List | Channel %i", GetPVarInt(playerid, "ChannelID_FMEM"));
-		ShowPlayerDialog(playerid, DIALOG_SAN_CAMLIST, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_SAN_CAMLIST, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
 	}
 	else SendClientMessage(playerid, COLOR_GRAD1, "There are no active camera's right now.");
 	return 1;
@@ -1502,7 +1502,7 @@ public SAN_Process_Director(playerid, choice, channel)
 		}
 		case SAN_DIRECTOR_PSTREAM:
 		{
-			ShowPlayerDialog(playerid, DIALOG_SAN_PSTREAM, DIALOG_STYLE_INPUT, "SAN | Preview Stream", "Paste the link of the stream here.", "Listen", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_SAN_PSTREAM, DIALOG_STYLE_INPUT, "SAN | Preview Stream", "Paste the link of the stream here.", "Listen", "Cancel");
 		}
 		case SAN_DIRECTOR_BROADCAST:
 		{
@@ -1548,7 +1548,7 @@ public SAN_Process_Director(playerid, choice, channel)
 		}
 		case SAN_DIRECTOR_BSTREAM:
 		{
-			ShowPlayerDialog(playerid, DIALOG_SAN_BSTREAM, DIALOG_STYLE_INPUT, "SAN | Preview Stream", "Paste the link of the stream here.", "Listen", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_SAN_BSTREAM, DIALOG_STYLE_INPUT, "SAN | Preview Stream", "Paste the link of the stream here.", "Listen", "Cancel");
 		}
 		case SAN_DIRECTOR_STARTCAM:
 		{
@@ -2306,7 +2306,7 @@ CMD:cameraman(playerid, params[])
 			Birdseye View\n\
 			Vehicle Camera\n\
 			Log out out of camera system", szMiscArray);
-		ShowPlayerDialog(playerid, DIALOG_SAN_CAMERAMAN, DIALOG_STYLE_LIST, "SA News | Cameraman Menu", szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_SAN_CAMERAMAN, DIALOG_STYLE_LIST, "SA News | Cameraman Menu", szMiscArray, "Select", "Cancel");
 	}
 	else
 	{
@@ -2370,7 +2370,7 @@ CMD:bdirector(playerid, params[])
 			----------------------------------\n\
 			Log out of the system", sizeof(szMiscArray));
 
-		ShowPlayerDialog(playerid, DIALOG_SAN_DIRECTOR, DIALOG_STYLE_LIST, "SA News | Broadcast Director Menu", szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_SAN_DIRECTOR, DIALOG_STYLE_LIST, "SA News | Broadcast Director Menu", szMiscArray, "Select", "Cancel");
 	}
 	return 1;
 }

@@ -270,7 +270,7 @@ CMD:togreports(playerid, params[])
 
 CMD:reporttips(playerid, params[])
 {
-	ShowPlayerDialog(playerid,7955,DIALOG_STYLE_MSGBOX,"Report tips","Tips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
+	ShowPlayerDialogEx(playerid,7955,DIALOG_STYLE_MSGBOX,"Report tips","Tips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
 	return 1;
 }
 
@@ -359,7 +359,7 @@ CMD:rto(playerid, params[])
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
 					format(string, sizeof(string), "An admin warns you not to abuse /report.\n\nNote that future abuse of /report could result in a mute from /report or loss of that privilege altogether.");
-					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Report abuse warning", string,"Next", "");
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Report abuse warning", string,"Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s has given %s(%d) their first warning about report abuse, reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), reason);
 					Log("logs/mute.log", string);
@@ -374,7 +374,7 @@ CMD:rto(playerid, params[])
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the second time you have been blocked from reporting, you will not be able to use /report for 15 minutes.\n\nNote that future abuse of /report could result in a longer mute from /report or loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -388,7 +388,7 @@ CMD:rto(playerid, params[])
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the third time you have been blocked from reporting, you will not be able to use /report for 30 minutes.\n\nNote that future abuse of /report could result in a longer mute from /report or loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -402,7 +402,7 @@ CMD:rto(playerid, params[])
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the fourth time you have been blocked from reporting, you will not be able to use /report for 45 minutes.\n\nNote that future abuse of /report could result in a longer mute from /report or loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -416,7 +416,7 @@ CMD:rto(playerid, params[])
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the fifth time you have been blocked from reporting, you will not be able to use /report for 60 minutes.\n\nNote that future abuse of /report could result in a loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -430,7 +430,7 @@ CMD:rto(playerid, params[])
 					ABroadCast(COLOR_LIGHTRED,string,2);
 
 					format(string, sizeof(string), "You have been temporarily blocked from submitting reports by %s, reason: %s.\n\nAs this is the sixth time you have been blocked from reporting, you will not be able to use /report for 5 hours.\n\nNote that future abuse of /report could result in a loss of that privilege altogether.", GetPlayerNameEx(playerid), reason);
-					ShowPlayerDialog(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
+					ShowPlayerDialogEx(giveplayerid,7954,DIALOG_STYLE_MSGBOX,"Temporarily blocked from reports", string,"Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) was temporarily blocked from /report by %s, reason: %s", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), reason);
 					Log("logs/mute.log", string);
@@ -502,10 +502,10 @@ CMD:report(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can't submit reports as an administrator.");
 	}
 	else if(PlayerInfo[playerid][pRMuted] != 0) {
-	    ShowPlayerDialog(playerid, 7955, DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
+	    ShowPlayerDialogEx(playerid, 7955, DIALOG_STYLE_MSGBOX,"Report blocked","You are blocked from submitting any reports!\n\nTips when reporting:\n- Report what you need, not who you need.\n- Be specific, report exactly what you need.\n- Do not make false reports.\n- Do not flame admins.\n- Report only for in-game items.\n- For shop orders use the /shoporder command","Close", "");
 	}
 	else {
-	    ShowPlayerDialog(playerid, DIALOG_REPORTMENU, DIALOG_STYLE_LIST, "Report Menu [1/2]", "Deathmatch\nFalling\nHacking\nChicken Running\nCar Ramming\nPower Gaming\nMeta Gaming\nGun Discharge Exploits (QS/CS)\nSpamming\nMoney Farming\nBan Evader\nGeneral Exploits\nReleasing Hitman Names\nRunning Man Exploiter\nCar Surfing\nNonRP Behavior\nNext Page","Select", "Exit");
+	    ShowPlayerDialogEx(playerid, DIALOG_REPORTMENU, DIALOG_STYLE_LIST, "Report Menu [1/2]", "Deathmatch\nFalling\nHacking\nChicken Running\nCar Ramming\nPower Gaming\nMeta Gaming\nGun Discharge Exploits (QS/CS)\nSpamming\nMoney Farming\nBan Evader\nGeneral Exploits\nReleasing Hitman Names\nRunning Man Exploiter\nCar Surfing\nNonRP Behavior\nNext Page","Select", "Exit");
 	}
 	return 1;
 }
@@ -715,7 +715,7 @@ CMD:ar(playerid, params[])
 			DeletePVar(Reports[reportid][ReportFrom], "ReverseReport");
 			SetPVarInt(playerid, "ReverseFromID", Reports[reportid][ReportFrom]);
 			format(string, 128, "%s would like to reverse their action on %s.\n\nReason: %s", GetPlayerNameEx(Reports[reportid][ReportFrom]), GetPlayerNameEx(GetPVarInt(Reports[reportid][ReportFrom], "ReverseID")), reversereason);
-			ShowPlayerDialog(playerid, DIALOG_REVERSE, DIALOG_STYLE_MSGBOX, "Reverse Action", string, "Allow", "Deny");
+			ShowPlayerDialogEx(playerid, DIALOG_REVERSE, DIALOG_STYLE_MSGBOX, "Reverse Action", string, "Allow", "Deny");
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
 			PlayerInfo[playerid][pAcceptReport]++;
@@ -733,7 +733,7 @@ CMD:ar(playerid, params[])
 			SetPVarInt(playerid, "PendingAction4", GetPVarInt(Reports[reportid][ReportFrom], "AccountRestID"));
 			DeletePVar(Reports[reportid][ReportFrom], "AccountRestrictionReport");
 			DeletePVar(Reports[reportid][ReportFrom], "AccountRestID");
-			ShowPlayerDialog(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Account Restriction", "This player has 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
+			ShowPlayerDialogEx(playerid, DIALOG_NONRPACTION, DIALOG_STYLE_MSGBOX, "Account Restriction", "This player has 15+ Non RP Points, would you like to restrict his account?", "Yes", "No");
 		}
 		if(GetPVarType(Reports[reportid][ReportFrom], "AlertedThisPlayer"))
 		{
@@ -750,7 +750,7 @@ CMD:ar(playerid, params[])
 			new advert[128];
 			GetPVarString(Reports[reportid][ReportFrom], "PriorityAdText", advert, 128);
 			SetPVarInt(playerid, "ReporterID", Reports[reportid][ReportFrom]);
-			ShowPlayerDialog(playerid, DIALOG_CONFIRMADP, DIALOG_STYLE_MSGBOX, "Advertisement Confirmation", advert, "Approve", "Deny");
+			ShowPlayerDialogEx(playerid, DIALOG_CONFIRMADP, DIALOG_STYLE_MSGBOX, "Advertisement Confirmation", advert, "Approve", "Deny");
 			
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
@@ -769,7 +769,7 @@ CMD:ar(playerid, params[])
 
 			if(GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost") == 2) format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: {FFFFFF}%s credits", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname, number_format(ShopItems[40][sItemPrice]));
 			else format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: {FFFFFF}Free", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname);
-			ShowPlayerDialog(playerid, DIALOG_REPORTNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Name Change Request",string,"Approve","Deny");
+			ShowPlayerDialogEx(playerid, DIALOG_REPORTNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Name Change Request",string,"Approve","Deny");
 
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
@@ -790,7 +790,7 @@ CMD:ar(playerid, params[])
 			GetPVarString(Reports[reportid][ReportFrom], "NewRFLName", newname, MAX_PLAYER_NAME);
 
 			format(string, sizeof(string), "{00BFFF}Old Team Name: {FFFFFF}%s\n\n{00BFFF}New Team Name: {FFFFFF}%s", RFLInfo[PlayerInfo[gid][pRFLTeam]][RFLname], newname);
-			ShowPlayerDialog(playerid, DIALOG_REPORTTEAMNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Team Name Change Request",string,"Approve","Deny");
+			ShowPlayerDialogEx(playerid, DIALOG_REPORTTEAMNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Team Name Change Request",string,"Approve","Deny");
 
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
@@ -808,7 +808,7 @@ CMD:ar(playerid, params[])
 		if(GetPVarInt(Reports[reportid][ReportFrom], "hSignRequest")) {
 			new hSignTxt[64];
 			GetPVarString(Reports[reportid][ReportFrom], "hSignRequestText", hSignTxt, 64);
-			ShowPlayerDialog(playerid, DIALOG_REPORT_HSIGN, DIALOG_STYLE_MSGBOX, "{00BFFF}House Sale Sign Text Change", hSignTxt, "Approve", "Deny");
+			ShowPlayerDialogEx(playerid, DIALOG_REPORT_HSIGN, DIALOG_STYLE_MSGBOX, "{00BFFF}House Sale Sign Text Change", hSignTxt, "Approve", "Deny");
 
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
@@ -852,7 +852,7 @@ CMD:ar(playerid, params[])
 								}
 							}	
 							ABroadCast( COLOR_YELLOW, string, 2);
-							ShowPlayerDialog(giveplayerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
+							ShowPlayerDialogEx(giveplayerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Free name change","This is a roleplay server where you must have a name in this format: Firstname_Lastname.\nFor example: John_Smith or Jimmy_Johnson\n\nAn admin has offered you to change your name to the correct format for free. Please enter your desired name below.\n\nNote: If you press cancel you will be kicked from the server.", "Change", "Cancel" );
 						}
 						else
 						{

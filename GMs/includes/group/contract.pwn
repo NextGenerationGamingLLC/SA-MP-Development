@@ -145,16 +145,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							C4\t\t\t $50,000"
 							);
 						}
-						ShowPlayerDialog(playerid, DIALOG_ORDER_HMAWPS, DIALOG_STYLE_LIST, "Weapon Select", szMiscArray, "Select", "Back");
+						ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMAWPS, DIALOG_STYLE_LIST, "Weapon Select", szMiscArray, "Select", "Back");
 					}
 					case 2: {
-						ShowPlayerDialog(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Uniform", "Choose a skin (by ID).", "Change", "Back");  
+						ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Uniform", "Choose a skin (by ID).", "Change", "Back");  
 					}
 					case 3: {
 						if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) {
 							return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only request a name change every two minutes.");
 						}
-						ShowPlayerDialog(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Back");
+						ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Back");
 					}
 					case 4: ShowGroupAmmoDialog(playerid, iGroupID);
 				}
@@ -164,7 +164,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(!response) {
 				format(szMiscArray, sizeof(szMiscArray), "Health and Armour\t\t $2000\nWeapons\nUniform\nName Change");
-				ShowPlayerDialog(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", szMiscArray, "Order", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", szMiscArray, "Order", "Cancel");
 			}
 			else {
 				switch(listitem) {
@@ -304,14 +304,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(response)	{
 				new skin = strval(inputtext);
 				if(IsInvalidSkin(skin)) {
-					return ShowPlayerDialog(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Uniform","Invalid skin specified. Choose another.", "Select", "Cancel");
+					return ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Uniform","Invalid skin specified. Choose another.", "Select", "Cancel");
 				}
 				PlayerInfo[playerid][pModel] = skin;
 				SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 			}
 			else {
 				format(szMiscArray, sizeof(szMiscArray), "Health and Armour\t\t $2000\nWeapons\nUniform\nName Change");
-				ShowPlayerDialog(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", szMiscArray, "Order", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", szMiscArray, "Order", "Cancel");
 			}
 		}
 	}
@@ -338,7 +338,7 @@ CMD:order(playerid, params[])
 			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
 			new string[128];
 			format(string, sizeof(string), "Health and Armour\t\t $2000\nWeapons\nUniform\nName Change\nAmmo");
-			ShowPlayerDialog(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", string, "Order", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", string, "Order", "Cancel");
 		}
 		else
 		{
@@ -429,7 +429,7 @@ CMD:profile(playerid, params[])
 			{FF6347}Organization: {BFC0C2}%s\n\
 			{FF6347}Bounty: {BFC0C2}$%d\n\
 			{FF6347}Bounty Reason: {BFC0C2}%s", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pBirthDate], PlayerInfo[giveplayerid][pPnumber], str2, PlayerInfo[giveplayerid][pHeadValue], PlayerInfo[giveplayerid][pContractDetail]);
-			ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Target Profile", string, "OK", "");
+			ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Target Profile", string, "OK", "");
 		}
 	}
 	return 1;

@@ -47,6 +47,7 @@ stock SendJobMessage(job, color, string[])
 	}
 }
 
+/*
 stock GetJobName(job)
 {
 	new name[20];
@@ -74,6 +75,7 @@ stock GetJobName(job)
 	}
 	return name;
 }
+*/
 
 stock GetJobLevel(playerid, job)
 {
@@ -178,59 +180,59 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					case 0: //Detective
 					{
-						ShowPlayerDialog(playerid, DETECTIVEJOB, DIALOG_STYLE_MSGBOX, "Detective", "Information:\n\nThis job can be used to locate people anywhere around San Andreas.\nThis is helpful for the Government factions, and can be used to find criminals. It is a legal job and you cannot get busted for doing it.\nIt will tell you the last known location(area) they were found in and give you a beacon.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, DETECTIVEJOB, DIALOG_STYLE_MSGBOX, "Detective", "Information:\n\nThis job can be used to locate people anywhere around San Andreas.\nThis is helpful for the Government factions, and can be used to find criminals. It is a legal job and you cannot get busted for doing it.\nIt will tell you the last known location(area) they were found in and give you a beacon.", "Next", "Cancel");
 					}
 					case 1: //Lawyer
 					{
-						ShowPlayerDialog(playerid, LAWYERJOB, DIALOG_STYLE_MSGBOX, "Lawyer", "Information:\n\nThis job can be used to remove wanted stars, reduce jail time, and list all criminals.\nThis is helpful for criminals and crooks, it is a legal job and you cannot get busted for doing it.\nIt will come in handy for your friends and families who got trouble with the cops.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, LAWYERJOB, DIALOG_STYLE_MSGBOX, "Lawyer", "Information:\n\nThis job can be used to remove wanted stars, reduce jail time, and list all criminals.\nThis is helpful for criminals and crooks, it is a legal job and you cannot get busted for doing it.\nIt will come in handy for your friends and families who got trouble with the cops.", "Next", "Cancel");
 					}
 					case 2: //Whore
 					{
-						ShowPlayerDialog(playerid, WHOREJOB, DIALOG_STYLE_MSGBOX, "Whore", "Information:\n\nThis job can be used to bring pleasure to any clients who may be interested in having some fun.\nThis is a job that offers sex to every client who comes along.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, WHOREJOB, DIALOG_STYLE_MSGBOX, "Whore", "Information:\n\nThis job can be used to bring pleasure to any clients who may be interested in having some fun.\nThis is a job that offers sex to every client who comes along.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
 					}
 					case 3: //Drug Dealer
 					{
-						ShowPlayerDialog(playerid, DRUGDEALERJOB, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Information:\n\nThis job can be used to sell pot and crack to any customers you might find.\nIt often comes in handy, when you're a higher level at it.\nThe higher the level, the more drugs you can hold.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, DRUGDEALERJOB, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Information:\n\nThis job can be used to sell pot and crack to any customers you might find.\nIt often comes in handy, when you're a higher level at it.\nThe higher the level, the more drugs you can hold.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
 					}
 					case 4: //Mechanic
 					{
-						ShowPlayerDialog(playerid, MECHANICJOB, DIALOG_STYLE_MSGBOX, "Mechanic", "Information:\n\nThis job can be used to repair, add nos, and add hydraulics to vehicles.\nThis job can sometimes be rewarding, but often people do not require assistance.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, MECHANICJOB, DIALOG_STYLE_MSGBOX, "Mechanic", "Information:\n\nThis job can be used to repair, add nos, and add hydraulics to vehicles.\nThis job can sometimes be rewarding, but often people do not require assistance.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
 					}
 					case 5: //Bodyguard
 					{
-						ShowPlayerDialog(playerid, BODYGUARDJOB, DIALOG_STYLE_MSGBOX, "Bodyguard", "Information:\n\nThis job can be used to give people half armor.\nThis job is very profitable and the common spot for purchasing off bodyguards is the gym.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, BODYGUARDJOB, DIALOG_STYLE_MSGBOX, "Bodyguard", "Information:\n\nThis job can be used to give people half armor.\nThis job is very profitable and the common spot for purchasing off bodyguards is the gym.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
 					}
 					case 6: //Arms Dealer
 					{
-						ShowPlayerDialog(playerid, ARMSDEALERJOB, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Information:\n\nThis job can be used to sell people weapons.\nThis job is very profitable and can earn you big cash at later levels.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, ARMSDEALERJOB, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Information:\n\nThis job can be used to sell people weapons.\nThis job is very profitable and can earn you big cash at later levels.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
 					}
 					case 7: //Boxer
 					{
-						ShowPlayerDialog(playerid, BOXERJOB, DIALOG_STYLE_MSGBOX, "Boxer", "Information:\n\nThis job can be used to box people inside the Ganton Gym.\nThis job is not very money-making, but you can become the boxing champion.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, BOXERJOB, DIALOG_STYLE_MSGBOX, "Boxer", "Information:\n\nThis job can be used to box people inside the Ganton Gym.\nThis job is not very money-making, but you can become the boxing champion.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
 					}
 					case 8: //Taxi Driver
 					{
-						ShowPlayerDialog(playerid, TAXIJOB, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Information:\n\nThis job can be used to take passengers around the city for any price you desire($1 - $500 per 16 seconds).\nThis job is not very profitable as people do not usually call taxis, and sometimes they try to steal your taxi vehicle.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, TAXIJOB, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Information:\n\nThis job can be used to take passengers around the city for any price you desire($1 - $500 per 16 seconds).\nThis job is not very profitable as people do not usually call taxis, and sometimes they try to steal your taxi vehicle.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
 					}
 					case 9: //Drug Smuggling
 					{
-						ShowPlayerDialog(playerid, SMUGGLEJOB, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Information:\n\nThis job can be used to keep Crack and Pot filled in the Crack Lab.\nThis job is very profitable as people usually buy crack and pot, and sometimes they try to steal your pot and crack.\nThis is an ilegal job and you can get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, SMUGGLEJOB, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Information:\n\nThis job can be used to keep Crack and Pot filled in the Crack Lab.\nThis job is very profitable as people usually buy crack and pot, and sometimes they try to steal your pot and crack.\nThis is an ilegal job and you can get busted for doing it.", "Next", "Cancel");
 					}
 					case 10: //Craftsman
 					{
-						ShowPlayerDialog(playerid, CRAFTJOB, DIALOG_STYLE_MSGBOX, "Craftsman", "Information:\nThis job can be used to sell crafts to other players.\nThis job is very profitable as people have a need for many of the things you can make.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/getmats /craft\nLocation of job: This job can be obtained in Willowfield at the junkyard, at the job icon(yellow circle).", "Done", "Cancel");
+						ShowPlayerDialogEx(playerid, CRAFTJOB, DIALOG_STYLE_MSGBOX, "Craftsman", "Information:\nThis job can be used to sell crafts to other players.\nThis job is very profitable as people have a need for many of the things you can make.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/getmats /craft\nLocation of job: This job can be obtained in Willowfield at the junkyard, at the job icon(yellow circle).", "Done", "Cancel");
 					}
 					case 11: //Bartender
 					{
-						ShowPlayerDialog(playerid, BARTENDERJOB, DIALOG_STYLE_MSGBOX, "Bartender", "Information:\nThis job can be used to sell drinks to other players.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/selldrink\nLocation of job: This job can be obtained in Idlewood inside the Alhambra Club, at the job icon(yellow i).", "Done", "Cancel");
+						ShowPlayerDialogEx(playerid, BARTENDERJOB, DIALOG_STYLE_MSGBOX, "Bartender", "Information:\nThis job can be used to sell drinks to other players.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/selldrink\nLocation of job: This job can be obtained in Idlewood inside the Alhambra Club, at the job icon(yellow i).", "Done", "Cancel");
 					}
 					case 12: //Trucker
 					{
-						ShowPlayerDialog(playerid, TRUCKERJOB, DIALOG_STYLE_MSGBOX, "Shipment Contractor","Information:\nThis job can be used to earn money by making truck deliveries\nThis is a legal job, however you can get busted if you transport illegal goods or hijack trucks. Also Shipment Contractors get a 50 percent bonus for carting illegal goods.\n\nCommands:\n/loadshipment /checkcargo /hijackcargo\nLocation of job: This job can be obtained at the San Fierro Docks, at the job icon(yellow I).", "Done", "Cancel");
+						ShowPlayerDialogEx(playerid, TRUCKERJOB, DIALOG_STYLE_MSGBOX, "Shipment Contractor","Information:\nThis job can be used to earn money by making truck deliveries\nThis is a legal job, however you can get busted if you transport illegal goods or hijack trucks. Also Shipment Contractors get a 25 percent bonus for carting illegal goods.\n\nCommands:\n/loadshipment /checkcargo /hijackcargo\nLocation of job: This job can be obtained at the San Fierro Docks, at the job icon(yellow I).", "Done", "Cancel");
 					}
 					case 13: //Pizza Boy
 					{
-						ShowPlayerDialog(playerid, PIZZAJOB, DIALOG_STYLE_MSGBOX, "Pizza Boy","Information:\nThis job can be used to earn money by grabbing a pizza from the\n SF Pizza Stack and then delivering it to different houses.\n You will get less and less money as time moves on and eventually,\n when the pizza is cold, it will be worthless.\n\nCommands:\n/getpizza\nLocation of job: This job can be obtained at the Pier 69, at the job icon(yellow I).", "Done", "Cancel");
+						ShowPlayerDialogEx(playerid, PIZZAJOB, DIALOG_STYLE_MSGBOX, "Pizza Boy","Information:\nThis job can be used to earn money by grabbing a pizza from the\n SF Pizza Stack and then delivering it to different houses.\n You will get less and less money as time moves on and eventually,\n when the pizza is cold, it will be worthless.\n\nCommands:\n/getpizza\nLocation of job: This job can be obtained at the Pier 69, at the job icon(yellow I).", "Done", "Cancel");
 					}
 				}
 			}
@@ -239,140 +241,140 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, SMUGGLEJOB3, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Commands:\n\n/getcrate [name(Pot/Crack)]\n\nLocation of job: This job can be obtained inside the Crack Lab, at the job icon(yellow circle).", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, SMUGGLEJOB3, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Commands:\n\n/getcrate [name(Pot/Crack)]\n\nLocation of job: This job can be obtained inside the Crack Lab, at the job icon(yellow circle).", "Done", "Cancel");
 			}
 		}
 		case SMUGGLEJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, SMUGGLEJOB2, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Note: There is no reload time for drug smuggling and you do need to level it up to obtain more money. There are 5 levels for this job.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, SMUGGLEJOB2, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Note: There is no reload time for drug smuggling and you do need to level it up to obtain more money. There are 5 levels for this job.", "Next", "Cancel");
 			}
 		}
 		case TAXIJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, TAXIJOB2, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Note: There is no reload time for taxi fares and there are no levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, TAXIJOB2, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Note: There is no reload time for taxi fares and there are no levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
 			}
 		}
 		case TAXIJOB2:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, TAXIJOB3, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Commands:\n\n/fare [$1 - $500]\n\nLocation of job: This job can be obtained in front of Unity Station at the job icon(yellow circle).", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, TAXIJOB3, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Commands:\n\n/fare [$1 - $500]\n\nLocation of job: This job can be obtained in front of Unity Station at the job icon(yellow circle).", "Done", "Cancel");
 			}
 		}
 		case BOXERJOB2:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, BOXERJOB3, DIALOG_STYLE_MSGBOX, "Boxer", "Commands:\n\n/fight [PlayerID/Name], /boxstats\n\nLocation of job: This job can be obtained inside the Ganton Gym, at the job icon(yellow circle).", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, BOXERJOB3, DIALOG_STYLE_MSGBOX, "Boxer", "Commands:\n\n/fight [PlayerID/Name], /boxstats\n\nLocation of job: This job can be obtained inside the Ganton Gym, at the job icon(yellow circle).", "Done", "Cancel");
 			}
 		}
 		case BOXERJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, BOXERJOB2, DIALOG_STYLE_MSGBOX, "Boxer", "Note: There is no reload time for boxing and you don't need to level it up to box people in the gym. There are 3 levels for this job.\n\nLevel 1: Beginner Boxer.\nLevel 2: Amateur Boxer.\nLevel 3: Professional Boxer.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, BOXERJOB2, DIALOG_STYLE_MSGBOX, "Boxer", "Note: There is no reload time for boxing and you don't need to level it up to box people in the gym. There are 3 levels for this job.\n\nLevel 1: Beginner Boxer.\nLevel 2: Amateur Boxer.\nLevel 3: Professional Boxer.", "Next", "Cancel");
 			}
 		}
 		case ARMSDEALERJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, ARMSDEALERJOB2, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Note: The reload time for selling guns is always 10 seconds, no matter what level.\n\nSkills:\n\nLevel 1 Weapons: Flowers, Knuckles, SDPistol, 9mm, and Shotgun.\nLevel 2 Weapons: Baseball Bat, Cane, MP5, and Rifle.\nLevel 3 Weapons: Shovel and Deagle.\nLevel 4 Weapons: Poolcue and Golf Club.\nLevel 5 Weapons: Katana, Dildo, UZI & TEC9.\nGold+ VIP Feature: AK-47", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, ARMSDEALERJOB2, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Note: The reload time for selling guns is always 10 seconds, no matter what level.\n\nSkills:\n\nLevel 1 Weapons: Flowers, Knuckles, SDPistol, 9mm, and Shotgun.\nLevel 2 Weapons: Baseball Bat, Cane, MP5, and Rifle.\nLevel 3 Weapons: Shovel and Deagle.\nLevel 4 Weapons: Poolcue and Golf Club.\nLevel 5 Weapons: Katana, Dildo, UZI & TEC9.\nGold+ VIP Feature: AK-47", "Next", "Cancel");
 			}
 		}
 		case ARMSDEALERJOB2:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, ARMSDEALERJOB3, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Commands:\n\n/getmats, /sellgun\n\nLocation of job: This job can be obtained outside the large Ammunation, at the 'gun' icon.", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, ARMSDEALERJOB3, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Commands:\n\n/getmats, /sellgun\n\nLocation of job: This job can be obtained outside the large Ammunation, at the 'gun' icon.", "Done", "Cancel");
 			}
 		}
 		case BODYGUARDJOB2:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, BODYGUARDJOB3, DIALOG_STYLE_MSGBOX, "Bodyguard", "Commands:\n\n/guard [player] [Price $2000 - $10000]\n/frisk [player]\n\nLocation of job: This job can be obtained outside the Ganton Gym, at the job icon(yellow circle).", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, BODYGUARDJOB3, DIALOG_STYLE_MSGBOX, "Bodyguard", "Commands:\n\n/guard [player] [Price $2000 - $10000]\n/frisk [player]\n\nLocation of job: This job can be obtained outside the Ganton Gym, at the job icon(yellow circle).", "Done", "Cancel");
 			}
 		}
 		case BODYGUARDJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, BODYGUARDJOB2, DIALOG_STYLE_MSGBOX, "Bodyguard", "Note: The reload time is always 1 minute. There are no job levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, BODYGUARDJOB2, DIALOG_STYLE_MSGBOX, "Bodyguard", "Note: The reload time is always 1 minute. There are no job levels for this job. In other words, you do not need to level it up to earn the max money you can.", "Next", "Cancel");
 			}
 		}
 		case MECHANICJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, MECHANICJOB2, DIALOG_STYLE_MSGBOX, "Mechanic", "Note: The reload time is always 1 minute, no matter what level.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, MECHANICJOB2, DIALOG_STYLE_MSGBOX, "Mechanic", "Note: The reload time is always 1 minute, no matter what level.", "Next", "Cancel");
 			}
 		}
 		case MECHANICJOB2:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, MECHANICJOB3, DIALOG_STYLE_MSGBOX, "Mechanic", "Commands:\n\n/fix, /repair, /hyd, /nos, /refill, /mechduty\n\nLocation of job: This job can be obtained at blueberry, at the job icon(yellow circle).", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, MECHANICJOB3, DIALOG_STYLE_MSGBOX, "Mechanic", "Commands:\n\n/fix, /repair, /hyd, /nos, /refill, /mechduty\n\nLocation of job: This job can be obtained at blueberry, at the job icon(yellow circle).", "Done", "Cancel");
 			}
 		}
 		case DRUGDEALERJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, DRUGDEALERJOB2, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You can hold 10 pot and 5 crack.\nLevel 2: You can hold 20 pot and 15 crack.\nLevel 3: You can hold 30 pot and 15 crack.\nLevel 4: You can hold 40 pot and 20 crack.\nLevel 5: You can hold 50 pot and 25 crack.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, DRUGDEALERJOB2, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You can hold 10 pot and 5 crack.\nLevel 2: You can hold 20 pot and 15 crack.\nLevel 3: You can hold 30 pot and 15 crack.\nLevel 4: You can hold 40 pot and 20 crack.\nLevel 5: You can hold 50 pot and 25 crack.", "Next", "Cancel");
 			}
 		}
 		case DRUGDEALERJOB2:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, DRUGDEALERJOB3, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Commands:\n\n/getpot, /sell, /getcrack, /getseeds, /plantpotseeds\n\nLocation of job: This job can be located outside the Drug Den, opposite the Ganton Gym, at the 'D' icon.", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, DRUGDEALERJOB3, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Commands:\n\n/getpot, /sell, /getcrack, /getseeds, /plantpotseeds\n\nLocation of job: This job can be located outside the Drug Den, opposite the Ganton Gym, at the 'D' icon.", "Done", "Cancel");
 			}
 		}
 		case WHOREJOB2:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, WHOREJOB3, DIALOG_STYLE_MSGBOX, "Whore", "Commands:\n\n/sex\n/sex is a command to offer sex to a client, and may only be used in a vehicle.\n\nLocation of job: This job can be obtained inside the Pig Pen, at the job icon(yellow circle).", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, WHOREJOB3, DIALOG_STYLE_MSGBOX, "Whore", "Commands:\n\n/sex\n/sex is a command to offer sex to a client, and may only be used in a vehicle.\n\nLocation of job: This job can be obtained inside the Pig Pen, at the job icon(yellow circle).", "Done", "Cancel");
 			}
 		}
 		case LAWYERJOB2:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, LAWYERJOB3, DIALOG_STYLE_MSGBOX, "Lawyer", "Commands:\n\n/defend, /free, /wanted, /lawyerduty, /offerappeal, /finishappeal\n\nLocation of job: This job can be found at the job map icon(yellow circle)near the bank.", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, LAWYERJOB3, DIALOG_STYLE_MSGBOX, "Lawyer", "Commands:\n\n/defend, /free, /wanted, /lawyerduty, /offerappeal, /finishappeal\n\nLocation of job: This job can be found at the job map icon(yellow circle)near the bank.", "Done", "Cancel");
 			}
 		}
 		case WHOREJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, WHOREJOB2, DIALOG_STYLE_MSGBOX, "Whore", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You have a very high chance of catching/giving STD's.\nLevel 2: You have a high chance of catching/giving STD's.\nLevel 3: You have a medium chance of catching/giving STD's.\nLevel 4: You have a low chance of catching/giving STD's.\nLevel 5: You have a very low chance of catching/giving STD's.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, WHOREJOB2, DIALOG_STYLE_MSGBOX, "Whore", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You have a very high chance of catching/giving STD's.\nLevel 2: You have a high chance of catching/giving STD's.\nLevel 3: You have a medium chance of catching/giving STD's.\nLevel 4: You have a low chance of catching/giving STD's.\nLevel 5: You have a very low chance of catching/giving STD's.", "Next", "Cancel");
 			}
 		}
 		case LAWYERJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, LAWYERJOB2, DIALOG_STYLE_MSGBOX, "Lawyer", "Note: The reload time is always 2 minutes, no matter what level.\n\nSkills:\n\nLevel 1: You can reduce inmates sentences by 1 minute.\nLevel 2: You can reduce inmates sentences by 2 minutes.\nLevel 3: You can reduce inmates sentences by 3 minutes.\nLevel 4: You can reduce inmates sentences by 4 minutes.\nLevel 5: You can reduce inmates sentences by 5 minutes.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, LAWYERJOB2, DIALOG_STYLE_MSGBOX, "Lawyer", "Note: The reload time is always 2 minutes, no matter what level.\n\nSkills:\n\nLevel 1: You can reduce inmates sentences by 1 minute.\nLevel 2: You can reduce inmates sentences by 2 minutes.\nLevel 3: You can reduce inmates sentences by 3 minutes.\nLevel 4: You can reduce inmates sentences by 4 minutes.\nLevel 5: You can reduce inmates sentences by 5 minutes.", "Next", "Cancel");
 			}
 		}
 		case DETECTIVEJOB2:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, DETECTIVEJOB3, DIALOG_STYLE_MSGBOX, "Detective", "Commands:\n\n/find\n/find is a command that can locate a player's position.\n\nLocation of job: This job can be obtained in the Los Santos Police Department.", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, DETECTIVEJOB3, DIALOG_STYLE_MSGBOX, "Detective", "Commands:\n\n/trace\n/trace is a command that can locate a player's phone position.\n\nLocation of job: This job can be obtained in the Los Santos Police Department.", "Done", "Cancel");
 			}
 		}
 		case DETECTIVEJOB:
 		{
 			if(response)
 			{
-				ShowPlayerDialog(playerid, DETECTIVEJOB2, DIALOG_STYLE_MSGBOX, "Detective", "Skills:\n\nLevel 1: You can find someone for 3 seconds, the reload time is 2 minutes.\nLevel 2: You can find someone for 5 seconds, the reload time is 1 minute, 20 seconds.\nLevel 3: You can find someone for 7 seconds, the reload time is 1 minute.\nLevel 4: You can find someone for 9 seconds, the reload time is 30 seconds.\nLevel 5: You can find someone for 11 seconds, the reload time is 20 seconds.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, DETECTIVEJOB2, DIALOG_STYLE_MSGBOX, "Detective", "Skills:\n\nLevel 1: You can find someone for 3 seconds, the reload time is 2 minutes.\nLevel 2: You can find someone for 5 seconds, the reload time is 1 minute, 20 seconds.\nLevel 3: You can find someone for 7 seconds, the reload time is 1 minute.\nLevel 4: You can find someone for 9 seconds, the reload time is 30 seconds.\nLevel 5: You can find someone for 11 seconds, the reload time is 20 seconds.", "Next", "Cancel");
 			}
 		}
 	}
@@ -820,7 +822,7 @@ CMD:skill(playerid, params[])
 }
 
 CMD:jobhelp(playerid, params[]) {
-    return ShowPlayerDialog(playerid, JOBHELPMENU, DIALOG_STYLE_LIST, "Which job do you need help with?","Detective\nLawyer\nWhore\nDrug Dealer\nMechanic\nBodyguard\nArms Dealer\nBoxer\nTaxi Driver\nDrug Smuggling\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Select", "Cancel");
+    return ShowPlayerDialogEx(playerid, JOBHELPMENU, DIALOG_STYLE_LIST, "Which job do you need help with?","Detective\nLawyer\nWhore\nDrug Dealer\nMechanic\nBodyguard\nArms Dealer\nBoxer\nTaxi Driver\nDrug Smuggling\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Select", "Cancel");
 }
 
 CMD:quitjob(playerid, params[])

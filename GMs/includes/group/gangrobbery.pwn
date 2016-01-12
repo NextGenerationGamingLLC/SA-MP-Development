@@ -211,9 +211,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response) return 1;
 			switch(listitem)
 			{
-				case 0: ShowPlayerDialog(playerid, DIALOG_ROBBERY_SETUP_PERC, DIALOG_STYLE_INPUT, "Robbery Setup | Robable Percentage", "Enter the percentage that's takeable by the robbers.", "Cancel", "Confirm");
-				case 1: ShowPlayerDialog(playerid, DIALOG_ROBBERY_SETUP_RATE, DIALOG_STYLE_INPUT, "Robbery Setup | Collect Rate", "Enter the amount of money taken each 10 seconds.", "Cancel", "Confirm");
-				case 2: ShowPlayerDialog(playerid, DIALOG_ROBBERY_SETUP_MIN, DIALOG_STYLE_INPUT, "Robbery Setup | Minimum Robbers", "Enter the minimum amount of robbers needed in the robbery.", "Cancel", "Confirm");
+				case 0: ShowPlayerDialogEx(playerid, DIALOG_ROBBERY_SETUP_PERC, DIALOG_STYLE_INPUT, "Robbery Setup | Robable Percentage", "Enter the percentage that's takeable by the robbers.", "Cancel", "Confirm");
+				case 1: ShowPlayerDialogEx(playerid, DIALOG_ROBBERY_SETUP_RATE, DIALOG_STYLE_INPUT, "Robbery Setup | Collect Rate", "Enter the amount of money taken each 10 seconds.", "Cancel", "Confirm");
+				case 2: ShowPlayerDialogEx(playerid, DIALOG_ROBBERY_SETUP_MIN, DIALOG_STYLE_INPUT, "Robbery Setup | Minimum Robbers", "Enter the minimum amount of robbers needed in the robbery.", "Cancel", "Confirm");
 			}
 			return 1;
 		}
@@ -285,19 +285,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0:
 				{
-					ShowPlayerDialog(playerid, DIALOG_SAFE_BALANCE, DIALOG_STYLE_MSGBOX, szTitle, szDialog, "---", "---");
+					ShowPlayerDialogEx(playerid, DIALOG_SAFE_BALANCE, DIALOG_STYLE_MSGBOX, szTitle, szDialog, "---", "---");
 				}
 				case 1:
 				{
-					return ShowPlayerDialog(playerid, DIALOG_SAFE_WITHDRAW, DIALOG_STYLE_INPUT, szTitle, "Specify the amount you would like to withdraw", "Cancel", "Withdraw");
+					return ShowPlayerDialogEx(playerid, DIALOG_SAFE_WITHDRAW, DIALOG_STYLE_INPUT, szTitle, "Specify the amount you would like to withdraw", "Cancel", "Withdraw");
 				}
 				case 2:
 				{
-					return ShowPlayerDialog(playerid, DIALOG_SAFE_DEPOSIT, DIALOG_STYLE_INPUT, szTitle, "Specify the amount you would like to deposit.", "Cancel", "Deposit");
+					return ShowPlayerDialogEx(playerid, DIALOG_SAFE_DEPOSIT, DIALOG_STYLE_INPUT, szTitle, "Specify the amount you would like to deposit.", "Cancel", "Deposit");
 				}
 				case 3:
 				{
-					return ShowPlayerDialog(playerid, DIALOG_SAFE_PIN_EDIT, DIALOG_STYLE_INPUT, szTitle, "Please edit the new PIN.", "Back", "Proceed");
+					return ShowPlayerDialogEx(playerid, DIALOG_SAFE_PIN_EDIT, DIALOG_STYLE_INPUT, szTitle, "Please edit the new PIN.", "Back", "Proceed");
 				}
 			}	
 		}
@@ -350,11 +350,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!response) return DeletePVar(playerid, "_EditingSafeID");
 			switch(listitem)
 			{
-				case 0: return ShowPlayerDialog(playerid, DIALOG_SAFE_CTYPE, DIALOG_STYLE_LIST, "Safe Menu | Safe Type", "Bank\nGroup\nBusiness\nPlayer", "Cancel", "Select");
-				case 1: return ShowPlayerDialog(playerid, DIALOG_SAFE_CTYPEID, DIALOG_STYLE_INPUT, "Safe Menu | Safe Type ID", "Please specify the ID of the safe's owner.", "Cancel", "Select");
-				case 2: return ShowPlayerDialog(playerid, DIALOG_SAFE_CMODELID_CONFIRM, DIALOG_STYLE_LIST, "Safe Menu | Model Selection", "Big Safe\nMedium Safe\nSmall Safe", "Cancel", "Select");
+				case 0: return ShowPlayerDialogEx(playerid, DIALOG_SAFE_CTYPE, DIALOG_STYLE_LIST, "Safe Menu | Safe Type", "Bank\nGroup\nBusiness\nPlayer", "Cancel", "Select");
+				case 1: return ShowPlayerDialogEx(playerid, DIALOG_SAFE_CTYPEID, DIALOG_STYLE_INPUT, "Safe Menu | Safe Type ID", "Please specify the ID of the safe's owner.", "Cancel", "Select");
+				case 2: return ShowPlayerDialogEx(playerid, DIALOG_SAFE_CMODELID_CONFIRM, DIALOG_STYLE_LIST, "Safe Menu | Model Selection", "Big Safe\nMedium Safe\nSmall Safe", "Cancel", "Select");
 				case 3: return safePosition(playerid, GetPVarInt(playerid, "_EditingSafeID"));
-				case 4: return ShowPlayerDialog(playerid, DIALOG_SAFE_PIN_AEDIT, DIALOG_STYLE_INPUT, "Safe Menu | Edit Safe PIN", "Please edit the new PIN.", "Back", "Proceed");
+				case 4: return ShowPlayerDialogEx(playerid, DIALOG_SAFE_PIN_AEDIT, DIALOG_STYLE_INPUT, "Safe Menu | Edit Safe PIN", "Please edit the new PIN.", "Back", "Proceed");
 				case 5: { processSafe(GetPVarInt(playerid, "_EditingSafeID")); return DeletePVar(playerid, "_EditingSafeID"); }
 			}
 		}
@@ -403,7 +403,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 			SetPVarInt(playerid, "_SafeTypeID", strval(inputtext));
-			ShowPlayerDialog(playerid, DIALOG_SAFE_CTYPEID_CONFIRM, DIALOG_STYLE_MSGBOX, "Safe Menu | Confirm Owner", szDialog, "Confirm", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_SAFE_CTYPEID_CONFIRM, DIALOG_STYLE_MSGBOX, "Safe Menu | Confirm Owner", szDialog, "Confirm", "Cancel");
 			return 1;
 		}
 		case DIALOG_SAFE_CMODELID_CONFIRM:
@@ -798,7 +798,7 @@ safeMenu(playerid)
 	if(iSafeID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near a safe.");
 	SetPVarInt(playerid, "_EditingSafeID", iSafeID);
 	format(szTitle, sizeof(szTitle), "%s's Safe Menu (ID: %i)", "test", iSafeID);
-	ShowPlayerDialog(playerid, DIALOG_SAFE_MAIN, DIALOG_STYLE_LIST, szTitle, "Request Balance Sheet\nWithdraw Money\nDeposit Money\nEdit PIN", "Cancel", "Proceed");
+	ShowPlayerDialogEx(playerid, DIALOG_SAFE_MAIN, DIALOG_STYLE_LIST, szTitle, "Request Balance Sheet\nWithdraw Money\nDeposit Money\nEdit PIN", "Cancel", "Proceed");
 	return 1;
 }
 
@@ -866,7 +866,7 @@ safeEditMenu(playerid)
 		case 3: format(szTitle, sizeof(szTitle), "Safe Menu | %s (Business)", Businesses[SafeData[iSafeID][g_iTypeID]][bName]);
 		case 4: format(szTitle, sizeof(szTitle), "Safe Menu | %s (Player)", GetPlayerNameEx(SafeData[iSafeID][g_iTypeID]));
 	}
-	ShowPlayerDialog(playerid, DIALOG_SAFE_CREATE, DIALOG_STYLE_LIST, szTitle, "\
+	ShowPlayerDialogEx(playerid, DIALOG_SAFE_CREATE, DIALOG_STYLE_LIST, szTitle, "\
 		Safe Type (Bank / Group / Business)\n\
 		Safe Type ID\n\
 		Safe Size\n\
@@ -1020,7 +1020,7 @@ breachSafe(playerid, iSafeID)
 		1a0z\t48ff\t00f\n\
 		%b\t48ff\a64b\n\
 		1a0z\t48ff\%b", SafeData[iSafeID][g_iPin][0], SafeData[iSafeID][g_iPin][1], SafeData[iSafeID][g_iPin][2], SafeData[iSafeID][g_iPin][3]);
-	return ShowPlayerDialog(playerid, DIALOG_SAFE_BREACH, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szDialog, "Try Code", "Cancel");
+	return ShowPlayerDialogEx(playerid, DIALOG_SAFE_BREACH, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szDialog, "Try Code", "Cancel");
 }
 
 
@@ -1152,7 +1152,7 @@ CMD:safe(playerid, params[])
 			case 3: if(SafeData[iSafeID][g_iTypeID] != PlayerInfo[playerid][pBusiness]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot access this safe.");
 		}
 	}
-	ShowPlayerDialog(playerid, DIALOG_SAFE_PIN, DIALOG_STYLE_INPUT, "Safe | Enter Pin", "Please enter the safe's pin to open it.", "X", "V");
+	ShowPlayerDialogEx(playerid, DIALOG_SAFE_PIN, DIALOG_STYLE_INPUT, "Safe | Enter Pin", "Please enter the safe's pin to open it.", "X", "V");
 	return 1;
 }
 
@@ -1268,7 +1268,7 @@ CMD:editrobbery(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] < 1337) return 1;
 	new szDialog[256];
 	format(szDialog, sizeof(szDialog), "Robable percentage\t\t%i\nCollect rate\t\t$%s / 10s\nMinimum robbers\t\t%i", ROB_MAX_PERCENTAGE, number_format(ROB_COLLECT_RATE), ROB_MIN_MEMBERS);
-	ShowPlayerDialog(playerid, DIALOG_ROBBERY_SETUP, DIALOG_STYLE_TABLIST, "Robbery Setup Menu", szDialog, "Cancel", "Select");
+	ShowPlayerDialogEx(playerid, DIALOG_ROBBERY_SETUP, DIALOG_STYLE_TABLIST, "Robbery Setup Menu", szDialog, "Cancel", "Select");
 	return 1;
 }
 
@@ -1283,6 +1283,6 @@ CMD:robsafe(playerid, params[])
 {
 	if(!GetGVarInt("RobberyStage")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You did not get an approval yet.");
 	if(GetSafeID(playerid) != GetGVarInt("RobbedSafeID")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near the safe.");
-	ShowPlayerDialog(playerid, DIALOG_ROBBERY_SAFE, DIALOG_STYLE_INPUT, "Safe PIN", "Please enter the PIN to open the safe.", "Cancel", "Enter");
+	ShowPlayerDialogEx(playerid, DIALOG_ROBBERY_SAFE, DIALOG_STYLE_INPUT, "Safe PIN", "Please enter the PIN to open the safe.", "Cancel", "Enter");
 	return 1;
 }

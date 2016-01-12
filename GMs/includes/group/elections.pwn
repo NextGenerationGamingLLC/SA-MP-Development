@@ -46,7 +46,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) return SendClientMessage(playerid, COLOR_WHITE, "You have not cast a vote");
 
 			if(strcmp(inputtext, "Add Candidate") == 0) {
-				return ShowPlayerDialog(playerid, ELECTIONS_ADD, DIALOG_STYLE_INPUT, "Add candidate", "Please enter the candidates name", "Select", "Cancel");
+				return ShowPlayerDialogEx(playerid, ELECTIONS_ADD, DIALOG_STYLE_INPUT, "Add candidate", "Please enter the candidates name", "Select", "Cancel");
 			}
 
 			if(strcmp(inputtext, "Remove Candidate") == 0) {
@@ -59,7 +59,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GetGVarString("CandidateName", szTemp, sizeof(szTemp), i);
 					format(szMiscArray, sizeof(szMiscArray), "%s\n%s", szMiscArray, szTemp);
 				}
-				return ShowPlayerDialog(playerid, ELECTIONS_REMOVE, DIALOG_STYLE_LIST, "Gov Elections", szMiscArray, "Select", "Cancel");
+				return ShowPlayerDialogEx(playerid, ELECTIONS_REMOVE, DIALOG_STYLE_LIST, "Gov Elections", szMiscArray, "Select", "Cancel");
 			}	
 
 			if(strcmp(inputtext, "Start Elections") == 0) {
@@ -199,7 +199,7 @@ ShowElectionMenu(playerid) {
 
 	if(PlayerInfo[playerid][pAdmin] >= 1337 && !GetGVarType("ElectionActive")) strcat(szMiscArray, "\nAdd Candidate\nRemove Candidate\nStart Elections");
 	if(PlayerInfo[playerid][pAdmin] >= 1337 && GetGVarType("ElectionActive")) strcat(szMiscArray, "\nEnd Elections");
-	return ShowPlayerDialog(playerid, ELECTIONS, DIALOG_STYLE_LIST, "Gov Elections", szMiscArray, "Select", "Close");
+	return ShowPlayerDialogEx(playerid, ELECTIONS, DIALOG_STYLE_LIST, "Gov Elections", szMiscArray, "Select", "Close");
 }
 
 CMD:elections(playerid, params[]) {

@@ -313,6 +313,9 @@ CMD:sellfish(playerid, params[])
 	return 1;
 }
 
+
+
+
 CMD:fish(playerid, params[])
 {
 	if(PlayerInfo[playerid][pFishes] > 5)
@@ -555,6 +558,7 @@ CMD:fish(playerid, params[])
 	return 1;
 }
 
+
 CMD:fishes(playerid, params[])
 {
 	new string[128];
@@ -573,6 +577,7 @@ CMD:fishes(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
 	return 1;
 }
+
 
 CMD:releasefish(playerid, params[])
 {

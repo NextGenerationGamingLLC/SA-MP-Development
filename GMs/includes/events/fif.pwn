@@ -72,15 +72,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						case 1:
 						{
-							ShowPlayerDialog(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "{00FF00}Normal Mode (1 chance / 3 hours){FFFFFF}\nDouble Mode (2 chances / 3 hours)\nTriple Mode(3 chances / 3 hours)", "Select", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "{00FF00}Normal Mode (1 chance / 3 hours){FFFFFF}\nDouble Mode (2 chances / 3 hours)\nTriple Mode(3 chances / 3 hours)", "Select", "Cancel");
 						}
 						case 2:
 						{
-							ShowPlayerDialog(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "Normal Mode (1 chance / 3 hours)\n{00FF00}Double Mode (2 chances / 3 hours){FFFFFF}\nTriple Mode(3 chances / 3 hours)", "Select", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "Normal Mode (1 chance / 3 hours)\n{00FF00}Double Mode (2 chances / 3 hours){FFFFFF}\nTriple Mode(3 chances / 3 hours)", "Select", "Cancel");
 						}
 						case 3:
 						{
-							ShowPlayerDialog(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "Normal Mode (1 chance / 3 hours)\nDouble Mode (2 chances / 3 hours)\n{00FF00}Triple Mode(3 chances / 3 hours){FFFFFF}", "Select", "Cancel");
+							ShowPlayerDialogEx(playerid, DIALOG_FIFMENU2, DIALOG_STYLE_LIST, "FIF Mode Edit", "Normal Mode (1 chance / 3 hours)\nDouble Mode (2 chances / 3 hours)\n{00FF00}Triple Mode(3 chances / 3 hours){FFFFFF}", "Select", "Cancel");
 						}
 					}
 				}
@@ -192,7 +192,7 @@ CMD:gamblechances(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any chances to gamble.");
 		if(!IsPlayerInRangeOfPoint(playerid, 20, FIFGamble[0], FIFGamble[1], FIFGamble[2]))
 			return SendClientMessageEx(playerid, COLOR_GREY, "You aren't at the chance gambler location.");
-		ShowPlayerDialog(playerid, DIALOG_ROLL, DIALOG_STYLE_MSGBOX, "Chance Gambler! - All or Nothing","You must roll a number greater than 4 to double your chances.", "Roll", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_ROLL, DIALOG_STYLE_MSGBOX, "Chance Gambler! - All or Nothing","You must roll a number greater than 4 to double your chances.", "Roll", "Cancel");
 	}
 	else return 0;
 	return 1;
@@ -253,7 +253,7 @@ CMD:fifmenu(playerid, params[])
 	
 		}
 		format(FIFString,sizeof(FIFString), "%s\nSet Chance Gambler Position", FIFString);
-		ShowPlayerDialog(playerid, DIALOG_FIFMENU, DIALOG_STYLE_LIST, "Fall Into Fun Menu", FIFString, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_FIFMENU, DIALOG_STYLE_LIST, "Fall Into Fun Menu", FIFString, "Select", "Cancel");
 	}
 	return 1;
 }

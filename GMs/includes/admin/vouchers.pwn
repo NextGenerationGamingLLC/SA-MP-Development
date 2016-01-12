@@ -48,7 +48,7 @@ stock ShowVouchers(playerid, targetid)
 		format(szDialog, sizeof(szDialog), "Car Voucher(s):\t\t\t{18F0F0}%d\nSilver VIP Voucher(s):\t\t{18F0F0}%d\nGold VIP Voucher(s):\t\t{18F0F0}%d\n1 month PVIP Voucher(s):\t{18F0F0}%d\nRestricted Car Voucher(s):\t{18F0F0}%d\nGift Reset Voucher(s):\t\t{18F0F0}%d\n" \
 		"Priority Advert Voucher(s):\t{18F0F0}%d\n7 Days SVIP Voucher(s): \t{18F0F0}%d\n7 Days GVIP Voucher(s):\t{18F0F0}%d\n",
 		PlayerInfo[targetid][pVehVoucher], PlayerInfo[targetid][pSVIPVoucher], PlayerInfo[targetid][pGVIPVoucher], PlayerInfo[targetid][pPVIPVoucher], PlayerInfo[targetid][pCarVoucher], PlayerInfo[targetid][pGiftVoucher], PlayerInfo[targetid][pAdvertVoucher], PlayerInfo[targetid][pSVIPExVoucher], PlayerInfo[targetid][pGVIPExVoucher]);
-		ShowPlayerDialog(playerid, DIALOG_VOUCHER, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Close");
+		ShowPlayerDialogEx(playerid, DIALOG_VOUCHER, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Close");
 	}
 	return 1;
 }	
@@ -71,25 +71,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 						{
 							SetPVarInt(playerid, "voucherdialog", 1);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 						}
 						else if(PlayerInfo[playeridd][pVehVoucher] > 0 && (playerid == playeridd))
 						{
 							SetPVarInt(playerid, "voucherdialog", 1);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your car voucher?", "Yes", "No");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your car voucher?", "Yes", "No");
 						}
 						else if(PlayerInfo[playeridd][pVehVoucher] < 1)
 						{
 							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 							{
 								SetPVarInt(playerid, "voucherdialog", 1);
-								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 							}
 							else 
 							{
 								new szDialog[128];
 								format(szDialog, sizeof(szDialog), "%s does not have any car vouchers.", GetPlayerNameEx(GetPVarInt(playerid, "WhoIsThis")));
-								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 								DeletePVar(playerid, "WhoIsThis");
 							}	
 						}	
@@ -99,25 +99,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 						{
 							SetPVarInt(playerid, "voucherdialog", 2);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 						}
 						else if(PlayerInfo[playeridd][pSVIPVoucher] > 0 && (playerid == playeridd))
 						{
 							SetPVarInt(playerid, "voucherdialog", 2);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your Silver VIP voucher?", "Yes", "No");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your Silver VIP voucher?", "Yes", "No");
 						}
 						else if(PlayerInfo[playeridd][pSVIPVoucher] < 1)
 						{
 							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 							{
 								SetPVarInt(playerid, "voucherdialog", 2);
-								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 							}
 							else 
 							{
 								new szDialog[128];
 								format(szDialog, sizeof(szDialog), "%s does not have any Silver VIP vouchers.", GetPlayerNameEx(GetPVarInt(playerid, "WhoIsThis")));
-								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 								DeletePVar(playerid, "WhoIsThis");
 							}	
 						}	
@@ -127,25 +127,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 						{
 							SetPVarInt(playerid, "voucherdialog", 3);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 						}
 						else if(PlayerInfo[playeridd][pGVIPVoucher] > 0 && (playerid == playeridd))
 						{
 							SetPVarInt(playerid, "voucherdialog", 3);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your Gold VIP voucher?", "Yes", "No");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your Gold VIP voucher?", "Yes", "No");
 						}
 						else if(PlayerInfo[playeridd][pGVIPVoucher] < 1)
 						{
 							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 							{
 								SetPVarInt(playerid, "voucherdialog", 3);
-								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 							}
 							else 
 							{
 								new szDialog[128];
 								format(szDialog, sizeof(szDialog), "%s does not have any Gold VIP vouchers.", GetPlayerNameEx(playeridd));
-								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 								DeletePVar(playerid, "WhoIsThis");
 							}	
 						}	
@@ -158,12 +158,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							new szDialog[128];
 							format(szDialog, sizeof(szDialog), "%s does not have any 1 month PVIP Vouchers.", GetPlayerNameEx(playeridd));
 							DeletePVar(playerid, "WhoIsThis");
-							return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+							return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 						}
 						
 						if(PlayerInfo[playerid][pDonateRank] >= 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have Platinum VIP+, you may sell this voucher with /sellvoucher."), DeletePVar(playerid, "WhoIsThis");
 						
-						ShowPlayerDialog(playerid, DIALOG_PVIPVOUCHER, DIALOG_STYLE_MSGBOX, "1 month PVIP Voucher", "You will be made Platinum VIP after use of this voucher.", "Confirm", "Cancel");	
+						ShowPlayerDialogEx(playerid, DIALOG_PVIPVOUCHER, DIALOG_STYLE_MSGBOX, "1 month PVIP Voucher", "You will be made Platinum VIP after use of this voucher.", "Confirm", "Cancel");	
 					}
 					case 4: // Restricted Car Voucher
 					{
@@ -176,7 +176,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							new szDialog[128];
 							format(szDialog, sizeof(szDialog), "%s does not have any Restriced Car vouchers.", GetPlayerNameEx(playeridd));
 							DeletePVar(playerid, "WhoIsThis");
-							return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+							return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 						}
 						if(!IsPlayerInDynamicArea(playerid, NGGShop)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must be at NGG's shop to redeem this voucher.");
 						ShowModelSelectionMenu(playerid, CarList3, "Car Shop");
@@ -186,25 +186,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if((PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pHR] >= 1) && PlayerInfo[playerid][pTogReports] == 0)
 						{
 							SetPVarInt(playerid, "voucherdialog", 4);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 						}
 						else if(PlayerInfo[playeridd][pGiftVoucher] > 0 && (playerid == playeridd))
 						{
 							SetPVarInt(playerid, "voucherdialog", 4);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your Gift Reset Voucher?", "Yes", "No");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your Gift Reset Voucher?", "Yes", "No");
 						}
 						else if(PlayerInfo[playeridd][pGiftVoucher] < 1)
 						{
 							if((PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pHR] >= 1) && PlayerInfo[playerid][pTogReports] == 0)
 							{
 								SetPVarInt(playerid, "voucherdialog", 4);
-								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 							}
 							else 
 							{
 								new szDialog[128];
 								format(szDialog, sizeof(szDialog), "%s does not have any Gift Reset vouchers.", GetPlayerNameEx(playeridd));
-								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 								DeletePVar(playerid, "WhoIsThis");
 							}	
 						}	
@@ -214,7 +214,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 						{
 							SetPVarInt(playerid, "voucherdialog", 5);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 						}
 						else if(PlayerInfo[playeridd][pAdvertVoucher] > 0 && (playerid == playeridd))
 						{
@@ -225,13 +225,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 							{
 								SetPVarInt(playerid, "voucherdialog", 5);
-								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 							}
 							else 
 							{
 								new szDialog[128];
 								format(szDialog, sizeof(szDialog), "%s does not have any Priority Advertisement vouchers.", GetPlayerNameEx(playeridd));
-								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 								DeletePVar(playerid, "WhoIsThis");
 							}	
 						}	
@@ -241,25 +241,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 						{
 							SetPVarInt(playerid, "voucherdialog", 6);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 						}
 						else if(PlayerInfo[playeridd][pSVIPExVoucher] > 0 && (playerid == playeridd))
 						{
 							SetPVarInt(playerid, "voucherdialog", 5);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your 7 Days Silver VIP voucher?", "Yes", "No");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your 7 Days Silver VIP voucher?", "Yes", "No");
 						}
 						else if(PlayerInfo[playeridd][pSVIPExVoucher] < 1)
 						{
 							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 							{
 								SetPVarInt(playerid, "voucherdialog", 6);
-								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 							}
 							else 
 							{
 								new szDialog[128];
 								format(szDialog, sizeof(szDialog), "%s does not have any 7 Days Silver VIP vouchers.", GetPlayerNameEx(playeridd));
-								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 								DeletePVar(playerid, "WhoIsThis");
 							}	
 						}	
@@ -269,25 +269,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 						{
 							SetPVarInt(playerid, "voucherdialog", 7);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 						}
 						else if(PlayerInfo[playeridd][pGVIPExVoucher] > 0 && (playerid == playeridd))
 						{
 							SetPVarInt(playerid, "voucherdialog", 6);
-							return ShowPlayerDialog(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your 7 Days Gold VIP voucher?", "Yes", "No");
+							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHER2, DIALOG_STYLE_MSGBOX, "Voucher System", "Are you sure you want to use your 7 Days Gold VIP voucher?", "Yes", "No");
 						}
 						else if(PlayerInfo[playeridd][pGVIPExVoucher] < 1)
 						{
 							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 							{
 								SetPVarInt(playerid, "voucherdialog", 7);
-								return ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 							}
 							else 
 							{
 								new szDialog[128];
 								format(szDialog, sizeof(szDialog), "%s does not have any 7 Days Gold VIP vouchers.", GetPlayerNameEx(playeridd));
-								ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
+								ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Voucher System", szDialog, "Close", "");
 								DeletePVar(playerid, "WhoIsThis");
 							}	
 						}	
@@ -400,9 +400,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							Log("logs/vouchers.log", szString);	
 						}
 					}
-					else ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System - {FF0000}That's not a number", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
+					else ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System - {FF0000}That's not a number", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
 				}	
-				else ShowPlayerDialog(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System ", "Please enter how many would you like to give to this player.", "Enter", "Cancel");	
+				else ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System ", "Please enter how many would you like to give to this player.", "Enter", "Cancel");	
 			}
 			DeletePVar(playerid, "voucherdialog");
 			DeletePVar(playerid, "WhoIsThis");

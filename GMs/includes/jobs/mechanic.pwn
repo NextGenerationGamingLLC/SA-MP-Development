@@ -35,6 +35,17 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+timer Fix_PlayerInVehicleCheck[3000](playerid) {
+
+	if(IsPlayerInAnyVehicle(playerid)) {
+
+		TogglePlayerControllable(playerid, true);
+		RemovePlayerFromVehicle(playerid);
+		SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SERVER]: Please do not exploit this again.");
+		TogglePlayerControllable(playerid, false);
+	}
+}
+
 CMD:fix(playerid, params[])
 {
     if(PlayerInfo[playerid][pJob] == 7 || PlayerInfo[playerid][pJob2] == 7 || PlayerInfo[playerid][pJob3] == 7 ||
@@ -91,6 +102,7 @@ CMD:fix(playerid, params[])
 				SetPVarInt(playerid, "FixVehicleTimer", SetTimerEx("FixVehicle", 15000, false, "ii", playerid, closestcar));
 				TogglePlayerControllable(playerid, 0);
 				ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, 1, 1, 1, 1, 1, 1);
+				defer Fix_PlayerInVehicleCheck(playerid);
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
   		}

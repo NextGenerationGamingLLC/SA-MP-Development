@@ -14,7 +14,7 @@ CMD:newb(playerid, params[]) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "Type /cancelnewbie to submit a new one!");
 	}
 
-	ShowPlayerDialog(playerid, SEND_NEWBIE, DIALOG_STYLE_INPUT, "Ask Newbie Question", "Please input your question\nPlease bare in mind only script/server related questions will be answered.", "Send", "Cancel");
+	ShowPlayerDialogEx(playerid, SEND_NEWBIE, DIALOG_STYLE_INPUT, "Ask Newbie Question", "Please input your question\nPlease bare in mind only script/server related questions will be answered.", "Send", "Cancel");
 
 	return 1;
 }
@@ -52,7 +52,7 @@ CMD:an(playerid, params[]) {
 		SetPVarInt(id, "NewbBeingAnswered", playerid);
 		GetPVarString(id, "HasNewbQues", szMiscArray, 128);
 		format(szMiscArray, sizeof(szMiscArray), "%s (ID:%d) Q: %s\nPlease type in your answer below!", GetPlayerNameEx(id), id, szMiscArray);
-		ShowPlayerDialog(playerid, ACCEPT_NEWBIE, DIALOG_STYLE_INPUT, "Newbie Answer", szMiscArray, "Answer", "");
+		ShowPlayerDialogEx(playerid, ACCEPT_NEWBIE, DIALOG_STYLE_INPUT, "Newbie Answer", szMiscArray, "Answer", "");
 	}
 
 	return 1;
@@ -76,7 +76,7 @@ CMD:tn(playerid, params[]) {
 		SetPVarInt(id, "NewbBeingAnswered", playerid);
 		GetPVarString(id, "HasNewbQues", szMiscArray, 128);
 		
-		ShowPlayerDialog(playerid, DENY_NEWBIE, DIALOG_STYLE_LIST, "Why is this not a valid request?", "Not a Question\nIC Matter\nSpam", "Select","");
+		ShowPlayerDialogEx(playerid, DENY_NEWBIE, DIALOG_STYLE_LIST, "Why is this not a valid request?", "Not a Question\nIC Matter\nSpam", "Select","");
 	}
 
 	return 1;

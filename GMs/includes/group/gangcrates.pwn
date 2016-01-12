@@ -255,7 +255,7 @@ public OnShowGCrateItems(iPlayerID, iCrateID, itemid) {
 			szMiscArray[4020],
 			szMiscArray[4021]
 		);
-		ShowPlayerDialog(iPlayerID, DIALOG_GANG_CRATE1, DIALOG_STYLE_TABLIST_HEADERS, "Gang Shipment Stock Preparation", szMiscArray, "Select", "Cancel");
+		ShowPlayerDialogEx(iPlayerID, DIALOG_GANG_CRATE1, DIALOG_STYLE_TABLIST_HEADERS, "Gang Shipment Stock Preparation", szMiscArray, "Select", "Cancel");
 		SetPVarInt(iPlayerID, "GCTransferTo", iCrateID);
 	}
 
@@ -350,7 +350,7 @@ public OnShowGCrates(iPlayerID) {
 		);
 		iCount++;
 	}
-	ShowPlayerDialog(iPlayerID, DIALOG_ADM_GCRATES, DIALOG_STYLE_LIST, "Gang Crates", szMiscArray, "Select", "Cancel");
+	ShowPlayerDialogEx(iPlayerID, DIALOG_ADM_GCRATES, DIALOG_STYLE_LIST, "Gang Crates", szMiscArray, "Select", "Cancel");
 	return 1;
 }
 
@@ -690,7 +690,7 @@ ShowGCrateTransferMenu(playerid, itemid, transfertype, stage = 0) {
 
 	switch(stage) {
 		case 0: {
-			ShowPlayerDialog(playerid, DIALOG_GANG_CRATE2, DIALOG_STYLE_LIST, "Please select an action!", "Withdraw from crate\nDeposit into crate", "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_GANG_CRATE2, DIALOG_STYLE_LIST, "Please select an action!", "Withdraw from crate\nDeposit into crate", "Select", "Cancel");
 		}
 
 		case 1: {
@@ -698,12 +698,12 @@ ShowGCrateTransferMenu(playerid, itemid, transfertype, stage = 0) {
 			switch(transfertype) {
 				case 0: { // withdraw
 					format(szMiscArray, sizeof(szMiscArray), "Please input the quantity of %s you wish to withdraw!", GetItemNameFromIdx(itemid));
-					ShowPlayerDialog(playerid, GCRATE_TRANSFER_WITHDRAW, DIALOG_STYLE_INPUT, "Withdraw item from crate!", szMiscArray, "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, GCRATE_TRANSFER_WITHDRAW, DIALOG_STYLE_INPUT, "Withdraw item from crate!", szMiscArray, "Select", "Cancel");
 
 				}
 				case 1: { //deposit
 					format(szMiscArray, sizeof(szMiscArray), "Please input the quantity of %s you wish to deposit!", GetItemNameFromIdx(itemid));
-					ShowPlayerDialog(playerid, GCRATE_TRANSFER_DEPOSIT, DIALOG_STYLE_INPUT, "Deposit item into crate!", szMiscArray, "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, GCRATE_TRANSFER_DEPOSIT, DIALOG_STYLE_INPUT, "Deposit item into crate!", szMiscArray, "Select", "Cancel");
 				}
 			}
 		}
@@ -779,7 +779,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 CMD:purchasegcrate(playerid, params[]) {
 
 	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
-	ShowPlayerDialog(playerid, PURCHASE_GANG_CRATE, DIALOG_STYLE_MSGBOX, "Purchase Gang Crate", 
+	ShowPlayerDialogEx(playerid, PURCHASE_GANG_CRATE, DIALOG_STYLE_MSGBOX, "Purchase Gang Crate", 
 		"Are you sure you wish to purchase a gang crate?\nThis will cost your gang $150,000!\n\
 		If so, make sure you are in a place where a vehicle can access your crate!", 
 		"Create Crate", "Cancel"

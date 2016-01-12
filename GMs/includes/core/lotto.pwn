@@ -196,7 +196,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(lotto < 1 || lotto > 300)
 				{
 					SendClientMessageEx(playerid, COLOR_GREY, "   Lottery Number not below 1 or above 300!");
-					ShowPlayerDialog( playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Lottery Ticket Selection","Please enter a Lotto Number!", "Buy", "Cancel" );
+					ShowPlayerDialogEx( playerid, LOTTOMENU, DIALOG_STYLE_INPUT, "Lottery Ticket Selection","Please enter a Lotto Number!", "Buy", "Cancel" );
 				}
 				else
 				{

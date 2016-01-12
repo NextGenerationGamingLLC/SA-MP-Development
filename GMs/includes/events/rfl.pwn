@@ -188,7 +188,7 @@ CMD:toglapcount(playerid, params[]) {
 
 CMD:rflscore(playerid, params[])
 {
-	ShowPlayerDialog(playerid, DIALOG_RFL_SEL, DIALOG_STYLE_LIST, "Relay For Life Scoreboard", "Team Scores\nPlayer Top 25", "Choose", "Close");
+	ShowPlayerDialogEx(playerid, DIALOG_RFL_SEL, DIALOG_STYLE_LIST, "Relay For Life Scoreboard", "Team Scores\nPlayer Top 25", "Choose", "Close");
 	return 1;
 }
 

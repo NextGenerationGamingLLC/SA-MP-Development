@@ -49,7 +49,7 @@ ShowBugReportMainMenu(playerid)
 	if(GetPVarType(playerid, "BugDetail")) GetPVarString(playerid, "BugDetail", bugdesc, 40); else bugdesc = "N/A";
 	if(strlen(bugdesc) > 35) strmid(bugdesc, bugdesc, 0, 35, 35), format(bugdesc, 41, "%s [...]", bugdesc);
 	format(string, sizeof(string), "Subject: %s\nDetails: %s\nSubmit Anonymously?: %s\nSubmit", bug, bugdesc, GetPVarInt(playerid, "BugAnonymous") == 1 ? ("Yes"):("No"));
-	return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report", string, "Select", "Close");
+	return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report", string, "Select", "Close");
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -70,12 +70,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(listitem == 0) //Subject
 					{
 						SetPVarInt(playerid, "BugStep", 1);
-						return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Subject", "Please enter a short description of the bug:\n * 15 characters min\n * 40 characters max", "Continue", "Close");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Subject", "Please enter a short description of the bug:\n * 15 characters min\n * 40 characters max", "Continue", "Close");
 					}
 					if(listitem == 1) //Bug Details
 					{
 						SetPVarInt(playerid, "BugStep", 2);
-						return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Bug Details", "Please explain the bug in as much detail you can:\n * 50 characters minimum", "Continue", "Close");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Bug Details", "Please explain the bug in as much detail you can:\n * 50 characters minimum", "Continue", "Close");
 					}
 					if(listitem == 2) //Submit Anonymously?
 					{
@@ -87,7 +87,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						new stringg[256];
 						if(strlen(bug) == 0 || strlen(bugdesc) == 0) 
-							return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "Please fill in all the available text fields.", "Close", "");
+							return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "Please fill in all the available text fields.", "Close", "");
 						if(strlen(bugdesc) > 64)
 						{
 							new firstl[65], secondl[65];
@@ -97,14 +97,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						format(stringg, sizeof(stringg), "{4A8BC2}Subject: {BFC0C2}%s\n{4A8BC2}Details:\n{BFC0C2}%s\n{4A8BC2}Anonymous: {BFC0C2}%s", bug, bugdesc, GetPVarInt(playerid, "BugAnonymous") == 1 ? ("Yes"):("No"));
 						SetPVarInt(playerid, "BugStep", 4);
-						return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_MSGBOX , "Bug Report - Submit", stringg, "Submit", "Cancel");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_MSGBOX , "Bug Report - Submit", stringg, "Submit", "Cancel");
 					}
 				}
 				if(GetPVarInt(playerid, "BugStep") == 1) //Subject
 				{
 					new bugsub[41];
 					if(sscanf(inputtext, "s[41]", bugsub) || strlen(inputtext) < 15 || strlen(inputtext) > 40) 
-						return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Subject", "Please enter a short description of the bug:\n * 15 characters min\n * 40 characters max", "Continue", "Close");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Subject", "Please enter a short description of the bug:\n * 15 characters min\n * 40 characters max", "Continue", "Close");
 					SetPVarString(playerid, "BugSubject", bugsub);
 					ShowBugReportMainMenu(playerid);
 				}
@@ -112,7 +112,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					new bugdetails[128];
 					if(sscanf(inputtext, "s[128]", bugdetails) || strlen(inputtext) < 50) 
-						return ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Bug Details", "Please explain the bug in as much detail you can:\n * 50 characters minimum", "Continue", "Close");
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_INPUT, "Bug Report - Bug Details", "Please explain the bug in as much detail you can:\n * 50 characters minimum", "Continue", "Close");
 					SetPVarString(playerid, "BugDetail", bugdetails);
 					ShowBugReportMainMenu(playerid);
 				}
@@ -140,7 +140,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 CMD:bugreport(playerid, params[])
 {
 	if(gettime() - PlayerInfo[playerid][pBugReportTimeout] < 3600) 
-		return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "You can only submit a bug report once every hour!\nAlternatively, you can visit http://devcp.ng-gaming.net and post a bug report there.", "Close", "");
+		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "You can only submit a bug report once every hour!\nAlternatively, you can visit http://devcp.ng-gaming.net and post a bug report there.", "Close", "");
 	new query[128];
 	format(query, sizeof(query), "SELECT * from `devcpBans` where `user` = %d AND `bugs` = 1", GetPlayerSQLId(playerid));
 	return mysql_function_query(MainPipeline, query, true, "CheckBugReportBans", "ii", playerid, 1);
@@ -162,7 +162,7 @@ public OnBugReport(playerid)
 	GetPVarString(playerid, "BugSubject", bug, 40);
 	format(string, sizeof(string), "[BugID: %d] %s(%d) submitted a%sbug (%s)", mysql_insert_id(MainPipeline), GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous") == 1 ? (" anonymous "):(" "), bug);
 	Log("logs/bugreport.log", string);
-	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", 
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", 
 	"{FFFFFF}Your bug report has been successfully submitted.\n\
 	 We highly suggest adding more information regarding the bug by visiting: http://devcp.ng-gaming.net\n\
 	 {FF8000}Note:{FFFFFF} If you are found abusing this system you will be restricted from submitting future bug reports.", "Close", "");
@@ -187,13 +187,13 @@ public CheckBugReportBans(playerid, check)
 		{
 			SetPVarInt(playerid, "BugStep", 3);
 			SetPVarInt(playerid, "BugListItem", 2);
-			ShowPlayerDialog(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report - Submit Anonymously?", "No\nYes", "Continue", "Close");
+			ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report - Submit Anonymously?", "No\nYes", "Continue", "Close");
 		}
 	}
 	else
 	{
-		if(check == 1) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting bug reports.\nContact the Director of Development for more information.", "Close", "");
-		if(check == 2) ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting anonymous bug reports.\nContact the Director of Development for more information.", "Close", ""); 
+		if(check == 1) ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting bug reports.\nContact the Director of Development for more information.", "Close", "");
+		if(check == 2) ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting anonymous bug reports.\nContact the Director of Development for more information.", "Close", ""); 
 	}
 	return 1;
 }
@@ -215,5 +215,5 @@ public CheckPendingBugReports(playerid)
 		cache_get_field_content(i, "Bug", szResult, MainPipeline);
 		format(string, sizeof(string), "%s%s", string, szResult);
 	}
-	return ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://devcp.ng-gaming.net", string, "Close", "");
+	return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://devcp.ng-gaming.net", string, "Close", "");
 }

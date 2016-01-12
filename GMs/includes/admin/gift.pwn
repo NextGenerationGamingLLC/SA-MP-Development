@@ -3387,7 +3387,7 @@ stock ShowPlayerDynamicGiftBox(playerid)
 	else
 		format(szMiscArray, sizeof(szMiscArray), "%s\n{F2070B}1 month PVIP Voucher", szMiscArray);
 		
-	return ShowPlayerDialog(playerid, DIALOG_GIFTBOX_VIEW, DIALOG_STYLE_LIST, "Dynamic Giftbox", szMiscArray, "Select", "Close");
+	return ShowPlayerDialogEx(playerid, DIALOG_GIFTBOX_VIEW, DIALOG_STYLE_LIST, "Dynamic Giftbox", szMiscArray, "Select", "Close");
 }
 
 CMD:gifts(playerid, params[])
@@ -3758,7 +3758,7 @@ CMD:getgift(playerid, params[])
 			if(PlayerInfo[playerid][pGiftTime] > 0)
 			{
 			    format(string, sizeof(string),"Item: Reset Gift Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
-	    		ShowPlayerDialog( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
+	    		ShowPlayerDialogEx( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You have already received a gift in the last 5 hours!");
 				return 1;
 			}
@@ -3779,7 +3779,7 @@ CMD:getgift(playerid, params[])
 				if(PlayerInfo[playerid][pGiftTime] > 0 && (IsDynamicGiftBoxEnabled == false || (IsDynamicGiftBoxEnabled == true && !dgGoldToken)))
 				{
 				    format(string, sizeof(string),"Item: Reset Gift Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
-	    			ShowPlayerDialog( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
+	    			ShowPlayerDialogEx( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
 					SendClientMessageEx(playerid, COLOR_GRAD2, "You have already received a gift in the last 5 hours!");
 					return 1;
 				}
@@ -3830,7 +3830,7 @@ CMD:dgedit(playerid, params[])
 	{
 		DeletePVar(playerid, "dgInputSel");
 		format(string, sizeof(string), "Timer: %d min(s)\nAmount: %d\n%s", dgTimerTime, dgAmount, (dgTimer != -1)?("{FF0606}Disable"):("{00ff00}Enable"));
-		return ShowPlayerDialog(playerid, DIALOG_DGRAUTORESET, DIALOG_STYLE_LIST, "Dynamic Giftbox Auto Reset - Select to modify", string, "Select", "Close");
+		return ShowPlayerDialogEx(playerid, DIALOG_DGRAUTORESET, DIALOG_STYLE_LIST, "Dynamic Giftbox Auto Reset - Select to modify", string, "Select", "Close");
 	}
 	if(sscanf(params, "s[32]dD", choice, type, amount))
 	{

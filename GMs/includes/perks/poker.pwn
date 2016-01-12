@@ -1080,7 +1080,7 @@ public PokerPulse(tableid)
 						if(GetPVarInt(playerid, "pkrActionChoice")) {
 							DeletePVar(playerid, "pkrActionChoice");
 
-							ShowPlayerDialog(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+							ShowPlayerDialogEx(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
 						}
 
 						PokerFoldHand(playerid);
@@ -1371,10 +1371,10 @@ ShowCasinoGamesMenu(playerid, dialogid)
 				new szString[128];
 				if(actualBet > GetPVarInt(playerid, "pkrChips")) {
 					format(szString, sizeof(szString), "{FFFFFF}Are you sure you want to call $%d (All-In)?:", actualBet);
-					return ShowPlayerDialog(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szString, "All-In", "Cancel");
+					return ShowPlayerDialogEx(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szString, "All-In", "Cancel");
 				}
 				format(szString, sizeof(szString), "{FFFFFF}Are you sure you want to call $%d?:", actualBet);
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szString, "Call", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESCALLPOKER, DIALOG_STYLE_MSGBOX, "{FFFFFF}Texas Holdem Poker - (Call)", szString, "Call", "Cancel");
 			} else {
 				SendClientMessage(playerid, COLOR_WHITE, "DEALER: You do not have enough funds to call.");
 				new noFundsSoundID[] = {5823, 5824, 5825};
@@ -1393,13 +1393,13 @@ ShowCasinoGamesMenu(playerid, dialogid)
 
 				new szString[128];
 				format(szString, sizeof(szString), "{FFFFFF}How much do you want to Raise? ($%d-$%d):", PokerTable[tableid][pkrActiveBet]+PokerTable[tableid][pkrBlind]/2, GetPVarInt(playerid, "pkrCurrentBet")+GetPVarInt(playerid, "pkrChips"));
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESRAISEPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Texas Holdem Poker - (Raise)", szString, "Raise", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESRAISEPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Texas Holdem Poker - (Raise)", szString, "Raise", "Cancel");
 			} else if(GetPVarInt(playerid, "pkrCurrentBet")+GetPVarInt(playerid, "pkrChips") == PokerTable[tableid][pkrActiveBet]+PokerTable[tableid][pkrBlind]/2) {
 				SetPVarInt(playerid, "pkrActionChoice", 1);
 
 				new szString[128];
 				format(szString, sizeof(szString), "{FFFFFF}How much do you want to Raise? (All-In):", PokerTable[tableid][pkrActiveBet]+PokerTable[tableid][pkrBlind]/2, GetPVarInt(playerid, "pkrCurrentBet")+GetPVarInt(playerid, "pkrChips"));
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESRAISEPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Texas Holdem Poker - (Raise)", szString, "All-In", "Cancel");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESRAISEPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Texas Holdem Poker - (Raise)", szString, "All-In", "Cancel");
 			} else {
 				SendClientMessage(playerid, COLOR_WHITE, "DEALER: You do not have enough funds to raise.");
 				new noFundsSoundID[] = {5823, 5824, 5825};
@@ -1412,11 +1412,11 @@ ShowCasinoGamesMenu(playerid, dialogid)
 		{
 			new szString[386];
 			format(szString, sizeof(szString), "{FFFFFF}Please input a buy-in amount for the table:\n\nCurrent Casino Chips: {00FF00}$%d{FFFFFF}\nCurrent Poker Chips: {00FF00}$%d{FFFFFF}\nBuy-In Maximum/Minimum: {00FF00}$%d{FFFFFF}/{00FF00}$%d{FFFFFF}", GetPlayerCash(playerid), GetPVarInt(playerid, "pkrChips"), PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMax], PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrBuyInMin]);
-			return ShowPlayerDialog(playerid, DIALOG_CGAMESBUYINPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (BuyIn Menu)", szString, "Buy In", "Leave");
+			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESBUYINPOKER, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (BuyIn Menu)", szString, "Buy In", "Leave");
 		}
 		case DIALOG_CGAMESADMINMENU:
 		{
-			return ShowPlayerDialog(playerid, DIALOG_CGAMESADMINMENU, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Admin Menu)", "{FFFFFF}Setup Poker Minigame...\nLine2\nCredits", "Select", "Close");
+			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESADMINMENU, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Admin Menu)", "{FFFFFF}Setup Poker Minigame...\nLine2\nCredits", "Select", "Close");
 		}
 		case DIALOG_CGAMESSELECTPOKER:
 		{
@@ -1428,21 +1428,21 @@ ShowCasinoGamesMenu(playerid, dialogid)
 				if(PokerTable[i][pkrPlaced] == 0) { format(szPlaced, sizeof(szPlaced), "{FF0000}Deactived{FFFFFF}"); }
 				format(szMiscArray, sizeof(szMiscArray), "%sPoker Table %d (%s)\n", szMiscArray, i, szPlaced, PokerTable[i][pkrPlayers]);
 			}
-			return ShowPlayerDialog(playerid, DIALOG_CGAMESSELECTPOKER, DIALOG_STYLE_LIST, "Casino Games - (Select Poker Table)", szMiscArray, "Select", "Back");
+			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSELECTPOKER, DIALOG_STYLE_LIST, "Casino Games - (Select Poker Table)", szMiscArray, "Select", "Back");
 		}
 		case DIALOG_CGAMESSETUPPOKER:
 		{
 			new tableid = GetPVarInt(playerid, "tmpEditPokerTableID")-1;
 
 			if(PokerTable[tableid][pkrPlaced] == 0) {
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Minigame)", "{FFFFFF}Place Table...", "Select", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Minigame)", "{FFFFFF}Place Table...", "Select", "Back");
 			} else {
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Minigame)", "{FFFFFF}Edit Table...\nDelete Table...", "Select", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPOKER, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Minigame)", "{FFFFFF}Edit Table...\nDelete Table...", "Select", "Back");
 			}
 		}
 		case DIALOG_CGAMESCREDITS:
 		{
-			return ShowPlayerDialog(playerid, DIALOG_CGAMESCREDITS, DIALOG_STYLE_MSGBOX, "{FFFFFF}Casino Games - (Credits)", "{FFFFFF}Developed By: Dan 'GhoulSlayeR' Reed", "Back", "");
+			return ShowPlayerDialogEx(playerid, DIALOG_CGAMESCREDITS, DIALOG_STYLE_MSGBOX, "{FFFFFF}Casino Games - (Credits)", "{FFFFFF}Developed By: Dan 'GhoulSlayeR' Reed", "Back", "");
 		}
 		case DIALOG_CGAMESSETUPPGAME:
 		{
@@ -1472,43 +1472,43 @@ ShowCasinoGamesMenu(playerid, dialogid)
 						PokerTable[tableid][pkrSetDelay]
 					);
 				}
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Room)", szString, "Select", "Quit");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME, DIALOG_STYLE_LIST, "{FFFFFF}Casino Games - (Setup Poker Room)", szString, "Select", "Quit");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME2:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME2, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Max)", "{FFFFFF}Please input a Buy-In Max:", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME2, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Max)", "{FFFFFF}Please input a Buy-In Max:", "Change", "Back");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME3:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME3, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Min)", "{FFFFFF}Please input a Buy-In Min:", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME3, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Buy-In Min)", "{FFFFFF}Please input a Buy-In Min:", "Change", "Back");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME4:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME4, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Blinds)", "{FFFFFF}Please input Blinds:\n\nNote: Small blinds are automatically half of a big blind.", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME4, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Blinds)", "{FFFFFF}Please input Blinds:\n\nNote: Small blinds are automatically half of a big blind.", "Change", "Back");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME5:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME5, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Limit)", "{FFFFFF}Please input a Player Limit (2-6):", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME5, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Limit)", "{FFFFFF}Please input a Player Limit (2-6):", "Change", "Back");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME6:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME6, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Password)", "{FFFFFF}Please input a Password:\n\nNote: Leave blank to have a public room", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME6, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Password)", "{FFFFFF}Please input a Password:\n\nNote: Leave blank to have a public room", "Change", "Back");
 			}
 		}
 		case DIALOG_CGAMESSETUPPGAME7:
 		{
 			if(GetPVarType(playerid, "pkrTableID")) {
-				return ShowPlayerDialog(playerid, DIALOG_CGAMESSETUPPGAME7, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Round Delay)", "{FFFFFF}Please input a Round Delay (15-120sec):", "Change", "Back");
+				return ShowPlayerDialogEx(playerid, DIALOG_CGAMESSETUPPGAME7, DIALOG_STYLE_INPUT, "{FFFFFF}Casino Games - (Round Delay)", "{FFFFFF}Please input a Round Delay (15-120sec):", "Change", "Back");
 			}
 		}
 	}
@@ -1632,7 +1632,7 @@ LeavePokerTable(playerid)
 	TogglePlayerControllable(playerid, 1);
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 2.0, 0, 0, 0, 0, 0);
 	CancelSelectTextDraw(playerid);
-	ShowPlayerDialog(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+	ShowPlayerDialogEx(playerid, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
 
 	if(GetPVarInt(playerid, "pkrActiveHand")) {
 		PokerTable[tableid][pkrActiveHands]--;

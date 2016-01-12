@@ -42,6 +42,37 @@ stock g_mysql_SaveVehicle(playerid, slotid)
 	getdate(zyear, zmonth, zday);
 	if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) format(szMiscArray, sizeof(szMiscArray), "%s `pvHealth` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvHealth]);
 	
+	format(szMiscArray, sizeof(szMiscArray), "%s\
+		`Lsd` = %d,\
+		`Cannabis` = %d,\
+		`Meth` = %d,\
+		`Heroin` = %d,\
+		`Cocaine` = %d,\
+		`Crack` = %d,\
+		`Opium` = %d,\
+		`Ecstasy` = %d,\
+		`Speed` = %d,\
+		`Alcohol` = %d,\
+		`Demerol` = %d,\
+		`Morphine` = %d,\
+		`Haloperidol` = %d,\
+		`Aspirin` = %d,",
+		szMiscArray,
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][0],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][1],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][2],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][3],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][4],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][5],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][6],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][7],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][8],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][9],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][10],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][11],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][12],
+		PlayerVehicleInfo[playerid][slotid][pvDrugs][13]);
+
 	for(new m = 0; m < MAX_MODS; m++)
 	{
 		if(m == MAX_MODS-1)
@@ -94,6 +125,8 @@ stock CreatePlayerVehicle(playerid, playervehicleid, modelid, Float: x, Float: y
 		PlayerVehicleInfo[playerid][playervehicleid][pvAlarm] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvAlarmTriggered] = 0;
 		PlayerVehicleInfo[playerid][playervehicleid][pvBeingPickLocked] = 0;
+
+		for(new m; m < sizeof(szDrugs); ++m) PlayerVehicleInfo[playerid][playervehicleid][pvDrugs][m] = 0;
 		
 		for(new m = 0; m < MAX_MODS; m++)
 	    {
@@ -165,6 +198,7 @@ stock DestroyPlayerVehicle(playerid, playervehicleid)
 	        PlayerInfo[PlayerVehicleInfo[playerid][playervehicleid][pvAllowedPlayerId]][pVehicleKeysFrom] = INVALID_PLAYER_ID;
 	    	PlayerVehicleInfo[playerid][playervehicleid][pvAllowedPlayerId] = INVALID_PLAYER_ID;
 		}
+		for(new m; m < sizeof(szDrugs); ++m) PlayerVehicleInfo[playerid][playervehicleid][pvDrugs][m] = 0;
 
 		new query[60];
 		format(query, sizeof(query), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[playerid][playervehicleid][pvSlotId]);
