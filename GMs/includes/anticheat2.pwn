@@ -13,14 +13,14 @@
 #define 			DIALOGSPOOFING				3
 
 new ac_iPlayerKeySpam[MAX_PLAYERS],
-	ac_iVehicleDriverID[MAX_PLAYERS],
+	// ac_iVehicleDriverID[MAX_PLAYERS],
 	ac_iLastVehicleID[MAX_PLAYERS];
 
 new bool:ac_ACToggle[6];
 
 hook OnGameModeInit() {
 	
-	for(new i; i < sizeof(ac_ACToggle); ++i) ac_ACToggle[i] = true;
+	for(new i; i < sizeof(ac_ACToggle); ++i) ac_ACToggle[i] = false;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
@@ -28,6 +28,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	if(newkeys == KEY_YES) ac_iPlayerKeySpam[playerid]++;
 }
 
+/*
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
 	if(!ispassenger) ac_iVehicleDriverID[playerid] = GetDriverID(vehicleid);
 }
@@ -38,26 +39,28 @@ hook OnPlayerStateChange(playerid, newstate, oldstate) {
 	if(oldstate == PLAYER_STATE_DRIVER && newstate == PLAYER_STATE_ONFOOT) defer AC_ResetPVars(playerid, 0);
 }
 
+
 hook OnPlayerDeath(playerid, killerid, reason) {
 
-	//if(killerid == INVALID_PLAYER_ID) {
-		new iKillerID = GetDriverID(ac_iLastVehicleID[playerid]),
-			iKillerVehID = GetPlayerVehicleID(iKillerID);
-		if(iKillerID != INVALID_PLAYER_ID) {
-			if(ac_iVehicleDriverID[iKillerID] == playerid || (iKillerVehID == ac_iLastVehicleID[playerid] && iKillerVehID != INVALID_VEHICLE_ID)) {
-				AC_Process(playerid, iKillerID, NINJAJACK);
-			}
+	new iKillerID = GetDriverID(ac_iLastVehicleID[playerid]),
+		iKillerVehID = GetPlayerVehicleID(iKillerID);
+	if(iKillerID != INVALID_PLAYER_ID) {
+		if(ac_iVehicleDriverID[iKillerID] == playerid || (iKillerVehID == ac_iLastVehicleID[playerid] && iKillerVehID != INVALID_VEHICLE_ID)) {
+			AC_Process(playerid, iKillerID, NINJAJACK);
 		}
-	//}
+	}
 }
+*/
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	switch(dialogid) {
 
 		case DIALOG_AC_MAIN: {
-			if(!response) return 1;
+			if(response) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot turn anything on yet.");
+			else return 1;
 
+			/*
 			if(ac_ACToggle[listitem]) {
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned off the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
 				ac_ACToggle[listitem] = false;
@@ -67,6 +70,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				ac_ACToggle[listitem] = true;
 			}
 			AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
+			*/
 		}
 	}
 	return 1;
@@ -74,11 +78,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 ptask HackCheck[HACKTIMER_INTERVAL](playerid) {
 
+	ac_iPlayerKeySpam[playerid] = 0;
 	if(PlayerInfo[playerid][pAdmin] < 1) {
 		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
 			if(ac_ACToggle[CARSURFING] && AC_IsPlayerSurfing(playerid)) AC_Process(playerid, INVALID_PLAYER_ID, CARSURFING);
 			if(ac_ACToggle[HEALTHARMORHACKS] && AC_PlayerHealthArmor(playerid)) AC_Process(playerid, INVALID_PLAYER_ID, HEALTHARMORHACKS);
-			ac_iPlayerKeySpam[playerid] = 0;
 		}
 	}
 }
@@ -97,7 +101,7 @@ timer AC_ResetPVars[2000](playerid, processid) {
 	
 }
 
-GetDriverID(iVehID) {
+stock GetDriverID(iVehID) {
 	if(iVehID == INVALID_VEHICLE_ID) return INVALID_PLAYER_ID;
 	foreach(new i : Player) {
 		if(GetPlayerVehicleID(i) == iVehID && GetPlayerState(i) == PLAYER_STATE_DRIVER) return i;
@@ -105,7 +109,7 @@ GetDriverID(iVehID) {
 	return INVALID_PLAYER_ID;
 }
 
-AC_GetACName(i) {
+stock AC_GetACName(i) {
 	szMiscArray[0] = 0;
 	switch(i) {
 		case 0: szMiscArray = "Car Surfing";
@@ -119,8 +123,8 @@ AC_GetACName(i) {
 AC_FinePlayer(playerid, fineid) {
 
 	switch(fineid) {
-		case NINJAJACK: GivePlayerCash(playerid, -5000);
-		case DIALOGSPOOFING: GivePlayerCash(playerid, -5000);
+		case NINJAJACK: GivePlayerCash(playerid, -2000);
+		case DIALOGSPOOFING: GivePlayerCash(playerid, -2000);
 	}
 }
 
@@ -148,6 +152,7 @@ AC_Process(playerid, killerid, processid) {
 			szMiscArray = "[SYSTEM]: Please do not car surf.";
 		}
 		case NINJAJACK: {
+			if(!ac_ACToggle[NINJAJACK]) return 1;
 			defer AC_RevivePlayer(playerid);
 			AC_FinePlayer(killerid, processid);
 			SetTimerEx("KickEx", 1000, 0, "i", killerid);

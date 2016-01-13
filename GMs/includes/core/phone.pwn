@@ -441,6 +441,7 @@ CMD:call(playerid, params[])
 						}
 						else format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %d]", PlayerInfo[playerid][pPnumber]);
 
+						FetchContact(i, PlayerInfo[playerid][pPnumber]);
 						SendClientMessageEx(i, COLOR_YELLOW, string);
 						RingTone[i] = 10;
 						format(string, sizeof(string), "* %s's phone begins to ring.", GetPlayerNameEx(i));

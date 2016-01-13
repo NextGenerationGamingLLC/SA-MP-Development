@@ -352,7 +352,7 @@ TurfWars_CapCheck(playerid, iTurfID) {
 	else {
 		foreach(new p : Player) {
 			if(IsPlayerInDynamicArea(p, arrTurfWars[iTurfID][tw_iAreaID]) && !GetPVarInt(p, "Injured") && PlayerInfo[p][pMember] == arrTurfWars[iTurfID][tw_iGroupID] &&
-				PlayerInfo[p][pMember] != PlayerInfo[playerid][pMember]) iCount++;
+				PlayerInfo[p][pMember] != PlayerInfo[playerid][pMember] && PlayerInfo[p][pMember] != INVALID_PLAYER_ID) iCount++;
 		}
 		if(iCount == 0) return 1;
 		format(szMiscArray, sizeof(szMiscArray), "[TURF]: {CCCCCC}There's {FFFF00}%d {CCCCCC}gang members left on the turf.", iCount);
@@ -397,6 +397,7 @@ CMD:rehashturfs(playerid, params[]) {
 
 CMD:claim(playerid, params[]) {
 
+	if(!IsACriminal(playerid) && !IsAGovernment(playerid) && !IsMDCPermitted(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot claim turfs.");
 	if(GetPVarType(playerid, "CapCheck")) {
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You are already trying to claim a turf.");
 		return 1;
@@ -453,10 +454,10 @@ CMD:claim(playerid, params[]) {
 
 CMD:shutdown(playerid, params[]) {
 
+	if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not an LEO.");
 	if(PlayerInfo[playerid][pRank] < arrGroupData[PlayerInfo[playerid][pMember]][g_iTurfCapRank]) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "Your rank is not high enough to shutdown turfs!");
     }
-    if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not an LEO.");
     // for(new i; i < MAX_TURFS; ++i) if(GetGVarType("TW_Capturer", i) == PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your group is already shutting down a turf.");
 	new iTurfID = TurfWars_GetTurfID(playerid);
 	if(Bit_State(arrTurfWarsBits[iTurfID], tw_bDisabled)) return SendClientMessage(playerid, COLOR_GRAD1, "This turf is currently disabled.");

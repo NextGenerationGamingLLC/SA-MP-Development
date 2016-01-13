@@ -318,12 +318,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_PHONE_ADDCONTACT1: {
 
-			if(!response || !IsNumeric(inputtext)) {
+			if(!response) {
 				DeletePVar(playerid, "PHN_CONTACT");
 				Phone_Contacts(playerid);
 				return 1;
 			}
-
+		
 			szMiscArray[0] = 0;
 			GetPVarString(playerid, "PHN_CONTACT", szMiscArray, sizeof(szMiscArray));
 			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `phone_contacts` (id, `contactname`, `contactnr`) VALUES ('%d', '%e', '%d')", GetPlayerSQLId(playerid), szMiscArray, strval(inputtext));
@@ -748,7 +748,7 @@ public Phone_OnGetContacts(iPlayerID)
 
 	szMiscArray[0] = 0;
 
-	szMiscArray = "Name\tNumber\n";
+	szMiscArray = "Name\tNumber";
 
 	while(idx < iRows)
 	{
@@ -756,13 +756,15 @@ public Phone_OnGetContacts(iPlayerID)
 		if(iNumber != 0) {
 
 			cache_get_field_content(idx, "contactname", szResult, MainPipeline);
+			/*
 			foreach(new i : Player) {
 
 				if(PlayerInfo[i][pPnumber] == iNumber) format(szResult, sizeof(szResult), "{00FF00}[O] {FFFFFF}%s", szResult);
 				else format(szResult, sizeof(szResult), "{FF0000}[O] {FFFFFF}%s", szResult);
 			}
+			*/
 			ListItemTrackId[iPlayerID][idx] = iNumber;
-			format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szResult, iNumber);
+			format(szMiscArray, sizeof(szMiscArray), "%s\n%s\t%d", szMiscArray, szResult, iNumber);
 		}	
 		idx++;
 	}

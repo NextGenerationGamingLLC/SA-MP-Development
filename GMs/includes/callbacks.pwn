@@ -1455,6 +1455,17 @@ public OnPlayerConnect(playerid)
 	acstruct[playerid][checkmaptp] = 0; acstruct[playerid][maptplastclick] = 0;
 	acstruct[playerid][maptp][0] = 0.0; acstruct[playerid][maptp][1] = 0.0; acstruct[playerid][maptp][2] = 0.0;
 
+	PlayerInfo[playerid][pLastPass][0] = 0;
+	PlayerInfo[playerid][pGroupToy][0] = 0.0;
+	PlayerInfo[playerid][pGroupToy][1] = 0.0;
+	PlayerInfo[playerid][pGroupToy][2] = 0.0;
+	PlayerInfo[playerid][pGroupToy][3] = 0.0;
+	PlayerInfo[playerid][pGroupToy][4] = 0.0;
+	PlayerInfo[playerid][pGroupToy][5] = 0.0;
+	PlayerInfo[playerid][pGroupToy][6] = 1.0;
+	PlayerInfo[playerid][pGroupToy][7] = 1.0;
+	PlayerInfo[playerid][pGroupToy][8] = 1.0;
+
 	PlayerInfo[playerid][pHolsteredWeapon] = 0;
 
 	foreach(new x: Player)

@@ -24,7 +24,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		else if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 		{
 			if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while refueling.");
-			if(!Vehicle_LockCheck(playerid, vehicleid)) return 1;
+			// if(!Vehicle_LockCheck(playerid, vehicleid)) return 1;
 			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine starts.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");
@@ -43,7 +43,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	return 1;
 }
 
-Vehicle_LockCheck(playerid, iVehID) {
+stock Vehicle_LockCheck(playerid, iVehID) {
 
 	new v;
 	foreach(new i: Player) {
