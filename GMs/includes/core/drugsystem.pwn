@@ -733,7 +733,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			new i = GetPVarInt(playerid, "PO_AID");
 			// if(arrPoint[i][po_iType] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot interact with a weapon point.");
-			if(arrPoint[i][po_iType] == 0) return cmd_getmats(playerid, "");
+			if(arrPoint[i][po_iType] == 0) {
+				cmd_getmats(playerid, "");
+			}
 
 			if(arrPoint[i][po_iType] == 1) {
 
@@ -1725,7 +1727,7 @@ Drug_FinishMix(playerid, iDrugID) {
 						if(dr_arrDrugMix[playerid][i][drm_iAmount] % 4 == 0) iDrugQuality = 20;
 						if(dr_arrDrugMix[playerid][i][drm_iAmount] % 10 == 0) iDrugQuality = 100;
 						if(dr_arrDrugMix[playerid][i][drm_iAmount] == 0) iDrugQuality = 0;
-						iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount]; // 10 crack
+						iDrugAmount = dr_arrDrugMix[playerid][i][drm_iAmount];
 						PlayerInfo[playerid][p_iIngredient][13] -= dr_arrDrugMix[playerid][i][drm_iAmount];
 						bDrugCheck[0] = true;
 					}
@@ -3218,7 +3220,7 @@ CMD:gblackmarket(playerid, params[])
 	DeletePVar(playerid, PVAR_BLMARKETID);
 	if(!(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) || !IsACriminal(playerid)) return 1;
 
-	for(new i; i < MAX_BLACKMARKETS; ++i) if(arrBlackMarket[i][bm_iGroupID] == PlayerInfo[playerid][pMember] && IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) {
+	for(new i; i < MAX_BLACKMARKETS; ++i) if(arrBlackMarket[i][bm_iGroupID] == PlayerInfo[playerid][pMember] && IsValidDynamicPickup(arrBlackMarket[i][bm_iPickupID])) {
 		SetPVarInt(playerid, PVAR_BLMARKETID, i);
 		break;
 	}

@@ -168,13 +168,16 @@ AC_Process(playerid, killerid, processid) {
 			AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
 			szMiscArray = "[SYSTEM]: You were kicked for plausibly health/armor hacking.";
 		}
+		/*
 		case DIALOGSPOOFING: {
+			if(!ac_ACToggle[DIALOGSPOOFING]) return 1;
 			AC_FinePlayer(playerid, processid);
-			// SetTimerEx("KickEx", 1000, 0, "i", killerid);
+			SetTimerEx("KickEx", 1000, 0, "i", killerid);
 			format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s was kicked for (plausibly!) dialog spoofing. Refrain from taking more action until fully tested.", GetPlayerNameEx(playerid));
 			AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
 			szMiscArray = "[SYSTEM]: You were kicked for plausibly dialog spoofing.";
 		}
+		*/
 	}
 	// format(szMiscArray, sizeof(szMiscArray), "%s %s (ID: %d)", szMiscArray, GetPlayerNameExt(playerid), playerid);
 	SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
@@ -241,7 +244,8 @@ CMD:system(playerid, params[]) {
 	format(szMiscArray, sizeof(szMiscArray), "Detecting\tStatus\n\
 		Car Surfing\t%s\n\
 		Ninja Jacking\t%s\n\
-		Health Hacks\t%s",
+		Health Hacks\t%s\n\
+		Dialog Spoofing\t%s\n",
 		(ac_ACToggle[CARSURFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[NINJAJACK] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[HEALTHARMORHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),

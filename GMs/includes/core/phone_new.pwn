@@ -1091,6 +1091,16 @@ CMD:picture(playerid, params[]) {
 CMD:selfie(playerid, params[]) {
 
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this inside a vehicle.");
+	if(GetPVarInt(playerid, "EventToken")) {
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
+	}
+	else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) {
+		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	}
+	else if(GetPVarType(playerid, "FixVehicleTimer")) {
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are fixing a vehicle!");
+	}
+
 	if(!Bit_State(arrPlayerBits[playerid], phone_bitCamState))
 	{
 		new Float:fPos[4],

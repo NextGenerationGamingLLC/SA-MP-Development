@@ -34,11 +34,6 @@
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-	if(iLastDialogID[playerid] != dialogid) {
-		AC_Process(playerid, INVALID_PLAYER_ID, 3);
-		// return 1;
-	}
-
 	if(dialogid == DIALOG_DISABLED) return ShowPlayerDialogEx(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
 	new sendername[MAX_PLAYER_NAME];
 	new string[128];

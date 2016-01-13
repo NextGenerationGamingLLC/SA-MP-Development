@@ -629,6 +629,7 @@ timer TurfWars_Capture[60000](playerid, iTurfID) {
 
 timer TurfWars_MicroTimer[1000](iGroupID, iTurfID) {
 
+
 	if(!GetGVarType("TW_Capturer", iTurfID) || GetGVarInt("TW_Capturer", iTurfID) != iGroupID)  {
 		foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) TextDrawHideForPlayer(p, PointTime);
 		return 1;
@@ -647,7 +648,12 @@ timer TurfWars_MicroTimer[1000](iGroupID, iTurfID) {
 	}
 	format(szMiscArray, sizeof(szMiscArray), "%d:%02d", iMinutes, iSeconds);
 	TextDrawSetString(PointTime, szMiscArray);
-	foreach(new p : Player) if (PlayerInfo[p][pMember] == iGroupID) TextDrawShowForPlayer(p, PointTime);
+	foreach(new p : Player) {
+		if(PlayerInfo[p][pMember] == iGroupID) {
+			TextDrawShowForPlayer(p, PointTime);
+		}
+		else TextDrawHideForPlayer(p, PointTime);
+	}
 	defer TurfWars_MicroTimer(iGroupID, iTurfID);
 	return 1;
 }

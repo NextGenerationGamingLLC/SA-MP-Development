@@ -56,7 +56,7 @@ timer RepFam_Cooldown[1000 * 120](playerid) { // 2 minutes
 Rivalry_Toggle(playerid, bool:bState) {
 
 	PlayAnim(playerid, "goggles", "goggles_put_on", 4.0, 0, 0, 0, 0, 0, 1);
-	RemovePlayerAttachedObject(playerid, 9);
+	RemovePlayerAttachedObject(playerid, 8);
 	if(bState == true) {
 
 		SetPVarInt(playerid, "RepFam_TL", _:CreateDynamic3DTextLabel(
@@ -68,7 +68,7 @@ Rivalry_Toggle(playerid, bool:bState) {
 			.worldid = -1,
 			.interiorid = -1,
 			.streamdistance = 40));
-		SetPlayerAttachedObject(playerid, 9, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
+		SetPlayerAttachedObject(playerid, 8, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
 			PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],
 			PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4], PlayerInfo[playerid][pGroupToy][5], 
 			PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);

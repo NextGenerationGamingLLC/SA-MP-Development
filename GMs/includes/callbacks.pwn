@@ -2883,7 +2883,7 @@ public OnPlayerEnterCheckpoint(playerid)
 				}
 				else if(PlayerInfo[playerid][pDonateRank] == 2 || PlayerInfo[playerid][pDonateRank] == 3)
 				{
-			    	TransferStorage(playerid, -1, -1, -1, 4, 900, -1, 2);
+			    	TransferStorage(playerid, -1, -1, -1, 4, 600, -1, 2);
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 600 materials for your 10 materials packages.");
 					SendClientMessageEx(playerid, COLOR_YELLOW,"Silver & Gold VIP: You received 2x more materials than normal.");
 
