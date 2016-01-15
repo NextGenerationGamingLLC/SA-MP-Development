@@ -22,9 +22,9 @@ new g_iEntranceID[MAX_PLAYERS],
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & ENTRANCE_SHORTCUT) {
-		new areaid[3];
+		new areaid[1];
 		GetPlayerDynamicAreas(playerid, areaid);
-		for(new i; i < sizeof(areaid); ++i) Process_Entrance(playerid, areaid[i]);
+		Process_Entrance(playerid, areaid[0]);
 	}
 	return 1;
 }
@@ -32,9 +32,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 CMD:enter(playerid)
 {
 	// SendClientMessage(playerid, COLOR_RED, "/enter is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
-	new areaid[3];
+	new areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid);
-	for(new i; i < sizeof(areaid); ++i) Process_Entrance(playerid, areaid[i]);
+	Process_Entrance(playerid, areaid[0]);
 	return 1;
 }
 
@@ -43,7 +43,7 @@ CMD:exit(playerid)
 	// SendClientMessage(playerid, COLOR_RED, "/exit is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
 	new areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid);
-	for(new i; i < sizeof(areaid); ++i) Process_Entrance(playerid, areaid[i]);
+	Process_Entrance(playerid, areaid[0]);
 	return 1;
 }
 
@@ -86,13 +86,13 @@ Process_Entrance(playerid, areaid) {
 
 			if(GetPVarType(playerid, "VEHA_ID")) {
 
-				Vehicle_Exit(playerid);
+				// Vehicle_Exit(playerid);
 				return 1;
 			}
 		}
 		if(GetPVarType(playerid, "VEHA_ID")) {
 
-			Vehicle_Enter(playerid, GetPVarInt(playerid, "VEHA_ID"));
+			// Vehicle_Enter(playerid, GetPVarInt(playerid, "VEHA_ID"));
 			return 1;
 		}
 	}
@@ -153,8 +153,8 @@ GetIDFromArea(areaid) {
 	return iAssignData;
 }
 
-Enter_Door(playerid, i, areaid = - 1)
-{
+Enter_Door(playerid, i, areaid = - 1) {
+
 	// printf("DEBUG: Enter_Door triggered - Player %d, DoorID: %d, Door sVW: %d, Door sInt: %d", playerid, i, DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
 	if(g_iEntranceAID[playerid] == -1 || g_iEntranceID[playerid] == -1) return 1;
 	ENT_DelVar(playerid);
@@ -191,15 +191,17 @@ Enter_Door(playerid, i, areaid = - 1)
 			Business_Exit(playerid, i);
 			return 1;
 		}
+		/*
 		if(areaid == iVehExits[0] || areaid == iVehExits[1] || areaid == iVehExits[2]) {
 			Vehicle_Exit(playerid);
 			return 1;
 		}
+		*/
 	}
 	return 1;
 }
 
-Vehicle_Enter(playerid, i) {
+stock Vehicle_Enter(playerid, i) {
 
 	ClearAnimations(playerid);
 
@@ -234,7 +236,7 @@ Vehicle_Enter(playerid, i) {
 	return 1;
 }
 
-Vehicle_Exit(playerid) {
+stock Vehicle_Exit(playerid) {
  	
  	if(!IsAPlane(InsidePlane[playerid]) && !GetPVarType(playerid, "InsideCar")) {
 	    PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
