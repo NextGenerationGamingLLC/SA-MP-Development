@@ -14,7 +14,7 @@
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
 					
-	* Copyright (c) 2014, Next Generation Gaming, LLC
+	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
 	*
@@ -1800,7 +1800,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		    }
 		}
 	}
-	else if(!IsPlayerInRangeOfVehicle(playerid, vehicleid, 7.5) || (LockStatus{vehicleid} >= 1 && !IsABike(vehicleid))) { // G-bugging fix
+	else if(!IsPlayerInRangeOfVehicle(playerid, vehicleid, 7.5) || (LockStatus{vehicleid} >= 1)) { // G-bugging fix
 		ClearAnimations(playerid);
 	}
 
@@ -1842,7 +1842,7 @@ CMD:car(playerid, params[])
 		else if((engine == VEHICLE_PARAMS_OFF || engine == VEHICLE_PARAMS_UNSET))
 		{
 			if (GetPVarInt(playerid, "Refueling")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while refueling.");
-			if(!Vehicle_LockCheck(playerid, vehicleid)) return 1;
+			// if(!Vehicle_LockCheck(playerid, vehicleid)) return 1;
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s turns the key in the ignition and the engine starts.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle engine starting, please wait...");

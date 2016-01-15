@@ -11,7 +11,7 @@
 //--------------------------------[VARIABLES.PWN]--------------------------------
 
 
- * Copyright (c) 2014, Next Generation Gaming, LLC
+ * Copyright (c) 2016, Next Generation Gaming, LLC
  *
  * All rights reserved.
  *
@@ -2680,7 +2680,6 @@ new Text:txtAnimHelper;
 
 new bool:PlayerIsDead[MAX_PLAYERS];
 
-
 /* Buttons */
 
 
@@ -2708,6 +2707,9 @@ new GunPrices[6];
 
 new szJobNames[MAX_JOBTYPES][32];
 
+new PlayerText:phone_PTextDraw[MAX_PLAYERS][24];
+
+
 /* AC */
 new iLastDialogID[MAX_PLAYERS];
 
@@ -2718,7 +2720,7 @@ new iVehExits[3]; // for shamal, nevada and journey
 /* Iterators - More efficient looping for changing/dynamic structures */
 new Iterator:Vehicles<MAX_VEHICLES>;
 new Iterator:GangTags<MAX_GANGTAGS>;
-
+new Iterator:PlayerDrugs<MAX_DRUGS>;
 
 new const szFonts[][] = {
 	"Arial",

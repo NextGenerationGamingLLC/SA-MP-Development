@@ -11,7 +11,7 @@
 //--------------------------------[TIMERS.PWN]--------------------------------
 
 
- * Copyright (c) 2014, Next Generation Gaming, LLC
+ * Copyright (c) 2016, Next Generation Gaming, LLC
  *
  * All rights reserved.
  *
@@ -1382,7 +1382,8 @@ ptask PlayerHeartBeat[1000](i) {
 
 
 	if(playerTabbed[i] == 0) {
-		// Prison_PlayerUpdate(i); WINTERFIELD WIP
+		// Prison_PlayerUpdate(i); // WINTERFIELD WIP
+		
 		
 		if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0) {
 			if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1) {
@@ -1412,6 +1413,8 @@ ptask PlayerHeartBeat[1000](i) {
 			format(szMiscArray, sizeof(szMiscArray), "%s has paid their debt to society.", GetPlayerNameEx(i));
 			for(new x; x < MAX_GROUPS; ++x) if(arrGroupData[x][g_iDoCAccess] >= 0 && arrGroupData[x][g_iDoCAccess] != INVALID_RANK) GroupLog(x, szMiscArray);
 		}
+		
+
 		if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
 
 			new Float: vehSize[3],

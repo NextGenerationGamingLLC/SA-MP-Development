@@ -14,7 +14,7 @@
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
 					
-	* Copyright (c) 2014, Next Generation Gaming, LLC
+	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
 	*
@@ -885,6 +885,7 @@ CMD:asellhouse(playerid, params[])
 		Log("logs/house.log", string);
 		ClearHouse(house);
 		format( HouseInfo[house][hOwnerName], 128, "Nobody" );
+		foreach(new p : Player) if(HouseInfo[house][hOwnerID] == PlayerInfo[p][pId]) Homes[p]--;
 		HouseInfo[house][hOwnerID] = -1;
 		HouseInfo[house][hGLUpgrade] = 1;
 		PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);

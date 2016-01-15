@@ -17,7 +17,7 @@
 	Developers:
 		(*) Miguel
 	
-	* Copyright (c) 2014, Next Generation Gaming, LLC
+	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
 	*

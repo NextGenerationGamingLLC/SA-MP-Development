@@ -21,43 +21,60 @@ new g_iEntranceID[MAX_PLAYERS],
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if(newkeys & ENTRANCE_SHORTCUT) Process_Entrance(playerid);
+	if(newkeys & ENTRANCE_SHORTCUT) {
+		new areaid[3];
+		GetPlayerDynamicAreas(playerid, areaid);
+		for(new i; i < sizeof(areaid); ++i) Process_Entrance(playerid, areaid[i]);
+	}
 	return 1;
 }
 
 CMD:enter(playerid)
 {
 	// SendClientMessage(playerid, COLOR_RED, "/enter is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
-	Process_Entrance(playerid);
+	new areaid[3];
+	GetPlayerDynamicAreas(playerid, areaid);
+	for(new i; i < sizeof(areaid); ++i) Process_Entrance(playerid, areaid[i]);
 	return 1;
 }
 
 CMD:exit(playerid)
 {
 	// SendClientMessage(playerid, COLOR_RED, "/exit is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
-	Process_Entrance(playerid);
+	new areaid[1];
+	GetPlayerDynamicAreas(playerid, areaid);
+	for(new i; i < sizeof(areaid); ++i) Process_Entrance(playerid, areaid[i]);
 	return 1;
 }
 
-Process_Entrance(playerid) {
-	if(GetPVarType(playerid, "IsInArena")) return 1;
-	if(IsPlayerInAnyDynamicArea(playerid))
-	{
-		new areaid[1];
-		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
-		new i = GetIDFromArea(areaid[0]);
+timer ResetEntranceVars[5000](playerid) {
 
+	DeletePVar(playerid, "LastEID");
+}
+
+Process_Entrance(playerid, areaid) {
+
+	if(GetPVarType(playerid, "IsInArena")) return 1;
+	new i = GetIDFromArea(areaid);
+	// if(GetPVarType(playerid, "LastEID")) return 1;
+	// SetPVarInt(playerid, "LastEID", i);
+	// if(IsPlayerInAnyDynamicArea(playerid))
+	{
+		// new areaid[1];
+		// GetPlayerDynamicAreas(playerid, areaid);
+
+		// defer ResetEntranceVars(playerid);
 		//printf("DEBUG: Area %d was detected as a door area: ID: %d, VW: %d, Int: %d.", areaid[0], i, Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_WORLD_ID), Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_INTERIOR_ID));
-		g_iEntranceAID[playerid] = areaid[0];
+		g_iEntranceAID[playerid] = areaid;
 		g_iEntranceID[playerid] = i;
 
 		if(i < sizeof(iVehExits)) {
-			if(iVehExits[i] == areaid[0]) {
+			if(iVehExits[i] == areaid) {
 				SetPVarInt(playerid, "VEHA_ID", i);
 			}
 		}
 		if(i < MAX_VEHICLES) {
-			if(iVehEnterAreaID[i] == areaid[0]) {
+			if(iVehEnterAreaID[i] == areaid) {
 				//printf("DEBUG: Area %d was detected as a vehicle area.", areaid[0]);
 				SetPVarInt(playerid, "VEHA_ID", i);
 			}
@@ -84,6 +101,11 @@ Process_Entrance(playerid) {
 		Enter_Door(playerid, g_iEntranceID[playerid], g_iEntranceAID[playerid]);
 	}
 	return 1;
+}
+
+hook OnPlayerEnterDynamicArea(playerid, areaid) {
+
+	// Process_Entrance(playerid, areaid);
 }
 
 /* public OnPlayerEnterDynamicArea(playerid, areaid) {
@@ -117,8 +139,8 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 	return 1;
 }
 
-ENT_DelVar(playerid)
-{
+ENT_DelVar(playerid) {
+	
 	g_iEntranceID[playerid] = -1;
 	g_iEntranceAID[playerid] = -1;
 }
@@ -136,45 +158,36 @@ Enter_Door(playerid, i, areaid = - 1)
 	// printf("DEBUG: Enter_Door triggered - Player %d, DoorID: %d, Door sVW: %d, Door sInt: %d", playerid, i, DDoorsInfo[i][ddInteriorVW], DDoorsInfo[i][ddInteriorInt]);
 	if(g_iEntranceAID[playerid] == -1 || g_iEntranceID[playerid] == -1) return 1;
 	ENT_DelVar(playerid);
-	if(!GetPVarType(playerid, "StreamPrep"))
-	{
-		if(areaid == HouseInfo[i][hAreaID][0]) 
-		{
+	if(!GetPVarType(playerid, "StreamPrep")) {
+		if((-1 < i < MAX_HOUSES) && areaid == HouseInfo[i][hAreaID][0]) {
 			House_Enter(playerid, i);
 			return 1;
 		}
-		if(areaid == HouseInfo[i][hAreaID][1])
-		{
+		if((-1 < i < MAX_HOUSES) && areaid == HouseInfo[i][hAreaID][1]) {
 			House_Exit(playerid, i);
 			return 1;
 		}
-		if(areaid == DDoorsInfo[i][ddAreaID])
-		{
+		if((-1 < i < MAX_DDOORS) && areaid == DDoorsInfo[i][ddAreaID]) {
 			DDoor_Enter(playerid, i);
 			return 1;
 		}
-		if(areaid == DDoorsInfo[i][ddAreaID_int])
-		{
+		if((-1 < i < MAX_DDOORS) && areaid == DDoorsInfo[i][ddAreaID_int]) {
 			DDoor_Exit(playerid, i);
 			return 1;
 		}
-		if(areaid == GarageInfo[i][gar_AreaID])
-		{
+		if((-1 < i < MAX_GARAGES) && areaid == GarageInfo[i][gar_AreaID]) {
 			Garage_Enter(playerid, i);
 			return 1;
 		}
-		if(areaid == GarageInfo[i][gar_AreaID_int])
-		{
+		if((-1 < i < MAX_GARAGES) && areaid == GarageInfo[i][gar_AreaID_int]) {
 			Garage_Exit(playerid, i);
 			return 1;
 		}
-		if(areaid == Businesses[i][bAreaID][0]) 
-		{
+		if((-1 < i < MAX_BUSINESSES) && areaid == Businesses[i][bAreaID][0]) {
 			Business_Enter(playerid, i);
 			return 1;
 	    }
-		if(areaid == Businesses[i][bAreaID][1])
-		{
+		if((-1 < i < MAX_BUSINESSES) && areaid == Businesses[i][bAreaID][1]) {
 			Business_Exit(playerid, i);
 			return 1;
 		}
@@ -182,7 +195,6 @@ Enter_Door(playerid, i, areaid = - 1)
 			Vehicle_Exit(playerid);
 			return 1;
 		}
-		
 	}
 	return 1;
 }

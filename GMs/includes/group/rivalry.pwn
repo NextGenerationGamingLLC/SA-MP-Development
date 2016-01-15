@@ -15,7 +15,7 @@
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
 					
-	* Copyright (c) 2014, Next Generation Gaming, LLC
+	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
 	*
@@ -141,7 +141,7 @@ CMD:grouptoy(playerid, params[]) {
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /grouptoy [pos/bone]");
 	if(strcmp(params, "pos", true) == 0) {
 		SetPVarInt(playerid, "EditGToy", 1);
-		EditAttachedObject(playerid, 9);
+		EditAttachedObject(playerid, 8);
 	}
 	if(strcmp(params, "bone", true) == 0) {
 
@@ -331,7 +331,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			format(szMiscArray, sizeof(szMiscArray), "[Group Toy]: Attached to %s", HoldingBones[listitem]);
 			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
-			SetPlayerAttachedObject(playerid, 9, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
+			RemovePlayerAttachedObject(playerid, 8);
+			SetPlayerAttachedObject(playerid, 8, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
 				PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],
 				PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4], PlayerInfo[playerid][pGroupToy][5], 
 				PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);

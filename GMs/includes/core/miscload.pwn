@@ -32,7 +32,7 @@ hook OnGameModeExit() {
 }
 
 hook OnPlayerConnect(playerid) {
-
+	/*
 	TD_ChatBox[0] = CreatePlayerTextDraw(playerid, 520.000000, 352.000000, "chatbox");
 	PlayerTextDrawAlignment(playerid,TD_ChatBox[0], 2);
 	PlayerTextDrawBackgroundColor(playerid,TD_ChatBox[0], 255);
@@ -138,6 +138,7 @@ hook OnPlayerConnect(playerid) {
 	PlayerTextDrawSetOutline(playerid,TD_ChatBox[10], 1);
 	PlayerTextDrawSetProportional(playerid,TD_ChatBox[10], 1);
 	PlayerTextDrawSetSelectable(playerid,TD_ChatBox[10], 0);
+	*/
 	return 1;
 }
 

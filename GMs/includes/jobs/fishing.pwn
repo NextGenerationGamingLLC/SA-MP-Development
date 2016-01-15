@@ -14,7 +14,7 @@
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
 					
-	* Copyright (c) 2014, Next Generation Gaming, LLC
+	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
 	*
@@ -210,6 +210,7 @@ CMD:fishhelp(playerid, params[])
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** FISHING *** /releasefish (Release one of your fishes)");
     return 1;
 }
+
 
 CMD:sellfish(playerid, params[])
 {
@@ -557,6 +558,7 @@ CMD:fish(playerid, params[])
 	}
 	return 1;
 }
+
 
 
 CMD:fishes(playerid, params[])

@@ -15,7 +15,7 @@
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
 					
-	* Copyright (c) 2014, Next Generation Gaming, LLC
+	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
 	*
@@ -89,20 +89,24 @@ task TurfWars_Task[60000 * 30]() { // Every 10 minutes.
 hook OnGameModeInit() {
 
 	for(new i; i < sizeof(arrTurfWarsBits); ++i) {
-		// Bit_Off(arrTurfWarsBits[i], tw_bVulnerable);
 		arrTurfWars[i][tw_bVulnerable] = false;
 		Bit_Off(arrTurfWarsBits[i], tw_bDisabled);
 	}
 	TurfWars_LoadGUI();
-	// Bit_State(arrTurfWarsBits[i], tw_bDisabled);
 }
 
 hook OnGameModeExit() {
 
-	for(new i; i < sizeof(TW_TextDraws); ++i) {
-		TextDrawHideForAll(TW_TextDraws[i]);
-		TextDrawDestroy(TW_TextDraws[i]);
-	}
+	TextDrawHideForAll(TW_TextDraws[0]);
+	TextDrawHideForAll(TW_TextDraws[1]);
+	TextDrawHideForAll(TW_TextDraws[2]);
+	TextDrawHideForAll(TW_TextDraws[3]);
+	TextDrawHideForAll(TW_TextDraws[4]);
+	TextDrawDestroy(TW_TextDraws[0]);
+	TextDrawDestroy(TW_TextDraws[1]);
+	TextDrawDestroy(TW_TextDraws[2]);
+	TextDrawDestroy(TW_TextDraws[3]);
+	TextDrawDestroy(TW_TextDraws[4]);
 	return 1;
 }
 
@@ -113,10 +117,18 @@ hook OnPlayerConnect(playerid) {
 
 hook OnPlayerDisconnect(playerid, reason) {
 
-	for(new i; i < sizeof(TW_PTextDraws); ++i) {
-		PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][i]);
-		PlayerTextDrawDestroy(playerid, TW_PTextDraws[playerid][i]);
-	}
+	PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][0]);
+	PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][1]);
+	PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][2]);
+	PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][3]);
+	PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][4]);
+	PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][5]);
+	PlayerTextDrawDestroy(playerid, TW_PTextDraws[playerid][0]);
+	PlayerTextDrawDestroy(playerid, TW_PTextDraws[playerid][1]);
+	PlayerTextDrawDestroy(playerid, TW_PTextDraws[playerid][2]);
+	PlayerTextDrawDestroy(playerid, TW_PTextDraws[playerid][3]);
+	PlayerTextDrawDestroy(playerid, TW_PTextDraws[playerid][4]);
+	PlayerTextDrawDestroy(playerid, TW_PTextDraws[playerid][5]);
 }
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
@@ -1350,12 +1362,19 @@ TurfWars_GUI(playerid, bool:bState) {
 			PlayerTextDrawShow(playerid, TW_PTextDraws[playerid][5]);
 		}
 		default: {
-			for(new i; i < sizeof(TW_TextDraws); ++i) {
-				TextDrawHideForPlayer(playerid, TW_TextDraws[i]);
-			}
-			for(new i; i < sizeof(TW_PTextDraws); ++i) {
-				PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][i]);
-			}
+			
+			TextDrawHideForPlayer(playerid, TW_TextDraws[0]);
+			TextDrawHideForPlayer(playerid, TW_TextDraws[1]);
+			TextDrawHideForPlayer(playerid, TW_TextDraws[2]);
+			TextDrawHideForPlayer(playerid, TW_TextDraws[3]);
+			TextDrawHideForPlayer(playerid, TW_TextDraws[4]);
+			
+			PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][0]);
+			PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][1]);
+			PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][2]);
+			PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][3]);
+			PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][4]);
+			PlayerTextDrawHide(playerid, TW_PTextDraws[playerid][5]);
 		}
 	}
 }

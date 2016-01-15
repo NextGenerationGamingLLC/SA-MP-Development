@@ -11,7 +11,7 @@
 //--------------------------------[FUNCTIONS.PWN]--------------------------------
 
 
- * Copyright (c) 2014, Next Generation Gaming, LLC
+ * Copyright (c) 2016, Next Generation Gaming, LLC
  *
  * All rights reserved.
  *
@@ -77,6 +77,14 @@ IsNumeric(szInput[]) {
 
 	while ((iChar = szInput[i++])) if (!('0' <= iChar <= '9')) return 0;
 	return 1;
+}
+
+ReturnUserFromIP(szIP[]) {
+
+	foreach(new i : Player) {
+		if(strcmp(szIP, GetPlayerIpEx(i), true) == 0) return i;
+	}
+	return INVALID_PLAYER_ID;
 }
 
 ReturnUser(text[]) {

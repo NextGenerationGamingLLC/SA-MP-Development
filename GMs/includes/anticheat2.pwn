@@ -20,7 +20,8 @@ new bool:ac_ACToggle[6];
 
 hook OnGameModeInit() {
 	
-	for(new i; i < sizeof(ac_ACToggle); ++i) ac_ACToggle[i] = false;
+	for(new i = 1; i < sizeof(ac_ACToggle); ++i) ac_ACToggle[i] = false;
+	ac_ACToggle[CARSURFING] = true;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
@@ -57,20 +58,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	switch(dialogid) {
 
 		case DIALOG_AC_MAIN: {
-			if(response) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot turn anything on yet.");
-			else return 1;
-
-			/*
-			if(ac_ACToggle[listitem]) {
-				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned off the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
-				ac_ACToggle[listitem] = false;
+			if(response && listitem == 0) {
+			
+				if(ac_ACToggle[listitem]) {
+					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned off the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
+					ac_ACToggle[listitem] = false;
+				}
+				else {
+					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned on the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
+					ac_ACToggle[listitem] = true;
+				}
+				AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
 			}
-			else {
-				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned on the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
-				ac_ACToggle[listitem] = true;
-			}
-			AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
-			*/
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot turn these on yet.");
 		}
 	}
 	return 1;
@@ -200,7 +200,7 @@ AC_IsPlayerSurfing(playerid) {
 	if(iVehID == INVALID_VEHICLE_ID) return 0;
 	switch(GetVehicleModel(iVehID)) {
 
-		case 403, 406, 422, 430, 433, 443, 446, 452, 453, 454, 455, 470, 472, 473, 478, 484, 493, 500, 514, 515, 525, 543, 554, 578, 595, 605, 607: return 0;
+		case 403, 406, 422, 430, 432, 433, 443, 446, 452, 453, 454, 455, 470, 472, 473, 478, 484, 493, 500, 514, 515, 525, 543, 554, 578, 595, 605, 607: return 0;
 		case 417, 423, 416, 425, 427, 431, 437, 447, 469, 487, 488, 497, 508, 528, 537, 538, 449, 548, 563, 56, 570, 577, 590, 592, 490: return 0; // often modded vehicles
 	}
 	return 1;

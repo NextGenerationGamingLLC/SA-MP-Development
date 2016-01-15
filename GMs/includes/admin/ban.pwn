@@ -1,3 +1,24 @@
+#include <YSI\y_hooks>
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	switch(dialogid) {
+
+		case DIALOG_MONEYFARMING: {
+			if(response) {
+				if(strcmp(inputtext, "Ban All", true) == 0) {
+
+					new szIP[16];
+					GetPVarString(playerid, "MF_IP", szIP, sizeof(szIP));
+					format(szMiscArray, sizeof(szMiscArray), "%s 90 Moneyfarming", szIP);
+					cmd_banip(playerid, szMiscArray);
+				}
+			}
+		}
+	}
+}
+
+
 CreateBan(iBanCreator, iBanned, iPlayerID, szIPAddress[], szReason[], iLength) {
 
 	// SPECIFY INVALID ID for iBanCreator for System Bans
@@ -150,6 +171,36 @@ public InitiateOfflineBan(iBanCreator, szReason[], iLength) {
 	return 1;
 }
 
+
+forward InitiateIPBan(iBanCreator, szReason[], iLength);
+public InitiateIPBan(iBanCreator, szReason[], iLength) {
+
+	new iRows,
+		iFields,
+		szIPAddress[16],
+		szName[MAX_PLAYER_NAME],
+		id,
+		iCount;
+
+	cache_get_data(iRows, iFields, MainPipeline);
+	if(iRows) {
+		while(iCount < iRows) {
+
+			id = cache_get_field_content_int(iCount, "id", MainPipeline);
+			cache_get_field_content(iCount, "IP", szIPAddress, MainPipeline);
+			cache_get_field_content(iCount, "Username", szName, MainPipeline, MAX_PLAYER_NAME);
+			SetPVarString(iBanCreator, "BanningName", szName);
+			if(cache_get_field_content_int(iCount, "AdminLevel", MainPipeline) > PlayerInfo[iBanCreator][pAdmin]) {
+				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: Couldn't ban account ID %d (higher admin level than you).", id);
+				SendClientMessageEx(iBanCreator, COLOR_GREY, szMiscArray);
+			}
+			else CreateBan(iBanCreator, id, INVALID_PLAYER_ID, szIPAddress, szReason, iLength);
+			iCount++;
+		}
+	}
+	return 1;
+}
+
 CheckBan(iPlayerID) {
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `ban` WHERE `active` = '1' AND (`bannedid` = '%d' OR `IP` = '%s')", PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]);
@@ -258,6 +309,67 @@ CMD:saban(playerid, params[]) {
 
 	return 1;
 }
+
+CMD:moneyfarmban(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] < 99999) return 1;
+	new uPlayer;
+	if(sscanf(params, "u", uPlayer)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /moneyfarmban [playerid / name]");
+	format(szMiscArray, sizeof(szMiscArray), "SELECT `Username`, `IP`, `Money`, `Bank`, `SPos_x`, `SPos_y`, `SPos_z` FROM `accounts` WHERE `IP` = '%s'", GetPlayerIpEx(uPlayer));
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckMoneyFarm", "is", playerid, GetPlayerIpEx(uPlayer));
+	return 1;
+}
+
+forward OnCheckMoneyFarm(playerid, szIP[]);
+public OnCheckMoneyFarm(playerid, szIP[]) {
+
+	szMiscArray[0] = 0;
+	new iRows,
+		iFields,
+		iCount,
+		szTitle[48],
+		szName[MAX_PLAYER_NAME],
+		szZone[MAX_ZONE_NAME];
+
+	cache_get_data(iRows, iFields, MainPipeline);
+	while(iCount < iRows) {
+
+		cache_get_field_content(iCount, "Username", szName, MainPipeline, MAX_PLAYER_NAME);
+		cache_get_field_content(iCount, "IP", szIP, MainPipeline, 16);
+		Get3DZone(cache_get_field_content_float(iCount, "SPos_x", MainPipeline),
+			cache_get_field_content_float(iCount, "SPos_y", MainPipeline),
+			cache_get_field_content_float(iCount, "SPos_z", MainPipeline),
+			szZone, MAX_ZONE_NAME);
+		
+		format(szMiscArray, sizeof(szMiscArray), "%s\n%s - %s - Hand: $%s Bank: $%s - LastLocation: %s", szMiscArray, szName, szIP,
+			number_format(cache_get_field_content_int(iCount, "Money", MainPipeline)), number_format(cache_get_field_content_int(iCount, "Bank", MainPipeline)), szZone);
+		iCount++;
+	}
+	strcat(szMiscArray, "\n___________________\nBan All", sizeof(szMiscArray));
+	SetPVarString(playerid, "MF_IP", szIP);
+	format(szTitle, sizeof(szTitle), "%s - Moneyfarm check", szIP);
+	ShowPlayerDialogEx(playerid, DIALOG_MONEYFARMING, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "<<");
+}
+
+
+CMD:banip(playerid, params[]) {
+
+	new
+		szIP[MAX_PLAYER_NAME],
+		szReason[64],
+		iLength;
+
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(sscanf(params, "s[16]ds[64]", szIP, iLength, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /banip [ip] [length in days] [reason]");
+
+	if(IsPlayerConnected(ReturnUserFromIP(szIP))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");
+
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`AdminLevel`,`IP` FROM `accounts` WHERE `IP` = '%e'", szIP);
+	mysql_function_query(MainPipeline, szMiscArray, false, "InitiateIPBan","isi", playerid, szReason, iLength);
+
+	return 1;
+}
+
 
 CMD:banaccount(playerid, params[]) {
 

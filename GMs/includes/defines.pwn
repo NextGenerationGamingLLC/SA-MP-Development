@@ -11,7 +11,7 @@
 //--------------------------------[DEFINES.PWN]--------------------------------
 
 
- * Copyright (c) 2014, Next Generation Gaming, LLC
+ * Copyright (c) 2016, Next Generation Gaming, LLC
  *
  * All rights reserved.
  *
@@ -110,6 +110,7 @@ native IsValidVehicle(vehicleid);
 #define 		MAX_PAYNSPRAYS				(25)
 #define 		MAX_ARRESTPOINTS			(30)
 #define 		MAX_IMPOUNDPOINTS			(20)
+#define 		MAX_DRUGS					(400)
 #define         NATION_SAN_ANDREAS		 	0
 #define         NATION_TIERRA_ROBADA	 	1
 #define			MAX_ZONE_NAME				28
@@ -1161,7 +1162,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_GANGTAGS_LIST			(6144)
 #define 		DIALOG_GANGTAGS_INPUT			(6145)
 #define 		DIALOG_GANGTAGS_FONT			(6146)
-
+#define 		DIALOG_MONEYFARMING				(6147)
 
 // GangTags
 #define 			GANGTAG_TIME				60000

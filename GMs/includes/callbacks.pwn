@@ -11,7 +11,7 @@
 //--------------------------------[CALLBACKS.PWN]--------------------------------
 
 
- * Copyright (c) 2014, Next Generation Gaming, LLC
+ * Copyright (c) 2016, Next Generation Gaming, LLC
  *
  * All rights reserved.
  *
@@ -396,13 +396,46 @@ public OnPlayerUpdate(playerid)
 	}
 	GetPlayerPos(playerid, acstruct[playerid][LastOnFootPosition][0], acstruct[playerid][LastOnFootPosition][1], acstruct[playerid][LastOnFootPosition][2]);
 
-	new newkeys, updown, leftright;
-    GetPlayerKeys(playerid, newkeys, updown, leftright);
+	new newkeys,
+		updown,
+		leftright;
+
+    GetPlayerKeys(playerid, newkeys, updown, leftright); // playervar for phone.
 
 	// night vision and thermal goggle fixes added by Dom
-	if(GetPlayerWeapon(playerid) == 44 || GetPlayerWeapon(playerid) == 45)
-	{
+	if(GetPlayerWeapon(playerid) == 44 || GetPlayerWeapon(playerid) == 45) {
+
 		if((newkeys & KEY_FIRE) && (!IsPlayerInAnyVehicle(playerid))) return 0;
+	}
+	if(updown == KEY_UP) {
+
+		if(Bit_State(arrPlayerBits[playerid], phone_bitState)) {
+			new iPMenuItem = GetPVarInt(playerid, "PMenuItem");
+			if(iPMenuItem != 0) {
+				SetPVarInt(playerid, "PMenuItem", iPMenuItem-1);
+				PlayerTextDrawBoxColor(playerid, phone_PTextDraw[playerid][12 + iPMenuItem-1], 0x22222266);
+				PlayerTextDrawBoxColor(playerid, phone_PTextDraw[playerid][12 + iPMenuItem], 0xFFFFFF00);
+				PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][12 + iPMenuItem-1]);
+				PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][12 + iPMenuItem]);
+				PlayerTextDrawShow(playerid, phone_PTextDraw[playerid][12 + iPMenuItem-1]);
+				PlayerTextDrawShow(playerid, phone_PTextDraw[playerid][12 + iPMenuItem]);
+			}
+		}
+	}
+	if(updown == KEY_DOWN) {
+
+		if(Bit_State(arrPlayerBits[playerid], phone_bitState)) {
+			new iPMenuItem = GetPVarInt(playerid, "PMenuItem");
+			if(iPMenuItem < 9) { // max menu item
+				SetPVarInt(playerid, "PMenuItem", GetPVarInt(playerid, "PMenuItem")+1);
+				PlayerTextDrawBoxColor(playerid, phone_PTextDraw[playerid][12 + iPMenuItem+1], 0x22222266);
+				PlayerTextDrawBoxColor(playerid, phone_PTextDraw[playerid][12 + iPMenuItem], 0xFFFFFF00);
+				PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][12 + iPMenuItem+1]);
+				PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][12 + iPMenuItem]);
+				PlayerTextDrawShow(playerid, phone_PTextDraw[playerid][12 + iPMenuItem+1]);
+				PlayerTextDrawShow(playerid, phone_PTextDraw[playerid][12 + iPMenuItem]);
+			}
+		}
 	}
 	return 1;
 }
@@ -1065,7 +1098,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			break;
 		}
 	}
-	*/
+	*/	
 	return 1;
 }
 
@@ -4805,7 +4838,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					SetVehicleParamsEx(newcar,engine,lights,VEHICLE_PARAMS_ON,doors,bonnet,boot,objective);
 					SetTimerEx("DisableVehicleAlarm", 20000, 0, "d",  newcar);
 				}
-				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 2 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0 && !IsABike(newcar)) { // Electronic Lock System
+				else if(PlayerVehicleInfo[i][v][pvLocked] == 1 && PlayerVehicleInfo[i][v][pvLock] == 2 && PlayerVehicleInfo[i][v][pvLocksLeft] > 0) { // Electronic Lock System
 
 					new
 						string[49 + MAX_PLAYER_NAME];
