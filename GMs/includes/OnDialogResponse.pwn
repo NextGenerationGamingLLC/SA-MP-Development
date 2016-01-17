@@ -2670,10 +2670,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				DynVehicleInfo[carid][gv_iSpawnedID] = INVALID_VEHICLE_ID;
 				for(new i = 0; i != MAX_DV_OBJECTS; i++)
 				{
-					if(DynVehicleInfo[carid][gv_iAttachedObjectID][i] != INVALID_OBJECT_ID)
+					if(DynVehicleObjInfo[carid][i][gv_iAttachedObjectID] != INVALID_OBJECT_ID)
 					{
-						DestroyDynamicObject(DynVehicleInfo[carid][gv_iAttachedObjectID][i]);
-						DynVehicleInfo[carid][gv_iAttachedObjectID][i] = INVALID_OBJECT_ID;
+						DestroyDynamicObject(DynVehicleObjInfo[carid][i][gv_iAttachedObjectID]);
+						DynVehicleObjInfo[carid][i][gv_iAttachedObjectID] = INVALID_OBJECT_ID;
 					}
 				}
 				new szstring[128];

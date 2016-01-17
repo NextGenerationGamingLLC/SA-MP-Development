@@ -78,7 +78,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.268"
+#define SERVER_GM_TEXT "NG:RP v3.0.269"
 
 // #define AREA_DEBUG
 
@@ -95,6 +95,7 @@
 #include <YSI\y_utils>
 #include <mSelection>
 #include <gvar>
+#include <irc>
 
 #if defined SOCKET_ENABLED
 #include <socket>
@@ -112,6 +113,7 @@
 #include "./includes/textdraws.pwn"
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
+#include "./includes/irc.pwn"
 
 //streamer includes
 #include "./includes/streamer/removebuildings.pwn"

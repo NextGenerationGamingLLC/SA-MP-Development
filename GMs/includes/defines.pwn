@@ -190,7 +190,7 @@ native IsValidVehicle(vehicleid);
 #define 		MAX_GROUP_DIVS 				10
 #define 		MAX_GROUP_WEAPONS			16
 #define			MAX_DYNAMIC_VEHICLES        700
-#define         MAX_DV_OBJECTS          	2
+#define         MAX_DV_OBJECTS          	4
 #define         MAX_DV_MODS                 15
 #define 		MAX_GROUP_LOCKERS           10
 #define 		MAX_GROUP_JURISDICTIONS     10
@@ -1424,3 +1424,6 @@ native IsValidVehicle(vehicleid);
 #define 			PVAR_GANGTAGID					"GT_ID"
 #define 			PVAR_GANGTAGEDITING				"GT_ED"
 #define 			PVAR_GANGTAGTEXT				"GT_TE"
+
+/* IRC/Slack */
+#define MAX_BOTS (1)

@@ -341,49 +341,49 @@ stock GetPlayerGroupInfo(targetid, rank[], division[], employer[])
 
 stock ToggleDVSiren(iDvSlotID, iSlot, iTogState = 0)
 {
-	switch(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot])
+	switch(DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectModel])
 	{
 		case 1899:
 		{
 			if(!iTogState) return 0;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19294;
-			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19294);
-			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
+			DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectModel] = 19294;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], E_STREAMER_MODEL_ID, 19294);
+			AttachDynamicObjectToVehicle(DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectZ], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRZ]);
 		}
 		case 18646:
 		{
 			if(iTogState) return 0;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19300;
-			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19300);
-			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
+			DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectModel] = 19300;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], E_STREAMER_MODEL_ID, 19300);
+			AttachDynamicObjectToVehicle(DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectZ], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRZ]);
 		}
 		case 19294:
 		{
 			if(iTogState) return 0;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 1899;
-			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 1899);
-			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
+			DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectModel] = 1899;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], E_STREAMER_MODEL_ID, 1899);
+			AttachDynamicObjectToVehicle(DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectZ], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRZ]);
 		}
 		case 19300:
 		{
 			if(!iTogState) return 0;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 18646;
-			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 18646);
-			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
+			DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectModel] = 18646;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], E_STREAMER_MODEL_ID, 18646);
+			AttachDynamicObjectToVehicle(DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectZ], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRZ]);
 		}
 		case 19419:
 		{
 			if(iTogState) return 0;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19420;
-			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19420);
-			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
+			DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectModel] = 19420;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], E_STREAMER_MODEL_ID, 19420);
+			AttachDynamicObjectToVehicle(DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectZ], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRZ]);
 		}
 		case 19420:
 		{
 			if(!iTogState) return 0;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][iSlot] = 19419;
-			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], E_STREAMER_MODEL_ID, 19419);
-			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][iSlot], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectZ][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRX][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRY][iSlot], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][iSlot]);
+			DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectModel] = 19419;
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], E_STREAMER_MODEL_ID, 19419);
+			AttachDynamicObjectToVehicle(DynVehicleObjInfo[iDvSlotID][iSlot][gv_iAttachedObjectID], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectZ], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRX], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRY], DynVehicleObjInfo[iDvSlotID][iSlot][gv_fObjectRZ]);
 		}
 	}
 	return 1;
@@ -2864,6 +2864,231 @@ public OnVehicleSirenStateChange(playerid, vehicleid, newstate)
     return 1;
 }
 
+stock EditDV(playerid, iDvSlotID, params[], name[], Float:value, &slot)
+{
+	new string[128];
+	format(string, sizeof(string), "%s has edited DV Slot %d - %s.", GetPlayerNameEx(playerid), iDvSlotID, params);
+	Log("logs/dv.log", string);
+	if(strcmp(name, "siren", true) == 0)
+	{
+		DynVehicleInfo[iDvSlotID][gv_iSiren] = !DynVehicleInfo[iDvSlotID][gv_iSiren];
+		DynVeh_Save(iDvSlotID);
+		DynVeh_Spawn(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, DynVehicleInfo[iDvSlotID][gv_iSiren] ? ("You have enabled the siren on the dynamic vehicle."):("You have disabled the siren on the dynamic vehicle."));
+		return 1;
+	}
+	if(strcmp(name, "delete", true) == 0)
+	{
+		DynVehicleInfo[iDvSlotID][gv_iModel] = 0;
+		DynVehicleObjInfo[iDvSlotID][0][gv_iAttachedObjectModel] = INVALID_OBJECT_ID;
+		DynVehicleObjInfo[iDvSlotID][1][gv_iAttachedObjectModel] = INVALID_OBJECT_ID;
+		DynVehicleObjInfo[iDvSlotID][2][gv_iAttachedObjectModel] = INVALID_OBJECT_ID;
+		DynVehicleObjInfo[iDvSlotID][3][gv_iAttachedObjectModel] = INVALID_OBJECT_ID;
+		DynVehicleInfo[iDvSlotID][gv_igID] = INVALID_GROUP_ID;
+		DynVehicleInfo[iDvSlotID][gv_igDivID] = 0;
+		DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = 1000;
+		DynVehicleInfo[iDvSlotID][gv_iUpkeep] = 0;
+		DynVehicleInfo[iDvSlotID][gv_iSiren] = 0;
+		DynVeh_Save(iDvSlotID);
+		DynVeh_Spawn(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "vw", true) == 0)
+	{
+		DynVehicleInfo[iDvSlotID][gv_iVW] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		DynVeh_Spawn(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the virtual world of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "disabled", true) == 0)
+	{
+		DynVehicleInfo[iDvSlotID][gv_iDisabled] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		DynVeh_Spawn(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "vmodel", true) == 0)
+	{
+		if(!(400 < value < 612)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Model ID");
+		DynVehicleInfo[iDvSlotID][gv_iModel] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		DynVeh_Spawn(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the vehicle model of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "vcol1", true) == 0)
+	{
+		if(!(0 <= value <= 255)) {
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
+		}
+		DynVehicleInfo[iDvSlotID][gv_iCol1] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (1) of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "vcol2", true) == 0)
+	{
+		if(!(0 <= value <= 255)) {
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
+		}
+		DynVehicleInfo[iDvSlotID][gv_iCol2] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (2) of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "groupid", true) == 0)
+	{
+		if(value == 0)
+		{
+			DynVehicleInfo[iDvSlotID][gv_igID] = INVALID_GROUP_ID;
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the group id flag of the dynamic vehicle");
+			return 1;
+		}
+		if(!(0 <= value < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at "#MAX_GROUPS")");
+		DynVehicleInfo[iDvSlotID][gv_igID] = floatround(value-1);
+		DynVeh_Save(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the group id flag of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "divid", true) == 0)
+	{
+		DynVehicleInfo[iDvSlotID][gv_igDivID] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the division id of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "rank", true) == 0)
+	{
+		DynVehicleInfo[iDvSlotID][gv_irID] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the rank id of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "loadmax", true) == 0)
+	{
+		if(!(0 < value < 6)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at 6)");
+		DynVehicleInfo[iDvSlotID][gv_iLoadMax] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the load max of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "maxhealth", true) == 0)
+	{
+		DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = (value);
+		DynVeh_Save(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the maximum health of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "upkeep", true) == 0)
+	{
+		DynVehicleInfo[iDvSlotID][gv_iUpkeep] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the up keep of the dynamic vehicle");
+		return 1;
+	}
+	if(strcmp(name, "vtype", true) == 0)
+	{
+		DynVehicleInfo[iDvSlotID][gv_iType] = floatround(value);
+		DynVeh_Save(iDvSlotID);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the vehicle type of the dynamic vehicle");
+		return 1;
+	}
+	if(1 <= slot <= MAX_DV_OBJECTS)
+	{
+		if(strcmp(name, "objmodel", true) == 0)
+		{
+			if(slot == 3 || slot == 4)
+			{
+				if(floatround(value) != 0 && !IsABlankTexture(floatround(value))) return SendClientMessageEx(playerid, COLOR_GREY, "DV Object slots 3 and 4 can only be assigned models 19475-19483");
+			}
+			DynVehicleObjInfo[iDvSlotID][slot-1][gv_iAttachedObjectModel] = floatround(value);
+			DynVeh_Spawn(iDvSlotID);
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object model of the dynamic vehicle");
+			return 1;
+		}
+		if(strcmp(name, "objx", true) == 0)
+		{
+			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectX] = value;
+			DynVeh_Spawn(iDvSlotID);
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (X) of the dynamic vehicle");
+			return 1;
+		}
+		if(strcmp(name, "objy", true) == 0)
+		{
+			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectY] = value;
+			DynVeh_Spawn(iDvSlotID);
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (Y) of the dynamic vehicle");
+			return 1;
+		}
+		if(strcmp(name, "objz", true) == 0)
+		{
+			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectZ] = value;
+			DynVeh_Spawn(iDvSlotID);
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (Z) of the dynamic vehicle");
+			return 1;
+		}
+		if(strcmp(name, "objrx", true) == 0)
+		{
+			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectRX] = value;
+			DynVeh_Spawn(iDvSlotID);
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (X) of the dynamic vehicle");
+			return 1;
+		}
+		if(strcmp(name, "objry", true) == 0)
+		{
+			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectRY] = value;
+			DynVeh_Spawn(iDvSlotID);
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (Y) of the dynamic vehicle");
+			return 1;
+		}
+		if(strcmp(name, "objrz", true) == 0)
+		{
+			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectRZ] = value;
+			DynVeh_Spawn(iDvSlotID);
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (Z) of the dynamic vehicle");
+			return 1;
+		}
+		if(strcmp(name, "objmatsize", true) == 0)
+		{
+			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectMatSize] = floatround(value);
+			DynVeh_Spawn(iDvSlotID);
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object material size of the dynamic vehicle");
+			return 1;
+		}
+		if(strcmp(name, "objsize", true) == 0)
+		{
+			DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectSize] = floatround(value);
+			DynVeh_Spawn(iDvSlotID);
+			DynVeh_Save(iDvSlotID);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object text size of the dynamic vehicle");
+			return 1;
+		}
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Slot ID Must be between 1 and "#MAX_DV_OBJECTS"!");
+	return 1;
+}
+
+stock IsABlankTexture(modelid)
+{
+	switch(modelid)
+	{
+		case 19475, 19476, 19477, 19478, 19479, 19480, 19481, 19482, 19483: return 1;
+	}
+	return 0;
+}
+
 CMD:clearbugs(playerid, params[])
 {
 	if(IsACop(playerid))
@@ -3294,29 +3519,42 @@ CMD:gvbuyback(playerid, params[])
 	return 1;
 }
 
-CMD:adjustdvrank(playerid, params[])
+CMD:dvadjust(playerid, params[])
 {
-	if(gettime() < GetPVarInt(playerid, "DvAdjust_Time")) return SendClientMessageEx(playerid, COLOR_GREY, " You need to wait 10 seconds before using this command again !");
 	if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a group!");
 	if(PlayerInfo[playerid][pMember] != PlayerInfo[playerid][pLeader]) return SendClientMessageEx(playerid, COLOR_GREY, "You do not have leadership!");
-	new vid, rank;
-	if(sscanf(params, "dd", vid, rank))
+	new vehicleid, opt[5], rank;
+	if(sscanf(params, "ds[5]d", vehicleid, opt, rank))
 	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "Syntax: /adjustdvrank <vehicleid> <rank>");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Use /dl to get the vehicleid.");
-		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Rank 0 = Disabled.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /dvadjust [vehicle id] [rank/div] [value]");
+		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Use /dl to get the vehicle ID");
+		SendClientMessageEx(playerid, COLOR_GREY, "NOTE: Value of 0 = Disabled");
 		return 1;
 	}
-	new iDvSlotID = DynVeh[vid];
-	if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vid) return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided!");
-	if(DynVehicleInfo[iDvSlotID][gv_igID] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, " This Vehicle is not owned by your group!");
+	new iDvSlotID = DynVeh[vehicleid];
+	if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid dynamic vehicle ID provided!");
+	if(DynVehicleInfo[iDvSlotID][gv_igID] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This vehicle is not owned by your group!");
 	//if(DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This Vehicle is owned by a faction!");
-	if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ranks can't go below 0 or above 9");
-	new string[128];
-	SetPVarInt(playerid, "DvAdjust_Time", gettime()+10);
-	DynVehicleInfo[iDvSlotID][gv_irID] = rank;
-	format(string, sizeof(string), "You have adjusted the rank of this vehicle to %d.", rank);
-	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	if(strcmp(opt, "rank", true) == 0)
+	{
+		if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Ranks can't go below 0 or above 9!");
+		DynVehicleInfo[iDvSlotID][gv_irID] = rank;
+		new string[128];
+		format(string, sizeof(string), "You have adjusted the rank of this vehicle to %s (%d).", arrGroupRanks[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_irID]], rank);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		format(string, sizeof(string), "%s has adjusted the rank to %s (%d) on DV Slot %d.", GetPlayerNameEx(playerid), arrGroupRanks[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_irID]], rank, iDvSlotID);
+		Log("logs/dv.log", string);
+	}
+	else if(strcmp(opt, "div", true) == 0)
+	{
+		if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Divisions can't go below 0 or above 9!");
+		DynVehicleInfo[iDvSlotID][gv_igDivID] = rank;
+		new string[128];
+		format(string, sizeof(string), "You have adjusted the division of this vehicle to %s (%d).", arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_igDivID]], rank);
+		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		format(string, sizeof(string), "%s has adjusted the division to %s (%d) on DV Slot %d.", GetPlayerNameEx(playerid), arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_igDivID]], rank, iDvSlotID);
+		Log("logs/dv.log", string);
+	}
 	DynVeh_Save(iDvSlotID);
 	return 1;
 }
@@ -3397,9 +3635,9 @@ CMD:dvstatus(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREEN, string);
 			format(string, sizeof(string), "X: %f | Y: %f | Z: %f | Model: %d | Upkeep: $%d | Maxhealth: %f", DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ], DynVehicleInfo[iDvSlotID][gv_iModel], DynVehicleInfo[iDvSlotID][gv_iUpkeep], DynVehicleInfo[iDvSlotID][gv_fMaxHealth]);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "Group: %d | Division: %d | Rank: %d | Type: %d | Disabled: %d", DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iDisabled]);
+			format(string, sizeof(string), "Group: %d | Division: %d | Rank: %d | Type: %d | VW: %d | Int: %d | Disabled: %d", DynVehicleInfo[iDvSlotID][gv_igID], DynVehicleInfo[iDvSlotID][gv_igDivID], DynVehicleInfo[iDvSlotID][gv_irID], DynVehicleInfo[iDvSlotID][gv_iType], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_iDisabled]);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "Obj Model 1: %d | Obj Model 2: %d | VW: %d | Int: %d | LoadMax: %d | Siren: %d", DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][0],DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][1], DynVehicleInfo[iDvSlotID][gv_iVW], DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iSiren]);
+			format(string, sizeof(string), "Obj Model 1: %d | Obj Model 2: %d | Obj Model 3: %d | Obj Model 4: %d | LoadMax: %d | Siren: %d", DynVehicleObjInfo[iDvSlotID][0][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][1][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][2][gv_iAttachedObjectModel], DynVehicleObjInfo[iDvSlotID][3][gv_iAttachedObjectModel], DynVehicleInfo[iDvSlotID][gv_iLoadMax], DynVehicleInfo[iDvSlotID][gv_iSiren]);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Dynamic Vehicle Slot ID.");
@@ -3508,204 +3746,18 @@ CMD:dvedit(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
-		new vehicleid, name[24], Float:value, slot, string[128];
-		if(sscanf(params, "is[24]F(0)D(0)", vehicleid, name, value, slot)) {
+		new vehicleid, name[24], Float:value, slot;
+		if(sscanf(params, "is[24]F(0)D(0)", vehicleid, name, value, slot))
+		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvedit [vehicleid] [v parameter] [value] [slot] (if applicable - indicated by *)");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled objmodel* objx* objy* objz* objrx* objry* objrz* (Object Offsets)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: rank siren");
+			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled rank siren objmodel* objx* objy* objz* objrx* objry* objrz*");
+			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: objmatsize* objsize* (Object Offsets)");
 			return 1;
 		}
 		new iDvSlotID = DynVeh[vehicleid];
-		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided " );
-		format(string, sizeof(string), "%s has edited DV Slot %d - %s.", GetPlayerNameEx(playerid), iDvSlotID, params);
-		Log("logs/dv.log", string);
-		if(strcmp(name, "siren", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iSiren] = !DynVehicleInfo[iDvSlotID][gv_iSiren];
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, DynVehicleInfo[iDvSlotID][gv_iSiren] ? ("You have enabled the siren on the dynamic vehicle."):("You have disabled the siren on the dynamic vehicle."));
-			return 1;
-		}
-		if(strcmp(name, "delete", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iModel] = 0;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][0] = INVALID_OBJECT_ID;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][1] = INVALID_OBJECT_ID;
-			DynVehicleInfo[iDvSlotID][gv_igID] = INVALID_GROUP_ID;
-			DynVehicleInfo[iDvSlotID][gv_igDivID] = 0;
-			DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = 1000;
-			DynVehicleInfo[iDvSlotID][gv_iUpkeep] = 0;
-			DynVehicleInfo[iDvSlotID][gv_iSiren] = 0;
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vw", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iVW] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the virtual world of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "disabled", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iDisabled] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vmodel", true) == 0)
-		{
-			if(!(400 < value < 612)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Model ID");
-			DynVehicleInfo[iDvSlotID][gv_iModel] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the vehicle model of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vcol1", true) == 0)
-		{
-			if(!(0 <= value <= 255)) {
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
-			}
-			DynVehicleInfo[iDvSlotID][gv_iCol1] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (1) of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vcol2", true) == 0)
-		{
-			if(!(0 <= value <= 255)) {
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
-			}
-			DynVehicleInfo[iDvSlotID][gv_iCol2] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (2) of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "groupid", true) == 0)
-		{
-			if(value == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_igID] = INVALID_GROUP_ID;
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the group id flag of the dynamic vehicle");
-				return 1;
-			}
-			if(!(0 <= value < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at "#MAX_GROUPS")");
-			DynVehicleInfo[iDvSlotID][gv_igID] = floatround(value-1);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the group id flag of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "divid", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_igDivID] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the division id of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "rank", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_irID] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the rank id of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "loadmax", true) == 0)
-		{
-			if(!(0 < value < 6)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at 6)");
-			DynVehicleInfo[iDvSlotID][gv_iLoadMax] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the load max of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "maxhealth", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = (value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the maximum health of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "upkeep", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iUpkeep] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the up keep of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vtype", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iType] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the vehicle type of the dynamic vehicle");
-			return 1;
-		}
-		if(1 <= slot <= MAX_DV_OBJECTS)
-		{
-			if(strcmp(name, "objmodel", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][slot-1] = floatround(value);
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object model of the dynamic vehicle");
-				return 1;
-			}
-			if(strcmp(name, "objx", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectX][slot-1] = value;
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (X) of the dynamic vehicle");
-				return 1;
-			}
-			if(strcmp(name, "objy", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectY][slot-1] = value;
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (Y) of the dynamic vehicle");
-				return 1;
-			}
-			if(strcmp(name, "objz", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectZ][slot-1] = value;
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (Z) of the dynamic vehicle");
-				return 1;
-			}
-			if(strcmp(name, "objrx", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectRX][slot-1] = value;
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (X) of the dynamic vehicle");
-				return 1;
-			}
-			if(strcmp(name, "objry", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectRY][slot-1] = value;
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (Y) of the dynamic vehicle");
-				return 1;
-			}
-			if(strcmp(name, "objrz", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectRZ][slot-1] = value;
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (Z) of the dynamic vehicle");
-				return 1;
-			}
-		}
-		else return SendClientMessageEx(playerid, COLOR_GRAD2, "Slot ID Must be between 1 and "#MAX_DV_OBJECTS"!");
+		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Dynamic Vehicle ID provided!" );
+		EditDV(playerid, iDvSlotID, params, name, value, slot);
 	}
 	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
 	return 1;
@@ -3715,199 +3767,66 @@ CMD:dveditslot(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
-		new iDvSlotID, name[24], Float:value, slot, string[128];
+		new iDvSlotID, name[24], Float:value, slot;
 		if(sscanf(params, "is[24]F(0)D(0)", iDvSlotID, name, value, slot)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dveditslot [dv slot id] [v parameter] [value] [slot] (if applicable - indicated by *)");
 			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: vmodel vcol1 vcol2 groupid divid loadmax maxhealth upkeep vtype vw delete");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled objmodel* objx* objy* objz* objrx* objry* objrz* (Object Offsets)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: rank siren");
+			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: disabled rank siren objmodel* objx* objy* objz* objrx* objry* objrz*");
+			SendClientMessageEx(playerid, COLOR_GREY, "Parameters: objmatsize* objsize* (Object Offsets)");
 			return 1;
 		}
-		if(iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iModel] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided " );
+		if(iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iModel] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Dynamic Vehicle ID provided!" );
+		EditDV(playerid, iDvSlotID, params, name, value, slot);
+	}
+	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	return 1;
+}
+
+CMD:dvtextobj(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
+	{
+		new vehicleid, name[24], value[32], slot, string[128];
+		if(sscanf(params, "ids[8]s[32]", vehicleid, slot, name, value)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvtextobj [vehicleid] [object slot] [text/font/color/bgcolor] [value]");
+
+		new iDvSlotID = DynVeh[vehicleid];
+		if(iDvSlotID == -1 || iDvSlotID > MAX_DYNAMIC_VEHICLES || DynVehicleInfo[iDvSlotID][gv_iSpawnedID] != vehicleid) return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided " );
 		format(string, sizeof(string), "%s has edited DV Slot %d - %s.", GetPlayerNameEx(playerid), iDvSlotID, params);
 		Log("logs/dv.log", string);
-		if(strcmp(name, "siren", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iSiren] = !DynVehicleInfo[iDvSlotID][gv_iSiren];
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, DynVehicleInfo[iDvSlotID][gv_iSiren] ? ("You have enabled the siren on the dynamic vehicle."):("You have disabled the siren on the dynamic vehicle."));
-			return 1;
-		}
-		if(strcmp(name, "delete", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iModel] = 0;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][0] = INVALID_OBJECT_ID;
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][1] = INVALID_OBJECT_ID;
-			DynVehicleInfo[iDvSlotID][gv_igID] = INVALID_GROUP_ID;
-			DynVehicleInfo[iDvSlotID][gv_igDivID] = 0;
-			DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = 1000;
-			DynVehicleInfo[iDvSlotID][gv_iUpkeep] = 0;
-			DynVehicleInfo[iDvSlotID][gv_iSiren] = 0;
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vw", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iVW] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the virtual world of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "disabled", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iDisabled] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vmodel", true) == 0)
-		{
-			if(!(400 < value < 612)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid Model ID");
-			DynVehicleInfo[iDvSlotID][gv_iModel] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			DynVeh_Spawn(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the vehicle model of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vcol1", true) == 0)
-		{
-			if(!(0 <= value <= 255)) {
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
-			}
-			DynVehicleInfo[iDvSlotID][gv_iCol1] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (1) of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vcol2", true) == 0)
-		{
-			if(!(0 <= value <= 255)) {
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
-			}
-			DynVehicleInfo[iDvSlotID][gv_iCol2] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the color (2) of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "groupid", true) == 0)
-		{
-			if(value == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_igID] = INVALID_GROUP_ID;
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have removed the group id flag of the dynamic vehicle");
-				return 1;
-			}
-			if(!(0 <= value < MAX_GROUPS)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at "#MAX_GROUPS")");
-			DynVehicleInfo[iDvSlotID][gv_igID] = floatround(value-1);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the group id flag of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "divid", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_igDivID] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the division id of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "rank", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_irID] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the rank id of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "loadmax", true) == 0)
-		{
-			if(!(0 < value < 6)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group specified (Start at 1, end at 6)");
-			DynVehicleInfo[iDvSlotID][gv_iLoadMax] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the load max of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "maxhealth", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_fMaxHealth] = (value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the maximum health of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "upkeep", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iUpkeep] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the up keep of the dynamic vehicle");
-			return 1;
-		}
-		if(strcmp(name, "vtype", true) == 0)
-		{
-			DynVehicleInfo[iDvSlotID][gv_iType] = floatround(value);
-			DynVeh_Save(iDvSlotID);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the vehicle type of the dynamic vehicle");
-			return 1;
-		}
+
 		if(1 <= slot <= MAX_DV_OBJECTS)
 		{
-			if(strcmp(name, "objmodel", true) == 0)
+			if(DynVehicleObjInfo[iDvSlotID][slot-1][gv_iAttachedObjectModel] == INVALID_OBJECT_ID || !IsABlankTexture(DynVehicleObjInfo[iDvSlotID][slot-1][gv_iAttachedObjectModel])) return SendClientMessageEx(playerid, COLOR_GREY, "The object slot given is not valid with this command!");
+			if(strcmp(name, "text", true) == 0)
 			{
-				DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][slot-1] = floatround(value);
+				format(DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectText], 32, "%s", value);
 				DynVeh_Spawn(iDvSlotID);
 				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object model of the dynamic vehicle");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object text of the dynamic vehicle");
 				return 1;
 			}
-			if(strcmp(name, "objx", true) == 0)
+			if(strcmp(name, "font", true) == 0)
 			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectX][slot-1] = value;
+				format(DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectFont], 32, "%s", value);
 				DynVeh_Spawn(iDvSlotID);
 				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (X) of the dynamic vehicle");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object font face of the dynamic vehicle");
 				return 1;
 			}
-			if(strcmp(name, "objy", true) == 0)
+			if(strcmp(name, "color", true) == 0)
 			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectY][slot-1] = value;
+				sscanf(value, "h", DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectColor]);
 				DynVeh_Spawn(iDvSlotID);
 				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (Y) of the dynamic vehicle");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object text color of the dynamic vehicle");
 				return 1;
 			}
-			if(strcmp(name, "objz", true) == 0)
+			if(strcmp(name, "bgcolor", true) == 0)
 			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectZ][slot-1] = value;
+				sscanf(value, "h", DynVehicleObjInfo[iDvSlotID][slot-1][gv_fObjectBGColor]);
 				DynVeh_Spawn(iDvSlotID);
 				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object position (Z) of the dynamic vehicle");
-				return 1;
-			}
-			if(strcmp(name, "objrx", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectRX][slot-1] = value;
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (X) of the dynamic vehicle");
-				return 1;
-			}
-			if(strcmp(name, "objry", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectRY][slot-1] = value;
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (Y) of the dynamic vehicle");
-				return 1;
-			}
-			if(strcmp(name, "objrz", true) == 0)
-			{
-				DynVehicleInfo[iDvSlotID][gv_fObjectRZ][slot-1] = value;
-				DynVeh_Spawn(iDvSlotID);
-				DynVeh_Save(iDvSlotID);
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object rotation (Z) of the dynamic vehicle");
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have modified the object background color of the dynamic vehicle");
 				return 1;
 			}
 		}
@@ -3985,7 +3904,7 @@ CMD:siren(playerid, params[])
 		{
 			for(new i = 0; i != MAX_DV_OBJECTS; i++)
 			{
-				switch(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][i])
+				switch(DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][i][gv_iAttachedObjectModel])
 				{
 					case 1899, 19300, 19420: ToggleDVSiren(DynVeh[GetPlayerVehicleID(playerid)], i, 1);
 					case 18646, 19294, 19419: ToggleDVSiren(DynVeh[GetPlayerVehicleID(playerid)], i, 0);

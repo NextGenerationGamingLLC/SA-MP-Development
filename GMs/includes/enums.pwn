@@ -174,16 +174,25 @@ enum eGroupVehData {
 	Float:gv_fRotZ, // Vehicle Z Rotation
 	gv_iUpkeep, // Upkeep fee - costs faction $
 	gv_iMod[15],
-	gv_iAttachedObjectID[2],
-	gv_iAttachedObjectModel[2], // For permanently attached vehicle objects.. ie lightbar, neons
-	Float:gv_fObjectX[2],
-	Float:gv_fObjectY[2],
-	Float:gv_fObjectZ[2],
-	Float:gv_fObjectRX[2],
-	Float:gv_fObjectRY[2],
-	Float:gv_fObjectRZ[2],
 	gv_iSiren,
 	gv_iAmmoLoaded
+}
+
+enum eGroupVehObjectData {
+	gv_iAttachedObjectID,
+	gv_iAttachedObjectModel, // For permanently attached vehicle objects.. ie lightbar, neons
+	Float:gv_fObjectX,
+	Float:gv_fObjectY,
+	Float:gv_fObjectZ,
+	Float:gv_fObjectRX,
+	Float:gv_fObjectRY,
+	Float:gv_fObjectRZ,
+	gv_fObjectText[32],
+	gv_fObjectMatSize,
+	gv_fObjectFont[32],
+	gv_fObjectSize,
+	gv_fObjectColor,
+	gv_fObjectBGColor
 }
 
 enum eBiz {

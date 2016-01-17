@@ -414,6 +414,7 @@ CMD:erasetag(playerid, params[])
 
 stock GangTag_IntColor(color)
 {
+	if(color == 0) return color;
 	new rgba = 0xFF + (color * 256);
 	return rgba >>> 8 | rgba << 24;
 }

@@ -5684,14 +5684,14 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 	{
 	    new vw[1];
 		vw[0] = GetVehicleVirtualWorld(vehicleid);
-	    if(DynVehicleInfo[DynVeh[vehicleid]][gv_iAttachedObjectModel][0] != INVALID_OBJECT_ID)
+	    if(DynVehicleObjInfo[DynVeh[vehicleid]][1][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 	    {
-	    	Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[vehicleid]][gv_iAttachedObjectID][0], E_STREAMER_WORLD_ID, vw[0]);
+	    	Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[vehicleid]][0][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 
 		}
-		if(DynVehicleInfo[DynVeh[vehicleid]][gv_iAttachedObjectModel][1] != INVALID_OBJECT_ID)
+		if(DynVehicleObjInfo[DynVeh[vehicleid]][0][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 	    {
-			Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[vehicleid]][gv_iAttachedObjectID][1], E_STREAMER_WORLD_ID, vw[0]);
+			Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[vehicleid]][1][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 		}
 	}
 	return 0;

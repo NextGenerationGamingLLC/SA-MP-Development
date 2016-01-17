@@ -49,13 +49,15 @@ stock IsAdminLevel(playerid, level, warning = 1) {
 	return 0;
 }
 
-stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false) {
+stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: IRC = false)
+{
 	foreach(new i: Player)
 	{
 		if(PlayerInfo[i][pAdmin] >= iLevel && (bUndercover || !PlayerInfo[i][pTogReports])) {
 			SendClientMessageEx(i, hColor, szMessage);
 		}
-	}	
+	}
+	if(!IRC && iLevel <= 2) IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
 	return 1;
 }
 
@@ -75,30 +77,13 @@ stock GetAdminRankName(i)
 {
 	switch(i)
 	{
-		case 2: 
-		{
-			format(szMiscArray, sizeof(szMiscArray), "Junior Admin");
-		}
-		case 3: 
-		{
-			format(szMiscArray, sizeof(szMiscArray), "General Admin");
-		}
-		case 4: 
-		{
-			format(szMiscArray, sizeof(szMiscArray), "Senior Admin");
-		}
-		case 1337: 
-		{
-			format(szMiscArray, sizeof(szMiscArray), "Head Admin");
-		}
-		case 1338: 
-		{
-			format(szMiscArray, sizeof(szMiscArray), "Lead Head Admin");
-		}
-		default:
-		{
-			format(szMiscArray, sizeof(szMiscArray), "Executive Admin");
-		}
+		case 2: format(szMiscArray, sizeof(szMiscArray), "Junior Administrator");
+		case 3: format(szMiscArray, sizeof(szMiscArray), "General Administrator");
+		case 4: format(szMiscArray, sizeof(szMiscArray), "Senior Administrator");
+		case 1337: format(szMiscArray, sizeof(szMiscArray), "Head Administrator");
+		case 1338: format(szMiscArray, sizeof(szMiscArray), "Lead Head Administrator");
+		case 99999: format(szMiscArray, sizeof(szMiscArray), "Executive Administrator");
+		default: format(szMiscArray, sizeof(szMiscArray), "Undefined Administrator (%i)", i);
 	}
 	return szMiscArray;
 }
@@ -1851,21 +1836,17 @@ CMD:admin(playerid, params[])  {
 			new
 				szMessage[128];
 
-			if(PlayerInfo[playerid][pAdmin] == 2) format(szMessage, sizeof(szMessage), "* Junior Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMessage, sizeof(szMessage), "* General Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMessage, sizeof(szMessage), "* Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMessage, sizeof(szMessage), "* Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else format(szMessage, sizeof(szMessage), "* Undefined Admin (%i) %s: %s", PlayerInfo[playerid][pAdmin], GetPlayerNameEx(playerid), params);
-
+			format(szMessage, sizeof(szMessage), "* %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 			foreach(new i: Player)
 			{
 				if(PlayerInfo[i][pAdmin] >= 2)
 				{
 					SendClientMessage(i, COLOR_YELLOW, szMessage);
 				}
-			}	
+			}
+
+			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
+			IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/a)dmin [admin chat]");
 	}
@@ -1883,11 +1864,7 @@ CMD:headadmin(playerid, params[])  {
 			new
 				szMessage[128];
 
-			if(PlayerInfo[playerid][pAdmin] == 1337) format(szMessage, sizeof(szMessage), "(PRIVATE) Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "(PRIVATE) Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "(PRIVATE) Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else format(szMessage, sizeof(szMessage), "(PRIVATE) Undefined Admin (%i) %s: %s", PlayerInfo[playerid][pAdmin], GetPlayerNameEx(playerid), params);
-
+			format(szMessage, sizeof(szMessage), "(PRIVATE) %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 			foreach(new i: Player)
 			{
 				if(PlayerInfo[i][pAdmin] >= 1337)
@@ -1895,6 +1872,9 @@ CMD:headadmin(playerid, params[])  {
 					SendClientMessage(i, COLOR_GREEN, szMessage);
 				}	
 			}
+
+			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
+			IRC_Say(BotID[0], IRC_CHANNEL_HEADADMIN, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/ha)eadmin [Head admin+ chat]");
 	}

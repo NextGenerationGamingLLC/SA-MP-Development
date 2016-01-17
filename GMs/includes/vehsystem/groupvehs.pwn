@@ -59,19 +59,31 @@ public DynVeh_QueryFinish(iType, iExtraID) {
 				i = 1;
 				while(i <= MAX_DV_OBJECTS) {
 					format(szResult, sizeof szResult, "vAttachedObjectModel%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i-1] = strval(szResult);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_iAttachedObjectModel] = strval(szResult);
 					format(szResult, sizeof szResult, "vObjectX%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectX][i-1] = floatstr(szResult);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectX] = floatstr(szResult);
 					format(szResult, sizeof szResult, "vObjectY%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectY][i-1] = floatstr(szResult);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectY] = floatstr(szResult);
 					format(szResult, sizeof szResult, "vObjectZ%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectZ][i-1] = floatstr(szResult);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectZ] = floatstr(szResult);
 					format(szResult, sizeof szResult, "vObjectRX%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectRX][i-1] = floatstr(szResult);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectRX] = floatstr(szResult);
 					format(szResult, sizeof szResult, "vObjectRY%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectRY][i-1] = floatstr(szResult);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectRY] = floatstr(szResult);
 					format(szResult, sizeof szResult, "vObjectRZ%i", i);
-					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleInfo[sqlid][gv_fObjectRZ][i-1] = floatstr(szResult);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectRZ] = floatstr(szResult);
+					format(szResult, sizeof szResult, "vObjectText%i", i);
+					cache_get_field_content(iIndex, szResult, DynVehicleObjInfo[sqlid][i-1][gv_fObjectText], MainPipeline, 32);
+					format(szResult, sizeof szResult, "vObjectMatSize%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectMatSize] = strval(szResult);
+					format(szResult, sizeof szResult, "vObjectFont%i", i);
+					cache_get_field_content(iIndex, szResult, DynVehicleObjInfo[sqlid][i-1][gv_fObjectFont], MainPipeline, 32);
+					format(szResult, sizeof szResult, "vObjectSize%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectSize] = strval(szResult);
+					format(szResult, sizeof szResult, "vObjectColor%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectColor] = strval(szResult);
+					format(szResult, sizeof szResult, "vObjectBGColor%i", i);
+					cache_get_field_content(iIndex, szResult, szResult, MainPipeline); DynVehicleObjInfo[sqlid][i-1][gv_fObjectBGColor] = strval(szResult);
 					i++;
 				}
 				i = 0;
@@ -86,9 +98,9 @@ public DynVeh_QueryFinish(iType, iExtraID) {
 						//printf("[DynVeh] Loaded Dynamic Vehicle %i.", iIndex);
 						for(i = 0; i != MAX_DV_OBJECTS; i++)
 						{
-							if(DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i] == 0 || DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i] == INVALID_OBJECT_ID) {
-								DynVehicleInfo[sqlid][gv_iAttachedObjectID][i] = INVALID_OBJECT_ID;
-								DynVehicleInfo[sqlid][gv_iAttachedObjectModel][i] = INVALID_OBJECT_ID;
+							if(DynVehicleObjInfo[sqlid][i][gv_iAttachedObjectModel] == 0 || DynVehicleObjInfo[sqlid][i][gv_iAttachedObjectModel] == INVALID_OBJECT_ID) {
+								DynVehicleObjInfo[sqlid][i][gv_iAttachedObjectID] = INVALID_OBJECT_ID;
+								DynVehicleObjInfo[sqlid][i][gv_iAttachedObjectModel] = INVALID_OBJECT_ID;
 							}
 						}
 					} else {
@@ -122,13 +134,19 @@ DynVeh_Save(iDvSlotID) {
 		DynVehicleInfo[iDvSlotID][gv_iInt], DynVehicleInfo[iDvSlotID][gv_fFuel], DynVehicleInfo[iDvSlotID][gv_iSiren]);
 
 	for(i = 0; i != MAX_DV_OBJECTS; ++i) {
-		format(szMiscArray, sizeof szMiscArray, "%s, `vAttachedObjectModel%i` = '%d'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i]);
-		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectX%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectX][i]);
-		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectY%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectY][i]);
-		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectZ%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectZ][i]);
-		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRX%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRX][i]);
-		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRY%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRY][i]);
-		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRZ%i` = '%.2f'", szMiscArray, i+1, DynVehicleInfo[iDvSlotID][gv_fObjectRZ][i]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vAttachedObjectModel%i` = '%d'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectModel]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectX%i` = '%.2f'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectX]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectY%i` = '%.2f'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectY]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectZ%i` = '%.2f'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectZ]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRX%i` = '%.2f'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectRX]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRY%i` = '%.2f'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectRY]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRZ%i` = '%.2f'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectRZ]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectText%i` = '%s'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectText]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectMatSize%i` = '%d'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectMatSize]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectFont%i` = '%s'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectFont]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectSize%i` = '%d'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectSize]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectColor%i` = '%i'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectColor]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectBGColor%i` = '%i'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectBGColor]);
 	}
 
 	for(i = 0; i != MAX_DV_MODS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `vMod%d` = %i", szMiscArray, i, DynVehicleInfo[iDvSlotID][gv_iMod][i]);
@@ -157,9 +175,9 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 			DynVehicleInfo[iDvSlotID][gv_iSpawnedID] = INVALID_VEHICLE_ID;
 			for(new i = 0; i != MAX_DV_OBJECTS; i++)
 			{
-				if(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i] != INVALID_OBJECT_ID) {
-					DestroyDynamicObject(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i]);
-					DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i] = INVALID_OBJECT_ID;
+				if(DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectID] != INVALID_OBJECT_ID) {
+					DestroyDynamicObject(DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectID]);
+					DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectID] = INVALID_OBJECT_ID;
 				}
 			}
 		}
@@ -206,11 +224,20 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 	if(GetGVarType("VehSiren", DynVehicleInfo[iDvSlotID][gv_iSpawnedID])) ToggleSiren(DynVehicleInfo[iDvSlotID][gv_iSpawnedID], 1);
 	for(new i = 0; i != MAX_DV_OBJECTS; i++)
 	{
-		if(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i] != INVALID_OBJECT_ID && DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i] != 0)
+		if(DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectModel] != INVALID_OBJECT_ID && DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectModel] != 0)
 		{
-			DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i] = CreateDynamicObject(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i],0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-			AttachDynamicObjectToVehicle(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectID][i], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleInfo[iDvSlotID][gv_fObjectX][i], DynVehicleInfo[iDvSlotID][gv_fObjectY][i], DynVehicleInfo[iDvSlotID][gv_fObjectZ][i], DynVehicleInfo[iDvSlotID][gv_fObjectRX][i], DynVehicleInfo[iDvSlotID][gv_fObjectRY][i], DynVehicleInfo[iDvSlotID][gv_fObjectRZ][i]);
-			switch(DynVehicleInfo[iDvSlotID][gv_iAttachedObjectModel][i])
+			DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectID] = CreateDynamicObject(DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectModel],0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			
+			if(IsABlankTexture(DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectModel]) && !isnull(DynVehicleObjInfo[iDvSlotID][i][gv_fObjectText]))
+			{
+				if(DynVehicleObjInfo[iDvSlotID][i][gv_fObjectMatSize] == 0) DynVehicleObjInfo[iDvSlotID][i][gv_fObjectMatSize] = 90;
+				if(isnull(DynVehicleObjInfo[iDvSlotID][i][gv_fObjectFont])) format(DynVehicleObjInfo[iDvSlotID][i][gv_fObjectFont], 32, "Arial");
+				if(DynVehicleObjInfo[iDvSlotID][i][gv_fObjectSize] == 0) DynVehicleObjInfo[iDvSlotID][i][gv_fObjectSize] = 24;
+				if(DynVehicleObjInfo[iDvSlotID][i][gv_fObjectColor] == 0) DynVehicleObjInfo[iDvSlotID][i][gv_fObjectColor] = 0xFFFFFFFF;
+				SetDynamicObjectMaterialText(DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectID], 0, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectText], DynVehicleObjInfo[iDvSlotID][i][gv_fObjectMatSize], DynVehicleObjInfo[iDvSlotID][i][gv_fObjectFont], DynVehicleObjInfo[iDvSlotID][i][gv_fObjectSize], 1, GangTag_IntColor(DynVehicleObjInfo[iDvSlotID][i][gv_fObjectColor]), GangTag_IntColor(DynVehicleObjInfo[iDvSlotID][i][gv_fObjectBGColor]), 1);
+			}
+			AttachDynamicObjectToVehicle(DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectID], DynVehicleInfo[iDvSlotID][gv_iSpawnedID], DynVehicleObjInfo[iDvSlotID][i][gv_fObjectX], DynVehicleObjInfo[iDvSlotID][i][gv_fObjectY], DynVehicleObjInfo[iDvSlotID][i][gv_fObjectZ], DynVehicleObjInfo[iDvSlotID][i][gv_fObjectRX], DynVehicleObjInfo[iDvSlotID][i][gv_fObjectRY], DynVehicleObjInfo[iDvSlotID][i][gv_fObjectRZ]);
+			switch(DynVehicleObjInfo[iDvSlotID][i][gv_iAttachedObjectModel])
 			{
 				case 18646, 19294, 19419: ToggleDVSiren(iDvSlotID, i, 0);
 			}

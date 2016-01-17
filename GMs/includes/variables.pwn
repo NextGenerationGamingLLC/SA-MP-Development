@@ -134,7 +134,9 @@ new stock
 	arrGroupLockers[MAX_GROUPS][MAX_GROUP_LOCKERS][eLockerData],
 	arrGroupJurisdictions[MAX_GROUPS][MAX_GROUP_JURISDICTIONS][eJurisdictionData];
 
-new DynVehicleInfo[MAX_DYNAMIC_VEHICLES][eGroupVehData];
+new
+	DynVehicleInfo[MAX_DYNAMIC_VEHICLES][eGroupVehData],
+	DynVehicleObjInfo[MAX_DYNAMIC_VEHICLES][MAX_DV_OBJECTS][eGroupVehObjectData];
 // Gym dynamic objects
 new BikeParkourObjects[2];
 new BikeParkourObjectStage[2];
@@ -2888,3 +2890,6 @@ new const szFurnitureTextures[][][] = {
 
 new Text:Furniture_TD[26];
 */
+
+/* IRC/Slack */
+new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], BotID[MAX_BOTS], BotGroupID;

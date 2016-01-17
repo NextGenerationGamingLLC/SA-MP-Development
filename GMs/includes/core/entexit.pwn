@@ -350,14 +350,14 @@ DDoor_Enter(playerid, i)
 		{
 			new vw[1];
 			vw[0] = GetVehicleVirtualWorld(GetPlayerVehicleID(playerid));
-			if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][0] != INVALID_OBJECT_ID)
+			if(DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][0][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 			{
-				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][0], E_STREAMER_WORLD_ID, vw[0]);
+				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][0][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 
 			}
-			if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][1] != INVALID_OBJECT_ID)
+			if(DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][1][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 			{
-				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][1], E_STREAMER_WORLD_ID, vw[0]);
+				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][1][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 
 			}
 		}
@@ -457,14 +457,14 @@ DDoor_Exit(playerid, i)
 		{
 			new vw[1];
 			vw[0] = GetVehicleVirtualWorld(GetPlayerVehicleID(playerid));
-			if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][0] != INVALID_OBJECT_ID)
+			if(DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][0][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 			{
-				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][0], E_STREAMER_WORLD_ID, vw[0]);
+				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][0][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 
 			}
-			if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][1] != INVALID_OBJECT_ID)
+			if(DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][1][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 			{
-				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][1], E_STREAMER_WORLD_ID, vw[0]);
+				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][1][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 
 			}
 		}
@@ -612,13 +612,13 @@ Garage_Enter(playerid, i) {
 		{
 			new vw[1];
 			vw[0] = GetVehicleVirtualWorld(GetPlayerVehicleID(playerid));
-			if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][0] != INVALID_OBJECT_ID)
+			if(DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][0][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 			{
-				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][0], E_STREAMER_WORLD_ID, vw[0]);
+				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][0][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 			}
-			if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][1] != INVALID_OBJECT_ID)
+			if(DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][1][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 			{
-				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][1], E_STREAMER_WORLD_ID, vw[0]);
+				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][1][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 			}
 		}
 		foreach(new passenger : Player)
@@ -669,13 +669,13 @@ Garage_Exit(playerid, i) {
 		{
 			new vw[1];
 			vw[0] = GetVehicleVirtualWorld(GetPlayerVehicleID(playerid));
-			if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][0] != INVALID_OBJECT_ID)
+			if(DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][0][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 			{
-				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][0], E_STREAMER_WORLD_ID, vw[0]);
+				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][0][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 			}
-			if(DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectModel][1] != INVALID_OBJECT_ID)
+			if(DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][1][gv_iAttachedObjectModel] != INVALID_OBJECT_ID)
 			{
-				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleInfo[DynVeh[GetPlayerVehicleID(playerid)]][gv_iAttachedObjectID][1], E_STREAMER_WORLD_ID, vw[0]);
+				Streamer_SetArrayData(STREAMER_TYPE_OBJECT, DynVehicleObjInfo[DynVeh[GetPlayerVehicleID(playerid)]][1][gv_iAttachedObjectID], E_STREAMER_WORLD_ID, vw[0]);
 			}
 		}
 		foreach(new passenger : Player)
