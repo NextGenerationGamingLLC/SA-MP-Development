@@ -57,7 +57,7 @@ stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: I
 			SendClientMessageEx(i, hColor, szMessage);
 		}
 	}
-	if(!IRC && iLevel <= 2) IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
+	//if(!IRC && iLevel <= 2) IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
 	return 1;
 }
 
@@ -122,10 +122,10 @@ stock GetStaffRank(playerid)
 	{
 		switch(PlayerInfo[playerid][pHelper])
 		{
-			case 1: szMiscArray = "{6495ED}Helper{FFFFFF}";
-			case 2: szMiscArray = "{00FFFF}Community Advisor{FFFFFF}";
-			case 3: szMiscArray = "{00FFFF}Senior Advisor{FFFFFF}";
-			case 4: szMiscArray = "{00FFFF}Chief Advisor{FFFFFF}";
+			case 1: szMiscArray = "{6495ED}Junior Player Advisor{FFFFFF}";
+			case 2: szMiscArray = "{00FFFF}General Player Advisor{FFFFFF}";
+			case 3: szMiscArray = "{00FFFF}Senior Player Advisor{FFFFFF}";
+			case 4: szMiscArray = "{00FFFF}Chief Player Advisor{FFFFFF}";
 		}
 	}
 
@@ -774,7 +774,7 @@ CMD:mjail(playerid, params[]) {
 				return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on administrators.");
 			}
 			if(PlayerInfo[iTargetID][pHelper] >= 2) {
-				return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on community advisors.");
+				return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on Player Advisors.");
 			}
             if(PlayerInfo[iTargetID][pJailTime] > 0) {
 			    return SendClientMessageEx(playerid, COLOR_GREY, "You can't perform this action on someone in jail already.");
@@ -1707,7 +1707,7 @@ CMD:makeadmin(playerid, params[])  {
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 			if(PlayerInfo[iTargetID][pHelper] >= 1) {
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot make community advisors admins!");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot make Player Advisors admins!");
 			}
 			if(PlayerInfo[iTargetID][pAdmin] == iAdminValue) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this administrator level.");
 			else {
@@ -1846,7 +1846,7 @@ CMD:admin(playerid, params[])  {
 			}
 
 			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-			IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
+			//IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/a)dmin [admin chat]");
 	}
@@ -1874,7 +1874,7 @@ CMD:headadmin(playerid, params[])  {
 			}
 
 			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-			IRC_Say(BotID[0], IRC_CHANNEL_HEADADMIN, szMessage);
+			//IRC_Say(BotID[0], IRC_CHANNEL_HEADADMIN, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/ha)eadmin [Head admin+ chat]");
 	}
@@ -1895,7 +1895,7 @@ CMD:staff(playerid, params[]) {
 			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "-- Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "-- Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "-- Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pHelper] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Community Advisor %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pHelper] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Player Advisor %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pHelper] == 3) format(szMiscArray, sizeof(szMiscArray), "-- Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pHelper] >= 4) format(szMiscArray, sizeof(szMiscArray), "-- Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1)
@@ -3003,7 +3003,7 @@ CMD:togtp(playerid, params[])
 
 CMD:spec(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pHelper] < 3)
+	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pHelper] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 		return 1;
@@ -3030,14 +3030,16 @@ CMD:spec(playerid, params[])
 	}
 
 	new giveplayerid;
+
+	if(PlayerInfo[playerid][pHelper] > 0) {
+		switch(PlayerInfo[playerid][pHelper]) {
+			case 1, 2: if(!(1 <= PlayerInfo[giveplayerid][pLevel] <= 5)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only use this on Levels 1 - 5 as a JPA/GPA!");
+			case 3, 4: if(!(1 <= PlayerInfo[giveplayerid][pLevel] <= 10)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only use this on Levels 1 - 10 as a SPA/CPA!");
+		}
+	}
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /spec (playerid/off)");
 	if(IsPlayerConnected(giveplayerid))
 	{
-	    if(PlayerInfo[playerid][pHelper] >= 3 && !(1 <= PlayerInfo[giveplayerid][pHelper] <= 4))
-	    {
-	        SendClientMessageEx(playerid, COLOR_GREY, "You can only spectate helpers/advisors");
-			return 1;
-		}
 		if(PlayerInfo[giveplayerid][pAdmin] == 99999 && !GetPVarType(giveplayerid, "EASpecable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot spectate this person.");
 		if(PlayerInfo[playerid][pAdmin] >= 4 && Spectate[giveplayerid] != INVALID_PLAYER_ID && Spectating[giveplayerid] == 1)
 		{
@@ -5258,9 +5260,9 @@ CMD:ahelp(playerid, params[]) {
 
 CMD:ah(playerid, params[])
 {
+	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	if (PlayerInfo[playerid][pAdmin] >= 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 		if(PlayerInfo[playerid][pSMod] > 0) SendClientMessageEx(playerid, COLOR_GRAD1, "*** {FFFF00}SENIOR SERVER MODERATOR{B4B5B7} --* /jail /kick /staff /togstaff /changename");
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "--* {FFFF00}SERVER MODERATOR{B4B5B7} --* /mjail /kick /staff /togstaff");
 	}
@@ -5362,14 +5364,20 @@ CMD:ah(playerid, params[])
 	if (PlayerInfo[playerid][pShopTech] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - DoCR --* /pmotd /ovmute /ovunmute /vipm /togdynamicgift /dgedit /viewgiftbox /freeweekend");
 	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Faction Mod --* /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn"), SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Faction Mod --* /fires /destroyfire /destroyfires /gotofire /setfstrength");
 	if (PlayerInfo[playerid][pFactionModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - DoFM --* /dvcreate /dvedit /dveditslot /dvplate");
-	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Public Relations --* /catokens /cmotd /makeadvisor /makehelper /takeadvisor");
-	if (PlayerInfo[playerid][pAdmin] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Public Relations --* /catokens /cmotd /makeadvisor /takeadvisor");
+
+	if (PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /advisors /pa /newbquestions /an /tn /spec /newbspec off");
+	if ( PlayerInfo[playerid][pHelper] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /paduty /showrequests /accepthelp /finishhelp /findnewb /staff /kick /mjail /rhmute /nmute");
+	if ( PlayerInfo[playerid][pHelper] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /makeadvisor /takeadvisor /requestevent /newbspec");
+	if ( PlayerInfo[playerid][pHelper] == 4) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /pamotd /nonewbie /newbspec");
+
+	if ( PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	return 1;
 }
 
 CMD:nrn(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /nrn [player]");

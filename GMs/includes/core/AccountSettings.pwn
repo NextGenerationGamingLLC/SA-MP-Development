@@ -62,7 +62,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				{FFFFFF}Biz Radio\t%s\n\
 				{FFFFFF}--- Staff ---\t\n\
 				{FFFFFF}Staff Chat\t%s\n\
-				{FFFFFF}Community Advisor Chat\t%s\n\
+				{FFFFFF}Player Advisor Chat\t%s\n\
 				{FFFFFF}Watchdog Chat\t%s\n",
 				szMiscArray,
 				(PlayerInfo[playerid][pToggledChats][10] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
@@ -97,7 +97,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				Biz Radio\t%d\n\
 				--- Staff ---\t\n\
 				Staff Chat\t%d\n\
-				Community Advisor Chat\t%d\n\
+				Player Advisor Chat\t%d\n\
 				Watchdog Chat\t%d\n",
 				PlayerInfo[playerid][pChatbox][0],
 				PlayerInfo[playerid][pChatbox][1],
@@ -193,7 +193,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(strcmp(inputtext, "Bug Chat", true) == 0) id = 13;
 			else if(strcmp(inputtext, "Biz Radio", true) == 0) id = 14;
 			else if(strcmp(inputtext, "Staff Chat", true) == 0) id = 15;
-			else if(strcmp(inputtext, "Community Advisor Chat", true) == 0) id = 16;
+			else if(strcmp(inputtext, "Player Advisor Chat", true) == 0) id = 16;
 			else if(strcmp(inputtext, "Watchdog Chat", true) == 0) id = 17;
 			// else if(strcmp(inputtext, "Admin", true) == 0) id = 18;
 			if(id == -1) return ShowAccountSettings(playerid, 1);
@@ -249,7 +249,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				else if(strcmp(inputtext, "Bug Chat", true) == 0) id = 13;
 				else if(strcmp(inputtext, "Biz Radio", true) == 0) id = 14;
 				else if(strcmp(inputtext, "Staff Chat", true) == 0) id = 15;
-				else if(strcmp(inputtext, "Community Advisor Chat", true) == 0) id = 16;
+				else if(strcmp(inputtext, "Player Advisor Chat", true) == 0) id = 16;
 				else if(strcmp(inputtext, "Watchdog Chat", true) == 0) id = 17;
 				if(id == -1) return ShowAccountSettings(playerid, 1);
 				// else if(strcmp(inputtext, "Admin", true) == 0) id = 18;
@@ -258,6 +258,64 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 	}
+
+	return 1;
+}
+
+CMD:tog(playerid, params[]) {
+
+	if(isnull(params)) {
+
+		SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /tog [option]");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: newbie | ooc | whisper | pr | phone | famed | vip | dept | gooc | radio | bug");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | hunger");
+		return 1;
+	}
+
+	new iChatID = -1;
+
+	if(strcmp(params, "newbie", true) == 0) iChatID = 0;
+	else if(strcmp(params, "ooc", true) == 0) iChatID = 2;
+	else if(strcmp(params, "whisper", true) == 0) iChatID = 3;
+	else if(strcmp(params, "pr", true) == 0) iChatID = 5;
+	else if(strcmp(params, "phone", true) == 0) iChatID = 7;
+	else if(strcmp(params, "famed", true) == 0) iChatID = 8;
+	else if(strcmp(params, "vip", true) == 0) iChatID = 9;
+	else if(strcmp(params, "dept", true) == 0) iChatID = 10;
+	else if(strcmp(params, "gooc", true) == 0) iChatID = 11;
+	else if(strcmp(params, "radio", true) == 0) iChatID = 12;
+	else if(strcmp(params, "bug", true) == 0) iChatID = 13;
+	else if(strcmp(params, "biz", true) == 0) iChatID = 14;
+	else if(strcmp(params, "staff", true) == 0) iChatID = 15;
+	else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
+	else if(strcmp(params, "news", true) == 0) iChatID = 1;
+	else if(strcmp(params, "chatbox", true) == 0) iChatID = 4; 
+	else if(strcmp(params, "hunger", true) == 0) iChatID = 6;
+
+	if(!(0 <= iChatID < MAX_CHATSETS)) return 1; // preventing OOB issues.
+
+	if(PlayerInfo[playerid][pToggledChats][iChatID] == 0) {
+
+		PlayerInfo[playerid][pToggledChats][iChatID] = 1;
+		switch(iChatID) {
+
+			case 6: PlayerTextDrawHide(playerid, _hungerText[playerid]);
+			case 7: PhoneOnline[playerid] = 1;
+			case 15: advisorchat[playerid] = 0;
+			case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
+		}
+	}
+	else {
+
+		PlayerInfo[playerid][pToggledChats][iChatID] = 0;
+		switch(iChatID) {
+			case 6: PlayerTextDrawShow(playerid, _hungerText[playerid]);
+			case 7: PhoneOnline[playerid] = 0;
+			case 15: advisorchat[playerid] = 1;
+			case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
+		}
+	}
+
 
 	return 1;
 }

@@ -5,7 +5,7 @@ hook OnGameModeInit() {
 	print("[Streamer] Loading 3D Text Labels...");
 	
     //CreateDynamic3DTextLabel("{FF8000}/loadforklift\nTo load the crate onto your forklift", COLOR_YELLOW, -2114.1, -1723.5, 11984.5, 20.0, _, _, 1, 0, -1, _, 20.0);
-	CreateDynamic3DTextLabel("{FF8000}/loadforklift\nTo load the crate onto your forklift", COLOR_YELLOW, -2136.05, -1573.24, 3551.5, 20.0, _, _, -1, -1, -1, _, 20.0);
+	CreateDynamic3DTextLabel("{FF8000}/loadforklift\nTo load the crate onto your forklift", COLOR_YELLOW, 134.7094,-4380.9165,50.5603, 20.0, _, _, -1, -1, -1, _, 20.0);
 	CreateDynamic3DTextLabel("{FF8000}LOCKDOWN\nPUSH ONLY IN CASE OF EMERGENCY", COLOR_YELLOW, -1121.70, 4290.41, 5.88, 20.0, _, _, 1, 0, 0, _, 20.0);
 
 	// General text labels

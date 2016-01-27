@@ -406,7 +406,7 @@ new Tooltips[][] =
 	"Don't have a voip server? No Problem! Use our ~b~TeamSpeak~w~ at ~y~ts.ng-gaming.net:9987~w~.",
 	"We are not just a sa-mp community, don't forget to check our other projects at ~y~ng-gaming.net~w~!",
 	"Don't forget to check out our E-store at ~y~shop.ng-gaming.net~w~, Helps keep this server up and running~w~!",
-	"We have a full community advisors staff waiting to help you! Use ~g~/requesthelp~w~ to communicate with them!",
+	"We have a full Player Advisors staff waiting to help you! Use ~g~/requesthelp~w~ to communicate with them!",
 	"Found a bug? Don't report it to our staff, please goto our bug forums at ~y~ng-gaming.net~w~.",
 	"Remember to read the ~r~rules~w~, failure to do so may lead toward punishment or even a ban.",
 	"Wait at least 5 minutes inbetween ~g~/reports~w~, We work hard to get to everyone who reports.",
@@ -2892,4 +2892,4 @@ new Text:Furniture_TD[26];
 */
 
 /* IRC/Slack */
-new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], BotID[MAX_BOTS], BotGroupID;
+//new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], BotID[MAX_BOTS], BotGroupID;

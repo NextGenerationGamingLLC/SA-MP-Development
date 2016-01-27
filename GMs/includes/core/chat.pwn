@@ -344,10 +344,10 @@ CMD:ooc(playerid, params[])
 		format(string, sizeof(string), "(( %s %s: %s ))", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
 		OOCOff(COLOR_OOC,string);
 	}
-	else if(PlayerInfo[playerid][pHelper] >= 2)
+	else if(PlayerInfo[playerid][pHelper] >= 1)
 	{
 		new string[128];
-		format(string, sizeof(string), "(( Community Advisor %s: %s ))", GetPlayerNameEx(playerid), params);
+		format(string, sizeof(string), "(( Player Advisor %s: %s ))", GetPlayerNameEx(playerid), params);
 		OOCOff(COLOR_OOC,string);
 		return 1;
 	}

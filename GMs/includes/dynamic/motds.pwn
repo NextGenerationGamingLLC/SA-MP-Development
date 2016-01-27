@@ -61,7 +61,7 @@ CMD:amotd(playerid, params[])
 		ABroadCast( COLOR_LIGHTRED, string, 4);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the Admin MOTD.");
 		g_mysql_SaveMOTD();
-		IRC_SetChannelTopic(BotID[0], IRC_CHANNEL_ADMIN, AdminMOTD);
+		//IRC_SetChannelTopic(BotID[0], IRC_CHANNEL_ADMIN, AdminMOTD);
 	}
 	return 1;
 }
@@ -81,7 +81,7 @@ CMD:vipmotd(playerid, params[])
 	return 1;
 }
 
-CMD:cmotd(playerid, params[])
+CMD:advisormotd(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pHelper] >= 4 || PlayerInfo[playerid][pPR] > 0)
     {
@@ -90,15 +90,15 @@ CMD:cmotd(playerid, params[])
 		format(CAMOTD, sizeof(CAMOTD), "%s", params);
 		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR] > 0)
 		{
-			format(string, sizeof(string), "AdmCmd: %s has changed the Community Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
+			format(string, sizeof(string), "AdmCmd: %s has changed the Player Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
 			ABroadCast( COLOR_LIGHTRED, string, 4);
 		}
 		else if(PlayerInfo[playerid][pHelper] >= 4)
 		{
-		    format(string, sizeof(string), "CACmd: %s has changed the Community Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
+		    format(string, sizeof(string), "CACmd: %s has changed the Player Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
 			CBroadCast( COLOR_YELLOW, string, 2);
 		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the Community Advisor MOTD.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the Player Advisor MOTD.");
 		g_mysql_SaveMOTD();
 	}
 	return 1;

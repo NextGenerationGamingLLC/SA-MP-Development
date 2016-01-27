@@ -206,13 +206,9 @@ CMD:help(playerid, params[])
 			}
 		}
 	}
-	if (PlayerInfo[playerid][pAdmin] >= 1)
+	if (PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "*** ADMIN *** (/a)dmin (/ah)elp");
-	}
-	if (PlayerInfo[playerid][pHelper] >= 1)
-	{
-		SendClientMessageEx(playerid, COLOR_WHITE, "*** COMMUNITY ADVISOR *** (/ch)elp");
 	}
 	if(PlayerInfo[playerid][pDonateRank] >= 1)
 	{

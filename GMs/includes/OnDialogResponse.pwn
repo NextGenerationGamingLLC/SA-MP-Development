@@ -4214,7 +4214,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have enough money on you to pay the ticket.");
 				}
 				GivePlayerCash(playerid, -PlayerVehicleInfo[playerid][listitem][pvTicket]);
-				Tax += (PlayerVehicleInfo[playerid][listitem][pvTicket] / 100) * 11;
+				Tax += PlayerVehicleInfo[playerid][listitem][pvTicket];
 				SpeedingTickets += PlayerVehicleInfo[playerid][listitem][pvTicket];
 				for(new z; z < MAX_GROUPS; z++)
 				{
@@ -4250,7 +4250,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(szMessage, sizeof(szMessage), "You have released your %s for $%i.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400], iCost);
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMessage);
 				GivePlayerCash(playerid, -iCost);
-				Tax += (iCost / 100) * 11;
+				Tax += iCost;
 				SpeedingTickets += iCost;
 				for(new z; z < MAX_GROUPS; z++)
 				{
@@ -7028,7 +7028,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					JustReported[playerid]=10;
 					format(string, sizeof(string), "** %s(%i) is requesting help, reason: Report Menu. (type /accepthelp %i)", GetPlayerNameEx(playerid), playerid, playerid);
 					SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have requested help from a Community Advisor, wait for a reply.");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have requested help from a Player Advisor, wait for a reply.");
 					SetPVarInt( playerid, "COMMUNITY_ADVISOR_REQUEST", 1 );
 					SetPVarInt( playerid, "HelpTime", 5);
 					SetPVarString( playerid, "HelpReason", "Report Menu");

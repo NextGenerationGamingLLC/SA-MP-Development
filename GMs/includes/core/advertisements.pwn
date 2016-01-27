@@ -427,7 +427,7 @@ CMD:adunmute(playerid, params[])
 
 CMD:admute(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pSMod] == 1 || PlayerInfo[playerid][pWatchdog] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /admute [player]");
@@ -481,7 +481,7 @@ CMD:admute(playerid, params[])
 					}
 					else
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD1, "That person is currently muted. You are unable to unmute players from advertisements as a Community Advisor.");
+						SendClientMessageEx(playerid, COLOR_GRAD1, "That person is currently muted. You are unable to unmute players from advertisements as a Player Advisor.");
 					}
 				}
 

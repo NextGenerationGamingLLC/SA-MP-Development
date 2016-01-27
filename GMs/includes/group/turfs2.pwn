@@ -184,6 +184,8 @@ TurfWars_TurfTax(playerid, szType[], iAmount) {
 
 		new iTurfTax = iAmount * arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iTurfTax] / 100;
 
+		if(iTurfTax > 500000) iTurfTax = 500000;
+
 		szMiscArray[0] = 0;
 		arrTurfWars[iTurfID][tw_iRevenue] += iTurfTax;
 		arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iBudget] += iTurfTax;
@@ -314,9 +316,9 @@ CMD:setturftax(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a group.");
 	if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a group leader.");
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setturftax [percentage] (between 0 and 25)");
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setturftax [percentage] (between 0 and 10)");
 	new iTurfTax = strval(params);
-	if(!(0 <= iTurfTax < 26)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Enter a value between 0 and 25.");
+	if(!(0 <= iTurfTax < 11)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Enter a value between 0 and 10.");
 
 	arrGroupData[PlayerInfo[playerid][pMember]][g_iTurfTax] = iTurfTax;
 	format(szMiscArray, sizeof(szMiscArray), "[Turf]: {CCCCCC}%s set the turf tax to {FFFF00}%d%", GetPlayerNameEx(playerid), iTurfTax);

@@ -80,7 +80,7 @@ InitiateGamemode()
 	LoadPayPhones();
 	
 	//Island for crate system
-    MAXCRATES = 10; // Sets Default Max Crates
+    MAXCRATES = 0; // Sets Default Max Crates
 	
 	//LoadCarrier()
 	//SelectCharmPoint();

@@ -266,7 +266,6 @@ task Point_Process[50400000]() {
 			if(arrPoint[i][po_iType] == 0) {
 
 				new newammo = Random(150, 200), // amount of ammo created per hour.
-					totwep,
 					totammo,
 					iGroupID = arrPoint[i][po_iGroupID];
 
@@ -295,7 +294,7 @@ task Point_Process[50400000]() {
 
 					if(PlayerInfo[p][pMember] == arrPoint[i][po_iGroupID]) {
 
-						format(szMiscArray, sizeof(szMiscArray), "[Weapon Point] - {DDDDDD}%d weapons and %d rounds of ammo have been added to your locker from a weapon factory you own.", totwep, totammo);
+						format(szMiscArray, sizeof(szMiscArray), "[Weapon Point] - {DDDDDD}weapons and %d rounds of ammo have been added to your locker from a weapon factory you own.", totammo);
 						SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
 					}
 				}

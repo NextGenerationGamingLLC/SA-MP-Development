@@ -786,7 +786,7 @@ CMD:loadforklift(playerid, params[]) {
 		{
 		    new CrateFound;
 		    //if(IsPlayerInRangeOfPoint(playerid, 5, -2114.1, -1723.5, 11984.5))
-			if(IsPlayerInRangeOfPoint(playerid, 5, -2136.0332,-1572.6605,3551.0564))
+			if(IsPlayerInRangeOfPoint(playerid, 5, 134.7094,-4380.9165,51.8603))
 		    {
 				Streamer_Update(playerid);
 		        if(CountCrates() < MAXCRATES)
@@ -796,7 +796,7 @@ CMD:loadforklift(playerid, params[]) {
 		                SendClientMessageEx(playerid, COLOR_GRAD2, "The San Andreas Government cannot afford this crate");
 		                return 1;
 		            }
-					if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot take crates from the factory.");
+					if(MAXCRATES == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot take crates from the factory. Production is at a standstill!");
 		            if(LoadForkliftStatus)
 		            {
 		                SendClientMessageEx(playerid, COLOR_GRAD2, "A Crate is already being loaded.");
@@ -915,9 +915,13 @@ CMD:cratelimit(playerid, params[]) {
     {
 		new string[128];
 		new moneys;
-	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
-		if(moneys < 5 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
+	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [0-50] (Limits the total production of crates)");
+		if(moneys < 0 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [0-50] (Limits the total production of crates)");
 		MAXCRATES = moneys;
+		
+		if(moneys == 0) HideCrate();
+		else if(moneys > 0) SetTimer("ShowCrate", CRATE_PRODUCTION_DELAY, 0);
+
 		format(string, sizeof(string), "* You have restricted weapon crate production to %d", moneys);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		format(string, sizeof(string), "** %s has restricted weapon crate production to %d", GetPlayerNameEx(playerid), moneys);
