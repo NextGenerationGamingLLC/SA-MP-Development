@@ -268,7 +268,7 @@ CMD:tog(playerid, params[]) {
 
 		SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /tog [option]");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: newbie | ooc | whisper | pr | phone | famed | vip | dept | gooc | radio | bug");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | hunger");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | hunger | advisor");
 		return 1;
 	}
 
@@ -291,6 +291,7 @@ CMD:tog(playerid, params[]) {
 	else if(strcmp(params, "news", true) == 0) iChatID = 1;
 	else if(strcmp(params, "chatbox", true) == 0) iChatID = 4; 
 	else if(strcmp(params, "hunger", true) == 0) iChatID = 6;
+	else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
 
 	if(!(0 <= iChatID < MAX_CHATSETS)) return 1; // preventing OOB issues.
 

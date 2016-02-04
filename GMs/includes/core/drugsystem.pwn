@@ -728,8 +728,8 @@ hook OnPlayerEnterCheckpoint(playerid) {
 
 		case CHECKPOINT_SMUGGLE_BLACKMARKET: {
 
-			if(GetPVarInt(playerid, "RunTS") > (gettime() - 30)) return Run_KickPlayer(playerid);
-			DeletePVar(playerid, "RunTS");
+			//if(GetPVarInt(playerid, "RunTS") > (gettime() - 30)) return Run_KickPlayer(playerid);
+			//DeletePVar(playerid, "RunTS");
 			if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a vehicle.");
 			new iVehID = GetPlayerVehicleID(playerid),
 				iBlackMarketID = GetPVarInt(playerid, PVAR_SMUGGLE_DELIVERINGTO),
@@ -796,8 +796,8 @@ hook OnPlayerEnterCheckpoint(playerid) {
 
 		case CHECKPOINT_SMUGGLE_PLAYER:	{
 
-			if(GetPVarInt(playerid, "RunTS") > (gettime() - 30)) return Run_KickPlayer(playerid);
-			DeletePVar(playerid, "RunTS");
+			//if(GetPVarInt(playerid, "RunTS") > (gettime() - 30)) return Run_KickPlayer(playerid);
+			//DeletePVar(playerid, "RunTS");
 			if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a vehicle.");
 
 			new iVehID = GetPlayerVehicleID(playerid),
@@ -3794,7 +3794,7 @@ Smuggle_StartSmuggle(playerid, iBlackMarketID = -1) {
 
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_SMUGGLE_PLAYER;
 	}
-	SetPVarInt(playerid, "RunTS", gettime());
+	//SetPVarInt(playerid, "RunTS", gettime());
 	SendClientMessageEx(playerid, COLOR_GREEN, "[Drug Smuggle] {CCCCCC}You started your drug smuggle. Make your way to the delivery point.");
 	return 1;
 }

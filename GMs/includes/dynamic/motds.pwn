@@ -85,7 +85,7 @@ CMD:advisormotd(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pHelper] >= 4 || PlayerInfo[playerid][pPR] > 0)
     {
-		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cmotd [message]");
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /advisormotd [message]");
 		new string[128];
 		format(CAMOTD, sizeof(CAMOTD), "%s", params);
 		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR] > 0)

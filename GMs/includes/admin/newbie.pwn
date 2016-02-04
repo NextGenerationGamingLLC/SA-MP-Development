@@ -120,11 +120,13 @@ AnswerNewbie(iPlayerID, iNewbieID, szAnswer[]) {
 
 	format(szMiscArray, sizeof(szMiscArray), "Q: (%s): %s", GetPlayerNameEx(iNewbieID), szMiscArray);
 	SendGlobalNewbMsg(szMiscArray);
+	Log("logs/newbiechat.log", szMiscArray);
 
 	szMiscArray[0] = 0;
 
 	format(szMiscArray, sizeof(szMiscArray), "A: (%s): %s", GetPlayerNameEx(iPlayerID), szAnswer);
 	SendGlobalNewbMsg(szMiscArray);
+	Log("logs/newbiechat.log", szMiscArray);
 
 	if(PlayerInfo[iPlayerID][pHelper] == 1 && PlayerInfo[iPlayerID][pAdmin] < 1) {
 		ReportCount[iPlayerID]++;

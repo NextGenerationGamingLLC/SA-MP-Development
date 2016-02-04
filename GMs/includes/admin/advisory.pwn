@@ -73,7 +73,7 @@ stock SendAdvisorMessage(color, string[])
 {
 	foreach(new i: Player)
 	{
-		if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 1 || PlayerInfo[i][pVIPMod] || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
+		if((PlayerInfo[i][pAdmin] >= 1 || PlayerInfo[i][pHelper] >= 2 || PlayerInfo[i][pVIPMod] || PlayerInfo[i][pWatchdog] >= 1) && advisorchat[i])
 		{
 			ChatTrafficProcess(i, color, string, 15);
 		}
@@ -857,7 +857,7 @@ CMD:findnewb(playerid, params[])
 					SetPlayerPos(playerid, Pos[0][0], Pos[1][0]+2, Pos[2][0]);
 					PlayerInfo[x][pHelpedBefore] = 1;
 					SetPVarInt(playerid, "HelpingSomeone", 1);
-					ShowPlayerDialogEx(x, 0, DIALOG_STYLE_MSGBOX, "Helper Alert", "A Player Advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
+					ShowPlayerDialogEx(x, 0, DIALOG_STYLE_MSGBOX, "Advisor Alert", "A Player Advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
 					if(i[0] > 0 || vw[0] > 0) Player_StreamPrep(playerid, Pos[0][0], Pos[1][0], Pos[2][0], FREEZE_TIME);
 					format(Message, sizeof(Message), "You have been teleported to newbie %s, retype the command to be teleported back.", GetPlayerNameEx(x));
 					SendClientMessageEx(playerid, COLOR_WHITE, Message);
@@ -1014,7 +1014,7 @@ CMD:pa(playerid, params[])
 	format(szMiscArray, sizeof(szMiscArray), "- %s %s: %s", GetStaffRank(playerid), GetPlayerNameEx(playerid), params);
 	foreach(new i : Player)
 	{
-		if((PlayerInfo[i][pHelper] >= 0 || PlayerInfo[i][pAdmin] >= 2) && GetPVarInt(i, "CAChat") == 1)
+		if((PlayerInfo[i][pHelper] >= 1 || PlayerInfo[i][pAdmin] >= 2) && !PlayerInfo[playerid][pToggledChats][16])
 		{
 			ChatTrafficProcess(i, 0x5288f3FF, szMiscArray, 16);
 		}

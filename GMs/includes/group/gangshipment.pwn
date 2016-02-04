@@ -32,7 +32,7 @@ new Float:arrDeliverPositions[MAX_SHIPMENT_POINTS][3] = {
 new Float:arrShipmentTrucks[MAX_SHIPMENT_POINTS][3] = {
 	{-2650.3557,-2260.4309,6.7077},  // Whetstone - Chilliad Beach
 	{-1725.7112,219.3324,3.6448}, // SF Docks
-	{1491.5762,-2759.0896,4.0944}, // LSI Beach
+	{1868.6660,-2708.9341,13.5391}, // LSI Beach
 	{2912.3601,-554.3483,11.1824} // east beach 
 };
 

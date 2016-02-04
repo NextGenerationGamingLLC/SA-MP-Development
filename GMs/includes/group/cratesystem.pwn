@@ -919,8 +919,8 @@ CMD:cratelimit(playerid, params[]) {
 		if(moneys < 0 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [0-50] (Limits the total production of crates)");
 		MAXCRATES = moneys;
 		
-		if(moneys == 0) HideCrate();
-		else if(moneys > 0) SetTimer("ShowCrate", CRATE_PRODUCTION_DELAY, 0);
+		//if(moneys == 0) HideCrate();
+		//else if(moneys > 0) SetTimer("ShowCrate", CRATE_PRODUCTION_DELAY, 0);
 
 		format(string, sizeof(string), "* You have restricted weapon crate production to %d", moneys);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);

@@ -49,7 +49,7 @@ stock IsAdminLevel(playerid, level, warning = 1) {
 	return 0;
 }
 
-stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: IRC = false)
+stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: IRC = true)
 {
 	foreach(new i: Player)
 	{
@@ -3011,7 +3011,7 @@ CMD:spec(playerid, params[])
 
 	if(strcmp(params, "off", true) == 0)
 	{
-		if(Spectating[playerid] > 0 && PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 && Spectating[playerid] > 0)
+		if(Spectating[playerid] > 0 && PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 1 && Spectating[playerid] > 0)
 		{
 			GettingSpectated[Spectate[playerid]] = INVALID_PLAYER_ID;
 			Spectating[playerid] = 0;
@@ -3031,15 +3031,15 @@ CMD:spec(playerid, params[])
 
 	new giveplayerid;
 
-	if(PlayerInfo[playerid][pHelper] > 0) {
-		switch(PlayerInfo[playerid][pHelper]) {
-			case 1, 2: if(!(1 <= PlayerInfo[giveplayerid][pLevel] <= 5)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only use this on Levels 1 - 5 as a JPA/GPA!");
-			case 3, 4: if(!(1 <= PlayerInfo[giveplayerid][pLevel] <= 10)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only use this on Levels 1 - 10 as a SPA/CPA!");
-		}
-	}
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /spec (playerid/off)");
 	if(IsPlayerConnected(giveplayerid))
 	{
+		if(PlayerInfo[playerid][pHelper] > 0) {
+			switch(PlayerInfo[playerid][pHelper]) {
+				case 1, 2: if(!(1 <= PlayerInfo[giveplayerid][pLevel] <= 5)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only use this on Levels 1 - 5 as a JPA/GPA!");
+				case 3, 4: if(!(1 <= PlayerInfo[giveplayerid][pLevel] <= 10)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only use this on Levels 1 - 10 as a SPA/CPA!");
+			}
+		}
 		if(PlayerInfo[giveplayerid][pAdmin] == 99999 && !GetPVarType(giveplayerid, "EASpecable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot spectate this person.");
 		if(PlayerInfo[playerid][pAdmin] >= 4 && Spectate[giveplayerid] != INVALID_PLAYER_ID && Spectating[giveplayerid] == 1)
 		{
@@ -5366,10 +5366,10 @@ CMD:ah(playerid, params[])
 	if (PlayerInfo[playerid][pFactionModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - DoFM --* /dvcreate /dvedit /dveditslot /dvplate");
 	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Public Relations --* /catokens /cmotd /makeadvisor /takeadvisor");
 
-	if (PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /advisors /pa /newbquestions /an /tn /spec /newbspec off");
-	if ( PlayerInfo[playerid][pHelper] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /paduty /showrequests /accepthelp /finishhelp /findnewb /staff /kick /mjail /rhmute /nmute");
-	if ( PlayerInfo[playerid][pHelper] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /makeadvisor /takeadvisor /requestevent /newbspec");
-	if ( PlayerInfo[playerid][pHelper] == 4) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /pamotd /nonewbie /newbspec");
+	if (PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /advisors /pa /newbquestions /an /tn /spec");
+	if ( PlayerInfo[playerid][pHelper] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* General Player Advisor --* /paduty /showrequests /accepthelp /finishhelp /findnewb /staff /kick /mjail /rhmute /nmute");
+	if ( PlayerInfo[playerid][pHelper] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Senior Player Advisor --* /makeadvisor /takeadvisor /requestevent /newbspec");
+	if ( PlayerInfo[playerid][pHelper] == 4) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Chief Player Advisor --* /advisormotd /nonewbie /newbspec");
 
 	if ( PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	return 1;
