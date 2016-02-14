@@ -6,7 +6,7 @@ hook OnGameModeInit() {
 
 	//CrateLoad = CreateDynamicObject(964,-2114.1, -1723.5, 11984.5, 0, 0, 337.994, .worldid = 0, .interiorid = 1, .streamdistance = 200); //object(cj_metal_crate) (1)
 	//CrateLoad = CreateDynamicObject(964, -2136.05, -1573.24, 3550.00,0.00000000,0.00000000,180.00000000, .worldid = 0, .interiorid = 1, .streamdistance = 200); //object(cj_metal_crate) (1)
-	CrateLoad = CreateDynamicObject(964, 134.7094,-4380.9165,51.8603,0.00000000,0.00000000,180.00000000, .worldid = 0, .interiorid = 1, .streamdistance = 200); //object(cj_metal_crate) (1)
+	CrateLoad = CreateDynamicObject(964, 134.7094,-4380.9165,51.2,0.00000000,0.00000000,180.00000000, .worldid = 0, .interiorid = 0, .streamdistance = 200); //object(cj_metal_crate) (1)
 
 	new VIPLogo = CreateDynamicObject(19353, 1803.89, -1593.99, 14.05,   0.00, 0.00, 312.26);
 	SetDynamicObjectMaterialText(VIPLogo, 0, "{842787}VIP LOUNGE", 90, "Impact", 56, 1, 0xFFFFFFFF, 0, 1);
