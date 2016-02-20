@@ -690,6 +690,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new giveplayerid = GetPVarInt(playerid, "Interact_Target");
 
 			if(!response) return Player_InteractMenu(playerid, giveplayerid, 0);
+			if(listitem == 9) {
+				SendClientMessageEx(playerid, COLOR_WHITE, "* This ingredient has no purpose and cannot be given out.");
+				return Player_InteractMenu(playerid, giveplayerid, 0);
+			}
 			SetPVarInt(playerid, "Interact_GiveItem", ITEM_INGREDIENT);
 			SetPVarInt(playerid, "Interact_Ingredient", listitem);
 			Player_InteractMenu(playerid, giveplayerid, 2);
@@ -1151,7 +1155,6 @@ Interact_FriskPlayer(playerid, giveplayerid) {
 
 	if (!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not in range of that player");
 	if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk yourself!"); return 1; }
-	if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return 1;
 
 	new packages = GetPVarInt(giveplayerid, "Packages");
 	new crates = PlayerInfo[giveplayerid][pCrates];
@@ -1514,7 +1517,7 @@ CMD:interact(playerid, params[]) {
 	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot interact with yourself.");
 	if(GetPVarInt(playerid, "Injured") == 1) return 1;
 	if(!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
-
+	if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
 	Player_InteractMenu(playerid, giveplayerid);
 
 	return 1;

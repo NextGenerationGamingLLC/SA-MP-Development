@@ -20,17 +20,17 @@ public OnFilterScriptInit()
 	}
 
 	/*
-		 ######   ######## ##    ## ######## ########     ###    ##       
-		##    ##  ##       ###   ## ##       ##     ##   ## ##   ##       
-		##        ##       ####  ## ##       ##     ##  ##   ##  ##       
-		##   #### ######   ## ## ## ######   ########  ##     ## ##       
-		##    ##  ##       ##  #### ##       ##   ##   ######### ##       
-		##    ##  ##       ##   ### ##       ##    ##  ##     ## ##       
+		 ######   ######## ##    ## ######## ########     ###    ##
+		##    ##  ##       ###   ## ##       ##     ##   ## ##   ##
+		##        ##       ####  ## ##       ##     ##  ##   ##  ##
+		##   #### ######   ## ## ## ######   ########  ##     ## ##
+		##    ##  ##       ##  #### ##       ##   ##   ######### ##
+		##    ##  ##       ##   ### ##       ##    ##  ##     ## ##
 		 ######   ######## ##    ## ######## ##     ## ##     ## ########
 	*/
-	
+
 	// Start of Enterable vehicles mapping project.
-	
+
 	// journey interior
 	CreateObject(19462, 2821.55054, 1529.81494, -50.00000+2500,   0.00000, 90.00000, 0.00000);
 	CreateDynamicObject(1794, 2823.32007, 1533.18005, -49.49400+2500,   0.00000, 0.00000, 90.00000);
@@ -73,9 +73,9 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2102, 2820.12402, 1529.23193, -48.94510+2500,   0.00000, 0.00000, 77.16120);
 	CreateDynamicObject(2286, 2819.82397, 1526.04626, -48.23520+2500,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(2269, 2820.27808, 1529.77307, -48.49490+2500,   0.00000, 0.00000, 90.00000);
-	
+
 	// train carriage interior
-	
+
 	/*CreateDynamicObject(19458, 737.60889, 1775.08411, -40.00000,   0.00000, 90.00000, 0.00000);
 	CreateDynamicObject(19458, 737.60889, 1765.45044, -40.00000,   0.00000, 90.00000, 0.00000);
 	CreateDynamicObject(19454, 735.25140, 1775.08301, -39.99370,   0.00000, 90.00000, 0.00000);
@@ -318,7 +318,7 @@ public OnFilterScriptInit()
 	CreateDynamicPickup(1239, 23, 986.4434,2056.2480,1085.8531);// Glen Park - ATM
 	CreateDynamicPickup(1239, 23, 1014.1396,2060.8284,1085.8531);// Glen Park - ATM
 	CreateDynamicPickup(1239, 23, 1013.4720,2023.8784,1085.8531);// Glen Park - ATM
-	
+
 	CreateDynamicObject(8650, 1000, 2000, 1075, 0.0000000, 0.0000000, 270.0000000);
 	CreateDynamicObject(3998, 993.7998, 2000.59961, 1066.09998, 0.0000000, 0.0000000, 0.0000000);
 	CreateDynamicObject(3998, 1010.70019, 2000.59082, 1066.09094, 0.0000000, 0.0000000, 0.0000000);
@@ -1732,7 +1732,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(8040, 1113.8206787109, 1527.8955078125, 5288.111328125, 0, 0, 318, .worldid = -1, .streamdistance = 300);
 	CreateDynamicObject(644, 1113.0578613281, 1551.7387695313, 5289.576171875, 0, 0, 230.13610839844, .worldid = -1, .streamdistance = 300);
 	CreateDynamicObject(644, 1094.3381347656, 1551.5457763672, 5289.576171875, 0, 0, 300.17419433594, .worldid = -1, .streamdistance = 300);
-	CreateDynamicObject(11393, 1120.1169433594, 1545.7606201172, 5290.8022460938, 0, 0, 137.57629394531, .worldid = -1, .streamdistance = 300);	
+	CreateDynamicObject(11393, 1120.1169433594, 1545.7606201172, 5290.8022460938, 0, 0, 137.57629394531, .worldid = -1, .streamdistance = 300);
 	CreateDynamicObject(3498, 1117.1286621094, 1547.5725097656, 5285.837890625, 0, 0, 0, .worldid = -1, .streamdistance = 300);
 	CreateDynamicObject(3498, 1117.9184570313, 1547.5814208984, 5285.837890625, 0, 0, 0, .worldid = -1, .streamdistance = 300);
 	CreateDynamicObject(3498, 1118.3104248047, 1546.9320068359, 5285.8129882813, 0, 0, 0, .worldid = -1, .streamdistance = 300);
@@ -1766,7 +1766,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3352, 1198.8900146484, 1586.7694091797, 5290.5849609375, 0, 0, 90.480041503906, .worldid = -1, .streamdistance = 300);
 	CreateDynamicObject(4562, 1081.5458984375, 1557.0202636719, 5294.4848632813, 180, 0, 0, .worldid = -1, .streamdistance = 300);
 	CreateDynamicObject(4562, 1179.1983642578, 1557.7141113281, 5294.4848632813, 179.99450683594, 0, 89.730010986328, .worldid = -1, .streamdistance = 300);
-	
+
 	//Los Santos -- General
 	CreateDynamicObject(19966, 2080.10, -1757.69, 12.55,   0.00, 0.00, 270.00, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(19966, 2104.55, -1746.95, 12.55,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 200);
@@ -1834,7 +1834,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19121, 1417.74, -1439.57, 13.41,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
 	CreateDynamicObject(19121, 2105.50, -1762.32, 13.12,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
 	CreateDynamicObject(18474, 585.51, -1511.26, 16.03,   0.00, 0.00, 128.62, .worldid = -1, .streamdistance = 200);
-	
+
 	//San Fierro -- General
 	CreateDynamicObject(19966, -892.08, -1123.16, 97.99,   0.00, 0.00, 225.59);
 	CreateDynamicObject(19966, -1219.05, -768.50, 62.85,   0.00, 0.00, 42.00);
@@ -2122,7 +2122,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(973,-1621.19226074,-834.81658936,93.91922760,0.00000000,354.99877930,106.38061523, .streamdistance = 200); //object(sub_roadbarrier) (15)
 	CreateDynamicObject(973,-1722.11315918,-817.91680908,79.44545746,0.00000000,19.29541016,216.40869141, .streamdistance = 200); //object(sub_roadbarrier) (16)
 	CreateDynamicObject(2942, -1980.63000, 121.53000, 27.31000,   0.00000, 0.00000, 270.00000, .streamdistance = 150);
-	
+
 	/* Los Santos VIP Lounge -- Exterior (Farva) */
 	CreateDynamicObject(14877, 1800.98, -1580.42, 10.96,   0.00, 0.00, 130.50, .streamdistance = 150);
 	CreateDynamicObject(14877, 1800.22, -1581.08, 10.95,   0.00, 0.00, 130.50, .streamdistance = 150);
@@ -2160,7 +2160,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(869, 1805.70, -1596.97, 13.49,   0.00, 0.00, 31.69, .streamdistance = 150);
 	new VIPLogo = CreateDynamicObject(19353, 1803.89, -1593.99, 14.05,   0.00, 0.00, 312.26);
 	SetDynamicObjectMaterialText(VIPLogo, 0, "{842787}VIP LOUNGE", 90, "Impact", 56, 1, 0xFFFFFFFF, 0, 1);
-	
+
 	/* San Fierro VIP Lounge -- Exterior (Farva) */
 	CreateDynamicObject(1223, -2427.96, 498.99, 28.99,   0.00, 0.00, 203.00, .streamdistance = 200);
 	CreateDynamicObject(1223, -2439.19, 494.02, 28.99,   0.00, 0.00, 23.00, .streamdistance = 200);
@@ -2171,7 +2171,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1281,-2473.11425781,500.22604370,29.86957550,0.00000000,0.00000000,30.00000000, .streamdistance = 200); //object(parktable1) (2)
 	CreateDynamicObject(1281,-2465.64306641,496.84118652,29.86957550,0.00000000,0.00000000,315.99816895, .streamdistance = 200); //object(parktable1) (3)
 	CreateDynamicObject(1281,-2472.24438477,493.23858643,29.86957550,0.00000000,0.00000000,1.99426270, .streamdistance = 200); //object(parktable1) (4)
-	
+
 	// Mile High Club (Admin Island)
 	CreateObject(10771,1722.5996094,1448.8994141,1132.9019775,0.0000000,0.0000000,0.0000000, 400.0); //object(carrier_hull_sfse) (1)
 	CreateObject(10771,1722.5996094,1474.7998047,1132.8999023,0.0000000,0.0000000,0.0000000, 400.0); //object(carrier_hull_sfse) (2)
@@ -2353,7 +2353,7 @@ public OnFilterScriptInit()
 	SetDynamicObjectMaterialText(mhc_logo, 0, "Mile High Club", 140, "Myriad Pro", 80, 1, -65536, 0, 1);
 	new adminhof_logo = CreateDynamicObject(19480, 1678.0703, 1461.0832, 1148.6065, 0.0000, 0.0000, 0.0331);
 	SetDynamicObjectMaterialText(adminhof_logo, 0, "ADMIN HALL OF FAME", 90, "Times New Roman", 0, 1, -8092540, 0, 1);
-	
+
 	//9/11 Memorial by Whitestone
 	new never = CreateDynamicObject(19477, 2020.0930, -1195.3050, 22.5302, 0.0000, 0.0000, 30.0538);
 	SetDynamicObjectMaterialText(never, 0, "Never", 50, "Arial", 24, 0, -65536, 0, 1);
@@ -2412,7 +2412,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(970, 2037.22803, -1205.55701, 22.39680,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(1215, 2035.70557, -1176.48315, 22.83810,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(1215, 2035.52966, -1210.18799, 22.83810,   0.00000, 0.00000, 0.00000);
-	
+
 	// Palomino Beach & Marina (Farva)
 	CreateDynamicObject(3406, 2195.10, -140.42, -0.92,   0.00, 0.00, 276.45, .streamdistance = 150);
 	CreateDynamicObject(3406, 2196.09, -149.16, -0.92,   0.00, 0.00, 276.44, .streamdistance = 150);
@@ -2649,7 +2649,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(16501, 2157.70, -95.59, 5.20,   0.00, 0.00, 29.77, .streamdistance = 150);
 	CreateDynamicObject(16501, 2157.70, -95.59, 0.79,   0.00, 0.00, 29.77, .streamdistance = 150);
 	CreateDynamicObject(19356, 2158.54, -100.95, 1.08,   0.00, 0.00, 299.50, .streamdistance = 150);
-	
+
 	// The Cove Pirate Ship
 	CreateDynamicObject(3510, 2882.65, -1978.43, 5.41, 0.00, 0.00, 0.00, .interiorid = -1, .streamdistance = 200);
 	CreateDynamicObject(3510, 2882.15, -1938.15, 4.99, 0.00, 0.00, 0.00, .interiorid = -1, .streamdistance = 200);
@@ -2712,7 +2712,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1557, 2928.08, -1981.60, 5.31, 0.00, 0.00, 180.00, .interiorid = -1, .streamdistance = 200);
 	CreateDynamicObject(9159, 2927.25, -1951.15, 16.67, 0.00, 0.00, 0.00, .interiorid = -1, .streamdistance = 200);
 	CreateDynamicObject(8981, 2926.66, -1957.21, 16.22, 0.00, 0.00, 0.00, .interiorid = -1, .streamdistance = 200);
-	
+
 	// Hall of Famed - EX VIP INTERIOR & GARAGE
 	CreateDynamicObject(14777,886.62890625,1429.77734375,-83.34485626,0.00000000,0.00000000,0.00000000); // FAMED LOUNGE -- object(int_5weecasino) (1)
 	CreateDynamicObject(1670,885.04125977,1418.45605469,-81.12625885,359.75000000,0.00000000,0.00000000); // FAMED LOUNGE -- object(propcollecttable) (1)
@@ -2812,7 +2812,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1823,921.04000000,1428.09000000,-82.22000000,0.00000000,0.00000000,90.00000000); //
 	CreateDynamicObject(1823,920.09000000,1428.09000000,-82.22000000,0.00000000,0.00000000,90.00000000); //
 	CreateDynamicObject(2291,919.34000000,1425.70000000,-82.21000000,0.00000000,0.00000000,180.00000000);
-	
+
 	//Project Neighborhood
 	CreateDynamicObject(3444,982.29998779,2370.30004883,12.35000038,0.00000000,0.00000000,179.99450684, .worldid = 0, .streamdistance = 200); //object(shabbyhouse02_lvs) (1)
 	CreateDynamicObject(3464,1057.40002441,2318.19995117,12.11999989,0.00000000,0.00000000,90.00000000, .worldid = 0, .streamdistance = 200); //object(shabbyhouse03_lvs) (1)
@@ -3223,7 +3223,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1294,2583.50000000,-2053.30004883,16.39999962,0.00000000,0.00000000,270.00000000, .worldid = 0, .streamdistance = 200); //object(mlamppost) (26)
 	CreateDynamicObject(1294,2620.39990234,-2053.30004883,14.60000038,0.00000000,0.00000000,270.00000000, .worldid = 0, .streamdistance = 200); //object(mlamppost) (27)
 	CreateDynamicObject(1775,2585.10009766,-1673.40002441,11.00000000,0.00000000,0.00000000,180.00000000, .worldid = 0, .streamdistance = 200); //object(cj_sprunk1) (1)
-	
+
 	CreateDynamicObject(966,-1390.12377930,-816.92901611,80.58147430,0.00000000,0.00000000,94.00000000, .worldid = 0); //object(bar_gatebar01) (1)
 	CreateDynamicObject(5837,-1394.46472168,-817.11138916,82.06602478,0.00000000,359.73999023,182.55541992, .worldid = 0); //object(ci_guardhouse1) (1)
 	CreateDynamicObject(967,-1389.61584473,-824.73455811,80.50614929,0.00000000,0.00000000,184.00000000, .worldid = 0); //object(bar_gatebox01) (1)
@@ -3920,7 +3920,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2485,-1751.00000000,964.70001221,87.44999695,0.00000000,0.00000000,251.99993896, .streamdistance = 100); //object(model_car_1) (1)
 	CreateDynamicObject(2485,-1750.19995117,964.70001221,87.44999695,0.00000000,0.00000000,251.99890137, .streamdistance = 100); //object(model_car_1) (2)
 	CreateDynamicObject(2485,-1749.40002441,964.70001221,87.44999695,0.00000000,0.00000000,251.99890137, .streamdistance = 100); //object(model_car_1) (3)
-	
+
 	// Misc Fencing (Farva)
 	CreateDynamicObject(973,-962.31347656,-257.49902344,37.10395050,0.00000000,4.25170898,258.47534180, .streamdistance = 200); //object(sub_roadbarrier) (39)
 	CreateDynamicObject(973,-960.45404053,-248.34140015,37.79391861,0.00000000,4.20571899,258.47534180, .streamdistance = 200); //object(sub_roadbarrier) (40)
@@ -4050,7 +4050,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(973, -475.48, 569.36, 17.46,   0.00, 359.13, 339.45, .streamdistance = 200);
 	CreateDynamicObject(973, -466.92, 566.63, 16.10,   0.00, 18.04, 345.45, .streamdistance = 200);
 	CreateDynamicObject(973, -757.66, 693.97, 17.69,   0.00, 348.13, 340.19, .streamdistance = 200);
-	
+
 	//Custom Pay N' Sprays (Farva)
 	CreateDynamicObject(4848, 1936.37, -1873.32, 15.84,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
 	CreateDynamicObject(19313, 1921.16, -1859.04, 12.55,   0.00, 0.00, 90.00, .worldid = -1, .streamdistance = 100);
@@ -4071,7 +4071,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(970, 1895.39, -1846.29, 13.11,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
 	CreateDynamicObject(970, 1899.51, -1846.78, 14.09,   0.00, 0.00, -13.50, .worldid = -1, .streamdistance = 100);
 	CreateDynamicObject(970, 1895.39, -1846.29, 14.09,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 100);
-	
+
 	/* VIP Gold/Plat Room
 	CreateDynamicObject(1536,902.68000000,1418.29000000,-81.98000000,0.00000000,0.00000000,90.00000000); //
 	CreateDynamicObject(1536,902.64000000,1421.30000000,-81.98000000,0.00000000,0.00000000,270.00000000); //
@@ -4188,7 +4188,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3037, 1311.67, -1435.89, 1.39,   0.00, 0.00, 90.00, -1, -1, -1, 200.0);
 	CreateDynamicObject(3037, 1292.22, -1445.56, 1.39,   0.00, 0.00, 0.00, -1, -1, -1, 200.0);
 	CreateDynamicObject(16662, 1296.89, -1438.89, 9.33,   64.00, 90.00, 0.00, -1, -1, -1, 200.0);
-	
+
 	/* 0.3C Club Interior */
 	CreateDynamicObject(14607,2553.61000000,-1682.29000000,1035.13000000,0.00000000,0.00000000,0.00000000); //
 	CreateDynamicObject(14614,2553.82000000,-1682.29000000,1035.12000000,0.00000000,0.00000000,0.00000000); //
@@ -4353,7 +4353,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3498,2539.04000000,-1671.16000000,1038.09000000,0.00000000,0.00000000,0.00000000); //
 	CreateDynamicObject(19152,2543.22000000,-1671.38000000,1034.11000000,16.00000000,0.00000000,180.00000000); //
 	CreateDynamicObject(19152,2539.05000000,-1671.36000000,1034.11000000,16.00000000,0.00000000,180.00000000); //
-	
+
 	/* Paintball Parking Lot */
 	CreateDynamicObject(8042, 1219.69, -1411.78, 14.64,   0.00, 0.00, 106.73);
 	CreateDynamicObject(16773, 1218.96, -1428.94, 14.64 ,   0.00, 0.00, 0.00);
@@ -4384,7 +4384,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3934, 1285.96, -1431.04, (26.05 + 1100.00),   0.00, 0.00, 90.00);
 	CreateDynamicObject(3934, 1301.79, -1431.20, (26.05 + 1100.00),   0.00, 0.00, 90.00);
 	CreateDynamicObject(3934, 1317.47, -1431.31, (26.05 + 1100.00),   0.00, 0.00, 90.00);
-	
+
 	// Mall Gates & Ganton Gym ATM
 	CreateDynamicObject(19978, 1133.06, -1414.55, 12.66,   0.00, 0.00, 180.00);
 	CreateDynamicObject(19978, 1124.96, -1414.56, 12.66,   0.00, 0.00, 180.00);
@@ -4407,7 +4407,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3471,1564.04772949,-1881.44250488,13.82141495,0.00000000,0.00000000,90.00000000); // TRIADS object(vgschinalion1) (2)
 	CreateDynamicObject(3471,1571.83093262,-1881.41430664,13.82141495,0.00000000,0.00000000,90.00000000); // TRIADS object(vgschinalion1) (3)
 	CreateDynamicObject(9482,1567.88854980,-1882.18041992,19.17709923,0.00000000,0.00000000,90.00000000); // TRIADS object(chinagate) (2)
-	
+
 	// VIP garage
 	CreateDynamicObject(7657,2497.30004883,2382.39990234,11.50000000,0.00000000,0.00000000,90.00000000); // VIP GARAGE // object(plasticsgate1) (3)
 	CreateDynamicObject(7657,2497.30004883,2382.39941406,14.00000000,0.00000000,0.00000000,90.00000000); // VIP GARAGE // object(plasticsgate1) (6)
@@ -4732,7 +4732,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(18650,2795.71875000,2411.61718750,1244.20742187,0.00000000,0.00000000,0.00000000); //object(gneon)(1)
 	CreateDynamicObject(18650,2807.28515625,2399.69921875,1244.20739746,0.00000000,0.00000000,271.49963379); //object(gneon)(4)
 	CreateDynamicObject(18885,2787.13037109,2389.61181641,1240.66625977,0.00000000,0.00000000,179.98596191); //object(locker)(4)
-	
+
 	//New Hospital Interior
 	CreateDynamicObject(18030, 1174.7900390625, -1343.57421875, 2424.4133300781, 0, 0, 0);
 	CreateDynamicObject(14466, 1214.5484619141, -1360.7130126953, 2432.2053222656, 0, 0, 270.5);
@@ -4790,11 +4790,11 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3388, 1180.3153076172, -1329.8544921875, 2422.0461425781, 0, 0, 90.247192382813);
 	CreateDynamicObject(3394, 1184.6655273438, -1334.9022216797, 2422.0461425781, 0, 0, 269.75);
 	CreateDynamicObject(3394, 1175.7877197266, -1334.8275146484, 2422.0461425781, 0, 0, 269.74731445313);
-	
+
 	// Airport
 	CreateDynamicObject(1681,1993.81091309,-2324.98144531,15.52490044-1,0.00000000,0.00000000,89.98004150); //object(ap_learjet1_01) (1)
 	CreateDynamicObject(1681,1995.21508789,-2381.67602539,15.52490044-1,0.00000000,0.00000000,88.23004150); //object(ap_learjet1_01) (2)
-	
+
 	//Points
 	CreateDynamicObject(970, 2294.1489257813, -1119.072265625, 37.5280418396, 0.000000, 0.000000, 89.559997558594); //
 	CreateDynamicObject(970, 2294.1589355469, -1114.8975830078, 37.5280418396, 0.000000, 0.000000, 90.0576171875); //
@@ -4806,7 +4806,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(944, 2386.1618652344, -2008.1566162109, 13.43848991394, 0.000000, 0.000000, 0.000000); //
 	CreateDynamicObject(1635, 2396.1938476563, -2008.0467529297, 16.3014087677, 0.000000, 0.000000, 90); //
 	CreateDynamicObject(1522, 2389.7197265625, -2007.4593505859, 12.553703308105, 0.000000, 0.000000, 0.000000); //
-	
+
 	//-------------Crack Lab Fixes-------------//
 	CreateDynamicObject(7191,2338.39135742,-1182.56323242,1032.95129395,90.00000000,0.00000000,90.00000000, -1, 5); //object(vegasnnewfence2b)(1)
 	CreateDynamicObject(13656,2292.93872070,-1132.04724121,1017.29772949,0.00000000,0.00000000,0.00000000, -1, 5); //object(fuckknows)(1)
@@ -4823,7 +4823,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(7191,2337.95947266,-1179.38879395,1032.95129395,90.00000000,180.00000000,270.00000000, -1, 5); //object(vegasnnewfence2b)(12)
 	CreateDynamicObject(7191,2338.38476562,-1179.43066406,1032.95129395,90.00000000,0.00000000,90.00000000, -1, 5); //object(vegasnnewfence2b)(13)
 	CreateDynamicObject(7191,2337.96630859,-1179.23559570,1032.95129395,90.00000000,179.99450684,90.24719238, -1, 5); //object(vegasnnewfence2b)(14)
-	
+
 	/* Luggage Interior */
 	CreateDynamicObject(8378,-1860.23962402,45.58924484,1053.52038574,270.00000000,180.00000000,180.00000000); //object(vgsbighngrdoor) (1)
 	CreateDynamicObject(8378,-1860.36950684,62.81288528,1053.52038574,270.00000000,179.99450684,179.99450684); //object(vgsbighngrdoor) (2)
@@ -4972,7 +4972,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2730,-1835.57739258,59.61295700,1057.65197754,0.00000000,0.00000000,270.00000000); //object(cj_binc_post2) (1)
 	CreateDynamicObject(2731,-1835.49853516,58.42656708,1057.66076660,0.00000000,0.00000000,280.00000000); //object(cj_binc_post) (1)
 	CreateDynamicObject(986,-1830.72778320,65.81304932,1054.00878906,0.00000000,0.00000000,359.98352051); //object(gate_autol) (7)
-	
+
 	/* CHURCH INTERIOR */
 	CreateDynamicObject(9931,1947.54003906,-368.51269531,1108.01086426,0.00000000,0.00000000,90.00000000); //object(church_sfe) (1)
 	CreateDynamicObject(3976,1970.65722656,-341.23883057,1100.22949219,0.00000000,0.00000000,0.00000000); //object(policest02_lan) (1)
@@ -5100,7 +5100,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(970,1940.77000000,-1779.11000000,12.90000000,0.00000000,0.00000000,90.00000000); //
 	CreateDynamicObject(19121,1941.63000000,-1781.03000000,13.16000000,0.00000000,0.00000000,0.00000000); //
 	CreateDynamicObject(19121,1941.64000000,-1764.87000000,13.16000000,0.00000000,0.00000000,0.00000000); //
-	
+
 	// Post Office
 	CreateDynamicObject(18030, -257.27, 10.48, 2000.00,   0.00, 0.00, 0.00, .interiorid = 4, .streamdistance = 200);
 	CreateDynamicObject(3923, -145.74, 9.87, 2010.32,   0.00, 0.00, 0.00, .interiorid = 4, .streamdistance = 200);
@@ -6013,7 +6013,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1368,1969.09997559,1320.90002441,8.89999962,0.00000000,0.00000000,0.00000000); //object(cj_blocker_bench) (8)
 	CreateDynamicObject(1368,1969.59960938,1365.50000000,8.89999962,0.00000000,0.00000000,179.99450684); //object(cj_blocker_bench) (9)
 	CreateDynamicObject(1368,1931.29980469,1368.79980469,8.89999962,0.00000000,0.00000000,90.00000000); //object(cj_blocker_bench) (10)
-	
+
 	//LV VIP Interior
 	CreateDynamicObject(14624, 1835.10, 1324.70, 1466.90,   0.00, 0.00, 0.00);
 	CreateDynamicObject(14625, 1774.30, 1329.53, 1465.05,   0.00, 0.00, 0.00);
@@ -6478,7 +6478,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19169, 1817.44, 1327.42, 1464.46,   90.00, -90.00, 0.00);
 	CreateDynamicObject(19168, 1817.44, 1334.15, 1464.44,   90.00, -90.00, 0.00);
 	CreateDynamicObject(19159, 1846.69, 1297.53, 1470.17,   0.00, 0.00, 0.00);
-	
+
 	//Methlab - New drug interior - Benny
 	CreateDynamicObject(12805,-873.8171997,1117.4947510,5396.1679688,1.7500000,90.0000000,270.2702637, .worldid = -1, .streamdistance = 200); //object(ce_bigshed1) (1)
 	CreateDynamicObject(5140,-886.2696533,1125.8780518,5444.0776367,0.0000000,0.0000000,0.0000000, .worldid = -1, .streamdistance = 200); //object(snpedtatshp) (1)
@@ -6583,17 +6583,51 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3027,-873.2858887,1108.5797119,5442.8281250,90.0000000,0.0000000,59.8200073, .worldid = -1, .streamdistance = 200); //object(ciggy) (5)
 	CreateDynamicObject(3027,-873.2264404,1108.6319580,5442.8281250,90.0000000,0.0000000,260.2952881, .worldid = -1, .streamdistance = 200); //object(ciggy) (6)
 	CreateDynamicObject(1485,-873.4666138,1108.3974609,5442.8281250,0.0000000,0.0000000,310.1501465, .worldid = -1, .streamdistance = 200); //object(cj_ciggy) (13)
-	
+
 	/*
-		########    ###     ######  ######## ####  #######  ##    ## 
-		##         ## ##   ##    ##    ##     ##  ##     ## ###   ## 
-		##        ##   ##  ##          ##     ##  ##     ## ####  ## 
-		######   ##     ## ##          ##     ##  ##     ## ## ## ## 
-		##       ######### ##          ##     ##  ##     ## ##  #### 
-		##       ##     ## ##    ##    ##     ##  ##     ## ##   ### 
+		########    ###     ######  ######## ####  #######  ##    ##
+		##         ## ##   ##    ##    ##     ##  ##     ## ###   ##
+		##        ##   ##  ##          ##     ##  ##     ## ####  ##
+		######   ##     ## ##          ##     ##  ##     ## ## ## ##
+		##       ######### ##          ##     ##  ##     ## ##  ####
+		##       ##     ## ##    ##    ##     ##  ##     ## ##   ###
 		##       ##     ##  ######     ##    ####  #######  ##    ##
 	*/
-	
+
+    // FTS Bus Stops
+    CreateDynamicObject(1257, 1238.70862, -947.01575, 42.79520,   0.00000, 0.00000, -79.62000, .streamdistance = 200);
+    CreateDynamicObject(1229, 1241.08167, -945.35150, 43.06615,   0.00000, 0.00000, -168.12000, .streamdistance = 200);
+    CreateDynamicObject(1257, 1051.98596, -1515.13367, 13.67410,   0.00000, 0.00000, -376.13980, .streamdistance = 200);
+    CreateDynamicObject(1229, 1051.84448, -1512.19250, 13.96265,   0.00000, 0.00000, -96.24001, .streamdistance = 200);
+    CreateDynamicObject(1257, 1041.23511, -1134.25037, 23.93876,   0.00000, 0.00000, -271.55994, .streamdistance = 200);
+    CreateDynamicObject(1229, 1038.51404, -1135.14124, 24.22748,   0.00000, 0.00000, 352.31989, .streamdistance = 200);
+    CreateDynamicObject(1257, 1510.33997, -1586.24280, 13.68158,   0.00000, 0.00000, -270.36014, .streamdistance = 200);
+    CreateDynamicObject(1229, 1507.53186, -1587.13879, 14.00023,   0.00000, 0.00000, -365.39993, .streamdistance = 200);
+    CreateDynamicObject(1257, 1815.47449, -1590.56042, 13.71237,   0.00000, 0.00000, -181.44000, .streamdistance = 200);
+    CreateDynamicObject(1229, 1816.28284, -1593.40942, 13.79010,   0.00000, 0.00000, -271.55997, .streamdistance = 200);
+    CreateDynamicObject(1257, 1994.98022, -1254.61523, 24.11918,   0.00000, 0.00000, 89.27998, .streamdistance = 200);
+    CreateDynamicObject(1229, 1992.16553, -1255.47168, 24.47688,   0.00000, 0.00000, 5.15989, .streamdistance = 200);
+    CreateDynamicObject(1257, 2377.19580, -1340.14746, 24.17185,   0.00000, 0.00000, -358.55997, .streamdistance = 200);
+    CreateDynamicObject(1229, 2376.27051, -1337.46228, 24.41475,   0.00000, 0.00000, -84.00002, .streamdistance = 200);
+    CreateDynamicObject(1257, 2290.96997, -1725.90894, 13.73536,   0.00000, 0.00000, -270.05972, .streamdistance = 200);
+    CreateDynamicObject(1229, 2288.13354, -1726.85620, 14.05389,   0.00000, 0.00000, 359.09982, .streamdistance = 200);
+    CreateDynamicObject(1257, 1971.55164, -1746.04297, 13.68589,   0.00000, 0.00000, 450.30002, .streamdistance = 200);
+    CreateDynamicObject(1229, 1968.83911, -1746.96472, 14.00352,   0.00000, 0.00000, -10.68003, .streamdistance = 200);
+    CreateDynamicObject(1257, 1814.42749, -1843.12256, 13.60060,   0.00000, 0.00000, -181.26013, .streamdistance = 200);
+    CreateDynamicObject(1229, 1815.22803, -1845.86389, 14.01324,   0.00000, 0.00000, -277.67993, .streamdistance = 200);
+    CreateDynamicObject(1257, 364.11005, -2041.00378, 8.00891,   0.00000, 0.00000, -180.05969, .streamdistance = 200);
+    CreateDynamicObject(1229, 365.03635, -2043.81787, 8.32539,   0.00000, 0.00000, 87.53990, .streamdistance = 200);
+    CreateDynamicObject(1257, 409.15375, -1465.67456, 30.83950,   0.00000, 0.00000, 126.11997, .streamdistance = 200);
+    CreateDynamicObject(1229, 407.32590, -1468.19861, 31.27742,   0.00000, 0.00000, 35.52000, .streamdistance = 200);
+    CreateDynamicObject(1257, 621.12378, -1336.19568, 13.69180,   0.00000, 0.00000, -181.20000, .streamdistance = 200);
+    CreateDynamicObject(1229, 622.03595, -1339.05188, 13.83424,   0.00000, 0.00000, 91.98003, .streamdistance = 200);
+    CreateDynamicObject(1257, 2008.64319, -1634.15942, 13.73704,   0.00000, 0.00000, 0.00000, .streamdistance = 200);
+    CreateDynamicObject(1229, 2007.77161, -1631.41541, 13.99576,   0.00000, 0.00000, -90.06001, .streamdistance = 200);
+    CreateDynamicObject(1257, 178.49603, -1497.19556, 12.76829,   0.00000, 0.00000, 146.52002, .streamdistance = 200);
+    CreateDynamicObject(1229, 177.75681, -1500.05212, 12.97615,   0.00000, 0.00000, 55.80004, .streamdistance = 200);
+    CreateDynamicObject(1257, 462.70981, -1650.88196, 25.49690,   4.00000, 0.00000, 84.18000, .streamdistance = 200);
+    CreateDynamicObject(1229, 459.89398, -1651.44617, 26.06627,   0.00000, 0.00000, 0.00000, .streamdistance = 200);
+
 	/* Flint County Sub-Station Exterior */
 	CreateDynamicObject(16563, -653.88, -1251.97, 19.05,   0.00, 0.00, 338.00, .streamdistance = 200);
 	CreateDynamicObject(18766, -649.81, -1254.95, 19.99,   90.00, 180.00, 250.00, .streamdistance = 200);
@@ -8348,7 +8382,7 @@ public OnFilterScriptInit()
 	//Tierra Robada Dynamic 3D Text Lables.
     CreateDynamic3DTextLabel("Tierra Robada Gant Bridge Access.",0xFFFF00AA,-2678.2702636719,2148.0134277344,55.4296875+0.6,20.0);// Border Lable
 	CreateDynamic3DTextLabel("Tierra Robada Airport",0xFFFF00AA,-1873.2819824219,2172.4621582031,6.2687501907349+0.6,20.0);// Airport Lable.
-	
+
 		// SAAS LS base
     CreateDynamicObject(984, 1106.7486572266, -1752.3682861328, 13.208800315857, 0, 0, 0, .interiorid = 0, .streamdistance = 100.0);
     CreateDynamicObject(984, 1106.7373046875, -1765.1868896484, 13.208800315857, 0, 0, 0, .interiorid = 0, .streamdistance = 100.0);
@@ -9563,7 +9597,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2924,-1619.09973145,688.25970459,7.38373232,0.00000000,0.00000000,0.00000000); //object(kmb_crash3door) (1)
 	CreateDynamicObject(2924,-1621.89050293,688.27947998,7.38373232,0.00000000,0.00000000,180.00000000); //object(kmb_crash3door) (2)
 	CreateDynamicObject(1535,-1616.83410645,687.90826416,6.18750000,0.00000000,0.00000000,0.00000000); //object(gen_doorext14) (1)
-	
+
 	/* Court Interior */
 	CreateDynamicObject(14858, 2182.9599609375, 1303.8388671875, 7703.203125, 0, 0, 0);
 	CreateDynamicObject(14856, 2136.38281250, 1303.83300781, 7699.94238281, 0.00000000, 0.00000000, 0.00000000);
@@ -9695,7 +9729,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2935,1367.98632812,-308.21875000,1.63013005,3.00732422,0.00000000,18.53002930); //object(kmb_container_yel) (5)
 	CreateDynamicObject(2935,1379.30053711,-305.33956909,1.54913270,359.80902100,3.00802612,288.22961426); //object(kmb_container_yel) (6)
 	CreateDynamicObject(2935,1380.58532715,-308.24456787,1.38353813,359.80773926,3.00476074,288.22631836); //object(kmb_container_yel) (7)
-	
+
 	//LSPD
 	CreateDynamicObject(1616,240.28379822,107.48500061,1010.29998779,0.00000000,0.00000000,270.00000000,-1,10,-1,100.0); //object(nt_securecam1_01) (1)
 	CreateDynamicObject(2058,262.23831177,107.09999847,1006.12506104,270.00000000,0.00000000,0.00000000,-1,10,-1,100.0); //object(cj_gun_docs) (1)
@@ -9754,7 +9788,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3934,1565.94946289,-1701.00000000,27.39999962,0.00000000,0.00000000,0.00000000,-1,10,-1,100.0); //object(helipad01) (1)
 	CreateDynamicObject(3934,1565.94921875,-1646.02929688,27.39999962,0.00000000,0.00000000,0.00000000,-1,10,-1,100.0); //object(helipad01) (2)
 	CreateDynamicObject(2953,228.27796936,125.20470428,1010.14331055,0.00000000,0.00000000,143.45983887,-1,10,-1,100.0); //object(kmb_paper_code) (1)
-	
+
 	// FDSA Sub Station
 	CreateDynamicObject(3934, 152.79669189453, -167.55070495605, 0.578125, 0.000000, 0.000000, 0.000000); //
 	CreateDynamicObject(2642, 83.16081237793, -155.21029663086, 2.5193686485291, 0.000000, 0.000000, 270.27026367188); //
@@ -9769,7 +9803,7 @@ public OnFilterScriptInit()
     CreateDynamicObject(14843, 320.92279052734, 319.88626098633, 999.38720703125, 0.000000, 0.000000, 89.730041503906); //
 	CreateDynamicObject(14843, 320.85809326172, 315.79330444336, 999.38720703125, 0.000000, 0.000000, 89.730041503906); //
 	CreateDynamicObject(1569, 321.45043945313, 302.0078125, 998.17004394531, 0.000000, 0.000000, 0.000000); //
-	
+
 	//LSPD-Chink Gates-LSSD-FDSA-All Saints
     CreateDynamicObject(18030, 2092.279296875, 2817.1181640625, -14.807208061218, 0.000000, 0.000000, 0.000000); //
     CreateDynamicObject(2951, 2109.0756835938, 2812.5268554688, -17.188125610352, 0.000000, 0.000000, 270.67498779297); //
@@ -9818,7 +9852,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(994, 2230.0375976563, -1702.1334228516, 12.554218292236, 0.000000, 0.000000, 174.55895996094); //
 	CreateDynamicObject(994, 2245.8688964844, -1720.8118896484, 12.554218292236, 0.000000, 0.000000, 267.63110351563); //
 	CreateDynamicObject(1495, 1582.6011962891, -1637.8992919922, 12.552812576294, 0.000000, 0.000000, 0.000000); //
-	 
+
 	//FDSA headquarters - Benny
 	CreateDynamicObject(3998, 1277.44, -2525.85, -0.80,   0.00, 0.00, 95.95, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(3998, 1296.74, -2523.84, -0.80,   0.00, 0.00, 95.95, .worldid = -1, .streamdistance = 200);
@@ -10377,7 +10411,7 @@ public OnFilterScriptInit()
     CreateDynamicObject(11631,1597.80004883,-2144.00000000,18.18000031,0.00000000,0.00000000,0.00000000); //object(ranch_desk) (2)
     CreateDynamicObject(1810,1595.79980469,-2152.69921875,16.89999962,0.00000000,0.00000000,179.99450684); //object(cj_foldchair) (9)
 	*/
-	
+
 	//LSPD Improvements farva
 	CreateDynamicObject(11326,1604.98535156,-1623.68457031,14.71534920,0.00000000,0.00000000,90.00000000); //object(sfse_hublockup) (1)
 	CreateDynamicObject(1886,1581.56628418,-1633.38085938,16.76438522,0.00000000,0.00000000,308.90148926); //object(shop_sec_cam) (1)
@@ -10408,7 +10442,7 @@ public OnFilterScriptInit()
     // CreateDynamicObject(1282, 781.29571533203, -1328.1229248047, 13.235691070557, 0, 0, 270.63061523438);
     // CreateDynamicObject(1282, 777.85040283203, -1328.0673828125, 13.235691070557, 0, 0, 270.67565917969);
     // CreateDynamicObject(1282, 774.73156738281, -1328.00390625, 13.235691070557, 0, 0, 270.27026367188);
-	
+
     CreateDynamicObject(2942, 2065.439453125, -1897.5510253906, 13.19670009613, 0, 0, 0);// ATMS
     CreateDynamicObject(2942, 2565.667480, 1406.839355, 7699.20, 0, 0, 270);// VIP Lounge ATM
 	CreateDynamicObject(2942, 1497.7467041016, -1749.8747558594, 15.088212013245, 0, 0, 177.38134765625);
@@ -10431,7 +10465,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2942, 2316.1015625, -88.522567749023, 26.12727355957, 0, 0, 0);//End of Red County ATM's
 	CreateDynamicObject(2395, 968.34387207031, -52.585327148438, 1002.404296875, 0, 0, 270.27026367188);
 	CreateDynamicObject(2946, 968.24615478516, -53.999252319336, 1000.1245727539, 0, 0, 0);
-	
+
 	// FBI
 	CreateDynamicObject(2949, 317.199737, -1513.150512, 23.942632, 0.000000, 0.000000, 325.997314); // FBI door outside
 	CreateDynamicObject(3089, 301.648437, 191.891983, 1007.500854, 0.000000, 0.000000, 270.000000); // FBI door inside
@@ -10661,7 +10695,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1616,281.14285278,-1481.05761719,-31.00306702,0.00000000,0.00000000,267.23352051, .interiorid = 1); //object(nt_securecam1_01) (2)
 	CreateDynamicObject(1616,318.01690674,-1485.05334473,-31.00306702,0.00000000,0.00000000,267.23144531, .interiorid = 1); //object(nt_securecam1_01) (3)
 	CreateDynamicObject(1616,277.92636108,-1509.63354492,-43.22993469,0.00000000,0.00000000,267.23144531, .interiorid = 1); //object(nt_securecam1_01) (4)
-	
+
 	// NSB (FBI)
 	CreateDynamicObject(18024, 162.49586, -35.51318, 1016.22437,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(365, 167.24768, -27.34127, 1014.04761,   0.00000, -6.00000, 0.00000);
@@ -10780,7 +10814,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2249, -228.20450, 1512.05481, 724.11493,   0.00000, 0.00000, 201.23981);
 	CreateDynamicObject(10744, -222.03369, 1524.68408, 729.86603,   180.00000, 0.00000, 0.00000);
 	CreateDynamicObject(1657, -226.42540, 1505.84631, 725.75287,   0.00000, 0.00000, 0.00000);
-	
+
 	//---------------SASD HQ Interior-------------------//
 	CreateDynamicObject(14858,2547.63281250,-1672.62011719,566.94067383,0.00000000,0.00000000,0.00000000); //object(veg_pol_main1)(1)
 	CreateDynamicObject(2614,2512.38671875,-1668.72644043,564.15686035,0.00000000,0.00000000,89.99450684); //object(cj_us_flag) (1)
@@ -10878,7 +10912,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1663,2515.10693359,-1667.07128906,562.25244141,0.00000000,0.00000000,57.99682617); //object(swivelchair_b) (4)
 	CreateDynamicObject(638,2525.97753906,-1669.66699219,562.48925781,0.00000000,0.00000000,0.00000000); //object(kb_planter_bush) (2)
 	CreateDynamicObject(638,2525.97436523,-1674.83300781,562.48925781,0.00000000,0.00000000,0.00000000); //object(kb_planter_bush) (3)
-	
+
 	//---------------SASD HQ Exterior-------------------//
 	new SASDGarageWall[6];
 	SASDGarageWall[0] = CreateDynamicObject(18766, 645.66, -564.83, -2.75,   0.00, 0.00, 0.00, .streamdistance = 150);
@@ -10902,9 +10936,9 @@ public OnFilterScriptInit()
 	CreateDynamicObject(8948,650.19073486,-611.58850098,-0.17405701,0.00000000,0.00000000,0.00000000); //object(lckupgrgdoor_lvs) (4)
 	CreateDynamicObject(11391,549.71221924,-603.48608398,-14.68468285,0.00000000,0.00000000,2.00000000); //object(hubprops6_sfse) (1)
 	CreateDynamicObject(1533, 620.50, -568.66, 25.15, 0.00, 0.00, 0.00, .streamdistance = 150); //Roof Access Door
-	
+
 	// New SANEWS Interior Ross
-	
+
 	CreateDynamicObject(14391, 647.16217, -5.03980, 1101.12805,   0.00000, 0.00000, -90.00000);
 	CreateDynamicObject(18001, 647.32520, -4.16680, 1102.25696,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(2258, 635.04468, -15.40028, 1109.02625,   0.00000, 0.00000, -140.00000);
@@ -11489,7 +11523,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1491, 620.95001, 1.67650, 1106.94348,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(19384, 620.93512, 2.42380, 1108.70544,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(1491, 625.42767, 9.82880, 1106.94348,   0.00000, 0.00000, 270.00000);
-		
+
 	// Custom Int.
 	CreateDynamicObject(16662,431.07250977,2295.58618164,8904.12695312,0.00000000,0.00000000,64.25500488); //object(a51_radar_stuff) (1)
 	CreateDynamicObject(16782,429.41915894,2295.08764648,8905.13574219,0.00000000,0.00000000,0.00000000); //object(a51_radar_scan) (1)
@@ -14549,7 +14583,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1502, 530.02002, 1425.64197, 10999.46484,   0.00000, 0.00000, 90.00000, .streamdistance = 125.0);
 	CreateDynamicObject(1502, 530.02008, 1416.30603, 10999.46484,   0.00000, 0.00000, 90.00000, .streamdistance = 125.0);
 
-	// Prison interogation room 
+	// Prison interogation room
 
 	CreateDynamicObject(19905, 242.56848, 1974.11401, 6000.23633,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(19456, 235.52980, 1978.25439, 6007.68701,   0.00000, 0.00000, 90.00000);
@@ -15014,7 +15048,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19121,1741.68444824,-1849.50122070,12.91159534,0.00000000,0.00000000,0.00000000, .worldid = -1, .streamdistance = 150); //object(bollardlight) (10)
 	CreateDynamicObject(19121,1740.36340332,-1849.50122070,12.91159534,0.00000000,0.00000000,0.00000000, .worldid = -1, .streamdistance = 150); //object(bollardlight) (11)
 	CreateDynamicObject(9833,1693.61218262,-1875.97485352,15.73739624,0.00000000,0.00000000,0.00000000, .worldid = -1, .streamdistance = 150); //object(fountain_sfw) (1)
-	
+
 	//New Judicial CourtHouse by Neo Karls
 	CreateDynamicObject(2808, -2624.50000, 350.19922, 680.40002,   0.00000, 0.00000, 90.00000, .interiorid = 5);
 	CreateDynamicObject(2808, -2622.80005, 344.89999, 680.40002,   0.00000, 0.00000, 90.00000, .interiorid = 5);
@@ -15280,7 +15314,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2208, -2636.79053, 342.33270, 679.27649,   0.00000, 0.00000, 210.00000, .interiorid = 5);
 	CreateDynamicObject(2208, -2638.88745, 341.11682, 679.27551,   0.00000, 0.00000, 210.00000, .interiorid = 5);
 	CreateDynamicObject(2208, -2640.59619, 346.29370, 679.72552,   0.00000, 0.00000, 11.00000, .interiorid = 5);
-	
+
 	// New Judicial Lobby - by Ross
 	CreateDynamicObject(19378, 2209.71948, -1065.97083, 1200.00000,   0.00000, 90.00000, 0.00000);
 	CreateDynamicObject(19378, 2209.71948, -1075.60413, 1200.00000,   0.00000, 90.00000, 0.00000);
@@ -15543,17 +15577,17 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19304, 2223.07349, -1033.52136, 1202.52832,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(19302, 2223.06250, -1036.67163, 1200.68372,   0.00000, 0.00000, 270.00000);
 	CreateDynamicObject(19302, 2223.06812, -1032.69641, 1200.68372,   0.00000, 0.00000, 270.00000);
-	
+
 	/*
-		 ######      ###    ##    ##  ######   
-		##    ##    ## ##   ###   ## ##    ##  
-		##         ##   ##  ####  ## ##        
-		##   #### ##     ## ## ## ## ##   #### 
-		##    ##  ######### ##  #### ##    ##  
-		##    ##  ##     ## ##   ### ##    ##  
+		 ######      ###    ##    ##  ######
+		##    ##    ## ##   ###   ## ##    ##
+		##         ##   ##  ####  ## ##
+		##   #### ##     ## ## ## ## ##   ####
+		##    ##  ######### ##  #### ##    ##
+		##    ##  ##     ## ##   ### ##    ##
 		 ######   ##     ## ##    ##  ######
 	*/
-	
+
 	// The Black Hand Restaurant
   	CreateDynamicObject(14623,222.30000000,314.16000000,960.51000000,0.00000000,0.00000000,36.00000000); //
 	CreateDynamicObject(10722,221.61000000,324.33000000,976.61000000,270.00000000,180.01000000,359.25000000); //
@@ -15753,7 +15787,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1523,220.60000000,333.27000000,954.91000000,0.00000000,0.00000000,181.70000000); //
 	CreateDynamicObject(1557,239.22000000,322.99000000,955.70000000,0.00000000,0.00000000,292.00000000); //
 	CreateDynamicObject(1557,240.45000000,319.92000000,955.70000000,0.00000000,0.00000000,112.00000000); //
-	
+
 	//TRIADS
 	CreateDynamicObject(18018, 1497.58984375, -1820.1455078125, 821.96350097656, 0.000000, 0.000000, 0.000000); //object (int_bars) (1)
 	CreateDynamicObject(14399, 1489.896484375, -1821.65625, 821.77600097656, 0.000000, 0.000000, 270.16479492188); //object (bar2) (1)
@@ -15840,7 +15874,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2921, 1513.6909179688, -1832.7159423828, 827.08428955078, 0.000000, 0.000000, 315); //object (kmb_cam) (1)
 	CreateDynamicObject(2922, 1515.4291992188, -1813.6689453125, 826.13836669922, 0.000000, 0.000000, 0.000000); //object (kmb_keypad) (1)
 	CreateDynamicObject(1359, 1500.9515380859, -1810.8406982422, 822.66986083984, 0.000000, 0.000000, 0.000000); //object (cj_bin1) (1)
-	
+
 	// Ballas Office
 	CreateDynamicObject(1557, 1225.031250, -814.101806, 1083.027832, 0.000000, 0.000000, 0.000000);
 	CreateDynamicObject(1557, 1228.057739, -814.101806, 1083.051391, 0.000000, 0.000000, 179.994506);
@@ -15851,7 +15885,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1729, 1231.426269, -811.360656, 1083.007812, 0.000000, 0.000000, 179.994506);
 	CreateDynamicObject(1670, 1231.961059, -810.037475, 1083.811157, 0.000000, 0.000000, 0.000000);
 	CreateDynamicObject(1670, 1237.418212, -808.776428, 1083.430053, 0.000000, 0.000000, 0.000000);
-	
+
 	// Family 1 Interior
 	CreateDynamicObject(8673,272.78515625,-142.28906250,1.64504111,0.00000000,0.00000000,270.00000000); //object(csrsfence03_lvs) (1)
 	CreateDynamicObject(8673,242.82189941,-142.33764648,1.84504104,0.00000000,0.00000000,270.00000000); //object(csrsfence03_lvs) (3)
@@ -15988,17 +16022,17 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2232,958.57299805,-13.14301872,1009.60815430,0.00000000,0.00000000,182.99926758); //object(med_speaker_4) (2)
 	CreateDynamicObject(2232,955.35815430,-13.10101318,1009.60815430,0.00000000,0.00000000,182.99926758); //object(med_speaker_4) (3)
 	CreateDynamicObject(2232,947.51574707,-17.56950951,1011.01440430,0.00000000,0.00000000,182.99926758); //object(med_speaker_4) (4)
-	
+
 	/*
-		########  ##     ##  ######  #### ##    ## ########  ######   ######  
-		##     ## ##     ## ##    ##  ##  ###   ## ##       ##    ## ##    ## 
-		##     ## ##     ## ##        ##  ####  ## ##       ##       ##       
-		########  ##     ##  ######   ##  ## ## ## ######    ######   ######  
-		##     ## ##     ##       ##  ##  ##  #### ##             ##       ## 
-		##     ## ##     ## ##    ##  ##  ##   ### ##       ##    ## ##    ## 
+		########  ##     ##  ######  #### ##    ## ########  ######   ######
+		##     ## ##     ## ##    ##  ##  ###   ## ##       ##    ## ##    ##
+		##     ## ##     ## ##        ##  ####  ## ##       ##       ##
+		########  ##     ##  ######   ##  ## ## ## ######    ######   ######
+		##     ## ##     ##       ##  ##  ##  #### ##             ##       ##
+		##     ## ##     ## ##    ##  ##  ##   ### ##       ##    ## ##    ##
 		########   #######   ######  #### ##    ## ########  ######   ######
 	*/
-	
+
 	//Gym business - Swimming pool & Boxing - Benny
 	CreateDynamicObject(10994,2820.1601562,-2255.5380859,0.1781788,0.0000000,0.0000000,89.7253418, .worldid = 7, .streamdistance = 220); //object(shoppie6_sfs02) (10)
 	CreateDynamicObject(10994,2902.8425293,-2274.9826660,-12.8944159,0.0000000,0.0000000,269.6374512, .worldid = 7, .streamdistance = 220); //object(shoppie6_sfs02) (21)
@@ -16344,7 +16378,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1428,2813.2827148,-2239.9311523,96.0371094,324.2702637,0.0000000,9.9700012, .worldid = 7, .streamdistance = 300); //object(dyn_ladder) (2)
 	CreateDynamicObject(3529,2847.4375000,-2246.2363281,103.1181641,0.0000000,0.0000000,0.0000000, .worldid = 7, .streamdistance = 300); //object(vgsn_constrbeam) (1)
 	CreateDynamicObject(3572,2814.4389648,-2225.9626465,99.5449219,166.1650391,26.5181885,180.2792969, .worldid = 7, .streamdistance = 300); //object(lasdkrt4) (6)
-	
+
 	CreateDynamicObject(10994,2820.1601562,-2255.5380859,0.1781788,0.0000000,0.0000000,89.7253418, .worldid = 6, .streamdistance = 220); //object(shoppie6_sfs02) (10)
 	CreateDynamicObject(10994,2902.8425293,-2274.9826660,-12.8944159,0.0000000,0.0000000,269.6374512, .worldid = 6, .streamdistance = 220); //object(shoppie6_sfs02) (21)
 	CreateDynamicObject(10994,2843.6166992,-2301.3231201,0.1781788,0.0000000,0.0000000,179.4552002, .worldid = 6, .streamdistance = 220); //object(shoppie6_sfs02) (10)
@@ -16690,7 +16724,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3529,2847.4375000,-2246.2363281,103.1181641,0.0000000,0.0000000,0.0000000, .worldid = 6, .streamdistance = 300); //object(vgsn_constrbeam) (1)
 	CreateDynamicObject(3572,2814.4389648,-2225.9626465,99.5449219,166.1650391,26.5181885,180.2792969, .worldid = 6, .streamdistance = 300); //object(lasdkrt4) (6)
 	// Gym Ending
-	
+
 	//Tony DiNunzio's Dealership
 	CreateDynamicObject(1498, 1026.83301, -1927.81934, 11.74950,   0.00000, 0.00000, 182.46832);
 	new TonyDWall1 = CreateDynamicObject(8649, 1037.79724, -1917.84375, 12.90000,   0.00000, 0.00000, 1.81992);
@@ -16713,7 +16747,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19124, 1022.77063, -1909.85010, 12.28614,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(19122, 1022.74066, -1919.74292, 12.25814,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(19125, 1022.74493, -1926.18860, 12.25814,   0.00000, 0.00000, 0.00000);
-	
+
 	//Benny McCabe - Dillimore Gasso Exterior mapping UPDATE2
 	new DilliGasWall[2];
 	DilliGasWall[0] = CreateDynamicObject(19447, 666.53, -590.04, 16.67,   0.00, 0.00, 90.00, .streamdistance = 200);
@@ -16746,17 +16780,17 @@ public OnFilterScriptInit()
 	CreateDynamicObject(9339, 651.17, -540.25, 3.58,   270.00, 0.00, 270.60, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1215, 661.53, -540.26, 15.90,   0.00, 0.00, 0.00, .worldid = -1, .streamdistance = 200);
 
-	
+
 	/*
-		 _____                         _____               
-		/  ___|                       |_   _|              
-		\ `--. _ __  _ __ __ _ _   _    | | __ _  __ _ ___ 
+		 _____                         _____
+		/  ___|                       |_   _|
+		\ `--. _ __  _ __ __ _ _   _    | | __ _  __ _ ___
 		 `--. \ '_ \| '__/ _` | | | |   | |/ _` |/ _` / __|
 		/\__/ / |_) | | | (_| | |_| |   | | (_| | (_| \__ \
 		\____/| .__/|_|  \__,_|\__, |   \_/\__,_|\__, |___/
-			  | |               __/ |             __/ |    
-			  |_|              |___/             |___/     
-			  
+			  | |               __/ |             __/ |
+			  |_|              |___/             |___/
+
 
 	*/
 	// Adding back the original one from 0% complete singleplayer
@@ -16814,7 +16848,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(18665, 2281.46, -1118.96, 27.01, 0.00, 0.00, 180.00);
 	CreateDynamicObject(18665, 2346.52, -1350.76, 24.28, 0.00, 0.00, 90.00);
 	CreateDynamicObject(18665, 2797.92, -1097.78, 31.06, 0.00, 0.00, -90.00);*/
-	
+
 	//SF Airport Hangers
 	CreateDynamicObject(8240,-1272.0999800,-657.5999800,26.8000000,0.0000000,0.0000000,358.7500000, .worldid = 0, .streamdistance = 200); //object(vgssbighanger1) (1)
 	CreateDynamicObject(8240,-1358.8000500,-655.7000100,26.8000000,0.0000000,0.0000000,358.7480000, .worldid = 0, .streamdistance = 200); //object(vgssbighanger1) (2)
@@ -17207,7 +17241,7 @@ public OnFilterScriptInit()
     CreateDynamicObject(2904,-619.19085693,-471.22735596,25.82960129,0.00000000,0.00000000,0.00000000, .worldid = 0, .streamdistance = 150); //object(warehouse_door1) (2)
     CreateDynamicObject(4100,-587.69470215,-502.70257568,26.22510719,0.00000000,0.00000000,49.99877930, .worldid = 0, .streamdistance = 150); //object(meshfence1_lan) (5)
     CreateDynamicObject(4100,-616.36926270,-496.02087402,26.22510719,0.00000000,0.00000000,319.99877930, .worldid = 0, .streamdistance = 150); //object(meshfence1_lan) (6)
-	
+
 	//OOC Prison
 	CreateDynamicObject(14412, -1154.70056, 2895.23120, 10001.47559,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(14459, -1159.42188, 2895.22583, 9999.14355,   0.00000, 0.00000, 0.00000);
@@ -17226,7 +17260,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(18769, -1178.25159, 2875.59326, 9992.12793,   90.00000, 0.00000, 90.00000);
 	CreateDynamicObject(19364, -1186.08496, 2887.28125, 9997.06836,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(18769, -1173.94983, 2915.22021, 9992.12793,   90.00000, 0.00000, 90.00000);
-	
+
 	//HMA Interior
 	CreateDynamicObject(14424, 55.12810, 1953.05713, -68.1944,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(1569, 66.59990, 1974.00000, -69.81900,   0.00000, 0.00000, 90.00000);
@@ -17313,7 +17347,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2737, 58.84900, 1979.72156, -67.8306,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(2356, 56.03730, 1974.93640, -69.8165,   0.00000, 0.00000, -75.00000);
 	CreateDynamicObject(922, 54.58010, 1982.34058, -68.9407,   0.00000, 0.00000, 0.00000);
-	
+
 	//Mercenaries Motorcycle Club
 	CreateDynamicObject(8533, 678.72601, -450.54843, 12512.70605,   0.00000, 0.00000, 0.00000, .worldid = 2);
 	CreateDynamicObject(8533, 684.73438, -451.03479, 12517.55957,   0.00000, 179.99451, 0.00000, .worldid = 2);
@@ -17629,7 +17663,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(331, 682.51129, -474.96320, 12513.49805,   120.00000, 40.00000, 90.00000, .worldid = 2);
 	CreateDynamicObject(336, 681.30951, -474.37900, 12512.90625,   10.00000, 0.00000, 0.00000, .worldid = 2);
 	CreateDynamicObject(19088, 684.22351, -471.73190, 12511.75586,   320.00000, 120.00000, 0.00000, .worldid = 2);
-	
+
 	//SFPD
 	CreateDynamicObject(19357, -2717.69336, 49.59200, 4.58460,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(1536, -2715.92163, 50.51530, 3.30870,   0.00000, 0.00000, 90.00000);
@@ -18020,8 +18054,8 @@ public OnFilterScriptInit()
 		if(x == 0 || x == 2 || x == 4 || x == 5) SetDynamicObjectMaterialText(DilliDMVArrow[x], 0, "3", 10, "Wingdings 3", 32, 1, 0xFFFFFFFF, 0, 1);
 		else SetDynamicObjectMaterialText(DilliDMVArrow[x], 0, "4", 10, "Wingdings 3", 32, 1, 0xFFFFFFFF, 0, 1);
 	}
-	
-	
+
+
 	//FDSA
 	new FDSAWLS_Roof[6], FDSAWLS_Wall[18];
 	CreateObject(19340, 279.00, -1303.04, 9.33,   0.00, 0.00, 24.50);
@@ -18078,7 +18112,7 @@ public OnFilterScriptInit()
 	SetDynamicObjectMaterial(FDSAWLS_Flag, 0, 7091, "vegasflag", "starspangban1_256", 0);
 	for(new x; x < sizeof(FDSAWLS_Roof); x++) SetDynamicObjectMaterial(FDSAWLS_Roof[x], 0, 11008, "firehouse_sfse", "corugwall_sandy", 0);
 	for(new x; x < sizeof(FDSAWLS_Wall); x++) SetDynamicObjectMaterial(FDSAWLS_Wall[x], 0, 11008, "firehouse_sfse", "GB_sandstwall01", 0);
-	
+
 	//Donahue Family Condos
 	new DFCLS[3], DFCLS_Wall[2], DFCLS_Roof[6];
 	DFCLS[0] = CreateDynamicObject(19340, 1270.42, -1184.34, 8.78,   0.00, 0.00, 180.00);
@@ -18160,7 +18194,7 @@ public OnFilterScriptInit()
 	new DFCRoof = CreateDynamicObject(2714, -2062.80737, 238.58321, 1005.76123, 0.00000, 0.00000, 0.00000, .interiorid = 1, .worldid = 2217, .streamdistance = 50);
 	SetDynamicObjectMaterial(DFCExit, 0, 14506, "imy_motel", "Ah_exit", 0);
 	SetDynamicObjectMaterial(DFCRoof, 0, 14506, "imy_motel", "mp_motel_roof", 0);
-	
+
 	//Interior
 	CreateDynamicObject(18312,-2163.5000000,-1403.6000000,3544.2000000,0.0000000,0.0000000,0.0000000); //object(cs_landbit_23) (1)
 	CreateDynamicObject(18312,-2178.7000000,-1338.8000000,3549.4000000,0.0000000,0.0000000,180.0000000); //object(cs_landbit_23) (2)
@@ -18204,7 +18238,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3265,-2140.1000000,-1444.2000000,3553.1000000,0.0000000,0.0000000,245.0000000); //object(privatesign4) (2)
 	CreateDynamicObject(3264,-2162.9000000,-1291.9000000,3557.5000000,0.0000000,0.0000000,200.0000000); //object(privatesign3) (1)
 	CreateDynamicObject(3264,-2147.9000000,-1452.5000000,3552.7000000,0.0000000,0.0000000,199.9950000); //object(privatesign3) (2)
-	
+
 	// Hospital Interior Mapping
 	CreateObject(1997, 2370.80469, 2642.91553, 8000.12988,   0.00000, 0.00000, 0.00000);
 	CreateObject(1997, 2370.89771, 2649.08740, 8000.12988,   0.00000, 0.00000, 0.00000);
@@ -18588,7 +18622,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1291, 1026.35242, -2004.26501, 12.49713,   0.00000, 0.00000, 81.29999);
 	CreateDynamicObject(1478, 1026.19922, -2006.65686, 12.46271,   0.00000, 0.78000, 83.88000);
 	CreateDynamicObject(1776, 1026.04382, -2005.61743, 13.20026,   0.00000, 0.00000, 81.42009);
-	
+
 	//FDSA HQ (Idlewood)
 	//Outside Stairs
     CreateDynamicObject(8613, 1897.86108, -1796.07031, 16.86710,   0.00000, 0.00000, 0.00000);
@@ -18621,7 +18655,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1297, 1735.83997, -1001.11737, 26.20000,   0.00000, 0.00000, 75.00000);
 	CreateDynamicObject(1297, 1717.41101, -997.48480, 26.20000,   0.00000, 0.00000, 75.00000);
 	CreateDynamicObject(1297, 1764.53882, -1007.46240, 26.20000,   0.00000, 0.00000, 75.00000);
-	
+
 	//Paintball Arenas
 		//East LS Parking Lot
 	CreateDynamicObject(987, 2812.58960, -1583.50964, 9.74301,   0.00000, 0.00000, 244.30896, .worldid = 1);
@@ -18773,10 +18807,10 @@ public OnFilterScriptInit()
 	CreateDynamicObject(745, 2370.77, -649.56, 126.20,   0.00, 0.00, -99.78, .worldid = 5);//ING_BUSH_G
 	CreateDynamicObject(745, 2407.88, -651.44, 125.91,   0.00, 0.00, 116.26, .worldid = 5);//ING_BUSH_G
 	CreateDynamicObject(745, 2382.57, -653.64, 125.40,   0.00, 0.00, 116.26, .worldid = 5);//ING_BUSH_G
-	
+
 	//Mall Wall Fix
 	CreateDynamicObject(19447, 1090.32690, -1485.31982, 18.44960,   0.00000, 0.00000, 106.00000);
-	
+
 	//SFPD HQ - By: Whitestone
 	CreateDynamicObject(19446, -1598.14429, 712.26740, 14.61590,   0.00000, 0.00000, 90.00000, .streamdistance = 50);
 	CreateDynamicObject(19446, -1588.56750, 712.27118, 14.61590,   0.00000, 0.00000, 90.00000, .streamdistance = 50);
@@ -19174,7 +19208,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1893, -1577.00208, 704.51001, 22.36860,   0.00000, 0.00000, 0.00000, .streamdistance = 50);
 	CreateDynamicObject(1893, -1577.45654, 694.45734, 22.36860,   0.00000, 0.00000, 0.00000, .streamdistance = 50);
 	CreateDynamicObject(1714, -1586.51794, 689.76013, 18.65460,   0.00000, 0.00000, 160.00000, .streamdistance = 50);
-	
+
 	//FBI HQ - By: Ross
 		//Main Int
 	CreateDynamicObject(19379, 1033.68005, -852.41321, 1084.17615,   0.00000, 90.00000, 0.00000);
@@ -19630,7 +19664,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19377, 1022.67401, -823.84888, 1101.06226,   0.00000, 90.00000, 0.00000);
 	CreateDynamicObject(19377, 1022.67401, -833.48291, 1101.06226,   0.00000, 90.00000, 0.00000);
 	CreateDynamicObject(19377, 1033.17505, -833.48291, 1101.06226,   0.00000, 90.00000, 0.00000);
-		//Divisional Office 
+		//Divisional Office
 	CreateDynamicObject(19379, 1134.66211, -823.04572, 1086.06238,   0.00000, 90.00000, 0.00000);
 	CreateDynamicObject(19379, 1124.32849, -823.00800, 1086.74646,   0.00000, 90.00000, 0.00000);
 	CreateDynamicObject(19357, 1129.90845, -821.24353, 1086.30945,   0.00000, 76.00000, 90.00000);
@@ -19712,10 +19746,10 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2202, 1124.79041, -818.69788, 1086.81860,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(1671, 1123.45300, -820.00299, 1087.27588,   0.00000, 0.00000, -1.00000);
 	CreateDynamicObject(1726, 1126.84827, -821.72308, 1086.79443,   0.00000, 0.00000, 180.00000);
-	
+
 	//FBI garage door in Mullholland
 	CreateDynamicObject(9093, 1704.73535, -1360.10706, 14.32190, 0.00000, 0.00000, 180.00000);
-	
+
 	//Tim Boss Dealership - By: Andrew Cook
 	CreateDynamicObject(19397, -1976.80798, 102.75220, 28.36670,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(19313, -1960.60010, 100.94610, 25.47120,   0.00000, 0.00000, 90.00000);
@@ -19792,7 +19826,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(639, -1963.87292, 107.91350, 33.92520,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(717, -1977.45178, 90.44340, 26.75640,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(717, -1977.45178, 82.44340, 26.75640,   0.00000, 0.00000, 0.00000);
-	
+
 	//SA News
 	new san_ground_tex[2],
 		san_wall_tex[14],
@@ -19804,7 +19838,7 @@ public OnFilterScriptInit()
 	san_ground_tex[0] = CreateObject(18754, 664.52051, -1301.13367, 11.79870,   0.00000, 0.00000, 0.00000);
 	san_ground_tex[1] = CreateDynamicObject(11549, 737.6066, -1334.9672, 12.5136,   0.00000, 0.00000, 0.00000);
 	san_wall_tex[0] = CreateDynamicObject(5863, 750.53448, -1366.02148, 16.53150,   0.00000, 0.00000, 270.66739);
-	san_wall_tex[1] = CreateDynamicObject(5865, 676.41772, -1346.32971, 15.52650,   0.00000, 0.00000, 270.00000);	
+	san_wall_tex[1] = CreateDynamicObject(5865, 676.41772, -1346.32971, 15.52650,   0.00000, 0.00000, 270.00000);
 	san_wall_tex[2] = CreateDynamicObject(7022, 734.8933, -1351.7996, 14.4300,   0.00000, 0.00000, 180.00000);
 	san_wall_tex[3] = CreateDynamicObject(5706, 773.3110, -1370.8110, 17.5172,   0.00000, 0.00000, 268.96313);
 	san_wall_tex[4] = CreateObject(16335, 761.4268, -1357.8785, 7.8149,   0.00000, 0.00000, 60.76905);
@@ -19828,7 +19862,7 @@ public OnFilterScriptInit()
 	san_grass_tex[0] = CreateDynamicObject(4682, 668.56622, -1369.49866, -7.03500,   0.00000, 0.00000, 0.00000);
 	san_grass_tex[1] = CreateDynamicObject(4682, 668.68439, -1345.76416, -7.03700,   0.00000, 0.00000, 0.00000);
 	san_grass_tex[2] = CreateDynamicObject(4682, 687.49609, -1369.58044, -7.03500,   0.00000, 0.00000, 0.00000);
-	san_grass_tex[3] = CreateDynamicObject(4682, 687.49420, -1345.93262, -7.03700,   0.00000, 0.00000, 0.00000);	
+	san_grass_tex[3] = CreateDynamicObject(4682, 687.49420, -1345.93262, -7.03700,   0.00000, 0.00000, 0.00000);
 	san_sign_tex = 	CreateDynamicObject(18244, 724.16522, -1378.10596, 20.19330,   89.98400, 0.03200, 1.00000);
 	CreateDynamicObject(4015, 674.6183, -1356.2146, -0.6345,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(4188, 674.6183, -1356.2146, -0.6345,   0.00000, 0.00000, 0.00000);
@@ -19846,7 +19880,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1596, 693.08441, -1338.57861, 48.10260,   0.00000, 0.00000, 135.00000);
 	CreateDynamicObject(736, 646.32300, -1367.77722, 24.76080,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(736, 646.24512, -1343.92053, 24.73280,   0.00000, 0.00000, 0.00000);
-	
+
 	SetDynamicObjectMaterialText(san_sign_tex, 0, "SAN News", OBJECT_MATERIAL_SIZE_256x128,
     "Georgia", 50, 0, 0xFF3AF0AD, 0x00000000, OBJECT_MATERIAL_TEXT_ALIGN_CENTER);
 	SetObjectMaterial(san_ground_tex[0], 0, 11549, "desn_decocafe", "parking2plain", 0xFFFFFFFF);
@@ -19895,7 +19929,7 @@ public OnFilterScriptInit()
 	SetDynamicObjectMaterial(san_grass_tex[2], 0, 4013, "civic01_lan", "sl_concretewall1", 0);
 	SetDynamicObjectMaterial(san_grass_tex[3], 10, 16239, "des_se3", "desertgryard256", 0);
 	SetDynamicObjectMaterial(san_grass_tex[3], 0, 4013, "civic01_lan", "sl_concretewall1", 0);
-	
+
 	//SAPD HQ Interior
 	CreateDynamicObject(18981, 202.97929, -1006.28497, 1099.92139,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(3986, 217.51801, -980.56763, 1074.08716,   27.50000, 0.00000, 0.00000);
@@ -20188,7 +20222,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1432, 186.25656, -990.10931, 1159.13416,   0.00000, 0.00000, 313.71725);
 	CreateDynamicObject(1748, 183.87845, -991.51959, 1160.09863,   0.00000, 0.00000, 140.62480);
 	CreateDynamicObject(1491, 189.35281, -992.05200, 1159.03064,   0.00000, 0.00000, 0.00000);
-	
+
 	//SATR
 	CreateDynamicObject(8674,1810.7002000,-1094.7998000,23.0000000,0.0000000,0.0000000,0.0000000); //object(csrsfence02_lvs) (1)
 	CreateDynamicObject(11327,1799.4004000,-1128.9004000,25.4000000,0.0000000,0.0000000,90.0000000); //object(sfse_hub_grgdoor02) (1)
@@ -20210,7 +20244,7 @@ public OnFilterScriptInit()
 	CreateObject(6387,1825.5000000,-1116.0000000,-31.2000000,0.0000000,0.0000000,0.0000000); //object(century03_law2) (3)
 
 	CreateObject(19879, 1421.38, -1477.6, 42.2031, 0, 0, 0);
-	
+
 	//SASD
 	new sapd_main = CreateDynamicObject(12855, -594.89673, -1059.13208, 28.84589,   0.00000, 2.00000, 325.62787);
 	SetDynamicObjectMaterial(sapd_main, 1, 17536, "lae2bigblock", "badmarb1_LAn", 0);
@@ -20232,7 +20266,7 @@ public OnFilterScriptInit()
 
 	fdsa_main[1] =  CreateDynamicObject(16564, -616.3105, -1113.4707, 23.0042,   -1.43400, 0.00000, 323.47470);
 	// SetDynamicObjectMaterial(fdsa_main[1], 0, 17536, "lae2bigblock", "badmarb1_LAn", 0);
-	
+
 	new sapd_arrest = CreateDynamicObject(19907, -566.06183, -1022.13379, 24.27130,   0.00000, 0.00000, 146.13435);
 	SetDynamicObjectMaterial(sapd_arrest, 2, 17536, "lae2bigblock", "badmarb1_LAn", 0);
 	CreateDynamicObject(19905, -496.05646, -969.65497, 25.08459,   0.00000, 0.00000, 327.47177);
@@ -20351,7 +20385,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(16564, -616.26752, -1113.71338, 16.93888,   -1.43400, 0.00000, 323.47470);
 	CreateDynamicObject(987, -591.68896, -1097.50354, 21.61456,   0.00000, 0.00000, 136.03055);
 	CreateDynamicObject(987, -600.18530, -1089.26111, 21.61456,   0.00000, 0.00000, 147.46457);
-	
+
 	//Republic of New Eire
 	CreateDynamicObject(7033, 1760.75659, 590.14111, 26.66413,   -3.94400, 0.00000, -16.68000);
 	CreateDynamicObject(973, 1778.88708, 595.04529, 22.07710,   0.00000, 3.59600, 31.19999);
@@ -20451,7 +20485,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(970, 652.59668, 317.74072, 19.60215,   0.00000, 0.00000, -3.60000);
 	CreateDynamicObject(970, 654.82397, 302.05225, 19.69572,   0.00000, 0.00000, 60.54000);
 	CreateDynamicObject(970, 751.02924, -169.26506, 18.19005,   0.00000, 0.00000, 12.36001);
-	
+
 	CreateDynamicObject(18452, 2733.99487, -234.74963, 30.31960,   0.00000, 0.00000, 71.93997);
 	CreateDynamicObject(987, 2742.79565, -231.80751, 27.22169,   0.00000, 2.00000, -108.84000);
 	CreateDynamicObject(18452, 2728.64575, -232.99930, 30.31700,   0.00000, 0.00000, 71.94000);
@@ -22060,7 +22094,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(6959, 3068.81665, 491.54584, 15.61159,   0.00000, 0.00000, -33.23998, .streamdistance = 400.00, .drawdistance = 350.00);
 	CreateDynamicObject(6959, 3090.72583, 524.99426, 15.61159,   0.00000, 0.00000, -33.23998, .streamdistance = 400.00, .drawdistance = 350.00);
 	CreateDynamicObject(6959, 3125.29199, 502.34821, 15.61159,   0.00000, 0.00000, -33.23998, .streamdistance = 400.00, .drawdistance = 350.00);
-	
+
 
 	// bridges
 	CreateDynamicObject(16610, 2906.79248, 119.16415, 19.04374,   0.00000, 0.00000, 56.52002, .streamdistance = 400.00, .drawdistance = 350.00);
@@ -22078,7 +22112,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3666, 2962.75562, 187.99730, 24.27883,   0.00000, 0.00000, 0.00000, .streamdistance = 250.00, .drawdistance = 200.00);
 	CreateDynamicObject(3666, 2916.41553, 148.87340, 24.27883,   0.00000, 0.00000, 0.00000, .streamdistance = 250.00, .drawdistance = 200.00);
 	CreateDynamicObject(3666, 2929.93481, 138.95619, 24.27883,   0.00000, 0.00000, 0.00000, .streamdistance = 250.00, .drawdistance = 200.00);
-	
+
 	// control tower
 	CreateDynamicObject(8038, 3173.47925, 352.36810, 26.11533,   0.00000, 0.00000, -13.44000, .streamdistance = 310.00, .drawdistance = 290.00); // main tower
 	CreateDynamicObject(1649, 3172.22998, 322.86646, 47.89965,   0.00000, 0.00000, 257.16031, .streamdistance = 310.00, .drawdistance = 290.00);
@@ -22491,7 +22525,7 @@ public OnFilterScriptInit()
 	// hangars
 	CreateDynamicObject(3268, 3052.93994, 402.26303, 15.56674,   0.00000, 0.00000, -123.95999, .streamdistance = 250.00, .drawdistance = 180.00);
 	CreateDynamicObject(3268, 3022.70752, 423.53833, 15.56674,   0.00000, 0.00000, -123.95999, .streamdistance = 250.00, .drawdistance = 180.00);
-	
+
 	// runway signposting
 	CreateDynamicObject(3578, 3154.14111, 360.54483, 15.57593,   0.00000, 0.00000, -32.81999, .streamdistance = 90.00, .drawdistance = 60.00);
 	CreateDynamicObject(3578, 3133.71362, 512.04749, 14.83815,   0.00000, 0.00000, -32.93998, .streamdistance = 90.00, .drawdistance = 60.00);
@@ -22691,17 +22725,17 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1440, 1141.9844, -1346.1094, 13.2656, 0.25);
 		RemoveBuildingForPlayer(playerid, 1440, 1148.6797, -1385.1875, 13.2656, 0.25);
 		RemoveBuildingForPlayer(playerid, 1290, -1673.3047, 540.3672, 42.6172, 0.25);
-		
+
 		/*
-			########    ###     ######  ######## ####  #######  ##    ## 
-			##         ## ##   ##    ##    ##     ##  ##     ## ###   ## 
-			##        ##   ##  ##          ##     ##  ##     ## ####  ## 
-			######   ##     ## ##          ##     ##  ##     ## ## ## ## 
-			##       ######### ##          ##     ##  ##     ## ##  #### 
-			##       ##     ## ##    ##    ##     ##  ##     ## ##   ### 
+			########    ###     ######  ######## ####  #######  ##    ##
+			##         ## ##   ##    ##    ##     ##  ##     ## ###   ##
+			##        ##   ##  ##          ##     ##  ##     ## ####  ##
+			######   ##     ## ##          ##     ##  ##     ## ## ## ##
+			##       ######### ##          ##     ##  ##     ## ##  ####
+			##       ##     ## ##    ##    ##     ##  ##     ## ##   ###
 			##       ##     ##  ######     ##    ####  #######  ##    ##
 		*/
-		
+
 		// url hq sf
 		RemoveBuildingForPlayer(playerid, 11014, -2076.4375, -107.9297, 36.9688, 0.25);
 
@@ -22787,7 +22821,7 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1278, -1365.1563, -643.6875, 25.3359, 0.25);
 		RemoveBuildingForPlayer(playerid, 968, -1526.4375, 481.3828, 6.9063, 0.25);
 		RemoveBuildingForPlayer(playerid, 966, -1526.3906, 481.3828, 6.1797, 0.25);
-		
+
 		//SA News
 		RemoveBuildingForPlayer(playerid, 1226, 778.8594, -1391.1563, 16.3125, 0.25);
 		RemoveBuildingForPlayer(playerid, 6491, 717.4844, -1357.3047, 20.2969, 0.25);
@@ -22804,17 +22838,17 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1635, 721.2109, -1328.8750, 25.1094, 0.25);
 		RemoveBuildingForPlayer(playerid, 1415, 732.8516, -1332.8984, 12.6875, 0.25);
 		RemoveBuildingForPlayer(playerid, 1439, 732.7266, -1341.7734, 12.6328, 0.25);
-		
+
 		//Republic of New Eire
 		RemoveBuildingForPlayer(playerid, 3276, 1829.9453, 246.1953, 23.1250, 0.25);
 
 		/*
-			 ######      ###    ##    ##  ######   
-			##    ##    ## ##   ###   ## ##    ##  
-			##         ##   ##  ####  ## ##        
-			##   #### ##     ## ## ## ## ##   #### 
-			##    ##  ######### ##  #### ##    ##  
-			##    ##  ##     ## ##   ### ##    ##  
+			 ######      ###    ##    ##  ######
+			##    ##    ## ##   ###   ## ##    ##
+			##         ##   ##  ####  ## ##
+			##   #### ##     ## ## ## ## ##   ####
+			##    ##  ######### ##  #### ##    ##
+			##    ##  ##     ## ##   ### ##    ##
 			 ######   ##     ## ##    ##  ######
 		*/
 
@@ -22907,23 +22941,23 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1412, 270.0078, -146.7188, 1.8438, 0.25);
 		RemoveBuildingForPlayer(playerid, 1412, 272.7266, -138.8750, 1.8516, 0.25);
 		RemoveBuildingForPlayer(playerid, 1412, 272.6250, -133.5469, 1.8438, 0.25);
-		
+
 		/*
-			########  ##     ##  ######  #### ##    ## ########  ######   ######  
-			##     ## ##     ## ##    ##  ##  ###   ## ##       ##    ## ##    ## 
-			##     ## ##     ## ##        ##  ####  ## ##       ##       ##       
-			########  ##     ##  ######   ##  ## ## ## ######    ######   ######  
-			##     ## ##     ##       ##  ##  ##  #### ##             ##       ## 
-			##     ## ##     ## ##    ##  ##  ##   ### ##       ##    ## ##    ## 
+			########  ##     ##  ######  #### ##    ## ########  ######   ######
+			##     ## ##     ## ##    ##  ##  ###   ## ##       ##    ## ##    ##
+			##     ## ##     ## ##        ##  ####  ## ##       ##       ##
+			########  ##     ##  ######   ##  ## ## ## ######    ######   ######
+			##     ## ##     ##       ##  ##  ##  #### ##             ##       ##
+			##     ## ##     ## ##    ##  ##  ##   ### ##       ##    ## ##    ##
 			########   #######   ######  #### ##    ## ########  ######   ######
 		*/
-		
+
 		//Mike's Gas Station
 		RemoveBuildingForPlayer(playerid, 706, 111.0234, -134.5625, -0.0547, 0.25);
 		RemoveBuildingForPlayer(playerid, 3276, 122.5469, -140.8125, 1.3672, 0.25);
 		RemoveBuildingForPlayer(playerid, 3276, 122.4531, -92.8438, 1.3672, 0.25);
 		RemoveBuildingForPlayer(playerid, 3276, 126.0781, -69.9844, 1.4141, 0.25);
-		
+
 		//Darian's House
 		RemoveBuildingForPlayer(playerid, 785, -1013.7891, -1310.4141, 127.5234, 0.25);
 		RemoveBuildingForPlayer(playerid, 3276, -1082.4922, -1255.4375, 129.0625, 0.25);
@@ -23212,7 +23246,7 @@ stock RemoveBuildingsFromPlayer(playerid)
 		//Benny McCabe - Dillimore Gasso Exterior mapping UPDATE2
 		RemoveBuildingForPlayer(playerid, 1308, 671.6250, -590.3047, 15.5547, 0.25);
 		RemoveBuildingForPlayer(playerid, 1438, 663.3750, -541.6250, 15.2891, 0.25);
-		
+
 		//Removes for new additions for Glen Park mapping ~By Tim Boss
 		RemoveBuildingForPlayer(playerid, 5597, 2011.4688, -1300.8984, 28.6953, 0.25);
 		RemoveBuildingForPlayer(playerid, 5636, 2042.1797, -1346.8047, 24.0078, 0.25);
@@ -23232,7 +23266,7 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1297, 1992.1797, -1265.6094, 26.2188, 0.25);
 		RemoveBuildingForPlayer(playerid, 673, 2054.6797, -1281.5781, 22.9453, 0.25);
 		RemoveBuildingForPlayer(playerid, 1308, 2056.7578, -1270.7656, 23.2422, 0.25);
-		
+
 		//Removal of traffic lights for stop/speed signs -- Farva
 		RemoveBuildingForPlayer(playerid, 1350, -1847.1328, -241.4453, 17.3672, 0.25);
 		RemoveBuildingForPlayer(playerid, 1350, -1842.0547, -226.1797, 17.3672, 0.25);
@@ -23259,7 +23293,7 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1351, 687.5625, -495.8125, 15.1797, 0.25);
 		RemoveBuildingForPlayer(playerid, 1351, 635.8281, -474.7109, 15.1797, 0.25);
 		RemoveBuildingForPlayer(playerid, 1351, 797.8047, -540.8047, 15.1797, 0.25);
-		
+
 		//FDSA
 		RemoveBuildingForPlayer(playerid, 1268, 311.9531, -1383.1484, 19.6719, 0.25);
 		RemoveBuildingForPlayer(playerid, 620, 274.9375, -1398.2188, 10.3203, 0.25);
@@ -23269,7 +23303,7 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 620, 290.7031, -1389.5078, 11.6328, 0.25);
 		RemoveBuildingForPlayer(playerid, 620, 297.1797, -1380.7500, 11.3984, 0.25);
 		RemoveBuildingForPlayer(playerid, 1259, 311.9531, -1383.1484, 19.6719, 0.25);
-		
+
 		//Donahue Family Condos
 		RemoveBuildingForPlayer(playerid, 5967, 1259.4375, -1246.8125, 17.1094, 0.25);
 		RemoveBuildingForPlayer(playerid, 1283, 1182.6484, -1280.0781, 15.7109, 0.25);
@@ -23283,17 +23317,17 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 1283, 1269.5469, -1280.3203, 15.7109, 0.25);
 		RemoveBuildingForPlayer(playerid, 5857, 1259.4375, -1246.8125, 17.1094, 0.25);
 		RemoveBuildingForPlayer(playerid, 1219, 1284.1797, -1239.6406, 12.9141, 0.25);
-		
+
 		RemoveBuildingForPlayer(playerid, 694, 2314.2578, 246.0625, 27.8672, 0.25);
 		RemoveBuildingForPlayer(playerid, 620, 2043.2578, -1187.0781, 21.9297, 0.25);//Tree at 9/11 Memorial
-		
+
 		//Mulholland Garages
 		RemoveBuildingForPlayer(playerid, 1215, 1718.4844, -1000.4766, 23.6094, 0.25);
 		RemoveBuildingForPlayer(playerid, 1215, 1734.9609, -1003.8203, 23.6094, 0.25);
 		RemoveBuildingForPlayer(playerid, 1294, 1743.5391, -1007.3906, 27.5781, 0.25);
 		RemoveBuildingForPlayer(playerid, 1215, 1751.0156, -1007.2344, 23.6094, 0.25);
 		RemoveBuildingForPlayer(playerid, 1215, 1767.3984, -1011.0781, 23.6094, 0.25);
-		
+
 		//Paintball Arenas
 			//1
 		RemoveBuildingForPlayer(playerid, 17904, 2769.2422, -1624.2266, 19.3203, 0.25);
@@ -23302,7 +23336,7 @@ stock RemoveBuildingsFromPlayer(playerid)
 			//5
 		RemoveBuildingForPlayer(playerid, 785, 2431.3750, -657.0859, 119.6094, 0.25);
 		RemoveBuildingForPlayer(playerid, 791, 2431.3750, -657.0859, 119.6094, 0.25);
-		
+
 		//Jared's Smoke on the Water
 		RemoveBuildingForPlayer(playerid, 1297, 2823.6328, -1614.9844, 13.4063, 0.25);
 		RemoveBuildingForPlayer(playerid, 1297, 2833.3047, -1593.1797, 13.3281, 0.25);
@@ -23312,7 +23346,7 @@ stock RemoveBuildingsFromPlayer(playerid)
 		RemoveBuildingForPlayer(playerid, 710, 1297.0156, -824.4063, 91.6328, 0.25);
 		RemoveBuildingForPlayer(playerid, 620, 1297.3750, -831.8359, 74.9531, 0.25);
 		RemoveBuildingForPlayer(playerid, 673, 1378.8984, -850.2500, 42.0938, 0.25);
-		
+
 		//Kieran Mofujohn
 		RemoveBuildingForPlayer(playerid, 1438, -88.1094, -1598.7188, 1.5000, 0.25);
 		RemoveBuildingForPlayer(playerid, 1370, -86.5703, -1595.1406, 2.1563, 0.25);
@@ -23340,7 +23374,7 @@ stock RemoveBuildingsFromPlayer(playerid)
 
 		RemoveBuildingForPlayer(playerid, 4009, 1421.3750, -1477.6016, 42.2031, 0.25);
 		RemoveBuildingForPlayer(playerid, 4007, 1421.3750, -1477.6016, 42.2031, 0.25);
-		
+
 		//SASD
 		RemoveBuildingForPlayer(playerid, 696, -604.8672, -1106.0547, 24.3047, 0.25);
 		RemoveBuildingForPlayer(playerid, 17067, -588.7500, -1046.1797, 22.2891, 0.25);

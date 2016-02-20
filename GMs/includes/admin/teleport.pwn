@@ -8,7 +8,7 @@ CMD:goto(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,Famed,MHC,stadium1");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
 			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
-			SendClientMessageEx(playerid, COLOR_GRAD4, "Locations 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop, fc, unity");
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Locations 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop, fc, unity, (l)os(c)olinas");
 			return 1;
 		}
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
@@ -16,7 +16,27 @@ CMD:goto(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You can not do this while spectating.");
 			return 1;
 		}
-		if(strcmp(params,"glenpark",true) == 0 || strcmp(params,"gp",true) == 0)
+        if(strcmp(params, "lascolinas", true) == 0 || strcmp(params, "lc", true) == 0)
+        {
+            if (GetPlayerState(playerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(playerid);
+				SetVehiclePos(tmpcar, 2155.5400, -1011.4443, 62.9631);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[playerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(playerid, 2155.5400, -1011.4443, 62.9631);
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(playerid,0);
+			PlayerInfo[playerid][pInt] = 0;
+			SetPlayerVirtualWorld(playerid, 0);
+			PlayerInfo[playerid][pVW] = 0;
+        }
+		else if(strcmp(params,"glenpark",true) == 0 || strcmp(params,"gp",true) == 0)
 		{
 			if (GetPlayerState(playerid) == 2)
 			{
@@ -36,7 +56,7 @@ CMD:goto(playerid, params[])
 			SetPlayerVirtualWorld(playerid, 0);
 			PlayerInfo[playerid][pVW] = 0;
 		}
-		if(strcmp(params,"palomino",true) == 0 || strcmp(params,"pc",true) == 0)
+		else if(strcmp(params,"palomino",true) == 0 || strcmp(params,"pc",true) == 0)
 		{
 			if (GetPlayerState(playerid) == 2)
 			{
@@ -56,7 +76,7 @@ CMD:goto(playerid, params[])
 			SetPlayerVirtualWorld(playerid, 0);
 			PlayerInfo[playerid][pVW] = 0;
 		}
-		if(strcmp(params,"nggshop",true) == 0)
+		else if(strcmp(params,"nggshop",true) == 0)
 		{
 			if (GetPlayerState(playerid) == 2)
 			{
@@ -76,7 +96,7 @@ CMD:goto(playerid, params[])
 			SetPlayerVirtualWorld(playerid, 0);
 			PlayerInfo[playerid][pVW] = 0;
 		}
-		if(strcmp(params,"ls",true) == 0)
+		else if(strcmp(params,"ls",true) == 0)
 		{
 			if (GetPlayerState(playerid) == 2)
 			{
@@ -968,7 +988,7 @@ CMD:sendto(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,MHC,Famed,stadium1");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
 			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 4: glenpark, palomino, nggshop, fc, unity");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 4: glenpark, palomino, nggshop, fc, unity, LC (loscolinas)");
 			return 1;
 		}
 		if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin])
@@ -993,7 +1013,29 @@ CMD:sendto(playerid, params[])
 		    ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
 		    return 1;
 		}
-		if(strcmp(location,"glenpark",true) == 0 || strcmp(location,"gp",true) == 0)
+        else if(strcmp(location,"loscolinas",true) == 0 || strcmp(location,"lc",true) == 0)
+		{
+			if (GetPlayerState(giveplayerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(giveplayerid);
+				SetVehiclePos(tmpcar, 2155.5400, -1011.4443, 62.9631);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[giveplayerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(giveplayerid, 2155.5400, -1011.4443, 62.9631);
+			}
+			format(string, sizeof(string), " You have sent %s to Los Colinas.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(giveplayerid,0);
+			PlayerInfo[giveplayerid][pInt] = 0;
+			SetPlayerVirtualWorld(giveplayerid, 0);
+			PlayerInfo[giveplayerid][pVW] = 0;
+		}
+		else if(strcmp(location,"glenpark",true) == 0 || strcmp(location,"gp",true) == 0)
 		{
 			if (GetPlayerState(giveplayerid) == 2)
 			{
@@ -1015,7 +1057,7 @@ CMD:sendto(playerid, params[])
 			SetPlayerVirtualWorld(giveplayerid, 0);
 			PlayerInfo[giveplayerid][pVW] = 0;
 		}
-		if(strcmp(location,"palomino",true) == 0 || strcmp(location,"pc",true) == 0)
+		else if(strcmp(location,"palomino",true) == 0 || strcmp(location,"pc",true) == 0)
 		{
 			if (GetPlayerState(giveplayerid) == 2)
 			{
@@ -1037,7 +1079,7 @@ CMD:sendto(playerid, params[])
 			SetPlayerVirtualWorld(giveplayerid, 0);
 			PlayerInfo[giveplayerid][pVW] = 0;
 		}
-		if(strcmp(location,"nggshop",true) == 0)
+		else if(strcmp(location,"nggshop",true) == 0)
 		{
 			if (GetPlayerState(giveplayerid) == 2)
 			{
@@ -1059,7 +1101,7 @@ CMD:sendto(playerid, params[])
 			SetPlayerVirtualWorld(giveplayerid, 0);
 			PlayerInfo[giveplayerid][pVW] = 0;
 		}
-		if(strcmp(location,"ls",true) == 0)
+		else if(strcmp(location,"ls",true) == 0)
 		{
 			if (GetPlayerState(giveplayerid) == 2)
 			{

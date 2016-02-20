@@ -1,5 +1,5 @@
 /*
-	Shipment System by Dom 
+	Shipment System by Dom
 */
 
 #include <YSI\y_hooks>
@@ -19,27 +19,27 @@ new arrGangShipmentData[MAX_SHIPMENT_POINTS][eGangShipmentData];
 
 new Float:arrShipPositions[2][3] = {
 	{-1450.52, 1506.85, 0.0}, // large container ship with stairs
-	{-2329.41, 1524.87, 0.75} // container ship nearer to Gant Bridge 
+	{-2329.41, 1524.87, 0.75} // container ship nearer to Gant Bridge
 };
 
 new Float:arrDeliverPositions[MAX_SHIPMENT_POINTS][3] = {
 	{-2686.3425,-2196.2932,-0.7420}, // Whetstone - Chilliad Beach
 	{-1722.5935,230.6965,-0.6083}, // SF Docks
 	{1490.8795,-2782.3191,-0.5242}, // LSI Beach
-	{2960.0776,-538.0289,-0.0771} // east beach 
+	{2960.0776,-538.0289,-0.0771} // east beach
 };
 
 new Float:arrShipmentTrucks[MAX_SHIPMENT_POINTS][3] = {
 	{-2650.3557,-2260.4309,6.7077},  // Whetstone - Chilliad Beach
 	{-1725.7112,219.3324,3.6448}, // SF Docks
 	{1868.6660,-2708.9341,13.5391}, // LSI Beach
-	{2912.3601,-554.3483,11.1824} // east beach 
+	{2912.3601,-554.3483,11.1824} // east beach
 };
 
 CMD:gshipmentstocks(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] < 3) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
-	szMiscArray[0] = 0; 
+	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "Stock needed: %d", SHIPMENT_MATS_NEEDED);
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 	for(new i = 0; i < MAX_SHIPMENT_POINTS; i++) {
@@ -51,7 +51,7 @@ CMD:gshipmentstocks(playerid, params[]) {
 }
 
 LoadShipment(playerid) {
-	
+
 	SetPVarInt(playerid, "LoadShipmentTime", 5);
 	TogglePlayerControllable(playerid, 0);
 	SetPVarInt(playerid, "IsFrozen", 1);
@@ -60,7 +60,7 @@ LoadShipment(playerid) {
 }
 
 DeliverShipment(playerid, iShipmentPoint) {
-	
+
 	arrGangShipmentData[iShipmentPoint][gs_iStock]++;
 
 
@@ -86,23 +86,23 @@ DeliverShipment(playerid, iShipmentPoint) {
 	}
 	g_mysql_SaveMOTD();
 	return 1;
-}	
+}
 
 GenerateShipmentStock(iGroupID, iShipmentType) {
 
 	switch(iShipmentType) {
 
 		case SHIPMENT_TYPE_ARMS: {
-			
+
 			/*switch(random(4)) {
 				case 0: {
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 5); // 5 sdpistol 
+					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 5); // 5 sdpistol
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 20); // 20 deagles
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 5); // 5 pump action shotguns
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 6); // 6 aks
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4, 3); // 3 m4s
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, 3); // 3 spas-12s
-				} 
+				}
 				case 1: {
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_COLT45, 7); // 7 colt 45
 					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 8); // 8 deagles
@@ -142,7 +142,7 @@ GenerateShipmentStock(iGroupID, iShipmentType) {
 }
 
 /*ReturnShipmentType(iShipmentPoint) {
-	
+
 	switch(iShipmentPoint) {
 		case 0, 1: return SHIPMENT_TYPE_ARMS;
 		case 2, 3: return SHIPMENT_TYPE_DRUGS;
@@ -151,7 +151,7 @@ GenerateShipmentStock(iGroupID, iShipmentType) {
 }*/
 
 GetStockPointName(iShipmentPoint) {
-	
+
 	new szReturn[20];
 	switch(iShipmentPoint) {
 		case 0: szReturn = "Whetstone Beach";
@@ -164,16 +164,16 @@ GetStockPointName(iShipmentPoint) {
 
 
 IsAGangShipmentTruck(iCarID) {
-	
+
 	for(new v = 0; v < MAX_SHIPMENT_POINTS; v++) {
 	    if(iCarID == arrGangShipmentData[v][gs_iVehicle]) return 1;
 	}
 	return 0;
 }
- 
+
 forward ShipmentConvo(playerid, iStage);
 public ShipmentConvo(playerid, iStage) {
-	
+
 	switch(iStage) {
 		case 1: {
 			SendClientMessageEx(playerid, COLOR_YELLOW, "(cellphone) Unknown Caller says: Ayo ese I've got a job for ya.");
@@ -207,8 +207,8 @@ public ShipmentConvo(playerid, iStage) {
 
 forward OnLoadShipment(playerid);
 public OnLoadShipment(playerid) {
-	
-	new iLoadTime = GetPVarInt(playerid, "LoadShipmentTime"); 
+
+	new iLoadTime = GetPVarInt(playerid, "LoadShipmentTime");
 
 	szMiscArray[0] = 0;
 	SetPVarInt(playerid, "LoadShipmentTime", iLoadTime - 1);
@@ -233,7 +233,7 @@ public OnLoadShipment(playerid) {
 }
 
 hook OnPlayerEnterCheckpoint(playerid) {
-	
+
 	switch(gPlayerCheckpointStatus[playerid]) {
 		case CHECKPOINT_LOADSHIPMENT: {
 			if(IsABoat(GetPlayerVehicleID(playerid))) {
@@ -246,9 +246,9 @@ hook OnPlayerEnterCheckpoint(playerid) {
 			}
 			else SendClientMessageEx(playerid, COLOR_WHITE, "You must be in a boat");
 		}
-		
+
 		case CHECKPOINT_DELIVERSHIPMENT: {
-			
+
 			if(IsABoat(GetPlayerVehicleID(playerid))) {
 				if(GetPVarType(playerid, "DeliveringShipment") == 1) {
 					for(new i = 0; i < MAX_SHIPMENT_POINTS; i++) {
@@ -264,17 +264,17 @@ hook OnPlayerEnterCheckpoint(playerid) {
 }
 
 CMD:delivershipment(playerid, params[]) {
-	
+
 	new iVehID = GetPlayerVehicleID(playerid);
 	new iGroupID = PlayerInfo[playerid][pMember];
 	szMiscArray[0] = 0;
 	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a criminal organization.");
-	if(!IsAGangShipmentTruck(iVehID)) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a shipment truck!");
+	if(!IsAGangShipmentTruck(iVehID) || !iVehID) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not in a shipment truck!");
 	if(IsPlayerInRangeOfPoint(playerid, 5.0, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2])) {
-		
+
 		for(new v = 0; v < MAX_SHIPMENT_POINTS; v++) 	{
 	   		if(iVehID == arrGangShipmentData[v][gs_iVehicle]) {
-					
+
 				RemovePlayerFromVehicle(playerid);
 				GenerateShipmentStock(iGroupID, SHIPMENT_TYPE_ARMS);
 				DestroyVehicle(iVehID);
@@ -284,7 +284,7 @@ CMD:delivershipment(playerid, params[]) {
 				GroupLog(iGroupID, szMiscArray);
 				break;
 	   		}
-	   	}	
+	   	}
 	}
 	return 1;
 }

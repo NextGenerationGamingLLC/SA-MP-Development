@@ -116,10 +116,10 @@ CMD:accept(playerid, params[])
 			DeletePVar(playerid, "renderaid");
 			DeletePVar(target, "MedVestKit");
 		}
-        else if(strcmp(params, "kiss", true) == 0)
+        else if(strcmp(params, "valentine", true) == 0)
 		{
 	        if (!GetPVarType(playerid, "kissvaloffer")) {
-       	 		return SendClientMessageEx(playerid, COLOR_GREY, "No one has offered you a kiss!");
+       	 		return SendClientMessageEx(playerid, COLOR_GREY, "No one has offered you a valentine!");
 			}
 			if (GetPVarInt(playerid,"kissvalsqlid") != GetPlayerSQLId(GetPVarInt(playerid, "kissvaloffer"))) {
 				return SendClientMessageEx(playerid, COLOR_GREY, "Inviter has disconnected.");
@@ -130,7 +130,10 @@ CMD:accept(playerid, params[])
 
 			if(!IsPlayerInRangeOfPoint(playerid, 2, ppFloats[0], ppFloats[1], ppFloats[2]) || Spectating[targetid] > 0)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY, "You're too far away. You can't kiss right now.");
+				SendClientMessageEx(playerid, COLOR_GREY, "You're too far away!");
+				DeletePVar(playerid, "kissvaloffer");
+	      		DeletePVar(playerid, "kissvalsqlid");
+				DeletePVar(targetid, "kissvalstyle");
 				return 1;
 			}
 			if(PlayerInfo[playerid][pGiftTime] > 0)
@@ -138,11 +141,18 @@ CMD:accept(playerid, params[])
 				format(string, sizeof(string),"Item: Reset Gift Timer\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[17][sItemPrice]));
 				ShowPlayerDialogEx( playerid, DIALOG_SHOPGIFTRESET, DIALOG_STYLE_MSGBOX, "Reset Gift Timer", string, "Purchase", "Exit" );
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You have already received a gift in the last 5 hours!");
+				SendClientMessageEx(targetid, COLOR_GRAD2, "Your requested valentine cannot accept.");
+				DeletePVar(playerid, "kissvaloffer");
+	      		DeletePVar(playerid, "kissvalsqlid");
+				DeletePVar(targetid, "kissvalstyle");
 				return 1;
 			}
 			else if(PlayerInfo[targetid][pGiftTime] > 0)
 			{
 				SendClientMessageEx(playerid, COLOR_GRAD2, "That player has already received a gift in the last 5 hours!");
+				DeletePVar(playerid, "kissvaloffer");
+	      		DeletePVar(playerid, "kissvalsqlid");
+				DeletePVar(targetid, "kissvalstyle");
 				return 1;
 			}
 			ClearAnimations(playerid);
@@ -1654,7 +1664,7 @@ CMD:accept(playerid, params[])
                         }
 
                         if(PlayerInfo[CraftOffer[playerid]][pMats] < CraftMats[playerid]) {
-                        	
+
                         	CraftOffer[playerid] = INVALID_PLAYER_ID;
                        		CraftId[playerid] = 0;
                         	CraftMats[playerid] = 0;

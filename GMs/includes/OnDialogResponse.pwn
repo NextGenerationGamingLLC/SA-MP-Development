@@ -1667,7 +1667,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			GameTextForPlayer(playerid, "~r~You already requested the elevator", 3500, 4);
 		else
 		{
-			if(strfind(inputtext, "warfloor321", true) == 0)
+			if(strfind(inputtext, "hats", true) == 0 && IsAHitman(playerid))
 			{
 				CallElevator(playerid, 20);
 			}
@@ -5079,7 +5079,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						PlayerInfo[suspect][pJailTime] = time * 60;
 					}
-					if(PlayerInfo[suspect][pJailTime] > 7200) PlayerInfo[suspect][pJailTime] = 7200; 
+					if(PlayerInfo[suspect][pJailTime] > 7200) PlayerInfo[suspect][pJailTime] = 7200;
 					DeletePVar(suspect, "IsFrozen");
 					PhoneOnline[suspect] = 1;
 					PlayerInfo[suspect][pArrested] += 1;
@@ -5160,7 +5160,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						PlayerInfo[suspect][pJailTime] = time * 60;
 					}
-					if(PlayerInfo[suspect][pJailTime] > 7200) PlayerInfo[suspect][pJailTime] = 7200; 
+					if(PlayerInfo[suspect][pJailTime] > 7200) PlayerInfo[suspect][pJailTime] = 7200;
 					DeletePVar(suspect, "IsFrozen");
 					PhoneOnline[suspect] = 1;
 					PlayerInfo[suspect][pArrested] += 1;
@@ -8236,7 +8236,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		else {
 			new szSaleText[148], Float:price = floatstr(inputtext);
-			if (price < 1 || price > 500) return SendClientMessageEx(playerid, COLOR_WHITE, "Price can't be lower than $1 or higher than $500");
+			if (price < 1 || price > 5000) return SendClientMessageEx(playerid, COLOR_WHITE, "Price can't be lower than $1 or higher than $5,000");
 			Businesses[PlayerInfo[playerid][pBusiness]][bGasPrice] = price;
 			for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++)
 			{

@@ -37,7 +37,7 @@
 new MainPipeline;
 new ShopPipeline;
 new ShopToggle = 0;
- 
+
 #if defined zombiemode
 new zombieevent;
 new prezombie;
@@ -578,7 +578,7 @@ new Float:BroadcastFloats[MAX_PLAYERS][6];
 new BroadcastLastVW[MAX_PLAYERS];
 new BroadcastLastInt[MAX_PLAYERS];
 new EventLastInt[MAX_PLAYERS]; new EventLastVW[MAX_PLAYERS];
-new Gifts, VIPGifts = 0, VIPGiftsTimeLeft, VIPGiftsName[MAX_PLAYER_NAME], ValGifts, Text3D: vgtext;
+new Gifts, VIPGifts = 0, VIPGiftsTimeLeft, VIPGiftsName[MAX_PLAYER_NAME], ValGifts;
 new GiftCode[32], GiftCodeBypass, SecurityCode[32], ShopClosed, SellClosed, RimMod, CarVoucher, PVIPVoucher;
 new XMASGifts = 0;
 new GiftAllowed;
@@ -904,7 +904,7 @@ new HungerBackpackInfo[601][HUNGER_BACKPACK_INFO];
 new hgPlayerCount,
 	hgCountdown,
 	hgBackpackCount,
-	hgActive;	
+	hgActive;
 
 SSCANF:storeitem(string[])
 {
@@ -943,8 +943,8 @@ SSCANF:sweapon(string[])
 	if (!strcmp(string, "rifle", true)) return WEAPON_RIFLE;
 	if (!strcmp(string, "deagle", true)) return WEAPON_DEAGLE;
 	return -1;
-}	
-	
+}
+
 new Songs[7][1] = {
 {1187},
 {1185},
@@ -990,21 +990,21 @@ new Float:DocPrison[31][3] = {
 {547.9967,1444.0000,6000.4712},
 {544.1797,1444.0023,6000.4712},
 {540.1984,1447.7440,6000.4712},
-{540.9143,1450.7118,6000.4712}, 
+{540.9143,1450.7118,6000.4712},
 {540.6180,1454.5797,6000.4712},
 {540.9262,1458.6176,6000.4712},
 {543.5959,1463.9739,6000.4712},
 {547.4905,1464.4880,6000.4712},
 {550.9981,1464.4159,6000.4712},
 {556.9213,1464.2755,6000.4712},
-{560.2768,1465.3188,6000.4712}, 
+{560.2768,1465.3188,6000.4712},
 {557.8386,1464.3350,6004.3984},
 {550.2856,1464.7531,6004.3984},
-{547.6868,1465.1648,6004.3984}, 
+{547.6868,1465.1648,6004.3984},
 {543.0347,1464.5404,6004.3784},
 {540.6564,1458.0435,6004.3784},
 {540.8395,1454.0175,6004.3784},
-{541.1672,1450.7792,6004.3784}, 
+{541.1672,1450.7792,6004.3784},
 {540.0593,1446.8673,6004.3784},
 {544.9167,1443.7372,6004.3784},
 {548.1307,1444.8217,6004.3784},
@@ -1090,7 +1090,7 @@ new Float:WarrantJail[2][3] = {
 };*/
 new Float:OOCPrisonSpawns[20][3] = {
 {-1169.8495,2907.1541,9993.1318},
-{-1161.5973,2907.2935,9993.1318}, 
+{-1161.5973,2907.2935,9993.1318},
 {-1152.9495,2907.0779,9993.1318},
 {-1144.9945,2907.3643,9993.1318},
 {-1139.0138,2901.8857,9993.1318},
@@ -1185,7 +1185,7 @@ new PlayerShots[MAX_PLAYERS];
 new GarageInfo[MAX_GARAGES][garInfo];
 #define MicroSpecifier "p<|>e<dddddddddddddddddddd>"
 new MicroItems[MAX_MICROITEMS],
-	AmountSoldMicro[MAX_MICROITEMS], 
+	AmountSoldMicro[MAX_MICROITEMS],
 	AmountMadeMicro[MAX_MICROITEMS];
 new mItemName[MAX_MICROITEMS][] = {
 	{"Job Change"},
@@ -1258,7 +1258,7 @@ new Float:JoinCameraPosition[8][3] = {
 	{1188.4574, -1309.2242, -10.0},
 	{1716.1129,-1880.0715,-10.0}
 };
-	
+
 new HoldingObjectsShop[][HoldingEnumAll] = {
 {18647,0,	"RedNeonTube1"},
 {18648,0,	"BlueNeonTube1"},
@@ -2479,7 +2479,7 @@ new const gMainZones[][MAIN_ZONES] = {  // Majority of names and area coordinate
 	{"Whetstone",                   {-2997.40,-2892.90,-242.90,-1213.90,-1115.50,900.00}},
 	{"San Andreas",                 {-10000.00,-10000.00,-242.90,10000.00,10000.00,900.00}}
 };
- 
+
 stock GetPlayer2DZone(playerid, zone[], len) //Credits to Cueball, Betamaster, Mabako, and Simon (for finetuning).
 {
 	new Float:x, Float:y, Float:z;
@@ -2600,8 +2600,8 @@ new Float:HospitalSpawns[MAX_HOSPITALBEDS][3] = {
 };
 
 new Float:DocHospitalSpawns[MAX_DOCHOSPITALBEDS][4] = {
-{566.27, 1431.32, 6001.25,0.0}, 
-{568.71, 1431.32, 6001.2500,0.0}, 
+{566.27, 1431.32, 6001.25,0.0},
+{568.71, 1431.32, 6001.2500,0.0},
 {571.16, 1431.32,6001.2500,0.0}
 };
 
@@ -2621,7 +2621,7 @@ new Float:HospitalDeliveryPoints[MAX_DELIVERY_POINTS][3] = {
 	{-2482.4338,2231.1106,4.8463},
 	{195.56, 2120.69, 18.03},
 	{1579.58, 1768.88, 10.82},
-	{-2196.9641,-2303.8191,30.6250}, 
+	{-2196.9641,-2303.8191,30.6250},
 	{-2043.2212,-198.8035,15.0703},
 	{206.80, 2115.06, 24.09},
 	{-1506.1542,442.8032,42.3125},
@@ -2833,7 +2833,7 @@ new const szFurnitureTextures[][][] = {
 	{"Airport sign", "10838", "airwelcomesign_sfse", "ws_airwelcome1"},
 	{"Bahamas sign", "5631", "apartmentalpha", "aptsign01_LA"},
 	{"A51 Research sign", "16646", "a51_alpha", "a51_sign1"},
-	
+
 	{"ArrowNoLeftSign", "19978", "samproadsigns", "ArrowNoLeftSign"},
 	{"ArrowNoRightSign", "19978", "samproadsigns", "ArrowNoRightSign"},
 	{"ArrowNoStraightSign", "19978", "samproadsigns", "ArrowNoStraightSign"},

@@ -174,7 +174,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2886, -86.12320, 575.21771, 1003.95441,   0.00000, 0.00000, 180.00000);
 
 
-	// older hilltop stuff 
+	// older hilltop stuff
 
 	//Hilltop Exterior Updated 9-22-2012
 	CreateDynamicObject(987, 1005.81, -285.14, 72.99,   0.00, 0.00, 269.99, .worldid = 0, .streamdistance = 150);
@@ -1018,10 +1018,10 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1520, -97.10, 527.44, 1023.76,   0.00, 0.00, 0.00, .worldid = 1, .streamdistance = 300);
 	CreateDynamicObject(1520, -90.67, 527.05, 1022.92,   0.00, 0.00, 0.00, .worldid = 1, .streamdistance = 300);
 	CreateDynamicObject(2894, -95.03, 504.05, 1023.11,   0.00, 0.00, 270.00, .worldid = 1, .streamdistance = 300);
-	
 
 
-	
+
+
 	//Varrios Los Aztecas
 		//Exterior
 	CreateDynamicObject(3819,1815.2998000,-2039.9004000,13.6000000,0.0000000,0.0000000,179.9950000); //object(bleacher_sfsx)(1)
@@ -1032,7 +1032,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(4837,1823.0078100,-2087.1718700,12.5000000,0.0000000,0.0000000,0.0000000); //object(lapedhusrea_las)(3)
 	CreateDynamicObject(4808,1892.3359400,-2037.6484400,12.5000000,0.0000000,0.0000000,0.0000000); //object(laroadss_30_las)(3)
 	CreateDynamicObject(1946,1821.0000000,-2041.7998000,12.6600000,0.0000000,0.0000000,0.0000000); //object(baskt_ball_hi) (1)
-	
+
 	CreateDynamicObject(1766,1925.9000000,-2070.3000000,12.6000000,0.0000000,0.0000000,125.00); //object(med_couch_1)(2)
 	CreateDynamicObject(1766,1929.6000000,-2070.1001000,12.5000000,0.0000000,0.0000000,200.00); //object(med_couch_1)(3)
 	CreateDynamicObject(1362,1927.1999500,-2068.8000500,13.1000000,0.0000000,0.0000000,0.0000); //object(cj_firebin)(1)
@@ -1041,7 +1041,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3008,1927.4000000,-2068.3999000,13.5000000,0.0000000,222.0000000,42.0); //object(chopcop_armr)(1)
 	CreateDynamicObject(1358,1923.5000000,-2076.1001000,13.8000000,0.0000000,0.0000000,0.0000); //object(cj_skip_rubbish) (1)
 	CreateDynamicObject(1531,1913.1000000,-2066.3999000,14.0000000,0.0000000,0.0000000,180.00); //object(tag_azteca) (1)
-	
+
 	CreateDynamicObject(1728,1848.1000000,-2070.2000000,14.0000000,0.0000000,0.0000000,182.0000000); //object(mrk_seating3) (1)
 	CreateDynamicObject(1820,1846.5000000,-2069.1001000,14.0000000,0.0000000,0.0000000,0.0000000); //object(coffee_low_4) (1)
 	CreateDynamicObject(1670,1847.0000000,-2068.6001000,14.5000000,0.0000000,0.0000000,0.0000000); //object(propcollecttable) (1)
@@ -1261,9 +1261,9 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3061,2191.8999000,-985.2000100,67.5000000,0.0000000,0.0000000,349.0000000); //object(ad_flatdoor) (1)
 	CreateDynamicObject(1786,2192.3000000,-999.5000000,66.3000000,0.0000000,0.0000000,160.0000000); //object(swank_tv_4) (1)
 	CreateDynamicObject(1349,2151.1001000,-1012.3000000,62.4000000,0.0000000,355.0000000,0.0000000); //object(cj_shtrolly) (2)
-	CreateDynamicObject(970,2187.5000000,-997.3000500,67.2000000,0.0000000,0.0000000,78.0000000); //object(fencesmallb) (1) 
-	
-	
+	CreateDynamicObject(970,2187.5000000,-997.3000500,67.2000000,0.0000000,0.0000000,78.0000000); //object(fencesmallb) (1)
+
+
 	//Northside Asian Boyz
 		//Exterior
 	CreateDynamicObject(3684, 1030.7998, -905.40039, 44.6, 0, 0, 5.999);
@@ -1286,8 +1286,8 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2114, 1060.1, -906.79999, 42.1, 0, 0, 0);
 	CreateDynamicObject(3459, 1025.4, -921.20001, 48.7, 0, 0, 0);
 	CreateDynamicObject(3459, 1062.7, -895.70001, 49.7, 0, 0, 5.25);
-	
-	
+
+
 	//San Fierro Triads
 	CreateDynamicObject(1346,1540.400390625,-1881.599609375,13.89999961853,0.00000,0.00000,179.99450683594);
 	CreateDynamicObject(1342,1545.8396, -1878.0000, 13.6000, 0.00000,0.00000,90);
@@ -1509,7 +1509,7 @@ public OnFilterScriptInit()
 
 	// ballas
 
-	CreateDynamicObject(970, 2072.28638, -1785.77551, 13.09417,   0.00000, 0.00000, -107.75999, .streamdistance = 150.00);
+	/*CreateDynamicObject(970, 2072.28638, -1785.77551, 13.09417,   0.00000, 0.00000, -107.75999, .streamdistance = 150.00);
 	CreateDynamicObject(970, 2073.55444, -1781.80957, 13.09417,   0.00000, 0.00000, -107.75999, .streamdistance = 150.00);
 	CreateDynamicObject(970, 2074.82715, -1777.83557, 13.09417,   0.00000, 0.00000, -107.75999, .streamdistance = 150.00);
 	CreateDynamicObject(970, 2077.75244, -1768.27087, 13.09417,   0.00000, 0.00000, -105.12000, .streamdistance = 150.00);
@@ -1528,8 +1528,8 @@ public OnFilterScriptInit()
 	CreateDynamicObject(18667, 2061.04663, -1784.69617, 18.65212,   0.00000, 0.00000, -179.70026, .streamdistance = 150.00);
 	CreateDynamicObject(1442, 2072.22681, -1778.52368, 13.11095,   0.00000, 0.00000, 0.00000, .streamdistance = 150.00);
 	CreateDynamicObject(2676, 2071.83179, -1771.41492, 12.65525,   0.00000, 0.00000, -49.20000, .streamdistance = 150.00);
-	CreateDynamicObject(18688, 2072.15308, -1778.49927, 11.89560,   0.00000, 0.00000, 0.00000, .streamdistance = 150.00);
-	
+	CreateDynamicObject(18688, 2072.15308, -1778.49927, 11.89560,   0.00000, 0.00000, 0.00000, .streamdistance = 150.00);*/
+
 	// SACC
 
 	// exterior
@@ -1538,7 +1538,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1271, 1954.20019, -1759.79980, 12.89999, 0.00000, 0.00000, 21.99462, .streamdistance = 180.00);
 	CreateDynamicObject(1711, 1951.79980, -1758.79980, 12.50000, 0.00000, 0.00000, 27.99865, .streamdistance = 180.00);
 	CreateDynamicObject(1820, 1952.40039, -1760.40039, 12.50000, 0.00000, 0.00000, 0.00000, .streamdistance = 180.00);
-	CreateDynamicObject(1497, 1940.50000, -1828.40039, 6.09999, 334.05578, 0.00000, 345.99792, .streamdistance = 180.00); 
+	CreateDynamicObject(1497, 1940.50000, -1828.40039, 6.09999, 334.05578, 0.00000, 345.99792, .streamdistance = 180.00);
 
 	CreateDynamicObject(3454,1936.0000000,-1808.8000000,16.8000000,0.0000000,0.0000000,0.0000000);
 	CreateDynamicObject(3698,1913.4000000,-1805.5000000,15.3000000,0.0000000,0.0000000,0.0000000);
@@ -1759,7 +1759,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2332, 1169.29102, -985.77380, -56.14100, 0.00000, 0.00000, 0.00000, .streamdistance = 150.00);
 	CreateDynamicObject(19786, 1187.36304, -985.13251, -57.51000, 0.00000, 0.00000, -90.00000, .streamdistance = 150.00);
 
-	// condemned few 
+	// condemned few
 	// exterior - welcome pump
 	CreateDynamicObject(19868, 708.92737, -475.36374, 14.96000,   0.00000, 0.00000, 0.00000, .streamdistance = 180.00);
    	CreateDynamicObject(19868, 697.83490, -475.44727, 14.96000,   0.00000, 0.00000, 0.00000, .streamdistance = 180.00);
@@ -1775,7 +1775,7 @@ public OnFilterScriptInit()
 
    	// 18th street cycos
    	//exterior
-   	CreateDynamicObject(3582, 2030.93884, -1686.98901, 14.93902,   0.00000, 0.00000, 0.00000, .streamdistance = 150.00);
+   	/*CreateDynamicObject(3582, 2030.93884, -1686.98901, 14.93902,   0.00000, 0.00000, 0.00000, .streamdistance = 150.00);
 	CreateDynamicObject(1362, 2040.66895, -1685.00073, 13.20970,   0.00000, 0.00000, 0.00000, .streamdistance = 150.00);
 	CreateDynamicObject(18689, 2040.72095, -1685.32751, 11.94539,   0.00000, 0.00000, 0.00000, .streamdistance = 150.00);
 	CreateDynamicObject(1712, 2037.75415, -1684.66528, 12.51489,   0.00000, 0.00000, 82.74000, .streamdistance = 150.00);
@@ -1794,9 +1794,9 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1230, 2106.91333, -1626.11133, 12.97019,   0.00000, 0.00000, 18.12000, .streamdistance = 150.00);
 	CreateDynamicObject(1764, 2098.42383, -1654.14490, 12.76910,   0.00000, 0.00000, 162.06003, .streamdistance = 150.00);
 	CreateDynamicObject(1763, 2100.47803, -1649.53491, 12.52490,   0.00000, 0.00000, 270.95990, .streamdistance = 150.00);
-	CreateDynamicObject(1711, 2095.73608, -1652.36292, 12.65178,   0.00000, 0.00000, 107.22000, .streamdistance = 150.00);
+	CreateDynamicObject(1711, 2095.73608, -1652.36292, 12.65178,   0.00000, 0.00000, 107.22000, .streamdistance = 150.00);*/
 
-	
+
 	for(new i, Float: fPlayerPos[3]; i < MAX_PLAYERS; i++)
 	{
 		if(GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0)

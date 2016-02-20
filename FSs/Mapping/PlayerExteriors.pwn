@@ -15,7 +15,7 @@ public OnFilterScriptInit()
 	{
 	    if(GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0) TogglePlayerControllable(i, false);
 	}
-	
+
 	//Farva's House (SF - Exterior)
 	CreateDynamic3DTextLabel("Donahue Residence",0x880000AA,-1458.66638184,-1286.29614258,101.0,12.0);
 	new DASign = CreateDynamicObject(12921, -1442.39, -1177.39, 107.49,   0.00, 0.00, 20.00);
@@ -108,7 +108,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2482,-1426.06860352,-968.01153564,199.79211426,0.00000000,0.00000000,179.99450684, .interiorid = -1, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1437,-1434.69641113,-973.92535400,204.43591309,10.00000000,0.00000000,0.00000000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1437,-1434.69628906,-973.92480469,198.64422607,9.99755859,0.00000000,0.00000000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
-	
+
 	//Farva's Blueberry House
 	CreateDynamicObject(19503, -60.59, -489.76, 7.07,   0.00, 0.00, 146.00, .streamdistance = 150);
 	CreateDynamicObject(19504, -60.59, -489.77, 7.07,   0.00, 0.00, 146.00, .streamdistance = 150);
@@ -192,7 +192,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19466, -66.56, -495.38, 4.43,   0.00, 0.00, 56.00, .streamdistance = 150);
 	CreateDynamicObject(2400, -66.14, -483.68, 4.82,   0.00, 0.00, 146.00, .streamdistance = 150);
 	CreateDynamicObject(2650, -60.56, -481.85, 6.00,   0.00, 0.00, 236.00, .streamdistance = 150);
-	
+
 	//Chris' Palomino Creek House
 	new ChrisBaseSS[2];
 	new ChrisBase = CreateObject(4585, 2053.97, -275.34, -83.64,   0.00, 0.00, 0.00);
@@ -282,7 +282,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3877, 1880.99, -299.95, 39.95,   0.00, 0.00, 0.00, .streamdistance = 150);
 	CreateDynamicObject(8947, 2064.07, -300.57, 19.25,   0.00, 0.00, 224.48, .streamdistance = 200);
 	CreateDynamicObject(10558, 2055.94, -291.74, 17.77,   0.00, 0.00, 314.48, .streamdistance = 150);
-	
+
 	//Josh Whitestone Custom coding exterior 39946
   	CreateDynamicObject(3353, 180.23338, 28.43765, 2.34614,   0.00000, 0.00000, 165.58871, .streamdistance = 200);
 	CreateDynamicObject(11245, 183.78436, 44.20459, 4.43960,   0.00000, -70.00000, 140.00000, .streamdistance = 200);
@@ -310,7 +310,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1408, 184.72360, 46.37060, 1.97710,   0.00000, 0.00000, 164.98669, .streamdistance = 200);
 
 
-  	
+
 	//Donahue Construction Inc. (Farva)
 	new WebbFence[8];
 	new DFAGarage = CreateDynamicObject(4199, -2290.27, -114.82, 36.43,   0.00, 0.00, 270.00);
@@ -349,7 +349,7 @@ public OnFilterScriptInit()
 		SetDynamicObjectMaterial(WebbFence[x], 0, 10395, "scum2_sfs", "ws_altz_wall10b", 0);
 		SetDynamicObjectMaterial(WebbFence[x], 1, 10395, "scum2_sfs", "ws_altz_wall10b", 0);
 	}
-	
+
 	//Sammy Osborn Custom Coding free per Pygoz UPDATE
 	CreateDynamicObject(6300,-224.09960938,-1716.79980469,-7.90000010,0.00000000,0.00000000,65.99487305, .worldid = 0, .streamdistance = 150); //object(pier04_law2) (1)
 	CreateDynamicObject(11495,-167.00000000,-1710.50000000,-0.05000000,0.00000000,0.00000000,65.99487305, .worldid = 0, .streamdistance = 150); //object(des_ranchjetty) (1)
@@ -386,7 +386,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(660,-240.39999390,-1753.80004883,3.50000000,0.00000000,0.00000000,0.00000000, .worldid = 0, .streamdistance = 150); //object(pinetree03) (6)
 	CreateDynamicObject(660,-239.30000305,-1752.09997559,3.50000000,0.00000000,0.00000000,0.00000000, .worldid = 0, .streamdistance = 150); //object(pinetree03) (7)
 	CreateDynamicObject(660,-243.60000610,-1751.30004883,3.50000000,0.00000000,0.00000000,0.00000000, .worldid = 0, .streamdistance = 150); //object(pinetree03) (8)
-	
+
 	// Benny McCabe - Order ID: Free per Executive Administrators - House ID:
 	CreateDynamicObject(13681, 2917.787109375, -815.408203125, 14.5561876297, 0, 0, 271.02026367188, .worldid = 0, .streamdistance = 180);
 	CreateDynamicObject(13681, 2917.765625, -814.7646484375, 5.1811881065369, 179.99450683594, 0, 89.763793945313, .worldid = 0, .streamdistance = 180);
@@ -888,7 +888,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19452, 383.65, -243.09, 2.10,   0.00, 0.00, 234.50, .streamdistance = 150);
 	CreateDynamicObject(19452, 381.42, -237.71, 5.64,   0.00, 0.00, 145.00, .streamdistance = 150);
 	CreateDynamicObject(19452, 380.18, -231.05, 5.64,   0.00, 0.00, 55.00, .streamdistance = 150);
-	
+
 	// Nick's House(Tony Savita) - Order ID: Exeuctive Administrator - House ID: 3435
 	CreateDynamic3DTextLabel("Sativa Residence",0x880000AA,-1447.57287598,-1305.27624512,101.0,12.0);
 	CreateDynamicObject(3648,-1396.75878906,-1223.28417969,108.07105255,0.00000000,0.00000000,0.00000000, .interiorid = -1, .worldid = -1, .streamdistance = 150);
@@ -903,7 +903,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(18688,-1378.59570312,-1229.06042480,105.60595703,0.00000000,0.00000000,0.00000000, .interiorid = -1, .worldid = -1, .streamdistance = 150);
 	CreateDynamicObject(3407,-1447.57287598,-1305.27624512,99.47910309,0.00000000,0.00000000,304.99145508, .interiorid = -1, .worldid = -1, .streamdistance = 150);
 	CreateDynamicObject(1337,-1446.54943848,-1306.02832031,100.19672394,0.00000000,0.00000000,292.99145508, .interiorid = -1, .worldid = -1, .streamdistance = 150);
-	
+
 	// Sean Fitzpatrick - Order ID: 17883 - House ID: N/A- Dynamic Door ID: 291
 	CreateDynamicObject(14846, 1328.43, -1563.13, 5000.00,   0.00, 0.00, 0.00);
 	CreateDynamicObject(1557, 1313.20, -1569.34, 4997.56,   0.00, 0.00, 90.00);
@@ -1031,7 +1031,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1714, 1284.11, -1576.99, 5002.63,   0.00, 0.00, 0.00);
 	CreateDynamicObject(14455, 1292.08, -1582.23, 5004.30,   0.00, 0.00, 90.00);
 	CreateDynamicObject(18764, 1336.71, -1571.42, 4998.28,   0.00, 0.00, 0.00);
-	
+
     // Admin Johnson's House - Order ID: Added Per Devin - House ID: 4411 (EXTERIOR)
     CreateDynamicObject(6300,-1525.3994141,-2186.6992188,-7.6999998,0.0000000,0.0000000,64.7369385, .worldid = 0, .streamdistance = 150); //object(pier04_law2) (1)
 	CreateDynamicObject(3599,-1505.1992188,-2243.3496094,2.8000000,0.0000000,0.0000000,246.2475586, .worldid = 0, .streamdistance = 150); //object(hillhouse02_la) (1)
@@ -1201,7 +1201,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2264,-1506.8000488,-2256.8999023,1.6000000,0.0000000,0.0000000,336.2500000, .worldid = 0, .streamdistance = 150); //object(frame_slim_5) (1)
 	CreateDynamicObject(2263,-1508.3000488,-2256.3000488,1.5000000,0.0000000,0.0000000,336.2500000, .worldid = 0, .streamdistance = 150); //object(frame_slim_4) (1)
 	CreateDynamicObject(2265,-1509.6999512,-2255.6999512,1.5000000,0.0000000,0.0000000,336.2500000, .worldid = 0, .streamdistance = 150); //object(frame_slim_6) (1)
-	
+
 	// Donald J Trump - Order ID: Free per EA's - House ID: 1412(EXTERIOR)
 	CreateDynamicObject(10444,1339.97753906,-649.64843750,108.00000000,0.00000000,0.00000000,289.99511719, .interiorid = -1, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1596,1332.42187500,-636.82910156,115.58958435,0.00000000,0.00000000,234.49780273, .interiorid = -1, .worldid = -1, .streamdistance = 200);
@@ -1253,7 +1253,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1215,1286.18164062,-613.04150391,105.77326965,0.00000000,0.00000000,0.00000000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(1215,1277.05944824,-617.44427490,105.77526093,0.00000000,0.00000000,0.00000000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
 	CreateDynamicObject(984,1324.05371094,-653.99304199,108.45382690,0.00000000,0.00000000,19.00000000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
-	
+
 	// Obi Wan Kulm - Order ID: 47035 - House ID: N/A(EXTERIOR/CCP)
     CreateDynamicObject(18450, 208.5, 155.60000610352, 2.2000000476837, 0, 0, 90, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(8661, 257.7998046875, 203.69921875, 2.5, 0, 0, 0, .worldid = 0, .streamdistance = 200);
@@ -1715,7 +1715,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(4585, 233.35751342773, 247.0451965332, -103.03913116455, 0, 0, 0, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(4585, 214.62733459473, 247.07217407227, -103.06413269043, 0, 0, 0, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(4585, 215.45855712891, 227.58187866211, -103.08913421631, 0, 0, 0, .worldid = 0, .streamdistance = 200);
-	
+
 	// Taiyu Li  Order ID: 2779 - House ID: N/A(DYNAMIC DOOR)
 	// Exterior Mapping
 	CreateDynamicObject(9482, -2428.55, 99.97, 40.50,   0.00, 0.00, 0.00);
@@ -1764,7 +1764,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3749, -2439.29, 99.55, 39.24,   0.00, 0.00, 90.00);
 	CreateDynamicObject(2909, -2477.07, 108.64, 36.05,   90.00, 0.00, 180.00);
 	CreateDynamicObject(2909, -2508.60, 109.65, 23.63,   90.00, 0.00, 2.67);
-	
+
 	//Andrew Cook - Exterior Custm Coding [Order ID 50337]
 	CreateDynamicObject(987, 1117.0999755859, 1843.1999511719, 9.8000001907349, 0, 0, 0, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(987, 1105.0999755859, 1843.1999511719, 9.8000001907349, 0, 0, 0, .worldid = 0, .streamdistance = 200);
@@ -1898,7 +1898,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1231, 1128.9000244141, 1899.4000244141, 12.60000038147, 0, 0, 90, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(1231, 1129, 1915.8000488281, 12.60000038147, 0, 0, 90, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(1231, 1128.9000244141, 1930.5999755859, 12.60000038147, 0, 0, 90, .worldid = 0, .streamdistance = 200);
-	
+
 	//Russel Lock (Red) Custom Coding Project exterior [Order ID: 48455 ]
 	CreateDynamicObject(11496,822.70898438,-213.41210938,20.10158539,0.00000000,0.00000000,269.98901367, .worldid = 0, .streamdistance = 170); //object(des_wjetty) (19)
 	CreateDynamicObject(11496,822.70959473,-206.38702393,20.10158539,0.00000000,0.00000000,269.99450684, .worldid = 0, .streamdistance = 170); //object(des_wjetty) (20)
@@ -2160,7 +2160,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2103,838.39123535,-208.53096008,22.25499916,0.00000000,0.00000000,0.00000000, .worldid = 0, .streamdistance = 170); //object(low_hi_fi_1) (1)
 	CreateDynamicObject(2395,825.40539551,-190.51133728,20.28438187,0.00000000,179.99450684,349.99450684, .worldid = 0, .streamdistance = 170); //object(cj_sports_wall) (2)
 	CreateDynamicObject(1481,855.22119141,-212.35366821,21.20470619,0.00000000,0.00000000,180.00000000, .worldid = 0, .streamdistance = 170); //object(dyn_bar_b_q) (1)
-	
+
 	//Chris' Custom Exterior
 	CreateDynamicObject(6300,933.31738281,36.24902344,83.00000000,0.00000000,0.00000000,179.99450684, .streamdistance = 200); //object(pier04_law2) (1)
 	CreateDynamicObject(6300,944.46582031,24.48828125,70.00000000,0.00000000,0.00000000,179.99450684, .streamdistance = 200); //object(pier04_law2) (2)
@@ -2372,7 +2372,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(18368,913.98352051,-25.48163795,88.96595001,0.00000000,0.00000000,253.50000000, .streamdistance = 200); //object(cs_mountplat) (1)
 	CreateDynamicObject(18368,913.98339844,-25.48144531,88.96595001,0.00000000,0.00000000,253.49853516, .streamdistance = 200); //object(cs_mountplat) (2)
 	CreateDynamicObject(7191,958.43847656,40.93164062,87.88352203,0.00000000,0.00000000,0.00000000, .streamdistance = 200); //object(vegasnnewfence2b) (8)
-	
+
 	// Jay_Gomezabino's Exterior Project (order ID 12943)
 	CreateDynamicObject(11490,-339.53475952,-24.75227928,44.06593323,0.00000000,0.00000000,98.00000000); //object(des_ranch) (1)
 	CreateDynamicObject(11491,-328.59893799,-23.20669556,45.54891968,0.00000000,0.00000000,98.00000000); //object(des_ranchbits1) (1)
@@ -2464,7 +2464,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(8403,-285.91616821,160.56536865,1911.76159668,0.00000000,0.00000000,180.00000000); //object(shop03_lvs) (2)
 	CreateDynamicObject(8403,-281.30661011,185.11625671,1911.76159668,0.00000000,0.00000000,89.99450684); //object(shop03_lvs) (3)
 	CreateDynamicObject(11389,2287.69335938,1315.31347656,13.03408432,0.00000000,0.00000000,0.00000000); //object(hubinterior_sfs) (1)
-	
+
 	// House 63 Objects -- Nashtel
 	CreateDynamicObject(7191,2158.17382812,-1829.62292480,15.39672375,0.00000000,0.00000000,90.00000000); //object(vegasnnewfence2b) (1)
 	CreateDynamicObject(1343,2193.41308594,-1880.27136230,14.50646210,0.00000000,0.00000000,0.00000000); //object(cj_dumpster3) (2)
@@ -2745,7 +2745,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1517, -2673.29, 1539.89, 901.28,   0.00, 0.00, 27.56, 123015);
 	CreateDynamicObject(2388, -2637.30, 1535.01, 910.50,   180.00, 0.00, 0.00, 123015);
 	CreateDynamicObject(1985, -2637.54, 1535.24, 909.10,   0.00, 0.00, -124.24, 123015);
-	
+
 	/* Custom Coding Project Mikhail_2753 */
 	CreateDynamicObject(14858, 258.28, -9.74, 1036.88,   0.00, 0.00, 0.00, .worldid = 1);
 	CreateDynamicObject(14853, 278.45, -10.28, 1036.88,   0.00, 0.00, 0.00, .worldid = 1);
@@ -2871,14 +2871,14 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2001, 267.85, -1.21, 1031.73,   0.00, 0.00, 0.00, .worldid = 1);
 	CreateDynamicObject(2001, 267.81, 1.29, 1031.73,   0.00, 0.00, 0.00, .worldid = 1);
 	CreateDynamicObject(2395, 229.85, -1.43, 1031.73,   0.00, 0.00, 0.00, .worldid = 1);
-	
+
 	/* House Exterior for Seider/Gears (added by Christian) */
 	CreateDynamicObject(4892,1264.00,125.00,21.70,358.00,2.00,80.00); //object(kbsgarage2_las) (2)
-	
+
 	/* Garage Doors for Arturo_McJohnson (added by Christian) */
 	CreateDynamicObject(16773,1519.9399414,-1916.9599609,17.1599998,0.00,0.00,90.00); //object(door_savhangr1)
 	CreateDynamicObject(17564,1436.3499756,-1905.3000488,14.1999998,0.00,0.00,90.00); //object(tempdoor_lae2)
-	
+
 	//Brant's House (Devin approved it, who the fuck knows)
 	CreateDynamicObject(3353,-1272.3994141,-2057.7998047,21.7999992,0.0000000,0.0000000,330.9906006); //object(sw_bigburbsave2) (1)
 	CreateDynamicObject(13694,-1256.0000000,-2032.0000000,8.3000002,0.0000000,0.0000000,241.9958496); //object(cehillhse13) (1)
@@ -2940,7 +2940,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3262,-1292.0000000,-2179.8000488,19.6000004,0.0000000,0.0000000,354.0000000); //object(privatesign1) (1)
 	CreateDynamicObject(3263,-1330.5000000,-2158.0000000,22.5000000,0.0000000,0.0000000,338.0000000); //object(privatesign2) (1)
 	CreateDynamicObject(16192,3966.6374512,3537.9223633,-40.7275391,0.0000000,0.0000000,20.0000000); //object(centland01) (1)
-	
+
 	// Brian Wright Custom Exterior (Approved by Devin)
 	CreateDynamicObject(6300, -43.195404052734, -802.90802001953, 0.11258751899004, 0, 0, 253.99841308594, .streamdistance = 300.0, .interiorid = 0);
 	CreateDynamicObject(6300, -95.2587890625, -771.8720703125, 0.10929800570011, 0, 0, 253.99841308594, .streamdistance = 300.0, .interiorid = 0);
@@ -3216,7 +3216,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1557, -130.65832519531, -757.73193359375, 0.095346994698048, 0, 0, 73.965454101563, .streamdistance = 150.0, .interiorid = 0);
 	CreateDynamicObject(1557, -130.76564025879, -757.70111083984, 0.095346987247467, 0, 0, 73.965454101563, .streamdistance = 150.0, .interiorid = 0);
 	CreateDynamicObject(1557, -129.91471862793, -754.80694580078, 0.094912640750408, 0, 0, 253.97644042969, .streamdistance = 150.0, .interiorid = 0);
-	
+
  /*
 	//Shield HQ - LV
 	CreateDynamicObject(8650,2617.0000000,1448.0000000,10.8000000,0.0000000,0.0000000,0.0000000, .worldid = 0, .streamdistance = 200); //object(shbbyhswall06_lvs) (1)
@@ -3940,7 +3940,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1808, 262.47, 157.64, 1098.20,   0.00, 0.00, 90.00, .interiorid = 0, .worldid = 81699, .streamdistance = 200);
 	CreateDynamicObject(2001, 282.77, 154.79, 1098.18,   0.00, 0.00, 0.00, .interiorid = 0, .worldid = 81699, .streamdistance = 200);
 	CreateDynamicObject(2963, 337.12, 182.70, 1115.42,   0.00, 0.00, 270.00, .interiorid = 0, .worldid = 81699, .streamdistance = 200);
-	
+
 	//Darian's House EA Approved
 	CreateDynamicObject(3461,-1056.6099900,-1319.6099900,129.5200000,0.0000000,0.0000000,0.0000000, .worldid = 0,.streamdistance = 300); //
 	CreateDynamicObject(3461,-1040.8800000,-1319.3499800,129.4200000,0.0000000,0.0000000,0.0000000, .worldid = 0,.streamdistance = 300); //
@@ -3992,7 +3992,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(18648,-1067.8479000,-1272.1732200,131.9296000,0.0000000,0.0000000,0.0000000, .worldid = 0,.streamdistance = 300); //
 	CreateDynamicObject(18648,-1067.9932900,-1273.3978300,130.8145100,90.0000000,0.0000000,0.0000000, .worldid = 0,.streamdistance = 300); //
 
-	
+
 	//URL SF Track
     CreateDynamicObject(5837,-1818.1999500,-761.2000100,33.9000000,0.0000000,3.2500000,90.0000000, .worldid = 0, .streamdistance = 200); //object(ci_guardhouse1) (1)
 	CreateDynamicObject(966,-1801.3000500,-757.5000000,31.9000000,0.0000000,0.0000000,0.0000000, .worldid = 0, .streamdistance = 200); //object(bar_gatebar01) (1)
@@ -4329,7 +4329,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3524,1564.4000244,-1233.1999512,261.0000000,0.0000000,0.0000000,90.0000000, .worldid = 63168, .streamdistance = 120); //object(skullpillar01_lvs) (6)
 	CreateDynamicObject(2957,1588.6273193,-1242.7253418,261.2000122,0.0000000,0.0000000,179.7299805, .worldid = 63168, .streamdistance = 120); //object(chinatgaragedoor) (2)
 	CreateDynamicObject(2395,1579.4982910,-1239.9414062,255.6999969,0.0000000,270.0000000,0.5345764, .worldid = 63168, .streamdistance = 120); //object(cj_sports_wall) (4)
-	
+
 	//Mall Lane Barriers
 	CreateDynamicObject(5859, 1142.60, -1400.68, 11.57,   0.00, 0.00, 90.15, .worldid = 0,.streamdistance = 300);
 	CreateDynamicObject(19425, 1173.02, -1398.01, 12.31,   0.00, 0.00, 272.63, .worldid = 0,.streamdistance = 200);
@@ -4355,7 +4355,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(18646, 1149.44, -1385.08, 26.36,   0.00, 0.00, 0.00, .worldid = 0,.streamdistance = 200);
 	CreateDynamicObject(1622, 1127.42, -1525.24, 21.51,   0.00, 0.00, 234.08, .worldid = 0,.streamdistance = 200);
 	CreateDynamicObject(18646, 1127.60, -1524.99, 21.62,   0.00, 0.00, 0.00, .worldid = 0,.streamdistance = 200);
-	
+
 	//Pearsons House Exterior
 	CreateDynamicObject(16303, 2418.73, 302.18, 17.69,   0.00, 0.00, 228.72);
 	CreateDynamicObject(2649, 2400.29, 296.39, 21.66,   180.00, 90.00, 122.75);
@@ -4538,7 +4538,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2096, 2367.88, 263.83, 26.90,   0.00, 0.00, 291.76);
 	CreateDynamicObject(3262, 2374.00, 304.38, 19.75,   0.00, 0.00, 267.92);
 	CreateDynamicObject(3802, 2375.57, 271.01, 28.88,   0.00, 0.00, 270.00);
-	
+
 	 //Benneh Toretto Custom Coding Project [Order ID 48115]
 	CreateDynamicObject(3749, -1959.3994140625, -2476.599609375, 35.400001525879, 0, 0, 135.99426269531, .worldid = 0, .streamdistance = 180);
 	CreateDynamicObject(987, -1976.2998046875, -2463.2998046875, 29.700000762939, 0, 0, 317.99377441406, .worldid = 0, .streamdistance = 180);
@@ -4756,7 +4756,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(14872, -2019.5999755859, -2441.8000488281, 29, 30, 0, 180, .worldid = 0, .streamdistance = 180);
 	CreateDynamicObject(14872, -2018.3000488281, -2441.8000488281, 29.60000038147, 0, 300, 60, .worldid = 0, .streamdistance = 180);
 	CreateDynamicObject(841, -2018.8000488281, -2442.3000488281, 29.700000762939, 0, 0, 0, .worldid = 0, .streamdistance = 180);
-	
+
 	//Daniel Saunders Custom Coding Project [Order ID:  45970]UPDATED - Owned by other person now.
 	CreateDynamicObject(8661, -2281.80, -2768.60, 20.40,   0.00, 0.00, 65.99, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(8661, -2298.00, -2805.00, 20.40,   0.00, 0.00, 65.99, .worldid = 0, .streamdistance = 200);
@@ -5158,7 +5158,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1569, -2486.64, -2809.10, 17.24,   0.00, 0.00, 66.49, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(1569, -2485.42, -2806.36, 17.24,   0.00, 0.00, -113.74, .worldid = 0, .streamdistance = 200);
 	CreateDynamicObject(1569, -2485.41, -2806.33, 17.24,   0.00, 0.00, -113.74, .worldid = 0, .streamdistance = 200);
-	
+
 	//Tony DiNunzio House
 	new JGFlag = CreateDynamicObject(2048, 970.86011, -2129.81689, 16.85400,   0.00000, 0.00000, 84.00000);
 	SetDynamicObjectMaterial(JGFlag, 0, 7092, "vegasflag", "starspangban1_256", 0);
@@ -5212,7 +5212,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19433, 963.66748, -2151.11084, 12.68280,   90.00000, 0.00000, 355.01221);
 	CreateDynamicObject(19466, 963.57037, -2152.17432, 14.38960,   90.00000, 0.00000, 355.01221);
 	CreateDynamicObject(19466, 963.73853, -2150.24561, 14.38960,   90.00000, 0.00000, 355.01221);
-	
+
 	//Price's Island
 	CreateDynamicObject(13135, -3712.29, 2274.73, -2.95,   0.00, 0.00, 90.00);
 	CreateDynamicObject(12991, -3686.21, 2230.17, 1.74,   0.00, 0.00, 121.39);
@@ -5354,7 +5354,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(3265, -3789.64, 2229.39, 14.52,   0.00, 0.00, 69.46);
 	CreateDynamicObject(3264, -3789.61, 2262.31, 21.67,   0.00, 0.00, 35.42);
 	CreateDynamicObject(3576, -3794.71, 2275.76, 25.04,   0.00, 0.00, 0.00);
-	
+
 	//Andrew Cook's house
 	CreateDynamicObject(1759, 2065.22632, -1700.34839, 13.14640,   0.00000, 0.00000, 35.00000);
 	CreateDynamicObject(1337, 2069.14941, -1699.78748, 13.19620,   0.00000, 0.00000, 90.00000);
@@ -5404,7 +5404,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1215, 2047.06042, -1709.77856, 13.11460,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(1215, 2047.06042, -1702.75854, 13.11460,   0.00000, 0.00000, 0.00000);
 	CreateDynamicObject(2114, 2059.06958, -1698.16150, 12.68490,   0.00000, 0.00000, 0.00000);
-	
+
 	/*
 	//Kwart Cross
 	CreateDynamicObject(6973,2240.1999500,578.4697300,10.4000000,0.0000000,0.0000000,90.0000000); //object(shamheliprt1) (1)
@@ -5831,7 +5831,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1255, 1290.89124, -804.16333, 87.79400,   0.00000, 0.00000, -180.78020);
 	CreateDynamicObject(1255, 1290.94507, -807.34351, 87.79400,   0.00000, 0.00000, -180.78020);
 	CreateDynamicObject(1424, 1241.14075, -817.57666, 83.65130,   0.00000, 0.00000, 176.22000);
-	
+
 	CreateDynamicObject(10789, 1953.48267, -2383.92627, 10.28870,   0.00000, 0.00000, 0.00000, .worldid = 1);
 	CreateDynamicObject(10789, 1924.79663, -2384.09814, 10.28870,   0.00000, 0.00000, -0.24000, .worldid = 1);
 	CreateDynamicObject(10789, 1953.47974, -2414.10205, 10.28870,   0.00000, 0.00000, 0.00000, .worldid = 1);
@@ -6225,7 +6225,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(1491, 1889.07825, -2432.77344, 12.91290,   0.00000, 0.00000, 137.64005, .worldid = 1);
 	CreateDynamicObject(18102, 1894.09668, -2410.88599, 19.19160,   0.00000, 0.00000, 115.62003, .worldid = 1);
 	CreateDynamicObject(18102, 1894.40149, -2423.00293, 19.19160,   0.00000, 0.00000, 164.94006, .worldid = 1);
-	
+
 	CreateObject(1496,1222.4500000,-1677.5500000,10.8000000,0.0000000,0.0000000,0.0000000); //object(gen_doorshop02) (1)
 
 	//Tim Boss's Elevator Building Floor
@@ -6315,7 +6315,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2818,1821.0000000,-1296.6000000,75.7000000,0.0000000,0.0000000,0.0000000, .streamdistance = 60); //object(gb_bedrug02) (1)
 	CreateDynamicObject(2526,1819.7000000,-1291.6000000,75.7000000,0.0000000,0.0000000,270.0000000, .streamdistance = 60); //object(cj_bath4) (1)
 	CreateDynamicObject(14651,1831.0000000,-1282.5000000,77.9000000,0.0000000,0.0000000,0.0000000, .streamdistance = 60); //object(trukstp05) (1)
-	
+
 	//Palomino Gas Station
 	CreateDynamicObject(13170,2258.9219000,31.6875000,25.3984400,0.0000000,0.0000000,0.0000000, .worldid = 0, .streamdistance = 100); //object(cunte_roads87) (1)
 	CreateDynamicObject(12999,681.7109400,-574.8828100,15.2500000,0.0000000,0.0000000,0.0000000, .worldid = 0, .streamdistance = 100); //object(cunte_roads82) (1)
@@ -6471,7 +6471,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19368, 1390.13428, -1385.09741, 16.76080,   180.00000, 0.00000, 90.50400);
 	CreateDynamicObject(19368, 1400.40796, -1384.81689, 16.76080,   180.00000, 0.00000, 90.50400);
 	CreateDynamicObject(19368, 1395.33960, -1385.04919, 16.76080,   180.00000, 0.00000, 90.50400);
-	
+
 	//Customer: Mani
 	CreateDynamicObject(8572, 125.10242, -1491.52576, 19.90740,   0.00000, 0.00000, -123.00000);
 	CreateDynamicObject(12839, 133.63741, -1493.04285, 23.91670,   0.00000, 0.00000, -122.00000);
@@ -6511,7 +6511,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(17950, 129.76094, -1496.29089, 19.58430,   0.00000, 0.00000, -32.00000);
 	CreateDynamicObject(1966, 131.90530, -1492.64734, 18.88360,   0.00000, 0.00000, -32.00000);
 	CreateDynamicObject(13011, 133.76596, -1502.14270, 19.37990,   0.00000, 0.00000, -210.00000);
-	
+
 	//Price's Elevator Building Floor
 	CreateDynamicObject(14446, 1825.99585, -1296.66125, 65.39840,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(2614, 1824.39673, -1296.76917, 67.80930,   0.00000, 0.00000, 90.00000);
@@ -6985,7 +6985,7 @@ public OnFilterScriptInit()
 	SetDynamicObjectMaterialText(kwart, 0, "VANGUARD \nHEADQUARTERS", OBJECT_MATERIAL_SIZE_256x128,
 	"Verdana", 28, 1, 0xFFFFFFFF, 0x0C090A, OBJECT_MATERIAL_TEXT_ALIGN_CENTER);
 	*/
-	
+
 	//Jareds Elevator Floor
 	CreateDynamicObject(19384,1778.7506100,-1297.7143600,121.0195000,0.0000000,0.0000000,0.0000000); //
 	CreateDynamicObject(19427,1823.5808100,-1296.6579600,119.3406000,0.0000000,90.0000000,90.0000000); //
@@ -7179,7 +7179,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(19445,1810.9603300,-1301.0456500,121.0192000,0.0000000,0.0000000,0.0000000); //
 	CreateDynamicObject(19445,1818.5524900,-1298.0695800,124.5184000,0.0000000,0.0000000,0.0000000); //
 	CreateDynamicObject(19445,1815.8198200,-1301.6250000,124.5184000,0.0000000,0.0000000,90.0000000); //
-	
+
 	//Emilio Benitos Island re add (Order 34306)
 	CreateDynamicObject(4823, 1198.77, -3219.98, 32.00,   0.00, 0.00, 0.00);
 	CreateDynamicObject(4852, 1261.90, -3237.90, 30.83,   0.00, 0.00, 0.00);
@@ -7955,7 +7955,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(355, 1439.08, -3280.02, 4.22,   90.00, 0.00, 90.00);
 	CreateDynamicObject(355, 1439.10, -3281.11, 4.22,   90.00, 0.00, 90.00);
 	CreateDynamicObject(355, 1438.57, -3281.07, 4.22,   90.00, 0.00, 90.00);
-	
+
 	//Richard_Diaz(Tommy Bonzo) Custom coding 48195
 	CreateDynamicObject(6300, -404.5, 296.10000610352, -7, 0, 0, 173.99597167969, .streamdistance = 200);
 	CreateDynamicObject(6300, -465, 302.5, -7, 0, 0, 173.99597167969, .streamdistance = 200);
@@ -8036,7 +8036,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(658, -420.5, 299, 0.80000001192093, 0, 0, 0, .streamdistance = 200);
 	CreateDynamicObject(658, -490.70001220703, 343.5, 0.40000000596046, 0, 0, 0, .streamdistance = 200);
 	CreateDynamicObject(658, -493.89999389648, 307.39999389648, 1.5, 0, 0, 0, .streamdistance = 200);
-	
+
 	//Kieran Mofujohn
 		//Exterior
 	CreateDynamicObject(16409,-85.9003900,-1551.5000000,1.6100000,0.0000000,0.0000000,133.9950000); //object(by_weehangr) (1)
@@ -8343,7 +8343,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2886,698.7500000,-359.0000000,765.5999800,0.0000000,0.0000000,270.0000000); //object(sec_keypad) (5)
 	CreateDynamicObject(2886,698.8100000,-369.1499900,769.5999800,0.0000000,0.0000000,270.0000000); //object(sec_keypad) (6)
 	CreateDynamicObject(1497,695.0000000,-363.5000000,785.6500200,0.0000000,0.0000000,0.0000000); //object(gen_doorext02) (1)
-	
+
 	//Leon Valen
 		//Exterior
 	CreateDynamicObject(3355,691.7999900,-112.9000000,20.0000000,0.0000000,0.0000000,359.7500000); //object(cxrf_savhus1_) (1)
@@ -8416,7 +8416,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2120,1925.7000000,-111.3000000,644.0999800,0.0000000,0.0000000,0.0000000); //object(med_din_chair_4) (5)
 	CreateDynamicObject(2281,1920.6000000,-112.0000000,645.7000100,2.0000000,0.0000000,90.0000000); //object(frame_thick_5) (1)
 	CreateDynamicObject(2417,1922.2000000,-98.9000000,643.5000000,0.0000000,0.0000000,2.0000000); //object(cj_ff_cooker) (2)
-	
+
 	// Trump island - Owned by Computrix (Donald J Trump)
 	CreateDynamicObject(5145,2802.4912109,3967.2363281,9.3000031,0.0000000,0.0000000,257.9919434); //object(sanpdmdock2_las2) (1)
 	CreateDynamicObject(5145,2802.4912109,3967.2363281,9.3000031,0.0000000,0.0000000,257.9919434); //object(sanpdmdock2_las2) (2)
@@ -9234,7 +9234,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2669, 948.04431, 2055.79980, 11.09230,   0.00000, 0.00000, 180.00000, .streamdistance = 180.00);
 	CreateDynamicObject(1801, 948.62958, 2056.69580, 9.86660,   0.00000, 0.00000, 180.00000, .streamdistance = 180.00);
 
-	    //Brazil's mapping 
+	//Brazil's mapping
     CreateDynamicObject(10972, 565.99280, -645.49713, 11.47098,   0.00000, 0.00000, 0.00000, .streamdistance = 180.00);
     CreateDynamicObject(19503, 562.24878, -693.04413, 19.15030,   0.00000, 0.00000, 90.00000, .streamdistance = 180.00);
     CreateDynamicObject(19504, 562.24878, -693.04413, 19.15030,   0.00000, 0.00000, 90.00000, .streamdistance = 180.00);
@@ -9309,6 +9309,83 @@ public OnFilterScriptInit()
     CreateDynamicObject(638, 546.50031, -674.20587, 16.72310,   -2.34000, 0.00000, 0.00000, .streamdistance = 180.00);
     CreateDynamicObject(638, 547.23505, -669.41992, 16.52950,   -2.16000, 0.00000, -21.96000, .streamdistance = 180.00);
     CreateDynamicObject(638, 549.47034, -665.26135, 16.37530,   -0.36000, 0.00000, -32.64000, .streamdistance = 180.00);
+
+    // Brazil's Exterior 2
+    CreateDynamicObject(3648, 2396.48853, -1296.48608, 27.02480,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1728, 2390.56641, -1299.82166, 24.43700,   0.00000, 0.00000, 268.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1729, 2388.98389, -1298.50928, 24.32390,   0.00000, 0.00000, 2.50000, .streamdistance = 200.00);
+    CreateDynamicObject(2314, 2388.95435, -1301.64392, 24.31630,   0.00000, 0.00000, 90.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1544, 2389.22949, -1300.53601, 24.79600,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1544, 2389.21484, -1299.76038, 24.79950,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1544, 2389.22217, -1301.23877, 24.79950,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1487, 2388.78589, -1299.82910, 25.01900,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1666, 2389.08984, -1300.13477, 24.89900,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1666, 2389.00415, -1300.19360, 24.89920,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1666, 2388.98975, -1300.07788, 24.89920,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1520, 2388.91113, -1300.90503, 24.87930,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(2317, 2388.83569, -1301.68384, 25.05870,   0.00000, 0.00000, 131.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1415, 2390.82642, -1290.63892, 24.45550,   0.00000, 0.00000, -90.50000, .streamdistance = 200.00);
+    CreateDynamicObject(3594, 2384.84131, -1289.90869, 24.12200,   -8.00000, -0.50000, 92.00000, .streamdistance = 200.00);
+    CreateDynamicObject(933, 2382.82788, -1301.72156, 23.32820,   0.00000, -9.50000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1481, 2403.23364, -1300.37463, 25.03320,   0.00000, 0.00000, 90.00000, .streamdistance = 200.00);
+    CreateDynamicObject(918, 2403.15088, -1299.70520, 24.72460,   0.00000, 0.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(2630, 2403.86206, -1296.53088, 24.23050,   -1.00000, 2.50000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(2628, 2403.72534, -1298.17517, 24.25060,   3.00000, 0.00000, 88.00000, .streamdistance = 200.00);
+    CreateDynamicObject(1728, 2406.22827, -1299.28564, 24.14610,   -3.50000, 0.00000, 631.00000, .streamdistance = 200.00);
+    CreateDynamicObject(851, 2382.71582, -1291.50024, 23.52590,   0.50000, -4.00000, -34.00000, .streamdistance = 200.00);
+    CreateDynamicObject(853, 2384.19312, -1291.80933, 23.92470,   0.00000, -9.00000, 0.00000, .streamdistance = 200.00);
+    CreateDynamicObject(2673, 2388.85034, -1298.49890, 24.45680,   0.00000, -1.00000, -90.00000, .streamdistance = 200.00);
+    CreateDynamicObject(16409, 2393.58643, -1310.01257, 24.00490,   0.00000, -1.50000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(1728, 2397.16846, -1307.31946, 24.51700,   0.00000, 0.00000, 310.00000,.streamdistance=200);
+    CreateDynamicObject(19817, 2392.34131, -1311.03967, 23.34980,   0.00000, 0.00000, -90.50000,.streamdistance=200);
+    CreateDynamicObject(19815, 2393.87720, -1306.82190, 26.42670,   0.00000, 0.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(19899, 2390.55737, -1307.27954, 24.40810,   3.00000, 0.00000, -90.00000,.streamdistance=200);
+    CreateDynamicObject(19903, 2397.02002, -1312.77625, 24.51040,   0.00000, 0.00000, -90.00000,.streamdistance=200);
+    CreateDynamicObject(19810, 2386.04956, -1306.70105, 25.54300,   0.00000, 0.00000, 90.00000,.streamdistance=200);
+    CreateDynamicObject(11730, 2398.78638, -1314.67712, 24.44340,   0.00000, 0.00000, -90.00000,.streamdistance=200);
+    CreateDynamicObject(11729, 2398.78442, -1314.06116, 24.43390,   0.00000, 0.00000, -90.00000,.streamdistance=200);
+    CreateDynamicObject(19825, 2398.95142, -1310.99805, 27.62500,   0.00000, 0.00000, -90.00000,.streamdistance=200);
+    CreateDynamicObject(19572, 2391.56079, -1306.99170, 25.67970,   0.00000, -3.50000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(19805, 2398.89502, -1311.06726, 26.33310,   0.00000, 0.00000, -90.00000,.streamdistance=200);
+    CreateDynamicObject(1244, 2395.03320, -1312.80542, 25.29590,   0.00000, 0.00000, 90.50000,.streamdistance=200);
+    CreateDynamicObject(1827, 2395.87891, -1308.80444, 24.52450,   0.00000, 0.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(1668, 2396.02295, -1308.68286, 25.12820,   0.00000, 0.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(1520, 2396.26831, -1308.48706, 25.00830,   0.00000, 0.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(1487, 2396.36304, -1308.78296, 25.14820,   0.00000, 0.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(2860, 2395.59912, -1308.53296, 24.94840,   0.00000, 0.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(19820, 2395.68091, -1308.87463, 24.94840,   0.00000, 0.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(19893, 2396.37012, -1309.05115, 24.94820,   0.00000, 0.00000, 122.00000,.streamdistance=200);
+    CreateDynamicObject(19900, 2388.94067, -1307.16113, 24.29780,   0.00000, -2.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(19921, 2388.90747, -1307.29285, 25.25090,   0.00000, -3.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(11738, 2390.85864, -1307.20813, 25.73470,   0.00000, -4.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(930, 2396.05591, -1312.72766, 24.94900,   0.00000, 0.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(11709, 2396.41870, -1314.63611, 25.00520,   0.00000, 0.00000, 180.00000,.streamdistance=200);
+    CreateDynamicObject(643, 2383.88721, -1305.67224, 23.91770,   0.00000, -4.00000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(1512, 2383.82983, -1305.67603, 24.49230,   0.00000, -7.50000, 0.00000,.streamdistance=200);
+    CreateDynamicObject(955, 2386.89185, -1314.81567, 24.28940,   -1.50000, 2.50000, -180.00000,.streamdistance=200);
+    CreateDynamicObject(13591, 2403.14648, -1311.03516, 24.76200,   0.00000, 0.00000, 90.00000,.streamdistance=200);
+
+    // Price's House (Exterior version)
+    CreateDynamicObject(3649, 1621.69434, -2155.19629, 14.76230,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1413, 1621.80530, -2145.38477, 13.61550,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1413, 1627.09631, -2145.40796, 13.61550,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1413, 1629.58765, -2147.98901, 13.61550,   0.00000, 0.00000, 86.57999, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1413, 1616.51733, -2145.37720, 13.61550,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(19817, 1618.07703, -2146.96899, 11.68570,   0.00000, 0.00000, -89.58000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(19831, 1628.54102, -2149.30200, 12.54260,   0.00000, 0.00000, 180.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(19903, 1627.51868, -2149.25879, 12.54280,   0.00000, 0.00000, 90.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(19900, 1626.34241, -2149.27100, 12.54291,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(643, 1626.86646, -2146.81055, 12.98420,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1520, 1626.89111, -2146.84009, 13.40290,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1486, 1626.86157, -2146.96387, 13.52290,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1487, 1627.05493, -2146.95142, 13.52280,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1485, 1626.64575, -2146.33350, 13.38300,   0.00000, 0.00000, -53.70010, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(19815, 1621.88196, -2149.49146, 14.16590,   0.00000, 0.00000, 180.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(19921, 1626.34094, -2149.47998, 13.51520,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(19893, 1626.54883, -2147.14990, 13.38180,   0.00000, 0.00000, -32.76000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(2103, 1629.48779, -2146.13354, 12.54805,   0.00000, 0.00000, -90.11999, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1348, 1623.10596, -2149.03369, 13.25204,   0.00000, 0.00000, 0.00000, .worldid = 0, .streamdistance = 200.00);
+    CreateDynamicObject(1244, 1621.54150, -2149.07471, 13.28190,   0.00000, 0.00000, -90.00000, .worldid = 0, .streamdistance = 200.00);
 
 	for(new i, Float: fPlayerPos[3]; i < MAX_PLAYERS; i++)
 	{

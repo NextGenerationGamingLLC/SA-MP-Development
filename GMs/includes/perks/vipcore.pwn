@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -59,19 +59,19 @@ stock GetVIPRankName(i)
 	new string[128];
 	switch(i)
 	{
-		case 1: 
+		case 1:
 		{
 			format(string, sizeof(string), "Bronze VIP");
 		}
-		case 2: 
+		case 2:
 		{
 			format(string, sizeof(string), "Silver VIP");
 		}
-		case 3: 
+		case 3:
 		{
 			format(string, sizeof(string), "Gold VIP");
 		}
-		case 4: 
+		case 4:
 		{
 			format(string, sizeof(string), "Platinum VIP");
 		}
@@ -146,7 +146,7 @@ CMD:spawnathome(playerid, params[])
 
 CMD:vipnum(playerid, params[])
 {
-	
+
 
     if(!(IsPlayerInRangeOfPoint(playerid, 3.0, 2549.548095, 1404.047729, 7699.584472 ) || IsPlayerInRangeOfPoint(playerid, 3.0, 1832.6000, 1375.1700, 1464.4600)) )
     {
@@ -159,7 +159,7 @@ CMD:vipnum(playerid, params[])
     	SendClientMessageEx(playerid, COLOR_GRAD1, "You must be a Silver VIP or higher to use this function.");
      	return 1;
 	}
-	ShowPlayerDialogEx(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "New Phone Number","New phone number:", "Submit", "Cancel"); 
+	ShowPlayerDialogEx(playerid, VIPNUMMENU, DIALOG_STYLE_INPUT, "New Phone Number","New phone number:", "Submit", "Cancel");
 	return 1;
 }
 
@@ -168,8 +168,9 @@ CMD:buddyinvite(playerid, params[])
 	if(PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You need to be Silver VIP+ to use this function!");
 	new giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /buddyinvite [player]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not connected!");	
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not connected!");
 	if(PlayerInfo[giveplayerid][pDonateRank] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Unable to invite: That person is already a VIP.");
+	if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return SendClientMessageEx(playerid, COLOR_WHITE, "Unable to invite: That person is already a VIP.");
 	new days, daytime, string[128];
 	if(PlayerInfo[playerid][pDonateRank] == 2)
 	{
@@ -188,7 +189,7 @@ CMD:buddyinvite(playerid, params[])
 	{
 		PlayerInfo[playerid][pVIPInviteDay] = gettime();
 		PlayerInfo[playerid][pBuddyInvites] = 3;
-	}	
+	}
 	if(days < daytime && PlayerInfo[playerid][pAdmin] < 1338) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 7 days as silver or 1 day as gold, before inviting another person to become a VIP.");
 	if(PlayerInfo[playerid][pDonateRank] >= 4 && PlayerInfo[playerid][pBuddyInvites] < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You must wait 7 days as silver or 1 day as gold, before inviting another person to become a VIP.");
 	PlayerInfo[giveplayerid][pDonateRank] = 1;
@@ -212,7 +213,7 @@ CMD:buddyinvite(playerid, params[])
 	}
 	format(string, sizeof(string), "UPDATE `accounts` SET `VIPInviteDay` = %d, `BuddyInvites` = %d WHERE `id` = '%d'",
 	PlayerInfo[playerid][pVIPInviteDay], PlayerInfo[playerid][pBuddyInvites], GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);	
+	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	return 1;
 }
 
@@ -486,8 +487,8 @@ CMD:viplocker(playerid, params[]) {
     #if defined zombiemode
 	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
 	#endif
-	if(IsPlayerInRangeOfPoint(playerid, 7.0, 2555.747314, 1404.106079, 7699.584472) /*LS Main*/ 
-	|| IsPlayerInRangeOfPoint(playerid, 7.0, 1832.0533, 1380.7281, 1464.3822) /*LV Main*/ 
+	if(IsPlayerInRangeOfPoint(playerid, 7.0, 2555.747314, 1404.106079, 7699.584472) /*LS Main*/
+	|| IsPlayerInRangeOfPoint(playerid, 7.0, 1832.0533, 1380.7281, 1464.3822) /*LV Main*/
 	|| IsPlayerInRangeOfPoint(playerid, 7.0, 772.4844, 1715.7213, 1938.0391) /*LV Plat*/
 	|| IsPlayerInRangeOfPoint(playerid, 7.0, 1378.0017, 1747.4668, 927.3564) /*Olympics*/)
 	switch(PlayerInfo[playerid][pDonateRank]) {
@@ -523,7 +524,7 @@ CMD:v(playerid, params[]) {
 		else {
 
 			new szMessage[128];
-			
+
 			if(PlayerInfo[playerid][pAdmin] >= 2 && !GetPVarType(playerid, "Undercover"))
 			{
 				format(szMessage, sizeof(szMessage), "** %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
@@ -535,7 +536,7 @@ CMD:v(playerid, params[]) {
 				else format(szMessage, sizeof(szMessage), "-- %s %s: %s", GetVIPRankName(PlayerInfo[playerid][pDonateRank]), GetPlayerNameEx(playerid), params);
 				SetPVarInt(playerid, "timeVIP", gettime()+5);
 			}
-			
+
 			SendVIPMessage(COLOR_VIP, szMessage);
 		}
 	}
@@ -568,7 +569,7 @@ CMD:searchvipm(playerid, params[])
 				count++;
 			}
 			else if(count == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "No person online matched that VIPM number.");
-		}	
+		}
 	}
 	return 1;
 }
@@ -1111,7 +1112,7 @@ CMD:vipplate(playerid, params[])
      	if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
        	{
 			new Float: vHealth;
-			GetVehicleHealth(PlayerVehicleInfo[playerid][d][pvId], vHealth);      
+			GetVehicleHealth(PlayerVehicleInfo[playerid][d][pvId], vHealth);
     		if(vHealth < 800) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "Please repair your vehicle before replacing your plate.");
 			new string[64];
 			if(strcmp(params, "remove", true) == 0)
@@ -1125,7 +1126,7 @@ CMD:vipplate(playerid, params[])
 				format(string, sizeof(string), "{800080}PVIP");
 				format(PlayerVehicleInfo[playerid][d][pvPlate], 32, "%s", string);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "Your vehicle will now appear with the PVIP Plate, parking your vehicle momentarily...");
-				cmd_park(playerid, params); //Save a few lines of code here xD	
+				cmd_park(playerid, params); //Save a few lines of code here xD
 			}
 			else
 			{
@@ -1227,7 +1228,7 @@ CMD:vipm(playerid, params[])
 	else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
 	else format(szMessage, sizeof(szMessage), "* Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);
-	foreach(new i: Player) 
+	foreach(new i: Player)
 	{
 		if((PlayerInfo[i][pVIPMod] || PlayerInfo[i][pShopTech] >= 3 || PlayerInfo[i][pAdmin] >= 1338) && GetPVarInt(i, "vStaffChat") == 1)
 		{

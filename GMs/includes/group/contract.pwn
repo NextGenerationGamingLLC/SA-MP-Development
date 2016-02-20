@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -67,7 +67,7 @@ stock SearchingHit(playerid)
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}
-	}	
+	}
 	if(hits && PlayerInfo[playerid][pRank] <= 1 && arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT)
 	{
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Use /givemehit to assign a contract to yourself.");
@@ -89,10 +89,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	szMiscArray[0] = 0;
 
 	new iGroupID = PlayerInfo[playerid][pMember];
-	
+
 	switch(dialogid)
 	{
-		case DIALOG_ORDER_HMA1: 
+		case DIALOG_ORDER_HMA1:
 		{
 			if(response) {
 				switch(listitem) {
@@ -148,7 +148,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMAWPS, DIALOG_STYLE_LIST, "Weapon Select", szMiscArray, "Select", "Back");
 					}
 					case 2: {
-						ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Uniform", "Choose a skin (by ID).", "Change", "Back");  
+						ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMASKIN, DIALOG_STYLE_INPUT, "Uniform", "Choose a skin (by ID).", "Change", "Back");
 					}
 					case 3: {
 						if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) {
@@ -299,8 +299,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 		}
-		case DIALOG_ORDER_HMASKIN: 
-		{ 
+		case DIALOG_ORDER_HMASKIN:
+		{
 			if(response)	{
 				new skin = strval(inputtext);
 				if(IsInvalidSkin(skin)) {
@@ -385,7 +385,7 @@ CMD:execute(playerid, params[])
 	{
 		if(GoChase[playerid] != INVALID_PLAYER_ID || HitToGet[playerid] != INVALID_PLAYER_ID) {
 			if(GetPVarInt(playerid, "KillShotCooldown") != 0 && gettime() < GetPVarInt(playerid, "KillShotCooldown") + 300) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait 5 minutes between execution shots.");
-			
+
 			SetPVarInt(playerid, "ExecutionMode", 1);
 			SendClientMessageEx(playerid, COLOR_GRAD2, " You have loaded a Hollow point round.  Aim for the Head when executing your target. ");
 			SetPVarInt(playerid, "KillShotCooldown", gettime());
@@ -419,10 +419,10 @@ CMD:profile(playerid, params[])
 				format(str2, sizeof(str2), "%s", arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName]);
 			}
 			else str2 = "None";
-			
-			
-			
-			format(string, sizeof(string), 
+
+
+
+			format(string, sizeof(string),
 			"{FF6347}Name: {BFC0C2}%s\n\
 			{FF6347}Date of Birth: {BFC0C2}%s\n\
 			{FF6347}Phone Number: {BFC0C2}%d\n\n\
@@ -456,7 +456,7 @@ CMD:ranks(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
 		}
-	}	
+	}
 	return 1;
 }
 
@@ -635,6 +635,8 @@ CMD:givehit(playerid, params[])
 
 		if(IsPlayerConnected(giveplayerid))
 		{
+			if(!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
+			if(giveplayerid == targetid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot issue hits to the target.");
 			if(GoChase[giveplayerid] != INVALID_PLAYER_ID)
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "   That Hitman is already busy with a Contract!");
@@ -744,7 +746,7 @@ CMD:deletehit(playerid, params[])
 					HitToGet[i] = INVALID_PLAYER_ID;
 					HitOffer[i] = INVALID_PLAYER_ID;
 				}
-			}	
+			}
 		}
 		else
 		{
@@ -758,34 +760,34 @@ CMD:contract(playerid, params[])
 {
 	if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts while in cuffs.");
 	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts while in jail.");
-	
+
 	new string[128], giveplayerid, moneys, detail[32];
-	if(sscanf(params, "uds[32]", giveplayerid, moneys, detail)) 
+	if(sscanf(params, "uds[32]", giveplayerid, moneys, detail))
 		return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /contract [player] [amount] [details]");
 
-	if (IsPlayerConnected(giveplayerid) && giveplayerid != INVALID_PLAYER_ID) 
+	if (IsPlayerConnected(giveplayerid) && giveplayerid != INVALID_PLAYER_ID)
 	{
-		if(giveplayerid == playerid) 
+		if(giveplayerid == playerid)
 			return SendClientMessageEx(playerid, COLOR_GREY, "You can't contract yourself.");
 
-		if(PlayerInfo[playerid][pLevel] < 3 || PlayerInfo[giveplayerid][pLevel] < 3) 
+		if(PlayerInfo[playerid][pLevel] < 3 || PlayerInfo[giveplayerid][pLevel] < 3)
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a contract unless both you and the hit are at least level 3.");
-			
-		if(moneys < 100000 || moneys > 3000000) 
+
+		if(moneys < 100000 || moneys > 3000000)
 			return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts that are less than $100,000 or more than $3,000,000.");
-		
-		if((moneys < 150000 || moneys > 3000000) && IsACop(giveplayerid)) 
+
+		if((moneys < 150000 || moneys > 3000000) && IsACop(giveplayerid))
 			return SendClientMessageEx(playerid, COLOR_GREY, "The minimum hit amount for a law enforcement officer is $150,000.");
-		
+
 		if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT)
 			return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this to that person.");
-			
+
 		if(PlayerInfo[giveplayerid][pHeadValue] >= 3000000 || moneys + PlayerInfo[giveplayerid][pHeadValue] > 3000000)
 			return SendClientMessageEx(playerid, COLOR_GREY, "That person has the maximum on their head.");
 
-		if(PlayerInfo[playerid][pJailTime] > 0 || PlayerCuffed[playerid] > 0) 
+		if(PlayerInfo[playerid][pJailTime] > 0 || PlayerCuffed[playerid] > 0)
 			return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now");
-		
+
 		if (moneys > 0 && GetPlayerCash(playerid) >= moneys)
 		{
 			if(strlen(detail) > 32) return SendClientMessageEx(playerid, COLOR_GRAD1, "Contract details may not be longer than 32 characters in length.");
@@ -815,7 +817,7 @@ CMD:contract(playerid, params[])
 	return 1;
 }
 
-CMD:knife(playerid, params[]) 
+CMD:knife(playerid, params[])
 {
 	if(IsAHitman(playerid)) {
 		if(GetPVarInt(playerid, "HidingKnife") == 1) {
@@ -828,7 +830,7 @@ CMD:knife(playerid, params[])
 				RemovePlayerWeapon(playerid, 4); // Remove Knife
 				SetPVarInt(playerid, "HidingKnife", 1);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You have hidden your knife.");
-			} 
+			}
 			else {
 				SendClientMessageEx(playerid, COLOR_WHITE, "You do not have a knife available.");
 			}

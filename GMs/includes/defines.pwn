@@ -7,7 +7,7 @@
 				| $$\  $$$| $$  \ $$        | $$  \ $$| $$
 				| $$ \  $$|  $$$$$$/        | $$  | $$| $$
 				|__/  \__/ \______/         |__/  |__/|__/
-				
+
 //--------------------------------[DEFINES.PWN]--------------------------------
 
 
@@ -31,7 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
  			/*  ---------------- Enable the Windows/Android Application ----------------- */
 //#define SOCKET_ENABLED
 			/*  ---------------- SERVER PLATFORM ---------------- */
@@ -177,7 +177,7 @@ native IsValidVehicle(vehicleid);
 #define 		ini_SetInteger(%0,%1,%2,%3)     format(%1, sizeof(%1), "%s=%d\r\n", %2, %3) && fwrite(%0, %1)
 #define 		ini_SetFloat(%0,%1,%2,%3)       format(%1, sizeof(%1), "%s=%f\r\n", %2, %3) && fwrite(%0, %1)
 #define 		chrtoupper(%1) \
-        			(((%1) > 0x60 && (%1) <= 0x7A) ? ((%1) ^ 0x20) : (%1))				
+        			(((%1) > 0x60 && (%1) <= 0x7A) ? ((%1) ^ 0x20) : (%1))
 #define			ActiveKey(%0)			((newkeys & (%0)) == (%0))
 // strcpy - Simon / Y_LESS
 /*#define strcpy(%0,%1,%2) \
@@ -1120,8 +1120,8 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_REGISTER_QUESTION2		(6107)
 #define 		DIALOG_REGISTER_QUESTION3		(6108)
 #define 		DIALOG_REGISTER_QUESTION4		(6109)
-#define 		DIALOG_TUTORIAL_CAR				(6110) 
-#define 		ARMS_MENU						(6111)   			
+#define 		DIALOG_TUTORIAL_CAR				(6110)
+#define 		ARMS_MENU						(6111)
 
 #define         G_LOCKER_DRUGS				    (6112)
 #define         G_LOCKER_INGREDIENTS	       	(6113)
@@ -1149,7 +1149,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_TOYS_GROUP				(6133)
 
 #define 		DIALOG_FURNITURE 				(6134)
-#define 		DIALOG_FURNITURE_BUY			(6135)	
+#define 		DIALOG_FURNITURE_BUY			(6135)
 #define 		DIALOG_FURNITURE_BUYCONFIRM		(6136)
 #define 		DIALOG_FURNITURE_EDIT			(6137)
 #define 		DIALOG_FURNITURE_SELL			(6138)
@@ -1163,6 +1163,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_GANGTAGS_INPUT			(6145)
 #define 		DIALOG_GANGTAGS_FONT			(6146)
 #define 		DIALOG_MONEYFARMING				(6147)
+#define 		DIALOG_DRUG_INTERACT			(6148)
 
 // GangTags
 #define 			GANGTAG_TIME				60000

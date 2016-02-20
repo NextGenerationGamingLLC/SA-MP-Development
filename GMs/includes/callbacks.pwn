@@ -499,7 +499,7 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid,
 			RemovePlayerAttachedObject(playerid, 9);
 			SetPlayerAttachedObject(playerid, 9, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
 				PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],
-				PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4], PlayerInfo[playerid][pGroupToy][5], 
+				PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4], PlayerInfo[playerid][pGroupToy][5],
 				PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);
 
 			DeletePVar(playerid, "EditGToy");
@@ -1098,7 +1098,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			break;
 		}
 	}
-	*/	
+	*/
 	return 1;
 }
 
@@ -1609,7 +1609,6 @@ public OnPlayerDisconnect(playerid, reason)
 	{
 		if(GetPVarType(playerid, "signID") && IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
 		g_mysql_RemoveDumpFile(GetPlayerSQLId(playerid));
-
 		if(HungerPlayerInfo[playerid][hgInEvent] == 1)
 		{
 			if(hgActive == 2)
@@ -2317,7 +2316,6 @@ public OnPlayerDisconnect(playerid, reason)
 		}
 		UnloadPlayerVehicles(playerid, 1, reason);
 		g_mysql_AccountOnline(playerid, 0);
-
 		for(new i = 0; i < MAX_REPORTS; i++)
 		{
 			if(Reports[i][ReportFrom] == playerid)

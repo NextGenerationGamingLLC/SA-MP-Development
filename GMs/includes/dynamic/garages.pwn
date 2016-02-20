@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -102,7 +102,7 @@ CMD:changegaragepass(playerid, params[])
 
 CMD:lockgarage(playerid, params[])
 {
-	for(new i = 0; i < sizeof(GarageInfo); i++) 
+	for(new i = 0; i < sizeof(GarageInfo); i++)
 	{
 		if(IsPlayerInRangeOfPoint(playerid, 3.0, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_ExteriorVW] || IsPlayerInRangeOfPoint(playerid,3.0,GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && PlayerInfo[playerid][pVW] == GarageInfo[i][gar_InteriorVW])
 		{
@@ -437,7 +437,7 @@ CMD:garagenear(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	new option, string[128];
-	if(!sscanf(params, "d", option)) 
+	if(!sscanf(params, "d", option))
 	{
 		format(string, sizeof(string), "* Listing all garages within 30 meters of you in VW %d...", option);
 		SendClientMessageEx(playerid, COLOR_RED, string);
@@ -586,8 +586,6 @@ stock CreateGarage(garageid)
 	DestroyDynamicArea(GarageInfo[garageid][gar_AreaID_int]);
 	GarageInfo[garageid][gar_AreaID_int] = CreateDynamicSphere(GarageInfo[garageid][gar_InteriorX], GarageInfo[garageid][gar_InteriorY], GarageInfo[garageid][gar_InteriorZ], 3, .worldid = GarageInfo[garageid][gar_InteriorVW]);
 	Streamer_SetIntData(STREAMER_TYPE_AREA, GarageInfo[garageid][gar_AreaID_int], E_STREAMER_EXTRA_ID, garageid);
-
-
 
 	format(szMiscArray, sizeof(szMiscArray), "[Garage] Created Garage: %d | Exterior Area ID: %d | Interior Area ID: %d", garageid, GarageInfo[garageid][gar_AreaID], GarageInfo[garageid][gar_AreaID_int]);
 	Log("debug/door_garage.log", szMiscArray);
