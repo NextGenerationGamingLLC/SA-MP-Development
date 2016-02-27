@@ -56,6 +56,7 @@ ShowAccountSettings(playerid, menu = 0) {
 			format(szMiscArray, sizeof(szMiscArray), "%s\
 				{FFFFFF}---Groups---\t\n\
 				{FFFFFF}Dept\t%s\n\
+				{FFFFFF}International\t%s\n\
 				{FFFFFF}OOC Group\t%s\n\
 				{FFFFFF}Radio\t%s\n\
 				{FFFFFF}Bug Chat\t%s\n\
@@ -66,6 +67,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				{FFFFFF}Watchdog Chat\t%s\n",
 				szMiscArray,
 				(PlayerInfo[playerid][pToggledChats][10] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
+				(PlayerInfo[playerid][pToggledChats][21] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][11] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][12] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][13] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
@@ -188,6 +190,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(strcmp(inputtext, "Famed", true) == 0) id = 8;
 			else if(strcmp(inputtext, "VIP", true) == 0) id = 9;
 			else if(strcmp(inputtext, "Dept", true) == 0) id = 10;
+			else if(strcmp(inputtext, "International", true) == 0) id = 21;
 			else if(strcmp(inputtext, "OOC Group", true) == 0) id = 11;
 			else if(strcmp(inputtext, "Radio", true) == 0) id = 12;
 			else if(strcmp(inputtext, "Bug Chat", true) == 0) id = 13;

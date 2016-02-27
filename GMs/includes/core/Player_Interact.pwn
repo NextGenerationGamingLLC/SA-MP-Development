@@ -671,7 +671,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return Player_InteractMenu(playerid, giveplayerid, 4);
 			}
 
-		    Interact_GivePlayerWeapon(playerid, giveplayerid, id);
+		    Interact_GivePlayerValidWeapon(playerid, giveplayerid, id);
 		}
 		case INTERACT_DRUGS: {
 			new giveplayerid = GetPVarInt(playerid, "Interact_Target");
@@ -738,7 +738,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(GetPVarType(buyingfrom, "Interact_SellGun")) {
 
 					new weaponid = GetPVarInt(buyingfrom, "Interact_SellGun");
-					Interact_GivePlayerWeapon(buyingfrom, playerid, weaponid, price);
+					Interact_GivePlayerValidWeapon(buyingfrom, playerid, weaponid, price);
 				}
 				else if(GetPVarType(buyingfrom, "Interact_Drug")) {
 
@@ -779,7 +779,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	return 1;
 }
 
-Interact_GivePlayerWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {
+Interact_GivePlayerValidWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {
 
 	if(PlayerInfo[giveplayerid][pGuns][GetWeaponSlot(weaponid)] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player already has a weapon in that slot");
 
@@ -1129,6 +1129,7 @@ Interact_ShowLicenses(playerid, giveplayerid) {
 	switch(PlayerInfo[playerid][pNation]) {
 		case 0: SendClientMessageEx(giveplayerid, COLOR_WHITE, "** Citizen of San Andreas **");
 		case 1: SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of New Eire **");
+		case 2: SendClientMessageEx(giveplayerid, COLOR_TR, "** No citizenship **");
 	}
 	format(szMiscArray, sizeof(szMiscArray), "Listing %s's licenses...", GetPlayerNameEx(playerid));
 	SendClientMessageEx(giveplayerid, COLOR_WHITE, szMiscArray);

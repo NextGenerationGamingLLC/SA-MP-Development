@@ -300,37 +300,8 @@ CMD:reversejudgement(playerid, params[])
 
 CMD:commute(playerid, params[])
 {
-	if(IsAGovernment(playerid) && PlayerInfo[playerid][pRank] >= Group_GetMaxRank(PlayerInfo[playerid][pMember]))
- 	{
-		new
-			giveplayerid;
-
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /commute [player]");
-		if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
-		if(IsPlayerConnected(giveplayerid))
-		{
-			if(PlayerInfo[giveplayerid][pJudgeJailTime] != 0)
-		    {
-				new string[68 + (MAX_PLAYER_NAME * 2)];
-				if(PlayerInfo[giveplayerid][pJailTime] != 0) PlayerInfo[giveplayerid][pJailTime] = PlayerInfo[giveplayerid][pJailTime]/2;
-				PlayerInfo[giveplayerid][pJudgeJailTime] = PlayerInfo[giveplayerid][pJudgeJailTime]/2;
-				switch(PlayerInfo[playerid][pSex])
-				{
-					case 1: format(string, sizeof(string), "President %s has commuted %s, his sentence is now half (%d seconds).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pJudgeJailTime]);
-					case 2: format(string, sizeof(string), "President %s has commuted %s, her sentence is now half (%d seconds).", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pJudgeJailTime]);
-				}
-			    SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
-	    	}
-	    	else
-   			{
-	        	SendClientMessageEx(playerid, COLOR_GRAD1, "That person doesn't have a jail/prison sentence.");
-   			}
-		}
-   	}
-   	else
-   	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Only the President can use this command.");
-	}
+	cmd_pardon(playerid, "");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You can also use /pardon.");
 	return 1;
 }
 
@@ -505,12 +476,12 @@ CMD:deliver(playerid, params[])
 			PlayerInfo[giveplayerid][pWantedLevel] = 0;
 			SetPlayerToTeamColor(giveplayerid);
 			SetPlayerWantedLevel(giveplayerid, 0);
-			SetPlayerSkin(giveplayerid, 50);
+			
+			Prison_SetPlayerSkin(giveplayerid);
 			PhoneOnline[giveplayerid] = 1;
 			PlayerInfo[giveplayerid][pJailTime] = PlayerInfo[giveplayerid][pJudgeJailTime];
 			SetPlayerInterior(giveplayerid, 10);
 			PlayerInfo[giveplayerid][pInt] = 10;
-			SetPlayerSkin(giveplayerid, 50);
 			SetPlayerVirtualWorld(giveplayerid, 0);
 			PlayerInfo[giveplayerid][pVW] = 0;
 			SetPlayerColor(giveplayerid, TEAM_ORANGE_COLOR);

@@ -881,7 +881,7 @@ public PokerPulse(tableid)
 	}
 
 	if(PokerTable[tableid][pkrPlayers] < 2 && PokerTable[tableid][pkrActive] == 3) {
-		// Pseudo Code (Move Pot towards last player's chip count)
+		// Pseudo Code (Move Cannabis towards last player's chip count)
 
 		for(new i = 0; i < 6; i++) {
 			new playerid = PokerTable[tableid][pkrSlot][i];
@@ -973,10 +973,10 @@ public PokerPulse(tableid)
 					if(PokerTable[tableid][pkrWinners] > 1) {
 						// Split
 						if(resultArray[5] == GetPVarInt(playerid, "pkrResult")) {
-							new splitPot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
+							new splitpot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
 
 							SetPVarInt(playerid, "pkrWinner", 1);
-							SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")+splitPot);
+							SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")+splitpot);
 
 							PlayerPlaySound(playerid, 5821, 0.0, 0.0, 0.0);
 						} else {
@@ -1211,8 +1211,8 @@ public PokerPulse(tableid)
 						}
 					} else {
 						if(GetPVarInt(playerid, "pkrWinner")) {
-							new splitPot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
-							format(tmpString, sizeof(tmpString), "+$%d", splitPot);
+							new splitpot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
+							format(tmpString, sizeof(tmpString), "+$%d", splitpot);
 							SetPVarString(playerid, "pkrStatusString", tmpString);
 						} else {
 							format(tmpString, sizeof(tmpString), "-$%d", GetPVarInt(playerid, "pkrCurrentBet"));
@@ -1240,8 +1240,8 @@ public PokerPulse(tableid)
 						}
 					} else {
 						if(GetPVarInt(playerid, "pkrWinner")) {
-							new splitPot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
-							format(tmpString, sizeof(tmpString), "+$%d", splitPot);
+							new splitpot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
+							format(tmpString, sizeof(tmpString), "+$%d", splitpot);
 							SetPVarString(playerid, "pkrStatusString", tmpString);
 						} else {
 							format(tmpString, sizeof(tmpString), "-$%d", GetPVarInt(playerid, "pkrCurrentBet"));
@@ -1258,13 +1258,13 @@ public PokerPulse(tableid)
 				if(pid != -1) PlayerTextDrawSetString(pid, PlayerPokerUI[pid][4+tmp], tmpString);
 			}
 
-			// Pot
+			// Cannabis
 			if(PokerTable[tableid][pkrDelay] > 0 && PokerTable[tableid][pkrActive] == 3) {
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], "Texas Holdem Poker");
 			} else if(PokerTable[tableid][pkrActive] == 2) {
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], "Texas Holdem Poker");
 			} else if(PokerTable[tableid][pkrActive] == 3) {
-				format(tmpString, sizeof(tmpString), "Pot: $%d", PokerTable[tableid][pkrPot]);
+				format(tmpString, sizeof(tmpString), "Cannabis: $%d", PokerTable[tableid][pkrPot]);
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], tmpString);
 			} else if(PokerTable[tableid][pkrActive] == 4 && PokerTable[tableid][pkrDelay] < 19) {
 				if(PokerTable[tableid][pkrWinnerID] != -1) {
@@ -1273,8 +1273,8 @@ public PokerPulse(tableid)
 					format(tmpString, sizeof(tmpString), "%s Won $%d", winnerName, PokerTable[tableid][pkrPot]);
 					if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], tmpString);
 				} else if(PokerTable[tableid][pkrWinners] > 1) {
-					new splitPot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
-					format(tmpString, sizeof(tmpString), "%d Winners Won $%d", PokerTable[tableid][pkrWinners], splitPot);
+					new splitpot = PokerTable[tableid][pkrPot]/PokerTable[tableid][pkrWinners];
+					format(tmpString, sizeof(tmpString), "%d Winners Won $%d", PokerTable[tableid][pkrWinners], splitpot);
 					if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], tmpString);
 				}
 			} else {

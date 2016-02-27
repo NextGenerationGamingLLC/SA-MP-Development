@@ -41,16 +41,18 @@
 #define INACTIVE_SILVER_VIP 2592000 // 30 days
 #define INACTIVE_GOLD_VIP 5184000 // 60 days
 
-
+/*
 task Inactive_ResourceCheck[60000 * 60]() { // Every 1 hour.
 
 	Inactive_CheckHouses();
 }
 
+
 Inactive_CheckHouses() {
 
 	mysql_function_query(MainPipeline, "SELECT id FROM houses WHERE `Inactive` = 0 AND `Expire` < UNIX_TIMESTAMP(NOW()) AND `Ignore` = 0", true, "Inactive_OnCheckHouses", "");
 }
+*/
 
 forward Inactive_OnCheckHouses();
 public Inactive_OnCheckHouses() {
@@ -127,7 +129,7 @@ Inactive_CalcTime() {
 	return INACTIVE_REGULAR;
 }
 
-
+/*
 CMD:inactivitycheck(playerid, params[]) {
 
 	if(!IsAdminLevel(playerid, ADMIN_EXECUTIVE)) return 1;
@@ -135,3 +137,4 @@ CMD:inactivitycheck(playerid, params[]) {
 	cmd_admin(playerid, "[INACTIVITY]: All server properties are checked for their inactivity.");
 	return 1;
 }
+*/

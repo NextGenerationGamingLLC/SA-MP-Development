@@ -73,6 +73,13 @@ stock ShopTechBroadCast(color,string[])
 	return 1;
 }
 
+stock Player_KillCheckPoint(playerid) {
+	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NOTHING;
+	ClearCheckpoint(playerid);
+	SendClientMessageEx(playerid,COLOR_WHITE, "All current checkpoints, trackers and accepted fares have been reset.");
+}
+
+
 stock GetAdminRankName(i)
 {
 	switch(i)
@@ -1889,27 +1896,27 @@ CMD:staff(playerid, params[]) {
 
 			szMiscArray[0] = 0;
 
-			if(PlayerInfo[playerid][pAdmin] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Junior Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMiscArray, sizeof(szMiscArray), "-- General Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMiscArray, sizeof(szMiscArray), "-- Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "-- Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "-- Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "-- Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pHelper] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Player Advisor %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pHelper] == 3) format(szMiscArray, sizeof(szMiscArray), "-- Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pHelper] >= 4) format(szMiscArray, sizeof(szMiscArray), "-- Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
+			if(PlayerInfo[playerid][pAdmin] == 2) format(szMiscArray, sizeof(szMiscArray), "** Junior Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMiscArray, sizeof(szMiscArray), "** General Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMiscArray, sizeof(szMiscArray), "** Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "** Head Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "** Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "** Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pHelper] == 2) format(szMiscArray, sizeof(szMiscArray), "** Player Advisor %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pHelper] == 3) format(szMiscArray, sizeof(szMiscArray), "** Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pHelper] >= 4) format(szMiscArray, sizeof(szMiscArray), "** Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1)
 			{
-				if(PlayerInfo[playerid][pSMod] != 0) format(szMiscArray, sizeof(szMiscArray), "-- Senior Moderator %s: %s", GetPlayerNameEx(playerid), params);
-				else format(szMiscArray, sizeof(szMiscArray), "-- Server Moderator %s: %s", GetPlayerNameEx(playerid), params);
+				if(PlayerInfo[playerid][pSMod] != 0) format(szMiscArray, sizeof(szMiscArray), "** Senior Moderator %s: %s", GetPlayerNameEx(playerid), params);
+				else format(szMiscArray, sizeof(szMiscArray), "** Server Moderator %s: %s", GetPlayerNameEx(playerid), params);
 			}
-			else if(PlayerInfo[playerid][pVIPMod] == 1) format(szMiscArray, sizeof(szMiscArray), "-- VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMiscArray, sizeof(szMiscArray), "-- Watchdog %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMiscArray, sizeof(szMiscArray), "-- Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMiscArray, sizeof(szMiscArray), "-- RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMiscArray, sizeof(szMiscArray), "-- Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
-			else format(szMiscArray, sizeof(szMiscArray), "-- Undefined Admin (%d) %s: %s", PlayerInfo[playerid][pAdmin], GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pVIPMod] == 1) format(szMiscArray, sizeof(szMiscArray), "** VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMiscArray, sizeof(szMiscArray), "** Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMiscArray, sizeof(szMiscArray), "** Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMiscArray, sizeof(szMiscArray), "** Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 3) format(szMiscArray, sizeof(szMiscArray), "** RP Specialist %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pWatchdog] == 4) format(szMiscArray, sizeof(szMiscArray), "** Director of RP Improvement %s: %s", GetPlayerNameEx(playerid), params);
+			else format(szMiscArray, sizeof(szMiscArray), "** Undefined Admin (%d) %s: %s", PlayerInfo[playerid][pAdmin], GetPlayerNameEx(playerid), params);
 
 			SendAdvisorMessage(COLOR_COMBINEDCHAT, szMiscArray);
 			Log("logs/staffchat.log", szMiscArray);
@@ -3591,7 +3598,7 @@ CMD:setstat(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setstat [player] [statcode] [amount]");
 			SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |5 BankAccount |6 PhoneNumber |7 RespectPoints |8 House1 |9 House2 |10 House3");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Cannabis |23 Crack");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "|24 Fishing |25 Job |26 Rank |27 Packages |28 Crates |29 Smuggler |30 Insurance |31 Warnings |32 Screwdriver");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
@@ -3715,12 +3722,12 @@ CMD:setstat(playerid, params[])
 				}
 			case 22:
 				{
-					PlayerInfo[giveplayerid][pPot] = amount;
-					format(string, sizeof(string), "   %s's(%d) Pot has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
+					PlayerInfo[giveplayerid][p_iDrug][1] = amount;
+					format(string, sizeof(string), "   %s's(%d) Cannabis has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 23:
 				{
-					PlayerInfo[giveplayerid][pCrack] = amount;
+					PlayerInfo[giveplayerid][p_iDrug][5] = amount;
 					format(string, sizeof(string), "   %s's(%d) Crack has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 24:
@@ -3958,7 +3965,7 @@ CMD:setmystat(playerid, params[])
 			if(PlayerInfo[playerid][pAdmin] >= 4) {
 				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmystat [statcode] [amount]");
 				SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |5 BankAccount |6 PhoneNumber |7 RespectPoints |8 House1 |9 House2 |10 House3");
-				SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Cannabis |23 Crack");
 				SendClientMessageEx(playerid, COLOR_GRAD2, "|24 Fishing |25 Job |26 Rank |27 Packages |28 Crates |29 Smuggler |30 Insurance |31 Warnings |32 Screwdriver");
 				SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
 				SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
@@ -4090,12 +4097,12 @@ CMD:setmystat(playerid, params[])
 			}
 		case 22:
 			{
-				PlayerInfo[playerid][pPot] = amount;
-				format(string, sizeof(string), "   %s's Pot has been set to %d.", GetPlayerNameEx(playerid), amount);
+				PlayerInfo[playerid][p_iDrug][1] = amount;
+				format(string, sizeof(string), "   %s's Cannabis has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 23:
 			{
-				PlayerInfo[playerid][pCrack] = amount;
+				PlayerInfo[playerid][p_iDrug][5] = amount;
 				format(string, sizeof(string), "   %s's Crack has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 24:
@@ -4588,7 +4595,7 @@ CMD:gethere(playerid, params[])
 			    ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
 			    return 1;
 			}
-			// Furniture_ResetPVars(playerid);
+			Furniture_ResetPVars(playerid);
 			GetPlayerPos(playerid, plocx, plocy, plocz);
 			SetPlayerVirtualWorld(giveplayerid, PlayerInfo[playerid][pVW]);
 			Streamer_UpdateEx(giveplayerid, plocx, plocy, plocz);
@@ -4603,7 +4610,7 @@ CMD:gethere(playerid, params[])
 				SetVehicleVirtualWorld(GetPlayerVehicleID(giveplayerid), GetPlayerVirtualWorld(playerid));
 				SetPlayerVirtualWorld(giveplayerid, GetPlayerVirtualWorld(playerid));
 				if(IsValidDynamicArea(iVehEnterAreaID[tmpcar])) {
-					Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[tmpcar], E_STREAMER_WORLD_ID, tmpcar);
+					// Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[tmpcar], E_STREAMER_WORLD_ID, tmpcar);
 				}
 			}
 			else
@@ -4638,7 +4645,7 @@ CMD:getcar(playerid, params[])
 		SetVehicleVirtualWorld(carid, GetPlayerVirtualWorld(playerid));
 		LinkVehicleToInterior(carid, GetPlayerInterior(playerid));
 		if(IsValidDynamicArea(iVehEnterAreaID[carid])) {
-			Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[carid], E_STREAMER_WORLD_ID, carid);
+			// Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[carid], E_STREAMER_WORLD_ID, carid);
 		}
 
 	}
@@ -5636,7 +5643,7 @@ CMD:quickstats(playerid, params[])
 	GetHealth(playerid, health);
 	GetArmour(playerid, armor);
 
-	format(string, sizeof(string), "---===== -- Stats of %s -- =====---", GetPlayerNameEx(playerid));
+	format(string, sizeof(string), "---===== ** Stats of %s ** =====---", GetPlayerNameEx(playerid));
 	SendClientMessageEx(playerid, COLOR_GREEN, string);
 	format(string, sizeof(string), "** Level: %d | Bank: %s | Cash: %s | Radio Frequency: %dkhz | Warning: %d", PlayerInfo[playerid][pLevel],
 	number_format(PlayerInfo[playerid][pAccount]), number_format(PlayerInfo[playerid][pCash]), PlayerInfo[playerid][pRadioFreq], PlayerInfo[playerid][pWarns]);
@@ -5894,20 +5901,20 @@ CMD:dedit(playerid, params[])
 	if(sscanf(params, "s[32]d", choice, amount))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dedit [name] [amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Cannabis, Crack");
 		return 1;
 	}
 
-	if(strcmp(choice,"pot",true) == 0)
+	if(strcmp(choice,"Cannabis",true) == 0)
 	{
 		for(new h = 0; h < sizeof(Points); h++)
 		{
 			if(Points[h][Type] == 3)
 			{
 				Points[h][Stock] = amount;
-				format(string, sizeof(string), " POT/OPIUM AVAILABLE: %d/1000.", Points[h][Stock]);
+				format(string, sizeof(string), " CANNABIS/OPIUM AVAILABLE: %d/1000.", Points[h][Stock]);
 				UpdateDynamic3DTextLabelText(Points[h][TextLabel], COLOR_YELLOW, string);
-				SendClientMessageEx(playerid, COLOR_WHITE, " You have successfully changed the Drug House available pot!");
+				SendClientMessageEx(playerid, COLOR_WHITE, " You have successfully changed the Drug House available Cannabis!");
 			}
 		}
 	}
@@ -6063,10 +6070,9 @@ CMD:kcp(playerid, params[]) {
 	return cmd_killcheckpoint(playerid, params);
 }
 
-CMD:killcheckpoint(playerid, params[])
-{
-	ClearCheckpoint(playerid);
-	SendClientMessageEx(playerid,COLOR_WHITE,"All current checkpoints, trackers and accepted fares have been reset.");
+CMD:killcheckpoint(playerid, params[]) {
+
+	Player_KillCheckPoint(playerid);
 	return 1;
 }
 
@@ -6088,7 +6094,7 @@ CMD:dice(playerid, params[])
     new string[84];
     if (PlayerInfo[playerid][pDice])
 	{
-        new rand = Random(1, 7); format(string, sizeof(string), "{FF8000}-- {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
+        new rand = Random(1, 7); format(string, sizeof(string), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
         ProxDetector(9.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     }
     else

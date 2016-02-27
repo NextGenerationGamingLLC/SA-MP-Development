@@ -4,7 +4,7 @@
 
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
-	/*
+	
 	switch(response) {
 
 		case EDIT_RESPONSE_CANCEL: {
@@ -86,7 +86,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			}
 		}
 	}
-	*/
+	
 	if(response == EDIT_RESPONSE_FINAL)
 	{
 		szMiscArray[0] = 0;

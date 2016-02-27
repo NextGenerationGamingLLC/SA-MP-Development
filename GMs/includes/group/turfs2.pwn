@@ -52,31 +52,7 @@
 #include <YSI\y_hooks>
 
 // All player booleans variables go here to reduce memory:
-enum eTurfWarsBits:(<<= 1) {
 
-	// tw_bVulnerable = 1,
-	tw_bDisabled = 1,
-	tw_bHeadquarter,
-	tw_bShutdown,
-	tw_bTurfMode
-
-};
-new eTurfWarsBits:arrTurfWarsBits[MAX_TURFS];
-
-enum eTurfWars {
-
-	tw_iLinkedID,
-	tw_iAreaID,
-	tw_iGZoneID,
-	tw_iGroupID,
-	tw_iHealth,
-	tw_iLevel,
-	tw_iTraffic,
-	tw_iDeaths,
-	tw_iRevenue,
-	bool:tw_bVulnerable
-}
-new arrTurfWars[MAX_TURFS][eTurfWars];
 
 new Text:TW_TextDraws[5];
 new PlayerText:TW_PTextDraws[MAX_PLAYERS][6];
@@ -135,10 +111,12 @@ hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
 	if(Bit_State(arrPlayerBits[playerid], pTurfRadar)) {
 
-		new iTurfID = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
-		if(0 <= iTurfID < MAX_TURFS && areaid == arrTurfWars[iTurfID][tw_iAreaID]) {
-			TurfWars_SyncGUI(playerid, iTurfID);
-			if(iTurfID != 369) TurfWars_AddTraffic(iTurfID);
+		// new iTurfID = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+		for(new i; i < MAX_TURFS; ++i) {
+			if(areaid == arrTurfWars[i][tw_iAreaID]) {
+				TurfWars_SyncGUI(playerid, i);
+				if(i != 369) TurfWars_AddTraffic(i);
+			}
 		}
 	}
 }
@@ -307,7 +285,7 @@ TurfWars_InitZones() {
 		*/
 
 		// arrTurfWars[i][tw_iLinkedID] = j;
-		Streamer_SetIntData(STREAMER_TYPE_AREA, arrTurfWars[i][tw_iAreaID], E_STREAMER_EXTRA_ID, i);
+		// Streamer_SetIntData(STREAMER_TYPE_AREA, arrTurfWars[i][tw_iAreaID], E_STREAMER_EXTRA_ID, i);
 		printf("[TW] Created zone (%d): %s", i, gSAZones[i][SAZONE_NAME]);
 	}
 }
@@ -395,7 +373,7 @@ CMD:turfmode(playerid, params[]) {
 CMD:turfhelp(playerid, params[]) {
 
 	SendClientMessageEx(playerid, COLOR_GREEN, "__________[Turf System]__________");
-	SendClientMessageEx(playerid, COLOR_GRAD1, "/turfs | /turflist | /claim | /myturfs | /turfinfo | /turfstats | /upgradeturf | /healturf | /turftax");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "/turfs | /turflist | /claim | /myturfs | /turfinfo | /turfstats | /upgradeturf | /healturf | /setturftax");
 	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "[LEO] /shutdown");
 	if(IsAdminLevel(playerid, ADMIN_SENIOR, 0)) SendClientMessageEx(playerid, COLOR_YELLOW, "[ADMIN]: /editturf | /turfmode (link/unlink them) | /rehashturfs");
 	return 1;
@@ -724,7 +702,7 @@ TurfWars_FinalizeCapture(iTurfID, bool:bState) {
 					Bit_On(arrTurfWarsBits[iTurfID], tw_bShutdown);
 
 					format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `vulnerable` = '0', `shutdown` = '1', `timestamp` = '%d' WHERE `id` = '%d'",
-						gettime() + 86400, iTurfID);
+						gettime() + 43200, iTurfID);
 					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				}
 				else {
@@ -739,7 +717,7 @@ TurfWars_FinalizeCapture(iTurfID, bool:bState) {
 
 				arrTurfWars[iTurfID][tw_iGroupID] = iGroupID;
 				format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `groupid` = '%d', `vulnerable` = '0', `timestamp` = '%d' WHERE `id` = '%d'",
-					iGroupID, gettime() + 86400, iTurfID);
+					iGroupID, gettime() + 43200, iTurfID);
 				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			if(arrTurfWars[iTurfID][tw_iLevel] > 20) arrTurfWars[iTurfID][tw_iLevel] -= 10;
@@ -747,7 +725,7 @@ TurfWars_FinalizeCapture(iTurfID, bool:bState) {
 		default: {
 
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `vulnerable` = '0', `timestamp` = '%d' WHERE `id` = '%d'",
-				gettime() + 86400, iTurfID);
+				gettime() + 43200, iTurfID);
 			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) {
 				format(szMiscArray, sizeof(szMiscArray), "[TURF]: You have failed to shutdown %s's turf.", arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_szGroupName]);
@@ -838,7 +816,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SaveGroup(PlayerInfo[playerid][pMember]);
 					format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `health` = '%d', `level` = '%d' WHERE `id` = '%d'", arrTurfWars[iTurfID][tw_iHealth], arrTurfWars[iTurfID][tw_iLevel], iTurfID);
 					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-					foreach(new p : Player) if(TurfWars_GetTurfID(p) == iTurfID) TurfWars_SyncGUI(p, iTurfID);
+					Turf_SyncTurf(iTurfID);
 				}
 				else if(iUpgrID == 1) {
 					new iTurfID = GetPVarInt(playerid, "TurfID"),
@@ -852,13 +830,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SaveGroup(PlayerInfo[playerid][pMember]);
 					format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `health` = '%d' WHERE `id` = '%d'", arrTurfWars[iTurfID][tw_iHealth], iTurfID);
 					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-					foreach(new p : Player) if(TurfWars_GetTurfID(p) == iTurfID) TurfWars_SyncGUI(p, iTurfID);
+					Turf_SyncTurf(iTurfID);
 				}
 			}
 			DeletePVar(playerid, "TurfID");
 		}
 	}
 	return 0;
+}
+
+Turf_SyncTurf(iTurfID) {
+
+	foreach(new p : Player) if(TurfWars_GetTurfID(p) == iTurfID) TurfWars_SyncGUI(p, iTurfID);
 }
 
 Turf_GetMaxHealth(iTurfID) {
@@ -901,10 +884,10 @@ public TurfWars_FetchData(playerid, area) {
 				case INVALID_GROUP_ID: szGroup = "Neutral";
 				default: strcat(szGroup, arrGroupData[iGroupID][g_szGroupName], sizeof(szGroup));
 			}
-			iTimeStamp = (gettime() - cache_get_field_content_int(iCount, "timestamp", MainPipeline)) / 60; // Calculate difference, then convert to minutes.);
+			iTimeStamp = (gettime() - cache_get_field_content_int(iCount, "timestamp", MainPipeline)) / 3600; // Calculate difference, then convert to hours.);
 			if(cache_get_field_content_int(iCount, "vulnerable", MainPipeline) == 1) {
 
-				format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFF00}%s (%d)\t%s (%d)\t%d{FFFFFF}",
+				format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFF00}%s (%d)\t%s (%d)\t%d minutes{FFFFFF}",
 					szMiscArray,
 					szZoneName,
 					iTurfID,
@@ -913,7 +896,7 @@ public TurfWars_FetchData(playerid, area) {
 					0);
 			}
 			else {
-				format(szMiscArray, sizeof(szMiscArray), "%s\n%s (%d)\t%s (%d)\t%d",
+				format(szMiscArray, sizeof(szMiscArray), "%s\n%s (%d)\t%s (%d)\t%d hours",
 					szMiscArray,
 					szZoneName,
 					iTurfID,

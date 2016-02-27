@@ -2474,7 +2474,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					case 519, 553, 508: {
 						iVehEnterAreaID[iVeh] = CreateDynamicSphere(PlayerVehicleInfo[playerid][listitem][pvPosX]+2, PlayerVehicleInfo[playerid][listitem][pvPosY], PlayerVehicleInfo[playerid][listitem][pvPosZ], 4, GetVehicleVirtualWorld(iVeh));
 						AttachDynamicAreaToVehicle(iVehEnterAreaID[iVeh], iVeh);
-						Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[iVeh], E_STREAMER_EXTRA_ID, iVeh);
+						// Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[iVeh], E_STREAMER_EXTRA_ID, iVeh);
 					}
 				}
 
@@ -4996,20 +4996,19 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		if(response)
 		{
 			new moneys = GetPVarInt(playerid, "Arrest_Price"), time = GetPVarInt(playerid, "Arrest_Time"),
-			bail = GetPVarInt(playerid, "Arrest_Bail"), bailprice = GetPVarInt(playerid, "Arrest_BailPrice"),
-			suspect = GetPVarInt(playerid, "Arrest_Suspect"), arresttype = GetPVarInt(playerid, "Arrest_Type"),
-			query[1100];
+				bail = GetPVarInt(playerid, "Arrest_Bail"), bailprice = 15000000, // STATIC BAIL. GetPVarInt(playerid, "Arrest_BailPrice"),
+				suspect = GetPVarInt(playerid, "Arrest_Suspect"), arresttype = GetPVarInt(playerid, "Arrest_Type");
 			if(strlen(inputtext) < 30 || strlen(inputtext) > 128)
 			{
-				format(query, sizeof(query), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
-				return ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", query, "Submit", "");
+				format(szMiscArray, sizeof(szMiscArray), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
+				return ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", szMiscArray, "Submit", "");
 			}
 			switch(arresttype)
 			{
 				case 0, 1: { //arrest
 					if(bail && bailprice > 0)
 					{
-						format(string, sizeof(string), "You have been given the option to post bail.  Your bail is set at $%s. (/bail)", number_format(bailprice));
+						format(string, sizeof(string), "You have been given the option to post bail. Your bail is set at $%s. (/bail)", number_format(bailprice));
 						SendClientMessageEx(suspect, COLOR_RED, string);
 						PlayerInfo[suspect][pBailPrice] = bailprice;
 					}
@@ -5253,12 +5252,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				iAllegiance = arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance];
 			}
 			else iAllegiance = 1;
-			format(query, sizeof(query), "INSERT INTO `arrestreports` (`copid`, `suspectid`, `shortreport`, `origin`) VALUES ('%d', '%d', '%s', '%d')", GetPlayerSQLId(playerid), GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(inputtext, MainPipeline), iAllegiance);
-			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			format(query, sizeof(query), "You have arrested %s for %d minutes with a fine of $%s", GetPlayerNameEx(suspect), time, number_format(moneys));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, query);
+			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `arrestreports` (`copid`, `suspectid`, `shortreport`, `origin`) VALUES ('%d', '%d', '%s', '%d')", GetPlayerSQLId(playerid), GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(inputtext, MainPipeline), iAllegiance);
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			format(szMiscArray, sizeof(szMiscArray), "You have arrested %s for %d minutes with a fine of $%s", GetPlayerNameEx(suspect), time, number_format(moneys));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 			PlayerInfo[suspect][pWantedJailFine] = 0;
 			PlayerInfo[suspect][pWantedJailTime] = 0;
+			Prison_SetPlayerSkin(suspect);
 			for(new x;x<MAX_PLAYERTOYS;x++) {
 				if(IsPlayerAttachedObjectSlotUsed(suspect, x))
 				{
@@ -6151,7 +6151,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 1)
 			{
-				ShowPlayerDialogEx(playerid, INTERACTGIVE, DIALOG_STYLE_LIST, name, "Pot\nCrack\nMaterials\nFirework\nHeroin\nRawOpium\nSyringes\nOpiumSeeds\nSprunk\nAmmo1\nAmmo2\nAmmo3\nAmmo4\nAmmo5", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, INTERACTGIVE, DIALOG_STYLE_LIST, name, "Cannabis\nCrack\nMaterials\nFirework\nHeroin\nRawOpium\nSyringes\nOpiumSeeds\nSprunk\nAmmo1\nAmmo2\nAmmo3\nAmmo4\nAmmo5", "Select", "Cancel");
 			}
 		}
 		else
@@ -6954,7 +6954,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 16: //Next Page
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_REPORTMENU2, DIALOG_STYLE_LIST, "Report Menu [2/2]", "Revenge Killing\nOOC Hit\nServer Advertising\nNonRP Name\nOther/Freetext (PVIP Only)\nHouse Move\nAppeal Admin Action\nPrize Claim\nShop Issue\nNot Listed Here\nRequest CA\nRequest Unmute\nPrevious Page","Select", "Exit");
+					ShowPlayerDialogEx(playerid, DIALOG_REPORTMENU2, DIALOG_STYLE_LIST, "Report Menu [2/2]", "Revenge Killing\nOOC Hit\nServer Advertising\nNonRP Name\nOther/Freetext (PVIP Only)\nHouse Move\nAppeal Admin Action\nPrize Claim\nShop Issue\nNot Listed Here\nRequest PA\nRequest Unmute\nPrevious Page","Select", "Exit");
 				}
 			}
 		}
@@ -8442,23 +8442,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				new level = PlayerInfo[playerid][pTruckSkill];
 				if(level >= 0 && level <= 50)
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 1 Bonus: Free 9mm)\n{FF0606}Drugs 			{FFFFFF}(Level 1 Bonus: Free 2 pot, 1 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 1 Bonus: Free 100 materials)", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 1 Bonus: Free 9mm)\n{FF0606}Drugs 			{FFFFFF}(Level 1 Bonus: Free 2 Cannabis, 1 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 1 Bonus: Free 100 materials)", "Select", "Cancel");
 				}
 				else if(level >= 51 && level <= 100)
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 2 Bonus: Free Shotgun)\n{FF0606}Drugs 			{FFFFFF}(Level 2 Bonus: Free 4 pot, 2 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 2 Bonus: Free 200 materials)", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 2 Bonus: Free Shotgun)\n{FF0606}Drugs 			{FFFFFF}(Level 2 Bonus: Free 4 Cannabis, 2 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 2 Bonus: Free 200 materials)", "Select", "Cancel");
 				}
 				else if(level >= 101 && level <= 200)
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 3 Bonus: Free MP5)\n{FF0606}Drugs 			{FFFFFF}(Level 3 Bonus: Free 6 pot, 3 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 3 Bonus: Free 400 materials)", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 3 Bonus: Free MP5)\n{FF0606}Drugs 			{FFFFFF}(Level 3 Bonus: Free 6 Cannabis, 3 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 3 Bonus: Free 400 materials)", "Select", "Cancel");
 				}
 				else if(level >= 201 && level <= 400)
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 4 Bonus: Free Deagle)\n{FF0606}Drugs 			{FFFFFF}(Level 4 Bonus: Free 8 pot, 4 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 4 Bonus: Free 600 materials)", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 4 Bonus: Free Deagle)\n{FF0606}Drugs 			{FFFFFF}(Level 4 Bonus: Free 8 Cannabis, 4 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 4 Bonus: Free 600 materials)", "Select", "Cancel");
 				}
 				else if(level >= 401)
 				{
-					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 5 Bonus: Free AK-47)\n{FF0606}Drugs 			{FFFFFF}(Level 5 Bonus: Free 10 pot, 5 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 5 Bonus: Free 1000 materials)", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_LOADTRUCKI, DIALOG_STYLE_LIST, "What do you want to transport?","{FF0606}Weapons 		{FFFFFF}(Level 5 Bonus: Free AK-47)\n{FF0606}Drugs 			{FFFFFF}(Level 5 Bonus: Free 10 Cannabis, 5 crack)\n{FF0606}Illegal materials  	{FFFFFF}(Level 5 Bonus: Free 1000 materials)", "Select", "Cancel");
 				}
 			}
 		}
@@ -11205,7 +11205,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				new Message[520];
 				Message = "Purple VIP name on the forums.\nVIP Forums Access\
-				\nVIP Chat\nVIP Garage with access to all the most select cars on the map.\nVIP Lounge\nFirst Aid Station [HP Refills]\nGun Locker \nAbility to get Pot and Crack using the jobs without having to wait for refills at the Drug House.";
+				\nVIP Chat\nVIP Garage with access to all the most select cars on the map.\nVIP Lounge\nFirst Aid Station [HP Refills]\nGun Locker \nAbility to get Cannabis and Crack using the jobs without having to wait for refills at the Drug House.";
 				strcat(Message, "\nPreferred Pricing on Cars from the Dealership [20% off]\n24/7 VIP Pricing [20% Off]\nFree ATM Use \nFree Checking \nInvites to VIP Only Parties\nMax Hourly Interest Increase: $100k per paycheck");
 				ShowPlayerDialogEx(playerid, DIALOG_VIPBRONZE, DIALOG_STYLE_MSGBOX, "Bronze VIP Features" , Message, "Continue", "Cancel" );
 			}
@@ -11219,7 +11219,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				VIP Lounge\n\
 				First Aid Station [HP Refills] \n\
 				Gun Locker \n\
-				Ability to get Pot and Crack using the jobs without having to wait for refills at the Drug House. \n\
+				Ability to get Cannabis and Crack using the jobs without having to wait for refills at the Drug House. \n\
 				Preferred Pricing on Cars from the Dealership [20% off] \n\
 				24/7 VIP Pricing [20% Off]";
 
@@ -11250,7 +11250,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				VIP Lounge\n\
 				First Aid Station [HP Refills] \n\
 				Gun Locker \n\
-				Ability to get Pot and Crack using the jobs without having to wait for refills at the Drug House. \n\
+				Ability to get Cannabis and Crack using the jobs without having to wait for refills at the Drug House. \n\
 				Preferred Pricing on Cars from the Dealership [20% off] \n\
 				Full Health and Hunger after death \n\
 				24/7 VIP Pricing [20% Off]";
@@ -12355,7 +12355,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 20:
 				{
 					format(string, sizeof(string), "Enabled: %d\nStock: %d\nGift Quantity: %d\nGift Type: %s", dgVar[dgPot][0], dgVar[dgPot][1], dgVar[dgPot][2], GetDynamicGiftBoxType(dgVar[dgPot][3]));
-					ShowPlayerDialogEx(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Pot", string, "Back", "");
+					ShowPlayerDialogEx(playerid, DIALOG_GIFTBOX_INFO, DIALOG_STYLE_MSGBOX, "Dynamic Giftbox - Cannabis", string, "Back", "");
 				}
 				case 21:
 				{
@@ -13321,6 +13321,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else nonvipcredits = 0, SendClientMessageEx(playerid, COLOR_WHITE, "Selling of credits for Non-VIPs disabled.");
 			}
 		}
+	}
+	if(dialogid == DIALOG_MEDIC_LIST) {
+		if(response) Medic_GetPatient(playerid, ListItemTrackId[playerid][listitem]);
 	}
 	return 1;
 }

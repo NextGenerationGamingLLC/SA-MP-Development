@@ -47,7 +47,7 @@ CMD:accept(playerid, params[])
     if(IsPlayerConnected(playerid)) {
         if(isnull(params)) {
             SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accept [name]");
-            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Crack, Pot, Weapon, Craft, Repair, Lawyer, Bodyguard, Job, Live, Refill");
+            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Crack, Cannabis, Weapon, Craft, Repair, Lawyer, Bodyguard, Job, Live, Refill");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Firework, Group, Boxing, Medic, Mechanic, Ticket, Car, Death, Backpack");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Business, Item, Offer, Heroin, Rawopium, Syringes, Rimkit, Voucher, Kiss, RenderAid");
             return 1;
@@ -1189,7 +1189,7 @@ CMD:accept(playerid, params[])
                         GetPlayerName(MedicCall, giveplayer, sizeof(giveplayer));
                         format(szMessage, sizeof(szMessage), "* You have accepted the Medic Call from %s.",giveplayer);
                         SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-                        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* After the 45 Seconds the red marker will dissapear.");
+                        // SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* After the 45 Seconds the red marker will dissapear.");
                         format(szMessage, sizeof(szMessage), "* Medic %s has accepted your Medic Call please wait at your current Position.",sendername);
                         SendClientMessageEx(MedicCall, COLOR_LIGHTBLUE, szMessage);
                         new Float:X,Float:Y,Float:Z;
@@ -2312,7 +2312,7 @@ CMD:cancel(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Cancel __________________|");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cancel [name]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Pot, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Cannabis, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Drink, House, Shipment, Help, Firstaid");
 		SendClientMessageEx(playerid, COLOR_GREY, "FoodOffer, RenderAid");
 		if(IsAHitman(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "Special: contract"); }

@@ -753,7 +753,6 @@ CMD:unloadplane(playerid, params[]) {
 		}
 		else
 		{
-
 		    SendClientMessageEx(playerid, COLOR_GRAD2, "Unload your forklift first!");
 		    return 1;
 
@@ -809,7 +808,9 @@ CMD:loadforklift(playerid, params[]) {
 		            }
 		            if(Streamer_IsItemVisible(playerid, STREAMER_TYPE_OBJECT, CrateLoad))
 		            {
-		                LoadForkliftStatus = 1;
+		            	format(szMiscArray, sizeof(szMiscArray), "%s %s has created a weapon crate.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
+		              	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
+		              	LoadForkliftStatus = 1;
 		                SetPVarInt(playerid, "LoadForkliftTime", 5);
 		                SetPVarInt(playerid, "ForkliftID", vehicleid);
 						if(PlayerInfo[playerid][pSpeedo])
@@ -921,6 +922,9 @@ CMD:cratelimit(playerid, params[]) {
 		
 		//if(moneys == 0) HideCrate();
 		//else if(moneys > 0) SetTimer("ShowCrate", CRATE_PRODUCTION_DELAY, 0);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s restricted weapon crate production to $%s.", number_format(moneys));
+		GroupLog(iGroupID, szMiscArray);
 
 		format(string, sizeof(string), "* You have restricted weapon crate production to %d", moneys);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);

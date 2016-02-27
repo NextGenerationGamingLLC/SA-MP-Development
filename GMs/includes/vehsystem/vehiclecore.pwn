@@ -1989,13 +1989,12 @@ CMD:car(playerid, params[])
 	return 1;
 }
 
-CMD:window(playerid, params[])
-{
-	new string[128];
-    if(InsidePlane[playerid] != INVALID_VEHICLE_ID && GetPVarInt(playerid, "InsideCar") ==0)
-	{
-        if(GetPlayerInterior(playerid) != 0)
-		{
+CMD:window(playerid, params[]) {
+	
+    if(InsidePlane[playerid] != INVALID_VEHICLE_ID && GetPVarType(playerid, "InsideCar")) {
+
+        if(GetPlayerInterior(playerid) != 0) {
+
             new
                 Float: fSpecPos[6];
 
@@ -2018,8 +2017,8 @@ CMD:window(playerid, params[])
             TogglePlayerSpectating(playerid, true);
             PlayerSpectateVehicle(playerid, InsidePlane[playerid]);
 
-            format(string, sizeof(string), "* %s glances out the window.", GetPlayerNameEx(playerid));
-            ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+            format(szMiscArray, sizeof(szMiscArray), "* %s glances out the window.", GetPlayerNameEx(playerid));
+            ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
         }
         else TogglePlayerSpectating(playerid, 0);
     }

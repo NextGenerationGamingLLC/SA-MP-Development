@@ -491,7 +491,7 @@ CMD:rld(playerid, params[]) {
 	
 	for(new i = 0; i < 12; i++)
 	{
-		GivePlayerWeapon(playerid, PlayerInfo[playerid][pGuns][i], 99);
+		GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][i], 99);
 		SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
 	}
 	ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);

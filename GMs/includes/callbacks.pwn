@@ -350,11 +350,19 @@ public OnPlayerUpdate(playerid)
 	playerSeconds[playerid] = gettime();
 
 	new pCurWeap = GetPlayerWeapon(playerid);
-    if(pCurWeap != pCurrentWeapon{playerid})
-    {
+    if(pCurWeap != pCurrentWeapon{playerid}) {
         OnPlayerChangeWeapon(playerid, pCurWeap);
-        pCurrentWeapon{playerid} = pCurWeap;
+		pCurrentWeapon{playerid} = pCurWeap;
     }
+
+	if(PlayerInfo[playerid][pGuns][GetWeaponSlot(pCurWeap)] != pCurWeap) {
+
+		GetWeaponName(pCurWeap, szMiscArray, sizeof(szMiscArray));
+		format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s has given themself a client-sided weapon (%s). It was removed from the player.", GetPlayerNameEx(playerid), szMiscArray);
+		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+		SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Client weapon detected. Admins were notified: refrain from doing it again.");
+		SetPlayerWeaponsEx(playerid);
+	}
 
     new drunknew = GetPlayerDrunkLevel(playerid);
     if (drunknew < 100) { // go back up, keep cycling.
@@ -1082,7 +1090,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			}
 		}
 	}
-	/*
+	
 	for(new i; i < sizeof(FurnitureList); ++i) {
 
 		if(listid == FurnitureList[i]) {
@@ -1098,7 +1106,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			break;
 		}
 	}
-	*/
+	
 	return 1;
 }
 
@@ -1294,8 +1302,8 @@ public OnPlayerConnect(playerid)
 	UsedWeed[playerid] = 0;
 	SexOffer[playerid] = INVALID_PLAYER_ID;
 	DrinkOffer[playerid] =  INVALID_PLAYER_ID;
-	PotOffer[playerid] = INVALID_PLAYER_ID;
-	PotStorageID[playerid] = -1;
+	CannabisOffer[playerid] = INVALID_PLAYER_ID;
+	CannabisStorageID[playerid] = -1;
 	CrackOffer[playerid] = INVALID_PLAYER_ID;
 	CrackStorageID[playerid] = -1;
 	GunOffer[playerid] = INVALID_PLAYER_ID;
@@ -1350,16 +1358,16 @@ public OnPlayerConnect(playerid)
 	InsidePlane[playerid]=INVALID_VEHICLE_ID;
 	InsideMainMenu{playerid}=0;
 	InsideTut{playerid}=0;
-	PotOffer[playerid]= INVALID_PLAYER_ID;
-	PotStorageID[playerid]=-1;
+	CannabisOffer[playerid]= INVALID_PLAYER_ID;
+	CannabisStorageID[playerid]=-1;
 	CrackOffer[playerid]= INVALID_PLAYER_ID;
 	CrackStorageID[playerid]=-1;
 	PlayerCuffed[playerid]=0;
 	PlayerCuffedTime[playerid]=0;
-	PotPrice[playerid]=0;
+	CannabisPrice[playerid]=0;
 	CrackPrice[playerid]=0;
 	RegistrationStep[playerid]=0;
-	PotGram[playerid]=0;
+	CannabisGram[playerid]=0;
 	CrackGram[playerid]=0;
 	PlayerInfo[playerid][pBanned]=0;
 	ConnectedToPC[playerid]=0;
@@ -1422,7 +1430,6 @@ public OnPlayerConnect(playerid)
 	IsSpawned[playerid] = 0;
 	SpawnKick[playerid] = 0;
 	PlayerStoned[playerid] = 0;
-	PlayerInfo[playerid][pPot] = 0;
 	StartTime[playerid] = 0;
 	TicketOffer[playerid] = INVALID_PLAYER_ID;
 	TicketMoney[playerid] = 0;
@@ -1433,7 +1440,6 @@ public OnPlayerConnect(playerid)
 	TaxiAccepted[playerid] = INVALID_PLAYER_ID;
 	EMSAccepted[playerid] = INVALID_PLAYER_ID;
 	BusAccepted[playerid] = INVALID_PLAYER_ID;
-	PlayerInfo[playerid][pCrack] = 0;
 	HireCar[playerid] = 299;
 	TransportValue[playerid] = 0;
 	TransportMoney[playerid] = 0;
@@ -2791,7 +2797,6 @@ public OnPlayerSpawn(playerid)
   		}
 	}
 	if(GetPVarType(playerid, "WatchingTV")) return 1;
-	// if(GetPVarType(playerid, "pTut")) return 1;
 	if(GetPVarInt(playerid, "NGPassenger") == 1)
 	{
 	    new Float:X, Float:Y, Float:Z;
@@ -3204,7 +3209,7 @@ public OnPlayerEnterCheckpoint(playerid)
   				PlayerInfo[playerid][pSmugSkill] += 1;
 			}
 
-			format(string, sizeof(string), " POT/OPIUM AVAILABLE: %d/1000.", Points[h][Stock]);
+			format(string, sizeof(string), " Cannabis/OPIUM AVAILABLE: %d/1000.", Points[h][Stock]);
 			UpdateDynamic3DTextLabelText(Points[h][TextLabel], COLOR_YELLOW, string);
 			return 1;
 		}
@@ -3817,31 +3822,31 @@ public OnPlayerEnterCheckpoint(playerid)
 
 						if(level >= 0 && level <= 50)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 2 pot & 1 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 2 Cannabis & 1 crack as a bonus for taking the risk of transporting illegal drugs.");
 						    PlayerInfo[playerid][p_iDrug][1] += 2;
 						    PlayerInfo[playerid][p_iDrug][5] += 1;
 						}
 						else if(level >= 51 && level <= 100)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 4 pot & 2 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 4 Cannabis & 2 crack as a bonus for taking the risk of transporting illegal drugs.");
 					    	PlayerInfo[playerid][p_iDrug][1] += 4;
 						    PlayerInfo[playerid][p_iDrug][5] += 2;
 						}
 						else if(level >= 101 && level <= 200)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 6 pot & 3 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 6 Cannabis & 3 crack as a bonus for taking the risk of transporting illegal drugs.");
 					    	PlayerInfo[playerid][p_iDrug][1] += 6;
 						    PlayerInfo[playerid][p_iDrug][5] += 3;
 						}
 						else if(level >= 201 && level <= 400)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 8 pot & 4 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 8 Cannabis & 4 crack as a bonus for taking the risk of transporting illegal drugs.");
 					  	  	PlayerInfo[playerid][p_iDrug][1] += 8;
 						    PlayerInfo[playerid][p_iDrug][5] += 4;
 						}
 						else if(level >= 401)
 						{
-		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 10 pot & 5 crack as a bonus for taking the risk of transporting illegal drugs.");
+		                    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You were also given 10 Cannabis & 5 crack as a bonus for taking the risk of transporting illegal drugs.");
 					   	 	PlayerInfo[playerid][p_iDrug][1] += 10;
 						    PlayerInfo[playerid][p_iDrug][5] += 5;
 						}

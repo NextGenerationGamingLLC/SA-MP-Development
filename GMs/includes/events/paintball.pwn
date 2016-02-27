@@ -905,9 +905,9 @@ stock SpawnPaintballArena(playerid, arenaid)
  	if(PaintBallArena[arenaid][pbArmor] >= 0) {
  		SetArmour(playerid, PaintBallArena[arenaid][pbArmor]);
  	}
- 	GivePlayerWeapon(playerid, PaintBallArena[arenaid][pbWeapons][0], 60000);
- 	GivePlayerWeapon(playerid, PaintBallArena[arenaid][pbWeapons][1], 60000);
- 	GivePlayerWeapon(playerid, PaintBallArena[arenaid][pbWeapons][2], 60000);
+ 	GivePlayerValidWeapon(playerid, PaintBallArena[arenaid][pbWeapons][0], 60000);
+ 	GivePlayerValidWeapon(playerid, PaintBallArena[arenaid][pbWeapons][1], 60000);
+ 	GivePlayerValidWeapon(playerid, PaintBallArena[arenaid][pbWeapons][2], 60000);
 }
 
 stock JoinPaintballArena(playerid, arenaid, password[])

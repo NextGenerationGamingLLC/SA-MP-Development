@@ -16,8 +16,10 @@
 #define 		ENTRANCE_SHORTCUT		KEY_NO
 
 
+/*
 new g_iEntranceID[MAX_PLAYERS],
 	g_iEntranceAID[MAX_PLAYERS];
+*/
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
@@ -29,8 +31,64 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	return 1;
 }
 
-CMD:enter(playerid)
-{
+/*
+Old method
+EntExit_GetID(playerid) {
+
+	for(new i; i < MAX_DDOORS; ++i) {
+
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) &&
+			PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddExteriorVW] && PlayerInfo[playerid][pInt] == DDoorsInfo[i][ddExteriorInt])
+			return DDoor_Enter(playerid, i);
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, DDoorsInfo[i][ddInteriorX], DDoorsInfo[i][ddInteriorY], DDoorsInfo[i][ddInteriorZ]) &&
+			PlayerInfo[playerid][pVW] == DDoorsInfo[i][ddInteriorVW] && PlayerInfo[playerid][pInt] == DDoorsInfo[i][ddInteriorInt])
+			return DDoor_Exit(playerid, i);		
+	}
+	for(new i; i < MAX_HOUSES; ++i) {
+
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) &&
+			PlayerInfo[playerid][pVW] == HouseInfo[i][hExtVW] && PlayerInfo[playerid][pInt] == HouseInfo[i][hExtIW]) {
+			return House_Enter(playerid, i);
+		}
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) &&
+			PlayerInfo[playerid][pVW] == HouseInfo[i][hIntVW] && PlayerInfo[playerid][pInt] == HouseInfo[i][hIntIW]) {
+			return House_Exit(playerid, i);
+		}
+	}
+	for(new i; i < MAX_GARAGES; ++i) {
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) &&
+			PlayerInfo[playerid][pVW] == GarageInfo[i][gar_ExteriorVW]) {
+			return Garage_Enter(playerid, i);
+		}
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) &&
+			PlayerInfo[playerid][pVW] == GarageInfo[i][gar_InteriorVW]) {
+			return Garage_Exit(playerid, i);
+		}
+	}
+	for(new i; i < MAX_BUSINESSES; ++i) {
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2])) {
+			return Business_Enter(playerid, i);
+		}
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2])) {
+			return Business_Exit(playerid, i);
+		}
+	}
+	if(!IsPlayerInAnyVehicle(playerid)) {
+
+		if(InsidePlane[playerid] != INVALID_VEHICLE_ID) return Vehicle_Exit(playerid);
+
+		new iVehModel;
+		for(new i = 0; i < MAX_VEHICLES; i++) {
+			iVehModel = GetVehicleModel(i);
+			if((iVehModel == 508 || iVehModel == 519 || iVehModel == 553 || iVehModel == 570) && IsPlayerInRangeOfVehicle(playerid, i, 5.0)) return Vehicle_Enter(playerid, i);
+		}
+	}
+	return 1;
+}
+*/
+
+CMD:enter(playerid) {
+
 	// SendClientMessage(playerid, COLOR_RED, "/enter is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
 	new areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid);
@@ -38,8 +96,8 @@ CMD:enter(playerid)
 	return 1;
 }
 
-CMD:exit(playerid)
-{
+CMD:exit(playerid) {
+
 	// SendClientMessage(playerid, COLOR_RED, "/exit is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
 	new areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid);
@@ -47,10 +105,6 @@ CMD:exit(playerid)
 	return 1;
 }
 
-timer ResetEntranceVars[5000](playerid) {
-
-	DeletePVar(playerid, "LastEID");
-}
 
 Process_Entrance(playerid, areaid) {
 
@@ -89,12 +143,9 @@ Process_Entrance(playerid, areaid) {
 	return 1;
 }
 
-hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
-	// Process_Entrance(playerid, areaid);
-}
-
-/* public OnPlayerEnterDynamicArea(playerid, areaid) {
+/*
+public OnPlayerEnterDynamicArea(playerid, areaid) {
 
 	// printf("DEBUG: %d entered area %d", playerid, areaid);
 	new i = GetIDFromArea(areaid);
@@ -115,11 +166,12 @@ hook OnPlayerEnterDynamicArea(playerid, areaid) {
 		}
 	}
 	return 1;
-} */
+}
+*/
 
-public OnPlayerLeaveDynamicArea(playerid, areaid)
-{
-	// printf("DEBUG: %d left area %d.", playerid, areaid);
+/*
+public OnPlayerLeaveDynamicArea(playerid, areaid) {
+	printf("DEBUG: %d left area %d.", playerid, areaid);
 	DeletePVar(playerid, "VEHA_ID");
 	ENT_DelVar(playerid);
 	return 1;
@@ -129,6 +181,15 @@ ENT_DelVar(playerid) {
 	
 	g_iEntranceID[playerid] = -1;
 	g_iEntranceAID[playerid] = -1;
+}
+*/
+
+hook OnPlayerStateChange(playerid, newstate, oldstate) {
+
+	if(newstate == PLAYER_STATE_PASSENGER) {
+		new iVehID = GetPlayerVehicleID(playerid);
+		if(iVehID == 570) Vehicle_Enter(playerid, iVehID);
+	}
 }
 
 stock Vehicle_Enter(playerid, i) {
@@ -156,6 +217,14 @@ stock Vehicle_Enter(playerid, i) {
 			PlayerInfo[playerid][pInt] = 9;
 			SetPlayerInterior(playerid, 9);
 		}
+		/*
+		case 570: {
+			Player_StreamPrep(playerid, 2022.0273, 2235.2402, 2103.9536+2500, FREEZE_TIME);
+            SetPlayerFacingAngle(playerid, 0);
+            SetCameraBehindPlayer(playerid);
+            SetPlayerInterior(playerid, 15);
+		}
+		*/
 	}
 
 	SetCameraBehindPlayer(playerid);
@@ -264,9 +333,11 @@ DDoor_Enter(playerid, i)
 		SetVehicleZAngle(iVeh, DDoorsInfo[i][ddInteriorA]);
 		SetVehicleVirtualWorld(iVeh, DDoorsInfo[i][ddInteriorVW]);
 		LinkVehicleToInterior(iVeh, DDoorsInfo[i][ddInteriorInt]);
+		/*
 		if(IsValidDynamicArea(iVehEnterAreaID[iVeh])) {
 			Streamer_SetIntData(STREAMER_TYPE_AREA, iVehEnterAreaID[iVeh], E_STREAMER_WORLD_ID, iVeh);
 		}
+		*/
 		if(GetPVarInt(playerid, "tpForkliftTimer") > 0)
 		{
 			SetPVarInt(playerid, "tpJustEntered", 1);

@@ -47,7 +47,7 @@ LoadATMPoints() {
 	ATMPoint[35] = CreateDynamicSphere(1014.1396,2060.8284,1085.8531, 3.0);
 	ATMPoint[36] = CreateDynamicSphere(1013.4720,2023.8784,1085.8531, 3.0);
 
-	for(new i = 0; i < 37; i++) Streamer_SetIntData(STREAMER_TYPE_AREA, ATMPoint[i], E_STREAMER_EXTRA_ID, i);
+	// for(new i = 0; i < 37; i++) Streamer_SetIntData(STREAMER_TYPE_AREA, ATMPoint[i], E_STREAMER_EXTRA_ID, i);
 
 	print("[Streamer] ATM Points Loaded");
 
@@ -60,13 +60,16 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	{
 		new areaid[1];
 		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
-		new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
-		if((i >= 0 && i <= sizeof(ATMPoint)) && areaid[0] == ATMPoint[i])
-		{
-			format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s approaches the ATM, typing in their PIN.", GetPlayerNameEx(playerid));
-			//ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 15.0, 5000);
-			ShowATMMenu(playerid);
+		// new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
+		for(new i; i < sizeof(ATMPoint); ++i) {
+
+			if(areaid[0] == ATMPoint[i]) {
+				
+				format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s approaches the ATM, typing in their PIN.", GetPlayerNameEx(playerid));
+				//ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 15.0, 5000);
+				ShowATMMenu(playerid);
+			}
 		}
 	}
 	return 1;

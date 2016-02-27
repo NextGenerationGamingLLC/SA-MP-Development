@@ -35,16 +35,17 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-new iBankVault = 1000000000;
+/*
+new iBankVault;
 task Bank_VaultCheck[60000 * 15]() {
 
-	Bank_UpdateBank(iBankVault, 0);
+	Bank_UpdateBank(iBankVault);
 }
 
 
 Bank_LoadBank() {
 	// Current Main Server vault: 216.000.000.000. Above 32-bit int limit. Divide by 1000 from bigint column to get a readable number for SA:MP.
-	// mysql_function_query(MainPipeline, "SELECT money / 1000 FROM `bank` WHERE `id` = '1'", true, "Bank_OnLoadBank", "");
+	mysql_function_query(MainPipeline, "SELECT money / 1000 FROM `bank` WHERE `id` = '1'", true, "Bank_OnLoadBank", "");
 }
 
 forward Bank_OnLoadBank();
@@ -54,25 +55,16 @@ public Bank_OnLoadBank() {
 		iFields;
 
 	cache_get_data(iRows, iFields, MainPipeline);
-	// iBankVault = cache_get_field_content_int(0, "money / 1000", MainPipeline);
+	iBankVault = cache_get_field_content_int(0, "money / 1000", MainPipeline);
 	print("[LS Bank] - Loaded all the $$$");
 	return 1;
 }
+*/
 
-
-Bank_UpdateBank(iAmount, iChoiceID) {
+Bank_UpdateBank(iAmount) {
 	
-	switch(iChoiceID) {
-		case 0: {
-
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `bank` SET `money` = money + %d - 1000000000 WHERE `id` = 1 AND `money` > 0", INVALID_PLAYER_ID, iBankVault);
-			mysql_function_query(MainPipeline, szMiscArray, true, "Bank_OnUpdateBank", "i", 0);
-		}
-		case 1: {
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `bank` SET `money` = money + %d + %d - 1000000000 WHERE `id` = 1 AND `money` > 0", iAmount, iBankVault);
-			mysql_function_query(MainPipeline, szMiscArray, true, "Bank_OnUpdateBank", "i", iAmount);
-		}
-	}
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `bank` SET `money` = money + %d WHERE `money` > 0", iAmount);
+	mysql_function_query(MainPipeline, szMiscArray, true, "Bank_OnUpdateBank", "i", iAmount);
 }
 
 forward Bank_OnUpdateBank(iAmount);
@@ -84,22 +76,15 @@ public Bank_OnUpdateBank(iAmount) {
 	cache_get_data(iRows, iFields, MainPipeline);
 	iRows = cache_affected_rows(MainPipeline);
 	if(iRows) {
-		iBankVault = 1000000000;
-		Bank_ProcessMoney(iAmount);
-		printf("[LS BANK] Calculated %d and reset the IG cash flow.", iAmount);
-		format(szMiscArray, sizeof(szMiscArray), "[LS BANK] Calculated %d and reset the IG cash flow.", iAmount);
+		
+		format(szMiscArray, sizeof(szMiscArray), "[LS BANK] Processed $%s", iAmount);
 		Log("logs/bank.log", szMiscArray);
+		
 	}
-	//else Bank_Bankrupt();
+	else Bank_Bankrupt();
 	return 1;
 }
 
-/*
-Bank_Bankrupt() {
-	if(!GetGVarInt("Bankrupt")) SendClientMessageToAll(COLOR_LIGHTRED, "[BANK]: We are terribly sorry. We are bankrupt. Goodbye!");
-	SetGVarInt("Bankrupt", 1);
-}
-*/
 
 forward Bank_FetchData(playerid);
 public Bank_FetchData(playerid) {
@@ -113,14 +98,19 @@ public Bank_FetchData(playerid) {
 
 	format(szMiscArray, sizeof(szMiscArray), "[BANK]: Vault: {CCCCCC}$%s", szMoney);
 	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-
-	format(szMiscArray, sizeof(szMiscArray), "(( IG-FLOW: $%s ))", number_format(iBankVault));
-	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 	return 1;
+}
+
+
+
+Bank_Bankrupt() {
+	if(!GetGVarInt("Bankrupt")) SendClientMessageToAll(COLOR_LIGHTRED, "[BANK]: We are terribly sorry. We are bankrupt. Goodbye!");
+	SetGVarInt("Bankrupt", 1);
 }
 
 Bank_TransferCheck(iAmount) {
 
+	/*
 	if((-2147483647 < iBankVault + iAmount < 2147483647)) {
 
 		if(iBankVault > (iAmount * -1)) { // If you withdraw, the bank will always be happy.
@@ -132,13 +122,23 @@ Bank_TransferCheck(iAmount) {
 		Bank_UpdateBank(iAmount, 1);
 	}
 	if(GetGVarInt("Bankrupt")) return 0;
+	*/
+
+	if(GetGVarInt("Bankrupt")) {
+		// SendClientMessageEx(playerid, COLOR_LIGHTRED, "[Bank]: We're terribly sorry, we are bankrupt.");
+		// return 0;
+		return 1;
+	}
+	else Bank_UpdateBank(iAmount);
 	return 1;
 }
 
+/*
 Bank_ProcessMoney(iAmount) {
 
 	iBankVault += iAmount;
 }
+*/
 
 CMD:bankvault(playerid, params[]) {
 
@@ -147,12 +147,27 @@ CMD:bankvault(playerid, params[]) {
 	return 1;
 }
 
+CMD:resetbank(playerid, params[]) {
+	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
+	mysql_function_query(MainPipeline, "UPDATE `bank` SET `money` = (SELECT SUM(`money`) FROM `accounts`) WHERE `id` = 1", false, "Bank_ResetVault", "i", playerid);
+	return 1;
+}
+
+forward Bank_ResetVault(playerid);
+public Bank_ResetVault(playerid) {
+
+	if(mysql_errno(MainPipeline)) SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong.");
+	mysql_function_query(MainPipeline, "SELECT `money` FROM `bank` WHERE `id` = '1'", true, "Bank_FetchData", "i", playerid);
+}
+
+/*
 CMD:updatevault(playerid, parmas[]) {
 	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
-	Bank_UpdateBank(iBankVault, 0);
+	Bank_UpdateBank(iBankVault);
 	SendClientMessageEx(playerid, COLOR_YELLOW, "[BANK]: You updated the bank vault, resetting the cash flow.");
 	return 1;
 }
+*/
 
 PayDay(i) {
 	if(!gPlayerLogged{i}) return 1;

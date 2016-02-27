@@ -110,8 +110,8 @@ InitiateGamemode()
 
     TurfWars_LoadData();
 
-    Bank_LoadBank();
-    // LoadFurniture();
+    // Bank_LoadBank();
+    LoadFurniture();
 
 	print("\n-------------------------------------------");
 	print("Next Generation Roleplay\n");

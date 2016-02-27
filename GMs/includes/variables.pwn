@@ -443,10 +443,10 @@ new Float:HiddenTreasure[23][4] = {
 {709.3392,-1893.0990,3.1038,309.7114},
 {404.1025,-1882.6399,2.0538,350.5217} };
 
-new itemtype[][] = { "Nothing", "Cash", "Pot", "Crack", "Materials" };
+new itemtype[][] = { "Nothing", "Cash", "Cannabis", "Crack", "Materials" };
 new storagetype[][] = { "Pocket", "Bag", "Backpack", "Briefcase", "PSF" };
 
-// Cash, Pot, Crack, Mats
+// Cash, Cannabis, Crack, Mats
 //new onhandlimit[] = { 250000, 20, 15, 0 };
 new const onhandlimit[] = { 2147483647, 50, 50, 2147483647 };
 new bbackpacklimit[] = { 250000, 20, 15, 25000 };
@@ -766,10 +766,10 @@ new MatsOffer[MAX_PLAYERS];
 new MatsStorageID[MAX_PLAYERS];
 new MatsPrice[MAX_PLAYERS];
 new MatsAmount[MAX_PLAYERS];
-new PotOffer[MAX_PLAYERS];
-new PotStorageID[MAX_PLAYERS];
-new PotPrice[MAX_PLAYERS];
-new PotGram[MAX_PLAYERS];
+new CannabisOffer[MAX_PLAYERS];
+new CannabisStorageID[MAX_PLAYERS];
+new CannabisPrice[MAX_PLAYERS];
+new CannabisGram[MAX_PLAYERS];
 new CrackOffer[MAX_PLAYERS];
 new CrackStorageID[MAX_PLAYERS];
 new CrackPrice[MAX_PLAYERS];
@@ -1979,7 +1979,7 @@ new SuspectCrimes[][] = {
 	"3-4-3 Resisting an Arrest",
 	"3-4-9 Disobeying Lawful Orders",
 	"3-4-5 Vandalism",
-	"3-5-6 Consumption of Pot in Public"
+	"3-5-6 Consumption of Cannabis in Public"
 };
 
 	// Category (0 = mis, 1 = fel), Stars(1 mis, 2 fel, 3 violent)
@@ -2012,7 +2012,7 @@ new SuspectCrimeInfo[][] = {
 	{ 0, 1, 30, 15000 }, //"3-4-3 Resisting an Arrest",
 	{ 0, 1, 15, 8000 }, //"3-4-9 Disobeying Lawful Orders",
 	{ 0, 1, 10, 5000 }, //"3-4-5 Vandalism",
-	{ 0, 1, 10, 5000 } //"3-5-6 Consumption of Pot in Public"
+	{ 0, 1, 10, 5000 } //"3-5-6 Consumption of Cannabis in Public"
 };
 
 #if defined SHOPAUTOMATED
@@ -2740,7 +2740,7 @@ new const szFonts[][] = {
 	"Amsterdam Graffiti"
 };
 
-/*
+
 new szFurnitureCategories[][] = {
 	"Bathroom",
 	"Comfort",
@@ -2889,7 +2889,7 @@ new const szFurnitureTextures[][][] = {
 // for(new i; i < sizeof(szFurnitureCategories); ++i) FurnitureList[i] = mS_INVALID_LISTID;
 
 new Text:Furniture_TD[26];
-*/
+
 
 /* IRC/Slack */
 //new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], BotID[MAX_BOTS], BotGroupID;

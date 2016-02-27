@@ -260,13 +260,13 @@ task SyncTime[60000]()
 		else
 		{
 		    if(SpecLotto) {
-		        format(szMiscArray, sizeof(szMiscArray), "Special Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
+		        format(szMiscArray, sizeof(szMiscArray), "Special Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total Jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
 				SendClientMessageToAllEx(COLOR_WHITE, szMiscArray);
 		        format(szMiscArray, sizeof(szMiscArray), "Special Prize: %s", LottoPrize);
 				SendClientMessageToAllEx(COLOR_WHITE, szMiscArray);
 		    }
 		    else {
-		    	format(szMiscArray, sizeof(szMiscArray), "Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
+		    	format(szMiscArray, sizeof(szMiscArray), "Lottery: Remember to buy a lotto ticket at a 24/7. Next drawing is at %s. The total Jackpot is $%s", ConvertToTwelveHour(tmphour), number_format(Jackpot));
 				SendClientMessageToAllEx(COLOR_WHITE, szMiscArray);
 			}
 		}
@@ -1120,7 +1120,7 @@ task hungerGames[1000]()
 
 					if(GetPVarInt(i, "HungerVoucher") == 1)
 					{
-						GivePlayerWeapon(i, 29, 60000);
+						GivePlayerValidWeapon(i, 29, 60000);
 						SetHealth(i, 100.0);
 						DeletePVar(i, "HungerVoucher");
 					}
@@ -2158,12 +2158,15 @@ ptask PlayerHeartBeat[1000](i) {
 			{
 				if(IsPlayerConnected(EMSAccepted[i]))
 				{
-					new Float:X,Float:Y,Float:Z;
-					GetPlayerPos(EMSAccepted[i], X, Y, Z);
-					new zone[MAX_ZONE_NAME];
-					Get3DZone(X, Y, Z, zone, sizeof(zone));
-					format(szMiscArray, sizeof(szMiscArray), "Your patient is located in %s.", zone);
-					SetPlayerCheckpoint(i, X, Y, Z, 5);
+					if(!GetPlayerInterior(EMSAccepted[i])) {
+
+						new Float:X,Float:Y,Float:Z;
+						GetPlayerPos(EMSAccepted[i], X, Y, Z);
+						new zone[MAX_ZONE_NAME];
+						Get3DZone(X, Y, Z, zone, sizeof(zone));
+						format(szMiscArray, sizeof(szMiscArray), "Your patient is located in %s.", zone);
+						SetPlayerCheckpoint(i, X, Y, Z, 5);
+					}
 				}
 			}
 		}
@@ -2182,8 +2185,8 @@ ptask PlayerHeartBeat[1000](i) {
 		}
 		if(MedicCallTime[i] > 0)
 		{
-			if(MedicCallTime[i] == 45) { MedicCallTime[i] = 0; DisablePlayerCheckpoint(i); PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0); GameTextForPlayer(i, "~r~RedMarker gone", 2500, 1); }
-			else
+			// if(MedicCallTime[i] == 45) { MedicCallTime[i] = 0; DisablePlayerCheckpoint(i); PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0); GameTextForPlayer(i, "~r~RedMarker gone", 2500, 1); }
+			// else
 			{
 				format(szMiscArray, sizeof(szMiscArray), "%d", 45 - MedicCallTime[i]);
 				new Float:X,Float:Y,Float:Z;

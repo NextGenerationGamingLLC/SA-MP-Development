@@ -192,7 +192,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 3: //Drug Dealer
 					{
-						ShowPlayerDialogEx(playerid, DRUGDEALERJOB, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Information:\n\nThis job can be used to sell pot and crack to any customers you might find.\nIt often comes in handy, when you're a higher level at it.\nThe higher the level, the more drugs you can hold.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, DRUGDEALERJOB, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Information:\n\nThis job can be used to sell Cannabis and crack to any customers you might find.\nIt often comes in handy, when you're a higher level at it.\nThe higher the level, the more drugs you can hold.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
 					}
 					case 4: //Mechanic
 					{
@@ -216,7 +216,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 9: //Drug Smuggling
 					{
-						ShowPlayerDialogEx(playerid, SMUGGLEJOB, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Information:\n\nThis job can be used to keep Crack and Pot filled in the Crack Lab.\nThis job is very profitable as people usually buy crack and pot, and sometimes they try to steal your pot and crack.\nThis is an ilegal job and you can get busted for doing it.", "Next", "Cancel");
+						ShowPlayerDialogEx(playerid, SMUGGLEJOB, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Information:\n\nThis job can be used to keep Crack and Cannabis filled in the Crack Lab.\nThis job is very profitable as people usually buy crack and Cannabis, and sometimes they try to steal your Cannabis and crack.\nThis is an ilegal job and you can get busted for doing it.", "Next", "Cancel");
 					}
 					case 10: //Craftsman
 					{
@@ -241,7 +241,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				ShowPlayerDialogEx(playerid, SMUGGLEJOB3, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Commands:\n\n/getcrate [name(Pot/Crack)]\n\nLocation of job: This job can be obtained inside the Crack Lab, at the job icon(yellow circle).", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, SMUGGLEJOB3, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Commands:\n\n/getcrate [name(Cannabis/Crack)]\n\nLocation of job: This job can be obtained inside the Crack Lab, at the job icon(yellow circle).", "Done", "Cancel");
 			}
 		}
 		case SMUGGLEJOB:
@@ -325,7 +325,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response)
 			{
-				ShowPlayerDialogEx(playerid, DRUGDEALERJOB2, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You can hold 10 pot and 5 crack.\nLevel 2: You can hold 20 pot and 15 crack.\nLevel 3: You can hold 30 pot and 15 crack.\nLevel 4: You can hold 40 pot and 20 crack.\nLevel 5: You can hold 50 pot and 25 crack.", "Next", "Cancel");
+				ShowPlayerDialogEx(playerid, DRUGDEALERJOB2, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Note: The reload time is always 1 minute, no matter what level.\n\nSkills:\n\nLevel 1: You can hold 10 Cannabis and 5 crack.\nLevel 2: You can hold 20 Cannabis and 15 crack.\nLevel 3: You can hold 30 Cannabis and 15 crack.\nLevel 4: You can hold 40 Cannabis and 20 crack.\nLevel 5: You can hold 50 Cannabis and 25 crack.", "Next", "Cancel");
 			}
 		}
 		case DRUGDEALERJOB2:

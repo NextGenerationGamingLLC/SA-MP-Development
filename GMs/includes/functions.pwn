@@ -1556,11 +1556,11 @@ stock GivePlayerEventWeapons( playerid )
 {
 	if( GetPVarInt( playerid, "EventToken" ) == 1 )
 	{
-		GivePlayerWeapon( playerid, EventKernel[ EventWeapons ][ 0 ], 60000 );
-		GivePlayerWeapon( playerid, EventKernel[ EventWeapons ][ 1 ], 60000 );
-		GivePlayerWeapon( playerid, EventKernel[ EventWeapons ][ 2 ], 60000 );
-		GivePlayerWeapon( playerid, EventKernel[ EventWeapons ][ 3 ], 60000 );
-		GivePlayerWeapon( playerid, EventKernel[ EventWeapons ][ 4 ], 60000 );
+		GivePlayerValidWeapon( playerid, EventKernel[ EventWeapons ][ 0 ], 60000 );
+		GivePlayerValidWeapon( playerid, EventKernel[ EventWeapons ][ 1 ], 60000 );
+		GivePlayerValidWeapon( playerid, EventKernel[ EventWeapons ][ 2 ], 60000 );
+		GivePlayerValidWeapon( playerid, EventKernel[ EventWeapons ][ 3 ], 60000 );
+		GivePlayerValidWeapon( playerid, EventKernel[ EventWeapons ][ 4 ], 60000 );
 	}
 
 	return 1;

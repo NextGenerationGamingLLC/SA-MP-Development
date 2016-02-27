@@ -1,4 +1,5 @@
-/* Furniture System
+/*
+	Furniture System
 	by Jingles
 */
 
@@ -276,10 +277,10 @@ new const szFurnitureCatList[][][32] = {
 	{2254, "Yellow Cab", 1000},
 	
 	// Plants 
-	{949, "Plant Pot", 700},
-	{2001, "Plant Pot 2", 700},
-	{2010, "Plant Pot 3", 800},
-	{2011, "Palm Pot", 1000},
+	{949, "Plant Cannabis", 700},
+	{2001, "Plant Cannabis 2", 700},
+	{2010, "Plant Cannabis 3", 800},
+	{2011, "Palm Cannabis", 1000},
 	{2244, "Natural Plant", 1200},
 	{2345, "Plant Wall Decor", 1500},
 	{3802, "Plant Ornament", 1500},
@@ -459,6 +460,7 @@ BuildIcons(playerid, choice) {
 	}
 }
 
+/*
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & KEY_SPRINT && newkeys & KEY_CROUCH) {
@@ -523,6 +525,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	}
 	return 1;
 }
+*/
 
 GetMaxFurnitureSlots(playerid) {
 
@@ -1027,7 +1030,10 @@ CMD:furniturehelp(playerid, params[]) {
 
 CMD:furniture(playerid, params[]) {
 
+	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
+	return 1;
 
+	/*
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
 		for(new x; x < sizeof(Furniture_TD); ++x) TextDrawHideForPlayer(playerid, Furniture_TD[x]);
 		CancelSelectTextDraw(playerid);
@@ -1046,10 +1052,15 @@ CMD:furniture(playerid, params[]) {
 		SetPVarInt(playerid, PVAR_INHOUSE, i);
 	}
 	return 1;
+	*/
 }
 
 CMD:unfurnishhouse(playerid, params[]) {
 	
+	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
+	return 1;
+
+	/*
 	new iHouseID = GetHouseID(playerid),
 		Float:fHouseZ,
 		fDistance;
@@ -1110,6 +1121,7 @@ CMD:unfurnishhouse(playerid, params[]) {
 		}
 	}
 	return 1;
+	*/
 }
 
 timer HousePosition[5000](playerid, iHouseID) {
@@ -1119,6 +1131,10 @@ timer HousePosition[5000](playerid, iHouseID) {
 
 CMD:furnishhouse(playerid, params[]) {
 
+	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
+	return 1;
+
+	/*
 	new iHouseID = GetHouseID(playerid),
 		Float:fHouseZ,
 		fDistance;
@@ -1177,6 +1193,7 @@ CMD:furnishhouse(playerid, params[]) {
 		}
 	}
 	return 1;
+	*/
 }
 
 forward OnEditFurniture();
@@ -1188,6 +1205,10 @@ public OnEditFurniture() {
 
 CMD:furnitureresetpos(playerid, params[]) {
 
+	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
+	return 1;
+
+	/*
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
 
 		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
@@ -1195,10 +1216,15 @@ CMD:furnitureresetpos(playerid, params[]) {
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You can only use this when you are falling while positioning a piece of furniture.");
 	return 1;
+	*/
 }
 
 CMD:destroyfurniture(playerid, params[]) {
 
+	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
+	return 1;
+
+	/*
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
 
 	new iHouseID = GetHouseID(playerid),
@@ -1209,10 +1235,15 @@ CMD:destroyfurniture(playerid, params[]) {
 	if(!IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid slot.");
 	DestroyFurniture(iHouseID, iSlotID);
 	return 1;
+	*/
 }
 
 CMD:revokebuilders(playerid, params[]) {
 
+	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
+	return 1;
+
+	/*
 	new iHouseID;
 	if(sscanf(params, "d", iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /revokebuilder [house (1, 2, 3)]");
 	switch(iHouseID) {
@@ -1227,6 +1258,7 @@ CMD:revokebuilders(playerid, params[]) {
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnRevokeBuildPerms", "");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "All builder's permissions have been revoked.");
 	return 1;
+	*/
 }
 
 forward OnRevokeBuildPerms();

@@ -239,6 +239,15 @@ NationSel_HandleNationSelection(playerid)
 }*/
 
 
+stock NationCheck(playerid, giveplayerid) {
+
+	if(PlayerInfo[playerid][pNation] != PlayerInfo[giveplayerid][pNation]) {
+		SendClientMessageEx(playerid, COLOR_GRAD1, "This person is not part of your nation and can therefore not be processed.");
+		return 0;
+	}
+	return 1;
+}
+
 CMD:apply(playerid, params[])
 {
 	new choice[3];
@@ -301,12 +310,12 @@ CMD:deport(playerid, params[])
 				{
 					case 0:
 					{
-						SetPlayerPos(giveplayerid, 1699.2, 1435.1, 10.7);
+						SetPlayerPos(giveplayerid, 2231.578613, -48.729660, 26.484375);
 						SetPlayerFacingAngle(giveplayerid, 270.0);
 					}
 					case 1:
 					{
-						SetPlayerPos(giveplayerid, -1446.5997, 2608.4478, 55.8359);
+						SetPlayerPos(giveplayerid, 2231.578613, -48.729660, 26.484375);
 						SetPlayerFacingAngle(giveplayerid, 180.0);
 					}
 				}
@@ -329,6 +338,24 @@ CMD:deport(playerid, params[])
 				}
 				SendClientMessageEx(giveplayerid, COLOR_RED, "You have been deported back to San Andreas.");
 			}
+			else if(PlayerInfo[playerid][pNation] == 0 && PlayerInfo[giveplayerid][pNation] == 0)
+			{
+				switch(random(2))
+				{
+					case 0:
+					{
+						SetPlayerPos(giveplayerid, 1715.1201,-1903.1711,13.5665);
+						SetPlayerFacingAngle(giveplayerid, 360.0);
+					}
+					case 1:
+					{
+						SetPlayerPos(giveplayerid, -1969.0737,138.1210,27.6875);
+						SetPlayerFacingAngle(giveplayerid, 90.0);
+					}
+				}
+				PlayerInfo[giveplayerid][pNation] = 2;
+				SendClientMessageEx(giveplayerid, COLOR_RED, "You were deported from your country. You have lost your citizenship.");
+			}
 			else if(PlayerInfo[playerid][pNation] == 1 && PlayerInfo[giveplayerid][pNation] == 1)
 			{
 				switch(random(2))
@@ -344,8 +371,8 @@ CMD:deport(playerid, params[])
 						SetPlayerFacingAngle(giveplayerid, 90.0);
 					}
 				}
-				PlayerInfo[giveplayerid][pNation] = 0;
-				SendClientMessageEx(giveplayerid, COLOR_RED, "You have been deported to San Andreas.");
+				PlayerInfo[giveplayerid][pNation] = 2;
+				SendClientMessageEx(giveplayerid, COLOR_RED, "You were deported from your country. You have lost your citizenship.");
 			}
 	    }
 	}

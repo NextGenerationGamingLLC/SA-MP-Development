@@ -3,20 +3,15 @@
 hook OnPlayerEnterDynamicArea(playerid, areaid)
 {
 	new i = MetDet_GetIDFromArea(areaid);
+	if(i == -1) return 1;
 
-	if(-1 < i < MAX_METALDETECTORS) {
-		
-		if(areaid == arrMetalDetector[i][metdet_iAreaID]) {
-
-			new wepid, iammo;
-			for (new idx = 0; idx <= 12; ++idx)
-			{
-				GetPlayerWeaponData(playerid, idx, wepid, iammo);
-				switch(wepid)
-				{
-					case 24 .. 40: { MetDet_Alarm(i); break; }
-				}
-			}
+	new wepid, iammo;
+	for(new idx = 0; idx <= 12; ++idx)
+	{
+		GetPlayerWeaponData(playerid, idx, wepid, iammo);
+		switch(wepid)
+		{
+			case 24 .. 40: { MetDet_Alarm(i); break; }
 		}
 	}
 	return 1;
@@ -147,7 +142,7 @@ MetDet_Process(id, Float:X = 0.0, Float:Y = 0.0, Float:Z = 0.0, Float:RX = 0.0, 
 	if(IsValidDynamicArea(arrMetalDetector[id][metdet_iAreaID])) DestroyDynamicArea(arrMetalDetector[id][metdet_iAreaID]);
 	arrMetalDetector[id][metdet_iAreaID] = CreateDynamicSphere(X, Y, Z, 3.0, .worldid = iVW, .interiorid = iINT);
 
- 	Streamer_SetIntData(STREAMER_TYPE_AREA, arrMetalDetector[id][metdet_iAreaID], E_STREAMER_EXTRA_ID, id);
+ 	// Streamer_SetIntData(STREAMER_TYPE_AREA, arrMetalDetector[id][metdet_iAreaID], E_STREAMER_EXTRA_ID, id);
 }
 
 MetDet_Alarm(i)
@@ -165,11 +160,12 @@ public MetDet_Restore(i)
 	UpdateDynamic3DTextLabelText(arrMetalDetector[i][metdet_iTextID], COLOR_WHITE, szMiscArray);
 }
 
-MetDet_GetIDFromArea(areaid)
-{
-	new iAssignData;
-	iAssignData = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
-	return iAssignData;
+MetDet_GetIDFromArea(areaid) {
+
+	for(new i; i < MAX_METALDETECTORS; ++i) {
+		if(areaid == arrMetalDetector[i][metdet_iAreaID]) return i;
+	}
+	return -1;
 }
 
 MetDet_SaveMetDet(id)

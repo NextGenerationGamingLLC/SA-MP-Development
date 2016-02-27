@@ -25,6 +25,7 @@ stock ShowStats(playerid,targetid)
 		{
 			case 0: nation = "San Andreas";
 			case 1: nation = "New Eire";
+			case 2: nation = "None";
 		}
 		new insur[32];
 		insur = GetHospitalName(PlayerInfo[targetid][pInsurance]);

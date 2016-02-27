@@ -267,6 +267,13 @@ GetClosestPrisonPhone(playerid)
 	return returnval;
 }
 
+Prison_SetPlayerSkin(playerid) {
+	switch(PlayerInfo[playerid][pSex]) {
+		case 1: SetPlayerSkin(playerid, 8);
+		case 2: SetPlayerSkin(playerid, 211);
+	}
+}
+
 forward OpenDocAreaDoors(doorid, open);
 public OpenDocAreaDoors(doorid, open)
 {
@@ -792,16 +799,14 @@ CMD:bail(playerid, params[])
 			if(GetPlayerCash(playerid) > PlayerInfo[playerid][pBailPrice])
 			{
 				new string[128];
-
 				format(string, sizeof(string), "You bailed yourself out for $%d.", PlayerInfo[playerid][pBailPrice]);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				format(string, sizeof string, "%s has bailed themselves out for $%s.", GetPlayerNameEx(playerid), number_format(PlayerInfo[playerid][pBailPrice]));
+ 				for(new x; x < MAX_GROUPS; ++x) if(arrGroupData[x][g_iDoCAccess] >= 0 && arrGroupData[x][g_iDoCAccess] != INVALID_RANK) GroupLog(x, string);
 				GivePlayerCash(playerid, -PlayerInfo[playerid][pBailPrice]);
 				PlayerInfo[playerid][pBailPrice] = 0;
 				WantLawyer[playerid] = 0; CallLawyer[playerid] = 0;
 				PlayerInfo[playerid][pJailTime] = 1;
-
-				format(string, sizeof string, "%s has bailed themselves out for $%s.", GetPlayerNameEx(playerid), number_format(PlayerInfo[playerid][pBailPrice]));
- 				GroupLog(2, string); // Prison Group ID (September 2015).
 			}
 			else
 			{

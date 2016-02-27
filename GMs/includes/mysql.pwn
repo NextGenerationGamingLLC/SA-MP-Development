@@ -302,8 +302,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pWRestricted]			= cache_get_field_content_int(row,  "WRestricted", MainPipeline);
 					PlayerInfo[extraid][pMats]					= cache_get_field_content_int(row,  "Materials", MainPipeline);
 					PlayerInfo[extraid][pCrates]				= cache_get_field_content_int(row,  "Crates", MainPipeline);
-					PlayerInfo[extraid][pPot]					= cache_get_field_content_int(row,  "Pot", MainPipeline);
-					PlayerInfo[extraid][pCrack]					= cache_get_field_content_int(row,  "Crack", MainPipeline);
+					// PlayerInfo[extraid][pPot]					= cache_get_field_content_int(row,  "Pot", MainPipeline);
+					// PlayerInfo[extraid][pCrack]					= cache_get_field_content_int(row,  "Crack", MainPipeline);
 					PlayerInfo[extraid][pNation]				= cache_get_field_content_int(row,  "Nation", MainPipeline);
 					PlayerInfo[extraid][pLeader]				= cache_get_field_content_int(row,  "Leader", MainPipeline);
 					PlayerInfo[extraid][pMember]				= cache_get_field_content_int(row,  "Member", MainPipeline);
@@ -1646,10 +1646,10 @@ stock ClearCrimes(playerid, clearerid = INVALID_PLAYER_ID)
 	if(clearerid != INVALID_PLAYER_ID && (0 <= PlayerInfo[clearerid][pMember] < MAX_GROUPS))
 	{
 		iAllegiance = arrGroupData[PlayerInfo[clearerid][pMember]][g_iAllegiance];
-		format(query, sizeof(query), "UPDATE `mdc` SET `active`=0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);
+		format(query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);
 	}
 	else {
-		format(query, sizeof(query), "UPDATE `mdc` SET `active`=0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
+		format(query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
 	}
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
@@ -1663,7 +1663,7 @@ stock DisplayCrimes(playerid, suspectid)
 		iAllegiance = arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance];
 	}
 	else iAllegiance = 1;
-    format(query, sizeof(query), "SELECT issuer, crime, active FROM `mdc` WHERE id=%d AND origin=%d ORDER BY `time` AND `active` DESC LIMIT 12", GetPlayerSQLId(suspectid), iAllegiance);
+    format(query, sizeof(query), "SELECT issuer, crime, active FROM `mdc` WHERE `id` = '%d' AND `origin` = '%d' ORDER BY `time` AND `active` DESC LIMIT 12", GetPlayerSQLId(suspectid), iAllegiance);
     mysql_function_query(MainPipeline, query, true, "MDCQueryFinish", "ii", playerid, suspectid);
 	return 1;
 }
@@ -2140,8 +2140,8 @@ stock g_mysql_SaveAccount(playerid)
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "WRestricted", PlayerInfo[playerid][pWRestricted]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Materials", PlayerInfo[playerid][pMats]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Crates", PlayerInfo[playerid][pCrates]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Pot", PlayerInfo[playerid][pPot]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Crack", PlayerInfo[playerid][pCrack]);
+    // SavePlayerInteger(query, GetPlayerSQLId(playerid), "Pot", PlayerInfo[playerid][pPot]);
+    // SavePlayerInteger(query, GetPlayerSQLId(playerid), "Crack", PlayerInfo[playerid][pCrack]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Nation", PlayerInfo[playerid][pNation]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Leader", PlayerInfo[playerid][pLeader]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Member", PlayerInfo[playerid][pMember]);
@@ -5120,7 +5120,7 @@ public Group_QueryFinish(iType, iExtraID) {
 				arrGroupLockers[iGroup][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iGroup][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
 
 				arrGroupLockers[iGroup][iLocker][g_iLockerAreaID] = CreateDynamicSphere(arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 3.0, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
-				Streamer_SetIntData(STREAMER_TYPE_AREA, arrGroupLockers[iGroup][iLocker][g_iLockerAreaID], E_STREAMER_EXTRA_ID, iLocker);
+				// Streamer_SetIntData(STREAMER_TYPE_AREA, arrGroupLockers[iGroup][iLocker][g_iLockerAreaID], E_STREAMER_EXTRA_ID, iLocker);
 			}
 			iIndex++;
 

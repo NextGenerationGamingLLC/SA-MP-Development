@@ -62,8 +62,8 @@ CMD:service(playerid, params[])
 		new zone[MAX_ZONE_NAME];
 		GetPlayer2DZone(playerid, zone, MAX_ZONE_NAME);
 		SetPVarInt(playerid, "EMSAttempt", 1);
-		SendClientMessageEx(playerid, COLOR_WHITE, "The EMS have been informed of your current location and are on their way.");
-		format(string, sizeof(string), "Emergency Dispatch has reported (%d) %s to be wounded at %s, They require immediate emergency transport.",playerid, GetPlayerNameEx(playerid), zone);
+		SendClientMessageEx(playerid, COLOR_WHITE, "The EMS has been informed of your current location and is on its way.");
+		format(string, sizeof(string), "Emergency Dispatch has reported (%d) %s at %s. They require immediate emergency transport (/emslist).",playerid, GetPlayerNameEx(playerid), zone);
 		SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
 		PlayerInfo[playerid][pServiceTime] = gettime()+30;
 		return 1;

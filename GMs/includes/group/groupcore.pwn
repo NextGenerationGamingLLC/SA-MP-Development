@@ -154,7 +154,7 @@ SaveGroup(iGroupID) {
 	);
 
 	format(szMiscArray, sizeof(szMiscArray), "%s\
-		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i', `GroupToyID` = '%i', `TurfTax` = '%i'",
+		`OOCChat` = '%i', `OOCColor` = '%i', `pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Opium` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i', `GroupToyID` = '%i', `TurfTax` = '%i'",
 		szMiscArray,
 		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
 		arrGroupData[iGroupID][g_iOpium], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank],
@@ -658,15 +658,16 @@ ReturnCrimeGroupType(iType)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid))
-	{
-		if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
-		{
+	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid)) {
+
+		if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) {
+			
 			new areaid[1];
 			GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
-			new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
-			if((0 <= i < MAX_GROUP_LOCKERS) && arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID] == areaid[0])
-				cmd_locker(playerid, "");
+			// new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
+			for(new i; i < MAX_GROUP_LOCKERS; ++i) {
+				if(areaid[0] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) cmd_locker(playerid, "");
+			}
 		}
 	}
 }
@@ -777,8 +778,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SetPVarInt(playerid, "GSafe_Opt", 2);
 				return ShowPlayerDialogEx(playerid, G_LOCKER_DRUGS, DIALOG_STYLE_TABLIST_HEADERS, string, szMiscArray, "Select", "<<");
 
-				//\nPot (%i)\nCrack (%i)\nHeroin (%i)\nSyringes (%i)\nOpium (%i)
-				//return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Pot Safe", "Deposit\nWithdraw", "Select", "Back");
+				//\nCannabis (%i)\nCrack (%i)\nHeroin (%i)\nSyringes (%i)\nOpium (%i)
+				//return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Cannabis Safe", "Deposit\nWithdraw", "Select", "Back");
 			}
 
 			if (strcmp("Uniform", inputtext) == 0) {
@@ -1916,7 +1917,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szMiscArray, arrGroupData[iGroupID][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
 					arrGroupLockers[iGroupID][iLocker][g_iLockerAreaID] = CreateDynamicSphere(arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], 3.0, .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
 
-					Streamer_SetIntData(STREAMER_TYPE_AREA, arrGroupLockers[iGroupID][iLocker][g_iLockerAreaID], E_STREAMER_EXTRA_ID, iLocker);
+					// Streamer_SetIntData(STREAMER_TYPE_AREA, arrGroupLockers[iGroupID][iLocker][g_iLockerAreaID], E_STREAMER_EXTRA_ID, iLocker);
 				}
 				else if (listitem == 2)
 				{
@@ -5165,10 +5166,8 @@ CMD:groupkick(playerid, params[])
 
 CMD:m(playerid, params[]) {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(!isnull(params))
-	{
-		if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid) || IsAGovernment(playerid) || IsAJudge(playerid))
-		{
+	if(!isnull(params)) {
+		if(IsACop(playerid) || IsAMedic(playerid) || IsAHitman(playerid) || IsAGovernment(playerid) || IsAJudge(playerid) || (IsATowman(playerid) && PlayerInfo[playerid][pRank] > 1)) {
 			new
 				szMessage[128];
 
@@ -5233,12 +5232,26 @@ CMD:int(playerid, params[])
 	return cmd_international(playerid, params);
 }
 
+CMD:togint(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pToggledChats][21]) {
+		PlayerInfo[playerid][pToggledChats][21] = 0;
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You toggled the international chat on.");
+	}
+	else {
+		PlayerInfo[playerid][pToggledChats][21] = 1;
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You toggled the international chat off.");
+	}
+	return 1;
+}
+
 CMD:international(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	new iGroupID = PlayerInfo[playerid][pMember],
 	    iRank = PlayerInfo[playerid][pRank];
 
+	if(PlayerInfo[playerid][pToggledChats][21]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have the international chat toggled.");
 	if(0 <= iGroupID < MAX_GROUPS)
 	{
 	    if(iRank >= arrGroupData[iGroupID][g_iIntRadioAccess])
@@ -5250,9 +5263,8 @@ CMD:international(playerid, params[])
 	            format(szRadio, sizeof(szRadio), "** %s %s (%s) %s: %s **", szEmployer, szRank, szDivision, GetPlayerNameEx(playerid), params);
 	            foreach(new i: Player)
 				{
-					if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iIntRadioAccess])
-					{
-						SendClientMessageEx(i, 0x869688FF, szRadio);
+					if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iIntRadioAccess]) {
+						ChatTrafficProcess(i, 0x869688FF, szRadio, 21);
 					}
 				}
 	            format(szRadio, sizeof(szRadio), "(radio) %s", params);
@@ -5581,7 +5593,7 @@ CMD:locker(playerid, params[]) {
 					    }
 					    /* if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE)
 					    {
-					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nPot (%i)\nCrack (%i)\nHeroin (%i)\nSyringes (%i)\nOpium (%i)\nMaterials (%i)\nVault ($%s)\nAmmo",
+					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nCannabis (%i)\nCrack (%i)\nHeroin (%i)\nSyringes (%i)\nOpium (%i)\nMaterials (%i)\nVault ($%s)\nAmmo",
 					    		arrGroupData[iGroupID][g_iPot],
 					    		arrGroupData[iGroupID][g_iCrack],
 					    		arrGroupData[iGroupID][g_iHeroin],
@@ -6210,7 +6222,7 @@ CMD:lockerbalance(playerid, params[])
 			if(arrGroupData[GroupID][g_iWeapons][s] != 0) weps++;
 		}
 		szMiscArray[0] = 0;
-		format(szMiscArray, sizeof(szMiscArray), "Locker: Weapons: %d/50 | Cash: $%s | Pot: %d | Crack: %d | Heroin: %d | Syringes: %d | Opium: %d | Materials: %d ", weps, number_format(arrGroupData[GroupID][g_iBudget]), arrGroupData[GroupID][g_iPot], arrGroupData[GroupID][g_iCrack], arrGroupData[GroupID][g_iHeroin], arrGroupData[GroupID][g_iSyringes], arrGroupData[GroupID][g_iOpium], arrGroupData[GroupID][g_iMaterials]);
+		format(szMiscArray, sizeof(szMiscArray), "Locker: Weapons: %d/50 | Cash: $%s | Cannabis: %d | Crack: %d | Heroin: %d | Syringes: %d | Opium: %d | Materials: %d ", weps, number_format(arrGroupData[GroupID][g_iBudget]), arrGroupData[GroupID][g_iPot], arrGroupData[GroupID][g_iCrack], arrGroupData[GroupID][g_iHeroin], arrGroupData[GroupID][g_iSyringes], arrGroupData[GroupID][g_iOpium], arrGroupData[GroupID][g_iMaterials]);
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You're not in a criminal group.");

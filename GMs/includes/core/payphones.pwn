@@ -44,20 +44,23 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	{
 		new areaid[1];
 		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
-		new a = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
-		if(0 <= a < MAX_PAYPHONES && areaid[0] == arrPayPhoneData[a][pp_iAreaID]) {
-			if(IsPlayerInAnyVehicle(playerid)) return 1;
-			SetPVarInt(playerid, "AtPayPhone", a);
-		}
-		else
-			DeletePVar(playerid, "AtPayPhone");
+		// new a = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
 
+		for(new a; a < MAX_PAYPHONES; ++a) {
+
+			if(areaid[0] == arrPayPhoneData[a][pp_iAreaID]) {
+
+				if(IsPlayerInAnyVehicle(playerid)) return 1;
+				SetPVarInt(playerid, "AtPayPhone", a);
+				break;
+			}
+			// else DeletePVar(playerid, "AtPayPhone");
+		}
 		if(GetPVarType(playerid, "AtPayPhone")) {
 
 			if(GetPVarType(playerid, "PayPhone")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already communicating with a pay phone.");
 
 			new i = GetPVarInt(playerid, "AtPayPhone");
-			if(i > MAX_PAYPHONES) return 1;
 			if(arrPayPhoneData[i][pp_iCallerID] != INVALID_PLAYER_ID) {
 				
 				SetPVarInt(playerid, "PayPhone", i); 
@@ -254,7 +257,7 @@ ProcessPayPhone(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
 	format(szMiscArray, sizeof(szMiscArray), "Pay Phone {DDDDDD}(ID: %d)\n{FFFF00} Number: %d\n\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to dial.", i, arrPayPhoneData[i][pp_iNumber]);
 	arrPayPhoneData[i][pp_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, X, Y, Z + 1.0, 5.0, .worldid = iVW, .interiorid = iINT);
 	arrPayPhoneData[i][pp_iAreaID] = CreateDynamicSphere(X, Y, Z, 3.0, iVW, iINT);
-	Streamer_SetIntData(STREAMER_TYPE_AREA, arrPayPhoneData[i][pp_iAreaID], E_STREAMER_EXTRA_ID, i);
+	// Streamer_SetIntData(STREAMER_TYPE_AREA, arrPayPhoneData[i][pp_iAreaID], E_STREAMER_EXTRA_ID, i);
 }
 
 PayPhone_Save(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {

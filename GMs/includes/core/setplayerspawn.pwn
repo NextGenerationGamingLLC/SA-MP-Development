@@ -231,7 +231,7 @@ SetPlayerSpawn(playerid)
 					PlayerInfo[playerid][pInt] = 1;
 					SetPlayerVirtualWorld(playerid, 0);
 					PlayerInfo[playerid][pVW] = 0;
-					//SetPlayerSkin(playerid, 50); 
+					Prison_SetPlayerSkin(playerid);
 					SetPlayerColor(playerid, TEAM_ORANGE_COLOR);
 					SetHealth(playerid, 100);
 					KillEMSQueue(playerid);

@@ -88,6 +88,13 @@ GangTag_FinishTag(playerid, fontid)
 	ClearAnimations(playerid);
 	TogglePlayerControllable(playerid, 1);
 	GameTextForPlayer(playerid, "~g~Tagged!", 5000, 3);
+
+	new iTurfID = TurfWars_GetTurfID(playerid);
+	if(arrTurfWars[iTurfID][tw_iGroupID] != PlayerInfo[playerid][pMember]) {
+	
+		TurfWars_SetHealth(iTurfID, arrTurfWars[iTurfID][tw_iHealth] - 20);
+		Turf_SyncTurf(iTurfID);
+	}
 }
 
 GangTag_Save(iPlayerID, i, text[], fontid)

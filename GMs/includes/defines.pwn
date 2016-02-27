@@ -209,11 +209,11 @@ native IsValidVehicle(vehicleid);
 #define			MAX_GROUP_TYPES             11
 #define         MAX_LOCKER_STOCK        	10000
 #define         MAX_CRATES             		50
-#define 		MAX_SPIKES 					4
-#define 		MAX_CONES 					10
+#define 		MAX_SPIKES 					10
+#define 		MAX_CONES 					25
 #define 		MAX_FLARES 					10
 #define 		MAX_BARRICADES 				10
-#define 		MAX_BARRELS 				10
+#define 		MAX_BARRELS 				25
 #define 		MAX_LADDERS 				5
 #define 		MAX_SIGNS	 				10
 #define         MAX_AUCTIONS                10
@@ -1164,6 +1164,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_GANGTAGS_FONT			(6146)
 #define 		DIALOG_MONEYFARMING				(6147)
 #define 		DIALOG_DRUG_INTERACT			(6148)
+#define 		DIALOG_MEDIC_LIST				(6149)
 
 // GangTags
 #define 			GANGTAG_TIME				60000
@@ -1398,7 +1399,7 @@ native IsValidVehicle(vehicleid);
 #define 	MAX_FURNITURE_SLOTS			(200)
 #define 	MAX_METALDETECTORS 			(40)
 #define 	MAX_UFOS					(10)
-#define 	MAX_CHATSETS 				(21)
+#define 	MAX_CHATSETS 				(22)
 
 
 /* PVARS */

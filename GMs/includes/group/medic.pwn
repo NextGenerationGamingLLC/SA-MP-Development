@@ -65,24 +65,25 @@ public HidePlayerBeaconForMedics(playerid)
 forward MoveEMS(playerid);
 public MoveEMS(playerid)
 {
-    new Float:mX, Float:mY, Float:mZ;
+    new Float:mX, Float:mY, Float:mZ,
+    	iTargetPlayerID = GetPVarInt(playerid, "MovingStretcher");
     GetPlayerPos(playerid, mX, mY, mZ);
 
-    SetPVarFloat(GetPVarInt(playerid, "MovingStretcher"), "MedicX", mX);
-	SetPVarFloat(GetPVarInt(playerid, "MovingStretcher"), "MedicY", mY);
-	SetPVarFloat(GetPVarInt(playerid, "MovingStretcher"), "MedicZ", mZ);
-	SetPVarInt(GetPVarInt(playerid, "MovingStretcher"), "MedicVW", GetPlayerVirtualWorld(playerid));
-	SetPVarInt(GetPVarInt(playerid, "MovingStretcher"), "MedicInt", GetPlayerInterior(playerid));
+    SetPVarFloat(iTargetPlayerID, "MedicX", mX);
+	SetPVarFloat(iTargetPlayerID, "MedicY", mY);
+	SetPVarFloat(iTargetPlayerID, "MedicZ", mZ);
+	SetPVarInt(iTargetPlayerID, "MedicVW", GetPlayerVirtualWorld(playerid));
+	SetPVarInt(iTargetPlayerID, "MedicInt", GetPlayerInterior(playerid));
 
-	Streamer_UpdateEx(GetPVarInt(playerid, "MovingStretcher"), mX, mY, mZ);
-	SetPlayerPos(GetPVarInt(playerid, "MovingStretcher"), mX, mY, mZ);
-	SetPlayerInterior(GetPVarInt(playerid, "MovingStretcher"), GetPlayerVirtualWorld(playerid));
-	SetPlayerVirtualWorld(GetPVarInt(playerid, "MovingStretcher"), GetPlayerVirtualWorld(playerid));
+	Streamer_UpdateEx(iTargetPlayerID, mX, mY, mZ);
+	SetPlayerPos(iTargetPlayerID, mX, mY, mZ);
+	SetPlayerInterior(iTargetPlayerID, GetPlayerVirtualWorld(playerid));
+	SetPlayerVirtualWorld(iTargetPlayerID, GetPlayerVirtualWorld(playerid));
 
-	ClearAnimations(GetPVarInt(playerid, "MovingStretcher"));
-	ApplyAnimation(GetPVarInt(playerid, "MovingStretcher"), "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
+	ClearAnimations(iTargetPlayerID);
+	if(!IsPlayerInAnyVehicle(iTargetPlayerID)) ApplyAnimation(iTargetPlayerID, "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
 
-	DeletePVar(GetPVarInt(playerid, "MovingStretcher"), "OnStretcher");
+	DeletePVar(iTargetPlayerID, "OnStretcher");
 	DeletePVar(playerid, "MovingStretcher");
 }
 
@@ -149,8 +150,8 @@ public SendEMSQueue(playerid,type)
 		{
 		    SetPVarInt(playerid,"EMSAttempt", 2);
 			ClearAnimations(playerid);
-		 	ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
-			SetHealth(playerid, 100);
+		 	if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
+			SetHealth(playerid, 50); // Set to 50.
 			RemoveArmor(playerid);
 		}
 	}
@@ -168,6 +169,46 @@ PlayDeathAnimation(playerid) {
 		case 4: ApplyAnimation(playerid, "BASEBALL", "Bat_Hit_3", 4.1, 0, 1, 1, 1, 0, 1);
 		default: ApplyAnimation(playerid, "FIGHT_E", "Hit_fightkick_B", 4.1, 0, 1, 1, 1, 0, 1);
 	}
+}
+
+Medic_GetPatient(playerid, params[]) {
+
+	if(IsAMedic(playerid) || IsFirstAid(playerid))
+	{
+		new string[128], giveplayerid;
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /getpt(patient) [player]");
+
+		if(IsPlayerConnected(giveplayerid))
+		{
+		    if (giveplayerid == playerid)
+		    {
+		        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You cannot accept your own Emergency Dispatch call!");
+				return 1;
+		    }
+			if(GetPVarInt(giveplayerid,"MedicCall") == 1)
+			{
+				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
+				format(string, sizeof(string), "EMS Driver %s (%s, R%d) has accepted the Emergency Dispatch call for (%d) %s.", GetPlayerNameEx(playerid),
+					arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank], giveplayerid, GetPlayerNameEx(giveplayerid));
+				SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
+				format(string, sizeof(string), "* You have accepted EMS Call from %s, you will see the marker until you have reached it.",GetPlayerNameEx(giveplayerid));
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+				format(string, sizeof(string), "* EMS Driver %s has accepted your EMS Call; please wait at your current position.",GetPlayerNameEx(playerid));
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+				GameTextForPlayer(playerid, "~w~EMS Caller~n~~r~Go to the red marker.", 5000, 1);
+				EMSCallTime[playerid] = 1;
+				EMSAccepted[playerid] = giveplayerid;
+				SetPVarInt(giveplayerid, "EMSAttempt", 1);
+				PlayerInfo[playerid][pCallsAccepted]++;
+				if(GetPlayerInterior(giveplayerid)) SendClientMessageEx(playerid, COLOR_GRAD1, "This person is currently in an interior.");
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_WHITE, "The person has not requested any EMS attention!");
+			}
+		}
+	}
+	return 1;
 }
 
 stock IsAnAmbulance(carid)
@@ -195,6 +236,43 @@ CMD:aid(playerid, params[]) {
 	return 1;
 }
 */
+
+CMD:emslist(playerid, params[]) {
+
+	if(IsAMedic(playerid)) {
+
+		new szZone[MAX_ZONE_NAME],
+			x;
+		szMiscArray[0] = 0;
+		foreach(new i : Player) {
+
+			if(GetPVarType(i, "EMSAttempt")) {
+				GetPlayer3DZone(i, szZone, sizeof(szZone));
+				switch(GetPVarInt(i, "EMSAttempt")) {
+
+					case 1: {
+						ListItemTrackId[playerid][x] = i;
+						x++;
+						format(szMiscArray, sizeof(szMiscArray), "%s{FF0000}Emergency - %s - %s\n", szMiscArray, GetPlayerNameEx(i), szZone);
+					}
+					case 2: {
+						ListItemTrackId[playerid][x] = i;
+						x++;
+						format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}Treated - %s - %s\n", szMiscArray, GetPlayerNameEx(i), szZone);
+					}
+					case 3: {
+						ListItemTrackId[playerid][x] = i;
+						x++;
+						format(szMiscArray, sizeof(szMiscArray), "%s{FF00FF}Rescued - %s - %s\n", szMiscArray, GetPlayerNameEx(i), szZone);
+					}
+				}
+			}
+		}
+		ShowPlayerDialog(playerid, DIALOG_MEDIC_LIST, DIALOG_STYLE_LIST, "Medic | Dispatch List", szMiscArray, "Enroute", "Cancel");
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a medic.");
+	return 1;
+}
 
 CMD:loadpt(playerid, params[])
 {
@@ -386,39 +464,7 @@ CMD:heal(playerid, params[])
 
 CMD:getpt(playerid, params[])
 {
-	if(IsAMedic(playerid) || IsFirstAid(playerid))
-	{
-		new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /getpt(patient) [player]");
-
-		if(IsPlayerConnected(giveplayerid))
-		{
-		    if (giveplayerid == playerid)
-		    {
-		        SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You cannot accept your own Emergency Dispatch call!");
-				return 1;
-		    }
-			if(GetPVarInt(giveplayerid,"MedicCall") == 1)
-			{
-				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
-				format(string, sizeof(string), "EMS Driver %s has accepted the Emergency Dispatch call for (%d) %s.",GetPlayerNameEx(playerid),giveplayerid,GetPlayerNameEx(giveplayerid));
-				SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
-				format(string, sizeof(string), "* You have accepted EMS Call from %s, you will see the marker until you have reached it.",GetPlayerNameEx(giveplayerid));
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* EMS Driver %s has accepted your EMS Call; please wait at your current position.",GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				GameTextForPlayer(playerid, "~w~EMS Caller~n~~r~Go to the red marker.", 5000, 1);
-				EMSCallTime[playerid] = 1;
-				EMSAccepted[playerid] = giveplayerid;
-				SetPVarInt(giveplayerid, "EMSAttempt", 1);
-				PlayerInfo[playerid][pCallsAccepted]++;
-			}
-			else
-			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "The person has not requested any EMS attention!");
-			}
-		}
-	}
+	Medic_GetPatient(playerid, params);
 	return 1;
 }
 

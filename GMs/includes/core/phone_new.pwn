@@ -87,10 +87,55 @@ hook OnPlayerConnect(playerid) {
 
 hook OnPlayerDisconnect(playerid, reason) {
 
-	for(new i; i < sizeof(phone_PTextDraw[]); ++i) {
-		PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][i]);
-		PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][i]);
-	}
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][0]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][1]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][2]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][3]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][4]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][5]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][6]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][7]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][8]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][9]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][10]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][11]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][12]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][13]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][14]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][15]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][16]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][17]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][18]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][19]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][20]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][21]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][22]);
+	PlayerTextDrawHide(playerid, phone_PTextDraw[playerid][23]);
+
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][0]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][1]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][2]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][3]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][4]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][5]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][6]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][7]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][8]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][9]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][10]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][11]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][12]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][13]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][14]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][15]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][16]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][17]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][18]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][19]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][20]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][21]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][22]);
+	PlayerTextDrawDestroy(playerid, phone_PTextDraw[playerid][23]);
 	return 1;
 }
 
@@ -116,7 +161,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 		if(Bit_State(arrPlayerBits[playerid], phone_bitState)) {
 			new iPMenuItem = GetPVarInt(playerid, "PMenuItem");
-			if(iPMenuItem < 9) { // max menu item
+			if(iPMenuItem < 8) { // max menu item
 				SetPVarInt(playerid, "PMenuItem", GetPVarInt(playerid, "PMenuItem")+1);
 				PlayerTextDrawBoxColor(playerid, phone_PTextDraw[playerid][12 + iPMenuItem+1], 0x22222266);
 				PlayerTextDrawBoxColor(playerid, phone_PTextDraw[playerid][12 + iPMenuItem], 0xFFFFFF00);
@@ -1034,8 +1079,14 @@ CMD:togphone(playerid, params[]) {
 }
 */
 
-CMD:mouse(playerid) {
+CMD:mouse(playerid, params[]) {
 	SelectTextDraw(playerid, 0xF6FBFCFF);
+	return 1;
+}
+
+CMD:contacts(playerid, params[]) {
+
+	Phone_Contacts(playerid);
 	return 1;
 }
 
@@ -1115,7 +1166,6 @@ Phone_Main(playerid) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are fixing a vehicle!");
 	}
 	if(PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use the phone right now.");
-	if(!IsAblePedAnimation(playerid)) return 1;
 	if(PlayerInfo[playerid][pPnumber] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have a cell phone.");
 	if(!Bit_State(arrPlayerBits[playerid], phone_bitState)) {
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) {
@@ -1260,7 +1310,7 @@ CMD:selfie(playerid, params[]) {
 	if(GetPVarInt(playerid, "EventToken")) {
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
 	}
-	else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) {
+	else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]) {
 		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	else if(GetPVarType(playerid, "FixVehicleTimer")) {

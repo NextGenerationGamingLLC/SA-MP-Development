@@ -47,7 +47,7 @@
 
 #define MAX_CRATE_GUNS 30
 #define MAX_CRATE_AMMO	2000
-#define MAX_CRATE_DRUGS 1000
+#define MAX_CRATE_DRUGS 200
 #define MAX_GANG_SIMUL_CRATES 2
 
 
@@ -230,7 +230,7 @@ public OnShowGCrateItems(iPlayerID, iCrateID, itemid) {
 			50 Cal Ammo\t%d\n\
 			7.62x39 Ammo\t%d\n\
 			12 Gauge Ammo\t%d\n\
-			Pot\t%d\n\
+			Cannabis\t%d\n\
 			Crack\t%d\n\
 			Heroin\t%d",
 			szMiscArray[4001],
@@ -291,7 +291,8 @@ public OnCheckGCrateItems(iPlayerID, iCrateID, itemid, szGCItem[], iAmount) {
 	return 1;
 }
 
-/*CountLockerGuns(iGroupID, iWeaponID) {
+/*
+CountLockerGuns(iGroupID, iWeaponID) {
 
 	szMiscArray[0] = 0;
 
@@ -376,7 +377,7 @@ GetItemNameFromIdx(itemid) {
 		case 15: szReturn = "50 Cal Ammo";
 		case 16: szReturn = "7.52x39 Ammo";
 		case 17: szReturn = "12 Gauge Ammo";
-		case 18: szReturn = "Pot";
+		case 18: szReturn = "Cannabis";
 		case 19: szReturn = "Crack";
 		case 20: szReturn = "Heroin";
 	}
@@ -405,7 +406,7 @@ GetGCItemSQLFldName(itemid) {
 		case 15: szReturn ="ammo2";
 		case 16: szReturn ="ammo3";
 		case 17: szReturn ="ammo4";
-		case 18: szReturn ="pot";
+		case 18: szReturn ="Cannabis";
 		case 19: szReturn ="crack";
 		case 20: szReturn ="heroin";
 	}
@@ -442,8 +443,8 @@ SpawnGCrateAtGroup(iGroupID, iCrateID) {
 	return 1;
 }
 
-IsPlayerNearGCrate(playerid, i)
-{
+IsPlayerNearGCrate(playerid, i) {
+
 	new 
 		Float:fTemp[3];
 
@@ -509,9 +510,9 @@ public OnTransferItemFromCrate(playerid, itemid, iAmount,  iCrateID) {
 			}
 		}
 		case 13 .. 17: arrGroupData[iGroupID][g_iAmmo][itemid-13] += iAmount;
-		case 18: arrGroupData[iGroupID][g_iPot] += iAmount; // Pot
-		case 19: arrGroupData[iGroupID][g_iCrack] += iAmount; // crack 	
-		case 20: arrGroupData[iGroupID][g_iHeroin] += iAmount; // heroin
+		case 18: arrGroupData[iGroupID][g_iDrugs][1] += iAmount; // Cannabis
+		case 19: arrGroupData[iGroupID][g_iDrugs][5] += iAmount; // crack 	
+		case 20: arrGroupData[iGroupID][g_iDrugs][3] += iAmount; // heroin
 			
 	}
 	
@@ -541,14 +542,14 @@ TransferItemToCrate(playerid, itemid, iAmount, iCrateID) {
 		case 13 .. 17: { // ammo
 			if(0 < arrGroupData[iGroupID][g_iAmmo][itemid-13] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
 		}
-		case 18: { // Pot
-			if(0 < arrGroupData[iGroupID][g_iPot] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
+		case 18: { // Cannabis
+			if(0 < arrGroupData[iGroupID][g_iDrugs][1] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
 		}
 		case 19: { // crack 
-			if(0 < arrGroupData[iGroupID][g_iCrack] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
+			if(0 < arrGroupData[iGroupID][g_iDrugs][5] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
 		}
 		case 20: { // heroin
-			if(0 < arrGroupData[iGroupID][g_iHeroin] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
+			if(0 < arrGroupData[iGroupID][g_iDrugs][3] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
 		}
 	}
 
@@ -595,9 +596,9 @@ public OnFinalizeItemTransfer(playerid, itemid, iAmount, iCrateID) {
 	switch(itemid) {
 		case 0 .. 12: for(new i = 0; i < iAmount; i++) { WithdrawGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, GetWepIDFromGCIdx(itemid)); }
 		case 13 .. 17: arrGroupData[iGroupID][g_iAmmo][itemid-13] -= iAmount;
-		case 18: arrGroupData[iGroupID][g_iPot] -= iAmount; // Pot
-		case 19: arrGroupData[iGroupID][g_iCrack] -= iAmount; // crack 	
-		case 20: arrGroupData[iGroupID][g_iHeroin] -= iAmount; // heroin
+		case 18: arrGroupData[iGroupID][g_iDrugs][1] -= iAmount; // Cannabis
+		case 19: arrGroupData[iGroupID][g_iDrugs][5] -= iAmount; // crack 	
+		case 20: arrGroupData[iGroupID][g_iDrugs][3] -= iAmount; // heroin
 			
 	}
 	return 1;
@@ -672,9 +673,9 @@ public OnDeliverGCCrate(playerid, iGroupID, iCrateID) {
 	arrGroupData[iGroupID][g_iAmmo][3] += szMiscArray[4017];
 	arrGroupData[iGroupID][g_iAmmo][4] += szMiscArray[4018];
 
-	arrGroupData[iGroupID][g_iPot] += szMiscArray[4019];
-	arrGroupData[iGroupID][g_iCrack] += szMiscArray[4020];
-	arrGroupData[iGroupID][g_iHeroin] += szMiscArray[4021];
+	arrGroupData[iGroupID][g_iDrugs][1] += szMiscArray[4019];
+	arrGroupData[iGroupID][g_iDrugs][5] += szMiscArray[4020];
+	arrGroupData[iGroupID][g_iDrugs][3] += szMiscArray[4021];
 
 	DeleteGCrate(playerid, iCrateID);
 	SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully delivered the crate to your locker.");

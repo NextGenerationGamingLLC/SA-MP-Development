@@ -587,8 +587,9 @@ CMD:searchcar(playerid, params[])
 			}
 			else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
 			Smuggle_VehicleLoad(playerid, closestcar);
+			strins(string, "F", 0, sizeof(string));
 		}
-	}	
+	}
     if(isnull(string)) {
 
         if(CrateVehicleLoad[closestcar][vCarVestKit] > 0) {
@@ -1199,7 +1200,7 @@ CMD:take(playerid, params[])
 		if(sscanf(params, "s[32]u", choice, giveplayerid))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /take [name] [player]");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Weapons, Pot, Crack, Materials, Radio, Heroin, Rawopium, Syringes, Potseeds, OpiumSeeds, DrugCrates, Ammo.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Weapons, Cannabis, Crack, Materials, Radio, Heroin, Rawopium, Syringes, Cannabisseeds, OpiumSeeds, DrugCrates, Ammo.");
 			return 1;
 		}
 		if(PlayerInfo[playerid][pAdmin] < 2 && (PlayerInfo[giveplayerid][pJailTime] && strfind(PlayerInfo[giveplayerid][pPrisonReason], "[OOC]", true) != -1)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot take items from a OOC Prisoner.");
@@ -1235,17 +1236,17 @@ CMD:take(playerid, params[])
 				return 1;
 			}
 		}
-		else if(strcmp(choice,"potseeds",true) == 0)
+		else if(strcmp(choice,"Cannabisseeds",true) == 0)
 		{
 			if(IsPlayerConnected(giveplayerid))
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
-					format(string, sizeof(string), "* You have taken away %s's potseeds.", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "* You have taken away %s's Cannabisseeds.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your potseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "* Officer %s has taken away your Cannabisseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away %s's potseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "* Officer %s has taken away %s's Cannabisseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					PlayerInfo[giveplayerid][pWSeeds] = 0;
 				}
@@ -1425,19 +1426,19 @@ CMD:take(playerid, params[])
 				return 1;
 			}
 		}
-		else if(strcmp(choice,"pot",true) == 0)
+		else if(strcmp(choice,"Cannabis",true) == 0)
 		{
 			if(IsPlayerConnected(giveplayerid))
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
-					format(string, sizeof(string), "* You have taken away %s's pot.", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "* You have taken away %s's Cannabis.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away your pot.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "* Officer %s has taken away your Cannabis.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "* Officer %s has taken away %s's pot.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "* Officer %s has taken away %s's Cannabis.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					PlayerInfo[giveplayerid][pPot] = 0;
+					PlayerInfo[giveplayerid][p_iDrug][1] = 0;
 				}
 				else
 				{
@@ -1463,7 +1464,7 @@ CMD:take(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away %s's crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					PlayerInfo[giveplayerid][pCrack] = 0;
+					PlayerInfo[giveplayerid][p_iDrug][5] = 0;
 				}
 				else
 				{
@@ -2067,30 +2068,37 @@ CMD:drag(playerid, params[])
 
 CMD:wanted(playerid, params[])
 {
-	if(IsACop(playerid) || PlayerInfo[playerid][pJob] == 2 || PlayerInfo[playerid][pJob2] == 2 || PlayerInfo[playerid][pJob3] == 2)
+	if(IsACop(playerid) || IsAGovernment(playerid) || PlayerInfo[playerid][pJob] == 2 || PlayerInfo[playerid][pJob2] == 2 || PlayerInfo[playerid][pJob3] == 2)
 	{
-		new string[128], x;
+		szMiscArray[0] = 0;
+		
+		new x,
+			szNation[24];
 
 		SendClientMessageEx(playerid, COLOR_GREEN, "Current Wanted Suspects:");
 		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pWantedLevel] >= 1)
 			{
-				format(string, sizeof(string), "%s%s: %d", string,GetPlayerNameEx(i),PlayerInfo[i][pWantedLevel]);
+				switch(PlayerInfo[i][pNation]) {
+					case 0: szNation = "San Andreas";
+					default: szNation = "New Eire";
+				}
+				format(szMiscArray, sizeof(szMiscArray), "%s%s: %d (%s)", szMiscArray, GetPlayerNameEx(i),PlayerInfo[i][pWantedLevel], szNation);
 				x++;
 				if(x > 3) {
-					SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 					x = 0;
-					format(string, sizeof(string), " ");
+					format(szMiscArray, sizeof(szMiscArray), " ");
 				} else {
-					format(string, sizeof(string), "%s, ", string);
+					format(szMiscArray, sizeof(szMiscArray), "%s, ", szMiscArray);
 				}
 			}
 		}	
 		if(x <= 3 && x > 0)
 		{
-			string[strlen(string)-2] = '.';
-			SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			szMiscArray[strlen(szMiscArray)-2] = '.';
+			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 		}
 	}
 	else

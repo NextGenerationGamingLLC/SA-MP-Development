@@ -85,7 +85,7 @@ public Lotto(number)
 					AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
 				}
 				JackpotFallen = 1;
-				format(string, sizeof(string), "Lottery News: %s has won the jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot));
+				format(string, sizeof(string), "Lottery News: %s has won the Jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot));
 				OOCOff(COLOR_WHITE, string);
 				format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot));
 				SendClientMessageEx(i, COLOR_YELLOW, string);
@@ -107,7 +107,7 @@ public Lotto(number)
 					AddFlag(i, INVALID_PLAYER_ID, LottoPrize);
 				}
 				JackpotFallen = 1;
-				format(string, sizeof(string), "Lottery News: %s has won the jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot/TotalWinners));
+				format(string, sizeof(string), "Lottery News: %s has won the Jackpot of $%s with their lottery ticket.", GetPlayerNameEx(i), number_format(Jackpot/TotalWinners));
 				OOCOff(COLOR_WHITE, string);
 				format(string, sizeof(string), "* You have won $%s with your lottery ticket - congratulations!", number_format(Jackpot/TotalWinners));
 				SendClientMessageEx(i, COLOR_YELLOW, string);
@@ -121,13 +121,13 @@ public Lotto(number)
 	if(!JackpotFallen)
 	{
 		Misc_Save();
-		format(string, sizeof(string), "Lottery News: The jackpot has been raised to $%s.", number_format(Jackpot));
+		format(string, sizeof(string), "Lottery News: The Jackpot has been raised to $%s.", number_format(Jackpot));
 		OOCOff(COLOR_WHITE, string);
 	}
 	else
 	{
 	    Jackpot = 50000;
-	    format(string, sizeof(string), "Lottery News: The new jackpot has been started with $%s.", number_format(Jackpot));
+	    format(string, sizeof(string), "Lottery News: The new Jackpot has been started with $%s.", number_format(Jackpot));
 		OOCOff(COLOR_WHITE, string);
 	}
 	return 1;
@@ -227,7 +227,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 CMD:lottoinfo(playerid, params[])
 {
 	new szMessage[128];
-	format(szMessage, sizeof(szMessage), "Next drawing is at %i:00, tickets sold %i, and total jackpot is $%s.", NextDrawing, TicketsSold, number_format(Jackpot));
+	format(szMessage, sizeof(szMessage), "Next drawing is at %i:00, tickets sold %i, and total Jackpot is $%s.", NextDrawing, TicketsSold, number_format(Jackpot));
 	SendClientMessage(playerid, COLOR_WHITE, szMessage);
 	return 1;
 }

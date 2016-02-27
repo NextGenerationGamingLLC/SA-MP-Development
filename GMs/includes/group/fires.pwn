@@ -47,8 +47,8 @@ CreateStructureFire(Float:FirePosX, Float:FirePosY, Float:FirePosZ, VW)
 		arrStructureFires[next][fFirePos][1] = FirePosY;
 		arrStructureFires[next][fFirePos][2] = FirePosZ;
 
-		Streamer_SetIntData(STREAMER_TYPE_OBJECT, arrStructureFires[next][iFireObj], E_STREAMER_EXTRA_ID, next);
-		Streamer_SetIntData(STREAMER_TYPE_AREA, arrStructureFires[next][iFireArea], E_STREAMER_EXTRA_ID, next);
+		// Streamer_SetIntData(STREAMER_TYPE_OBJECT, arrStructureFires[next][iFireObj], E_STREAMER_EXTRA_ID, next);
+		// Streamer_SetIntData(STREAMER_TYPE_AREA, arrStructureFires[next][iFireArea], E_STREAMER_EXTRA_ID, next);
 		
 		arrStructureFires[next][iFireStrength] = MAX_FIRE_HEALTH;
 
@@ -139,10 +139,9 @@ hook OnPlayerUpdate(playerid) {
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
-	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+	// new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
 
-	if(-1 < i < MAX_STRUCTURE_FIRES) {
-		
+	for(new i; i < MAX_STRUCTURE_FIRES; ++i) {
 		if(arrStructureFires[i][iFireArea] == areaid) OnEnterFire(playerid, i);
 	}
 	return 1;
@@ -150,14 +149,10 @@ hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
 hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 
-	new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+	// new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
 
-	if(-1 < i < MAX_STRUCTURE_FIRES) {
-
-		if(arrStructureFires[i][iFireArea] == areaid) {
-
-			DeletePVar(playerid, "pInFire");
-		}
+	for(new i; i < MAX_STRUCTURE_FIRES; ++i) {
+		if(arrStructureFires[i][iFireArea] == areaid) DeletePVar(playerid, "pInFire");
 	}
 	return 1;
 }

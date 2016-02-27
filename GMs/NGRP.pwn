@@ -24,11 +24,11 @@
 
 
 				Past Developers:
-								*** Director of SA:MP Development:
+								*** Director of SA:MP Development:F
 									Akatony
 									John
 									Brendan
-									Brian
+									BrianF
 									Scott
 									GhoulSlayer
 									Zhao
@@ -75,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.274"
+#define SERVER_GM_TEXT "NG:RP v3.0.275"
 
 // #define AREA_DEBUG
 
@@ -250,7 +250,7 @@
 #include "./includes/group/lea.pwn"
 #include "./includes/group/medic.pwn"
 #include "./includes/group/news.pwn"
-#include "./includes/group/prisonsystem.pwn" // - Bing replaced by WIP
+#include "./includes/group/prisonsystem.pwn"
 #include "./includes/group/racing.pwn"
 #include "./includes/group/taxi.pwn"
 #include "./includes/group/towing.pwn"
@@ -303,6 +303,7 @@
 #include "./includes/core/drugsystem.pwn"
 #include "./includes/core/phone_new.pwn"
 #include "./includes/core/payphones.pwn"
+#include "./includes/group/rivalry.pwn"
 
 
 // WIP
@@ -318,9 +319,7 @@
 // Jingles WIP
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
-#include "./includes/group/rivalry.pwn"
-
-// #include "./includes/furniture.pwn"
+#include "./includes/furniture.pwn"
 
 // Winterfield WIP
 /*

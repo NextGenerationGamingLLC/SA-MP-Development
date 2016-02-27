@@ -60,9 +60,9 @@ new const szIngredients[][] = {
 	"Distilled Water",
 	"Opium Poppy",
 	"Lime",
-	"Cocaine",
-	"Baking Soda",
 	"Cocaine Plant Extract",
+	"Baking Soda",
+	"Cocaine Plant Powder",
 	"N-Benzynol",
 	"PMK Oil",
 	"MDMA Crystals",
@@ -916,8 +916,8 @@ enum pInfo
 	pMechSkill,
 	pTruckSkill,
 	pWantedLevel,
-	pPot,
-	pCrack,
+	// pCannabis,
+	// pCrack,
 	pHelper,
 	pDrugsSkill,
 	pArmsSkill,
@@ -1061,7 +1061,7 @@ enum pInfo
 	pGVip,
 	pSMod,
 	pWatchdog,
-	pPSFPot,
+	pPSFCannabis,
 	pPSFCrack,
 	pPSFMats,
 	pVIPSold,
@@ -1191,8 +1191,8 @@ enum pInfo
 	p_iAddictedLevel[sizeof(szDrugs)],
 	p_iIngredient[sizeof(szIngredients)],
 	pBAmmo[MAX_AMMO_TYPES],
-	pToggledChats[21], // see AccountSettings.pwn for coressponding chat IDs.
-	pChatbox[20], // see AccountSettings.pwn for coressponding chat IDs.
+	pToggledChats[MAX_CHATSETS], // see AccountSettings.pwn for coressponding chat IDs.
+	pChatbox[MAX_CHATSETS], // see AccountSettings.pwn for coressponding chat IDs.
 	Float:pGroupToy[9],
 	pGroupToyBone,
 	pFurnitureSlots[MAX_FURNITURE_SLOTS],
@@ -1342,8 +1342,8 @@ enum hInfo
 	ListedTimeStamp,
 	ListingDescription[128],
 	LinkedGarage[2],
-	hAreaID[2]
-	// hFurniture[MAX_FURNITURE_SLOTS]
+	hAreaID[2],
+	hFurniture[MAX_FURNITURE_SLOTS]
 };
 
 enum dmpInfo
@@ -1788,6 +1788,7 @@ enum eBlackMarket {
 	bm_iSeized,
 	bm_iPickupID,
 	bm_iAreaID,
+	Float:bm_fPos[3],
 	Text3D:bm_iTextID,
 	Text3D:bm_iDelTextID,
 	bm_iIngredientAmount[sizeof(szIngredients)],
@@ -1828,7 +1829,20 @@ enum eMetDetData {
 }
 new arrMetalDetector[MAX_METALDETECTORS][eMetDetData];
 
+enum eTurfWars {
 
+	tw_iLinkedID,
+	tw_iAreaID,
+	tw_iGZoneID,
+	tw_iGroupID,
+	tw_iHealth,
+	tw_iLevel,
+	tw_iTraffic,
+	tw_iDeaths,
+	tw_iRevenue,
+	bool:tw_bVulnerable
+}
+new arrTurfWars[MAX_TURFS][eTurfWars];
 
 
 // All player booleans variables go here to reduce memory:
@@ -1844,6 +1858,18 @@ enum PlayerBit:(<<= 1) {
 	pTurfRadar
 };
 new PlayerBit:arrPlayerBits[MAX_PLAYERS];
+
+enum eTurfWarsBits:(<<= 1) {
+
+	// tw_bVulnerable = 1,
+	tw_bDisabled = 1,
+	tw_bHeadquarter,
+	tw_bShutdown,
+	tw_bTurfMode
+
+};
+new eTurfWarsBits:arrTurfWarsBits[MAX_TURFS];
+
 
 /*
 enum AntiCheat:(<<= 1) {

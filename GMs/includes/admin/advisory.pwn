@@ -825,8 +825,8 @@ CMD:rhmutereset(playerid, params[])
 	return 1;
 }
 
-CMD:findnewb(playerid, params[])
-{
+CMD:findnewb(playerid, params[]) {
+
 	if(PlayerInfo[playerid][pHelper] < 2) {
         SendClientMessageEx(playerid, COLOR_GREY, "You are not a Player Advisor.");
 	}
@@ -836,9 +836,9 @@ CMD:findnewb(playerid, params[])
 	else {
 	    new Float: Pos[3][2], i[2], vw[2], Message[38 + MAX_PLAYER_NAME];
 	    if(!GetPVarType(playerid, "HelpingSomeone")) {
-     		foreach(new x: Player)
-			{
-				if(PlayerInfo[x][pLevel] == 1 && PlayerInfo[x][pHelpedBefore] == 0) {
+     		foreach(new x: Player) {
+
+				if(PlayerInfo[x][pLevel] == 1 && PlayerInfo[x][pHelpedBefore] == 0 && PlayerInfo[x][pAdmin] == 0 && PlayerInfo[x][pId] != PlayerInfo[playerid][pId]) {
 					GetPlayerPos(x, Pos[0][0], Pos[1][0], Pos[2][0]);
 					GetPlayerPos(playerid, Pos[0][1], Pos[1][1], Pos[2][1]);
 					vw[0] = GetPlayerVirtualWorld(x);

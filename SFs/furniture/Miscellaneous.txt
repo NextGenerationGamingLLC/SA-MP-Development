@@ -1,0 +1,50 @@
+19897 , "Cigarette Pack 2", 500
+19896 , "Cigarette Pack 1", 500
+19942 , "Handheld Radio", 1000
+19944 , "Bodybag", 10000
+18659 , "Grove Spray", 5000
+18661 , "VLA Spray", 5000
+18660 , "Seville Spray", 5000
+18665 , "LS Vagos", 5000
+18664 , "Balla tag", 5000
+2404 , "Rockstar Surfboard", 1000
+2405 , "Surfboard 1", 1000
+2406 , "Surfboard 2", 1000
+1640 , "Beach towel 1", 500
+1641 , "Beach towel 2", 500
+1642 , "Beach towel 3", 500
+1643 , "Beach towel 4", 500
+2845 , "Pile of clothes 1", 100
+2846 , "Pile of clothes 2", 100
+1550 , "Sack of money", 5000
+19086 , "Chainsaw dildo", 15000
+2690 , "Fire extinguisher", 1000
+2773 , "Airport velvet", 1000
+18782 , "Giant cookie", 10000
+19054 , "Giftbox 1", 10000
+19056 , "Giftbox 2", 10000
+19076 , "Christmas Tress", 10000
+19339 , "Coffin", 1000
+19346 , "Hotdog", 1000
+19579 , "Rye Breado", 100
+19610 , "Microphone", 100
+19611 , "Microphone stand", 100
+19609 , "Drum kit", 1000
+19804 , "Padlock", 100
+19815 , "Tool set", 1000
+19819 , "Wineglass", 100
+19835 , "Coffee cup", 100
+19820 , "Beer bottle", 100
+119825 , "Sprunk Clock", 100
+19873 , "Toilet paper", 100
+19878 , "Skateboard", 2000
+19830 , "Blender", 2000
+19831 , "BBQ", 2000
+11710, "Fire exit sign", 100
+11711 , "Exit sign", 100
+11712 , "Holy Cross", 666
+11725 , "Fire place", 10000
+11713 , "Fire hose holder", 1000
+11705 , "Telephone", 1000
+11738 , "MED cabinet", 1000
+11729 , "Locker", 10000

@@ -121,7 +121,7 @@ stock SaveHouse(houseid)
 		`RentFee`=%d, \
 		`Value`=%d, \
 		`SafeMoney`=%d, \
-		`Pot`=%d, \
+		`pot`=%d, \
 		`Crack`=%d, \
 		`Materials`=%d, \
 		`Heroin`=%d, \
@@ -498,12 +498,14 @@ stock ReloadHousePickup(houseid)
 		else
 			format(string, sizeof(string), "This house is owned by\n%s\nLevel: %d\nID: %d", StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
 	}
+	/*
 	else if(HouseInfo[houseid][hInactive] && !HouseInfo[houseid][hIgnore]) {
 		if(HouseInfo[houseid][hRentable])
 			format(string, sizeof(string), "[INACTIVE PROPERTY]\n\nCost: $%s\nThis house is owned by\n%s\nRent: $%s\nLevel: %d\nID: %d\nType /rentroom to rent a room", number_format(HouseInfo[houseid][hValue]), StripUnderscore(HouseInfo[houseid][hOwnerName]), number_format(HouseInfo[houseid][hRentFee]), HouseInfo[houseid][hLevel], houseid);
 		else
 			format(string, sizeof(string), "[INACTIVE PROPERTY]\n\nCost: $%s\nThis house is owned by\n%s\nLevel: %d\nID: %d", number_format(HouseInfo[houseid][hValue]), StripUnderscore(HouseInfo[houseid][hOwnerName]), HouseInfo[houseid][hLevel], houseid);
 	}
+	*/
 	else
 		format(string, sizeof(string), "This house is\n for sale!\n Description: %s\nCost: $%s\n Level: %d\nID: %d\nTo buy this house type /buyhouse", HouseInfo[houseid][hDescription], number_format(HouseInfo[houseid][hValue]), HouseInfo[houseid][hLevel], houseid);
 
@@ -520,8 +522,8 @@ stock ReloadHousePickup(houseid)
 	format(szMiscArray, sizeof(szMiscArray), "ID %d | VW: %d", houseid, HouseInfo[houseid][hIntVW]);
 	HouseInfo[houseid][hTextID_int] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GRAD1, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], 5.0, .worldid = HouseInfo[houseid][hIntVW], .interiorid = HouseInfo[houseid][hIntIW]);
 	
-	Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][0], E_STREAMER_EXTRA_ID, houseid);
-	Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][1], E_STREAMER_EXTRA_ID, houseid);
+	// Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][0], E_STREAMER_EXTRA_ID, houseid);
+	// Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][1], E_STREAMER_EXTRA_ID, houseid);
 	return 1;
 }
 
@@ -1547,7 +1549,7 @@ CMD:hstatus(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	format(string, sizeof(string), "Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", HouseInfo[hid][hCustomInterior], HouseInfo[hid][hCustomExterior], HouseInfo[hid][hExtVW], HouseInfo[hid][hExtIW], HouseInfo[hid][hIntVW], HouseInfo[hid][hIntIW]);
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Money: %d | Pot: %d | Crack: %d | Heroin: %d | Materials: %d", HouseInfo[hid][hSafeMoney], HouseInfo[hid][hPot], HouseInfo[hid][hCrack], HouseInfo[hid][hHeroin], HouseInfo[hid][hMaterials]);
+	format(string, sizeof(string), "Money: %d | Cannabis: %d | Crack: %d | Heroin: %d | Materials: %d", HouseInfo[hid][hSafeMoney], HouseInfo[hid][hPot], HouseInfo[hid][hCrack], HouseInfo[hid][hHeroin], HouseInfo[hid][hMaterials]);
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	format(string, sizeof(string), "Weapons - %d | %d | %d | %d | %d | GLUpgrade: %d", HouseInfo[hid][hWeapons][0], HouseInfo[hid][hWeapons][1], HouseInfo[hid][hWeapons][2], HouseInfo[hid][hWeapons][3], HouseInfo[hid][hWeapons][4], HouseInfo[hid][hGLUpgrade]);
 	SendClientMessageEx(playerid, COLOR_WHITE, string);

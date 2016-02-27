@@ -515,8 +515,10 @@ stock RefreshBusinessPickup(i)
 		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 2.5, .worldid = Businesses[i][bVW]);
 	}
 
+	/*
 	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][0], E_STREAMER_EXTRA_ID, i);
 	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][1], E_STREAMER_EXTRA_ID, i);
+	*/
 
 	format(szMiscArray, sizeof(szMiscArray), "[Business] Created Business: %d | Exterior Area ID: %d | Interior Area ID: %d", i, Businesses[i][bAreaID][0], Businesses[i][bAreaID][1]);
 	Log("debug/door_business.log", szMiscArray);
