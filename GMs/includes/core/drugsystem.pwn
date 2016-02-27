@@ -2969,7 +2969,7 @@ public Drug_OnGetPostOrders(playerid) {
 
 CMD:flushdrugs(playerid, params[]) {
 
-	if(IsAdminLevel(playerid, ADMIN_HEAD)) {
+	if(IsAdminLevel(playerid, ADMIN_SENIOR)) {
 
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You flushed the player drugs data.");
 		mysql_function_query(MainPipeline, "DELETE FROM `drugpool`", false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -3687,6 +3687,7 @@ CMD:capturepoint(playerid, params[]) {
 
 Point_GetPointID(playerid) {
 
+	/*
 	if(IsPlayerInAnyDynamicArea(playerid)) {
 		
 		new areaid[1];
@@ -3695,6 +3696,10 @@ Point_GetPointID(playerid) {
 
 			if(areaid[0] == arrPoint[i][po_iAreaID]) return i;
 		}
+	}
+	*/
+	for(new i; i < MAX_DYNPOINTS; ++i) {
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2]) && PlayerInfo[playerid][pVW] == 0) return i;
 	}
 	return -1;
 }
