@@ -1810,7 +1810,7 @@ enum eDynPoints {
 	po_iType,
 	po_szPointName[MAX_PLAYER_NAME],
 	Float:po_fPos[3],
-	po_iCaptureAble,
+	po_iCapturable,
 	po_iGroupID,
 	po_iPickupID,
 	po_iZoneID,

@@ -5,9 +5,21 @@
 
 #include <YSI\y_hooks>
 
-// Bathroom
+#define MAX_CATALOG 1000
+
+enum eFurnitureCatalog {
+	fc_iModelID,
+	fc_iTypeID,
+	fc_szName[32],
+	fc_iPrice
+}
+new arrFurnitureCatalog[MAX_CATALOG][eFurnitureCatalog];
+
+
+/*
 new const szFurnitureCatList[][][32] = {
 
+	// Bathroom
 	{2514, "Small Talk Toilet", 1500},
 	{2521, "Baby  Toilet", 1000},
 	{2528, "Chique Toilet", 2500},
@@ -403,6 +415,7 @@ new const szFurnitureCatList[][][32] = {
 	{19415, "Window wall", 2000},
 	{19416, "Window wall", 2000}
 };
+*/
 
 timer FurnitureControl[1000](playerid, Float:X, Float:Y, Float:Z) {
 	TogglePlayerControllable(playerid, true);
@@ -411,7 +424,6 @@ timer FurnitureControl[1000](playerid, Float:X, Float:Y, Float:Z) {
 
 hook OnGameModeInit() {
 
-	FurnitureListInit();
 	FurnitureTDInit();
 }
 
@@ -460,7 +472,7 @@ BuildIcons(playerid, choice) {
 	}
 }
 
-/*
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & KEY_SPRINT && newkeys & KEY_CROUCH) {
@@ -487,6 +499,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		}
 		return 1;
 	}
+	/*
 	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid)) {
 
 		new areaid[3],
@@ -523,9 +536,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 			}
 		}
 	}
+	*/
 	return 1;
 }
-*/
+
 
 GetMaxFurnitureSlots(playerid) {
 
@@ -576,7 +590,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case DIALOG_FURNITURE_BUY: {
 			if(!response) return FurnitureMenu(playerid, 0);
 
-			ShowModelSelectionMenu(playerid, FurnitureList[listitem], szFurnitureCategories[listitem], 0x00000099, 0x000000BB, 0xFFFF00AA);
+			szMiscArray[0] = 0;
+			new x;
+			for(new i; i < MAX_CATALOG; ++i) {
+				if(arrFurnitureCatalog[i][fc_iTypeID] == listitem) {
+					if(arrFurnitureCatalog[i][fc_iModelID] < 320) break;
+					szMiscArray[x] = arrFurnitureCatalog[i][fc_iModelID];
+					++x;
+				}
+			}
+			// ShowModelSelectionMenuEx(playerid, szMiscArray, sizeof(szMiscArray), szFurnitureCategories[listitem], 0x00000099, 0x000000BB, 0xFFFF00AA);
+			ShowModelSelectionMenuEx(playerid, szMiscArray, sizeof(szMiscArray), szFurnitureCategories[listitem], 1505, 0.0, 0.0, 0.0);
 		}
 		case DIALOG_FURNITURE_BUYCONFIRM: {
 
@@ -840,10 +864,11 @@ EditFurniture(playerid, objectid, modelid) {
 	TextDrawShowForPlayer(playerid, Furniture_TD[25]);
 	EditDynamicObject(playerid, objectid);
 }
-			
+
 
 FurnitureListInit() {
 
+	/*
 	new szDir[16];
 	szDir = "furniture/";
 
@@ -851,6 +876,42 @@ FurnitureListInit() {
 		format(szMiscArray, sizeof(szMiscArray), "%s%s.txt", szDir, szFurnitureCategories[i]);
 		FurnitureList[i] = LoadModelSelectionMenu(szMiscArray);
 	}
+	*/
+
+	mysql_function_query(MainPipeline, "SELECT `type`, `modelid`, `name`, `price` FROM `furniturecatalog`", true, "OnLoadFurnitureList", "");
+}
+
+forward OnLoadFurnitureList();
+public OnLoadFurnitureList() {
+
+	szMiscArray[0] = 0;
+
+	new iRows,
+		iFields,
+		iCount;
+
+	cache_get_data(iRows, iFields, MainPipeline);
+	if(!iRows || mysql_errno(MainPipeline)) print("[Furniture System]: No catalog found in the database.");
+
+	while(iCount < iRows) {
+
+		arrFurnitureCatalog[iCount][fc_iTypeID] = cache_get_field_content_int(iCount, "type", MainPipeline);
+		arrFurnitureCatalog[iCount][fc_iModelID] = cache_get_field_content_int(iCount, "modelid", MainPipeline);
+		cache_get_field_content(iCount, "name", arrFurnitureCatalog[iCount][fc_szName], MainPipeline, 32);
+		arrFurnitureCatalog[iCount][fc_iPrice] = cache_get_field_content_int(iCount, "price", MainPipeline);
+		// format(szMiscArray, sizeof(szMiscArray), "%s%d\n", szMiscArray, arrFurnitureCatalog[iCount][fc_iModelID]);
+		
+		/*
+		if(iType != cache_get_field_content_int(iCount+1, "type", MainPipeline)) {
+			FurnitureList[iType] = Furniture_LoadModelList(szMiscArray);
+			szMiscArray[0] = 0;
+			if(iType > sizeof(szFurnitureCategories)) print("[Furniture System]: There's not enough categories to load the objects into.");
+		}
+		*/
+		++iCount;
+	}
+	printf("[Furniture System] Loaded %d pieces of furniture from the catalog.", iCount);
+	return 1;
 }
 
 GetNextFurnitureSlotID(playerid, iHouseID) {
@@ -969,6 +1030,7 @@ FurnitureMenu(playerid, menu = 0) {
 	return 1;
 }
 
+
 FurnitureCatalog() {
 
 	szMiscArray[0] = 0;
@@ -982,31 +1044,29 @@ FurnitureCatalog() {
 GetFurnitureName(iModelID) {
 	
 	new szName[32];
+	for(new i; i < MAX_CATALOG; ++i) {
 
-	for(new i; i < sizeof(szFurnitureCatList); ++i) {
+		if(iModelID == arrFurnitureCatalog[i][fc_iModelID]) {
 
-		if(iModelID == szFurnitureCatList[i][0][0]) {
+			strins(szName, arrFurnitureCatalog[i][fc_szName], 0, sizeof(szName));
+			return szName;
 
-			szName = szFurnitureCatList[i][1];
-			break;
 		}
 	}
+	szName = "None";
 	return szName;
 }
 
 GetFurniturePrice(iModelID) {
 	
-	new iPrice;
+	for(new i; i < MAX_CATALOG; ++i) {
 
-	for(new i; i < sizeof(szFurnitureCatList); ++i) {
+		if(iModelID == arrFurnitureCatalog[i][fc_iModelID]) {
 
-		if(iModelID == szFurnitureCatList[i][0][0]) {
-
-			iPrice = szFurnitureCatList[i][2][0];
-			break;
+			return arrFurnitureCatalog[i][fc_iPrice];
 		}
 	}
-	return iPrice;
+	return 0;
 }
 
 SellFurniture(playerid, iHouseID, iSlotID, iPrice) {
@@ -1024,16 +1084,15 @@ GetDynamicObjectModel(iObjectID) {
 CMD:furniturehelp(playerid, params[]) {
 
 	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/furniture | /furnitureresetpos | /permitbuilder | /revokebuilders | Press ~k~~PED_LOOKBEHIND~ to toggle the mouse cursor.");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/unfurnishhouse (remove default furniture) | /furnishhouse (add default furniture).");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/unfurnishhouse (remove default furniture) | /furnishhouse (add default furniture)");
+	if(IsAdminLevel(playerid, ADMIN_GENERAL)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {FFFF00}/destroyfuniture | /rehashcatalog");
 	return 1;
 }
 
 CMD:furniture(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
-	return 1;
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
 
-	/*
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
 		for(new x; x < sizeof(Furniture_TD); ++x) TextDrawHideForPlayer(playerid, Furniture_TD[x]);
 		CancelSelectTextDraw(playerid);
@@ -1052,15 +1111,13 @@ CMD:furniture(playerid, params[]) {
 		SetPVarInt(playerid, PVAR_INHOUSE, i);
 	}
 	return 1;
-	*/
+
 }
 
 CMD:unfurnishhouse(playerid, params[]) {
 	
-	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
-	return 1;
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
 
-	/*
 	new iHouseID = GetHouseID(playerid),
 		Float:fHouseZ,
 		fDistance;
@@ -1121,7 +1178,6 @@ CMD:unfurnishhouse(playerid, params[]) {
 		}
 	}
 	return 1;
-	*/
 }
 
 timer HousePosition[5000](playerid, iHouseID) {
@@ -1131,10 +1187,8 @@ timer HousePosition[5000](playerid, iHouseID) {
 
 CMD:furnishhouse(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
-	return 1;
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
 
-	/*
 	new iHouseID = GetHouseID(playerid),
 		Float:fHouseZ,
 		fDistance;
@@ -1193,7 +1247,6 @@ CMD:furnishhouse(playerid, params[]) {
 		}
 	}
 	return 1;
-	*/
 }
 
 forward OnEditFurniture();
@@ -1205,10 +1258,8 @@ public OnEditFurniture() {
 
 CMD:furnitureresetpos(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
-	return 1;
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
 
-	/*
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
 
 		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
@@ -1216,16 +1267,11 @@ CMD:furnitureresetpos(playerid, params[]) {
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You can only use this when you are falling while positioning a piece of furniture.");
 	return 1;
-	*/
 }
 
 CMD:destroyfurniture(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
-	return 1;
-
-	/*
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_LEAD)) return 1;
 
 	new iHouseID = GetHouseID(playerid),
 		iSlotID;
@@ -1235,15 +1281,12 @@ CMD:destroyfurniture(playerid, params[]) {
 	if(!IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid slot.");
 	DestroyFurniture(iHouseID, iSlotID);
 	return 1;
-	*/
 }
 
 CMD:revokebuilders(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "This system is currently disabled.");
-	return 1;
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
 
-	/*
 	new iHouseID;
 	if(sscanf(params, "d", iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /revokebuilder [house (1, 2, 3)]");
 	switch(iHouseID) {
@@ -1258,7 +1301,22 @@ CMD:revokebuilders(playerid, params[]) {
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnRevokeBuildPerms", "");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "All builder's permissions have been revoked.");
 	return 1;
-	*/
+}
+
+		
+CMD:rehashcatalog(playerid, params[]) {
+
+	if(IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+	for(new i; i < MAX_CATALOG; ++i) {
+
+		arrFurnitureCatalog[i][fc_iModelID] = 0;
+		arrFurnitureCatalog[i][fc_iTypeID] = 0;
+		arrFurnitureCatalog[i][fc_szName][0] = 0;
+		arrFurnitureCatalog[i][fc_iPrice] = 0;
+	}
+	FurnitureListInit();
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Rehasing the furniture catalog.");
+	return 1;
 }
 
 forward OnRevokeBuildPerms();

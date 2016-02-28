@@ -1090,7 +1090,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			}
 		}
 	}
-	
+	/*
 	for(new i; i < sizeof(FurnitureList); ++i) {
 
 		if(listid == FurnitureList[i]) {
@@ -1106,6 +1106,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 			break;
 		}
 	}
+	*/
 	
 	return 1;
 }
@@ -5702,6 +5703,17 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 
 public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_id)
 {
+	if(extraid == 1505) {
+
+		if(response) {
+			SetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL, modelid);
+			format(szMiscArray, sizeof(szMiscArray), "Would you like to buy this %s for $%s and %s materials?", GetFurnitureName(modelid), number_format(GetFurniturePrice(modelid)), number_format(GetFurniturePrice(modelid) / 10));
+			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYCONFIRM, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm Purchase", szMiscArray, "Buy", "Cancel");
+		}
+		else {
+			FurnitureMenu(playerid, 0);
+		}
+	}
 	if(extraid == DYNAMIC_FAMILY_CLOTHES)
 	{
 		if(response)

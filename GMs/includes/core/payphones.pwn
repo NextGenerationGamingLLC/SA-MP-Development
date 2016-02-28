@@ -54,7 +54,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 				SetPVarInt(playerid, "AtPayPhone", a);
 				break;
 			}
-			// else DeletePVar(playerid, "AtPayPhone");
 		}
 		if(GetPVarType(playerid, "AtPayPhone")) {
 
@@ -68,6 +67,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 				return 1;
 			}
 			PayPhone_Menu(playerid, i);
+			DeletePVar(playerid, "AtPayPhone");
 		}
 	}
 	return 1;

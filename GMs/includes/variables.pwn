@@ -2757,7 +2757,7 @@ new szFurnitureCategories[][] = {
 	"Walls",
 	"VIP"
 };
-new FurnitureList[sizeof(szFurnitureCategories)];
+// new FurnitureList[sizeof(szFurnitureCategories)];
 
 
 new const szFurnitureTextures[][][] = {

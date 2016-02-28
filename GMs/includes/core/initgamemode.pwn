@@ -112,6 +112,7 @@ InitiateGamemode()
 
     // Bank_LoadBank();
     LoadFurniture();
+    FurnitureListInit();
 
 	print("\n-------------------------------------------");
 	print("Next Generation Roleplay\n");

@@ -702,7 +702,7 @@ TurfWars_FinalizeCapture(iTurfID, bool:bState) {
 					Bit_On(arrTurfWarsBits[iTurfID], tw_bShutdown);
 
 					format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `vulnerable` = '0', `shutdown` = '1', `timestamp` = '%d' WHERE `id` = '%d'",
-						gettime() + 43200, iTurfID);
+						gettime() + 21600, iTurfID);
 					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				}
 				else {
@@ -717,7 +717,7 @@ TurfWars_FinalizeCapture(iTurfID, bool:bState) {
 
 				arrTurfWars[iTurfID][tw_iGroupID] = iGroupID;
 				format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `groupid` = '%d', `vulnerable` = '0', `timestamp` = '%d' WHERE `id` = '%d'",
-					iGroupID, gettime() + 43200, iTurfID);
+					iGroupID, gettime() + 21600, iTurfID);
 				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			if(arrTurfWars[iTurfID][tw_iLevel] > 20) arrTurfWars[iTurfID][tw_iLevel] -= 10;
@@ -725,7 +725,7 @@ TurfWars_FinalizeCapture(iTurfID, bool:bState) {
 		default: {
 
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `vulnerable` = '0', `timestamp` = '%d' WHERE `id` = '%d'",
-				gettime() + 43200, iTurfID);
+				gettime() + 21600, iTurfID);
 			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) {
 				format(szMiscArray, sizeof(szMiscArray), "[TURF]: You have failed to shutdown %s's turf.", arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_szGroupName]);

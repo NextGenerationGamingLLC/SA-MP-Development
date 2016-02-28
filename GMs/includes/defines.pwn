@@ -1399,7 +1399,7 @@ native IsValidVehicle(vehicleid);
 #define 	MAX_FURNITURE_SLOTS			(200)
 #define 	MAX_METALDETECTORS 			(40)
 #define 	MAX_UFOS					(10)
-#define 	MAX_CHATSETS 				(22)
+#define 	MAX_CHATSETS 				(23)
 
 
 /* PVARS */

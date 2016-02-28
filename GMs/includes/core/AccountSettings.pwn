@@ -61,6 +61,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				{FFFFFF}Radio\t%s\n\
 				{FFFFFF}Bug Chat\t%s\n\
 				{FFFFFF}Biz Radio\t%s\n\
+				{FFFFFF}Point Messages\t%s\n\
 				{FFFFFF}--- Staff ---\t\n\
 				{FFFFFF}Staff Chat\t%s\n\
 				{FFFFFF}Player Advisor Chat\t%s\n\
@@ -73,6 +74,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				(PlayerInfo[playerid][pToggledChats][13] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][14] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][15] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
+				(PlayerInfo[playerid][pToggledChats][22] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][16] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][17] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
 				(PlayerInfo[playerid][pToggledChats][18] == 0) ? ("{00FF00}On") : ("{FF0000}Off")
@@ -195,6 +197,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(strcmp(inputtext, "Radio", true) == 0) id = 12;
 			else if(strcmp(inputtext, "Bug Chat", true) == 0) id = 13;
 			else if(strcmp(inputtext, "Biz Radio", true) == 0) id = 14;
+			else if(strcmp(inputtext, "Point Messages", true) == 0) id = 22;
 			else if(strcmp(inputtext, "Staff Chat", true) == 0) id = 15;
 			else if(strcmp(inputtext, "Player Advisor Chat", true) == 0) id = 16;
 			else if(strcmp(inputtext, "Watchdog Chat", true) == 0) id = 17;
@@ -271,7 +274,7 @@ CMD:tog(playerid, params[]) {
 
 		SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /tog [option]");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: newbie | ooc | whisper | pr | phone | famed | vip | dept | gooc | radio | bug");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | hunger | advisor");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | hunger | advisor | points");
 		return 1;
 	}
 
@@ -295,6 +298,7 @@ CMD:tog(playerid, params[]) {
 	else if(strcmp(params, "chatbox", true) == 0) iChatID = 4; 
 	else if(strcmp(params, "hunger", true) == 0) iChatID = 6;
 	else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
+	else if(strcmp(params, "points", true) == 0) iChatID = 22;
 
 	if(!(0 <= iChatID < MAX_CHATSETS)) return 1; // preventing OOB issues.
 
