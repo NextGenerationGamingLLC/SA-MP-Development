@@ -1998,7 +1998,9 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		case 1: // Cannabis
 		{
 			SetHealth(playerid, fHealth + (2.0 * iTaken));
-			PlayerInfo[playerid][pHunger] -= 0.5 * iTaken;
+			if(PlayerInfo[playerid][pHunger] > 0) PlayerInfo[playerid][pHunger] -= 0.5;
+			else PlayerInfo[playerid][pHunger] = 0;
+
 			switch(iTotalTaken) {
 
 				case 0 .. 5: SetPlayerWeather(playerid, 700);
@@ -2080,7 +2082,8 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 		{
 			SetHealth(playerid, fHealth + (5.0 * iTaken));
 			SetArmour(playerid, fArmour + (5.0 * iTaken));
-			PlayerInfo[playerid][pHunger] -= 0.5 * iTaken;
+			if(PlayerInfo[playerid][pHunger] > 0) PlayerInfo[playerid][pHunger] -= 0.5;
+			else PlayerInfo[playerid][pHunger] = 0;
 			switch(iTotalTaken)
 			{
 				case 0 .. 5:
@@ -2981,8 +2984,7 @@ CMD:getplant(playerid, params[]) {
 
 	for(new i; i < MAX_DRUGS; ++i) {
 
-		if(IsPlayerInRangeOfPoint(playerid, 2.0, arrDrugData[i][dr_fPos][0], arrDrugData[i][dr_fPos][1], arrDrugData[i][dr_fPos][2]) &&
-			IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) {
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, arrDrugData[i][dr_fPos][0], arrDrugData[i][dr_fPos][1], arrDrugData[i][dr_fPos][2])) {
 		// if(areaid[0] == arrDrugData[i][dr_iAreaID]) {
 			SetPVarInt(playerid, "AtDrugArea", i);
 			// if(IsPlayerInRangeOfPoint(playerid, 2.0, arrDrugData[i][dr_fPos][0], arrDrugData[i][dr_fPos][1], arrDrugData[i][dr_fPos][2])) {
@@ -3496,8 +3498,8 @@ CMD:points(playerid, params[]) {
 	new x;
 	for(new i; i < MAX_DYNPOINTS; ++i) {
 
-		if(IsValidDynamicArea(arrPoint[i][po_iAreaID])) {
-		// if(arrPoint[i][po_fPos][0] != 0.0) {
+		// if(IsValidDynamicArea(arrPoint[i][po_iAreaID])) {
+		if(arrPoint[i][po_fPos][0] != 0.0) {
 
 			ListItemTrackId[playerid][x] = i;
 			x++;

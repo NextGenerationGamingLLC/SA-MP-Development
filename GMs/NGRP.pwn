@@ -75,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.277"
+#define SERVER_GM_TEXT "NG:RP v3.0.278"
 
 // #define AREA_DEBUG
 

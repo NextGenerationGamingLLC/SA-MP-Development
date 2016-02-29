@@ -355,14 +355,18 @@ public OnPlayerUpdate(playerid)
 		pCurrentWeapon{playerid} = pCurWeap;
     }
 
-	if(PlayerInfo[playerid][pGuns][GetWeaponSlot(pCurWeap)] != pCurWeap) {
+    switch(pCurWeap) {
+    	case 9, 16, 17, 18, 35, 36, 37, 38: {
+    		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(pCurWeap)] != pCurWeap) {
 
-		GetWeaponName(pCurWeap, szMiscArray, sizeof(szMiscArray));
-		format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s has given themself a client-sided weapon (%s). It was removed from the player.", GetPlayerNameEx(playerid), szMiscArray);
-		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-		SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Client weapon detected. Admins were notified: refrain from doing it again.");
-		SetPlayerWeaponsEx(playerid);
-	}
+				GetWeaponName(pCurWeap, szMiscArray, sizeof(szMiscArray));
+				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s has given themself a client-sided weapon (%s). It was removed from the player.", GetPlayerNameEx(playerid), szMiscArray);
+				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Client weapon detected. Admins were notified: refrain from doing it again.");
+				SetPlayerWeaponsEx(playerid);
+			}
+    	}
+    }
 
     new drunknew = GetPlayerDrunkLevel(playerid);
     if (drunknew < 100) { // go back up, keep cycling.
