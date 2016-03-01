@@ -217,7 +217,6 @@ native IsValidVehicle(vehicleid);
 #define 		MAX_LADDERS 				5
 #define 		MAX_SIGNS	 				10
 #define         MAX_AUCTIONS                10
-#define         MAX_PLANTS                  300
 #define         MAX_BUSINESSSALES           100
 #define 		INVALID_GROUP_ID 			-1
 #define 		INVALID_RANK     			255

@@ -142,13 +142,13 @@ Bank_ProcessMoney(iAmount) {
 
 CMD:bankvault(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
 	mysql_function_query(MainPipeline, "SELECT `money` FROM `bank` WHERE `id` = '1'", true, "Bank_FetchData", "i", playerid);
 	return 1;
 }
 
 CMD:resetbank(playerid, params[]) {
-	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
 	mysql_function_query(MainPipeline, "UPDATE `bank` SET `money` = (SELECT SUM(`money`) FROM `accounts`) WHERE `id` = 1", false, "Bank_ResetVault", "i", playerid);
 	return 1;
 }
