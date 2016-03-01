@@ -1679,7 +1679,7 @@ CMD:jailcuff(playerid, params[])
 	return 1;
 }
 
-/* Prison Update - by Winterfield */
+// WINTERFIELD: VERSION .278 PRISON SYSTEM
 
 CMD:prisonhelp(playerid, params[])
 {

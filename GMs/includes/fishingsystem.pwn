@@ -35,7 +35,8 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* winterfield */
+// WINTERFIELD: VERSION .278 FISHING SYSTEM
+
 #include <YSI\y_hooks>
 
 command(fish, playerid, params[])

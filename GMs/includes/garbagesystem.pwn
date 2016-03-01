@@ -35,7 +35,7 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* winterfield is bae. #seniordeveloperbaby */
+// WINTERFIELD: VERSION .278 GARBAGE JOB
 
 #include <YSI\y_hooks>
 new GarbageVehicles[8];
