@@ -21,7 +21,7 @@
 									Dom
 									Miguel (s0nic)
 									Jingles
-
+									Winterfield
 
 				Past Developers:
 								*** Director of SA:MP Development:F
@@ -250,7 +250,7 @@
 #include "./includes/group/lea.pwn"
 #include "./includes/group/medic.pwn"
 #include "./includes/group/news.pwn"
-#include "./includes/group/prisonsystem.pwn"
+// #include "./includes/group/prisonsystem.pwn"
 #include "./includes/group/racing.pwn"
 #include "./includes/group/taxi.pwn"
 #include "./includes/group/towing.pwn"
@@ -276,7 +276,7 @@
 #include "./includes/jobs/craftsman.pwn"
 #include "./includes/jobs/detective.pwn"
 #include "./includes/jobs/drugs.pwn"
-#include "./includes/jobs/fishing.pwn"
+// #include "./includes/jobs/fishing.pwn"
 #include "./includes/jobs/jobcore.pwn"
 #include "./includes/jobs/dynjobcore.pwn"
 #include "./includes/jobs/lawyer.pwn"
@@ -322,11 +322,10 @@
 #include "./includes/furniture.pwn"
 
 // Winterfield WIP
-/*
-#include "./includes/WIP/prisonsystem.pwn"
-#include "./includes/WIP/garbagesystem.pwn"
-#include "./includes/WIP/fishingsystem.pwn"
-*/
+
+#include "./includes/prison_system.pwn"
+#include "./includes/garbagesystem.pwn"
+#include "./includes/fishingsystem.pwn"
 
 
 main(){}

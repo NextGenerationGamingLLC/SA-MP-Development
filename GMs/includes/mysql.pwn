@@ -214,6 +214,10 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "HalloweenShop", szResult, MainPipeline); HalloweenShop = strval(szResult);
 				cache_get_field_content(i, "PassComplexCheck", szResult, MainPipeline); PassComplexCheck = strval(szResult);
 
+				cache_get_field_content(i, "prisonerMOTD", prisonerMOTD[0], MainPipeline, GROUP_MAX_MOTD_LEN);
+				cache_get_field_content(i, "prisonerMOTD2", prisonerMOTD[1], MainPipeline, GROUP_MAX_MOTD_LEN);
+				cache_get_field_content(i, "prisonerMOTD3", prisonerMOTD[2], MainPipeline, GROUP_MAX_MOTD_LEN);
+
 				for(new x = 0; x < 6; x++)
 				{
 					format(szResult, sizeof(szResult), "GunPrice%d",x);
@@ -518,6 +522,27 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pBStoredH]				= cache_get_field_content_int(row,  "BStoredH", MainPipeline);
 					PlayerInfo[extraid][pBStoredV]				= cache_get_field_content_int(row,  "BStoredV", MainPipeline);
 					PlayerInfo[extraid][pBugReportTimeout]		= cache_get_field_content_int(row,  "BRTimeout", MainPipeline);
+
+					PlayerInfo[extraid][pPrisonCredits] 		= cache_get_field_content_int(row, "PrisonCredits", MainPipeline);
+					PlayerInfo[extraid][pPrisonMaterials] 		= cache_get_field_content_int(row, "PrisonMaterials", MainPipeline);
+					PlayerInfo[extraid][pPrisonWineTime]		= cache_get_field_content_int(row, "PrisonWineTime", MainPipeline);
+					PlayerInfo[extraid][pPrisonCell] 			= cache_get_field_content_int(row, "PrisonCell", MainPipeline);
+
+					SetPVarInt(extraid, "pPrisonSoap", cache_get_field_content_int(row, "PrisonSoap", MainPipeline));
+					SetPVarInt(extraid, "pPrisonSugar", cache_get_field_content_int(row, "PrisonSugar", MainPipeline));
+					SetPVarInt(extraid, "pPrisonBread", cache_get_field_content_int(row, "PrisonBread", MainPipeline));
+					SetPVarInt(extraid, "pPrisonShank", cache_get_field_content_int(row, "PrisonShank", MainPipeline));
+					SetPVarInt(extraid, "pPrisonShankOut", cache_get_field_content_int(row, "PrisonShankOut", MainPipeline));
+					SetPVarInt(extraid, "pShankUsages", cache_get_field_content_int(row, "ShankUsages", MainPipeline));
+					SetPVarInt(extraid, "pPrisonWine", cache_get_field_content_int(row, "PrisonWine", MainPipeline));
+					SetPVarInt(extraid, "pPrisonMWine", cache_get_field_content_int(row, "PrisonMWine", MainPipeline));
+					SetPVarInt(extraid, "pPrisonChisel", cache_get_field_content_int(row, "PrisonChisel", MainPipeline));
+					SetPVarInt(extraid, "pPrisonCellChisel", cache_get_field_content_int(row, "PrisonCellChisel", MainPipeline));
+
+					PlayerInfo[extraid][pFishingSkill]			= cache_get_field_content_int(row,  "BRTimeout", MainPipeline);
+					PlayerInfo[extraid][pFishWeight]			= cache_get_field_content_int(row,  "BRTimeout", MainPipeline);
+
+					PlayerInfo[extraid][pGarbageSkill]			= cache_get_field_content_int(row,  "BRTimeout", MainPipeline);
 					for(new i = 0; i < 12; i++)	{
 
 						format(szField, sizeof(szField), "BItem%d", i);
@@ -598,6 +623,16 @@ public OnQueryFinish(resultid, extraid, handleid)
 					// Jingles' Drug System:
 					for(new d; d != sizeof(szDrugs); ++d) PlayerInfo[extraid][p_iDrug][d] = cache_get_field_content_int(row, DS_Drugs_GetSQLName(d), MainPipeline);
 					for(new d; d != sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);
+
+					/*szMiscArray[0] = 0;	
+					for(new d; d != sizeof(szDrugs); ++d)
+					{
+						format(szMiscArray, sizeof(szMiscArray), "Prison%s", DS_Drugs_GetSQLName(d));
+						PlayerInfo[extraid][p_iPrisonDrug][d] = cache_get_field_content_int(row, szMiscArray, MainPipeline);
+					} old */
+
+					cache_get_field_content(row,  "PrisonDrugs", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iPrisonDrug]);
 
 					cache_get_field_content(row,  "DrugQuality", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);
@@ -1510,10 +1545,9 @@ stock g_mysql_SavePrices()
 	format(query, sizeof(query), "%s`MicroPrices` = '%s'", query, mString);
     mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
-
 stock g_mysql_SaveMOTD()
 {
-	new query[1024];
+	new query[1500];
 
 	format(query, sizeof(query), "UPDATE `misc` SET ");
 
@@ -1522,6 +1556,9 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `vMOTD` = '%s',", query, g_mysql_ReturnEscaped(VIPMOTD, MainPipeline));
 	format(query, sizeof(query), "%s `cMOTD` = '%s',", query, g_mysql_ReturnEscaped(CAMOTD, MainPipeline));
 	format(query, sizeof(query), "%s `pMOTD` = '%s',", query, g_mysql_ReturnEscaped(pMOTD, MainPipeline));
+	format(query, sizeof(query), "%s `prisonerMOTD` = '%s',", query, g_mysql_ReturnEscaped(prisonerMOTD[0], MainPipeline));
+	format(query, sizeof(query), "%s `prisonerMOTD2` = '%s',", query, g_mysql_ReturnEscaped(prisonerMOTD[1], MainPipeline));
+	format(query, sizeof(query), "%s `prisonerMOTD3` = '%s',", query, g_mysql_ReturnEscaped(prisonerMOTD[2], MainPipeline));
 	format(query, sizeof(query), "%s `ShopTechPay` = '%.2f',", query, ShopTechPay);
 	format(query, sizeof(query), "%s `GiftCode` = '%s',", query, g_mysql_ReturnEscaped(GiftCode, MainPipeline));
 	format(query, sizeof(query), "%s `GiftCodeBypass` = '%d',", query, GiftCodeBypass);
@@ -2361,6 +2398,30 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredH", PlayerInfo[playerid][pBStoredH]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BStoredV", PlayerInfo[playerid][pBStoredV]);
 
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonCredits", PlayerInfo[playerid][pPrisonCredits]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonMaterials", PlayerInfo[playerid][pPrisonMaterials]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonWineTime", PlayerInfo[playerid][pPrisonWineTime]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonCell", PlayerInfo[playerid][pPrisonCell]);
+
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonSoap", GetPVarInt(playerid, "pPrisonSoap"));
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonSugar", GetPVarInt(playerid, "pPrisonSugar"));
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonBread", GetPVarInt(playerid, "pPrisonBread"));
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonShank", GetPVarInt(playerid, "pPrisonShank"));
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonShankOut", GetPVarInt(playerid, "pPrisonShankOut"));
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ShankUsages", GetPVarInt(playerid, "pShankUsages"));
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonWine", GetPVarInt(playerid, "pPrisonWine"));
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonMWine", GetPVarInt(playerid, "pPrisonMWine"));
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonChisel", GetPVarInt(playerid, "pPrisonChisel"));
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonCellChisel", GetPVarInt(playerid, "pPrisonCellChisel"));
+
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishingSkill", PlayerInfo[playerid][pFishingSkill]);
+
+
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishingSkill", PlayerInfo[playerid][pFishingSkill]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishWeight", PlayerInfo[playerid][pFishWeight]);
+
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GarbageSkill", PlayerInfo[playerid][pGarbageSkill]);
+
 	new szForLoop[16];
 	for(new x = 0; x < 12; x++) {
 
@@ -2439,6 +2500,14 @@ stock g_mysql_SaveAccount(playerid)
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "DrugQuality", mistring);
 
+	mistring[0] = 0;
+	for(new ipdrugs = 0; ipdrugs < sizeof(szDrugs); ++ipdrugs)
+	{
+		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][p_iPrisonDrug][ipdrugs]);
+		if(ipdrugs != sizeof(szDrugs) - 1) strcat(mistring, "|");
+	}
+	SavePlayerString(query, GetPlayerSQLId(playerid), "PrisonDrugs", mistring);
+
 	/*format(szMiscArray, sizeof(szMiscArray), "%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d",
 		PlayerInfo[playerid][pToggledChats][0],
 		PlayerInfo[playerid][pToggledChats][1],
@@ -2507,6 +2576,13 @@ stock g_mysql_SaveAccount(playerid)
 
 	for(new d; d < sizeof(szDrugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Drugs_GetSQLName(d), PlayerInfo[playerid][p_iDrug][d]);
 	for(new d; d < sizeof(szIngredients); ++d) if(d != 9) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
+
+	/*szMiscArray[0] = 0;
+	for(new d; d < sizeof(szDrugs); ++d) 
+	{		
+		format(szMiscArray, sizeof(szMiscArray), "Prison%s", DS_Drugs_GetSQLName(d));
+		SavePlayerInteger(query, GetPlayerSQLId(playerid), szMiscArray, PlayerInfo[playerid][p_iPrisonDrug][d]);
+	} old */
 
 	for(new i = 0; i != MAX_AMMO_TYPES; i++)
 	{

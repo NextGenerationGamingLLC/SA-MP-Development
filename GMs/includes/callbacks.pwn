@@ -1111,7 +1111,6 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 		}
 	}
 	*/
-	
 	return 1;
 }
 
@@ -1414,7 +1413,7 @@ public OnPlayerConnect(playerid)
 	PlayerDrunk[playerid]=0;
 	PlayerDrunkTime[playerid]=0;
 	format(PlayerInfo[playerid][pPrisonReason],128,"None");
-	FishCount[playerid]=0;
+	// FishCount[playerid]=0;
 	HelpingNewbie[playerid]= INVALID_PLAYER_ID;
 	courtjail[playerid]=0;
 	gLastCar[playerid]=0;
@@ -1533,7 +1532,7 @@ public OnPlayerConnect(playerid)
 	CancelReport[playerid] = -1;
 	GiveKeysTo[playerid] = INVALID_PLAYER_ID;
 	RocketExplosions[playerid] = -1;
-	ClearFishes(playerid);
+	// ClearFishes(playerid); no.
 	ClearMarriage(playerid);
 
 	// Crash Fix - GhoulSlayeR
@@ -5705,8 +5704,8 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 	return 0;
 }
 
-public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_id)
-{
+public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_id) {
+
 	if(extraid == 1505) {
 
 		if(response) {
@@ -5891,6 +5890,27 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 			Register_CreatePlayer(playerid, modelid);
 		}
 		Register_MainMenu(playerid);
+	}
+	if(extraid == PRISON_SKINSELECT)
+	{
+		if(response)
+		{
+			if(GetPVarInt(playerid, "pPrisonSelectingSkin") == 1)
+			{
+			    if(PlayerInfo[playerid][pPrisonCredits] >= 250)
+                {
+                    PlayerInfo[playerid][pModel] = modelid;
+                    PlayerInfo[playerid][pPrisonCredits] -= 250;
+					SetPlayerSkin(playerid, modelid);
+					SetPVarInt(playerid, "pPrisonSelectingSkin", 0);
+
+					SendClientMessageEx(playerid, COLOR_GREY, "You have purchased a pair of clothes from the prison shop for 500 credits.");
+				}
+				else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+			}
+			else return 1;
+		}
+		else SetPVarInt(playerid, "pPrisonSelectingSkin", 0);
 	}
 	return 1;
 }

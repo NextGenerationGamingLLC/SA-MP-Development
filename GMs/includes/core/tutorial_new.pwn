@@ -394,12 +394,24 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-			    format(szMiscArray, sizeof(szMiscArray), "Nobody");
+			    ShowPlayerDialog(playerid, DIALOG_SPAWNINPRISON, DIALOG_STYLE_MSGBOX, "Notice", "At NG:RP, we allow players to roleplay by spawning in our in-character prison.\nWould you like to be ICly imprisoned?\n\n\t{FF0000}Your sentence will be indefinate, but you can release yourself at any time.", "No, thanks.", "Yes, please!");
+			}
+		}
+		case DIALOG_SPAWNINPRISON:
+		{
+			if(response)
+			{
+				format(szMiscArray, sizeof(szMiscArray), "Nobody");
 				strmid(PlayerInfo[playerid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
 				TogglePlayerSpectating(playerid, false);
 				SetHealth(playerid, 100.0);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information! Enjoy your time and trip to San Andreas!");
 				SetTimerEx("Register_FinishSetup2", 250, false, "i", playerid);
+			}
+			else
+			{
+				TogglePlayerSpectating(playerid, false);
+				SetTimerEx("Register_FinishSetup4", 250, false, "i", playerid);
 			}
 		}
 	}
@@ -513,12 +525,13 @@ Tutorial_Stage(playerid) {
 			strcat(szMiscArray, "\t\t{F69521}Developers{FFFFFF}:\n\
 				\t\t\tMiguel\n\
 				\t\t\tJingles\n\
+				\t\t\tWinterfield\n\
 				\t\t\tAlexR\n\
 				\t\t\tAustin\n\
 				\t\t\tFarva\n\
 				\t\t\t{F69500}Past Developers{FFFFFF}:\n\
-				\t\t\tAkatony\t\tJohn\t\tBrendan\n\
-				\t\t\tBrian\t\tScott\t\tGhoulSlayer\n\
+				\t\t\tAkatony\tJohn\t\tBrendan\n\
+				\t\t\tBrian\t\tScott\tGhoulSlayer\n\
 				\t\t\tZhao\t\tDonuts\t\tMo Cena\n\
 				\t\t\tCalgon\t\tNeo\t\tThomasJWhite\n\
 				\t\t\tBeren\t\tKareemtastic\tSew Sumi\n\
@@ -912,6 +925,15 @@ public Register_FinishSetup3(iPlayerID) {
 	return 1;
 }
 
+forward Register_FinishSetup4(playerid);
+public Register_FinishSetup4(playerid) 
+{
+	new iActorID = GetPVarInt(playerid, "_REGisterActor");
+	if(IsValidActor(iActorID)) DestroyActor(iActorID);
+	ClearChatbox(playerid);
+	Register_Prison(playerid);
+}
+
 
 GetPlayerAccent(iPlayerID) {
 	new accent[26];
@@ -983,6 +1005,31 @@ public Plane_TogglePlayerControllable(playerid)
 {
 	SetHealth(playerid, 500.0); // just in case.
 	TogglePlayerControllable(playerid, false);
+	return 1;
+}
+
+Register_Prison(playerid)
+{
+	Prison_SetPlayerSkin(playerid);
+	strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] [DNRL] Prison Gang", 128);
+	strcpy(PlayerInfo[playerid][pPrisonedBy], "Winterfield (Script Prison) SIP", 128);
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You have chosen to spawn in prison. Use /prisonhelp to view a list of the commands.");
+	PlayerInfo[playerid][pJailTime] = 9999999;
+
+	SetPlayerInterior(playerid, 1);
+	PlayerInfo[playerid][pInt] = 1;
+	SetPlayerFacingAngle(playerid, 0);
+
+	PlayerInfo[playerid][pVW] = 0;
+	SetPlayerVirtualWorld(playerid, 0);
+	SetHealth(playerid, 100);
+
+	TogglePlayerControllable(playerid, 0);
+	SetCameraBehindPlayer(playerid);
+
+	new randcell = random(29);
+	PlayerInfo[playerid][pPrisonCell] = randcell;
+	SpawnPlayerInPrisonCell(playerid, randcell);
 	return 1;
 }
 

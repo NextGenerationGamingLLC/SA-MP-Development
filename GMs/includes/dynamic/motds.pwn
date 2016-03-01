@@ -152,6 +152,29 @@ CMD:gmotd(playerid, params[])
 	return 1;
 }
 
+CMD:prisonermotd(playerid, params[])
+{
+	new 
+		iGroupID = PlayerInfo[playerid][pLeader],
+		string[128],
+		iSlot;
+
+	if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+
+	if (0 <= iGroupID < MAX_GROUPS) {
+		if(sscanf(params, "ds[128]", iSlot, string)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prisonermotd [motd slot] [message]");
+		if(strlen(string) > 128) return SendClientMessageEx( playerid, COLOR_GRAD1, "That MOTD is too long, please refrain from using more than 128 characters." );
+		if (1 <= iSlot <= 3) {
+		    strmid(prisonerMOTD[iSlot-1], string, 0, strlen(string), 128);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the prisoner MOTD.");
+			g_mysql_SaveMOTD();
+			format(string,sizeof(string),"%s (%d) has changed the prisoner MOTD to: %s in slot %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), string, iSlot);
+			GroupLog(iGroupID, string);
+		} else SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot specified.");
+	} else SendClientMessageEx(playerid, COLOR_GREY, "Only group leaders may use this command.");
+	return 1;
+}
+
 CMD:viewmotd(playerid, params[])
 {
 	new string[128], option[16];
@@ -163,6 +186,7 @@ CMD:viewmotd(playerid, params[])
 		if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) strcat(string, ", group");
 		if(PlayerInfo[playerid][pHelper] >= 1) strcat(string, ", advisor");
 		if(PlayerInfo[playerid][pAdmin] > 1) strcat(string, ", admin");
+		if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1 || IsADocGuard(playerid)) strcat(string, ", prisoner");
 		return SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
 	if(strcmp(option, "global", true) == 0) return SendClientMessageEx(playerid, COLOR_YELLOW, GlobalMOTD);
@@ -177,5 +201,12 @@ CMD:viewmotd(playerid, params[])
 	}
 	if(strcmp(option, "advisor", true) == 0 && PlayerInfo[playerid][pHelper] >= 1) return SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR, CAMOTD);
 	if(strcmp(option, "admin", true) == 0 && PlayerInfo[playerid][pAdmin] > 1) return SendClientMessageEx(playerid, COLOR_YELLOW, AdminMOTD);
+	if(strcmp(option, "prisoner", true) == 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1 || strcmp(option, "prisoner", true) == 0 && IsADocGuard(playerid))
+	{
+		for(new i = 0; i < 3; i++)
+		{
+			SendClientMessageEx(playerid, COLOR_ORANGE, prisonerMOTD[i]);
+		}
+	}
 	return 1;
 }

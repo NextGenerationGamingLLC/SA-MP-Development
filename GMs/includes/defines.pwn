@@ -988,6 +988,8 @@ native IsValidVehicle(vehicleid);
 #define			DIALOG_DOC_CP_AREA			(5554)
 #define			DIALOG_DOC_INMATES			(5560)
 #define			DIALOG_LOAD_DETAINEES		(5565)
+#define			DIALOG_DOC_CP_INT			(5570)
+#define			DIALOG_DOC_CP_INT2			(5571)
 
 #define			DIALOG_BUGREPORT 			(6000)
 
@@ -1165,6 +1167,8 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_MONEYFARMING				(6147)
 #define 		DIALOG_DRUG_INTERACT			(6148)
 #define 		DIALOG_MEDIC_LIST				(6149)
+
+#define 		DIALOG_SPAWNINPRISON			(6150)
 
 // GangTags
 #define 			GANGTAG_TIME				60000
@@ -1392,6 +1396,7 @@ native IsValidVehicle(vehicleid);
 
 #define 	MAX_GANG_CRATES				(15)
 #define 	REGISTER_SKINMODEL			(4810)
+#define 	PRISON_SKINSELECT			(4811)
 #define 	ALIEN_ACTORMODEL 			(264)
 
 #define 	MAX_DYNPOINTS 				(50)

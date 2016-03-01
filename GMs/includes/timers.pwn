@@ -554,10 +554,10 @@ task ProductionUpdate[300000]()
 			SendClientMessageEx(i, COLOR_LIGHTRED, "Due to an increase in new playing accounts being created for Death Matching, weapons for new players are restricted for the first two hours of game play.");
 		}
 
-		if(PlayerInfo[i][pFishes] >= 5) {
+		/*if(PlayerInfo[i][pFishes] >= 5) {
 			if(FishCount[i] >= 3) PlayerInfo[i][pFishes] = 0;
 			else ++FishCount[i];
-		}
+		}*/
 		if(PlayerDrunk[i] > 0) { PlayerDrunk[i] = 0; PlayerDrunkTime[i] = 0; GameTextForPlayer(i, "~p~Drunk effect~n~~w~Gone", 3500, 1); }
 	}
 	if(AdvisorMessage == 3) {
@@ -1381,37 +1381,17 @@ ptask PlayerHeartBeat[1000](i) {
 	if(PlayerInfo[i][pJudgeJailTime] <= 0 && PlayerInfo[i][pJudgeJailType] != 0) PlayerInfo[i][pJudgeJailType] = 0;
 
 
-	if(playerTabbed[i] == 0) {
-		// Prison_PlayerUpdate(i); // WINTERFIELD WIP
-		
-		
-		if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0) {
-			if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1) {
-				SetPlayerInterior(i, 0);
-				PlayerInfo[i][pInt] = 0;
-				SetPlayerVirtualWorld(i, 0);
-				PlayerInfo[i][pVW] = 0;
-				SetPlayerPos(i, 1742.3053,-1849.4283,13.5812);
-				SetPlayerFacingAngle(i, 180.0);
-				ClearCrimes(i);
-			}
-			else {
-				SetPlayerInterior(i, 0);
-				PlayerInfo[i][pInt] = 0;
-				SetPlayerVirtualWorld(i, 0);
-				PlayerInfo[i][pVW] = 0;
-				SetPlayerPos(i, 1544.5059,-1675.5673,13.5585);
-			}
-			SetHealth(i, 100);
-			PlayerInfo[i][pJailTime] = 0;
-			PlayerInfo[i][pIsolated] = 0;
-			strcpy(PlayerInfo[i][pPrisonReason], "None");
-			PhoneOnline[i] = 0;
-			SendClientMessageEx(i, COLOR_GRAD1,"   You have paid your debt to society.");
-			GameTextForPlayer(i, "~g~Freedom~n~~w~Try to be a better citizen", 5000, 1);
-			SetPlayerToTeamColor(i); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
-			format(szMiscArray, sizeof(szMiscArray), "%s has paid their debt to society.", GetPlayerNameEx(i));
-			for(new x; x < MAX_GROUPS; ++x) if(arrGroupData[x][g_iDoCAccess] >= 0 && arrGroupData[x][g_iDoCAccess] != INVALID_RANK) GroupLog(x, szMiscArray);
+	if(playerTabbed[i] == 0)
+	{
+		if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0)
+		{
+		    ShowPlayerDialog(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
+		}
+
+		if(gettime() >= PlayerInfo[i][pPrisonWineTime] && GetPVarInt(i, "pPrisonMWine") == 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
+		{
+			SetPVarInt(i, "pPrisonMWine", 2);
+		    SendClientMessageEx(i, COLOR_GREY, "Your wine is finished. Go to your cell and type /prisonfinishwine to collect it.");
 		}
 		
 

@@ -37,7 +37,7 @@
 
 #include <YSI\y_hooks>
 
-#define MAX_CRIMES				100
+#define MAX_CRIMES				150
 
 forward OnCrimesLoad();
 forward LoadCrimes();
