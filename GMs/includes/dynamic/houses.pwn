@@ -121,7 +121,7 @@ stock SaveHouse(houseid)
 		`RentFee`=%d, \
 		`Value`=%d, \
 		`SafeMoney`=%d, \
-		`pot`=%d, \
+		`Pot`=%d, \
 		`Crack`=%d, \
 		`Materials`=%d, \
 		`Heroin`=%d, \

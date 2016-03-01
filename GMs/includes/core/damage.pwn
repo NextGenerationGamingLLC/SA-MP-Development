@@ -394,7 +394,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			GameTextForPlayer(playerid, "No ammo!", 1000, 6);
 			format(szMiscArray, sizeof(szMiscArray), "** The weapon clicks **", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10.0, 3000);
-			if(GetPlayerState(playerid) != PLAYER_STATE_PASSENGER) GivePlayerValidWeapon(playerid, weaponid, 99); // preventing a drive buy bug issue.
+			if(GetPlayerState(playerid) != PLAYER_STATE_PASSENGER) GivePlayerWeapon(playerid, weaponid, 99); // preventing a drive buy bug issue.
 			SetPlayerArmedWeapon(playerid, 0);
 			return 0; // preventing if the weapon if the ammo is empty and preventing them from loosing it.
 		}

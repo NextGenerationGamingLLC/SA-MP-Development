@@ -359,6 +359,8 @@ public OnPlayerUpdate(playerid)
     	case 9, 16, 17, 18, 35, 36, 37, 38: {
     		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(pCurWeap)] != pCurWeap) {
 
+    			if(GetPVarType(playerid, "IsInArena") || GetPVarType(playerid, "EventToken")) return 1;
+    			
 				GetWeaponName(pCurWeap, szMiscArray, sizeof(szMiscArray));
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s has given themself a client-sided weapon (%s). It was removed from the player.", GetPlayerNameEx(playerid), szMiscArray);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
@@ -4639,7 +4641,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				}
 			}
 
-			//GivePlayerCash(playerid, TransportMoney[playerid]);
+			GivePlayerCash(playerid, (TransportMoney[playerid] / 100 * 40));
 			arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += TransportMoney[playerid];
 			if(TransportMoney[playerid]) format(szMiscArray, sizeof(szMiscArray), "%s is now off duty and earned $%s", GetPlayerNameEx(playerid), number_format(TransportMoney[playerid])), GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 			TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
@@ -5705,8 +5707,93 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 	return 0;
 }
 
-public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_id)
-{
+public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_id) {
+
+	if(extraid == 1500 && response) {
+		
+		new iGroup = PlayerInfo[playerid][pMember];
+		for(new i; i < MAX_BARRICADES; i++)
+		{
+			if(Barricades[iGroup][i][sX] == 0 && Barricades[iGroup][i][sY] == 0 && Barricades[iGroup][i][sZ] == 0)
+			{
+				new Float: f_TempAngle;
+
+				GetPlayerPos(playerid, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ]);
+				GetPlayerFacingAngle(playerid, f_TempAngle);
+
+				switch(modelid)
+				{
+					case 981: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(981, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ], 0.0, 0.0, f_TempAngle);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ] + 2);
+					}
+					case 4504: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(4504, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 1.6996, 0.0, 0.0, f_TempAngle + 270);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 10, Barricades[iGroup][i][sY] + 10, Barricades[iGroup][i][sZ] + 5);
+					}
+					case 4505: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(4505, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 1.6996, 0.0, 0.0, f_TempAngle + 270);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 10, Barricades[iGroup][i][sY] + 10, Barricades[iGroup][i][sZ] + 5);
+					}
+					case 4514: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(4514, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 1.2394, 0.0, 0.0, f_TempAngle + 270);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 10, Barricades[iGroup][i][sY] + 10, Barricades[iGroup][i][sZ] + 5);
+					}
+					case 4526: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(4526, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] + 0.7227, 0.0, 0.0, f_TempAngle);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 10, Barricades[iGroup][i][sY] + 10, Barricades[iGroup][i][sZ] + 5);
+					}
+					case 978: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(978, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ], 0.0, 0.0, f_TempAngle);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
+					}
+					case 979: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(979, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ], 0.0, 0.0, f_TempAngle);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
+					}
+					case 3091: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(3091, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.30, 0.0, 0.0, f_TempAngle);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
+					}
+					case 1459: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1459, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.40, 0.0, 0.0, f_TempAngle);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
+					}
+					case 1423: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1423, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
+					}
+					case 1424: {
+						Barricades[iGroup][i][sObjectID] = CreateDynamicObject(1424, Barricades[iGroup][i][sX], Barricades[iGroup][i][sY], Barricades[iGroup][i][sZ] - 0.35, 0.0, 0.0, f_TempAngle);
+						SetPlayerPos(playerid, Barricades[iGroup][i][sX] + 2, Barricades[iGroup][i][sY] + 2, Barricades[iGroup][i][sZ]);
+					}
+				}
+				GetPlayer3DZone(playerid, Barricades[iGroup][i][sDeployedAt], MAX_ZONE_NAME);
+				Barricades[iGroup][i][sDeployedBy] = GetPlayerNameEx(playerid);
+				if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Barricades[iGroup][i][sDeployedByStatus] = 1;
+				else Barricades[iGroup][i][sDeployedByStatus] = 0;
+				format(szMiscArray, sizeof(szMiscArray), "Barricade ID: %d successfully created.", i);
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+				/*format(string, sizeof(string), "** HQ: A barricade has been deployed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][i][sDeployedAt]);
+				foreach(new x: Player)
+				{
+					if(PlayerInfo[x][pToggledChats][12] == 0)
+					{
+						if(PlayerInfo[x][pMember] == iGroup) SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+						if(GetPVarInt(x, "BigEar") == 4 && GetPVarInt(x, "BigEarGroup") == iGroup)
+						{
+							new szBigEar[128];
+							format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+							SendClientMessageEx(x, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
+						}
+					}
+				}*/
+				return 1;
+			}
+		}
+		SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more barricades, limit is " #MAX_BARRICADES# ".");
+		return 1;
+	}
 	if(extraid == 1505) {
 
 		if(response) {

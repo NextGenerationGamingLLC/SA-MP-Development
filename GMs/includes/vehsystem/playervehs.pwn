@@ -44,7 +44,7 @@ stock g_mysql_SaveVehicle(playerid, slotid)
 	
 	format(szMiscArray, sizeof(szMiscArray), "%s\
 		`Lsd` = %d,\
-		`pot` = %d,\
+		`Cannabis` = %d,\
 		`Meth` = %d,\
 		`Heroin` = %d,\
 		`Cocaine` = %d,\

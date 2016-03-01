@@ -879,7 +879,6 @@ new Ladders[MAX_GROUPS][MAX_LADDERS][Ladder];
 new Signs[MAX_GROUPS][MAX_SIGNS][Sign];
 new Auctions[MAX_AUCTIONS][Auction];
 new BusinessSales[MAX_BUSINESSSALES][BusinessSale];
-new Plants[MAX_PLANTS][Plant];
 new Reports[MAX_REPORTS][reportinfo];
 new Calls[MAX_CALLS][callinfo];
 new ListItemReportId[MAX_PLAYERS][40];

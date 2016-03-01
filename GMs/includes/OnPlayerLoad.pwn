@@ -959,16 +959,6 @@ public OnPlayerLoad(playerid)
 	}
 	#endif
 
-	if(PlayerInfo[playerid][pWeedObject] != 0) {
-	    for(new i; i < MAX_PLANTS; i++)
-	    {
-	        if(Plants[i][pOwner] == GetPlayerSQLId(playerid))
-	        {
-				return 1;
-	        }
-	    }
-		PlayerInfo[playerid][pWeedObject] = 0;
-	}
 	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] == 0 && !IsValidName(GetPlayerNameExt(playerid)))
 	{
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have been kicked for having a Non RP Name.");

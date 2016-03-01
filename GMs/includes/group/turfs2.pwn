@@ -195,9 +195,10 @@ public TurfWars_OnTask() {
 				Bit_Off(arrTurfWarsBits[iCount], tw_bShutdown);
 			}
 			arrTurfWars[iCount][tw_bVulnerable] = true;
-			format(szMiscArray, sizeof(szMiscArray), "[TURF]: {FFFF00}%s (ID %d) has become vulnerable!", gSAZones[iCount][SAZONE_NAME], iCount);
-			TurfWars_SendGroupMessage(arrTurfWars[iCount][tw_iGroupID], COLOR_GREEN, szMiscArray);
-
+			if(arrTurfWars[iCount][tw_iGroupID] != INVALID_GROUP_ID) {
+				format(szMiscArray, sizeof(szMiscArray), "[TURF]: {FFFF00}%s (ID %d) has become vulnerable!", gSAZones[iCount][SAZONE_NAME], iCount);
+				TurfWars_SendGroupMessage(arrTurfWars[iCount][tw_iGroupID], COLOR_GREEN, szMiscArray);
+			}
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `vulnerable` = '1', `shutdown` = '0', `timestamp` = '0' WHERE `id` = '%d'", iCount);
 			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
