@@ -8397,10 +8397,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				cost = Businesses[d][bPrice][v] / 100 * 15;
 				Businesses[d][bSafeBalance] += TaxSale( cost );
 			}
-			if(PlayerInfo[playerid][pTut] < 5 ) {
-				PlayerInfo[playerid][pTut] += 1;
-				Tutorial_Objectives(playerid);
-			}
 			if(GetPVarInt(playerid, "pTut") == 4)
 			{
 				//SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF}You have successfully bought a car.");

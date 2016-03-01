@@ -49,6 +49,10 @@ stock GivePlayerValidWeapon( playerid, WeaponID, Ammo )
     #if defined zombiemode
    	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't have guns.");
 	#endif
+	if(GetPVarType(playerid, "IsInArena") || GetPVarType(playerid, "EventToken")) {
+		GivePlayerWeapon(playerid, WeaponID, 99999);
+		return 1;
+	}
 	switch( WeaponID )
 	{
   		case 0, 1:
@@ -113,7 +117,7 @@ stock GivePlayerValidWeapon( playerid, WeaponID, Ammo )
 		}
 	}
 
-	GivePlayerWeapon( playerid, WeaponID, 1);
+	GivePlayerWeapon(playerid, WeaponID, 1);
 	SyncPlayerAmmo(playerid, WeaponID);
 	new iAmmoType = GetAmmoType(WeaponID); // the if check prevents OOB index issues
 	if(iAmmoType != -1 && !zombieevent) arrAmmoData[playerid][awp_iAmmo][iAmmoType] += Ammo;
