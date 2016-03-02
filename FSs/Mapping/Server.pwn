@@ -8536,7 +8536,7 @@ public OnFilterScriptInit()
 	CreateDynamicObject(2948, 1473.82, -1350.88, 162.68,   0.00, 0.00, 180.00, .interiorid = 0, .worldid = 0, .streamdistance = 300);
 	CreateDynamicObject(2948, 1476.66, -1350.91, 162.68,   0.00, 0.00, 180.00, .interiorid = 0, .worldid = 0, .streamdistance = 300);
 
-	// SAAS - Big Ear Base (By: Price)
+	// SAAS - Big Ear Base [By: Price]
 	CreateDynamicObject(19448, -277.03821, 1535.49121, 58.12580,   0.00000, 90.00000, 0.00000, .interiorid = 0, .worldid=914, .streamdistance= 300);
     CreateDynamicObject(19448, -280.52444, 1535.44849, 58.12580,   0.00000, 90.00000, 0.00000, .interiorid = 0, .worldid=914, .streamdistance= 300);
     CreateDynamicObject(19448, -283.87820, 1535.49121, 58.12580,   0.00000, 90.00000, 0.00000, .interiorid = 0, .worldid=914, .streamdistance= 300);
