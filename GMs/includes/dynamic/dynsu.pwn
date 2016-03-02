@@ -140,6 +140,29 @@ stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DI
 	return 1;
 }
 
+stock ShowOfflineCrimesDialog(playerid)
+{
+	szMiscArray[0] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "----Misdemeanors----\n");
+	for(new i = 0; i < MAX_CRIMES; i++)
+	{
+		if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] && arrCrimeData[i][c_iType] == 1)
+		{
+			format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}%i\t%s\n", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName]);
+		}
+	}
+	format(szMiscArray, sizeof(szMiscArray), "%s----Felonies----\n", szMiscArray);
+	for(new i = 0; i < MAX_CRIMES; i++)
+	{
+		if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] && arrCrimeData[i][c_iType] == 2)
+		{
+			format(szMiscArray, sizeof(szMiscArray), "%s{AA3333}%i\t%s\n", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName]);
+		}
+	}
+	ShowPlayerDialogEx(playerid, DIALOG_SHOW_OFFLINE_CRIMES, DIALOG_STYLE_LIST, "Select a committed crime", szMiscArray, "Select", "Exit");
+	return 1;
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	szMiscArray[0] = 0;
@@ -201,6 +224,52 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							}
 						}
 						PlayerInfo[iTargetID][pDefendTime] = 60;
+					}
+				}
+			}
+		}
+		case DIALOG_SHOW_OFFLINE_CRIMES:
+		{
+			if(!response) return 1;
+			for(new i = 0; i < MAX_CRIMES; i++)
+			{
+				if(arrCrimeData[i][c_iNation] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
+				{
+					if(arrCrimeData[i][c_iID] == strval(inputtext))
+					{
+						new PlayerName[MAX_PLAYER_NAME], SQLID[16], query[500];
+
+						new szCountry[10], szCrime[128];
+						if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1)
+						{
+							format(szCountry, sizeof(szCountry), "[SA] ");
+						}
+						else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2)
+						{
+							format(szCountry, sizeof(szCountry), "[TR] ");
+						}
+						strcat(szCrime, szCountry);
+						strcat(szCrime, arrCrimeData[i][c_szName]);
+
+						GetPVarString(playerid, "OfflineSU", PlayerName, MAX_PLAYER_NAME);
+
+						format(SQLID, sizeof(SQLID), "SELECT `id` FROM `accounts` WHERE `Username` = '%s'", PlayerName);
+
+						format(query, sizeof(query), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", SQLID, g_mysql_ReturnEscaped(GetPlayerNameEx(playerid), MainPipeline), g_mysql_ReturnEscaped(arrCrimeData[i][c_szName], MainPipeline), arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance]);
+						mysql_function_query(MainPipeline, query, false, "OnSetCrime", "i");
+						format(query, sizeof(query), "[OFFLINE] MDC: %s(%d) added crime %s to %s(%d).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrCrimeData[i][c_szName], PlayerName, SQLID);
+
+						Log("logs/crime.log", query);
+
+						foreach(new p: Player)
+						{
+							if(IsACop(p) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[p][pMember]][g_iAllegiance]) {
+								format(szMiscArray, sizeof(szMiscArray), "(offline) HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
+								SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
+								format(szMiscArray, sizeof(szMiscArray), "(offline) HQ: Crime: %s, suspect: %s", szCrime, PlayerName);
+								SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
+							}
+						}
 					}
 				}
 			}
@@ -345,6 +414,28 @@ CMD:su(playerid, params[]) {
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
 	return 1;
 }
+
+/*CMD:osu(playerid, params[]) 
+{
+	if(IsACop(playerid)) 
+	{
+		if(PlayerInfo[playerid][pJailTime] > 0) {
+			return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this in jail/prison.");
+		}
+
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /osu(spect) [player name]");
+
+		new PlayerName[MAX_PLAYER_NAME];
+		mysql_escape_string(params, PlayerName);
+
+		if(IsPlayerConnected(ReturnUser(PlayerName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /su.");
+
+		SetPVarString(playerid, "OfflineSU", PlayerName);
+		ShowOfflineCrimesDialog(playerid);
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
+	return 1;
+}*/
 
 ShowCrimesList(playerid)
 {

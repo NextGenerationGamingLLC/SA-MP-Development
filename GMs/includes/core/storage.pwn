@@ -2030,7 +2030,6 @@ CMD:trunkput(playerid, params[])
 		}
 	}	
 	else { SendClientMessageEx(playerid,COLOR_GREY,"   Invalid weapon name!"); return 1; }
-	if(weapon == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You don't have that weapon.");
 	if(PlayerVehicleInfo[playerid][pvid][pvWeapons][slot-1] == 0)
 	{
 		PlayerVehicleInfo[playerid][pvid][pvWeapons][slot-1] = weapon;

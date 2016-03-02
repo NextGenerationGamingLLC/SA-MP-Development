@@ -4233,6 +4233,25 @@ public OnSetSuspended(index, value)
 	return 1;
 }
 
+forward OnSetCrime(index);
+public OnSetCrime(index)
+{
+	new string[128], name[24];
+	GetPVarString(index, "OfflineSU", name, 24);
+
+	if(mysql_affected_rows(MainPipeline)) {
+		format(string, sizeof(string), "You have successfully added a crime to %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, string);
+	}
+	else {
+		format(string, sizeof(string), "There was an issue with adding a crime to %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, string);
+	}
+	DeletePVar(index, "OfflineSU");
+
+	return 1;
+}
+
 forward OnSetMyName(index);
 public OnSetMyName(index)
 {

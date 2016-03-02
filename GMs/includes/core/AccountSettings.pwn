@@ -278,7 +278,8 @@ CMD:tog(playerid, params[]) {
 		return 1;
 	}
 
-	new iChatID = -1;
+	new iChatID = -1, chatname[50], string[128];
+	mysql_escape_string(params, chatname);
 
 	if(strcmp(params, "newbie", true) == 0) iChatID = 0;
 	else if(strcmp(params, "ooc", true) == 0) iChatID = 2;
@@ -312,6 +313,8 @@ CMD:tog(playerid, params[]) {
 			case 15: advisorchat[playerid] = 0;
 			case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
 		}
+		format(string, sizeof(string), "You have toggled %s on.", chatname);
+		SendClientMessage(playerid, COLOR_GRAD1, string);
 	}
 	else {
 
@@ -322,6 +325,8 @@ CMD:tog(playerid, params[]) {
 			case 15: advisorchat[playerid] = 1;
 			case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
 		}
+		format(string, sizeof(string), "You have toggled %s off.", chatname);
+		SendClientMessage(playerid, COLOR_GRAD1, string);
 	}
 
 

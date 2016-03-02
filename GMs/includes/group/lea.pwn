@@ -1057,7 +1057,10 @@ CMD:vcheck(playerid, params[])
         }
         else if(IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0) && !IsTrailerAttachedToVehicle(carid) && (GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)))
 		{
-		    new dynveh = DynVeh[closestcar];
+		    new dynveh = DynVeh[closestcar], szClamp[16];
+		    if(WheelClamp{closestcar}) {
+		    	format(szClamp, sizeof(szClamp), "| Wheelclamp: Yes");
+		    }
             foreach(new i: Player)
 			{
 
@@ -1065,7 +1068,7 @@ CMD:vcheck(playerid, params[])
 				if(v != -1)
 				{
 					new string[78 + MAX_PLAYER_NAME];
-					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar));
+					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH %s", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar), szClamp);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					return 1;
 				}
@@ -1075,14 +1078,14 @@ CMD:vcheck(playerid, params[])
 			    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
-                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}
 				else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
-                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}

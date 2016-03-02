@@ -397,14 +397,14 @@ task SyncTime[60000]()
 		{
   			WeatherCalling = 0;
 	    	gWeather = random(19) + 1;
-		    if(gWeather == 1) gWeather=10;
+		    if(gWeather == 1 || gWeather == 8 || gWeather == 9) gWeather=10;
 		}
 		#else
 		if(WeatherCalling > 20)
 		{
  			WeatherCalling = 0;
    			gWeather = random(19) + 1;
-		    if(gWeather == 1) gWeather=10;
+		    if(gWeather == 1 || gWeather == 8 || gWeather == 9) gWeather=10;
 		}
 		#endif
 
