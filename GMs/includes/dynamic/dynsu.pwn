@@ -237,7 +237,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(arrCrimeData[i][c_iID] == strval(inputtext))
 					{
-						new PlayerName[MAX_PLAYER_NAME], SQLID[16], query[500];
+						new PlayerName[MAX_PLAYER_NAME];
 
 						new szCountry[10], szCrime[128];
 						if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1)
@@ -253,23 +253,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 						GetPVarString(playerid, "OfflineSU", PlayerName, MAX_PLAYER_NAME);
 
-						format(SQLID, sizeof(SQLID), "SELECT `id` FROM `accounts` WHERE `Username` = '%s'", PlayerName);
-
-						format(query, sizeof(query), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", SQLID, g_mysql_ReturnEscaped(GetPlayerNameEx(playerid), MainPipeline), g_mysql_ReturnEscaped(arrCrimeData[i][c_szName], MainPipeline), arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance]);
-						mysql_function_query(MainPipeline, query, false, "OnSetCrime", "i");
-						format(query, sizeof(query), "[OFFLINE] MDC: %s(%d) added crime %s to %s(%d).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), arrCrimeData[i][c_szName], PlayerName, SQLID);
-
-						Log("logs/crime.log", query);
-
-						foreach(new p: Player)
-						{
-							if(IsACop(p) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[p][pMember]][g_iAllegiance]) {
-								format(szMiscArray, sizeof(szMiscArray), "(offline) HQ: All units APB (reporter: %s)",GetPlayerNameEx(playerid));
-								SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
-								format(szMiscArray, sizeof(szMiscArray), "(offline) HQ: Crime: %s, suspect: %s", szCrime, PlayerName);
-								SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
-							}
-						}
+						Crime_AddOffline(playerid, szCrime, PlayerName);
 					}
 				}
 			}
@@ -415,7 +399,7 @@ CMD:su(playerid, params[]) {
 	return 1;
 }
 
-/*CMD:osu(playerid, params[]) 
+CMD:osu(playerid, params[]) 
 {
 	if(IsACop(playerid)) 
 	{
@@ -431,11 +415,12 @@ CMD:su(playerid, params[]) {
 		if(IsPlayerConnected(ReturnUser(PlayerName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /su.");
 
 		SetPVarString(playerid, "OfflineSU", PlayerName);
+
 		ShowOfflineCrimesDialog(playerid);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
 	return 1;
-}*/
+}
 
 ShowCrimesList(playerid)
 {
@@ -446,4 +431,61 @@ ShowCrimesList(playerid)
 		format(szMiscArray, sizeof(szMiscArray), "%s\n%i\t%s\t%d\t$%s", szMiscArray, arrCrimeData[i][c_iID], arrCrimeData[i][c_szName], arrCrimeData[i][c_iJTime], number_format(arrCrimeData[i][c_iJFine]));
 	}
 	return ShowPlayerDialogEx(playerid, DIALOG_CRIMES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Select a crime to edit.", szMiscArray, "Select", "Exit");
+}
+
+Crime_AddOffline(iPlayerID, szAddCrime[], szPName[], iExtra = 0) {
+
+	szMiscArray[0] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `Username` FROM accounts WHERE `Username` = '%s' LIMIT 1", szPName);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnCrimeAddOffline", "dssd", iPlayerID, szAddCrime, szPName, iExtra);
+
+	return 1;
+}
+
+forward OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra);
+public OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra) 
+{
+
+	new
+		iRows, 
+		iTempID;
+
+	iRows = cache_get_row_count(MainPipeline);
+
+	switch(iExtra) {
+		case 0: {
+			
+			if(!iRows) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "That player was not found!");
+
+
+			iTempID = cache_get_field_content_int(iRows, "id", MainPipeline);
+
+			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", iTempID, GetPlayerNameEx(iPlayerID), szAddCrime, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance]);
+			mysql_function_query(MainPipeline, szMiscArray, true, "OnCrimeAddOffline", "dssd", iPlayerID, szAddCrime, szPName, 1);
+
+			new PlayerName[MAX_PLAYER_NAME];
+			GetPVarString(iPlayerID, "OfflineSU", PlayerName, MAX_PLAYER_NAME);
+			foreach(new p: Player)
+			{
+				if(IsACop(p) && arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[p][pMember]][g_iAllegiance]) {
+					format(szMiscArray, sizeof(szMiscArray), "(offline) HQ: All units APB (reporter: %s)",GetPlayerNameEx(iPlayerID));
+					SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
+					format(szMiscArray, sizeof(szMiscArray), "(offline) HQ: Crime: %s, suspect: %s", szAddCrime, PlayerName);
+					SendClientMessageEx(p, TEAM_BLUE_COLOR, szMiscArray);
+				}
+			}
+			DeletePVar(iPlayerID, "OfflineSU");
+		}
+
+		case 1: {
+			
+			if(!cache_affected_rows(MainPipeline)) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "There was an issue appending that crime!");
+
+			format(szMiscArray, sizeof(szMiscArray), "Crime Added: %s - %s", szPName, szAddCrime);
+			SendClientMessage(iPlayerID, 0xFFFFFF, szMiscArray);
+		}
+	}
+
+
+	return 1;
 }

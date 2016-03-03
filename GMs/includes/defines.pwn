@@ -1167,9 +1167,9 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_MONEYFARMING				(6147)
 #define 		DIALOG_DRUG_INTERACT			(6148)
 #define 		DIALOG_MEDIC_LIST				(6149)
-#define			DIALOG_SHOW_OFFLINE_CRIMES		(6150)
 
 #define 		DIALOG_SPAWNINPRISON			(6150)
+#define			DIALOG_SHOW_OFFLINE_CRIMES		(6151)
 
 // GangTags
 #define 			GANGTAG_TIME				60000
