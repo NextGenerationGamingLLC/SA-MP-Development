@@ -541,6 +541,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						ShowPlayerDialogEx(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
 						return 1;
 					}
+					if(garageid == 0)
+					{
+						DDSaleDoors[playerid][DDSaleTracking[playerid]] = 0;
+						ShowDynamicDoorDialog(playerid);
+						return 1;
+					}
 					for(new i = 0; i < sizeof(DDSaleDoors[]); i ++)
 					{
 						if(DDSaleDoors[playerid][i] == garageid && garageid != 0)
@@ -569,7 +575,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						{
 							if(GarageInfo[garageid][gar_Owner] != GetPlayerSQLId(playerid))
 							{
-								SendClientMessageEx(playerid, COLOR_GREY, "You do not own the specified dynamic door.");
+								SendClientMessageEx(playerid, COLOR_GREY, "You do not own the specified garage.");
 								ShowPlayerDialogEx(playerid, DIALOG_GARAGESALELINK, DIALOG_STYLE_INPUT, "Dynamic Door Selling", "Input below the ID of the garage you would like to link to the sale. Input \"0\" to remove a garage.", "Okay", "Cancel");
 								return 1;
 							}

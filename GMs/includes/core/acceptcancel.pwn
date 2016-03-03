@@ -1963,7 +1963,7 @@ CMD:accept(playerid, params[])
                             }
 
                             if(!GetPVarType(playerid, "STD")) {
-                                if(Condom[playerid] < 1) {
+                                if(Condom[playerid] == 0) {
                                     new Float:health;
                                     new level = PlayerInfo[SexOffer[playerid]][pSexSkill];
                                     if(level >= 0 && level <= 50) {
