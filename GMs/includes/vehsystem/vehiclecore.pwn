@@ -1754,6 +1754,18 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Shipment Contractor!");
 			}
 		}
+		else if(IsInGarbageTruck(playerid))
+		{
+			if(!ispassenger)
+			{
+				RemovePlayerFromVehicle(playerid);
+			    new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz);
+			    defer NOPCheck(playerid);
+			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Shipment Contractor!");
+			}
+		}
 	   	else if(IsAPlane(vehicleid))
 		{
 	  		if(PlayerInfo[playerid][pFlyLic] != 1)

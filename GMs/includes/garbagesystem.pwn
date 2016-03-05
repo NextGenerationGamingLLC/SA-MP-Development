@@ -103,7 +103,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 
 command(garbagerun, playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] == 69 || PlayerInfo[playerid][pJob2] == 69 || PlayerInfo[playerid][pJob3] == 69)
+	if(PlayerInfo[playerid][pJob] == 31 || PlayerInfo[playerid][pJob2] == 31 || PlayerInfo[playerid][pJob3] == 31)
 	{
 	    if(IsInGarbageTruck(GetPlayerVehicleID(playerid)))
 	    {

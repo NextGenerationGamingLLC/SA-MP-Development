@@ -1116,7 +1116,7 @@ ListInmates(playerid)
 		{
 			if(PlayerInfo[i][pIsolated] >= 1) 
 			{
-				if(GetPlayerVirtualWorld(playerid) == 666) {
+				if(GetPlayerVirtualWorld(i) == 666) {
 					format(IsoString, sizeof(IsoString), "[OOC-ISO] ");
 				}
 				else { format(IsoString, sizeof(IsoString), "[ISO] "); }
@@ -1135,7 +1135,7 @@ ListInmates(playerid)
 			}
 			else format(TimeString, sizeof(TimeString), "%s", TimeConvert(PlayerInfo[i][pJailTime]));
 
-			format(szInmates, sizeof(szInmates), "%s\n* %s%s: %s | Cell: %d | Credits: %d %s", szInmates, IsoString, GetPlayerNameEx(i), TimeString, PlayerInfo[playerid][pPrisonCell], PlayerInfo[playerid][pPrisonCredits], BailString);
+			format(szInmates, sizeof(szInmates), "%s\n* %s%s: %s | Cell: %d | Credits: %d %s", szInmates, IsoString, GetPlayerNameEx(i), TimeString, PlayerInfo[i][pPrisonCell], PlayerInfo[i][pPrisonCredits], BailString);
 		}
 	}
 	if(strlen(szInmates) == 0) format(szInmates, sizeof(szInmates), "No inmates");
@@ -1688,10 +1688,10 @@ CMD:prisonhelp(playerid, params[])
  	if(strfind(PlayerInfo[playerid][pPrisonReason], "[DNRL]", true) != -1) { SendClientMessageEx(playerid, COLOR_GREY, "LIFE SENTENCE: /docrelease"); }
  	if(IsADocGuard(playerid)) { 
  		SendClientMessageEx(playerid, COLOR_GREY, "GUARD:	/reducesentence, /extendsentence, /(jail)cuff, /(get)(offer)inmatefood, /listprisoners, /inmates, /acceptrelease"); 
- 		SendClientMessageEx(playerid, COLOR_GREY, "GUARD:	/denyrelease, /beanbag, /(un)isolateinmate, /oocisolateinmate, /loadinmates, /deliverinmates"); 
+ 		SendClientMessageEx(playerid, COLOR_GREY, "GUARD:	/denyrelease, /beanbag, /(un)isolateinmate, /oocisolateinmate, /loadinmates, /deliverinmates, /giveprisoncredits"); 
  	}
  	if(IsADocGuard(playerid) && PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID) { 
- 		SendClientMessageEx(playerid, COLOR_GREY, "LEADER:	/setbail, /giveprisoncredits, /takeprisoncredits, /changeinmatecell, /prisonermotd"); 
+ 		SendClientMessageEx(playerid, COLOR_GREY, "LEADER:	/setbail, /takeprisoncredits, /changeinmatecell, /prisonermotd"); 
  	}
   	if(IsAJudge(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "JUDGE:	/docjudgesentence, /docjudgecharge, /docjudgesubpoena"); }
    	if(GetPVarInt(playerid, "pPrisonShank") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "SHANK:	/shank - increases damage upon punching. | usable 15 times before 'breaking.'"); }
@@ -1735,11 +1735,10 @@ CMD:giveprisoncredits(playerid, params[]) // these NEED to show up on /frisk and
 {
 	new id, amount, string[128];
     if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
-    if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a group leader.");
     if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
 
     if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givepcredits [playerid] [amount]");
-    if(!(0 < amount < 101)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount (1 - 100).");
+    if(!(0 < amount < 51)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount (1 - 50).");
 
     if (ProxDetectorS(16.0, playerid, id))
     {

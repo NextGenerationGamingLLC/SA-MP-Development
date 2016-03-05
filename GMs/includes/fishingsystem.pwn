@@ -41,7 +41,7 @@
 
 command(fish, playerid, params[])
 {
-    if(PlayerInfo[playerid][pJob] == 70 || PlayerInfo[playerid][pJob2] == 70 || PlayerInfo[playerid][pJob3] == 70)
+    //if(PlayerInfo[playerid][pJob] == 70 || PlayerInfo[playerid][pJob2] == 70 || PlayerInfo[playerid][pJob3] == 70)
     {
         if(IsABoat(GetPlayerVehicleID(playerid)))
         {
@@ -632,7 +632,7 @@ command(fish, playerid, params[])
         }
         else return SendClientMessageEx(playerid, COLOR_GRAD2, "  You are not in a boat!");
     }
-    else SendClientMessageEx(playerid, COLOR_GRAD2, "  You are not a fisherman!");
+    //else SendClientMessageEx(playerid, COLOR_GRAD2, "  You are not a fisherman!");
 	return 1;
 }
 
@@ -647,7 +647,7 @@ command(myfish, playerid, params[])
 command(sellfish, playerid, params[])
 {
 	new amount;
-    if(PlayerInfo[playerid][pJob] == 70 || PlayerInfo[playerid][pJob2] == 70 || PlayerInfo[playerid][pJob3] == 70)
+    //if(PlayerInfo[playerid][pJob] == 70 || PlayerInfo[playerid][pJob2] == 70 || PlayerInfo[playerid][pJob3] == 70)
     {
         if(IsPlayerInRangeOfPoint(playerid, 30.0, 2286.7698, -2425.2292, 3.0000))
         {
@@ -659,6 +659,8 @@ command(sellfish, playerid, params[])
 				return SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			}
         
+            if(amount < 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot enter a negative ammount.");
+            
         	if(PlayerInfo[playerid][pFishWeight] >= amount && PlayerInfo[playerid][pFishWeight] != 0)
        		{
    	    		new rand = random(100) + 100, money = amount * 40 + rand, string[128];
@@ -678,7 +680,7 @@ command(sellfish, playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_YELLOW, "Make your way to the checkpoint to sell your fish.");
 		}
     }
-    else SendClientMessageEx(playerid, COLOR_GRAD2, "  You are not a fisherman!");
+    //else SendClientMessageEx(playerid, COLOR_GRAD2, "  You are not a fisherman!");
 	return 1;
 }
 

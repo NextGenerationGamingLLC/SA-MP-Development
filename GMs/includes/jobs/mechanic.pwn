@@ -74,7 +74,7 @@ CMD:fix(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
 			return 1;
 		}
-		else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen"))
+		else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen"))
 		{
 			return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 		}

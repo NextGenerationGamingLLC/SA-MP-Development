@@ -78,7 +78,7 @@ _t_ableTo(playerid)
 	new year, month, day;
 	getdate(year, month, day);
 	if(!(month == 4 && day == 26)) return SendClientMessageEx(playerid, COLOR_GRAD2, "It's not NGG's BDay!"), 0;
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "Hospital") || GetPVarType(playerid, "IsLive")) {
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "Hospital") || GetPVarType(playerid, "IsLive")) {
 		SendClientMessage(playerid, COLOR_GRAD2, "You perform this action right now.");
 		return 0;
 	}

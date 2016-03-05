@@ -268,7 +268,7 @@ CMD:call(playerid, params[])
 		SendClientMessageEx(playerid,COLOR_GREY,"You can't use your phone while in jail.");
 		return 1;
 	}
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0)
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || GetPVarInt(playerid, "pBagged") >= 1)
 	{
 		SendClientMessageEx(playerid,COLOR_GREY,"You can't use your phone whilist restrained.");
 		return 1;
@@ -286,7 +286,7 @@ CMD:call(playerid, params[])
 			return 1;
 		}
 	}
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	format(string, sizeof(string), "* %s takes out a cellphone.", GetPlayerNameEx(playerid));
@@ -478,7 +478,7 @@ CMD:sms(playerid, params[])
 	if(PlayerInfo[playerid][pPnumber] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "  You don't have a cell phone.");
 	if(PhoneOnline[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "Your phone is off.");
 	if(GetPVarInt(playerid, "Injured") != 0 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use your phone whilist restrained.");
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || GetPVarInt(playerid, "pBagged") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use your phone whilist restrained.");
 	if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You can not use your phone while in jail or prison!");
 
 	szMiscArray[0] = 0;
@@ -607,7 +607,7 @@ CMD:pickup(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD2, "  You are already on a call...");
 		return 1;
 	}
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] > 0) {
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	if(GetPVarType(playerid, "PayPhone")) {

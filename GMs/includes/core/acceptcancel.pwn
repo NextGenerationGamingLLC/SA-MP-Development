@@ -245,7 +245,7 @@ CMD:accept(playerid, params[])
 				SendClientMessage(playerid, COLOR_GRAD2, "Shop doesnt have mats anymore");
 				return 1;
 		    }
-			if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) {
+			if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) {
    				SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
    				return 1;
 			}

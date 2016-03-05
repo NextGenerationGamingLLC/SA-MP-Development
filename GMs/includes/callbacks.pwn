@@ -1992,7 +1992,7 @@ public OnPlayerDisconnect(playerid, reason)
 	                    DeletePVar(playerid, "cuffhealth");
 						DeletePVar(playerid, "PlayerCuffed");
 					}
-					strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] EBCF ((CWC))", 128);
+					strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] DMCF ((CWC))", 128);
 					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - CWC", 128);
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
@@ -3985,7 +3985,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 	    new string[128];
 	    if(!GetPVarType(playerid, "Tackling"))	{
-	        if(GetPVarInt(playerid, "TackleMode") == 1 && GetPlayerTargetPlayer(playerid) != INVALID_PLAYER_ID && PlayerCuffed[GetPlayerTargetPlayer(playerid)] == 0 && ProxDetectorS(4.0, playerid, GetPlayerTargetPlayer(playerid)) && !IsPlayerNPC(GetPlayerTargetPlayer(playerid)))
+	        if(GetPVarInt(playerid, "TackleMode") == 1 && GetPlayerTargetPlayer(playerid) != INVALID_PLAYER_ID && PlayerCuffed[GetPlayerTargetPlayer(playerid)] == 0 && GetPVarInt(GetPlayerTargetPlayer(playerid), "pBagged") == 0||ProxDetectorS(4.0, playerid, GetPlayerTargetPlayer(playerid)) && !IsPlayerNPC(GetPlayerTargetPlayer(playerid)))
 	        {
 		        if(GetPVarInt(playerid, "CopTackleCooldown") != 0)
 		        {
@@ -4132,7 +4132,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
-	else if((newkeys & 16) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && PlayerCuffed[playerid] == 0 && PlayerInfo[playerid][pBeingSentenced] == 0 && GetPVarType(playerid,"UsingAnim") && !GetPVarType(playerid, "IsFrozen"))
+	else if((newkeys & 16) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && PlayerCuffed[playerid] == 0 || GetPVarInt(playerid, "pBagged") == 0 || GetPVarInt(playerid, "pWineConsumed") == 0 || PlayerInfo[playerid][pBeingSentenced] == 0 && GetPVarType(playerid,"UsingAnim") && !GetPVarType(playerid, "IsFrozen"))
 	{
 		ClearAnimations(playerid);
 		DeletePVar(playerid,"UsingAnim");
