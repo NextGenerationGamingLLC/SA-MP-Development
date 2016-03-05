@@ -1088,7 +1088,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			arrBlackMarket[iBlackMarketID][bm_fPos][0] = 0.0;
 			arrBlackMarket[iBlackMarketID][bm_fPos][1] = 0.0;
 			arrBlackMarket[iBlackMarketID][bm_fPos][2] = 0.0;
-			DestroyDynamicArea(arrBlackMarket[iBlackMarketID][bm_iAreaID]);
+			if(IsValidDynamicArea(arrBlackMarket[iBlackMarketID][bm_iAreaID])) DestroyDynamicArea(arrBlackMarket[iBlackMarketID][bm_iAreaID]);
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `groupid` = '-1' WHERE `id` = '%d'", iBlackMarketID + 1);
 			mysql_function_query(MainPipeline, szMiscArray, false, "BM_OnDeleteBlackMarket", "ii", playerid, iBlackMarketID);
 		}
@@ -2655,7 +2655,7 @@ public Drugs_OnLoadPlayerPlants()
 
 			arrDrugData[iFreeID][dr_iDrugQuality] = cache_get_field_content_int(iCount, "quality", MainPipeline);
 
-			arrDrugData[iFreeID][dr_iAreaID] = CreateDynamicSphere(arrDrugData[iFreeID][dr_fPos][0], arrDrugData[iFreeID][dr_fPos][1], arrDrugData[iFreeID][dr_fPos][2], 2.0, iVW, iINT);
+			// arrDrugData[iFreeID][dr_iAreaID] = CreateDynamicSphere(arrDrugData[iFreeID][dr_fPos][0], arrDrugData[iFreeID][dr_fPos][1], arrDrugData[iFreeID][dr_fPos][2], 2.0, iVW, iINT);
 			
 			if(arrDrugData[iFreeID][dr_fPos][0] != 0 && arrDrugData[iFreeID][dr_fPos][1] != 0) {
 
@@ -2683,8 +2683,8 @@ public Drugs_OnDestroyPlant(playerid, i) {
 
 	if(mysql_errno(MainPipeline)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
 	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
-	DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
-	DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
+	if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 	Iter_Remove(PlayerDrugs, i);
 	arrDrugData[i][dr_fPos][0] = 0;
 	arrDrugData[i][dr_fPos][1] = 0;
@@ -2705,9 +2705,9 @@ Drugs_Remove(playerid, i)
 forward Drugs_OnLEODestroyPlant(playerid, i);
 public Drugs_OnLEODestroyPlant(playerid, i) {
 
-	DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
-	DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
-	DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
+	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+	if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 
 	DeletePVar(playerid, "AtDrugArea");
 	Iter_Remove(PlayerDrugs, i);
@@ -2732,9 +2732,9 @@ public Drugs_OnRetrievePlant(playerid, i) {
 
 	new iDrugID = arrDrugData[i][dr_iDrugID];
 	ApplyAnimation(playerid, "BOMBER","BOM_Plant_In", 4.0, 0, 0, 0, 0, 0);
-	DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
-	DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
-	DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+	if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 	PlayerInfo[playerid][p_iDrug][iDrugID] += 20;
 	PlayerInfo[playerid][p_iDrugQuality][iDrugID] = arrDrugData[i][dr_iDrugQuality];
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You have retrieved 20 pieces of cannabis/opium from the plant with a quality of %dqP.", arrDrugData[i][dr_iDrugQuality]);
@@ -2975,6 +2975,31 @@ public Drug_OnGetPostOrders(playerid) {
 	return 1;
 }
 
+CMD:rehashpoints(playerid, params[]) {
+
+	if(IsAdminLevel(playerid, ADMIN_SENIOR)) {
+		SendClientMessageEx(playerid, COLOR_YELLOW, "[Point]: Reloading all points.");
+		for(new i; i < MAX_DYNPOINTS; ++i) {
+
+			arrPoint[i][po_iGroupID] = INVALID_GROUP_ID;
+			arrPoint[i][po_iCapturable] = 0;
+			arrPoint[i][po_fPos][0] = 0.0;
+			arrPoint[i][po_fPos][1] = 0.0;
+			arrPoint[i][po_fPos][2] = 0.0;
+
+			DestroyDynamicPickup(arrPoint[i][po_iPickupID]);
+			DestroyDynamic3DTextLabel(arrPoint[i][po_iTextID]);
+			DestroyDynamic3DTextLabel(arrPoint[i][po_iDelTextID]);
+			DestroyDynamicArea(arrPoint[i][po_iBigAreaID]);
+			GangZoneDestroy(arrPoint[i][po_iZoneID]);
+			Iter_Remove(Points, i);
+		}
+		PO_LoadPoints();
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+	return 1;
+}
+
 CMD:getplant(playerid, params[]) {
 
 	/*
@@ -3004,9 +3029,9 @@ CMD:flushdrugs(playerid, params[]) {
 		mysql_function_query(MainPipeline, "DELETE FROM `drugpool`", false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		for(new i; i < MAX_DRUGS; ++i) {
 
-			DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
-			DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
-			DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+			if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+			if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+			if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 			arrDrugData[i][dr_iDrugQuality] = 0;
 			Iter_Remove(PlayerDrugs, i);
 		}
@@ -3340,7 +3365,7 @@ CMD:destroyblackmarket(playerid, params[])
 		arrBlackMarket[i][bm_fPos][0] = 0.0;
 		arrBlackMarket[i][bm_fPos][1] = 0.0;
 		arrBlackMarket[i][bm_fPos][2] = 0.0;
-		DestroyDynamicArea(arrBlackMarket[i][bm_iAreaID]);
+		if(IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) DestroyDynamicArea(arrBlackMarket[i][bm_iAreaID]);
 		Iter_Remove(BlackMarkets, i);
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `groupid` = '-1' WHERE `id` = '%d'", i + 1);
 		mysql_function_query(MainPipeline, szMiscArray, false, "BM_OnDeleteBlackMarket", "ii", playerid, i);
@@ -3599,8 +3624,8 @@ CMD:destroypoint(playerid, params[]) {
 	new i;
 	if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /destroypoint [id]");
 
-	// if(arrPoint[i][po_fPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid point ID.");
-	if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid point ID.");
+	if(arrPoint[i][po_fPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid point ID.");
+	// if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid point ID.");
 
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `groupid` = '-1', `Name` = 'Factory' WHERE `id` = '%d'", i + 1);
 	mysql_function_query(MainPipeline, szMiscArray, false, "PO_OnDeletePoint", "ii", playerid, i);
@@ -3617,8 +3642,8 @@ CMD:pointname(playerid, params[]) {
 
 	if(sscanf(params, "ds[32]", i, szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /editpoint [id] [name]");
 
-	// if(arrPoint[i][po_fPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
-	if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
+	if(arrPoint[i][po_fPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
+	// if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
 
 
 	format(arrPoint[i][po_szPointName], MAX_PLAYER_NAME, szMiscArray);
@@ -3662,8 +3687,8 @@ CMD:editpoint(playerid, params[]) {
 
 	if(sscanf(params, "s[16]dD", szChoice, i, szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /editpoint [choice] [id] [value] | Available: 'position', 'deliverpos', 'name', 'capturable'");
 
-	// if(arrPoint[i][po_fPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
-	if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
+	if(arrPoint[i][po_fPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
+	// if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
 
 	if(strcmp(szChoice, "position", true) == 0) {
 
@@ -4100,7 +4125,7 @@ PO_CreatePoint(i, Float:X, Float:Y, Float:Z, Float:DX = 0.0, Float:DY = 0.0, Flo
 		arrPoint[i][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, DX, DY, DZ, 10.0, .worldid = 0, .interiorid = 0);
 	}
 
-	arrPoint[i][po_iAreaID] = CreateDynamicSphere(arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], 2.0);
+	// arrPoint[i][po_iAreaID] = CreateDynamicSphere(arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], 2.0);
 	//Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_EXTRA_ID, i);
 
 	arrPoint[i][po_iBigAreaID] = CreateDynamicSphere(arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], 100.0);
@@ -4121,7 +4146,6 @@ PO_DestroyPoint(i) {
 	DestroyDynamicPickup(arrPoint[i][po_iPickupID]);
 	DestroyDynamic3DTextLabel(arrPoint[i][po_iTextID]);
 	DestroyDynamic3DTextLabel(arrPoint[i][po_iDelTextID]);
-	DestroyDynamicArea(arrPoint[i][po_iAreaID]);
 	DestroyDynamicArea(arrPoint[i][po_iBigAreaID]);
 	GangZoneDestroy(arrPoint[i][po_iZoneID]);
 	Iter_Remove(Points, i);

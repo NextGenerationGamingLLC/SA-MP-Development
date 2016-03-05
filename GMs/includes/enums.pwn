@@ -1814,7 +1814,7 @@ enum eDynPoints {
 	po_iGroupID,
 	po_iPickupID,
 	po_iZoneID,
-	po_iAreaID,
+	// po_iAreaID,
 	po_iBigAreaID,
 	Text3D:po_iTextID,
 	Text3D:po_iDelTextID

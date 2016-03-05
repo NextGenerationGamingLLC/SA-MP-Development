@@ -78,9 +78,9 @@ forward MetDet_OnDeleteMetDet(playerid, i);
 public MetDet_OnDeleteMetDet(playerid, i)
 {
 	if(mysql_errno(MainPipeline) == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your query could not be processed.");
-	DestroyDynamicObject(arrMetalDetector[i][metdet_iObjectID]);
-	DestroyDynamic3DTextLabel(arrMetalDetector[i][metdet_iTextID]);
-	DestroyDynamicArea(arrMetalDetector[i][metdet_iAreaID]);
+	if(IsValidDynamicObject(arrMetalDetector[i][metdet_iObjectID])) DestroyDynamicObject(arrMetalDetector[i][metdet_iObjectID]);
+	if(IsValidDynamic3DTextLabel(arrMetalDetector[i][metdet_iTextID])) DestroyDynamic3DTextLabel(arrMetalDetector[i][metdet_iTextID]);
+	if(IsValidDynamicArea(arrMetalDetector[i][metdet_iAreaID])) DestroyDynamicArea(arrMetalDetector[i][metdet_iAreaID]);
 	return 1;
 }
 

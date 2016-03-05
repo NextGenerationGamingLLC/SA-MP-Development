@@ -3916,6 +3916,148 @@ CMD:siren(playerid, params[])
 	return 1;
 }
 
+CMD:viewdeploys(playerid, params[]) {
+
+	if(0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS || PlayerInfo[playerid][pAdmin] >= 1337) {
+
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /viewdeploys (cade, spikes, flares, cones, barrels, ladders, signs");
+
+		szMiscArray[0] = 0;
+		new iGroupID = PlayerInfo[playerid][pMember];
+
+		if(strcmp(params, "cade", true) == 0) {
+			
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades]) {
+				for(new i; i < MAX_BARRICADES; ++i) {
+
+					for(new j; j < MAX_GROUPS; ++j) {
+						
+						if(arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[j][g_iAllegiance]) {
+							if(Barricades[j][i][sDeployedByStatus]) {
+								format(szMiscArray, sizeof(szMiscArray), "%sBarricade (%d) - Deployed by: %s\n", szMiscArray, i, arrGroupData[j][g_szGroupName]);
+							}
+						}
+					}
+				}
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(params, "spikes", true) == 0) {
+
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips]) {
+
+				for(new i; i < MAX_SPIKES; ++i) {
+
+					for(new j; j < MAX_GROUPS; ++j) {
+						
+						if(arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[j][g_iAllegiance]) {
+							if(SpikeStrips[j][i][sDeployedByStatus]) {
+								format(szMiscArray, sizeof(szMiscArray), "%sSpike (%d) - Deployed by: %s\n", szMiscArray, i, arrGroupData[j][g_szGroupName]);
+							}
+						}
+					}	
+				}
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(params, "flares", true) == 0) {
+
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFlares]) {
+
+				for(new i; i < MAX_FLARES; ++i) {
+
+					for(new j; j < MAX_GROUPS; ++j) {
+						
+						if(arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[j][g_iAllegiance]) {
+							if(Flares[j][i][sDeployedByStatus]) {
+								format(szMiscArray, sizeof(szMiscArray), "%sFlare (%d) - Deployed by: %s\n", szMiscArray, i, arrGroupData[j][g_szGroupName]);
+							}
+						}
+					}	
+				}
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(params, "cones", true) == 0) {
+
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones]) {
+
+				for(new i; i < MAX_CONES; ++i) {
+
+					for(new j; j < MAX_GROUPS; ++j) {
+						
+						if(arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[j][g_iAllegiance]) {
+							if(Cones[j][i][sDeployedByStatus]) {
+								format(szMiscArray, sizeof(szMiscArray), "%sCone (%d) - Deployed by: %s\n", szMiscArray, i, arrGroupData[j][g_szGroupName]);
+							}
+						}
+					}	
+				}
+			}
+		}
+		else if(strcmp(params, "barrels", true) == 0) {
+
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels]) {
+
+				for(new i; i < MAX_BARRELS; ++i) {
+
+					for(new j; j < MAX_GROUPS; ++j) {
+						
+						if(arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[j][g_iAllegiance]) {
+							if(Barrels[j][i][sDeployedByStatus]) {
+								format(szMiscArray, sizeof(szMiscArray), "%sBarrel (%d) - Deployed by: %s\n", szMiscArray, i, arrGroupData[j][g_szGroupName]);
+							}
+						}
+					}	
+				}
+			}
+		}
+		else if(strcmp(params, "ladders", true) == 0) {
+
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders]) {
+
+				for(new i; i < MAX_LADDERS; ++i) {
+
+					for(new j; j < MAX_GROUPS; ++j) {
+						
+						if(arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[j][g_iAllegiance]) {
+							if(Ladders[j][i][sDeployedByStatus]) {
+								format(szMiscArray, sizeof(szMiscArray), "%sLadder (%d) - Deployed by: %s\n", szMiscArray, i, arrGroupData[j][g_szGroupName]);
+							}
+						}
+					}	
+				}
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(params, "signs", true) == 0) {
+
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades]) {
+
+				for(new i; i < MAX_SIGNS; ++i) {
+
+					for(new j; j < MAX_GROUPS; ++j) {
+						
+						if(arrGroupData[iGroupID][g_iAllegiance] == arrGroupData[j][g_iAllegiance]) {
+							if(Signs[j][i][sDeployedByStatus]) {
+								format(szMiscArray, sizeof(szMiscArray), "%sSign (%d) - Deployed by: %s\n", szMiscArray, i, arrGroupData[j][g_szGroupName]);
+							}
+						}
+					}	
+				}
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid choice.");
+		if(isnull(szMiscArray)) SendClientMessageEx(playerid, COLOR_GRAD1, "There are none deployed.");
+		ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_LIST, "Deployed Objects", szMiscArray, "<<", "");
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	return 1;
+}
+
+
+
 CMD:deploy(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID)
@@ -4196,6 +4338,210 @@ CMD:deploy(playerid, params[])
 	return 1;
 }
 
+CMD:destroyall(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID || PlayerInfo[playerid][pAdmin] >= 1337)
+	{
+		new object[12];
+		if(sscanf(params, "s[12]", object))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /destroyall [object]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cades, Spikes, Flares, Cones, Barrels, Ladders, Signs");
+			return 1;
+		}
+		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
+
+		new iGroup = PlayerInfo[playerid][pMember];
+
+		if(strcmp(object, "cades", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarricades]) {
+
+				for(new type; type < MAX_BARRICADES; ++type) {
+
+					if(Barricades[iGroup][type][sDeployedByStatus]) {
+
+						if(IsValidDynamicObject(Barricades[iGroup][type][sObjectID])) DestroyDynamicObject(Barricades[iGroup][type][sObjectID]);
+						Barricades[iGroup][type][sX] = 0;
+						Barricades[iGroup][type][sY] = 0;
+						Barricades[iGroup][type][sZ] = 0;
+						Barricades[iGroup][type][sObjectID] = -1;
+						Barricades[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+						Barricades[iGroup][type][sDeployedByStatus] = 0;
+						format(szMiscArray, sizeof(szMiscArray), "Barricade ID: %d successfully deleted.", type);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+						format(szMiscArray, sizeof(szMiscArray), "** HQ: A barricade has been destroyed by %s at %s **", GetPlayerNameEx(playerid), Barricades[iGroup][type][sDeployedAt]);
+						foreach(new i: Player)
+						{
+							if(PlayerInfo[i][pToggledChats][12] == 0)
+							{
+								if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szMiscArray);
+								if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
+								{
+									new szBigEar[128];
+									format(szBigEar, sizeof(szBigEar), "(BE) %s", szMiscArray);
+									SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
+								}
+							}
+						}
+					}
+				}
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(object, "spikes", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iSpikeStrips]) {
+
+				for(new type; type < MAX_SPIKES; ++type) {
+
+					if(SpikeStrips[iGroup][type][sDeployedByStatus]) {
+
+						if(IsValidDynamicObject(SpikeStrips[iGroup][type][sObjectID])) DestroyDynamicObject(SpikeStrips[iGroup][type][sObjectID]);
+						DestroyDynamicPickup(SpikeStrips[iGroup][type][sPickupID]);
+						SpikeStrips[iGroup][type][sX] = 0;
+						SpikeStrips[iGroup][type][sY] = 0;
+						SpikeStrips[iGroup][type][sZ] = 0;
+						SpikeStrips[iGroup][type][sObjectID] = -1;
+						SpikeStrips[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+						SpikeStrips[iGroup][type][sDeployedByStatus] = 0;
+						format(szMiscArray,sizeof(szMiscArray),"Spike %d successfully deleted.", type);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+						/*format(string, sizeof(string), "** HQ: A spike has been destroyed by %s at %s **", GetPlayerNameEx(playerid), SpikeStrips[iGroup][type][sDeployedAt]);
+						foreach(new i: Player)
+						{
+							if(PlayerInfo[i][pToggledChats][12] == 0)
+							{
+								if(PlayerInfo[i][pMember] == iGroup) SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, string);
+								if(GetPVarInt(i, "BigEar") == 4 && GetPVarInt(i, "BigEarGroup") == iGroup)
+								{
+									new szBigEar[128];
+									format(szBigEar, sizeof(szBigEar), "(BE) %s", string);
+									SendClientMessageEx(i, arrGroupData[iGroup][g_hRadioColour] * 256 + 255, szBigEar);
+								}
+							}
+						}*/
+					}
+				}
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(object, "flares", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iFlares]) {
+
+				for(new type; type < MAX_FLARES; ++type) {
+
+					if(Flares[iGroup][type][sDeployedByStatus]) {
+
+						if(IsValidDynamicObject(Flares[iGroup][type][sObjectID])) DestroyDynamicObject(Flares[iGroup][type][sObjectID]);
+						Flares[iGroup][type][sX] = 0;
+						Flares[iGroup][type][sY] = 0;
+						Flares[iGroup][type][sZ] = 0;
+						Flares[iGroup][type][sObjectID] = -1;
+						Flares[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+						Flares[iGroup][type][sDeployedByStatus] = 0;
+						format(szMiscArray,sizeof(szMiscArray),"Flare ID: %d successfully deleted.", type);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					}
+				}
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(object, "cones", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones]) {
+
+				for(new type; type < MAX_CONES; ++type) {
+
+					if(Cones[iGroup][type][sDeployedByStatus]) {
+
+						if(IsValidDynamicObject(Cones[iGroup][type][sObjectID])) DestroyDynamicObject(Cones[iGroup][type][sObjectID]);
+						Cones[iGroup][type][sX] = 0;
+						Cones[iGroup][type][sY] = 0;
+						Cones[iGroup][type][sZ] = 0;
+						Cones[iGroup][type][sObjectID] = -1;
+						Cones[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+						Cones[iGroup][type][sDeployedByStatus] = 0;
+						format(szMiscArray,sizeof(szMiscArray),"Cone ID: %d successfully deleted.", type);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					}
+				}
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(object, "barrels", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels]) {
+
+				for(new type; type < MAX_BARRELS; ++type) {
+
+					if(Barrels[iGroup][type][sDeployedByStatus]) {
+
+						if(IsValidDynamicObject(Barrels[iGroup][type][sObjectID])) DestroyDynamicObject(Barrels[iGroup][type][sObjectID]);
+						Barrels[iGroup][type][sX] = 0;
+						Barrels[iGroup][type][sY] = 0;
+						Barrels[iGroup][type][sZ] = 0;
+						Barrels[iGroup][type][sObjectID] = -1;
+						Barrels[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+						Barrels[iGroup][type][sDeployedByStatus] = 0;
+						format(szMiscArray,sizeof(szMiscArray),"Barrel ID: %d successfully deleted.", type);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					}
+				}
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(object, "ladders", true) == 0) {
+
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders]) {
+
+				for(new type; type < MAX_LADDERS; ++type) {
+
+					if(Ladders[iGroup][type][sDeployedByStatus]) {
+
+						new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
+						if(IsValidDynamicObject(Ladders[iGroup][type][sObjectID])) DestroyDynamicObject(Ladders[iGroup][type][sObjectID]);
+						Ladders[iGroup][type][sX] = 0;
+						Ladders[iGroup][type][sY] = 0;
+						Ladders[iGroup][type][sZ] = 0;
+						Ladders[iGroup][type][sObjectID] = -1;
+						Ladders[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+						Ladders[iGroup][type][sDeployedByStatus] = 0;
+						format(string,sizeof(string),"Ladder ID: %d successfully deleted.", type);
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+				}
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(object, "signs", true) == 0) {
+
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones]) {
+
+				for(new type; type < MAX_SIGNS; ++type) {
+
+					if(Signs[iGroup][type][sDeployedByStatus]) {
+
+						if(IsValidDynamicObject(Signs[iGroup][type][sObjectID])) DestroyDynamicObject(Signs[iGroup][type][sObjectID]);
+						Signs[iGroup][type][sX] = 0;
+						Signs[iGroup][type][sY] = 0;
+						Signs[iGroup][type][sZ] = 0;
+						Signs[iGroup][type][sObjectID] = -1;
+						Signs[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
+						Signs[iGroup][type][sDeployedByStatus] = 0;
+						format(szMiscArray,sizeof(szMiscArray),"Sign ID: %d successfully deleted.", type);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					}
+				}
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	return 1;
+}
+
 CMD:destroy(playerid, params[])
 {
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID)
@@ -4360,7 +4706,7 @@ CMD:destroy(playerid, params[])
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iLadders])
 			{
 				if(!(0 <= type < MAX_LADDERS) || (Ladders[iGroup][type][sX] == 0 && Ladders[iGroup][type][sY] == 0 && Ladders[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid ladder ID.");
-				else if(PlayerInfo[playerid][pAdmin] < 2 && Barrels[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a ladder that an Administrator deployed.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Ladders[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a ladder that an Administrator deployed.");
 				else
 				{
 					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
@@ -4380,7 +4726,7 @@ CMD:destroy(playerid, params[])
 		}
 		else if(strcmp(object, "sign", true) == 0)
 		{
-			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBarrels])
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iCones])
 			{
 				if(!(0 <= type < MAX_SIGNS) || (Signs[iGroup][type][sX] == 0 && Signs[iGroup][type][sY] == 0 && Signs[iGroup][type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid sign ID.");
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Signs[iGroup][type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a sign that an Administrator deployed.");
