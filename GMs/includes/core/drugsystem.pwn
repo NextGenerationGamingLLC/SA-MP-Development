@@ -2682,7 +2682,8 @@ forward Drugs_OnDestroyPlant(playerid, i);
 public Drugs_OnDestroyPlant(playerid, i) {
 
 	if(mysql_errno(MainPipeline)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
-	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+//	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) 
+	DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
 	DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
 	DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 	Iter_Remove(PlayerDrugs, i);
@@ -3094,7 +3095,7 @@ CMD:usedrug(playerid, params[]) {
 	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
 	#endif
 
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || (PlayerInfo[playerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1))
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || (PlayerInfo[playerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1))
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 
 	if(GetPVarType(playerid, "AttemptingLockPick")) return SendClientMessageEx(playerid, COLOR_WHITE, "You are attempting to lockpick, please wait.");

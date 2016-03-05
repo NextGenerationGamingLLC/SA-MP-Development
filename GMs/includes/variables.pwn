@@ -695,7 +695,7 @@ new MarryWitnessOffer[MAX_PLAYERS];
 new TicketOffer[MAX_PLAYERS];
 new TicketMoney[MAX_PLAYERS];
 new PlayerStoned[MAX_PLAYERS];
-new FishCount[MAX_PLAYERS];
+//new FishCount[MAX_PLAYERS];
 new ActiveChatbox[MAX_PLAYERS];
 new TutStep[MAX_PLAYERS];
 new PlayerDrunk[MAX_PLAYERS];
@@ -837,6 +837,7 @@ new VIPMOTD[128];
 new CAMOTD[128];
 new pMOTD[256];
 new gMOTD[MAX_GROUPS][3][GROUP_MAX_MOTD_LEN];
+new prisonerMOTD[3][GROUP_MAX_MOTD_LEN];
 new Float:ShopTechPay;
 new TotalCitizens;
 new TRCitizens;
@@ -954,7 +955,7 @@ new Songs[7][1] = {
 {1062}
 };
 
-new FishNames[22][20] = {
+/*new FishNames[22][20] = {
 {"Jacket"}, {"Amberjack"}, {"Grouper"},
 {"Red Snapper"}, {"Pants"}, {"Trout"},
 {"Blue Marlin"}, {"Can"}, {"Mackeral"},
@@ -963,7 +964,7 @@ new FishNames[22][20] = {
 {"Eel"}, {"Dolphin"}, {"Shark"},
 {"Turtle"}, {"Catfish"}, {"Money Bag"},
 {"Swordfish"}
-};
+};*/
 
 /*new Float:DocPrison[12][3] = {
 {-2081.1941,-188.6734,991.536},
@@ -1352,7 +1353,7 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {19878, 0, "Skateboard"}
 };
 
-new HoldingObjectsCop[13][HoldingEnumAll] = {
+new HoldingObjectsCop[14][HoldingEnumAll] = {
 {18642,1000,"Taser1"},
 {19141,2500,"SWATHelmet1"},
 {19142,2500,"SWATArmour1"},
@@ -1365,7 +1366,8 @@ new HoldingObjectsCop[13][HoldingEnumAll] = {
 {19200,1000,"PoliceHelmet1"},
 {19138,1000,"PoliceGlasses1"},
 {19139,1000,"PoliceGlasses2"},
-{19140,1000,"PoliceGlasses3"}
+{19140,1000,"PoliceGlasses3"},
+{19904,1000,"OrangeVest"}
 };
 
 new HoldingObjectsAll[][HoldingEnumAll] = {

@@ -938,15 +938,16 @@ CMD:vticket(playerid, params[])
 {
     if(IsACop(playerid) || IsATowman(playerid))
     {
-        if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vticket [vehicle registration]");
+        new amount, registration[64];
+		if(sscanf(params, "s[64]d", registration, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vticket [registration] [amount]");
 
         if(PlayerInfo[playerid][pTicketTime] != 0)
 		{
             SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait within a minute in order to use this command again!");
             return 1;
         }
-
-        new Float: x, Float: y, Float: z, vehicleid = strval(params);
+        if(amount > 50000) return SendClientMessageEx(playerid, COLOR_GREY, "The maximum vehicle ticket amount is $50000");
+        new Float: x, Float: y, Float: z, vehicleid = strval(registration);
         GetVehiclePos(vehicleid, x, y, z);
         if(IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z))
 		{
@@ -958,9 +959,9 @@ CMD:vticket(playerid, params[])
 					if(v != -1)
 					{
 						new string[62 + MAX_PLAYER_NAME];
-						PlayerVehicleInfo[i][v][pvTicket] += 1000;
+						PlayerVehicleInfo[i][v][pvTicket] += amount;
 						PlayerInfo[playerid][pTicketTime] = 60;
-						format(string, sizeof(string), "You have issued a $1000 ticket on %s's %s.",GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][v][pvId]));
+						format(string, sizeof(string), "You have issued a $%d ticket on %s's %s.", amount, GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][v][pvId]));
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						return 1;
 					}
@@ -1057,7 +1058,10 @@ CMD:vcheck(playerid, params[])
         }
         else if(IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0) && !IsTrailerAttachedToVehicle(carid) && (GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)))
 		{
-		    new dynveh = DynVeh[closestcar];
+		    new dynveh = DynVeh[closestcar], szClamp[16];
+		    if(WheelClamp{closestcar}) {
+		    	format(szClamp, sizeof(szClamp), "| Wheelclamp: Yes");
+		    }
             foreach(new i: Player)
 			{
 
@@ -1065,7 +1069,7 @@ CMD:vcheck(playerid, params[])
 				if(v != -1)
 				{
 					new string[78 + MAX_PLAYER_NAME];
-					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar));
+					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH %s", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar), szClamp);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					return 1;
 				}
@@ -1075,14 +1079,14 @@ CMD:vcheck(playerid, params[])
 			    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
-                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}
 				else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			    {
 					new string[78 + MAX_PLAYER_NAME];
-                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName]);
+                    format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}
@@ -2123,6 +2127,7 @@ CMD:ticket(playerid, params[])
 		}
 
 		if(moneys < 1 || moneys > 100000) { SendClientMessageEx(playerid, COLOR_GREY, "The ticket price can't be below $1 or higher then $100,000."); return 1; }
+		if(PlayerInfo[giveplayerid][pConnectHours] < 30 && moneys > 5000) { SendClientMessageEx(playerid, COLOR_GREY, "You can only ticket players with less than 30 hours a maximum of $5000"); return 1; }
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if(giveplayerid != INVALID_PLAYER_ID)

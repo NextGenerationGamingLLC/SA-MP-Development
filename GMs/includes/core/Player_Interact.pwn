@@ -738,7 +738,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(GetPVarType(buyingfrom, "Interact_SellGun")) {
 
 					new weaponid = GetPVarInt(buyingfrom, "Interact_SellGun");
-					Interact_GivePlayerValidWeapon(buyingfrom, playerid, weaponid, price);
+					if(PlayerInfo[buyingfrom][pGuns][GetWeaponSlot(weaponid)] == weaponid)
+					{
+						Interact_GivePlayerValidWeapon(buyingfrom, playerid, weaponid, price);
+					}
 				}
 				else if(GetPVarType(buyingfrom, "Interact_Drug")) {
 

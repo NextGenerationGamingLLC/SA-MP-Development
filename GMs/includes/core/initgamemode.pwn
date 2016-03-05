@@ -86,7 +86,7 @@ InitiateGamemode()
 	//SelectCharmPoint();
 	
 	gWeather = random(19) + 1;
-	if(gWeather == 1) gWeather=10;
+	if(gWeather == 1 || gWeather == 8 || gWeather == 9) gWeather=10;
 	SetWeather(gWeather);
     
     // Streamer

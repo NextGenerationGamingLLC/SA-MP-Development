@@ -114,9 +114,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				else if(PlayerInfo[playerid][pPnumber] == 0) {
 					SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have a cell phone.");
 				}
-				else if(GetPVarType(playerid, "HasReport")) {
- 					SendClientMessageEx(playerid, COLOR_GREY, "You must wait for you report to be answered or cancelled (/cancelreport) before placing an ad.");
- 				}
 				else ShowPlayerDialogEx(playerid, DIALOG_ADCATEGORYPLACE, DIALOG_STYLE_LIST, "Select a category", "Real Estate\nAutomobile\nBuying\nSelling\nMiscellaneous", "Select", "Cancel");
 			}
 			case 3: {

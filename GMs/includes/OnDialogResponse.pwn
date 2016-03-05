@@ -5148,9 +5148,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					ResetPlayerWeaponsEx(suspect);
 					SetPlayerInterior(suspect, 1);
 					PlayerInfo[suspect][pInt] = 1;
-					new rand = random(sizeof(DocPrison));
 					SetPlayerFacingAngle(suspect, 0);
-					SetPlayerPos(suspect, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
 					if(PlayerInfo[suspect][pDonateRank] >= 2)
 					{
 						PlayerInfo[suspect][pJailTime] = ((time*60)*75)/100;
@@ -5170,7 +5168,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					WantLawyer[suspect] = 1;
 					TogglePlayerControllable(suspect, 1);
 					ClearAnimations(suspect);
-					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
+					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);					
 					PlayerCuffed[suspect] = 0;
 					DeletePVar(suspect, "PlayerCuffed");
 					PlayerCuffedTime[suspect] = 0;
@@ -5178,10 +5176,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPlayerVirtualWorld(suspect, 0);
 					SetHealth(suspect, 100);
 					strcpy(PlayerInfo[suspect][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
-					strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] EBCF Arrest", 128);
+					strcpy(PlayerInfo[suspect][pPrisonReason], "[IC] DMCF Arrest", 128);
 					SetPlayerToTeamColor(suspect);
-					Player_StreamPrep(suspect, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
 					SetHealth(suspect, 100);
+					new randcell = random(29);
+					PlayerInfo[playerid][pPrisonCell] = randcell;
+					SpawnPlayerInPrisonCell(playerid, randcell);
 				}
 				case 3: // doc judge arrest
 				{

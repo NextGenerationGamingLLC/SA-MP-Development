@@ -306,7 +306,7 @@ IsAStreetSweeper(playerid) {
 
 CMD:cleantag(playerid)
 {
-	if(IsAStreetSweeper(playerid)) {
+	if(IsAStreetSweeper(playerid) || strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1) {
 		new Float:gtPos[3];
 		for(new i; i < MAX_GANGTAGS; ++i)
 		{
