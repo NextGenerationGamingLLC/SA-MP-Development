@@ -3732,7 +3732,7 @@ CMD:setstat(playerid, params[])
 				}
 			case 24:
 				{
-					PlayerInfo[giveplayerid][pFishSkill] = amount;
+					PlayerInfo[playerid][pFishingSkill] = amount;
 					format(string, sizeof(string), "   %s's(%d) Fishing Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 25:
@@ -4107,7 +4107,7 @@ CMD:setmystat(playerid, params[])
 			}
 		case 24:
 			{
-				PlayerInfo[playerid][pFishSkill] = amount;
+				PlayerInfo[playerid][pFishingSkill] = amount;
 				format(string, sizeof(string), "   %s's Fishing Skill has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 25:

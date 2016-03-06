@@ -803,6 +803,7 @@ new VehicleSpawned[MAX_PLAYERS];
 new ShotPlayer[MAX_PLAYERS][MAX_PLAYERS];
 new LastShot[MAX_PLAYERS];
 new unbanip[MAX_PLAYERS][16];
+new GarbageVehicles[8];
 new TruckerVehicles[37];
 new PizzaVehicles[12];
 new VIPVehicles[50];

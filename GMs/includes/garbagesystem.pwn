@@ -38,7 +38,6 @@
 // WINTERFIELD: VERSION .278 GARBAGE JOB
 
 #include <YSI\y_hooks>
-new GarbageVehicles[8];
 
 hook OnGameModeInit()
 {
@@ -103,7 +102,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 
 command(garbagerun, playerid, params[])
 {
-	if(PlayerInfo[playerid][pJob] == 31 || PlayerInfo[playerid][pJob2] == 31 || PlayerInfo[playerid][pJob3] == 31)
+	if(PlayerInfo[playerid][pJob] == 27 || PlayerInfo[playerid][pJob2] == 27 || PlayerInfo[playerid][pJob3] == 27)
 	{
 	    if(IsInGarbageTruck(GetPlayerVehicleID(playerid)))
 	    {
@@ -238,15 +237,6 @@ AdvanceGarbageJob(playerid)
 		}
     }
 	return 1;
-}
-
-IsInGarbageTruck(id)
-{
-	for(new i = 0; i < sizeof(GarbageVehicles); i++)
-	{
-		if(id == GarbageVehicles[i]) return 1;
-	}
-	return 0;
 }
 
 forward GarbageJobLoad(playerid);

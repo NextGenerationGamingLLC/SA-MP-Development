@@ -149,6 +149,15 @@ stock IsATruckerCar(carid)
 	return 0;
 }
 
+stock IsInGarbageTruck(id)
+{
+	for(new i = 0; i < sizeof(GarbageVehicles); i++)
+	{
+		if(id == GarbageVehicles[i]) return 1;
+	}
+	return 0;
+}
+
 stock IsAPizzaCar(carid)
 {
 	for (new v = 0; v < sizeof(PizzaVehicles); v++) {
@@ -1754,17 +1763,19 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Shipment Contractor!");
 			}
 		}
-		else if(IsInGarbageTruck(playerid))
+		else if(IsInGarbageTruck(vehicleid))
 		{
-			if(!ispassenger)
+			if(PlayerInfo[playerid][pJob] == 27 || PlayerInfo[playerid][pJob2] == 27 || PlayerInfo[playerid][pJob3] == 27)
 			{
-				RemovePlayerFromVehicle(playerid);
-			    new Float:slx, Float:sly, Float:slz;
+			}
+		    else
+			{
+		        SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Garbage Man!");
+		        RemovePlayerFromVehicle(playerid);
+		        new Float:slx, Float:sly, Float:slz;
 				GetPlayerPos(playerid, slx, sly, slz);
 				SetPlayerPos(playerid, slx, sly, slz);
-			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Shipment Contractor!");
-			}
+		    }
 		}
 	   	else if(IsAPlane(vehicleid))
 		{

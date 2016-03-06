@@ -399,7 +399,7 @@ CMD:su(playerid, params[]) {
 	return 1;
 }
 
-CMD:osu(playerid, params[]) 
+/*CMD:osu(playerid, params[]) 
 {
 	if(IsACop(playerid)) 
 	{
@@ -420,7 +420,7 @@ CMD:osu(playerid, params[])
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
 	return 1;
-}
+}*/
 
 ShowCrimesList(playerid)
 {

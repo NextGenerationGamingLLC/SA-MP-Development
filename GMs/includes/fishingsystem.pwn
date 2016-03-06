@@ -659,7 +659,7 @@ command(sellfish, playerid, params[])
 				return SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			}
         
-            if(amount < 0) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot enter a negative ammount.");
+            if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot enter zero or a negative ammount.");
         	if(PlayerInfo[playerid][pFishWeight] >= amount && PlayerInfo[playerid][pFishWeight] != 0)
        		{
    	    		new rand = random(100) + 100, money = amount * 40 + rand, string[128];
