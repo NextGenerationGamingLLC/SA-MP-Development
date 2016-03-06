@@ -1738,7 +1738,7 @@ CMD:giveprisoncredits(playerid, params[]) // these NEED to show up on /frisk and
     if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
     if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
 
-    if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givepcredits [playerid] [amount]");
+    if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giveprisoncredits [playerid] [amount]");
     if(!(0 < amount < 51)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount (1 - 50).");
 
     if (ProxDetectorS(16.0, playerid, id))
@@ -1767,7 +1767,7 @@ CMD:takeprisoncredits(playerid, params[])
     if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
     if(PlayerInfo[playerid][pLeader] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a group leader.");
 
-    if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /takepcredits [playerid] [amount]");
+    if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /takeprisoncredits [playerid] [amount]");
     if(!(0 < amount < 100)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount (1 - 100).");
     if(amount > PlayerInfo[id][pPrisonCredits]) return SendClientMessageEx(playerid, COLOR_GRAD1, "  They don't have that many.");
     if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
@@ -1938,7 +1938,7 @@ CMD:acceptrelease(playerid, params[])
         format(string, sizeof(string), "You have accepted %s's release request.", GetPlayerNameEx(id));
         SendClientMessageEx(playerid, COLOR_GREY, string);
 
-        DeletePVar(playerid, "_pBeingReleased");
+        DeletePVar(id, "_pBeingReleased");
 
         format(szMiscArray, sizeof szMiscArray, "%s has accepted %s's release request.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
  		GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
@@ -1963,9 +1963,9 @@ CMD:denyrelease(playerid, params[])
         format(string, sizeof(string), "%s has denied your release request. Reason: %s", GetPlayerNameEx(playerid), reason);
         SendClientMessageEx(id, COLOR_GREY, string);
 
-        DeletePVar(playerid, "_pBeingReleased");
+        DeletePVar(id, "_pBeingReleased");
 
-        TogglePlayerControllable(playerid, TRUE);
+        TogglePlayerControllable(id, TRUE);
 
         format(szMiscArray, sizeof szMiscArray, "%s has denied %s's release request. Reason: %s", GetPlayerNameEx(playerid), GetPlayerNameEx(id), reason);
  		GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
@@ -2405,7 +2405,7 @@ ShowPrisonInventory(playerid)
 
 	if(GetPVarInt(playerid, "pPrisonShank") >= 1)
 	{
-	    format(string, sizeof string, "Shank: %d. | Uses: %d", GetPVarInt(playerid, "pPrisonShank"), GetPVarInt(playerid, "pShankUsages"));
+	    format(string, sizeof string, "Shank: %d | Uses: %d", GetPVarInt(playerid, "pPrisonShank"), GetPVarInt(playerid, "pShankUsages"));
 	    SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
 
@@ -2593,7 +2593,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     {
         if(IsPlayerInRangeOfPoint(playerid, 2, 567.7756,1450.0720,6000.4751))
         {
-            if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1) { ShowPlayerDialog(playerid, DIALOG_PRISONCREDS, DIALOG_STYLE_LIST, "Prison Canteen", "Dice\t\t\t\t\t\t5\nPaper\t\t\t\t\t\t5\nSoap\t\t\t\t\t\t5\nSugar\t\t\t\t\t\t5\nBread\t\t\t\t\t\t10\nCigarettes\t\t\t\t\t10\n\nMP3 Player\t\t\t\t\t50\nClothes\t\t\t\t\t500", "Purchase", "Cancel"); }
+            if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1) { ShowPlayerDialog(playerid, DIALOG_PRISONCREDS, DIALOG_STYLE_LIST, "Prison Canteen", "Dice\t\t\t\t\t\t5\nPaper\t\t\t\t\t\t5\nSoap\t\t\t\t\t\t5\nSugar\t\t\t\t\t\t5\nBread\t\t\t\t\t\t10\nCigarettes\t\t\t\t\t10\n\nMP3 Player\t\t\t\t\t50\nClothes\t\t\t\t\t250", "Purchase", "Cancel"); }
         }
 
         else if(IsPlayerInRangeOfPoint(playerid, 5, 546.7458,1484.4885,6000.4678))
@@ -2682,26 +2682,6 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart)
     		SendClientMessageEx(playerid, COLOR_GREY, "Your prison shank has exceeded it's uses.");
 
 	        RemovePlayerAttachedObject(playerid, 9);
-	    }
-	}
-
-	if(GetPVarInt(playerid, "pBeanBag") >= 1 && weaponid == 25)
-	{
-	    if(GetPVarInt(damagedid, "pBagged") >= 1) return 0;
-	    else
-		{
-	    	SetPlayerHealth(damagedid, 100);
-
-	    	TogglePlayerControllable(damagedid, FALSE);
-     		PlayAnimEx(damagedid,"PED","KO_shot_stom",4.1,0,0,0,0,0,0);
-	    	SetTimerEx("_UnbeanbagTimer", 20000, false, "d", damagedid);
-	    	SetPlayerDrunkLevel(damagedid, 10000);
-	    	PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
-     		SetTimerEx("TurnOffFlash", 2500, 0, "i", damagedid);
-
-     		SetPVarInt(damagedid, "pBagged", 1);
-
-	    	GameTextForPlayer(damagedid, "~r~Bagged!", 7000, 3);
 	    }
 	}
 
