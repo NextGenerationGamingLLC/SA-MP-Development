@@ -11,12 +11,15 @@
 #define 			NINJAJACK 					1
 #define 			HEALTHARMORHACKS			2
 #define 			DIALOGSPOOFING				3
+#define 			PROAIM 						4
+
+#define 			MAX_SHOT_VARIANCE 			5.0
 
 new ac_iPlayerKeySpam[MAX_PLAYERS],
 	// ac_iVehicleDriverID[MAX_PLAYERS],
 	ac_iLastVehicleID[MAX_PLAYERS];
 
-new bool:ac_ACToggle[6];
+new bool:ac_ACToggle[7];
 
 hook OnGameModeInit() {
 	
@@ -28,6 +31,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys == KEY_YES) ac_iPlayerKeySpam[playerid]++;
 }
+
+hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
+
+	if(hitid != INVALID_PLAYER_ID) {
+		new Float:fPos[6];
+		GetPlayerLastShotVectors(playerid, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5]);
+		new Float:fDistance = GetPlayerDistanceFromPoint(hitid, fPos[3], fPos[4], fPos[5]);
+
+		if(fDistance >= MAX_SHOT_VARIANCE && fDistance < 300.0) {
+			AC_Process(playerid, INVALID_PLAYER_ID, PROAIM);
+		}
+	}
+	return 1;
+}
+
 
 /*
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
@@ -116,6 +134,7 @@ stock AC_GetACName(i) {
 		case 1: szMiscArray = "Ninja Jacking";
 		case 2: szMiscArray = "Health Hacks";
 		case 3: szMiscArray = "Dialog Spoofing";
+		case 4: szMiscArray = "Pro Aim Detection";
 	}
 	return szMiscArray;
 }
@@ -124,7 +143,7 @@ AC_FinePlayer(playerid, fineid) {
 
 	switch(fineid) {
 		case NINJAJACK: GivePlayerCash(playerid, -2000);
-		case DIALOGSPOOFING: GivePlayerCash(playerid, -2000);
+		// case DIALOGSPOOFING: GivePlayerCash(playerid, -2000);
 	}
 }
 
@@ -178,6 +197,13 @@ AC_Process(playerid, killerid, processid) {
 			szMiscArray = "[SYSTEM]: You were kicked for plausibly dialog spoofing.";
 		}
 		*/
+		case PROAIM: {
+			// AC_FinePlayer(playerid, processid);
+			// SetTimerEx("KickEx", 1000, 0, "i", killerid);
+			format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s is possibly using pro aim.", GetPlayerNameEx(playerid));
+			AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
+			szMiscArray = "[SYSTEM]: Pro-Aim was plausibly detected on your system. Please refrain from using it.";
+		}
 	}
 	// format(szMiscArray, sizeof(szMiscArray), "%s %s (ID: %d)", szMiscArray, GetPlayerNameExt(playerid), playerid);
 	SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
@@ -240,16 +266,18 @@ AC_PlayerHealthArmor(playerid) {
 
 CMD:system(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
 	format(szMiscArray, sizeof(szMiscArray), "Detecting\tStatus\n\
 		Car Surfing\t%s\n\
 		Ninja Jacking\t%s\n\
 		Health Hacks\t%s\n\
-		Dialog Spoofing\t%s\n",
+		Dialog Spoofing\t%s\n\
+		Pro Aim Detection\t%s\n",
 		(ac_ACToggle[CARSURFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[NINJAJACK] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[HEALTHARMORHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[DIALOGSPOOFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"));
+		(ac_ACToggle[DIALOGSPOOFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[PROAIM] == true) ? ("{00FF00}On") : ("{FF0000}Off"));
 	ShowPlayerDialogEx(playerid, DIALOG_AC_MAIN, DIALOG_STYLE_TABLIST_HEADERS, "[SYSTEM]: Anti-Cheat", szMiscArray, "Select", "<<");
 	return 1;
 }

@@ -24,7 +24,7 @@
 
 
 				Past Developers:
-								*** Director of SA:MP Development:F
+								*** Director of SA:MP Development:
 									Akatony
 									John
 									Brendan

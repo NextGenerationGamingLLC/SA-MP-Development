@@ -587,6 +587,8 @@ CMD:turftime(playerid, params[]) {
 
 
 TurfWars_SendGroupMessage(iGroupID, COLOR, szMessage[]) {
+
+	if(iGroupID == INVALID_GROUP_ID) return 1;
 	foreach(new i : Player) {
 		if(PlayerInfo[i][pMember] == iGroupID) {
 			SendClientMessageEx(i, COLOR, szMessage);
