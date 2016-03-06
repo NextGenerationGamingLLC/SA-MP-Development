@@ -196,6 +196,17 @@ stock SendGroupMessage(iGroupType, color, string[], allegiance = 0)
 	}
 }
 
+stock SendMedicMessage(color, string[])
+{
+	foreach(new i: Player)
+	{
+		if(IsFirstAid(i))
+		{
+			SendClientMessageEx(i, color, string);
+		}
+	}
+}
+
 stock SendDivisionMessage(member, division, color, string[])
 {
 	foreach(new i: Player)
@@ -3212,7 +3223,7 @@ CMD:badge(playerid, params[]) {
 			PlayerInfo[playerid][pDuty] = 0;
 			SetPlayerToTeamColor(playerid);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have hidden your badge, and will now be identified as being off-duty.");
-			if(IsAMedic(playerid))
+			if(IsAMedic(playerid) || IsFirstAid(playerid))
 			{
 				Medics -= 1;
 			}
@@ -3221,21 +3232,15 @@ CMD:badge(playerid, params[]) {
 			PlayerInfo[playerid][pDuty] = 1;
 			SetPlayerToTeamColor(playerid);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have shown your badge, and will now be identified as being on-duty.");
-			if(IsAMedic(playerid))
+			if(IsAMedic(playerid) || IsFirstAid(playerid))
 			{
+				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1) { SetPlayerColor(playerid, 0xFFC0CBAA); }
 				Medics += 1;
 			}
 		}
 	}
 	return 1;
 }
-
-CMD:dvsiren(playerid, params[])
-{
-	SendClientMessageEx(playerid, COLOR_GREY, "/dvsiren has been merged with /siren. /dvsiren will be completely removed in a later update.");
-	return cmd_siren(playerid, params);
-}
-
 CMD:viewbudget(playerid, params[])
 {
 	new i = PlayerInfo[playerid][pMember];
