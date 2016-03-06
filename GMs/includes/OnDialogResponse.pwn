@@ -5180,8 +5180,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SetPlayerToTeamColor(suspect);
 					SetHealth(suspect, 100);
 					new randcell = random(29);
-					PlayerInfo[playerid][pPrisonCell] = randcell;
-					SpawnPlayerInPrisonCell(playerid, randcell);
+					PlayerInfo[suspect][pPrisonCell] = randcell;
+					SpawnPlayerInPrisonCell(suspect, randcell);
 				}
 				case 3: // doc judge arrest
 				{
@@ -5241,6 +5241,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					PlayerInfo[suspect][pWantedLevel] = 0;
 					SetPlayerToTeamColor(suspect);
 					SetPlayerWantedLevel(suspect, 0);
+					SetPVarInt(playerid, "pTut", 0);
 					strcpy(PlayerInfo[suspect][pPrisonedBy], GetPlayerNameEx(playerid), MAX_PLAYER_NAME);
 					strcpy(PlayerInfo[suspect][pPrisonReason], "[IC][JUDGE] EBCF Arrest", 128);
 					SetPlayerToTeamColor(suspect);

@@ -626,7 +626,7 @@ CMD:pr(playerid, params[])
 		}
 		if(PlayerInfo[playerid][pRadioFreq] >= 1 || PlayerInfo[playerid][pRadioFreq] <= -1)
 		{
-			if(GetPVarInt(playerid, "Injured") != 0||PlayerCuffed[playerid]!=0||PlayerInfo[playerid][pHospital]!=0 || PlayerInfo[playerid][pJailTime] > 0)
+			if(GetPVarInt(playerid, "Injured") != 0||PlayerCuffed[playerid]!=0||PlayerInfo[playerid][pHospital]!=0 || PlayerInfo[playerid][pIsolated] > 0)
 			{
 				SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
 				return 1;

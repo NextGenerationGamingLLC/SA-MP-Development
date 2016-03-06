@@ -702,6 +702,7 @@ CMD:skill(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "| 4: Drugs Dealer										  9: Fishing");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 5: Drug Smuggler								10: Shipment Contractor");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 11: Treasure Hunter							12: Vehicle Lock Picking");
+		SendClientMessageEx(playerid, COLOR_GREY, "| 13: Fishing");
 		return 1;
 	}
 	else switch(strval(params)) {

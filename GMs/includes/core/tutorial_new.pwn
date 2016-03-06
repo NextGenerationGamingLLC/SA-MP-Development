@@ -404,6 +404,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				format(szMiscArray, sizeof(szMiscArray), "Nobody");
 				strmid(PlayerInfo[playerid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
 				TogglePlayerSpectating(playerid, false);
+				SetPlayerColor(playerid,TEAM_ORANGE_COLOR);
+				for(new i = 0; i < 3; i++)
+				{
+					SendClientMessageEx(playerid, COLOR_ORANGE, prisonerMOTD[i]);
+				}
 				SetHealth(playerid, 100.0);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information! Enjoy your time and trip to San Andreas!");
 				SetTimerEx("Register_FinishSetup2", 250, false, "i", playerid);
@@ -526,18 +531,16 @@ Tutorial_Stage(playerid) {
 				\t\t\tMiguel\n\
 				\t\t\tJingles\n\
 				\t\t\tWinterfield\n\
-				\t\t\tAlexR\n\
 				\t\t\tAustin\n\
 				\t\t\tRothschild\n\
-				\t\t\tWinterfield\n\
 				\t\t\tFarva\n\
 				\t\t\t{F69500}Past Developers{FFFFFF}:\n\
 				\t\t\tAkatony\tJohn\t\tBrendan\n\
-				\t\t\tBrian\t\tScott\tGhoulSlayer\n\
+				\t\t\tBrian\t\tScott\t\tGhoulSlayer\n\
 				\t\t\tZhao\t\tDonuts\t\tMo Cena\n\
 				\t\t\tCalgon\t\tNeo\t\tThomasJWhite\n\
 				\t\t\tBeren\t\tKareemtastic\tSew Sumi\n\
-				\t\t\tRazbit\t");
+				\t\t\tRazbit\t\tAlexR");
 			strcat(szMiscArray, "\n\n_______________________________________________________________________________________________________________________________________________________");
 			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Server Offenses", szMiscArray, szCount, "");
 		}

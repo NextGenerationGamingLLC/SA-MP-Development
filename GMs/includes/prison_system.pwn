@@ -1458,6 +1458,7 @@ CMD:unisolateinmate(playerid, params[])
 	else if(IsPlayerConnected(iTargetID))
 	{
 		PlayerInfo[iTargetID][pIsolated] = 0;
+		PlayerInfo[iTargetID][pVW] = 0;
 
 		format(string, sizeof(string), "You have been released from isolation by %s.", GetPlayerNameEx(playerid));
 		SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
@@ -1863,7 +1864,7 @@ CMD:shank(playerid, params[])
                 SetPlayerAttachedObject(playerid, 9, 335, 6);
             }
         }
-        else return SendClientMessageEx(playerid, COLOR_GREY, "   You are not in prison!");
+        else return SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a shank!");
     }
     else SendClientMessageEx(playerid, COLOR_GREY, "   You are not in prison!");
 	return 1;
@@ -1937,7 +1938,7 @@ CMD:acceptrelease(playerid, params[])
         format(string, sizeof(string), "You have accepted %s's release request.", GetPlayerNameEx(id));
         SendClientMessageEx(playerid, COLOR_GREY, string);
 
-        SetPVarInt(playerid, "_pBeingReleased", 2);
+        DeletePVar(playerid, "_pBeingReleased");
 
         format(szMiscArray, sizeof szMiscArray, "%s has accepted %s's release request.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
  		GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
@@ -1962,7 +1963,7 @@ CMD:denyrelease(playerid, params[])
         format(string, sizeof(string), "%s has denied your release request. Reason: %s", GetPlayerNameEx(playerid), reason);
         SendClientMessageEx(id, COLOR_GREY, string);
 
-        SetPVarInt(id, "_pBeingReleased", -1);
+        DeletePVar(playerid, "_pBeingReleased");
 
         TogglePlayerControllable(playerid, TRUE);
 
@@ -2463,10 +2464,10 @@ public _ShowerTimer(playerid)
 		}
 		default: 
 		{
-			PlayAnimEx(playerid, "MISC", "Scratchballs_01", 4.0, 0, 0, 0, 0, 0, 1);
+			ApplyAnimation(playerid, "MISC", "Scratchballs_01", 4.0, 0, 0, 0, 0, 0, 1);
 			SetPVarInt(playerid, "pPrisonShowerStage", 1);
 
-			SetTimerEx("_ShowerTimer", 10000, false, "d", playerid);
+			SetTimerEx("_ShowerTimer", 8000, false, "d", playerid);
 		}
 	}
 	RandomMaterialChance(playerid);
@@ -2525,9 +2526,9 @@ public _ReleaseTimer(playerid)
     if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1 && GetPVarInt(playerid, "_pBeingReleased") >= 1)
 	{
  		ReleasePlayerFromPrison(playerid);
- 		SetPVarInt(playerid, "_pBeingReleased", 0);
+ 		DeletePVar(playerid, "_pBeingReleased");
 	}
-	else if(GetPVarInt(playerid, "_pBeingReleased") == -1) { SetPVarInt(playerid, "_pBeingReleased", 0); }
+	else if(GetPVarInt(playerid, "_pBeingReleased") == -1) { DeletePVar(playerid, "_pBeingReleased"); }
 	return 1;
 }
 
@@ -2581,7 +2582,7 @@ ReleasePlayerFromPrison(playerid)
 	SendClientMessageEx(playerid, COLOR_GRAD1,"   You have paid your debt to society.");
 	GameTextForPlayer(playerid, "~g~Freedom~n~~w~Try to be a better citizen", 5000, 1);
 	TogglePlayerControllable(playerid, TRUE);
-	SetPVarInt(playerid, "_pBeingReleased", 0);
+	DeletePVar(playerid, "_pBeingReleased");
 	SetPlayerToTeamColor(playerid); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
 	ClearCrimes(playerid);
 }
@@ -2665,7 +2666,7 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart)
 	{
 	    new Float:health;
 	    GetPlayerHealth(damagedid, health);
-	    SetPlayerHealth(damagedid, health - random(20)+40);
+	    SetPlayerHealth(damagedid, health - random(40));
 
 	    SetPVarInt(playerid, "pShankUsages", GetPVarInt(playerid, "pShankUsages") - 1);
 
@@ -2689,9 +2690,7 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart)
 	    if(GetPVarInt(damagedid, "pBagged") >= 1) return 0;
 	    else
 		{
-	    	new Float:health;
-	    	GetPlayerHealth(damagedid, health);
-	    	SetPlayerHealth(damagedid, health + amount);
+	    	SetPlayerHealth(damagedid, 100);
 
 	    	TogglePlayerControllable(damagedid, FALSE);
      		PlayAnimEx(damagedid,"PED","KO_shot_stom",4.1,0,0,0,0,0,0);
