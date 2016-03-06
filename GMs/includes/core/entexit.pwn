@@ -24,15 +24,17 @@ new g_iEntranceID[MAX_PLAYERS],
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & ENTRANCE_SHORTCUT) {
-		new areaid[1];
+	/*	new areaid[1];
 		GetPlayerDynamicAreas(playerid, areaid);
 		Process_Entrance(playerid, areaid[0]);
+		*/
+		EntExit_GetID(playerid);
 	}
 	return 1;
 }
 
-/*
-Old method
+
+//Old method
 EntExit_GetID(playerid) {
 
 	for(new i; i < MAX_DDOORS; ++i) {
@@ -85,27 +87,29 @@ EntExit_GetID(playerid) {
 	}
 	return 1;
 }
-*/
+
 
 CMD:enter(playerid) {
 
 	// SendClientMessage(playerid, COLOR_RED, "/enter is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
-	new areaid[1];
+/*	new areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid);
-	Process_Entrance(playerid, areaid[0]);
+	Process_Entrance(playerid, areaid[0]);*/
+	EntExit_GetID(playerid);
 	return 1;
 }
 
 CMD:exit(playerid) {
 
 	// SendClientMessage(playerid, COLOR_RED, "/exit is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
-	new areaid[1];
+/*	new areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid);
-	Process_Entrance(playerid, areaid[0]);
+	Process_Entrance(playerid, areaid[0]);*/
+	EntExit_GetID(playerid);
 	return 1;
 }
 
-
+/*
 Process_Entrance(playerid, areaid) {
 
 	if(GetPVarType(playerid, "IsInArena")) return 1;
@@ -141,7 +145,7 @@ Process_Entrance(playerid, areaid) {
 	}
 
 	return 1;
-}
+}*/
 
 
 /*

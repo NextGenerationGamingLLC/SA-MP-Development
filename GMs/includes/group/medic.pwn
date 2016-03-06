@@ -40,7 +40,7 @@ public ShowPlayerBeaconForMedics(playerid)
 {
 	foreach(new i: Player)
 	{
-		if(IsAMedic(i))
+		if(IsAMedic(i) || IsFirstAid(playerid))
 		{
 			SetPlayerMarkerForPlayer(i, playerid, COP_GREEN_COLOR);
 		}
@@ -53,7 +53,7 @@ public HidePlayerBeaconForMedics(playerid)
 {
 	foreach(new i: Player)
 	{
-		if(IsAMedic(i))
+		if(IsAMedic(i) || IsFirstAid(playerid))
 		{
 			SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
 		}
@@ -239,7 +239,7 @@ CMD:aid(playerid, params[]) {
 
 CMD:emslist(playerid, params[]) {
 
-	if(IsAMedic(playerid)) {
+	if(IsAMedic(playerid) || IsFirstAid(playerid)) {
 
 		new szZone[MAX_ZONE_NAME],
 			x;

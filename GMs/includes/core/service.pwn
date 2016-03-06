@@ -64,7 +64,7 @@ CMD:service(playerid, params[])
 		SetPVarInt(playerid, "EMSAttempt", 1);
 		SendClientMessageEx(playerid, COLOR_WHITE, "The EMS has been informed of your current location and is on its way.");
 		format(string, sizeof(string), "Emergency Dispatch has reported (%d) %s at %s. They require immediate emergency transport (/emslist).",playerid, GetPlayerNameEx(playerid), zone);
-		SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
+		SendMedicMessage(TEAM_MED_COLOR, string);
 		PlayerInfo[playerid][pServiceTime] = gettime()+30;
 		return 1;
 	}
@@ -101,7 +101,7 @@ CMD:service(playerid, params[])
 		new OnDutyMedics;
 		foreach(new i: Player)
 		{
-			if(IsAMedic(i) && PlayerInfo[i][pDuty] == 1)
+			if(IsAMedic(i) || IsFirstAid(i) && PlayerInfo[i][pDuty] == 1)
 			{
 				OnDutyMedics++;
 			}
@@ -114,7 +114,7 @@ CMD:service(playerid, params[])
 		else
 		{
 			format(string, sizeof(string), "** %s is in need of a Medic - use /accept medic to accept the call.", GetPlayerNameEx(playerid));
-			SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_AZTECAS_COLOR, string);
+			SendDivisionMessage(12, 2, TEAM_AZTECAS_COLOR, string);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have called for a medic, wait for a reply.");
 			MedicCall = playerid;
 			PlayerInfo[playerid][pServiceTime] = gettime()+30;
