@@ -41,6 +41,17 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	szMiscArray[0] = 0;
 	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID)
 	{
+		if(GetPlayerWeapon(playerid) == 25 && GetPVarType(playerid, "pBeanBag")) {
+
+			new Float:fHealth,
+				Float:fArmour;
+
+			GetHealth(damagedid, fHealth);
+			GetArmour(damagedid, fArmour);
+
+			// BeanBag gun effects here too pl0x <3 Jingles
+			return 1;
+		}
 		if(!IsPlayerStreamedIn(playerid, damagedid) || !IsPlayerStreamedIn(damagedid, playerid)) return 1;
 		new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
 		if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1)
