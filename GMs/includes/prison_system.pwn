@@ -2023,14 +2023,14 @@ CMD:prisoncraft(playerid, params[])
 				SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 				SendClientMessage(playerid, COLOR_PURPLE, string);
 
-				SendClientMessage(playerid, COLOR_GREY, "You have started to make prison wine. It will be ready in twenty four hours. Use /prisoninv(entory) to check the progress.");
+				SendClientMessage(playerid, COLOR_GREY, "You have started to make prison wine. It will be ready in twelve hours. Use /prisoninv(entory) to check the progress.");
 
 				PlayerInfo[playerid][pPrisonMaterials] -= 1;
 				SetPVarInt(playerid, "pPrisonSugar", GetPVarInt(playerid, "pPrisonSugar") - 3);
 				SetPVarInt(playerid, "pPrisonBread", GetPVarInt(playerid, "pPrisonBread") - 1);
 				SetPVarInt(playerid, "pPrisonMWine", 1);
 
-				PlayerInfo[playerid][pPrisonWineTime] = gettime()+60;
+				PlayerInfo[playerid][pPrisonWineTime] = gettime()+2400;
 			}
 			else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not in your prison cell!");
 		}
