@@ -1159,13 +1159,13 @@ Phone_Main(playerid) {
 	if(GetPVarInt(playerid, "EventToken")) {
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
 	}
-	else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) {
+	else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) {
 		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	else if(GetPVarType(playerid, "FixVehicleTimer")) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are fixing a vehicle!");
 	}
-	if(PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use the phone right now.");
+	if(PlayerCuffed[playerid] != 0 || GetPVarInt(playerid, "pBagged") >= 1 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use the phone right now.");
 	if(PlayerInfo[playerid][pPnumber] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have a cell phone.");
 	if(!Bit_State(arrPlayerBits[playerid], phone_bitState)) {
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) {
@@ -1310,7 +1310,7 @@ CMD:selfie(playerid, params[]) {
 	if(GetPVarInt(playerid, "EventToken")) {
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
 	}
-	else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]) {
+	else if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarInt(playerid, "pDoingPJob") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]) {
 		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	}
 	else if(GetPVarType(playerid, "FixVehicleTimer")) {

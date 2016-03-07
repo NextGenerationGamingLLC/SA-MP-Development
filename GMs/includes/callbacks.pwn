@@ -32,7 +32,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- //=======================[Official SA:MP/Streamer Callbacks]============================
+ //====================[Official SA:MP/Streamer Callbacks]============================
 
 public OnVehicleSpawn(vehicleid) {
 	new Float:X, Float:Y, Float:Z;
@@ -1113,7 +1113,6 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 		}
 	}
 	*/
-	
 	return 1;
 }
 
@@ -1416,7 +1415,7 @@ public OnPlayerConnect(playerid)
 	PlayerDrunk[playerid]=0;
 	PlayerDrunkTime[playerid]=0;
 	format(PlayerInfo[playerid][pPrisonReason],128,"None");
-	FishCount[playerid]=0;
+	// FishCount[playerid]=0;
 	HelpingNewbie[playerid]= INVALID_PLAYER_ID;
 	courtjail[playerid]=0;
 	gLastCar[playerid]=0;
@@ -1535,7 +1534,7 @@ public OnPlayerConnect(playerid)
 	CancelReport[playerid] = -1;
 	GiveKeysTo[playerid] = INVALID_PLAYER_ID;
 	RocketExplosions[playerid] = -1;
-	ClearFishes(playerid);
+	// ClearFishes(playerid); no.
 	ClearMarriage(playerid);
 
 	// Crash Fix - GhoulSlayeR
@@ -1995,7 +1994,7 @@ public OnPlayerDisconnect(playerid, reason)
 	                    DeletePVar(playerid, "cuffhealth");
 						DeletePVar(playerid, "PlayerCuffed");
 					}
-					strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] EBCF ((CWC))", 128);
+					strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] DMCF ((CWC))", 128);
 					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - CWC", 128);
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
@@ -5623,7 +5622,7 @@ public OnPlayerText(playerid, text[])
 		foreach(new i: Player)
 		{
 			if((InsidePlane[playerid] == GetPlayerVehicleID(i) && GetPlayerState(i) == 2) || (InsidePlane[i] == GetPlayerVehicleID(playerid) && GetPlayerState(playerid) == 2) || (InsidePlane[playerid] != INVALID_VEHICLE_ID && InsidePlane[playerid] == InsidePlane[i])) {
-				/*if(PlayerInfo[playerid][pDuty] || IsAHitman(playerid)) format(string, sizeof(string), "%s{%06x}%s{E6E6E6} says: %s", accent, GetPlayerColor(playerid) >>> 8, sendername, text);*/
+				/*if(PlayerInfo[playerid][pDuty] || IsAHitman(playerid)) format(string, sizeof(string), "%s{%06x}%s{E6E6E6} says: %s", accent, GetPlayerColor(playerid), sendername, text);*/
 				format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 				SendClientMessageEx(i, COLOR_FADE1, string);
 			}
@@ -5708,7 +5707,6 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 }
 
 public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_id) {
-
 	if(extraid == 1500 && response) {
 		
 		new iGroup = PlayerInfo[playerid][pMember];
@@ -5978,6 +5976,27 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 			Register_CreatePlayer(playerid, modelid);
 		}
 		Register_MainMenu(playerid);
+	}
+	if(extraid == PRISON_SKINSELECT)
+	{
+		if(response)
+		{
+			if(GetPVarInt(playerid, "pPrisonSelectingSkin") == 1)
+			{
+			    if(PlayerInfo[playerid][pPrisonCredits] >= 250)
+                {
+                    PlayerInfo[playerid][pModel] = modelid;
+                    PlayerInfo[playerid][pPrisonCredits] -= 250;
+					SetPlayerSkin(playerid, modelid);
+					SetPVarInt(playerid, "pPrisonSelectingSkin", 0);
+
+					SendClientMessageEx(playerid, COLOR_GREY, "You have purchased a pair of clothes from the prison shop for 500 credits.");
+				}
+				else return SendClientMessageEx(playerid, COLOR_GREY, "  You do not have enough prison credits!");
+			}
+			else return 1;
+		}
+		else SetPVarInt(playerid, "pPrisonSelectingSkin", 0);
 	}
 	return 1;
 }

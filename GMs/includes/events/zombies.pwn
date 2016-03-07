@@ -542,7 +542,7 @@ CMD:zfuelcan(playerid, params[])
 	if(GetPVarInt(playerid, "fuelcan") == 2) return 1;
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use your fuel can while inside the vehicle.");
 	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	new closestcar = GetClosestCar(playerid);
 	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
 	new string[72];
@@ -564,7 +564,7 @@ CMD:zscrapmetal(playerid, params[])
 	if(GetPVarInt(playerid, "zscrapmetal") == 1) return 1;
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can not use this while inside the vehicle.");
 	if(GetPVarInt(playerid, "EventToken")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this while in an event.");
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen")) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 	new closestcar = GetClosestCar(playerid);
 	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");
 	new Float:vHP;

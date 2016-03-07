@@ -702,6 +702,7 @@ CMD:skill(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "| 4: Drugs Dealer										  9: Fishing");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 5: Drug Smuggler								10: Shipment Contractor");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 11: Treasure Hunter							12: Vehicle Lock Picking");
+		SendClientMessageEx(playerid, COLOR_GREY, "| 13: Fishing");
 		return 1;
 	}
 	else switch(strval(params)) {
@@ -812,6 +813,15 @@ CMD:skill(playerid, params[])
 			else if(level >=125 && level <= 224) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 3"), format(string, sizeof(string), "You need to successfully lock pick %d more cars to level up.", 225 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			else if(level >=225 && level <= 349) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 4"), format(string, sizeof(string), "You need successfully lock pick %d more cars to level up.", 350 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			else if(level >=350) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Car Lock Picking Skill Level = 5");
+		}
+		case 13: //Fishing
+		{
+		    new level = PlayerInfo[playerid][pFishingSkill], string[61];
+            if(level >=0 && level <= 49) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 1"), format(string, sizeof(string), "You need to successfully fish %d more times to level up.", 50 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
+            else if(level >= 50 && level <= 124) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 2"), format(string, sizeof(string), "You need to successfully fish %d more times to level up.", 125 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			else if(level >=125 && level <= 224) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 3"), format(string, sizeof(string), "You need to successfully fish %d more times to level up.", 225 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			else if(level >=225 && level <= 349) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 4"), format(string, sizeof(string), "You need successfully fish %d more times to level up.", 350 - level), SendClientMessageEx(playerid, COLOR_YELLOW, string);
+			else if(level >=350) SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Level = 5");
 		}
 		default:
 		{

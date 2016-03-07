@@ -2292,3 +2292,44 @@ stock randomString(strDest[], strLen = 10)
 {
 	while(strLen--) strDest[strLen] = random(2) ? (random(26) + (random(2) ? 'a' : 'A')) : (random(10) + '0');
 }
+
+SpawnPlayerInPrisonCell(playerid, cellid)
+{
+	
+	switch(cellid)
+	{
+	    case 0: { Player_StreamPrep(playerid, 566.7456,1444.0634,6000.4571, FREEZE_TIME + 4000); }
+	    case 1: { Player_StreamPrep(playerid, 563.0581,1444.1854,6000.4571, FREEZE_TIME + 4000); }
+	    case 2: { Player_StreamPrep(playerid, 559.4159,1443.9288,6000.4571, FREEZE_TIME + 4000); }
+	    case 3: { Player_StreamPrep(playerid, 555.6315,1444.2306,6000.4571, FREEZE_TIME + 4000); }
+	    case 4: { Player_StreamPrep(playerid, 552.0065,1444.1968,6000.4571, FREEZE_TIME + 4000); }
+	    case 5: { Player_StreamPrep(playerid, 548.0844,1444.0985,6000.4571, FREEZE_TIME + 4000); }
+	    case 6: { Player_StreamPrep(playerid, 544.6454,1444.1449,6000.4571, FREEZE_TIME + 4000); }
+	    case 7: { Player_StreamPrep(playerid, 540.5981,1447.5231,6000.4571, FREEZE_TIME + 4000); }
+	    case 8: { Player_StreamPrep(playerid, 540.4813,1450.9047,6000.4571, FREEZE_TIME + 4000); }
+	    case 9: { Player_StreamPrep(playerid, 540.4357,1454.4258,6000.4571, FREEZE_TIME + 4000); }
+	    case 10: { Player_StreamPrep(playerid, 540.7283,1458.2170,6000.4571, FREEZE_TIME + 4000); }
+	    case 11: { Player_StreamPrep(playerid, 544.1293,1464.5228,6000.4571, FREEZE_TIME + 4000); }
+	    case 12: { Player_StreamPrep(playerid, 547.7798,1464.7081,6000.4571, FREEZE_TIME + 4000); }
+	    case 13: { Player_StreamPrep(playerid, 551.2144,1464.6027,6000.4571, FREEZE_TIME + 4000); }
+	    case 14: { Player_StreamPrep(playerid, 557.2998,1464.8198,6000.4571, FREEZE_TIME + 4000); }
+	    // end of first floor
+	    case 15: { Player_StreamPrep(playerid, 566.3901,1443.7551,6004.4946, FREEZE_TIME + 4000); }
+	    case 16: { Player_StreamPrep(playerid, 562.5015,1443.7295,6004.4946, FREEZE_TIME + 4000); }
+	    case 17: { Player_StreamPrep(playerid, 2559.0636,1444.0476,6004.4946, FREEZE_TIME + 4000); }
+	    case 18: { Player_StreamPrep(playerid, 555.3583,1444.0355,6004.4946, FREEZE_TIME + 4000); }
+	    case 19: { Player_StreamPrep(playerid, 551.9474,1443.7928,6004.4946, FREEZE_TIME + 4000); }
+	    case 20: { Player_StreamPrep(playerid, 548.2891,1444.0117,6004.4946, FREEZE_TIME + 4000); }
+	    case 21: { Player_StreamPrep(playerid, 544.8405,1444.0632,6004.4946, FREEZE_TIME + 4000); }
+	    case 22: { Player_StreamPrep(playerid, 540.6741,1447.4341,6004.4946, FREEZE_TIME + 4000); }
+	    case 23: { Player_StreamPrep(playerid, 540.6885,1451.2081,6004.4946, FREEZE_TIME + 4000); }
+	    case 24: { Player_StreamPrep(playerid, 540.7267,1454.9779,6004.4946, FREEZE_TIME + 4000); }
+	    case 25: { Player_StreamPrep(playerid, 540.4955,1458.8861,6004.4946, FREEZE_TIME + 4000); }
+	    case 26: { Player_StreamPrep(playerid, 543.8416,1464.8979,6004.4946, FREEZE_TIME + 4000); }
+	    case 27: { Player_StreamPrep(playerid, 547.9120,1464.5593,6004.4946, FREEZE_TIME + 4000); }
+	    case 28: { Player_StreamPrep(playerid, 551.5958,1464.7749,6004.4946, FREEZE_TIME + 4000); }
+	    case 29: { Player_StreamPrep(playerid, 557.6133,1464.9932,6004.4946, FREEZE_TIME + 4000); }
+	    // end of second floor
+	}
+	return 1;
+}

@@ -220,6 +220,7 @@ SetPlayerSpawn(playerid)
 			SetPlayerColor(playerid, SHITTY_JUDICIALSHITHOTCH);
 			return 1;
 		}
+
 		if(PlayerInfo[playerid][pJailTime] > 0)
 		{
 			if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1)
@@ -231,7 +232,6 @@ SetPlayerSpawn(playerid)
 					PlayerInfo[playerid][pInt] = 1;
 					SetPlayerVirtualWorld(playerid, 0);
 					PlayerInfo[playerid][pVW] = 0;
-					Prison_SetPlayerSkin(playerid);
 					SetPlayerColor(playerid, TEAM_ORANGE_COLOR);
 					SetHealth(playerid, 100);
 					KillEMSQueue(playerid);
@@ -245,8 +245,9 @@ SetPlayerSpawn(playerid)
 					}
 					else
 					{
-						SetPlayerPos(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
-						Player_StreamPrep(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);
+						SpawnPlayerInPrisonCell(playerid, PlayerInfo[playerid][pPrisonCell]);
+						/*SetPlayerPos(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2]);
+						Player_StreamPrep(playerid, DocPrison[rand][0], DocPrison[rand][1], DocPrison[rand][2], FREEZE_TIME);*/
 					}
 					return 1;
 				}

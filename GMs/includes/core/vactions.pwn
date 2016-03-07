@@ -73,7 +73,7 @@ PreloadAnimLib(playerid, animlib[])
 
 IsAblePedAnimation(playerid)
 {
-    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]!= 0 || GetPVarType(playerid, "IsLive") || GetPVarInt(playerid, "jailcuffs") == 1 || GetPVarType(playerid, "FixVehicleTimer")) {
+    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]!= 0 || GetPVarType(playerid, "IsLive") || GetPVarInt(playerid, "jailcuffs") == 1 || GetPVarType(playerid, "FixVehicleTimer")) {
    		SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
    		return 0;
 	}
@@ -87,7 +87,7 @@ IsAblePedAnimation(playerid)
 
 IsAbleVehicleAnimation(playerid)
 {
-    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "Hospital") || GetPVarType(playerid, "IsLive")) {
+    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "Hospital") || GetPVarType(playerid, "IsLive")) {
    		SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
    		return 0;
 	}
@@ -179,7 +179,7 @@ CMD:stopani(playerid, params[])
 	    SendClientMessageEx(playerid, COLOR_GREY, "You are already attempting to clear your animations!");
 		return 1;
 	}
-	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pBeingSentenced] != 0|| GetPVarType(playerid, "IsTackled") || GetPVarType(playerid, "Tackling") || GetPVarInt(playerid, "inmatefood") > 0 || GetPVarInt(playerid, "Carryingfood") > 0 || GetPVarInt(playerid, "jailcuffs") == 1 || GetPVarType(playerid, "FixVehicleTimer"))
+	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || GetPVarInt(playerid, "pBagged") >= 1 || PlayerInfo[playerid][pHospital] != 0 || PlayerInfo[playerid][pBeingSentenced] != 0|| GetPVarType(playerid, "IsTackled") || GetPVarType(playerid, "Tackling") || GetPVarInt(playerid, "inmatefood") > 0 || GetPVarInt(playerid, "Carryingfood") > 0 || GetPVarInt(playerid, "jailcuffs") == 1 || GetPVarType(playerid, "FixVehicleTimer"))
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	}
@@ -243,7 +243,7 @@ CMD:shakehand(playerid, params[])
 
 CMD:time(playerid, params[])
 {
-	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
+	if(GetPVarInt(playerid, "Injured") != 0 || PlayerCuffed[playerid] != 0 || GetPVarInt(playerid, "pBagged") >= 1 || PlayerInfo[playerid][pHospital] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
 	
 	new string[128], mtext[20], thour, suffix[3], year, month,day;
     getdate(year, month, day);
