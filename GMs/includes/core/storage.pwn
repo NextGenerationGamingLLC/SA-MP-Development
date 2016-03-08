@@ -2104,6 +2104,14 @@ CMD:trunktake(playerid, params[]) {
 						szWeapon[16],
 						szMessage[128];
 
+
+					new aWeapons[13][2];
+
+					for(new i; i < 13; ++i) {
+						GetPlayerWeaponData(playerid, i, aWeapons[i][0], aWeapons[i][1]);
+						if(aWeapons[i][0] == PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already carrying this weapon.");
+					}
+
 					GetWeaponName(PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1], szWeapon, sizeof(szWeapon));
 					GivePlayerValidWeapon(playerid, PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1], 0);
 					PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1] = 0;

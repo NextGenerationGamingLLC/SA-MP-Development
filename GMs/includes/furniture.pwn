@@ -15,7 +15,6 @@ enum eFurnitureCatalog {
 }
 new arrFurnitureCatalog[MAX_CATALOG][eFurnitureCatalog];
 
-
 /*
 new const szFurnitureCatList[][][32] = {
 
@@ -548,10 +547,10 @@ GetMaxFurnitureSlots(playerid) {
 
 		switch(PlayerInfo[playerid][pDonateRank]) {
 			case 0: iMaxSlots = 30; // Regular
-			case 1: iMaxSlots = 35; // Bronze VIPs
-			case 2: iMaxSlots = 40; // Silver VIPs
+			case 1: iMaxSlots = 40; // Bronze VIPs
+			case 2: iMaxSlots = 45; // Silver VIPs
 			case 3: iMaxSlots = 50; // Gold VIPs
-			case 4: iMaxSlots = 75; // Platinum VIPs
+			default: iMaxSlots = 75; // Platinum VIPs
 		}
 	}
 	if(PlayerInfo[playerid][pFurnitureSlots] > iMaxSlots) iMaxSlots = PlayerInfo[playerid][pFurnitureSlots];
@@ -594,13 +593,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new x;
 			for(new i; i < MAX_CATALOG; ++i) {
 				if(arrFurnitureCatalog[i][fc_iTypeID] == listitem) {
-					if(arrFurnitureCatalog[i][fc_iModelID] < 320) break;
-					szMiscArray[x] = arrFurnitureCatalog[i][fc_iModelID];
-					++x;
+					if(arrFurnitureCatalog[i][fc_iModelID] != 0) {
+
+						szMiscArray[x] = arrFurnitureCatalog[i][fc_iModelID];
+						++x;
+					}
+					else break;
 				}
 			}
 			// ShowModelSelectionMenuEx(playerid, szMiscArray, sizeof(szMiscArray), szFurnitureCategories[listitem], 0x00000099, 0x000000BB, 0xFFFF00AA);
-			ShowModelSelectionMenuEx(playerid, szMiscArray, sizeof(szMiscArray), szFurnitureCategories[listitem], 1505, 0.0, 0.0, 0.0);
+			ShowModelSelectionMenuEx(playerid, szMiscArray, sizeof(szMiscArray), szFurnitureCategories[listitem], 1505, 45.0, 45.0, 45.0);
 		}
 		case DIALOG_FURNITURE_BUYCONFIRM: {
 
@@ -899,15 +901,6 @@ public OnLoadFurnitureList() {
 		arrFurnitureCatalog[iCount][fc_iModelID] = cache_get_field_content_int(iCount, "modelid", MainPipeline);
 		cache_get_field_content(iCount, "name", arrFurnitureCatalog[iCount][fc_szName], MainPipeline, 32);
 		arrFurnitureCatalog[iCount][fc_iPrice] = cache_get_field_content_int(iCount, "price", MainPipeline);
-		// format(szMiscArray, sizeof(szMiscArray), "%s%d\n", szMiscArray, arrFurnitureCatalog[iCount][fc_iModelID]);
-		
-		/*
-		if(iType != cache_get_field_content_int(iCount+1, "type", MainPipeline)) {
-			FurnitureList[iType] = Furniture_LoadModelList(szMiscArray);
-			szMiscArray[0] = 0;
-			if(iType > sizeof(szFurnitureCategories)) print("[Furniture System]: There's not enough categories to load the objects into.");
-		}
-		*/
 		++iCount;
 	}
 	printf("[Furniture System] Loaded %d pieces of furniture from the catalog.", iCount);
@@ -918,13 +911,14 @@ GetNextFurnitureSlotID(playerid, iHouseID) {
 
 	new iSlotID = -1,
 		iMaxSlots = GetMaxFurnitureSlots(playerid);
+
 	for(new i; i < iMaxSlots; ++i) {
 
 		if(!IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][i])) {
 			iSlotID = i;
 			break;
 		}
-	}	
+	}
 	return iSlotID;
 }
 
@@ -1111,7 +1105,30 @@ CMD:furniture(playerid, params[]) {
 		SetPVarInt(playerid, PVAR_INHOUSE, i);
 	}
 	return 1;
+}
 
+CMD:setfurnitureslots(playerid, params[]) {
+
+	if(IsAdminLevel(playerid, ADMIN_HEAD)) {
+
+		new uPlayer,
+			iAmount;
+
+		if(sscanf(params, "ud", uPlayer, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setfurnitureslots [playerid] [slots]");
+
+		PlayerInfo[uPlayer][pFurnitureSlots] = iAmount;
+
+		format(szMiscArray, sizeof(szMiscArray), "Administrator %s set your furniture slots to %d.", GetPlayerNameEx(playerid), iAmount);
+		SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "You set %s's furniture slots to %d.", GetPlayerNameEx(uPlayer), iAmount);
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s set %s's furniture slots to %d.", GetPlayerNameExt(playerid), GetPlayerNameExt(uPlayer), iAmount);
+		Log("logs/furnitureslots.log", szMiscArray);
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+	return 1;
 }
 
 CMD:unfurnishhouse(playerid, params[]) {
@@ -1252,7 +1269,7 @@ CMD:furnishhouse(playerid, params[]) {
 forward OnEditFurniture();
 public OnEditFurniture() {
 
-	if(mysql_errno()) return SendClientMessageToAll(0, "[fURNITURE] Did not save.");
+	if(mysql_errno()) return SendClientMessageToAll(0, "[Furniture] Did not save.");
 	return 1;
 }
 
@@ -1261,6 +1278,13 @@ CMD:furnitureresetpos(playerid, params[]) {
 	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
 
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
+
+		new i = GetHouseID(playerid);
+		if(i == INVALID_HOUSE_ID) {
+
+			cmd_furniture(playerid, "");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
+		}
 
 		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
 		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
@@ -1276,6 +1300,7 @@ CMD:destroyfurniture(playerid, params[]) {
 	new iHouseID = GetHouseID(playerid),
 		iSlotID;
 
+	if(!IsAdminLevel(playerid, ADMIN_GENERAL)) return 1;
 	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house");
 	if(sscanf(params, "d", iSlotID)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /destroyfurniture [slot].");
 	if(!IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid slot.");
@@ -1300,6 +1325,49 @@ CMD:revokebuilders(playerid, params[]) {
 	format(szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `HouseBuilder` = '%d'", iHouseID);
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnRevokeBuildPerms", "");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "All builder's permissions have been revoked.");
+	return 1;
+}
+
+CMD:door(playerid, params[]) {
+	
+	if(GetHouseID(playerid) == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
+	
+	if(IsPlayerInAnyDynamicArea(playerid)) {
+
+		new areaid[3],
+			iObjectID,
+			iState,
+			Float:fPos[6],
+			szData[3];
+
+		GetPlayerDynamicAreas(playerid, areaid);
+		for(new i; i < sizeof(areaid); ++i) {
+
+			Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+			iObjectID = szData[1];
+			iState = szData[2];
+
+			if(IsValidDynamicObject(iObjectID)) {
+				if(IsDynamicObjectMoving(iObjectID)) return 1;
+				GetDynamicObjectPos(iObjectID, fPos[0], fPos[1], fPos[2]);
+				GetDynamicObjectRot(iObjectID, fPos[3], fPos[4], fPos[5]);
+				if(IsPlayerInRangeOfPoint(playerid, 3.0, fPos[0], fPos[1], fPos[2])) {
+					switch(iState) {
+						case 0: {
+							szData[2] = 1;
+							MoveDynamicObject(iObjectID, fPos[0] + 0.01, fPos[1], fPos[2], 0.03, fPos[3], fPos[4], fPos[5] + 90.0);
+							Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+						}
+						case 1: {
+							szData[2] = 0;
+							MoveDynamicObject(iObjectID, fPos[0] - 0.01, fPos[1], fPos[2], 0.03, fPos[3], fPos[4], fPos[5] - 90.0);
+							Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+						}
+					}
+				}
+			}
+		}
+	}
 	return 1;
 }
 

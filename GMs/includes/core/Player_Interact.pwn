@@ -1098,6 +1098,7 @@ Interact_TakeDrugs(playerid, giveplayerid) {
 	for(new i; i < sizeof(szDrugs); ++i) {
 
 		PlayerInfo[giveplayerid][p_iDrug][i] = 0;
+		PlayerInfo[giveplayerid][pBDrugs][i] = 0;
 	}
 
 	format(szMiscArray, sizeof(szMiscArray), "** %s has confiscated %s's drugs.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));

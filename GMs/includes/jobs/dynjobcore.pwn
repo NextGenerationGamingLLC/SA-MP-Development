@@ -755,7 +755,7 @@ CMD:jobtypes(playerid)
 	szMiscArray = "Job Type ID\tName\n";
 	for(new i; i < MAX_JOBTYPES; ++i)
 	{
-		if(!isnull(szJobNames[i])) format(szMiscArray, sizeof(szMiscArray), "%sID %d:\t %s\n", szMiscArray, i, szJobNames[i]);
+		if(!isnull(szJobNames[i])) format(szMiscArray, sizeof(szMiscArray), "%sID %d:\t%s\n", szMiscArray, i, szJobNames[i]);
 	}
 	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Job List", szMiscArray, "<<", "");
 	return 1;

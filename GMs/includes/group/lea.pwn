@@ -740,6 +740,11 @@ CMD:clearcargo(playerid, params[])
 
 CMD:backup(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) {
+
+		return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	}
+
     if(IsACop(playerid) || IsAMedic(playerid))
 	{
 	    new code[10],
@@ -813,6 +818,10 @@ CMD:backup(playerid, params[])
 
 CMD:backupall(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) {
+		
+		return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	}
     if(IsACop(playerid) || IsAMedic(playerid))
 	{
 	    new
@@ -856,6 +865,10 @@ CMD:backupall(playerid, params[])
 
 CMD:backupint(playerid, params[])
 {
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) {
+		
+		return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+	}
     if(IsACop(playerid) || IsAMedic(playerid))
 	{
 	    new

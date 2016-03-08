@@ -263,7 +263,7 @@ CMD:call(playerid, params[])
 
 	if(sscanf(params, "d", phonenumb)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /call [phonenumber]");
 
-	if (PlayerInfo[playerid][pJailTime] > 0 && !GetPVarType(playerid, "AtPayPhone"))
+	if(PlayerInfo[playerid][pJailTime] > 0 && !GetPVarType(playerid, "PayPhone"))
 	{
 		SendClientMessageEx(playerid,COLOR_GREY,"You can't use your phone while in jail.");
 		return 1;
@@ -296,11 +296,10 @@ CMD:call(playerid, params[])
 
 		case 911: {
 
-			if(PlayerInfo[playerid][pJailTime] > 0 && !GetPVarType(playerid, "AtPayPhone")) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilst in prison!");
+			if(PlayerInfo[playerid][pJailTime] > 0 && !GetPVarType(playerid, "PayPhone")) return SendClientMessageEx(playerid, COLOR_WHITE, "Cannot use this whilst in prison!");
 			if(GetPVarType(playerid, "Has911Call")) SendClientMessageEx(playerid, COLOR_GREY, "You can only have one active call at a time. (/cancelcall)");
 			else if(PlayerInfo[playerid][p911Muted] != 0) ShowPlayerDialogEx(playerid, 7955, DIALOG_STYLE_MSGBOX, "Call Blocked", "You are currently blocked from using 911 emergency services. This is generally caused by abuse of services.\n\n((Use /report to report for an unmute))", "Close", "");
-			else
-				ShowPlayerDialogEx(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)\nFire", "Select", "End Call");
+			else ShowPlayerDialogEx(playerid, DIALOG_911MENU, DIALOG_STYLE_LIST, "911 Emergency Services", "Emergency\nMedical\nPolice Assistance (Non-Emergency)\nTowing\nVehicle Burglary (In Progress)\nFire", "Select", "End Call");
 			return 1;
 		}
 		case 18004444, 18001800, 18008080, 18001111, 18001020: {

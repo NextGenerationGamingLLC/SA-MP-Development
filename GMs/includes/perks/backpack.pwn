@@ -547,9 +547,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}	
 				}
 				else {
+
 					format(szMiscArray, sizeof(szMiscArray), "ListItem%dSId", listitem);
 					new slot = GetPVarInt(playerid, szMiscArray);
 					if(PlayerInfo[playerid][pBItems][slot] > 0) {
+
+						new aWeapons[13][2];
+
+						for(new i; i < 13; ++i) {
+							GetPlayerWeaponData(playerid, i, aWeapons[i][0], aWeapons[i][1]);
+							if(aWeapons[i][0] == PlayerInfo[playerid][pBItems][slot]) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are already carrying this weapon.");
+						}
+
 						GetWeaponName(PlayerInfo[playerid][pBItems][slot], weapname, sizeof(weapname));
 						GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pBItems][slot], 0);
 						
@@ -580,7 +589,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 					return 1;
 				}
-				new handguns, primguns, wbid, weapname[20], slot;
+				new handguns, primguns, wbid;
 				for(new i = 6; i < 11; i++) {
 					if(PlayerInfo[playerid][pBItems][i] > 0) {
 						if(IsWeaponHandgun(PlayerInfo[playerid][pBItems][i])) handguns++;

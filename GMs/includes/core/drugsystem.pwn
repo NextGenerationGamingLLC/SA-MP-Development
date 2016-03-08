@@ -161,9 +161,10 @@ enum e_drMix {
 new dr_arrDrugMix[MAX_PLAYERS][MAX_DRUGINGREDIENT_SLOTS][e_drMix];
 
 enum eDrugData {
+
 	dr_iDrugID,
 	dr_iDrugQuality,
-	dr_iAreaID,
+	// dr_iAreaID,
 	Float:dr_fPos[3],
 	Text3D:dr_iTextID,
 	dr_iObjectID,
@@ -251,59 +252,12 @@ task Drugs_GrowthCheck[60000 * 10]() {
 	return 1;
 }
 
-task Point_Process[50400000]() {
+task Point_Process[60000 * 10]() {
 
 	BM_SeizeCheck();
 
-	foreach(new i : Player) if(IsACriminal(i)) SendClientMessageEx(i, COLOR_YELLOW, "[Point] - {DDDDDD}Some points have become available for capture. Use /points to get an overview");
-	mysql_function_query(MainPipeline, "UPDATE `dynpoints` SET `capturable` = '1'", false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-	for(new i; i < MAX_DYNPOINTS; ++i) {
-
-		if(arrPoint[i][po_fPos][0] != 0.0) {
-
-			arrPoint[i][po_iCapturable] = 1;
-
-			// Weapon Factories
-			if(arrPoint[i][po_iType] == 0) {
-
-				new newammo = Random(150, 200), // amount of ammo created per hour.
-					totammo,
-					iGroupID = arrPoint[i][po_iGroupID];
-
-
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_COLT45, 20);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 20);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 20);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 20);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SAWEDOFF, 5);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, 5);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_UZI, 35);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_TEC9, 35);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 35);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4, 5);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE, 20);
-				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER, 5);
-
-				for(new j; j < 5; ++j) {
-
-					arrGroupData[iGroupID][g_iAmmo][j] += newammo;
-					totammo += newammo;
-				}
-
-
-				foreach(new p : Player) {
-
-					if(PlayerInfo[p][pMember] == arrPoint[i][po_iGroupID]) {
-
-						format(szMiscArray, sizeof(szMiscArray), "[Weapon Point] - {DDDDDD}weapons and %d rounds of ammo have been added to your locker from a weapon factory you own.", totammo);
-						SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
-					}
-				}
-				SaveGroup(iGroupID);
-			}
-		}
-	}
+	format(szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `dynpoints` WHERE `timestamp` < %d AND `capturable` = 0 AND `posx` != 0", gettime());
+	mysql_function_query(MainPipeline, szMiscArray, true, "Point_OnCapCheck", "");
 }
 
 ptask PlayerAddiction[60000 * ADDICT_TIMER_MINUTES](playerid)
@@ -332,9 +286,8 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 
 	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 	GetHealth(playerid, fHealth);
-	if(fHealth < GetPVarFloat(playerid, "H") || GetPVarFloat(playerid, "X") != fPos[0] || GetPVarFloat(playerid, "Y") != fPos[1] || GetPVarFloat(playerid, "Z") != fPos[2] || GetPVarInt(playerid, "Injured") || !IsPlayerConnected(playerid)) {
+	if(GetPVarFloat(playerid, "X") != fPos[0] || GetPVarFloat(playerid, "Y") != fPos[1] || GetPVarFloat(playerid, "Z") != fPos[2] || GetPVarInt(playerid, "Injured") || !IsPlayerConnected(playerid)) {
 
-		DeletePVar(playerid, "H");
 		DeletePVar(playerid, "X");
 		DeletePVar(playerid, "Y");
 		DeletePVar(playerid, "Z");
@@ -342,7 +295,6 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 		return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You failed to capture the point. You either moved or died while attempting to capture.");
 	}
 
-	DeletePVar(playerid, "H");
 	DeletePVar(playerid, "X");
 	DeletePVar(playerid, "Y");
 	DeletePVar(playerid, "Z");
@@ -359,8 +311,10 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 		}
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}%s is attempting to capture %s.", arrGroupData[iGroupID][g_szGroupName], arrPoint[i][po_szPointName]);
-	foreach(new p : Player) if(IsACriminal(p)) SendClientMessageEx(p, COLOR_YELLOW, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s has attempted to take control of %s for %s, it will be theirs in 10 minutes.",
+		GetPlayerNameEx(playerid), arrPoint[i][po_szPointName], arrGroupData[iGroupID][g_szGroupName]);
+
+	foreach(new p : Player) ChatTrafficProcess(p, COLOR_YELLOW, szMiscArray, 22);
 	SetGVarInt("PO_CAPT", iGroupID, i);
 	GangZoneShowForAll(arrPoint[i][po_iZoneID], arrGroupData[iGroupID][g_hDutyColour] * 256 + 170);
 	GangZoneFlashForAll(arrPoint[i][po_iZoneID], COLOR_RED);
@@ -648,7 +602,6 @@ hook OnPlayerConnect(playerid) {
 	//DeletePVar(playerid, "AtDrugArea");
 	DeletePVar(playerid, "AtBlackMarket");
 	DeletePVar(playerid, "PO_CAPTUR");
-	DeletePVar(playerid, "H");
 	DeletePVar(playerid, "X");
 	DeletePVar(playerid, "Y");
 	DeletePVar(playerid, "Z");
@@ -704,19 +657,20 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 }
 
 hook OnPlayerLeaveDynamicArea(playerid, areaid) {
+	
 	DeletePVar(playerid, "AtDrugArea");
 	DeletePVar(playerid, "AtBlackMarket");
 	DeletePVar(playerid, "AtPoint");
 }
 
-/*Run_KickPlayer(playerid) {
+Run_KickPlayer(playerid) {
 
-	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You're exploiting a system and therefore kicked. Don't do that again!");
-	SetTimerEx("KickEx", 1000, false, "i", playerid);
-	format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) has been kicked for possibly TP-running (drug smuggle).", GetPlayerNameEx(playerid), playerid);
+	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You're possibly exploiting a system and administrators have been notified. Don't do that again!");
+	// SetTimerEx("KickEx", 1000, false, "i", playerid);
+	format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly TP-running (drug smuggle).", GetPlayerNameEx(playerid), playerid);
 	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 	return 1;
-}*/
+}
 
 hook OnPlayerEnterCheckpoint(playerid) {
 
@@ -725,8 +679,19 @@ hook OnPlayerEnterCheckpoint(playerid) {
 
 		case CHECKPOINT_SMUGGLE_BLACKMARKET: {
 
-			//if(GetPVarInt(playerid, "RunTS") > (gettime() - 30)) return Run_KickPlayer(playerid);
-			//DeletePVar(playerid, "RunTS");
+			if(GetPVarInt(playerid, "RunTS") > (gettime() - 20)) {
+
+				DisablePlayerCheckpoint(playerid);
+				DeletePVar(playerid, "BM_PAY");
+				DeletePVar(playerid, PVAR_ATDRUGPOINT);
+				DeletePVar(playerid, "DrugPoint");
+				DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
+				DeletePVar(playerid, "Smuggling");
+				gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+				return Run_KickPlayer(playerid);
+			}
+
+			DeletePVar(playerid, "RunTS");
 			if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a vehicle.");
 			new iVehID = GetPlayerVehicleID(playerid),
 				iBlackMarketID = GetPVarInt(playerid, PVAR_SMUGGLE_DELIVERINGTO),
@@ -780,21 +745,32 @@ hook OnPlayerEnterCheckpoint(playerid) {
 			DeletePVar(playerid, PVAR_ATDRUGPOINT);
 			DeletePVar(playerid, "DrugPoint");
 			DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
-
+			DeletePVar(playerid, "Smuggling");
+			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+			
 			PlayerInfo[playerid][pSmugSkill] += 1;
   			if(PlayerInfo[playerid][pSmugSkill] == 50) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 2 of the drug smuggling skill.");
 			if(PlayerInfo[playerid][pSmugSkill] == 100) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 3 of the drug smuggling skill.");
 			if(PlayerInfo[playerid][pSmugSkill] == 200) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 4 of the drug smuggling skill.");
 			if(PlayerInfo[playerid][pSmugSkill] == 400) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 5 of the drug smuggling skill.");
-			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-			DeletePVar(playerid, "Smuggling");
+			if(PlayerInfo[playerid][pSmugSkill] > 400) PlayerInfo[playerid][pSmugSkill] = 400;
 
 		}
 
 		case CHECKPOINT_SMUGGLE_PLAYER:	{
 
-			//if(GetPVarInt(playerid, "RunTS") > (gettime() - 30)) return Run_KickPlayer(playerid);
-			//DeletePVar(playerid, "RunTS");
+			if(GetPVarInt(playerid, "RunTS") > (gettime() - 20)) {
+
+				DisablePlayerCheckpoint(playerid);
+				DeletePVar(playerid, "DrugPoint");
+				DeletePVar(playerid, PVAR_ATDRUGPOINT);
+				DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
+				DeletePVar(playerid, "Smuggling");
+				gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+				return Run_KickPlayer(playerid);
+			}
+
+			DeletePVar(playerid, "RunTS");
 			if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a vehicle.");
 
 			new iVehID = GetPlayerVehicleID(playerid),
@@ -826,15 +802,16 @@ hook OnPlayerEnterCheckpoint(playerid) {
 			DeletePVar(playerid, "DrugPoint");
 			DeletePVar(playerid, PVAR_ATDRUGPOINT);
 			DeletePVar(playerid, PVAR_SMUGGLE_DELIVERINGTO);
-			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 			DeletePVar(playerid, "Smuggling");
+			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+			
 
 			PlayerInfo[playerid][pSmugSkill] += 1;
    			if(PlayerInfo[playerid][pSmugSkill] == 50) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 2 of the drug smuggling skill.");
 			if(PlayerInfo[playerid][pSmugSkill] == 100) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 3 of the drug smuggling skill.");
 			if(PlayerInfo[playerid][pSmugSkill] == 200) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 4 of the drug smuggling skill.");
 			if(PlayerInfo[playerid][pSmugSkill] == 400) SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You have reached level 5 of the drug smuggling skill.");
-
+			if(PlayerInfo[playerid][pSmugSkill] > 400) PlayerInfo[playerid][pSmugSkill] = 400;
 		}
 	}
 	return 1;
@@ -910,6 +887,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_BLACKMARKET_CREATE: {
 
+			if(!response) return 1;
 			new iGroupID = ListItemTrackId[playerid][listitem],
 				i = Iter_Free(BlackMarkets);
 			if(i != -1) {
@@ -1088,7 +1066,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			arrBlackMarket[iBlackMarketID][bm_fPos][0] = 0.0;
 			arrBlackMarket[iBlackMarketID][bm_fPos][1] = 0.0;
 			arrBlackMarket[iBlackMarketID][bm_fPos][2] = 0.0;
-			DestroyDynamicArea(arrBlackMarket[iBlackMarketID][bm_iAreaID]);
+			if(IsValidDynamicArea(arrBlackMarket[iBlackMarketID][bm_iAreaID])) DestroyDynamicArea(arrBlackMarket[iBlackMarketID][bm_iAreaID]);
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `groupid` = '-1' WHERE `id` = '%d'", iBlackMarketID + 1);
 			mysql_function_query(MainPipeline, szMiscArray, false, "BM_OnDeleteBlackMarket", "ii", playerid, iBlackMarketID);
 		}
@@ -1206,8 +1184,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					mysql_escape_string(szName, szName);
 
-					format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `type` = '%d', `name` = '%s', `groupid` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'",
-						listitem, szName, INVALID_GROUP_ID, fPos[0], fPos[1], fPos[2], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), i + 1);
+					format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `type` = '%d', `name` = '%s', `capturable` = '1', `timestamp` = '%d', `groupid` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'",
+						listitem, szName, gettime() + 14400, INVALID_GROUP_ID, fPos[0], fPos[1], fPos[2], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), i + 1);
 
 					mysql_function_query(MainPipeline, szMiscArray, false, "PO_OnCreatePoint", "ii", playerid, i);
 					PO_CreatePoint(i, fPos[0], fPos[1], fPos[2], fPos[0], fPos[1], fPos[2]);
@@ -1298,6 +1276,72 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	return 0;
 }
 
+
+forward Point_OnCapCheck();
+public Point_OnCapCheck() {
+
+	new iRows,
+		iFields,
+		iCount,
+		i;
+
+	cache_get_data(iRows, iFields, MainPipeline);
+
+	while(iCount < iRows) {
+
+		i = cache_get_field_content_int(iCount, "id", MainPipeline);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `capturable` = '1' AND `timestamp` = '0' WHERE `id` = '%d'", i);
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	
+		i -= 1; // MySQL -> Game.
+		foreach(new p : Player) {
+
+			format(szMiscArray, sizeof(szMiscArray), "%s has become available for capture.", arrPoint[i][po_szPointName]);
+			ChatTrafficProcess(p, COLOR_YELLOW, szMiscArray, 22);
+		}
+
+		arrPoint[i][po_iCapturable] = 1;
+
+		// Weapon Factories
+		if(arrPoint[i][po_iType] == 0) {
+
+			new newammo = Random(150, 200), // amount of ammo created per 3 hours.
+				totammo,
+				iGroupID = arrPoint[i][po_iGroupID];
+
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_COLT45, 20);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 20);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 20);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 20);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SAWEDOFF, 5);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, 5);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_UZI, 35);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_TEC9, 35);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 35);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4, 5);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE, 20);
+			AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER, 5);
+
+			for(new j; j < 5; ++j) {
+
+				arrGroupData[iGroupID][g_iAmmo][j] += newammo;
+				totammo += newammo;
+			}
+
+			foreach(new p : Player) {
+
+				if(PlayerInfo[p][pMember] == arrPoint[i][po_iGroupID]) {
+
+					format(szMiscArray, sizeof(szMiscArray), "[Weapon Point] - {DDDDDD}weapons and %d rounds of ammo have been added to your locker from a weapon factory you own.", totammo);
+					SendClientMessageEx(p, COLOR_GREEN, szMiscArray);
+				}
+			}
+			SaveGroup(iGroupID);
+		}
+		iCount++;
+	}
+}
+
 Process_DAreas(playerid) {
 
 	if(GetPVarType(playerid, "IsInArena")) return 1;
@@ -1306,7 +1350,6 @@ Process_DAreas(playerid) {
 	GetPlayerDynamicAreas(playerid, areaid);
 
 	if(IsPlayerInAnyDynamicArea(playerid)) {
-
 		for(new i; i < MAX_BLACKMARKETS; ++i) {
 			
 			if(areaid[0] == arrBlackMarket[i][bm_iAreaID]) {
@@ -1336,66 +1379,66 @@ Process_DAreas(playerid) {
 				break;
 			}
 		}
+	}
 	
-		/*
-		if(IsPlayerInAnyDynamicArea(playerid)) {
+	/*
+	if(IsPlayerInAnyDynamicArea(playerid)) {
 
-			for(new i = 0; i < MAX_DRUGS; i++) {
-				if(areaid == arrDrugData[i][dr_iAreaID]) {
-					SetPVarInt(playerid, "AtDrugArea", i);
-					break;
-				}
-				else DeletePVar(playerid, "AtDrugArea");
+		for(new i = 0; i < MAX_DRUGS; i++) {
+			if(areaid == arrDrugData[i][dr_iAreaID]) {
+				SetPVarInt(playerid, "AtDrugArea", i);
+				break;
 			}
-			for(new i = 0; i < MAX_BLACKMARKETS; i++) {
-				if(areaid == arrBlackMarket[i][bm_iAreaID]) {
-					SetPVarInt(playerid, "AtBlackMarket", i);
-					break;
-				}
-				else DeletePVar(playerid, "AtBlackMarket");
+			else DeletePVar(playerid, "AtDrugArea");
+		}
+		for(new i = 0; i < MAX_BLACKMARKETS; i++) {
+			if(areaid == arrBlackMarket[i][bm_iAreaID]) {
+				SetPVarInt(playerid, "AtBlackMarket", i);
+				break;
 			}
-			for(new i = 0; i < MAX_DYNPOINTS; i++) {
-				if(areaid == arrPoint[i][po_iAreaID]) {
-					SetPVarInt(playerid, "AtPoint", i);
-					break;
-				}
-				else DeletePVar(playerid, "AtPoint");
-			}s
-			if(GetPVarType(playerid, "AtBlackMarket") && GetPVarInt(playerid, "AtBlackMarket") > -1) {
-
-				new a = GetPVarInt(playerid, "AtBlackMarket");
-				if(IsValidDynamicArea(arrBlackMarket[a][bm_iAreaID])) {
-
-					if(arrBlackMarket[a][bm_iSeized]) SendClientMessageEx(playerid, COLOR_GRAD1, "This black market is currently seized.");
-					else {
-						SetPVarInt(playerid, PVAR_BLMARKETID, a);
-						BM_BlackMarketMain(playerid);
-					}
-				}
+			else DeletePVar(playerid, "AtBlackMarket");
+		}
+		for(new i = 0; i < MAX_DYNPOINTS; i++) {
+			if(areaid == arrPoint[i][po_iAreaID]) {
+				SetPVarInt(playerid, "AtPoint", i);
+				break;
 			}
-			if(GetPVarType(playerid, "AtPoint") && GetPVarInt(playerid, "AtPoint") > -1) {
+			else DeletePVar(playerid, "AtPoint");
+		}s
+		if(GetPVarType(playerid, "AtBlackMarket") && GetPVarInt(playerid, "AtBlackMarket") > -1) {
 
-				new a = GetPVarInt(playerid, "AtPoint");
-				if(arrPoint[a][po_iType] == 0) {
-					cmd_getmats(playerid, "");
+			new a = GetPVarInt(playerid, "AtBlackMarket");
+			if(IsValidDynamicArea(arrBlackMarket[a][bm_iAreaID])) {
+
+				if(arrBlackMarket[a][bm_iSeized]) SendClientMessageEx(playerid, COLOR_GRAD1, "This black market is currently seized.");
+				else {
+					SetPVarInt(playerid, PVAR_BLMARKETID, a);
+					BM_BlackMarketMain(playerid);
 				}
-				if(arrPoint[a][po_iType] == 1) {
-
-					if(GetPVarType(playerid, "Smuggling")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must complete your current smuggle before you can start another!");
-					if(!IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be driving a vehicle to load ingredients.");
-
-					SetPVarInt(playerid, "DrugPoint", a);
-					SetPVarInt(playerid, PVAR_ATDRUGPOINT, a);
-					Smuggle_LoadIngredients(playerid);
-				}
-			}
-			if(GetPVarType(playerid, "AtDrugArea") && GetPVarInt(playerid, "AtDrugArea") > -1) {
-				if(IsACop(playerid)) ShowPlayerDialogEx(playerid, DIALOG_DRUG_INTERACT, DIALOG_STYLE_LIST, "Drug Plant | Cop Menu", "{00FF00}Harvest\n{FF0000}Destroy", "Select", "Cancel");
-				else ShowPlayerDialogEx(playerid, DIALOG_DRUG_INTERACT, DIALOG_STYLE_MSGBOX, "Drug Plant | Harvest", "{FFFFFF}Would you like to {00FF00}harvest{FFFFFF} this drug plant?", "Harvest", "Cancel");
 			}
 		}
-		*/
+		if(GetPVarType(playerid, "AtPoint") && GetPVarInt(playerid, "AtPoint") > -1) {
+
+			new a = GetPVarInt(playerid, "AtPoint");
+			if(arrPoint[a][po_iType] == 0) {
+				cmd_getmats(playerid, "");
+			}
+			if(arrPoint[a][po_iType] == 1) {
+
+				if(GetPVarType(playerid, "Smuggling")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must complete your current smuggle before you can start another!");
+				if(!IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be driving a vehicle to load ingredients.");
+
+				SetPVarInt(playerid, "DrugPoint", a);
+				SetPVarInt(playerid, PVAR_ATDRUGPOINT, a);
+				Smuggle_LoadIngredients(playerid);
+			}
+		}
+		if(GetPVarType(playerid, "AtDrugArea") && GetPVarInt(playerid, "AtDrugArea") > -1) {
+			if(IsACop(playerid)) ShowPlayerDialogEx(playerid, DIALOG_DRUG_INTERACT, DIALOG_STYLE_LIST, "Drug Plant | Cop Menu", "{00FF00}Harvest\n{FF0000}Destroy", "Select", "Cancel");
+			else ShowPlayerDialogEx(playerid, DIALOG_DRUG_INTERACT, DIALOG_STYLE_MSGBOX, "Drug Plant | Harvest", "{FFFFFF}Would you like to {00FF00}harvest{FFFFFF} this drug plant?", "Harvest", "Cancel");
+		}
 	}
+	*/
 	return 1;
 }
 
@@ -1429,45 +1472,48 @@ Drug_TransferAllToVeh(playerid, iVehID, iChoiceID) {
 }
 
 GetMaxDrugsAllowed(iDrugID) {
+	
+	
 	switch(iDrugID) {
 
-		case 0: return 500;
-		case 1: return 500;
-		case 2: return 500;
-		case 3: return 500;
-		case 4: return 500;
-		case 5: return 500;
-		case 6: return 500;
-		case 7: return 500;
-		case 8: return 500;
-		case 9: return 500;
-		case 10: return 500;
-		case 11: return 500;
-		case 12: return 500;
-		case 13: return 500;
-		case 14: return 500;
+		case 0: return 1000;
+		case 1: return 1000;
+		case 2: return 1000;
+		case 3: return 1000;
+		case 4: return 1000;
+		case 5: return 1000;
+		case 6: return 1000;
+		case 7: return 1000;
+		case 8: return 1000;
+		case 9: return 1000;
+		case 10: return 1000;
+		case 11: return 1000;
+		case 12: return 1000;
+		case 13: return 1000;
+		case 14: return 1000;
 	}
 	return 0;
 }
 
 GetMaxIngredientsAllowed(iIngredientID) {
+
 	switch(iIngredientID) {
 
-		case 0: return 500;
-		case 1: return 500;
-		case 2: return 500;
-		case 3: return 500;
-		case 4: return 500;
-		case 5: return 500;
-		case 6: return 500;
-		case 7: return 500;
-		case 8: return 500;
-		case 9: return 500;
-		case 10: return 500;
-		case 11: return 500;
-		case 12: return 500;
-		case 13: return 500;
-		case 14: return 500;
+		case 0: return 1000;
+		case 1: return 1000;
+		case 2: return 1000;
+		case 3: return 1000;
+		case 4: return 1000;
+		case 5: return 1000;
+		case 6: return 1000;
+		case 7: return 1000;
+		case 8: return 1000;
+		case 9: return 1000;
+		case 10: return 1000;
+		case 11: return 1000;
+		case 12: return 1000;
+		case 13: return 1000;
+		case 14: return 1000;
 	}
 	return 0;
 }
@@ -2000,7 +2046,6 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 			SetHealth(playerid, fHealth + (2.0 * iTaken));
 			if(PlayerInfo[playerid][pHunger] > 0) PlayerInfo[playerid][pHunger] -= 0.5;
 			else PlayerInfo[playerid][pHunger] = 0;
-
 			switch(iTotalTaken) {
 
 				case 0 .. 5: SetPlayerWeather(playerid, 700);
@@ -2655,7 +2700,7 @@ public Drugs_OnLoadPlayerPlants()
 
 			arrDrugData[iFreeID][dr_iDrugQuality] = cache_get_field_content_int(iCount, "quality", MainPipeline);
 
-			arrDrugData[iFreeID][dr_iAreaID] = CreateDynamicSphere(arrDrugData[iFreeID][dr_fPos][0], arrDrugData[iFreeID][dr_fPos][1], arrDrugData[iFreeID][dr_fPos][2], 2.0, iVW, iINT);
+			// arrDrugData[iFreeID][dr_iAreaID] = CreateDynamicSphere(arrDrugData[iFreeID][dr_fPos][0], arrDrugData[iFreeID][dr_fPos][1], arrDrugData[iFreeID][dr_fPos][2], 2.0, iVW, iINT);
 			
 			if(arrDrugData[iFreeID][dr_fPos][0] != 0 && arrDrugData[iFreeID][dr_fPos][1] != 0) {
 
@@ -2682,10 +2727,9 @@ forward Drugs_OnDestroyPlant(playerid, i);
 public Drugs_OnDestroyPlant(playerid, i) {
 
 	if(mysql_errno(MainPipeline)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
-//	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) 
-	DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
-	DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
-	DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
+	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+	if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	// if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 	Iter_Remove(PlayerDrugs, i);
 	arrDrugData[i][dr_fPos][0] = 0;
 	arrDrugData[i][dr_fPos][1] = 0;
@@ -2706,9 +2750,9 @@ Drugs_Remove(playerid, i)
 forward Drugs_OnLEODestroyPlant(playerid, i);
 public Drugs_OnLEODestroyPlant(playerid, i) {
 
-	DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
-	DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
-	DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
+	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+	if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	// if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 
 	DeletePVar(playerid, "AtDrugArea");
 	Iter_Remove(PlayerDrugs, i);
@@ -2733,9 +2777,9 @@ public Drugs_OnRetrievePlant(playerid, i) {
 
 	new iDrugID = arrDrugData[i][dr_iDrugID];
 	ApplyAnimation(playerid, "BOMBER","BOM_Plant_In", 4.0, 0, 0, 0, 0, 0);
-	DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
-	DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
-	DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+	if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+	// if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 	PlayerInfo[playerid][p_iDrug][iDrugID] += 20;
 	PlayerInfo[playerid][p_iDrugQuality][iDrugID] = arrDrugData[i][dr_iDrugQuality];
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You have retrieved 20 pieces of cannabis/opium from the plant with a quality of %dqP.", arrDrugData[i][dr_iDrugQuality]);
@@ -2864,6 +2908,7 @@ public Drugs_OnGrowthCheck()
 	return 1;
 }
 
+
 forward Drugs_OnSearchDrugs(playerid);
 public Drugs_OnSearchDrugs(playerid) {
 
@@ -2976,6 +3021,37 @@ public Drug_OnGetPostOrders(playerid) {
 	return 1;
 }
 
+CMD:triggerpoints(playerid, params[]) {
+
+	if(IsAdminLevel(playerid, ADMIN_SENIOR)) Point_Process();
+	return 1;
+}
+
+CMD:rehashpoints(playerid, params[]) {
+
+	if(IsAdminLevel(playerid, ADMIN_SENIOR)) {
+		SendClientMessageEx(playerid, COLOR_YELLOW, "[Point]: Reloading all points.");
+		for(new i; i < MAX_DYNPOINTS; ++i) {
+
+			arrPoint[i][po_iGroupID] = INVALID_GROUP_ID;
+			arrPoint[i][po_iCapturable] = 0;
+			arrPoint[i][po_fPos][0] = 0.0;
+			arrPoint[i][po_fPos][1] = 0.0;
+			arrPoint[i][po_fPos][2] = 0.0;
+
+			DestroyDynamicPickup(arrPoint[i][po_iPickupID]);
+			DestroyDynamic3DTextLabel(arrPoint[i][po_iTextID]);
+			DestroyDynamic3DTextLabel(arrPoint[i][po_iDelTextID]);
+			DestroyDynamicArea(arrPoint[i][po_iBigAreaID]);
+			GangZoneDestroy(arrPoint[i][po_iZoneID]);
+			Iter_Remove(Points, i);
+		}
+		PO_LoadPoints();
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+	return 1;
+}
+
 CMD:getplant(playerid, params[]) {
 
 	/*
@@ -3005,9 +3081,9 @@ CMD:flushdrugs(playerid, params[]) {
 		mysql_function_query(MainPipeline, "DELETE FROM `drugpool`", false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		for(new i; i < MAX_DRUGS; ++i) {
 
-			DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
-			DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
-			DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+			if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+			if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+			// if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
 			arrDrugData[i][dr_iDrugQuality] = 0;
 			Iter_Remove(PlayerDrugs, i);
 		}
@@ -3341,7 +3417,7 @@ CMD:destroyblackmarket(playerid, params[])
 		arrBlackMarket[i][bm_fPos][0] = 0.0;
 		arrBlackMarket[i][bm_fPos][1] = 0.0;
 		arrBlackMarket[i][bm_fPos][2] = 0.0;
-		DestroyDynamicArea(arrBlackMarket[i][bm_iAreaID]);
+		if(IsValidDynamicArea(arrBlackMarket[i][bm_iAreaID])) DestroyDynamicArea(arrBlackMarket[i][bm_iAreaID]);
 		Iter_Remove(BlackMarkets, i);
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `groupid` = '-1' WHERE `id` = '%d'", i + 1);
 		mysql_function_query(MainPipeline, szMiscArray, false, "BM_OnDeleteBlackMarket", "ii", playerid, i);
@@ -3494,16 +3570,86 @@ CMD:destroyplant(playerid, params[]) {
 
 CMD:points(playerid, params[]) {
 
-	szMiscArray = "Name\tOwned or Captured By\tType\n{FF0000}Capturable\t{FFFF00}Being Captured by\t{00FF00}Neutral\n";
+	if(PlayerInfo[playerid][pAdmin]) {
+		
+		szMiscArray = "Name\tOwned or Captured By\tType\n{FF0000}Capturable\t{FFFF00}Being Captured by\t{00FF00}Neutral\n";
 
-	new x;
+		new iDialogCount;
+		for(new i; i < MAX_DYNPOINTS; ++i) {
+
+			// if(IsValidDynamicArea(arrPoint[i][po_iAreaID])) {
+			if(arrPoint[i][po_fPos][0] != 0.0) {
+				
+				ListItemTrackId[playerid][iDialogCount] = i;
+				iDialogCount++;
+
+				if(GetGVarType("PO_CAPT", i)) {
+
+					format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}(%d) {FFFF00}%s\t{FFFF00}%s\t{FFFF00}%s\n", szMiscArray, i, arrPoint[i][po_szPointName], arrGroupData[GetGVarInt("PO_CAPT", i)][g_szGroupName], (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"));
+				}
+				else {
+
+					new szGroup[GROUP_MAX_NAME_LEN];
+
+					switch(arrPoint[i][po_iGroupID]) {
+
+						case INVALID_GROUP_ID: szGroup = "None";
+						default: strcat(szGroup, arrGroupData[arrPoint[i][po_iGroupID]][g_szGroupName], sizeof(szGroup));
+					}
+
+					switch(arrPoint[i][po_iCapturable]) {
+
+						case 0: format(szMiscArray, sizeof(szMiscArray), "%s{FF4D4D}(%d) {FF4D4D}%s\t{FF4D4D}%s\t{FF4D4D}%s\n", szMiscArray, i, arrPoint[i][po_szPointName], szGroup, (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"));
+						case 1: format(szMiscArray, sizeof(szMiscArray), "%s{66FF66}(%d) {66FF66}%s\t{66FF66}%s\t{66FF66}%s\n", szMiscArray, i, arrPoint[i][po_szPointName], szGroup, (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"));
+					}
+				}
+			}
+		}
+
+		ShowPlayerDialogEx(playerid, DIALOG_POINT_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Points", szMiscArray, "<<", "" );
+	}
+	SendClientMessageEx(playerid, COLOR_YELLOW, "___________________ [Points] ___________________");
 	for(new i; i < MAX_DYNPOINTS; ++i) {
 
-		// if(IsValidDynamicArea(arrPoint[i][po_iAreaID])) {
-		if(arrPoint[i][po_fPos][0] != 0.0) {
+		if(IsValidDynamicPickup(arrPoint[i][po_iPickupID])) {
 
-			ListItemTrackId[playerid][x] = i;
-			x++;
+			if(GetGVarType("PO_CAPT", i)) {
+
+				format(szMiscArray, sizeof(szMiscArray), "(%d) {FFFF00}%s {FFFF00}(%s) - Being captured by: {FFFF00}%s (capturable)", i, arrPoint[i][po_szPointName], (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"), arrGroupData[GetGVarInt("PO_CAPT", i)][g_szGroupName]);
+			}
+			else {
+
+				new szGroup[GROUP_MAX_NAME_LEN];
+
+				switch(arrPoint[i][po_iGroupID]) {
+
+					case INVALID_GROUP_ID: szGroup = "None";
+					default: strcat(szGroup, arrGroupData[arrPoint[i][po_iGroupID]][g_szGroupName], sizeof(szGroup));
+				}
+
+				switch(arrPoint[i][po_iCapturable]) {
+
+					case 0: format(szMiscArray, sizeof(szMiscArray), "(%d) {FF4D4D}%s {FF4D4D}(%s) - Owned by: %s", i, arrPoint[i][po_szPointName], (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"), szGroup);
+					case 1: format(szMiscArray, sizeof(szMiscArray), "(%d) {66FF66}%s {66FF66}(%s) - Owned by: %s (capturable)", i, arrPoint[i][po_szPointName], (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"), szGroup);
+				}
+			}
+			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+		}
+	}
+	return 1;
+}
+
+
+/*
+CMD:points(playerid, params[]) {
+
+	szMiscArray = "Name\tOwned or Captured By\tType\n{FF0000}Capturable\t{FFFF00}Being Captured by\t{00FF00}Neutral\n";
+
+	for(new i; i < MAX_DYNPOINTS; ++i) {
+
+		if(IsValidDynamicArea(arrPoint[i][po_iAreaID])) {
+		// if(arrPoint[i][po_fPos][0] != 0.0) {
+
 			if(GetGVarType("PO_CAPT", i)) {
 
 				format(szMiscArray, sizeof(szMiscArray), "%s{FFFF00}(%d) {FFFF00}%s\t{FFFF00}%s\t{FFFF00}%s\n", szMiscArray, i, arrPoint[i][po_szPointName], arrGroupData[GetGVarInt("PO_CAPT", i)][g_szGroupName], (arrPoint[i][po_iType] == 0) ? ("Weapon Point") : ("Drug Point"));
@@ -3530,6 +3676,8 @@ CMD:points(playerid, params[]) {
 	ShowPlayerDialogEx(playerid, DIALOG_POINT_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Points", szMiscArray, "<<", "" );
 	return 1;
 }
+*/
+
 
 CMD:pointtime(playerid, params[]) {
 
@@ -3540,8 +3688,8 @@ CMD:pointtime(playerid, params[]) {
 
 		if(GetGVarType("PO_CAPT", i)) {
 
-			format(szMiscArray, sizeof(szMiscArray), "%s (%d) - {FFFF00}%s {CCCCCC}- {FFFF00}%d {CCCCCC}minutes.", arrPoint[i][po_szPointName], i, arrGroupData[GetGVarInt("PO_CAPT", i)][g_szGroupName], GetGVarInt("PO_Time", i) + 1);
-			SendClientMessage(playerid, COLOR_GREEN, szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "%s {CCCCCC}(%d) {FFFF00}- Being captured by: %s - %d {CCCCCC}minutes.", arrPoint[i][po_szPointName], i, arrGroupData[GetGVarInt("PO_CAPT", i)][g_szGroupName], GetGVarInt("PO_Time", i) + 1);
+			SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 		}
 	}
 	// ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "Point Time", szMiscArray, "<<", "");
@@ -3577,7 +3725,7 @@ public Point_GetPointInfo(playerid) {
 		iTraffic = cache_get_field_content_int(iCount, "traffic", MainPipeline);
 		iRevenue = cache_get_field_content_int(iCount, "revenue", MainPipeline);
 
-		format(szMiscArray, sizeof(szMiscArray), "[Point]: {FFFF00}%s {CCCCCC}(%d) {FFFF00}- Traffic: {CCCCCC}%d people {FFFF00}- Revenue: {CCCCCC}$%s", arrPoint[iPointID-1][po_szPointName], iPointID - 1, iTraffic, number_format(iRevenue));
+		format(szMiscArray, sizeof(szMiscArray), "[Point]: {CCCCCC}(%d) {FFFF00}- Traffic: {CCCCCC}%d people {FFFF00}- Revenue: {CCCCCC}$%s", iPointID - 1, iTraffic, number_format(iRevenue));
 		SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 		iCount++;
 	}
@@ -3600,10 +3748,11 @@ CMD:destroypoint(playerid, params[]) {
 	new i;
 	if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /destroypoint [id]");
 
-	// if(arrPoint[i][po_fPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid point ID.");
-	if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid point ID.");
+	if(arrPoint[i][po_fPos][0] == 0.0 && !IsValidDynamicPickup(arrPoint[i][po_iPickupID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid point ID.");
+	// if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is not a valid point ID.");
 
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `groupid` = '-1', `Name` = 'Factory' WHERE `id` = '%d'", i + 1);
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `groupid` = '-1', `Name` = 'Factory', `timestamp` = '0', `posx` = '0', `posy` = '0', `posz` = '0', \
+		`delposx` = '0', `delposy` = '0', `delposz` = '0' WHERE `id` = '%d'", i + 1);
 	mysql_function_query(MainPipeline, szMiscArray, false, "PO_OnDeletePoint", "ii", playerid, i);
 	return 1;
 }
@@ -3619,7 +3768,7 @@ CMD:pointname(playerid, params[]) {
 	if(sscanf(params, "ds[32]", i, szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /editpoint [id] [name]");
 
 	// if(arrPoint[i][po_fPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
-	if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
+	if(!IsValidDynamicPickup(arrPoint[i][po_iPickupID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
 
 
 	format(arrPoint[i][po_szPointName], MAX_PLAYER_NAME, szMiscArray);
@@ -3664,7 +3813,7 @@ CMD:editpoint(playerid, params[]) {
 	if(sscanf(params, "s[16]dD", szChoice, i, szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /editpoint [choice] [id] [value] | Available: 'position', 'deliverpos', 'name', 'capturable'");
 
 	// if(arrPoint[i][po_fPos][0] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
-	if(!IsValidDynamicArea(arrPoint[i][po_iAreaID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
+	if(!IsValidDynamicPickup(arrPoint[i][po_iPickupID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug point ID.");
 
 	if(strcmp(szChoice, "position", true) == 0) {
 
@@ -3766,18 +3915,15 @@ CMD:capture(playerid, params[]) {
 		}
 	}
 
-	new Float:fPos[3],
-		Float:fHealth;
+	new Float:fPos[3];
 
-	GetHealth(playerid, fHealth);
 	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-	SetPVarFloat(playerid, "H", fHealth);
 	SetPVarFloat(playerid, "X", fPos[0]);
 	SetPVarFloat(playerid, "Y", fPos[1]);
 	SetPVarFloat(playerid, "Z", fPos[2]);
 
 	SetPVarInt(playerid, "PO_CAPTUR", i);
-	format(szMiscArray, sizeof(szMiscArray), "[Point]: {CCCCCC}You are attempting to capture {FFFF00}%s.", arrPoint[i][po_szPointName]);
+	format(szMiscArray, sizeof(szMiscArray), "You are attempting to capture %s.", arrPoint[i][po_szPointName]);
 	SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 
 	defer Point_Capture(playerid, i, PlayerInfo[playerid][pMember]);
@@ -3835,6 +3981,7 @@ Smuggle_GetVehicleCapacity(iVehID) {
 Smuggle_GetSmuggleCapacity(playerid) {
 
 	new i = PlayerInfo[playerid][pSmugSkill] + 20;
+	if(i > 400) i = 400;
 	return i;
 }
 
@@ -3930,7 +4077,7 @@ Smuggle_StartSmuggle(playerid, iBlackMarketID = -1) {
 
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_SMUGGLE_PLAYER;
 	}
-	//SetPVarInt(playerid, "RunTS", gettime());
+	SetPVarInt(playerid, "RunTS", gettime());
 	SendClientMessageEx(playerid, COLOR_GREEN, "[Drug Smuggle] {CCCCCC}You started your drug smuggle. Make your way to the delivery point.");
 	return 1;
 }
@@ -3972,13 +4119,16 @@ timer PO_PointTimer[60000 * 10](playerid, i, iGroupID) {
 	}
 
 	DeletePVar(playerid, "PO_CAPTUR");
-	foreach(new p : Player) if(PlayerInfo[p][pMember] == iGroupID) TextDrawHideForPlayer(p, PointTime);
-	format(szMiscArray, sizeof(szMiscArray), "[Point] - {DDDDDD}%s has successfully captured %s.", arrGroupData[iGroupID][g_szGroupName], arrPoint[i][po_szPointName]);
-	SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
+	
+	format(szMiscArray, sizeof(szMiscArray), "%s has successfully captured %s for %s.", GetPlayerNameEx(playerid), arrPoint[i][po_szPointName], arrGroupData[iGroupID][g_szGroupName]);
+	foreach(new p : Player) {
+		ChatTrafficProcess(p, COLOR_YELLOW, szMiscArray, 22);
+		if(PlayerInfo[p][pMember] == iGroupID) TextDrawHideForPlayer(p, PointTime);
+	}
 
 	arrPoint[i][po_iGroupID] = iGroupID;
 	arrPoint[i][po_iCapturable] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `capturable` = '0', `groupid` = '%d' WHERE `id` = '%d'", iGroupID, i + 1);
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `capturable` = '0', `groupid` = '%d', `timestamp` = '%d' WHERE `id` = '%d'", iGroupID, gettime() + 14400, i + 1);
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 	new szGroup[GROUP_MAX_NAME_LEN];
@@ -4101,7 +4251,7 @@ PO_CreatePoint(i, Float:X, Float:Y, Float:Z, Float:DX = 0.0, Float:DY = 0.0, Flo
 		arrPoint[i][po_iDelTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, DX, DY, DZ, 10.0, .worldid = 0, .interiorid = 0);
 	}
 
-	arrPoint[i][po_iAreaID] = CreateDynamicSphere(arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], 2.0);
+	// arrPoint[i][po_iAreaID] = CreateDynamicSphere(arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], 2.0);
 	//Streamer_SetIntData(STREAMER_TYPE_AREA, arrPoint[i][po_iAreaID], E_STREAMER_EXTRA_ID, i);
 
 	arrPoint[i][po_iBigAreaID] = CreateDynamicSphere(arrPoint[i][po_fPos][0], arrPoint[i][po_fPos][1], arrPoint[i][po_fPos][2], 100.0);
@@ -4122,16 +4272,14 @@ PO_DestroyPoint(i) {
 	DestroyDynamicPickup(arrPoint[i][po_iPickupID]);
 	DestroyDynamic3DTextLabel(arrPoint[i][po_iTextID]);
 	DestroyDynamic3DTextLabel(arrPoint[i][po_iDelTextID]);
-	DestroyDynamicArea(arrPoint[i][po_iAreaID]);
+	// DestroyDynamicArea(arrPoint[i][po_iAreaID]);
 	DestroyDynamicArea(arrPoint[i][po_iBigAreaID]);
 	GangZoneDestroy(arrPoint[i][po_iZoneID]);
 	Iter_Remove(Points, i);
 
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `type` = '0', `name` = 'Factory', `capturable` = '0', `groupid` = '-1', \
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `dynpoints` SET `type` = '0', `name` = 'Factory', `capturable` = '0', `timestamp` = '0', `groupid` = '-1', \
 		`posx` = '0.0', `posy` = '0.0', `posz` = '0.0', `delposx` = '0.0', `delposy` = '0.0', `delposz` = '0.0'");
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-
-	mysql_function_query(MainPipeline, "UPDATE `dynpoints` SET `capturable` = '1'", false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 /*
@@ -4219,7 +4367,6 @@ hook OnGameModeInit() {
 	return 1;
 }
 
-/*
 hook OnPlayerGiveDamageActor(playerid, damaged_actorid, Float: amount, weaponid, bodypart) {
 
 	new Float:fHealth;
@@ -4234,14 +4381,13 @@ hook OnPlayerGiveDamageActor(playerid, damaged_actorid, Float: amount, weaponid,
 			if(GetPVarType(i, "Aliens")) {
 
 				SetHealth(i, fHealth);
-				// Character_Actor(playerid, 1);
+				// Character_Actor(i, 1);
 				Aliens_ResetPlayer(i);
 			}
 		}
 	}
 	return 1;
 }
-*/
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
 

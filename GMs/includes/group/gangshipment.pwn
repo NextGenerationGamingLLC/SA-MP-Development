@@ -25,14 +25,14 @@ new Float:arrShipPositions[2][3] = {
 new Float:arrDeliverPositions[MAX_SHIPMENT_POINTS][3] = {
 	{-2686.3425,-2196.2932,-0.7420}, // Whetstone - Chilliad Beach
 	{-1722.5935,230.6965,-0.6083}, // SF Docks
-	{1490.8795,-2782.3191,-0.5242}, // LSI Beach
+	{2289.6096,-2433.3176,-0.5133}, // Ocean Docks
 	{2960.0776,-538.0289,-0.0771} // east beach
 };
 
 new Float:arrShipmentTrucks[MAX_SHIPMENT_POINTS][3] = {
 	{-2650.3557,-2260.4309,6.7077},  // Whetstone - Chilliad Beach
 	{-1725.7112,219.3324,3.6448}, // SF Docks
-	{1868.6660,-2708.9341,13.5391}, // LSI Beach
+	{2294.1125,-2393.9399,13.5469}, // Ocean Docks
 	{2912.3601,-554.3483,11.1824} // east beach
 };
 
@@ -166,7 +166,7 @@ GetStockPointName(iShipmentPoint) {
 IsAGangShipmentTruck(iCarID) {
 
 	for(new v = 0; v < MAX_SHIPMENT_POINTS; v++) {
-	    if(iCarID == arrGangShipmentData[v][gs_iVehicle]) return 1;
+	    if(iCarID == arrGangShipmentData[v][gs_iVehicle] && IsValidVehicle(arrGangShipmentData[v][gs_iVehicle])) return 1;
 	}
 	return 0;
 }

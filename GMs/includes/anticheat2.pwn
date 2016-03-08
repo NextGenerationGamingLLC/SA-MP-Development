@@ -13,7 +13,7 @@
 #define 			DIALOGSPOOFING				3
 
 new ac_iPlayerKeySpam[MAX_PLAYERS],
-	// ac_iVehicleDriverID[MAX_PLAYERS],
+	ac_iVehicleDriverID[MAX_PLAYERS],
 	ac_iLastVehicleID[MAX_PLAYERS];
 
 new bool:ac_ACToggle[6];
@@ -29,7 +29,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	if(newkeys == KEY_YES) ac_iPlayerKeySpam[playerid]++;
 }
 
-/*
+
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
 	if(!ispassenger) ac_iVehicleDriverID[playerid] = GetDriverID(vehicleid);
 }
@@ -47,18 +47,24 @@ hook OnPlayerDeath(playerid, killerid, reason) {
 		iKillerVehID = GetPlayerVehicleID(iKillerID);
 	if(iKillerID != INVALID_PLAYER_ID) {
 		if(ac_iVehicleDriverID[iKillerID] == playerid || (iKillerVehID == ac_iLastVehicleID[playerid] && iKillerVehID != INVALID_VEHICLE_ID)) {
-			AC_Process(playerid, iKillerID, NINJAJACK);
+			
+			new Float:fPos[3];
+			GetPlayerPos(iKillerID, fPos[0], fPos[1], fPos[2]);
+			if(IsPlayerInRangeOfPoint(playerid, 15.0, fPos[0], fPos[1], fPos[2]) && GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(iKillerID)) {
+				AC_Process(playerid, iKillerID, NINJAJACK);
+			}
 		}
 	}
 }
-*/
+
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	switch(dialogid) {
 
 		case DIALOG_AC_MAIN: {
-			if(response && listitem == 0) {
+
+			if(response) {
 			
 				if(ac_ACToggle[listitem]) {
 					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned off the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
@@ -68,9 +74,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned on the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
 					ac_ACToggle[listitem] = true;
 				}
-				AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
+				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 			}
-			else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot turn these on yet.");
+			// else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot turn these on yet.");
 		}
 	}
 	return 1;
@@ -97,8 +103,6 @@ timer AC_ResetPVars[2000](playerid, processid) {
 			DeletePVar(playerid, "PCMute");
 		}
 	}
-	
-	
 }
 
 stock GetDriverID(iVehID) {
@@ -120,7 +124,7 @@ stock AC_GetACName(i) {
 	return szMiscArray;
 }
 
-AC_FinePlayer(playerid, fineid) {
+stock AC_FinePlayer(playerid, fineid) {
 
 	switch(fineid) {
 		case NINJAJACK: GivePlayerCash(playerid, -2000);
@@ -154,18 +158,21 @@ AC_Process(playerid, killerid, processid) {
 		case NINJAJACK: {
 			if(!ac_ACToggle[NINJAJACK]) return 1;
 			defer AC_RevivePlayer(playerid);
+			/*
 			AC_FinePlayer(killerid, processid);
 			SetTimerEx("KickEx", 1000, 0, "i", killerid);
-			format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s was fined and kicked for ninja-jacking %s.", GetPlayerNameEx(killerid), GetPlayerNameEx(playerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, szMiscArray);
-			szMiscArray = "[SYSTEM]: You will be revived from the ninja-jacking.";
-			szString = "[SYSTEM]: You were fined $5000 and kicked for ninja-jacking.";
+			*/
+			format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s has plausibly ninja-jacked %s.", GetPlayerNameEx(killerid), GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+			szMiscArray = "[SYSTEM]: You will be revived from the ninja-jacking in a few seconds.";
+			szString = "[SYSTEM]: You were caught plausibly ninja-jacking. Admins were warned.";
 		}
 		case HEALTHARMORHACKS: {
-			AC_FinePlayer(playerid, processid);
+			
+			// AC_FinePlayer(playerid, processid);
 			// SetTimerEx("KickEx", 1000, 0, "i", killerid);
 			format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s was kicked for (plausibly!) health/armor hacking. Refrain from taking more action until fully tested.", GetPlayerNameEx(playerid));
-			AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
+			ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 			szMiscArray = "[SYSTEM]: You were kicked for plausibly health/armor hacking.";
 		}
 		/*
@@ -174,7 +181,7 @@ AC_Process(playerid, killerid, processid) {
 			AC_FinePlayer(playerid, processid);
 			SetTimerEx("KickEx", 1000, 0, "i", killerid);
 			format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s was kicked for (plausibly!) dialog spoofing. Refrain from taking more action until fully tested.", GetPlayerNameEx(playerid));
-			AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
+			ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 			szMiscArray = "[SYSTEM]: You were kicked for plausibly dialog spoofing.";
 		}
 		*/
@@ -183,13 +190,6 @@ AC_Process(playerid, killerid, processid) {
 	SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
 	if(killerid != INVALID_PLAYER_ID) SendClientMessageEx(killerid, COLOR_LIGHTRED, szString);
 	return 1;
-}
-
-AC_SendAdminMessage(hColor, szMessage[]) {
-
-	foreach(new i : Player) {
-		if(PlayerInfo[i][pAdmin] > 0) SendClientMessageEx(i, hColor, szMessage);
-	}
 }
 
 AC_IsPlayerSurfing(playerid) {
@@ -232,7 +232,7 @@ AC_PlayerHealthArmor(playerid) {
 	GetArmour(playerid, fData[3]);
 	if(fData[1] < -40) {
 		format(szMiscArray, sizeof(szMiscArray), "[SYSTEM (BETA)]: %s (%d) may be health hacking.", GetPlayerNameEx(playerid), playerid);
-		AC_SendAdminMessage(COLOR_LIGHTRED, szMiscArray);
+		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 	}
 	if(fData[0] > (fData[1] + 10.0) || fData[2] > (fData[3] + 10.0)) return 1;
 	return 0;
@@ -240,7 +240,7 @@ AC_PlayerHealthArmor(playerid) {
 
 CMD:system(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
 	format(szMiscArray, sizeof(szMiscArray), "Detecting\tStatus\n\
 		Car Surfing\t%s\n\
 		Ninja Jacking\t%s\n\
