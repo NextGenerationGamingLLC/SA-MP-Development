@@ -5968,6 +5968,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		SetPVarInt(playerid, "MemorialToy", modelid);
 		ShowPlayerDialogEx(playerid, 0525, DIALOG_STYLE_MSGBOX, "Memorial's Day Shop", szMiscArray, "Purchase", "Exit");
 	}
+	/*
 	if(extraid == REGISTER_SKINMODEL)
 	{
 		if(response)
@@ -5977,6 +5978,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		}
 		Register_MainMenu(playerid);
 	}
+	*/
 	if(extraid == PRISON_SKINSELECT)
 	{
 		if(response)

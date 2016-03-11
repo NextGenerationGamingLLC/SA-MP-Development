@@ -220,20 +220,20 @@ CMD:sellfish(playerid, params[])
 		return 1;
 	}
 
-	new string[128], fishid;
+	new fishid;
 	if(sscanf(params, "d", fishid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellfish [fish]");
 
 	new price;
-	if(fishid < 1 || fishid > 5) { SendClientMessageEx(playerid, COLOR_GREY, "   Fish number cant be below 1 or above 5!"); return 1; }
-	else if(fishid == 1 && Fishes[playerid][pWeight1] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(1)!"); return 1; }
-	else if(fishid == 2 && Fishes[playerid][pWeight2] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(2)!"); return 1; }
-	else if(fishid == 3 && Fishes[playerid][pWeight3] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(3)!"); return 1; }
-	else if(fishid == 4 && Fishes[playerid][pWeight4] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(4)!"); return 1; }
-	else if(fishid == 5 && Fishes[playerid][pWeight5] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(5)!"); return 1; }
+	if(fishid < 1 || fishid > 5) return SendClientMessageEx(playerid, COLOR_GREY, "   Fish number cant be below 1 or above 5!");
+	if(fishid == 1 && Fishes[playerid][pWeight1] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(1)!"); return 1; }
+	if(fishid == 2 && Fishes[playerid][pWeight2] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(2)!"); return 1; }
+	if(fishid == 3 && Fishes[playerid][pWeight3] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(3)!"); return 1; }
+	if(fishid == 4 && Fishes[playerid][pWeight4] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(4)!"); return 1; }
+	if(fishid == 5 && Fishes[playerid][pWeight5] < 1) { SendClientMessageEx(playerid, COLOR_GREY, "   You didnt even catch a Fish at that number(5)!"); return 1; }
 
 	switch (fishid)
 	{
-	case 1:
+		case 1:
 		{
 			if(Fishes[playerid][pWeight1] < 20)
 			{
@@ -243,12 +243,12 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid1]);
 			price = price * Fishes[playerid][pWeight1];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(string, sizeof(string), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish1],Fishes[playerid][pWeight1],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish1],Fishes[playerid][pWeight1],price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 1);
 		}
-	case 2:
+		case 2:
 		{
 			if(Fishes[playerid][pWeight2] < 20)
 			{
@@ -258,12 +258,12 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid2]);
 			price = price * Fishes[playerid][pWeight2];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(string, sizeof(string), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish2],Fishes[playerid][pWeight2],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish2],Fishes[playerid][pWeight2],price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 2);
 		}
-	case 3:
+		case 3:
 		{
 			if(Fishes[playerid][pWeight3] < 20)
 			{
@@ -273,12 +273,12 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid3]);
 			price = price * Fishes[playerid][pWeight3];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(string, sizeof(string), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish3],Fishes[playerid][pWeight3],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish3],Fishes[playerid][pWeight3],price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 3);
 		}
-	case 4:
+		case 4:
 		{
 			if(Fishes[playerid][pWeight4] < 20)
 			{
@@ -288,12 +288,12 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid4]);
 			price = price * Fishes[playerid][pWeight4];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(string, sizeof(string), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish4],Fishes[playerid][pWeight4],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish4],Fishes[playerid][pWeight4],price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 4);
 		}
-	case 5:
+		case 5:
 		{
 			if(Fishes[playerid][pWeight5] < 20)
 			{
@@ -303,8 +303,8 @@ CMD:sellfish(playerid, params[])
 			price = FishCost(playerid, Fishes[playerid][pFid5]);
 			price = price * Fishes[playerid][pWeight5];
 			GameTextForPlayer(playerid, "~g~Fish~n~~r~Sold", 3000, 1);
-			format(string, sizeof(string), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish5],Fishes[playerid][pWeight5],price);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(szMiscArray, sizeof(szMiscArray), "* You have sold your %s that weights %d, for $%d.", Fishes[playerid][pFish5],Fishes[playerid][pWeight5],price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 			GivePlayerCash(playerid, price);
 			ClearFishID(playerid, 5);
 		}
@@ -542,14 +542,11 @@ CMD:fish(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "You don't have any space for your fish.");
 			return 1;
 		}
-		if(PlayerInfo[playerid][pFishSkill] == 50)
-		{ SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 2, you can now catch larger fish."); }
-		else if(PlayerInfo[playerid][pFishSkill] == 100)
-		{ SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 3, you can now catch larger fish."); }
-		else if(PlayerInfo[playerid][pFishSkill] == 200)
-		{ SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 4, you can now catch larger fish."); }
-		else if(PlayerInfo[playerid][pFishSkill] == 400)
-		{ SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 5, you can now catch larger fish."); }
+		if(PlayerInfo[playerid][pFishSkill] == 50) SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 2, you can now catch larger fish.");
+		else if(PlayerInfo[playerid][pFishSkill] == 100) SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 3, you can now catch larger fish.");
+		else if(PlayerInfo[playerid][pFishSkill] == 200) SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 4, you can now catch larger fish.");
+		else if(PlayerInfo[playerid][pFishSkill] == 400) SendClientMessageEx(playerid, COLOR_YELLOW, "* Your Fishing Skill is now Level 5, you can now catch larger fish.");
+		if(PlayerInfo[playerid][pFishSkill] == 400) PlayerInfo[playerid][pFishSkill] = 400;
 	}
 	else
 	{

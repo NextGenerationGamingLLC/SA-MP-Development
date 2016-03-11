@@ -246,13 +246,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2)
 						{
-							format(szCountry, sizeof(szCountry), "[TR] ");
+							format(szCountry, sizeof(szCountry), "[NE] ");
 						}
 						strcat(szCrime, szCountry);
 						strcat(szCrime, arrCrimeData[i][c_szName]);
 
 						GetPVarString(playerid, "OfflineSU", PlayerName, MAX_PLAYER_NAME);
-
 						Crime_AddOffline(playerid, szCrime, PlayerName);
 					}
 				}
@@ -399,7 +398,7 @@ CMD:su(playerid, params[]) {
 	return 1;
 }
 
-/*CMD:osu(playerid, params[]) 
+CMD:osu(playerid, params[]) 
 {
 	if(IsACop(playerid)) 
 	{
@@ -420,7 +419,7 @@ CMD:su(playerid, params[]) {
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
 	return 1;
-}*/
+}
 
 ShowCrimesList(playerid)
 {
@@ -436,9 +435,8 @@ ShowCrimesList(playerid)
 Crime_AddOffline(iPlayerID, szAddCrime[], szPName[], iExtra = 0) {
 
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `Username` FROM accounts WHERE `Username` = '%s' LIMIT 1", szPName);
+	format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s' LIMIT 1", szPName);
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnCrimeAddOffline", "dssd", iPlayerID, szAddCrime, szPName, iExtra);
-
 	return 1;
 }
 
@@ -447,7 +445,7 @@ public OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra)
 {
 
 	new
-		iRows, 
+		iRows,
 		iTempID;
 
 	iRows = cache_get_row_count(MainPipeline);
@@ -457,11 +455,10 @@ public OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra)
 			
 			if(!iRows) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "That player was not found!");
 
-
-			iTempID = cache_get_field_content_int(iRows, "id", MainPipeline);
+			iTempID = cache_get_field_content_int(0, "id", MainPipeline);
 
 			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", iTempID, GetPlayerNameEx(iPlayerID), szAddCrime, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance]);
-			mysql_function_query(MainPipeline, szMiscArray, true, "OnCrimeAddOffline", "dssd", iPlayerID, szAddCrime, szPName, 0);
+			mysql_function_query(MainPipeline, szMiscArray, true, "OnCrimeAddOffline", "dssd", iPlayerID, szAddCrime, szPName, 1);
 			new PlayerName[MAX_PLAYER_NAME];
 			GetPVarString(iPlayerID, "OfflineSU", PlayerName, MAX_PLAYER_NAME);
 			foreach(new p: Player)

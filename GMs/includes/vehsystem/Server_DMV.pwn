@@ -364,14 +364,9 @@ CMD:showlicenses(playerid, params[])
 
 			switch(PlayerInfo[playerid][pNation])
 			{
-				case 0:
-				{
-					SendClientMessageEx(giveplayerid, COLOR_WHITE, "** Citizen of San Andreas **");
-				}
-				case 1:
-				{
-					SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of New Eire **");
-				}
+				case 0:	SendClientMessageEx(giveplayerid, COLOR_WHITE, "** Citizen of San Andreas **");
+				case 1: SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of New Eire **");
+				default: SendClientMessageEx(giveplayerid, COLOR_TR, "** No citizenship **");
 			}
 			format(string, sizeof(string), "Listing %s's licenses...", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);

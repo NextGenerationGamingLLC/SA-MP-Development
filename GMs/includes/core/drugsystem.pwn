@@ -3534,6 +3534,7 @@ CMD:plantseeds(playerid, params[]) {
 
 		case 1: iIngredientID = 1;
 		case 6: iIngredientID = 7;
+		default: iIngredientID = 1;
 	}
 
 	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");

@@ -237,12 +237,21 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 4: return Register_MainMenu(playerid);
 				case 5:
 				{
-					if(PlayerInfo[playerid][pSex] == 0) { SendClientMessage(playerid, COLOR_YELLOW, "Please select your gender first."); return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<"); }
+					if(PlayerInfo[playerid][pSex] == 0) { 
+						SendClientMessage(playerid, COLOR_YELLOW, "Please select your gender first.");
+						return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<");
+					}
+					
+					/*
+					Caused issues with modded games.
 					switch(PlayerInfo[playerid][pSex])
 					{
 	                    case 1: return ShowModelSelectionMenuEx(playerid, g_aMaleSkins, sizeof(g_aMaleSkins), "Skin Model", REGISTER_SKINMODEL, -16.0, 0.0, -55.0);
 						case 2: return ShowModelSelectionMenuEx(playerid, g_aFemaleSkins, sizeof(g_aFemaleSkins), "Skin Model", REGISTER_SKINMODEL, -16.0, 0.0, -55.0);
                		}
+               		*/
+
+               		ShowPlayerDialog(playerid, DIALOG_REGISTER_SKIN, DIALOG_STYLE_MSGBOX, "NG:RP Character Creation | Skin Model", "Please enter a skin ID for your character.", "Select", "<<");
                	}
 				case 6: return Register_MainMenu(playerid);
 				case 7:
@@ -262,22 +271,31 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 		}
+		case DIALOG_REGISTER_SKIN: {
+
+			if(response && !isnull(inputtext) && IsNumeric(inputtext)) {
+
+			    PlayerInfo[playerid][pModel] = strval(inputtext);
+				Register_CreatePlayer(playerid, strval(inputtext));
+			}
+			Register_MainMenu(playerid);
+		}
 		case DIALOG_REGISTER_SEX:
 	    {
 		    if(response)
 		    {
-			    if(listitem == 0)
-			    {
+			    if(listitem == 0) {
 					PlayerInfo[playerid][pSex] = 1;
+					PlayerInfo[playerid][pModel] = 2;
 					Register_CreatePlayer(playerid, 2);
 					SendClientMessage(playerid, COLOR_YELLOW2, "Alright, so you're a male!");
 					Register_MainMenu(playerid);
 				}
-				else if(listitem == 1)
-				{
+				else if(listitem == 1) {
 					PlayerInfo[playerid][pSex] = 2;
-					SendClientMessage(playerid, COLOR_YELLOW2, "Alright, so you're a female!");
+					PlayerInfo[playerid][pModel] = 91;
 					Register_CreatePlayer(playerid, 91);
+					SendClientMessage(playerid, COLOR_YELLOW2, "Alright, so you're a female!");
 					Register_MainMenu(playerid);
 				}
 			}

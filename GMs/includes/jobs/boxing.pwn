@@ -129,7 +129,7 @@ CMD:train(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, " You are not at the learning area !(inside gym)");
+		SendClientMessageEx(playerid, COLOR_GRAD2, " You are not at the learning area! (Inside gym)");
 	}
 	return 1;
 }

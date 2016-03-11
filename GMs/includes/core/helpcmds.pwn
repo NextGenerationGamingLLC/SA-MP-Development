@@ -42,7 +42,7 @@ CMD:help(playerid, params[])
 	{
 		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR,"*** HELP *** /report /requesthelp (/newb)ie /tognewbie");
 	}
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** ACCOUNT *** /faq /(net)stats /inventory /quickstats /myguns /buylevel /upgrade /changepass /killcheckpoint /resetupgrades(100k)");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** ACCOUNT *** /(net)stats /inventory /quickstats /myguns /buylevel /upgrade /changepass /killcheckpoint /resetupgrades(100k)");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /w(hisper) /o(oc) /s(hout) /l(ow) /b /ad(vertisement)s /f(amily) /togooc /tognews /togfam /togwhisper /cancelcall");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /me /ame /lme /do /ldo /se(texamine) /examine");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /cashchecks /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
@@ -70,6 +70,7 @@ CMD:help(playerid, params[])
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
 		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
 		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
+		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}
 	switch(PlayerInfo[playerid][pJob2])
 	{
@@ -90,6 +91,7 @@ CMD:help(playerid, params[])
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
 		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
 		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
+		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}
 	switch(PlayerInfo[playerid][pJob3])
 	{
@@ -109,7 +111,8 @@ CMD:help(playerid, params[])
 		case 18: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
 		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
-		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");	
+		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
+		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}	
 	new iGroupID = PlayerInfo[playerid][pMember];
 	if(iGroupID != INVALID_GROUP_ID)
