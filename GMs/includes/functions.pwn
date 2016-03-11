@@ -195,9 +195,9 @@ SetPlayerPosObjectOffset(objectid, playerid, Float:offset_x, Float:offset_y, Flo
 	SetPlayerPos(playerid, x, y, z);
 }
 
-GlobalPlaySound(soundid, Float:x, Float:y, Float:z)
-{
-	for(new i = 0; i < GetMaxPlayers(); i++) {
+GlobalPlaySound(soundid, Float:x, Float:y, Float:z) {
+	
+	foreach(new i : Player) {
 		if(IsPlayerInRangeOfPoint(i, 25.0, x, y, z)) {
 			PlayerPlaySound(i, soundid, x, y, z);
 		}

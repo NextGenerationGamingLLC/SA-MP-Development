@@ -416,11 +416,6 @@ new const szFurnitureCatList[][][32] = {
 };
 */
 
-timer FurnitureControl[1000](playerid, Float:X, Float:Y, Float:Z) {
-	TogglePlayerControllable(playerid, true);
-	SetPlayerPos(playerid, X, Y, Z);
-}
-
 hook OnGameModeInit() {
 
 	FurnitureTDInit();
@@ -448,27 +443,6 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid) {
 	if(clickedid == Furniture_TD[17]) cmd_furnitureresetpos(playerid, "");
 	if(clickedid == Furniture_TD[11]) FurniturePermit(playerid);
 	return 1;
-}
-
-BuildIcons(playerid, choice) {
-
-	switch(choice) {
-
-		case 0: {
-
-			TextDrawHideForPlayer(playerid, Furniture_TD[20]);
-			TextDrawHideForPlayer(playerid, Furniture_TD[21]);
-			TextDrawHideForPlayer(playerid, Furniture_TD[22]);
-			TextDrawHideForPlayer(playerid, Furniture_TD[23]);
-		}
-		case 1: {
-
-			TextDrawShowForPlayer(playerid, Furniture_TD[20]);
-			TextDrawShowForPlayer(playerid, Furniture_TD[21]);
-			TextDrawShowForPlayer(playerid, Furniture_TD[22]);
-			TextDrawShowForPlayer(playerid, Furniture_TD[23]);
-		}
-	}
 }
 
 
@@ -539,41 +513,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	return 1;
 }
 
-
-GetMaxFurnitureSlots(playerid) {
-
-	new iMaxSlots;
-	if(PlayerInfo[playerid][pDonateRank] > 0) {
-
-		switch(PlayerInfo[playerid][pDonateRank]) {
-			case 0: iMaxSlots = 30; // Regular
-			case 1: iMaxSlots = 40; // Bronze VIPs
-			case 2: iMaxSlots = 45; // Silver VIPs
-			case 3: iMaxSlots = 50; // Gold VIPs
-			default: iMaxSlots = 75; // Platinum VIPs
-		}
-	}
-	if(PlayerInfo[playerid][pFurnitureSlots] > iMaxSlots) iMaxSlots = PlayerInfo[playerid][pFurnitureSlots];
-	if(IsAdminLevel(playerid, ADMIN_HEAD)) iMaxSlots = MAX_FURNITURE_SLOTS;
-	return iMaxSlots;
-}
-
-CheckSlotValidity(playerid, iSlotID) {
-
-	new iMaxSlots;
-
-	switch(PlayerInfo[playerid][pDonateRank]) {
-		case 0: iMaxSlots = 30; // Regular
-		case 1: iMaxSlots = 35; // Bronze VIPs
-		case 2: iMaxSlots = 40; // Silver VIPs
-		case 3: iMaxSlots = 50; // Gold VIPs
-		case 4: iMaxSlots = 75; // Platinum VIPs
-	}
-	if(PlayerInfo[playerid][pFurnitureSlots] > iMaxSlots) iMaxSlots = PlayerInfo[playerid][pFurnitureSlots];
-	if(iSlotID >= iMaxSlots) return 0;
-	return 1;
-}
-
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	switch(dialogid) {
@@ -587,9 +526,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 		case DIALOG_FURNITURE_BUY: {
+			
 			if(!response) return FurnitureMenu(playerid, 0);
-
 			szMiscArray[0] = 0;
+
 			new x;
 			for(new i; i < MAX_CATALOG; ++i) {
 				if(arrFurnitureCatalog[i][fc_iTypeID] == listitem) {
@@ -851,6 +791,117 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 	return 1;	
 }
 
+
+timer FurnitureControl[1000](playerid, Float:X, Float:Y, Float:Z) {
+	TogglePlayerControllable(playerid, true);
+	SetPlayerPos(playerid, X, Y, Z);
+}
+
+
+timer FurnitureEditObject[5000](playerid) {
+	
+	new Float:fPos[6];
+	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+	if(!GetPVarType(playerid, "furnfirst")) {
+
+		SetPVarInt(playerid, "furnfirst", 1);
+		SetPVarFloat(playerid, "PX", fPos[0]);
+		SetPVarFloat(playerid, "PY", fPos[1]);
+		SetPVarFloat(playerid, "PZ", fPos[2]);
+		defer FurnitureEditObject(playerid);
+		return 1;
+	}
+	fPos[3] = GetPVarFloat(playerid, "PX");
+	fPos[4] = GetPVarFloat(playerid, "PY");
+	fPos[5] = GetPVarFloat(playerid, "PZ");
+	if(!IsPlayerInRangeOfPoint(playerid, 15.0, fPos[3], fPos[4], fPos[5])) {
+
+		CancelEdit(playerid);
+		DeletePVar(playerid, "furnfirst");
+		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
+		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You went too far away.");
+		return 1;
+	}
+	if(fPos[5] > (fPos[2] + 2.0)) {
+
+		CancelEdit(playerid);
+		DeletePVar(playerid, "furnfirst");
+		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
+		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You went too far away.");
+		return 1;
+	}
+	return 1;
+}
+
+timer Furniture_HousePosition[5000](playerid, iHouseID) {
+
+	Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
+}
+
+
+timer RehashHouseFurniture[10000](iHouseID) {
+
+	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnRehashHouseFurniture", "i", iHouseID);
+}
+
+
+BuildIcons(playerid, choice) {
+
+	switch(choice) {
+
+		case 0: {
+
+			TextDrawHideForPlayer(playerid, Furniture_TD[20]);
+			TextDrawHideForPlayer(playerid, Furniture_TD[21]);
+			TextDrawHideForPlayer(playerid, Furniture_TD[22]);
+			TextDrawHideForPlayer(playerid, Furniture_TD[23]);
+		}
+		case 1: {
+
+			TextDrawShowForPlayer(playerid, Furniture_TD[20]);
+			TextDrawShowForPlayer(playerid, Furniture_TD[21]);
+			TextDrawShowForPlayer(playerid, Furniture_TD[22]);
+			TextDrawShowForPlayer(playerid, Furniture_TD[23]);
+		}
+	}
+}
+
+
+GetMaxFurnitureSlots(playerid) {
+
+	new iMaxSlots;
+
+	switch(PlayerInfo[playerid][pDonateRank]) {
+		case 0: iMaxSlots = 30; // Regular
+		case 1: iMaxSlots = 40; // Bronze VIPs
+		case 2: iMaxSlots = 45; // Silver VIPs
+		case 3: iMaxSlots = 50; // Gold VIPs
+		default: iMaxSlots = 75; // Platinum VIPs
+	}
+	if(PlayerInfo[playerid][pFurnitureSlots] > iMaxSlots) iMaxSlots = PlayerInfo[playerid][pFurnitureSlots];
+	if(IsAdminLevel(playerid, ADMIN_HEAD)) iMaxSlots = MAX_FURNITURE_SLOTS;
+	return iMaxSlots;
+}
+
+CheckSlotValidity(playerid, iSlotID) {
+
+	new iMaxSlots;
+
+	switch(PlayerInfo[playerid][pDonateRank]) {
+		case 0: iMaxSlots = 30; // Regular
+		case 1: iMaxSlots = 35; // Bronze VIPs
+		case 2: iMaxSlots = 40; // Silver VIPs
+		case 3: iMaxSlots = 50; // Gold VIPs
+		case 4: iMaxSlots = 75; // Platinum VIPs
+	}
+	if(PlayerInfo[playerid][pFurnitureSlots] > iMaxSlots) iMaxSlots = PlayerInfo[playerid][pFurnitureSlots];
+	if(iSlotID >= iMaxSlots) return 0;
+	return 1;
+}
+
 EditFurniture(playerid, objectid, modelid) {
 
 	new iHouseID = GetHouseID(playerid);
@@ -871,6 +922,7 @@ EditFurniture(playerid, objectid, modelid) {
 FurnitureListInit() {
 
 	/*
+	Loading from files.
 	new szDir[16];
 	szDir = "furniture/";
 
@@ -880,6 +932,7 @@ FurnitureListInit() {
 	}
 	*/
 
+	// Loading from MySQL database.
 	mysql_function_query(MainPipeline, "SELECT `type`, `modelid`, `name`, `price` FROM `furniturecatalog`", true, "OnLoadFurnitureList", "");
 }
 
@@ -1075,317 +1128,6 @@ GetDynamicObjectModel(iObjectID) {
 	return Streamer_GetIntData(STREAMER_TYPE_OBJECT, iObjectID, E_STREAMER_MODEL_ID);
 }
 
-CMD:furniturehelp(playerid, params[]) {
-
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/furniture | /furnitureresetpos | /permitbuilder | /revokebuilders | Press ~k~~PED_LOOKBEHIND~ to toggle the mouse cursor.");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/unfurnishhouse (remove default furniture) | /furnishhouse (add default furniture)");
-	if(IsAdminLevel(playerid, ADMIN_GENERAL)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {FFFF00}/destroyfuniture | /rehashcatalog");
-	return 1;
-}
-
-CMD:furniture(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
-
-	if(GetPVarType(playerid, PVAR_FURNITURE)) {
-		for(new x; x < sizeof(Furniture_TD); ++x) TextDrawHideForPlayer(playerid, Furniture_TD[x]);
-		CancelSelectTextDraw(playerid);
-		DeletePVar(playerid, PVAR_FURNITURE);
-		DeletePVar(playerid, PVAR_INHOUSE);
-		DeletePVar(playerid, PVAR_FURNITURE_SLOT);
-		DeletePVar(playerid, PVAR_FURNITURE_EDITING);
-		DeletePVar(playerid, PVAR_FURNITURE_BUYMODEL);
-		Furniture_ResetPVars(playerid);
-	}			
-	else {
-		new i = GetHouseID(playerid);
-		if(i == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
-		if(!HousePermissionCheck(playerid, i)) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have the permission to edit this house's furniture.");
-		FurnitureMenu(playerid, 0);
-		SetPVarInt(playerid, PVAR_INHOUSE, i);
-	}
-	return 1;
-}
-
-CMD:setfurnitureslots(playerid, params[]) {
-
-	if(IsAdminLevel(playerid, ADMIN_HEAD)) {
-
-		new uPlayer,
-			iAmount;
-
-		if(sscanf(params, "ud", uPlayer, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setfurnitureslots [playerid] [slots]");
-
-		PlayerInfo[uPlayer][pFurnitureSlots] = iAmount;
-
-		format(szMiscArray, sizeof(szMiscArray), "Administrator %s set your furniture slots to %d.", GetPlayerNameEx(playerid), iAmount);
-		SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
-
-		format(szMiscArray, sizeof(szMiscArray), "You set %s's furniture slots to %d.", GetPlayerNameEx(uPlayer), iAmount);
-		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-
-		format(szMiscArray, sizeof(szMiscArray), "%s set %s's furniture slots to %d.", GetPlayerNameExt(playerid), GetPlayerNameExt(uPlayer), iAmount);
-		Log("logs/furnitureslots.log", szMiscArray);
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
-	return 1;
-}
-
-CMD:unfurnishhouse(playerid, params[]) {
-	
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
-
-	new iHouseID = GetHouseID(playerid),
-		Float:fHouseZ,
-		fDistance;
-
-	// if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
-	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
-	for(new i; i < sizeof(InteriorsList); ++i) {
-		fDistance = floatround(GetDistanceBetweenPoints(HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ],
-			InteriorsList[i][0], InteriorsList[i][1], InteriorsList[i][2]), floatround_round);
-
-		if(fDistance < 100 && HouseInfo[iHouseID][hIntIW] == floatround(InteriorsList[i][3])) {
-			
-			fHouseZ = InteriorsList[i][2];
-			break;
-		}
-	}
-
-	if(fHouseZ == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This task cannot be completed for your house interior type.");
-
-	if(HouseInfo[iHouseID][hInteriorZ] > fHouseZ + 25.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your house is already unfurnished.");
-	HouseInfo[iHouseID][hInteriorZ] = fHouseZ + 30;
-	HouseInfo[iHouseID][hCustomInterior] = 1;
-	SaveHouse(iHouseID);
-
-	new Float:fPos[6];
-	for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
-
-		new iModelID = GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]);
-
-		GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
-		GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][i], fPos[3], fPos[4], fPos[5]);
-		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]);
-
-		fPos[2] -= 30;
-		if(IsADoor(iModelID)) {
-
-			new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
-				szData[3];
-			DestroyDynamicArea(iLocalDoorArea);
-
-			iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 1.0, HouseInfo[iHouseID][hIntVW]),
-			szData[1] = HouseInfo[iHouseID][hFurniture][i];
-			szData[2] = 0;
-			Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
-			Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
-		}
-		HouseInfo[iHouseID][hFurniture][i] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], HouseInfo[iHouseID][hIntVW]);
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	}
-	RehashHouse(iHouseID);
-	// defer RehashHouseFurniture(iHouseID);
-	foreach(new p : Player) {
-
-		if(GetPVarInt(p, PVAR_INHOUSE) == iHouseID) {
-			SendClientMessageEx(p, COLOR_GRAD1, "You will be moved to the unfurnished version of the house.");
-			defer HousePosition(p, iHouseID);
-		}
-	}
-	return 1;
-}
-
-timer HousePosition[5000](playerid, iHouseID) {
-
-	Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
-}
-
-CMD:furnishhouse(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
-
-	new iHouseID = GetHouseID(playerid),
-		Float:fHouseZ,
-		fDistance;
-
-	// if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
-	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
-	for(new i; i < sizeof(InteriorsList); ++i) {
-		fDistance = floatround(GetDistanceBetweenPoints(HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ],
-			InteriorsList[i][0], InteriorsList[i][1], InteriorsList[i][2]), floatround_round);
-
-		if(fDistance < 100 && HouseInfo[iHouseID][hIntIW] == floatround(InteriorsList[i][3])) {
-			
-			fHouseZ = InteriorsList[i][2];
-			break;
-		}
-	}
-
-	if(fHouseZ == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This task cannot be completed for your house interior type.");
-	if(HouseInfo[iHouseID][hInteriorZ] < fHouseZ + 25.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your house is already furnished.");
-	HouseInfo[iHouseID][hInteriorZ] = fHouseZ;
-	HouseInfo[iHouseID][hCustomInterior] = 0;
-	SaveHouse(iHouseID);
-	// defer RehashHouseFurniture(iHouseID);
-	new Float:fPos[6];
-	for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
-
-		new iModelID = GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]);
-
-		GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
-		GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][i], fPos[3], fPos[4], fPos[5]);
-		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]);
-
-		fPos[2] -= 30;
-		if(IsADoor(iModelID)) {
-
-			new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
-				szData[3];
-			DestroyDynamicArea(iLocalDoorArea);
-
-			iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 1.0, HouseInfo[iHouseID][hIntVW]),
-			szData[1] = HouseInfo[iHouseID][hFurniture][i];
-			szData[2] = 0;
-			Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
-			Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
-		}
-		HouseInfo[iHouseID][hFurniture][i] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], HouseInfo[iHouseID][hIntVW]);
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	}
-	RehashHouse(iHouseID);
-	foreach(new p : Player) {
-
-		if(GetPVarInt(p, PVAR_INHOUSE) == iHouseID) {
-			SendClientMessageEx(p, COLOR_GRAD1, "You will be moved to the furnished version of the house.");
-			defer HousePosition(p, iHouseID);
-		}
-	}
-	return 1;
-}
-
-forward OnEditFurniture();
-public OnEditFurniture() {
-
-	if(mysql_errno()) return SendClientMessageToAll(0, "[Furniture] Did not save.");
-	return 1;
-}
-
-CMD:furnitureresetpos(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
-
-	if(GetPVarType(playerid, PVAR_FURNITURE)) {
-
-		new i = GetHouseID(playerid);
-		if(i == INVALID_HOUSE_ID) {
-
-			cmd_furniture(playerid, "");
-			return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
-		}
-
-		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
-		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You can only use this when you are falling while positioning a piece of furniture.");
-	return 1;
-}
-
-CMD:destroyfurniture(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_LEAD)) return 1;
-
-	new iHouseID = GetHouseID(playerid),
-		iSlotID;
-
-	if(!IsAdminLevel(playerid, ADMIN_GENERAL)) return 1;
-	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house");
-	if(sscanf(params, "d", iSlotID)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /destroyfurniture [slot].");
-	if(!IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid slot.");
-	DestroyFurniture(iHouseID, iSlotID);
-	return 1;
-}
-
-CMD:revokebuilders(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
-
-	new iHouseID;
-	if(sscanf(params, "d", iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /revokebuilder [house (1, 2, 3)]");
-	switch(iHouseID) {
-		case 1: if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house slot is not being used.");
-		case 2: if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house slot is not being used.");
-		case 3: if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house slot is not being used.");
-		default: return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid house ID.");
-	}
-
-	foreach(new i : Player) if(PlayerInfo[playerid][pHouseBuilder] == iHouseID) PlayerInfo[playerid][pHouseBuilder] = INVALID_HOUSE_ID;
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `HouseBuilder` = '%d'", iHouseID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnRevokeBuildPerms", "");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "All builder's permissions have been revoked.");
-	return 1;
-}
-
-CMD:door(playerid, params[]) {
-	
-	if(GetHouseID(playerid) == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
-	
-	if(IsPlayerInAnyDynamicArea(playerid)) {
-
-		new areaid[3],
-			iObjectID,
-			iState,
-			Float:fPos[6],
-			szData[3];
-
-		GetPlayerDynamicAreas(playerid, areaid);
-		for(new i; i < sizeof(areaid); ++i) {
-
-			Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
-			iObjectID = szData[1];
-			iState = szData[2];
-
-			if(IsValidDynamicObject(iObjectID)) {
-				if(IsDynamicObjectMoving(iObjectID)) return 1;
-				GetDynamicObjectPos(iObjectID, fPos[0], fPos[1], fPos[2]);
-				GetDynamicObjectRot(iObjectID, fPos[3], fPos[4], fPos[5]);
-				if(IsPlayerInRangeOfPoint(playerid, 3.0, fPos[0], fPos[1], fPos[2])) {
-					switch(iState) {
-						case 0: {
-							szData[2] = 1;
-							MoveDynamicObject(iObjectID, fPos[0] + 0.01, fPos[1], fPos[2], 0.03, fPos[3], fPos[4], fPos[5] + 90.0);
-							Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
-						}
-						case 1: {
-							szData[2] = 0;
-							MoveDynamicObject(iObjectID, fPos[0] - 0.01, fPos[1], fPos[2], 0.03, fPos[3], fPos[4], fPos[5] - 90.0);
-							Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
-						}
-					}
-				}
-			}
-		}
-	}
-	return 1;
-}
-
-		
-CMD:rehashcatalog(playerid, params[]) {
-
-	if(IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
-	for(new i; i < MAX_CATALOG; ++i) {
-
-		arrFurnitureCatalog[i][fc_iModelID] = 0;
-		arrFurnitureCatalog[i][fc_iTypeID] = 0;
-		arrFurnitureCatalog[i][fc_szName][0] = 0;
-		arrFurnitureCatalog[i][fc_iPrice] = 0;
-	}
-	FurnitureListInit();
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Rehasing the furniture catalog.");
-	return 1;
-}
 
 forward OnRevokeBuildPerms();
 public OnRevokeBuildPerms() {
@@ -1415,43 +1157,6 @@ Furniture_ResetPVars(playerid) {
 	DeletePVar(playerid, "PX");
 	DeletePVar(playerid, "PY");
 	DeletePVar(playerid, "PZ");
-}
-
-timer FurnitureEditObject[5000](playerid) {
-	
-	new Float:fPos[6];
-	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-	if(!GetPVarType(playerid, "furnfirst")) {
-
-		SetPVarInt(playerid, "furnfirst", 1);
-		SetPVarFloat(playerid, "PX", fPos[0]);
-		SetPVarFloat(playerid, "PY", fPos[1]);
-		SetPVarFloat(playerid, "PZ", fPos[2]);
-		defer FurnitureEditObject(playerid);
-		return 1;
-	}
-	fPos[3] = GetPVarFloat(playerid, "PX");
-	fPos[4] = GetPVarFloat(playerid, "PY");
-	fPos[5] = GetPVarFloat(playerid, "PZ");
-	if(!IsPlayerInRangeOfPoint(playerid, 15.0, fPos[3], fPos[4], fPos[5])) {
-
-		CancelEdit(playerid);
-		DeletePVar(playerid, "furnfirst");
-		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
-		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You went too far away.");
-		return 1;
-	}
-	if(fPos[5] > (fPos[2] + 2.0)) {
-
-		CancelEdit(playerid);
-		DeletePVar(playerid, "furnfirst");
-		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
-		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You went too far away.");
-		return 1;
-	}
-	return 1;
 }
 
 FurniturePermit(playerid) {
@@ -1498,13 +1203,6 @@ public OnLoadFurniture() {
 	return printf("[Furniture] Loaded %d pieces of furniture from the database.", iCount);
 }
 
-
-timer RehashHouseFurniture[10000](iHouseID) {
-
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnRehashHouseFurniture", "i", iHouseID);
-}
-
 forward OnRehashHouseFurniture(iHouseID);
 public OnRehashHouseFurniture(iHouseID) {
 
@@ -1537,6 +1235,7 @@ public OnRehashHouseFurniture(iHouseID) {
 	}
 	return printf("[Furniture] Loaded %d pieces of furniture from the database.", iCount);
 }
+
 
 
 CreateFurniture(playerid, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ) {
@@ -2009,4 +1708,310 @@ FurnitureTDInit() {
 	TextDrawSetProportional(Furniture_TD[25], 1);
 	TextDrawSetShadow(Furniture_TD[25], 0);
 	TextDrawSetSelectable(Furniture_TD[25], 0);
+}
+
+CMD:furniturehelp(playerid, params[]) {
+
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/furniture | /furnitureresetpos | /permitbuilder | /revokebuilders | Press ~k~~PED_LOOKBEHIND~ to toggle the mouse cursor.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/unfurnishhouse (remove default furniture) | /furnishhouse (add default furniture)");
+	if(IsAdminLevel(playerid, ADMIN_GENERAL)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {FFFF00}/destroyfuniture | /rehashcatalog");
+	return 1;
+}
+
+CMD:furniture(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+
+	if(GetPVarType(playerid, PVAR_FURNITURE)) {
+		for(new x; x < sizeof(Furniture_TD); ++x) TextDrawHideForPlayer(playerid, Furniture_TD[x]);
+		CancelSelectTextDraw(playerid);
+		DeletePVar(playerid, PVAR_FURNITURE);
+		DeletePVar(playerid, PVAR_INHOUSE);
+		DeletePVar(playerid, PVAR_FURNITURE_SLOT);
+		DeletePVar(playerid, PVAR_FURNITURE_EDITING);
+		DeletePVar(playerid, PVAR_FURNITURE_BUYMODEL);
+		Furniture_ResetPVars(playerid);
+	}			
+	else {
+		new i = GetHouseID(playerid);
+		if(i == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
+		if(!HousePermissionCheck(playerid, i)) return SendClientMessage(playerid, COLOR_GRAD1, "You do not have the permission to edit this house's furniture.");
+		FurnitureMenu(playerid, 0);
+		SetPVarInt(playerid, PVAR_INHOUSE, i);
+	}
+	return 1;
+}
+
+CMD:setfurnitureslots(playerid, params[]) {
+
+	if(IsAdminLevel(playerid, ADMIN_HEAD)) {
+
+		new uPlayer,
+			iAmount;
+
+		if(sscanf(params, "ud", uPlayer, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setfurnitureslots [playerid] [slots]");
+
+		PlayerInfo[uPlayer][pFurnitureSlots] = iAmount;
+
+		format(szMiscArray, sizeof(szMiscArray), "Administrator %s set your furniture slots to %d.", GetPlayerNameEx(playerid), iAmount);
+		SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "You set %s's furniture slots to %d.", GetPlayerNameEx(uPlayer), iAmount);
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s set %s's furniture slots to %d.", GetPlayerNameExt(playerid), GetPlayerNameExt(uPlayer), iAmount);
+		Log("logs/furnitureslots.log", szMiscArray);
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+	return 1;
+}
+
+CMD:unfurnishhouse(playerid, params[]) {
+	
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+
+	new iHouseID = GetHouseID(playerid),
+		Float:fHouseZ,
+		fDistance;
+
+	// if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
+	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
+	for(new i; i < sizeof(InteriorsList); ++i) {
+		fDistance = floatround(GetDistanceBetweenPoints(HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ],
+			InteriorsList[i][0], InteriorsList[i][1], InteriorsList[i][2]), floatround_round);
+
+		if(fDistance < 100 && HouseInfo[iHouseID][hIntIW] == floatround(InteriorsList[i][3])) {
+			
+			fHouseZ = InteriorsList[i][2];
+			break;
+		}
+	}
+
+	if(fHouseZ == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This task cannot be completed for your house interior type.");
+
+	if(HouseInfo[iHouseID][hInteriorZ] > fHouseZ + 25.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your house is already unfurnished.");
+	HouseInfo[iHouseID][hInteriorZ] = fHouseZ + 30;
+	HouseInfo[iHouseID][hCustomInterior] = 1;
+	SaveHouse(iHouseID);
+
+	new Float:fPos[6];
+	for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
+
+		new iModelID = GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]);
+
+		GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
+		GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][i], fPos[3], fPos[4], fPos[5]);
+		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]);
+
+		fPos[2] -= 30;
+		if(IsADoor(iModelID)) {
+
+			new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
+				szData[3];
+			DestroyDynamicArea(iLocalDoorArea);
+
+			iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 1.0, HouseInfo[iHouseID][hIntVW]),
+			szData[1] = HouseInfo[iHouseID][hFurniture][i];
+			szData[2] = 0;
+			Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
+		}
+		HouseInfo[iHouseID][hFurniture][i] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], HouseInfo[iHouseID][hIntVW]);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	}
+	RehashHouse(iHouseID);
+	// defer RehashHouseFurniture(iHouseID);
+	foreach(new p : Player) {
+
+		if(GetPVarInt(p, PVAR_INHOUSE) == iHouseID) {
+			SendClientMessageEx(p, COLOR_GRAD1, "You will be moved to the unfurnished version of the house.");
+			defer Furniture_HousePosition(p, iHouseID);
+		}
+	}
+	return 1;
+}
+
+CMD:furnishhouse(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+
+	new iHouseID = GetHouseID(playerid),
+		Float:fHouseZ,
+		fDistance;
+
+	// if(!HousePermissionCheck(playerid, iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this in this house.");
+	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
+	for(new i; i < sizeof(InteriorsList); ++i) {
+		fDistance = floatround(GetDistanceBetweenPoints(HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ],
+			InteriorsList[i][0], InteriorsList[i][1], InteriorsList[i][2]), floatround_round);
+
+		if(fDistance < 100 && HouseInfo[iHouseID][hIntIW] == floatround(InteriorsList[i][3])) {
+			
+			fHouseZ = InteriorsList[i][2];
+			break;
+		}
+	}
+
+	if(fHouseZ == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This task cannot be completed for your house interior type.");
+	if(HouseInfo[iHouseID][hInteriorZ] < fHouseZ + 25.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your house is already furnished.");
+	HouseInfo[iHouseID][hInteriorZ] = fHouseZ;
+	HouseInfo[iHouseID][hCustomInterior] = 0;
+	SaveHouse(iHouseID);
+	// defer RehashHouseFurniture(iHouseID);
+	new Float:fPos[6];
+	for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
+
+		new iModelID = GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]);
+
+		GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
+		GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][i], fPos[3], fPos[4], fPos[5]);
+		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]);
+
+		fPos[2] -= 30;
+		if(IsADoor(iModelID)) {
+
+			new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
+				szData[3];
+			DestroyDynamicArea(iLocalDoorArea);
+
+			iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 1.0, HouseInfo[iHouseID][hIntVW]),
+			szData[1] = HouseInfo[iHouseID][hFurniture][i];
+			szData[2] = 0;
+			Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
+			Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
+		}
+		HouseInfo[iHouseID][hFurniture][i] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], HouseInfo[iHouseID][hIntVW]);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	}
+	RehashHouse(iHouseID);
+	foreach(new p : Player) {
+
+		if(GetPVarInt(p, PVAR_INHOUSE) == iHouseID) {
+			SendClientMessageEx(p, COLOR_GRAD1, "You will be moved to the furnished version of the house.");
+			defer Furniture_HousePosition(p, iHouseID);
+		}
+	}
+	return 1;
+}
+
+forward OnEditFurniture();
+public OnEditFurniture() {
+
+	if(mysql_errno()) return SendClientMessageToAll(0, "[Furniture] Did not save.");
+	return 1;
+}
+
+CMD:furnitureresetpos(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+
+	if(GetPVarType(playerid, PVAR_FURNITURE)) {
+
+		new i = GetHouseID(playerid);
+		if(i == INVALID_HOUSE_ID) {
+
+			cmd_furniture(playerid, "");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
+		}
+
+		new iHouseID = GetPVarInt(playerid, PVAR_INHOUSE);
+		Player_StreamPrep(playerid, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ], FREEZE_TIME);
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You can only use this when you are falling while positioning a piece of furniture.");
+	return 1;
+}
+
+CMD:destroyfurniture(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_LEAD)) return 1;
+
+	new iHouseID = GetHouseID(playerid),
+		iSlotID;
+
+	if(!IsAdminLevel(playerid, ADMIN_GENERAL)) return 1;
+	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house");
+	if(sscanf(params, "d", iSlotID)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /destroyfurniture [slot].");
+	if(!IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid slot.");
+	DestroyFurniture(iHouseID, iSlotID);
+	return 1;
+}
+
+CMD:revokebuilders(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+
+	new iHouseID;
+	if(sscanf(params, "d", iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /revokebuilder [house (1, 2, 3)]");
+	switch(iHouseID) {
+		case 1: if(PlayerInfo[playerid][pPhousekey] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house slot is not being used.");
+		case 2: if(PlayerInfo[playerid][pPhousekey2] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house slot is not being used.");
+		case 3: if(PlayerInfo[playerid][pPhousekey3] == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "This house slot is not being used.");
+		default: return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid house ID.");
+	}
+
+	foreach(new i : Player) if(PlayerInfo[playerid][pHouseBuilder] == iHouseID) PlayerInfo[playerid][pHouseBuilder] = INVALID_HOUSE_ID;
+	format(szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `HouseBuilder` = '%d'", iHouseID);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnRevokeBuildPerms", "");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "All builder's permissions have been revoked.");
+	return 1;
+}
+
+CMD:door(playerid, params[]) {
+	
+	if(GetHouseID(playerid) == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a house.");
+	
+	if(IsPlayerInAnyDynamicArea(playerid)) {
+
+		new areaid[3],
+			iObjectID,
+			iState,
+			Float:fPos[6],
+			szData[3];
+
+		GetPlayerDynamicAreas(playerid, areaid);
+		for(new i; i < sizeof(areaid); ++i) {
+
+			Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+			iObjectID = szData[1];
+			iState = szData[2];
+
+			if(IsValidDynamicObject(iObjectID)) {
+				if(IsDynamicObjectMoving(iObjectID)) return 1;
+				GetDynamicObjectPos(iObjectID, fPos[0], fPos[1], fPos[2]);
+				GetDynamicObjectRot(iObjectID, fPos[3], fPos[4], fPos[5]);
+				if(IsPlayerInRangeOfPoint(playerid, 3.0, fPos[0], fPos[1], fPos[2])) {
+					switch(iState) {
+						case 0: {
+							szData[2] = 1;
+							MoveDynamicObject(iObjectID, fPos[0] + 0.01, fPos[1], fPos[2], 0.03, fPos[3], fPos[4], fPos[5] + 90.0);
+							Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+						}
+						case 1: {
+							szData[2] = 0;
+							MoveDynamicObject(iObjectID, fPos[0] - 0.01, fPos[1], fPos[2], 0.03, fPos[3], fPos[4], fPos[5] - 90.0);
+							Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+						}
+					}
+				}
+			}
+		}
+	}
+	return 1;
+}
+		
+CMD:rehashcatalog(playerid, params[]) {
+
+	if(IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+	for(new i; i < MAX_CATALOG; ++i) {
+
+		arrFurnitureCatalog[i][fc_iModelID] = 0;
+		arrFurnitureCatalog[i][fc_iTypeID] = 0;
+		arrFurnitureCatalog[i][fc_szName][0] = 0;
+		arrFurnitureCatalog[i][fc_iPrice] = 0;
+	}
+	FurnitureListInit();
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Rehasing the furniture catalog.");
+	return 1;
 }

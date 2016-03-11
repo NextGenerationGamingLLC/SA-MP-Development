@@ -1566,7 +1566,7 @@ CMD:docjudgecharge(playerid, params[])
 		}
 		else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2)
 		{
-			format(szCountry, sizeof(szCountry), "[TR] ");
+			format(szCountry, sizeof(szCountry), "[NE] ");
 		}
 		strcat(szCrime, szCountry);
 		strcat(szCrime, szReason);
@@ -1686,6 +1686,7 @@ CMD:prisonhelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------------------------------------------------------------------------------------------------------");
  	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /prisonhelp, /getfood, /eatfood, /dropfoodtray, /acceptinmatefood, /jailcall, /jailhangup, /prisoncraft, /prisoninv(entory)");
+ 	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /prisoncelldeposit, /prisoncellwithdraw");
  	if(strfind(PlayerInfo[playerid][pPrisonReason], "[DNRL]", true) != -1) { SendClientMessageEx(playerid, COLOR_GREY, "LIFE SENTENCE: /docrelease"); }
  	if(IsADocGuard(playerid)) { 
  		SendClientMessageEx(playerid, COLOR_GREY, "GUARD:	/reducesentence, /extendsentence, /(jail)cuff, /(get)(offer)inmatefood, /listprisoners, /inmates, /acceptrelease"); 

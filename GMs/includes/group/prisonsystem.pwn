@@ -869,10 +869,6 @@ CMD:arrest(playerid, params[])
 
 	else {
 
-
-   		new
-			string[256];
-
         new suspect = GetClosestPlayer(playerid);
 		if(!IsPlayerConnected(suspect)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -890,8 +886,8 @@ CMD:arrest(playerid, params[])
 			SetPVarInt(playerid, "Arrest_BailPrice", PlayerInfo[suspect][pWantedJailFine]*2);
 			SetPVarInt(playerid, "Arrest_Suspect", suspect);
 			SetPVarInt(playerid, "Arrest_Type", 0);
-			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
-			ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
+			format(szMiscArray, sizeof(szMiscArray), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
+			ShowPlayerDialogEx(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", szMiscArray, "Submit", "");
 	    }
 	}
 	return 1;
@@ -1360,7 +1356,7 @@ CMD:docjudgecharge(playerid, params[])
 		}
 		else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2)
 		{
-			format(szCountry, sizeof(szCountry), "[TR] ");
+			format(szCountry, sizeof(szCountry), "[NE] ");
 		}
 		strcat(szCrime, szCountry);
 		strcat(szCrime, szReason);

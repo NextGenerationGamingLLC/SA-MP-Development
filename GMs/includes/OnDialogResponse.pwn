@@ -6837,7 +6837,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2)
 			{
-				format(szCountry, sizeof(szCountry), "[TR] ");
+				format(szCountry, sizeof(szCountry), "[NE] ");
 			}
 			strcat(szCrime, szCountry);
 			strcat(szCrime, inputtext);

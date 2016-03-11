@@ -39,8 +39,32 @@
 
 #include <YSI\y_hooks>
 
-command(fish, playerid, params[])
-{
+hook OnPlayerEnterCheckpoint(playerid) {
+
+    if(GetPVarInt(playerid, "pSellingFish") >= 1)
+    {
+        DisablePlayerCheckpoint(playerid);
+        SendClientMessageEx(playerid, COLOR_WHITE, "You have reached your destination. Type /sellfish [amount] to sell your fish.");
+    }
+    return 1;
+}
+
+IncreaseFishingLevel(playerid) {
+    
+    if(PlayerInfo[playerid][pDoubleEXP] > 0)
+    {
+        PlayerInfo[playerid][pFishingSkill] += 2;
+        // PlayerInfo[playerid][pXP] += PlayerInfo[playerid][pLevel] * XP_RATE * 2;
+    }
+    else
+    {
+        PlayerInfo[playerid][pFishingSkill] += 1;
+        // PlayerInfo[playerid][pXP] += PlayerInfo[playerid][pLevel] * XP_RATE;
+    }
+    return 1;
+}
+
+CMD:fish(playerid, params[]) {
     //if(PlayerInfo[playerid][pJob] == 70 || PlayerInfo[playerid][pJob2] == 70 || PlayerInfo[playerid][pJob3] == 70)
     {
         if(IsABoat(GetPlayerVehicleID(playerid)))
@@ -54,14 +78,13 @@ command(fish, playerid, params[])
                         {
                             case 0 .. 49:
                             {
-                                new string[128];
                          		switch(random(2))
                         		{
                         		    case 0:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught nothing!");
     									
@@ -70,9 +93,9 @@ command(fish, playerid, params[])
 									}
 									case 1:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bluegill!");
     									
@@ -83,9 +106,9 @@ command(fish, playerid, params[])
 									}
 									case 2:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bass!");
     									
@@ -98,14 +121,13 @@ command(fish, playerid, params[])
                             }
                             case 50 .. 99:
                             {
-                                new string[128];
                          		switch(random(4))
                         		{
                         		    case 0:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught nothing!");
     									
@@ -114,9 +136,9 @@ command(fish, playerid, params[])
 									}
 									case 1:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bluegill!");
 
@@ -127,9 +149,9 @@ command(fish, playerid, params[])
 									}
 									case 2:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bass!");
 
@@ -140,9 +162,9 @@ command(fish, playerid, params[])
 									}
 									case 3:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a cod!");
 
@@ -153,9 +175,9 @@ command(fish, playerid, params[])
 									}
 									case 4:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a catfish!");
 
@@ -168,14 +190,13 @@ command(fish, playerid, params[])
                             }
                             case 100 .. 199:
                             {
-                                new string[128];
                          		switch(random(8))
                         		{
                         		    case 0:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught nothing!");
     									
@@ -184,9 +205,9 @@ command(fish, playerid, params[])
 									}
 									case 1:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bluegill!");
 
@@ -197,9 +218,9 @@ command(fish, playerid, params[])
 									}
 									case 2:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bass!");
 
@@ -210,9 +231,9 @@ command(fish, playerid, params[])
 									}
 									case 3:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a cod!");
 
@@ -223,9 +244,9 @@ command(fish, playerid, params[])
 									}
 									case 4:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a catfish!");
 
@@ -236,9 +257,9 @@ command(fish, playerid, params[])
 									}
 									case 5:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a pike!");
 
@@ -249,9 +270,9 @@ command(fish, playerid, params[])
 									}
 									case 6:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a zander!");
 
@@ -262,9 +283,9 @@ command(fish, playerid, params[])
 									}
 									case 7:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a mackerel!");
 
@@ -275,9 +296,9 @@ command(fish, playerid, params[])
 									}
 									case 8:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a molly!");
 
@@ -290,14 +311,13 @@ command(fish, playerid, params[])
                             }
                             case 200 .. 399:
                             {
-                            	new string[128];
                          		switch(random(11))
                         		{
                         		    case 0:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught nothing!");
     									
@@ -306,9 +326,9 @@ command(fish, playerid, params[])
 									}
 									case 1:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bluegill!");
 
@@ -319,9 +339,9 @@ command(fish, playerid, params[])
 									}
 									case 2:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bass!");
 
@@ -332,9 +352,9 @@ command(fish, playerid, params[])
 									}
 									case 3:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a cod!");
 
@@ -345,9 +365,9 @@ command(fish, playerid, params[])
 									}
 									case 4:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a catfish!");
 
@@ -358,9 +378,9 @@ command(fish, playerid, params[])
 									}
 									case 5:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a pike!");
 
@@ -371,9 +391,9 @@ command(fish, playerid, params[])
 									}
 									case 6:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a zander!");
 
@@ -384,9 +404,9 @@ command(fish, playerid, params[])
 									}
 									case 7:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a mackerel!");
 
@@ -397,9 +417,9 @@ command(fish, playerid, params[])
 									}
 									case 8:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a molly!");
 
@@ -410,9 +430,9 @@ command(fish, playerid, params[])
 									}
 									case 9:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a swordfish!");
 
@@ -423,9 +443,9 @@ command(fish, playerid, params[])
 									}
 									case 10:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a tench!");
 
@@ -436,9 +456,9 @@ command(fish, playerid, params[])
 									}
 									case 11:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a seabass!");
 
@@ -451,14 +471,13 @@ command(fish, playerid, params[])
                             }
 							default:
 							{
-								new string[128];
                          		switch(random(12))
                         		{
                         		    case 0:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught nothing!");
     									
@@ -467,9 +486,9 @@ command(fish, playerid, params[])
 									}
 									case 1:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bluegill!");
 
@@ -480,9 +499,9 @@ command(fish, playerid, params[])
 									}
 									case 2:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a bass!");
 
@@ -493,9 +512,9 @@ command(fish, playerid, params[])
 									}
 									case 3:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a cod!");
 
@@ -506,9 +525,9 @@ command(fish, playerid, params[])
 									}
 									case 4:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a catfish!");
 
@@ -519,9 +538,9 @@ command(fish, playerid, params[])
 									}
 									case 5:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a pike!");
 
@@ -532,9 +551,9 @@ command(fish, playerid, params[])
 									}
 									case 6:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a zander!");
 
@@ -545,9 +564,9 @@ command(fish, playerid, params[])
 									}
 									case 7:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a mackerel!");
 
@@ -558,9 +577,9 @@ command(fish, playerid, params[])
 									}
 									case 8:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a molly!");
 
@@ -571,9 +590,9 @@ command(fish, playerid, params[])
 									}
 									case 9:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a swordfish!");
 
@@ -584,9 +603,9 @@ command(fish, playerid, params[])
 									}
 									case 10:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a tench!");
 
@@ -597,9 +616,9 @@ command(fish, playerid, params[])
 									}
 									case 11:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a seabass!");
 
@@ -610,9 +629,9 @@ command(fish, playerid, params[])
 									}
 									case 12:
                             		{
-                						format(string, sizeof string, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
-    									SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
-    									SendClientMessageEx(playerid, COLOR_PURPLE, string);
+                						format(szMiscArray, sizeof szMiscArray, "{FF8000}* {C2A2DA}%s casts their rod out, reeling it back in.", GetPlayerNameEx(playerid));
+    									SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 30.0, 4000);
+    									SendClientMessageEx(playerid, COLOR_PURPLE, szMiscArray);
 
     									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have caught a kraken!");
 
@@ -636,16 +655,15 @@ command(fish, playerid, params[])
 	return 1;
 }
 
-command(myfish, playerid, params[])
-{
-	new string[16];
-	format(string, sizeof string, "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
-	SendClientMessageEx(playerid, COLOR_YELLOW, string);
+CMD:myfish(playerid, params[]) {
+
+	format(szMiscArray, sizeof(szMiscArray), "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 	return 1;
 }
 
-command(sellfish, playerid, params[])
-{
+CMD:sellfish(playerid, params[]) {
+
 	new amount;
     //if(PlayerInfo[playerid][pJob] == 70 || PlayerInfo[playerid][pJob2] == 70 || PlayerInfo[playerid][pJob3] == 70)
     {
@@ -653,57 +671,31 @@ command(sellfish, playerid, params[])
         {
         	if(sscanf(params, "d", amount))
 			{
-		    	new string[16];
 				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellfish [amount]");
-				format(string, sizeof string, "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
-				return SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				format(szMiscArray, sizeof szMiscArray, "Fish: %d lbs.", PlayerInfo[playerid][pFishWeight]);
+				return SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 			}
         
             if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot enter zero or a negative ammount.");
         	if(PlayerInfo[playerid][pFishWeight] >= amount && PlayerInfo[playerid][pFishWeight] != 0)
        		{
-   	    		new rand = random(100) + 100, money = amount * 40 + rand, string[128];
+   	    		new rand = random(100) + 100, money = amount * 40 + rand;
 				PlayerInfo[playerid][pFishWeight] -= amount;
 				GivePlayerCash(playerid, money);
 				
-				format(string, sizeof string, "You have sold %d lbs for $%d.", amount, money);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
+				format(szMiscArray, sizeof szMiscArray, "You have sold %d lbs for $%s.", amount, number_format(money));
+				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "  You don't have that many pounds!");
 		}
 		else
 		{
 		    GameTextForPlayer(playerid, "~g~CHECKPOINT ~r~SET", 5000, 4);
-		    SetPlayerCheckpoint(playerid, 2286.7698,-2425.2292,3.0000, 10.0);
+		    SetPlayerCheckpoint(playerid, 2286.7698, -2425.2292, 3.0000, 10.0);
 		    SetPVarInt(playerid, "pSellingFish", 1);
 			return SendClientMessageEx(playerid, COLOR_YELLOW, "Make your way to the checkpoint to sell your fish.");
 		}
     }
     //else SendClientMessageEx(playerid, COLOR_GRAD2, "  You are not a fisherman!");
-	return 1;
-}
-
-hook OnPlayerEnterCheckpoint(playerid)
-{
-	if(GetPVarInt(playerid, "pSellingFish") >= 1)
-	{
-    	DisablePlayerCheckpoint(playerid);
-    	SendClientMessageEx(playerid, COLOR_WHITE, "You have reached your destination. Type /sellfish [amount] to sell your fish.");
-	}
- 	return 1;
-}
-
-IncreaseFishingLevel(playerid)
-{
-	if(PlayerInfo[playerid][pDoubleEXP] > 0)
-	{
-		PlayerInfo[playerid][pFishingSkill] += 2;
-		// PlayerInfo[playerid][pXP] += PlayerInfo[playerid][pLevel] * XP_RATE * 2;
-	}
-	else
-	{
-		PlayerInfo[playerid][pFishingSkill] += 1;
-		// PlayerInfo[playerid][pXP] += PlayerInfo[playerid][pLevel] * XP_RATE;
-	}
 	return 1;
 }

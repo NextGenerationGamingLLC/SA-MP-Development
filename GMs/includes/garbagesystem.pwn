@@ -39,8 +39,8 @@
 
 #include <YSI\y_hooks>
 
-hook OnGameModeInit()
-{
+hook OnGameModeInit() {
+
 	GarbageVehicles[0] = AddStaticVehicleEx(408,2450.0818,-2117.0393,14.0948,359.3405,-1,-1,300); // Garbage 1
 	GarbageVehicles[1] = AddStaticVehicleEx(408,2456.0059,-2117.0317,14.0978,359.8398,-1,-1,300); // Garbage 2
 	GarbageVehicles[2] = AddStaticVehicleEx(408,2461.9404,-2116.9187,14.1033,1.3363,-1,-1,300); // Garbage 3
@@ -65,7 +65,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 			}
 			else if(GetPVarInt(playerid, "pGarbageStage") >= 5)
 			{
-			    new string[256], value = 10000+random(10000);
+			    new value = 10000+random(10000);
 			    
 		    	SetVehicleToRespawn(GetPlayerVehicleID(playerid));
 		    	SetPVarInt(playerid, "pGarbageTime", gettime() + 900);
@@ -77,20 +77,18 @@ hook OnPlayerEnterCheckpoint(playerid)
 		    	
        			GivePlayerCash(playerid, value);
        			
-       			format(string, sizeof(string), "You have completed your garbage run and earned %d. Please wait 15 minutes before running again.", value);
-				SendClientMessageEx(playerid, COLOR_WHITE, string);
+       			format(szMiscArray, sizeof(szMiscArray), "You have completed your garbage run and earned $%s. Please wait 15 minutes before running again.", number_format(value));
+				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 				
 			    if(PlayerInfo[playerid][pDoubleEXP] > 0)
 				{
-					format(string, sizeof(string), "You have gained 2 garbage skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-					SendClientMessageEx(playerid, COLOR_YELLOW, string);
+					format(szMiscArray, sizeof(szMiscArray), "You have gained 2 garbage skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
+					SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 					PlayerInfo[playerid][pGarbageSkill] += 2;
-					// PlayerInfo[playerid][pXP] += PlayerInfo[playerid][pLevel] * XP_RATE * 2;
 				}
 				else
 				{
 					PlayerInfo[playerid][pGarbageSkill] += 1;
-					// PlayerInfo[playerid][pXP] += PlayerInfo[playerid][pLevel] * XP_RATE;
 				}
 			}
 			return 1;
@@ -98,38 +96,6 @@ hook OnPlayerEnterCheckpoint(playerid)
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not in a garbage truck!");
 	}
  	return 1;
-}
-
-command(garbagerun, playerid, params[])
-{
-	if(PlayerInfo[playerid][pJob] == 27 || PlayerInfo[playerid][pJob2] == 27 || PlayerInfo[playerid][pJob3] == 27)
-	{
-	    if(IsInGarbageTruck(GetPlayerVehicleID(playerid)))
-	    {
-	        if(GetPVarInt(playerid, "pGarbageRun") <= 0)
-	        {
-                if(GetPVarInt(playerid, "pGarbageTime") < gettime())
-                {
-                    SetPVarInt(playerid, "pGarbageRun", 1);
-                    SetPVarInt(playerid, "pGarbageStage", 0);
-                    SetPVarInt(playerid, "pGarbagePath", random(5));
-                    
-                    SendClientMessageEx(playerid, COLOR_YELLOW, "You have started a garbage run, make your way to your first destination.");
-                    AdvanceGarbageJob(playerid);
-                }
-                else
-				{
-				    new string[128];
-				    format(string, sizeof(string), "You must wait %d seconds before going on another run.", GetPVarInt(playerid, "pGarbageTime") - gettime());
-					return SendClientMessageEx(playerid, COLOR_GRAD1, string);
-				}
-	        }
-	        else return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are already on a garbage run!");
-	    }
-	    else return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not in a garbage truck!");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not a garbage man!");
-	return 1;
 }
 
 AdvanceGarbageJob(playerid)
@@ -257,4 +223,36 @@ public GarbageJobLoad(playerid)
 	    SendClientMessageEx(playerid, COLOR_WHITE, "Your garbage truck is full, make your way back to headquarters.");
 	}
     return 1;
+}
+
+
+CMD:garbagerun(playerid, params[]) {
+	
+	if(PlayerInfo[playerid][pJob] == 27 || PlayerInfo[playerid][pJob2] == 27 || PlayerInfo[playerid][pJob3] == 27)
+	{
+	    if(IsInGarbageTruck(GetPlayerVehicleID(playerid)))
+	    {
+	        if(GetPVarInt(playerid, "pGarbageRun") <= 0)
+	        {
+                if(GetPVarInt(playerid, "pGarbageTime") < gettime())
+                {
+                    SetPVarInt(playerid, "pGarbageRun", 1);
+                    SetPVarInt(playerid, "pGarbageStage", 0);
+                    SetPVarInt(playerid, "pGarbagePath", random(5));
+                    
+                    SendClientMessageEx(playerid, COLOR_YELLOW, "You have started a garbage run, make your way to your first destination.");
+                    AdvanceGarbageJob(playerid);
+                }
+                else
+				{
+				    format(szMiscArray, sizeof(szMiscArray), "You must wait %d seconds before going on another run.", GetPVarInt(playerid, "pGarbageTime") - gettime());
+					return SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+				}
+	        }
+	        else return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are already on a garbage run!");
+	    }
+	    else return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not in a garbage truck!");
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not a garbage man!");
+	return 1;
 }
