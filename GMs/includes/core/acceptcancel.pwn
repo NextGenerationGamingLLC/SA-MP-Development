@@ -2313,7 +2313,7 @@ CMD:cancel(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Cancel __________________|");
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cancel [name]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Cannabis, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Drink, House, Shipment, Help, Firstaid");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Drink, House, Shipment, Help, Firstaid, Garbage");
 		SendClientMessageEx(playerid, COLOR_GREY, "FoodOffer, RenderAid");
 		if(IsAHitman(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "Special: contract"); }
 		SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
@@ -2380,6 +2380,15 @@ CMD:cancel(playerid, params[])
 
 		TruckUsed[playerid] = INVALID_VEHICLE_ID;
 		gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
+ 		DisablePlayerCheckpoint(playerid);
+	}
+	else if(strcmp(choice,"garbage",true) == 0)
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		if(vehicleid == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be in a valid vehicle.");
+ 		DeletePVar(playerid, "pGarbageRun");
+		DeletePVar(playerid, "pGarbageStage");
+
  		DisablePlayerCheckpoint(playerid);
 	}
 	else if(strcmp(choice,"help", true) == 0)

@@ -58,6 +58,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	    		SetTimerEx("_UnbeanbagTimer", 20000, false, "d", damagedid);
 	    		SetPlayerDrunkLevel(damagedid, 10000);
 	    		PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
+	    		SetPVarInt(damagedid, "IsFrozen", 1);
      			SetTimerEx("TurnOffFlash", 2500, 0, "i", damagedid);
 
      			SetPVarInt(damagedid, "pBagged", 1);

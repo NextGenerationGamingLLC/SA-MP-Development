@@ -665,7 +665,7 @@ CMD:myfish(playerid, params[]) {
 CMD:sellfish(playerid, params[]) {
 
 	new amount;
-    //if(PlayerInfo[playerid][pJob] == 70 || PlayerInfo[playerid][pJob2] == 70 || PlayerInfo[playerid][pJob3] == 70)
+    if(GetPVarInt(playerid, "pFishSellTime") < gettime())
     {
         if(IsPlayerInRangeOfPoint(playerid, 30.0, 2286.7698, -2425.2292, 3.0000))
         {
@@ -682,6 +682,8 @@ CMD:sellfish(playerid, params[]) {
    	    		new rand = random(100) + 100, money = amount * 40 + rand;
 				PlayerInfo[playerid][pFishWeight] -= amount;
 				GivePlayerCash(playerid, money);
+
+                SetPVarInt(playerid, "pFishSellTime", gettime() + 120);
 				
 				format(szMiscArray, sizeof szMiscArray, "You have sold %d lbs for $%s.", amount, number_format(money));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
@@ -692,10 +694,9 @@ CMD:sellfish(playerid, params[]) {
 		{
 		    GameTextForPlayer(playerid, "~g~CHECKPOINT ~r~SET", 5000, 4);
 		    SetPlayerCheckpoint(playerid, 2286.7698, -2425.2292, 3.0000, 10.0);
-		    SetPVarInt(playerid, "pSellingFish", 1);
 			return SendClientMessageEx(playerid, COLOR_YELLOW, "Make your way to the checkpoint to sell your fish.");
 		}
     }
-    //else SendClientMessageEx(playerid, COLOR_GRAD2, "  You are not a fisherman!");
+    else SendClientMessageEx(playerid, COLOR_GRAD2, "  You must wait two minutes before selling your fish again!");
 	return 1;
 }

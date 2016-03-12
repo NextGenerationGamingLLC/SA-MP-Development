@@ -1391,7 +1391,7 @@ ptask PlayerHeartBeat[1000](i) {
 		if(gettime() >= PlayerInfo[i][pPrisonWineTime] && GetPVarInt(i, "pPrisonMWine") == 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
 		{
 			SetPVarInt(i, "pPrisonMWine", 2);
-		    SendClientMessageEx(i, COLOR_GREY, "Your wine is finished. Go to your cell and type /prisonfinishwine to collect it.");
+		    SendClientMessageEx(i, COLOR_GREY, "Your pruno is finished. Go to your cell and type /finishpruno to collect it.");
 		}
 		
 

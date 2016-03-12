@@ -1686,7 +1686,6 @@ CMD:prisonhelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------------------------------------------------------------------------------------------------------");
  	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /prisonhelp, /getfood, /eatfood, /dropfoodtray, /acceptinmatefood, /jailcall, /jailhangup, /prisoncraft, /prisoninv(entory)");
- 	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /prisoncelldeposit, /prisoncellwithdraw");
  	if(strfind(PlayerInfo[playerid][pPrisonReason], "[DNRL]", true) != -1) { SendClientMessageEx(playerid, COLOR_GREY, "LIFE SENTENCE: /docrelease"); }
  	if(IsADocGuard(playerid)) { 
  		SendClientMessageEx(playerid, COLOR_GREY, "GUARD:	/reducesentence, /extendsentence, /(jail)cuff, /(get)(offer)inmatefood, /listprisoners, /inmates, /acceptrelease"); 
@@ -1697,8 +1696,8 @@ CMD:prisonhelp(playerid, params[])
  	}
   	if(IsAJudge(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "JUDGE:	/docjudgesentence, /docjudgecharge, /docjudgesubpoena"); }
    	if(GetPVarInt(playerid, "pPrisonShank") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "SHANK:	/shank - increases damage upon punching. | usable 15 times before 'breaking.'"); }
-   	if(GetPVarInt(playerid, "pPrisonCellChisel") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "CELL:	/prisoncelldeposit, /prisoncellwithdraw"); }
-   	if(GetPVarInt(playerid, "pPrisonWine") >= 1 || GetPVarInt(playerid, "pPrisonMWine") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "WINE:	/prisonfinishwine, /prisondrinkwine - increases damage upon punching. | forces drunk walk."); }
+   	if(GetPVarInt(playerid, "pPrisonCellChisel") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "CELL:	/celldeposit, /cellwithdraw"); }
+   	if(GetPVarInt(playerid, "pPrisonWine") >= 1 || GetPVarInt(playerid, "pPrisonMWine") >= 1) { SendClientMessageEx(playerid, COLOR_GREY, "WINE:	/finishpruno, /drinkpruno - increases damage upon punching. | forces drunk walk."); }
     SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------------------------------------------------------------------------------------------------------");
 	return 1;
 }
@@ -1717,7 +1716,7 @@ CMD:beanbag(playerid, params[])
     		format(string, sizeof string, "{FF8000}> {C2A2DA}%s loads their shotgun with live action rounds.", GetPlayerNameEx(playerid));
     		SendClientMessage(playerid, COLOR_PURPLE, string);
 
-    		SetPVarInt(playerid, "pBeanBag", 0);
+    		DeletePVar(playerid, "pBeanBag");
     	}
     	else
     	{
@@ -1737,9 +1736,9 @@ CMD:giveprisoncredits(playerid, params[]) // these NEED to show up on /frisk and
 {
 	new id, amount, string[128];
     if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
-    if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
 
     if(sscanf(params, "ud", id, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giveprisoncredits [playerid] [amount]");
+    if(strfind(PlayerInfo[id][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
     if(!(0 < amount < 51)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount (1 - 50).");
 
     if (ProxDetectorS(16.0, playerid, id))
@@ -1823,8 +1822,8 @@ CMD:setbail(playerid, params[]) { // Can no longer set negative bail prices & ba
 	new uPlayer,
 		iBail;
 
-	if(strfind(PlayerInfo[uPlayer][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
 	if(sscanf(params, "dd", uPlayer, iBail)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /setbail [player] [amount]");
+	if(strfind(PlayerInfo[uPlayer][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
 
 	if(!(0 < iBail <= 15000000)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount ($1 - $15,000,000).");
 
@@ -1853,7 +1852,7 @@ CMD:shank(playerid, params[])
                 format(string, sizeof string, "{FF8000}> {C2A2DA}%s secretly holsters a prison shank.", GetPlayerNameEx(playerid));
     			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
     			SendClientMessage(playerid, COLOR_PURPLE, string);
-                SetPVarInt(playerid, "pPrisonShankOut", 0);
+                DeletePVar(playerid, "pPrisonShankOut");
                 RemovePlayerAttachedObject(playerid, 9);
             }
             else
@@ -1989,7 +1988,7 @@ CMD:prisoncraft(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
    			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available prison crafts >>");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "shank\t\t\t\t\t\t\t\t\t\twine");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "shank\t\t\t\t\t\t\t\t\t\tpruno");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "radio\t\t\t\t\t\t\t\t\t\tchisel");
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prisoncraft [craftname]");
@@ -2008,10 +2007,10 @@ CMD:prisoncraft(playerid, params[])
 			PlayerInfo[playerid][pPrisonMaterials] -= 3;
 			SetPVarInt(playerid, "pPrisonShank", 1);
 			SetPVarInt(playerid, "pShankUsages", 15);
-	        SetPVarInt(playerid, "pPrisonShankOut", 0);
+	        DeletePVar(playerid, "pPrisonShankOut");
 		}
 
-		else if(strcmp(value, "wine", true) == 0)
+		else if(strcmp(value, "pruno", true) == 0)
 		{
 			if(GetPVarInt(playerid, "pPrisonWine") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have wine.");
 			if(PlayerInfo[playerid][pPrisonMaterials] <= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain a prison material.");
@@ -2024,14 +2023,14 @@ CMD:prisoncraft(playerid, params[])
 				SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 				SendClientMessage(playerid, COLOR_PURPLE, string);
 
-				SendClientMessage(playerid, COLOR_GREY, "You have started to make prison wine. It will be ready in twelve hours. Use /prisoninv(entory) to check the progress.");
+				SendClientMessage(playerid, COLOR_GREY, "You have started to make pruno. It will be ready in twelve hours. Use /prisoninv(entory) to check the progress.");
 
 				PlayerInfo[playerid][pPrisonMaterials] -= 1;
 				SetPVarInt(playerid, "pPrisonSugar", GetPVarInt(playerid, "pPrisonSugar") - 3);
 				SetPVarInt(playerid, "pPrisonBread", GetPVarInt(playerid, "pPrisonBread") - 1);
 				SetPVarInt(playerid, "pPrisonMWine", 1);
 
-				PlayerInfo[playerid][pPrisonWineTime] = gettime()+2400;
+				PlayerInfo[playerid][pPrisonWineTime] = gettime()+43200;
 			}
 			else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not in your prison cell!");
 		}
@@ -2068,7 +2067,7 @@ CMD:prisoncraft(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "<< Available prison crafts >>");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "shank\t\t\t\t\t\t\t\t\t\twine");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "shank\t\t\t\t\t\t\t\t\t\tpruno");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "radio\t\t\t\t\t\t\t\t\t\tchisel");
 			SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prisoncraft [craftname]");
@@ -2079,7 +2078,7 @@ CMD:prisoncraft(playerid, params[])
 	return 1;
 }
 
-CMD:prisondrinkwine(playerid, params[])
+CMD:drinkpruno(playerid, params[])
 {
     if(PlayerInfo[playerid][pJailTime] > 0)
     {
@@ -2088,12 +2087,12 @@ CMD:prisondrinkwine(playerid, params[])
             new string[256];
     	    SetPVarInt(playerid, "pPrisonWine", GetPVarInt(playerid, "pPrisonWine") - 1);
 
-    	    format(string, sizeof string, "{FF8000}> {C2A2DA}%s drinks some prison wine from a bottle.", GetPlayerNameEx(playerid));
+    	    format(string, sizeof string, "{FF8000}> {C2A2DA}%s drinks some pruno from a bottle.", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 			SendClientMessage(playerid, COLOR_PURPLE, string);
 
 			SetPVarInt(playerid, "pWineConsumed", 1);
-			PlayAnimEx(playerid, "PED", "WALK_DRUNK", 4.1, 1, 1, 1, 1, 1, 1);
+			ApplyAnimation(playerid, "PED", "WALK_DRUNK", 4.1, 1, 1, 1, 1, 1, 1);
 			SetPlayerDrunkLevel(playerid, 10000);
 			SetTimerEx("_DrinkWineTimer", 30000, false, "d", playerid);
 
@@ -2104,7 +2103,7 @@ CMD:prisondrinkwine(playerid, params[])
 	return 1;
 }
 
-CMD:prisonfinishwine(playerid, params[]) // add to /interact
+CMD:finishpruno(playerid, params[]) // add to /interact
 {
     if(PlayerInfo[playerid][pJailTime] > 0)
     {
@@ -2116,26 +2115,26 @@ CMD:prisonfinishwine(playerid, params[]) // add to /interact
 			    {
 			    	new string[256];
 					SetPVarInt(playerid, "pPrisonWine", GetPVarInt(playerid, "pPrisonWine") + 1);
-					SetPVarInt(playerid, "pPrisonMWine", 0);
-					SendClientMessage(playerid, COLOR_WHITE, "You now have prison wine, use /prisonrisonhelp to learn how to use it.");
+					DeletePVar(playerid, "pPrisonMWine");
+					SendClientMessage(playerid, COLOR_WHITE, "You now have pruno, use /prisonhelp to learn how to use it.");
 
 					PlayerInfo[playerid][pPrisonWineTime] = 0;
 
-					format(string, sizeof string, "{FF8000}> {C2A2DA}%s dips a bottle into their toilet, secretly filling it with wine.", GetPlayerNameEx(playerid));
+					format(string, sizeof string, "{FF8000}> {C2A2DA}%s dips a bottle into their toilet, secretly filling it with pruno.", GetPlayerNameEx(playerid));
 					SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
 					SendClientMessage(playerid, COLOR_PURPLE, string);
 				}
 				else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not in your cell");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "  Your wine is not finished yet!");
+			else return SendClientMessageEx(playerid, COLOR_GREY, "  Your pruno is not finished yet!");
 		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not making wine or your wine is not finished yet!");
+		else return SendClientMessageEx(playerid, COLOR_GREY, "  You are not making pruno or your pruno is not finished yet!");
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "  You are not in prison!");
 	return 1;
 }
 
-CMD:prisoncelldeposit(playerid, params[])
+CMD:celldeposit(playerid, params[])
 {
     if(PlayerInfo[playerid][pJailTime] > 0)
     {
@@ -2181,7 +2180,7 @@ CMD:prisoncelldeposit(playerid, params[])
 	return 1;
 }
 
-CMD:prisoncellwithdraw(playerid, params[])
+CMD:cellwithdraw(playerid, params[])
 {
     if(PlayerInfo[playerid][pJailTime] > 0)
     {
@@ -2400,7 +2399,7 @@ ShowPrisonInventory(playerid)
 
 	if(GetPVarInt(playerid, "pPrisonWine") >= 1)
 	{
-	    format(string, sizeof string, "Wine: %d.", GetPVarInt(playerid, "pPrisonWine"));
+	    format(string, sizeof string, "Pruno: %d.", GetPVarInt(playerid, "pPrisonWine"));
 	    SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
 
@@ -2415,11 +2414,11 @@ ShowPrisonInventory(playerid)
 	    if(PlayerInfo[playerid][pPrisonWineTime] <= gettime())
 		{
 		    SendClientMessageEx(playerid, COLOR_WHITE, "");
-			SendClientMessageEx(playerid, COLOR_GREY, "Wine Time Left: 0 seconds.");
+			SendClientMessageEx(playerid, COLOR_GREY, "Pruno Time Left: 0 seconds.");
 		}
 		else
 		{
-	    	format(string, sizeof(string), "Wine Time Left: %s.", TimeConvert(PlayerInfo[playerid][pPrisonWineTime]-gettime()));
+	    	format(string, sizeof(string), "Pruno Time Left: %s.", TimeConvert(PlayerInfo[playerid][pPrisonWineTime]-gettime()));
 	    	SendClientMessageEx(playerid, COLOR_WHITE, "");
 	    	SendClientMessageEx(playerid, COLOR_GREY, string);
 		}
@@ -2438,7 +2437,7 @@ public _UnbeanbagTimer(playerid)
 		TogglePlayerControllable(playerid, TRUE);
 
 		SetPlayerDrunkLevel(playerid, 0);
-		SetPVarInt(playerid, "pBagged", 0);
+		DeletePVar(playerid, "pBagged");
 
 		ClearAnimations(playerid);
 	}
@@ -2498,8 +2497,8 @@ public _DrinkWineTimer2(playerid)
 	new Float: health;
 	GetPlayerHealth(playerid, health);
 
-	SendClientMessage(playerid, COLOR_GREY, "The wine has lost it's effect.");
-	SetPVarInt(playerid, "pWineConsumed", 0);
+	SendClientMessage(playerid, COLOR_GREY, "The pruno has lost it's effect.");
+	DeletePVar(playerid, "pWineConsumed");
 
 	SetPlayerDrunkLevel(playerid, 0);
 	ClearAnimations(playerid);
@@ -2512,7 +2511,7 @@ public _KitchenTimer(playerid)
 	PlayerInfo[playerid][pMechTime] = gettime()+60;
 	SendClientMessage(playerid, COLOR_GREY, "You have finished preparing food.");
 	TogglePlayerControllable(playerid, TRUE);
-	SetPVarInt(playerid, "pDoingPJob", 0);
+	DeletePVar(playerid, "pDoingPJob");
 
 	PlayerInfo[playerid][pPrisonCredits] += 3;
 	RandomMaterialChance(playerid);
@@ -2563,16 +2562,16 @@ ReleasePlayerFromPrison(playerid)
 	PlayerInfo[playerid][pPrisonWineTime] = 0;
 	PlayerInfo[playerid][pPrisonCell] = 0;
 
-	SetPVarInt(playerid, "pPrisonSoap", 0);
-	SetPVarInt(playerid, "pPrisonSugar", 0);
-	SetPVarInt(playerid, "pPrisonBread", 0);
-	SetPVarInt(playerid, "pPrisonShank", 0);
-	SetPVarInt(playerid, "pPrisonShankOut", 0);
-	SetPVarInt(playerid, "pShankUsages", 0);
-	SetPVarInt(playerid, "pPrisonWine", 0);
-	SetPVarInt(playerid, "pPrisonMWine", 0);
-	SetPVarInt(playerid, "pPrisonChisel", 0);
-	SetPVarInt(playerid, "pPrisonCellChisel", 0);
+	DeletePVar(playerid, "pPrisonSoap");
+	DeletePVar(playerid, "pPrisonSugar");
+	DeletePVar(playerid, "pPrisonBread");
+	DeletePVar(playerid, "pPrisonShank");
+	DeletePVar(playerid, "pPrisonShankOut");
+	DeletePVar(playerid, "pShankUsages");
+	DeletePVar(playerid, "pPrisonWine");
+	DeletePVar(playerid, "pPrisonMWine");
+	DeletePVar(playerid, "pPrisonChisel");
+	DeletePVar(playerid, "pPrisonCellChisel");
 
 	SetPlayerHealth(playerid, 100);
 	PlayerInfo[playerid][pJailTime] = 0;
@@ -2699,14 +2698,30 @@ RandomMaterialChance(playerid)
 {
 	switch(random(50))
 	{
-	    case 0 .. 45:
+	    case 0 .. 35:
 	    {
 	        return 0;
 	    }
 	    default:
 	    {
-	        PlayerInfo[playerid][pPrisonMaterials] +=1;
-	        SendClientMessage(playerid, COLOR_WHITE, "You have found a secret prison material. You can use these in /prisoncraft.");
+	    	switch(random(10))
+	    	{
+	    		case 0 .. 5: 
+	    		{
+	        		PlayerInfo[playerid][pPrisonMaterials] +=1;
+	        		SendClientMessage(playerid, COLOR_WHITE, "You have found a secret prison material. You can use these in /prisoncraft.");
+	        	}
+	        	case 6 .. 8: 
+	    		{
+	        		PlayerInfo[playerid][pPrisonMaterials] +=2;
+	        		SendClientMessage(playerid, COLOR_WHITE, "You have found two secret prison materiasl. You can use these in /prisoncraft.");
+	        	}
+	        	default: 
+	    		{
+	        		PlayerInfo[playerid][pPrisonMaterials] +=3;
+	        		SendClientMessage(playerid, COLOR_WHITE, "You have found three secret prison materials. You can use these in /prisoncraft.");
+	        	}
+	        }
 	    }
 	}
 	return 1;

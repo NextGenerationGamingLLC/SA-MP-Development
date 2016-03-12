@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.285"
+#define SERVER_GM_TEXT "NG:RP v3.0.288"
 
 // #define AREA_DEBUG
 
@@ -251,7 +251,7 @@
 #include "./includes/group/lea.pwn"
 #include "./includes/group/medic.pwn"
 #include "./includes/group/news.pwn"
-// #include "./includes/group/prisonsystem.pwn"
+#include "./includes/prison_system.pwn"
 #include "./includes/group/racing.pwn"
 #include "./includes/group/taxi.pwn"
 #include "./includes/group/towing.pwn"
@@ -278,6 +278,8 @@
 #include "./includes/jobs/detective.pwn"
 #include "./includes/jobs/drugs.pwn"
 // #include "./includes/jobs/fishing.pwn"
+#include "./includes/garbagesystem.pwn"
+#include "./includes/fishingsystem.pwn"
 #include "./includes/jobs/jobcore.pwn"
 #include "./includes/jobs/dynjobcore.pwn"
 #include "./includes/jobs/lawyer.pwn"
@@ -321,12 +323,6 @@
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
 #include "./includes/furniture.pwn"
-
-// Winterfield WIP
-
-#include "./includes/prison_system.pwn"
-#include "./includes/garbagesystem.pwn"
-#include "./includes/fishingsystem.pwn"
 
 
 main(){}

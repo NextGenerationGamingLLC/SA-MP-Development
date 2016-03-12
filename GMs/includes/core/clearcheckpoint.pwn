@@ -12,6 +12,8 @@ ClearCheckpoint(playerid) {
 	DeletePVar(playerid, "ShipmentCallActive");
 	DeletePVar(playerid, "DV_TrackCar");
 	DeletePVar(playerid, "TrackVehicleBurglary");
+	DeletePVar(playerid, "pGarbageRun");
+	DeletePVar(playerid, "pGarbageStage");
 	if(GetPVarType(playerid, "DeliveringVehicleTime")) {
 		if(GetPVarType(playerid, "LockPickVehicleSQLId")) {
 			new szQuery[128];

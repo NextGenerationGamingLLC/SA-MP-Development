@@ -53,7 +53,7 @@ hook OnGameModeInit() {
 
 hook OnPlayerEnterCheckpoint(playerid)
 {
-    if(GetPVarInt(playerid, "pGarbageRun") >= 1)
+    if(IsPlayerInRangeOfPoint(playerid, 4.0, 2520.4834,-2089.1470,13.5469))
 	{
 		if(IsInGarbageTruck(GetPlayerVehicleID(playerid)))
 		{
@@ -70,8 +70,8 @@ hook OnPlayerEnterCheckpoint(playerid)
 		    	SetVehicleToRespawn(GetPlayerVehicleID(playerid));
 		    	SetPVarInt(playerid, "pGarbageTime", gettime() + 900);
 		    	
-		    	SetPVarInt(playerid, "pGarbageRun", 0);
-       			SetPVarInt(playerid, "pGarbageStage", 0);
+		    	DeletePVar(playerid, "pGarbageRun");
+       			DeletePVar(playerid, "pGarbageStage");
        			
        			DisablePlayerCheckpoint(playerid);
 		    	
@@ -96,6 +96,38 @@ hook OnPlayerEnterCheckpoint(playerid)
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not in a garbage truck!");
 	}
  	return 1;
+}
+
+command(garbagerun, playerid, params[])
+{
+	if(PlayerInfo[playerid][pJob] == 27 || PlayerInfo[playerid][pJob2] == 27 || PlayerInfo[playerid][pJob3] == 27)
+	{
+	    if(IsInGarbageTruck(GetPlayerVehicleID(playerid)))
+	    {
+	        if(GetPVarInt(playerid, "pGarbageRun") <= 0)
+	        {
+                if(GetPVarInt(playerid, "pGarbageTime") < gettime())
+                {
+                    SetPVarInt(playerid, "pGarbageRun", 1);
+                    DeletePVar(playerid, "pGarbageStage");
+                    SetPVarInt(playerid, "pGarbagePath", random(5));
+                    
+                    SendClientMessageEx(playerid, COLOR_YELLOW, "You have started a garbage run, make your way to your first destination.");
+                    AdvanceGarbageJob(playerid);
+                }
+                else
+				{
+				    new string[128];
+				    format(string, sizeof(string), "You must wait %d seconds before going on another run.", GetPVarInt(playerid, "pGarbageTime") - gettime());
+					return SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				}
+	        }
+	        else return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are already on a garbage run!");
+	    }
+	    else return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not in a garbage truck!");
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not a garbage man!");
+	return 1;
 }
 
 AdvanceGarbageJob(playerid)
@@ -223,36 +255,4 @@ public GarbageJobLoad(playerid)
 	    SendClientMessageEx(playerid, COLOR_WHITE, "Your garbage truck is full, make your way back to headquarters.");
 	}
     return 1;
-}
-
-
-CMD:garbagerun(playerid, params[]) {
-	
-	if(PlayerInfo[playerid][pJob] == 27 || PlayerInfo[playerid][pJob2] == 27 || PlayerInfo[playerid][pJob3] == 27)
-	{
-	    if(IsInGarbageTruck(GetPlayerVehicleID(playerid)))
-	    {
-	        if(GetPVarInt(playerid, "pGarbageRun") <= 0)
-	        {
-                if(GetPVarInt(playerid, "pGarbageTime") < gettime())
-                {
-                    SetPVarInt(playerid, "pGarbageRun", 1);
-                    SetPVarInt(playerid, "pGarbageStage", 0);
-                    SetPVarInt(playerid, "pGarbagePath", random(5));
-                    
-                    SendClientMessageEx(playerid, COLOR_YELLOW, "You have started a garbage run, make your way to your first destination.");
-                    AdvanceGarbageJob(playerid);
-                }
-                else
-				{
-				    format(szMiscArray, sizeof(szMiscArray), "You must wait %d seconds before going on another run.", GetPVarInt(playerid, "pGarbageTime") - gettime());
-					return SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
-				}
-	        }
-	        else return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are already on a garbage run!");
-	    }
-	    else return SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not in a garbage truck!");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "  You are not a garbage man!");
-	return 1;
 }
