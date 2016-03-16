@@ -1998,7 +1998,7 @@ CMD:prisoncraft(playerid, params[])
 		if(strcmp(value, "shank", true) == 0)
 		{
 			if(GetPVarInt(playerid, "pPrisonShank") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a prison shank.");
-			if(PlayerInfo[playerid][pPrisonMaterials] <= 3) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain 3 prison materials.");
+			if(PlayerInfo[playerid][pPrisonMaterials] <= 3) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain 4 prison materials.");
 
             format(string, sizeof string, "{FF8000}> {C2A2DA}%s secretly crafts a shank.", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);
@@ -2435,6 +2435,7 @@ public _UnbeanbagTimer(playerid)
 	{
 		ClearAnimations(playerid);
 		TogglePlayerControllable(playerid, TRUE);
+		DeletePVar(playerid, "IsFrozen");
 
 		SetPlayerDrunkLevel(playerid, 0);
 		DeletePVar(playerid, "pBagged");
@@ -2461,6 +2462,7 @@ public _ShowerTimer(playerid)
 			SendClientMessage(playerid, COLOR_GREY, "You have finished showering.");
 			TogglePlayerControllable(playerid, TRUE);
 			DeletePVar(playerid, "pPrisonShowerStage");
+			DeletePVar(playerid, "IsFrozen");
 		}
 		default: 
 		{
@@ -2515,6 +2517,7 @@ public _KitchenTimer(playerid)
 
 	PlayerInfo[playerid][pPrisonCredits] += 3;
 	RandomMaterialChance(playerid);
+	DeletePVar(playerid, "IsFrozen");
 
 	ClearAnimations(playerid);
 	return 1;
@@ -2609,6 +2612,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             TogglePlayerControllable(playerid, FALSE);
 			SetTimerEx("_KitchenTimer", 25000, false, "d", playerid);
 
+			SetPVarInt(playerid, "IsFrozen", 1);
+
 			format(string, sizeof string, "{FF8000}> {C2A2DA}%s begins to prepare some food for the kitchen.", GetPlayerNameEx(playerid));
     		SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 6000);
     		SendClientMessage(playerid, COLOR_PURPLE, string);
@@ -2633,6 +2638,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				SetPVarInt(playerid, "pPrisonSoap", GetPVarInt(playerid, "pPrisonSoap") - 1);
 				TogglePlayerControllable(playerid, FALSE);
+				SetPVarInt(playerid, "IsFrozen", 1);
 
 				SetTimerEx("_ShowerTimer", 10000, false, "d", playerid);
 
@@ -2696,9 +2702,9 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart)
 
 RandomMaterialChance(playerid)
 {
-	switch(random(50))
+	switch(random(100))
 	{
-	    case 0 .. 35:
+	    case 0 .. 80:
 	    {
 	        return 0;
 	    }
@@ -2714,7 +2720,7 @@ RandomMaterialChance(playerid)
 	        	case 6 .. 8: 
 	    		{
 	        		PlayerInfo[playerid][pPrisonMaterials] +=2;
-	        		SendClientMessage(playerid, COLOR_WHITE, "You have found two secret prison materiasl. You can use these in /prisoncraft.");
+	        		SendClientMessage(playerid, COLOR_WHITE, "You have found two secret prison materials. You can use these in /prisoncraft.");
 	        	}
 	        	default: 
 	    		{

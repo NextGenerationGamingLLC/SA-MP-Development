@@ -41,9 +41,10 @@
 
 hook OnPlayerEnterCheckpoint(playerid) {
 
-    if(GetPVarInt(playerid, "pSellingFish") >= 1)
+    if(GetPVarInt(playerid, "pSellingFish"))
     {
         DisablePlayerCheckpoint(playerid);
+        DeletePVar(playerid, "pSellingFish");
         SendClientMessageEx(playerid, COLOR_WHITE, "You have reached your destination. Type /sellfish [amount] to sell your fish.");
     }
     return 1;
@@ -667,6 +668,7 @@ CMD:sellfish(playerid, params[]) {
 	new amount;
     if(GetPVarInt(playerid, "pFishSellTime") < gettime())
     {
+        if(PlayerInfo[playerid][pFishWeight] < 50) return SendClientMessageEx(playerid, COLOR_GREY, "You must at least have fifty pounds of fish to sell them.");
         if(IsPlayerInRangeOfPoint(playerid, 30.0, 2286.7698, -2425.2292, 3.0000))
         {
         	if(sscanf(params, "d", amount))
@@ -676,7 +678,7 @@ CMD:sellfish(playerid, params[]) {
 				return SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 			}
         
-            if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot enter zero or a negative ammount.");
+            if(amount < 50) return SendClientMessageEx(playerid, COLOR_GREY, "You can only sell over 50 pounds of fish at a time.");
         	if(PlayerInfo[playerid][pFishWeight] >= amount && PlayerInfo[playerid][pFishWeight] != 0)
        		{
    	    		new rand = random(100) + 100, money = amount * 40 + rand;
@@ -692,7 +694,10 @@ CMD:sellfish(playerid, params[]) {
 		}
 		else
 		{
+            if(CheckPointCheck(playerid)) cmd_killcheckpoint(playerid, params);
+
 		    GameTextForPlayer(playerid, "~g~CHECKPOINT ~r~SET", 5000, 4);
+            SetPVarInt(playerid, "pSellingFish", 1);
 		    SetPlayerCheckpoint(playerid, 2286.7698, -2425.2292, 3.0000, 10.0);
 			return SendClientMessageEx(playerid, COLOR_YELLOW, "Make your way to the checkpoint to sell your fish.");
 		}

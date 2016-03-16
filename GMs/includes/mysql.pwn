@@ -539,10 +539,10 @@ public OnQueryFinish(resultid, extraid, handleid)
 					SetPVarInt(extraid, "pPrisonChisel", cache_get_field_content_int(row, "PrisonChisel", MainPipeline));
 					SetPVarInt(extraid, "pPrisonCellChisel", cache_get_field_content_int(row, "PrisonCellChisel", MainPipeline));
 
-					PlayerInfo[extraid][pFishingSkill]			= cache_get_field_content_int(row,  "BRTimeout", MainPipeline);
-					PlayerInfo[extraid][pFishWeight]			= cache_get_field_content_int(row,  "BRTimeout", MainPipeline);
+					PlayerInfo[extraid][pFishingSkill]			= cache_get_field_content_int(row,  "FishingSkill", MainPipeline);
+					PlayerInfo[extraid][pFishWeight]			= cache_get_field_content_int(row,  "FishWeight", MainPipeline);
 
-					PlayerInfo[extraid][pGarbageSkill]			= cache_get_field_content_int(row,  "BRTimeout", MainPipeline);
+					PlayerInfo[extraid][pGarbageSkill]			= cache_get_field_content_int(row,  "GarbageSkill", MainPipeline);
 					for(new i = 0; i < 12; i++)	{
 
 						format(szField, sizeof(szField), "BItem%d", i);
