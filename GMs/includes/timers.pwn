@@ -1383,9 +1383,16 @@ ptask PlayerHeartBeat[1000](i) {
 
 	if(playerTabbed[i] == 0)
 	{
-		if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
+		if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0)
 		{
-		    ShowPlayerDialog(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
+			if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
+			{
+		    	ShowPlayerDialog(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
+			}
+			else
+			{
+				ReleasePlayerFromPrison(i);
+			}
 		}
 
 		if(gettime() >= PlayerInfo[i][pPrisonWineTime] && GetPVarInt(i, "pPrisonMWine") == 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)

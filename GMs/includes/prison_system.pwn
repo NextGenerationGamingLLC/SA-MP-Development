@@ -2548,6 +2548,23 @@ ReleasePlayerFromPrison(playerid)
 				SetPlayerVirtualWorld(playerid, 0);
 				PlayerInfo[playerid][pVW] = 0;
 				SetPlayerPos(playerid, -1528.5812,489.6914,7.1797);
+
+				PlayerInfo[playerid][pPrisonCredits] = 0;
+				PlayerInfo[playerid][pPrisonMaterials] = 0;
+				PlayerInfo[playerid][pPrisonWineTime] = 0;
+				PlayerInfo[playerid][pPrisonCell] = 0;
+
+				DeletePVar(playerid, "pPrisonSoap");
+				DeletePVar(playerid, "pPrisonSugar");
+				DeletePVar(playerid, "pPrisonBread");
+				DeletePVar(playerid, "pPrisonShank");
+				DeletePVar(playerid, "pPrisonShankOut");
+				DeletePVar(playerid, "pShankUsages");
+				DeletePVar(playerid, "pPrisonWine");
+				DeletePVar(playerid, "pPrisonMWine");
+				DeletePVar(playerid, "pPrisonChisel");
+				DeletePVar(playerid, "pPrisonCellChisel");
+				DeletePVar(playerid, "_pBeingReleased");
 	 		}
 		}
 		else
@@ -2560,22 +2577,6 @@ ReleasePlayerFromPrison(playerid)
 		}
 	}
 
-	PlayerInfo[playerid][pPrisonCredits] = 0;
-	PlayerInfo[playerid][pPrisonMaterials] = 0;
-	PlayerInfo[playerid][pPrisonWineTime] = 0;
-	PlayerInfo[playerid][pPrisonCell] = 0;
-
-	DeletePVar(playerid, "pPrisonSoap");
-	DeletePVar(playerid, "pPrisonSugar");
-	DeletePVar(playerid, "pPrisonBread");
-	DeletePVar(playerid, "pPrisonShank");
-	DeletePVar(playerid, "pPrisonShankOut");
-	DeletePVar(playerid, "pShankUsages");
-	DeletePVar(playerid, "pPrisonWine");
-	DeletePVar(playerid, "pPrisonMWine");
-	DeletePVar(playerid, "pPrisonChisel");
-	DeletePVar(playerid, "pPrisonCellChisel");
-
 	SetPlayerHealth(playerid, 100);
 	PlayerInfo[playerid][pJailTime] = 0;
 	PlayerInfo[playerid][pIsolated] = 0;
@@ -2585,7 +2586,6 @@ ReleasePlayerFromPrison(playerid)
 	SendClientMessageEx(playerid, COLOR_GRAD1,"   You have paid your debt to society.");
 	GameTextForPlayer(playerid, "~g~Freedom~n~~w~Try to be a better citizen", 5000, 1);
 	TogglePlayerControllable(playerid, TRUE);
-	DeletePVar(playerid, "_pBeingReleased");
 	SetPlayerToTeamColor(playerid); //For some reason this is a being a bitch now so let's reset their colour to white and let the script decide what colour they should have afterwords
 	ClearCrimes(playerid);
 }
