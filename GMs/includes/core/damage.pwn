@@ -41,32 +41,6 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	szMiscArray[0] = 0;
 	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID)
 	{
-		if(GetPlayerWeapon(playerid) == 25 && GetPVarType(playerid, "pBeanBag")) 
-		{
-			if(GetPVarInt(damagedid, "pBagged") >= 1) return 0;
-	    	else
-			{
-				new Float:fHealth, Float:fArmour;
-
-				GetHealth(damagedid, fHealth);
-				GetArmour(damagedid, fArmour);
-				SetHealth(damagedid, fHealth);
-				SetArmour(damagedid, fArmour);
-
-	    		TogglePlayerControllable(damagedid, FALSE);
-     			PlayAnimEx(damagedid,"PED","KO_shot_stom",4.1,0,0,0,0,0,0);
-	    		SetTimerEx("_UnbeanbagTimer", 20000, false, "d", damagedid);
-	    		SetPlayerDrunkLevel(damagedid, 10000);
-	    		PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
-	    		SetPVarInt(damagedid, "IsFrozen", 1);
-     			SetTimerEx("TurnOffFlash", 2500, 0, "i", damagedid);
-
-     			SetPVarInt(damagedid, "pBagged", 1);
-
-	    		GameTextForPlayer(damagedid, "~r~Bagged!", 7000, 3);
-	    		return 1;
-	    	}
-		}
 		if(!IsPlayerStreamedIn(playerid, damagedid) || !IsPlayerStreamedIn(damagedid, playerid)) return 1;
 		new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
 		if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1)
@@ -180,6 +154,38 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~r~Tazer reloading... ~w~12", 1500,3);
 				return 1;
 			}
+		}
+		if(GetPlayerWeapon(playerid) == 25 && GetPVarType(playerid, "pBeanBag")) 
+		{
+			if(GetPVarInt(damagedid, "pBagged") >= 1) return 0;
+	    	else if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT)
+			{
+				if(GetPlayerCameraMode(damagedid) == 53 || GetPlayerCameraMode(damagedid) == 7 || GetPlayerCameraMode(damagedid) == 8 || GetPlayerCameraMode(damagedid) == 51) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot bag players that are actively aiming.");
+				if(HelpingNewbie[damagedid] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot taze an advisor while they are helping someone.");
+				if(PlayerInfo[damagedid][pHospital] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Players in hospital cannot be tazed!");
+				new Float:fHealth, Float:fArmour;
+
+				GetHealth(damagedid, fHealth);
+				GetArmour(damagedid, fArmour);
+				SetHealth(damagedid, fHealth);
+				SetArmour(damagedid, fArmour);
+
+	    		TogglePlayerControllable(damagedid, FALSE);
+     			ApplyAnimation(damagedid,"PED","KO_shot_stom",4.1,0,1,1,1,1,1);
+	    		SetTimerEx("_UnbeanbagTimer", 20000, false, "d", damagedid);
+	    		SetPlayerDrunkLevel(damagedid, 10000);
+	    		PlayerTextDrawShow(damagedid, _vhudFlash[damagedid]);
+	    		SetPVarInt(damagedid, "IsFrozen", 1);
+     			SetTimerEx("TurnOffFlash", 5000, 0, "i", damagedid);
+
+     			SetPVarInt(damagedid, "pBagged", 1);
+
+	    		GameTextForPlayer(damagedid, "~r~Bagged!", 7000, 3);
+	    		format(szMiscArray, sizeof(szMiscArray), "* %s fires their beanbag shotgun at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	    		if(GetPVarType(damagedid, "FixVehicleTimer")) KillTimer(GetPVarInt(damagedid, "FixVehicleTimer")), DeletePVar(damagedid, "FixVehicleTimer");
+	    		return 1;
+	    	}
 		}
 		if(pTazer{damagedid} == 1 && (!IsNotAGun(weaponid)))
 		{

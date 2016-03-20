@@ -1809,7 +1809,7 @@ CMD:cuff(playerid, params[])
 			{
 				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff yourself!"); return 1; }
 				if(GetPVarInt(giveplayerid, "Injured") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff someone in a injured state.");
-				if(PlayerCuffed[giveplayerid] == 1 || GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP)
+				if(PlayerCuffed[giveplayerid] == 1 || GetPlayerSpecialAction(giveplayerid) == SPECIAL_ACTION_HANDSUP || GetPVarInt(giveplayerid, "pBagged") >= 1)
 				{
 					if(PlayerInfo[giveplayerid][pConnectHours] < 32) SendClientMessageEx(giveplayerid, COLOR_WHITE, "If you logout now you will automatically be prisoned for 2+ hours!");
 					format(string, sizeof(string), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
