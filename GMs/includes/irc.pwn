@@ -184,13 +184,13 @@ public IRC_OnUserSay(botid, recipient[], user[], host[], message[])
 	{
 		IRC_Say(botid, user, "You sent me a PM!");
 	}
-	else if(!strcmp(recipient, IRC_CHANNEL_ADMIN, true) && strcmp(user, "slackbot", true))
+	else if(!strcmp(recipient, IRC_CHANNEL_ADMIN, true) && strcmp(user, "samp", true))
 	{
 		user[0] = toupper(user[0]);
 		format(szMessage, sizeof(szMessage), "* [Slack] Administrator %s: %s", user, message);
 		ABroadCast(COLOR_YELLOW, szMessage, 2, false, true);
 	}
-	else if(!strcmp(recipient, IRC_CHANNEL_HEADADMIN, true) && strcmp(user, "slackbot", true))
+	else if(!strcmp(recipient, IRC_CHANNEL_HEADADMIN, true) && strcmp(user, "samp", true))
 	{
 		user[0] = toupper(user[0]);
 		format(szMessage, sizeof(szMessage), "(PRIVATE) [Slack] Administrator %s: %s", user, message);

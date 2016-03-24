@@ -5622,7 +5622,7 @@ public OnPlayerText(playerid, text[])
 		foreach(new i: Player)
 		{
 			if((InsidePlane[playerid] == GetPlayerVehicleID(i) && GetPlayerState(i) == 2) || (InsidePlane[i] == GetPlayerVehicleID(playerid) && GetPlayerState(playerid) == 2) || (InsidePlane[playerid] != INVALID_VEHICLE_ID && InsidePlane[playerid] == InsidePlane[i])) {
-				/*if(PlayerInfo[playerid][pDuty] || IsAHitman(playerid)) format(string, sizeof(string), "%s{%06x}%s{E6E6E6} says: %s", accent, GetPlayerColor(playerid), sendername, text);*/
+				//if(PlayerInfo[playerid][pDuty] || IsAHitman(playerid)) format(string, sizeof(string), "%s{%06x}%s{E6E6E6} says: %s", accent, GetPlayerColor(playerid), sendername, text);
 				format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 				SendClientMessageEx(i, COLOR_FADE1, string);
 			}

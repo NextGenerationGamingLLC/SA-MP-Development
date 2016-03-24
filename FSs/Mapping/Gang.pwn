@@ -6,6 +6,27 @@ public OnFilterScriptInit()
 	{
 		if(GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0) TogglePlayerControllable(i, false);
 	}
+
+	// THE COMMUNITY GANG EXTERIOR 
+CreateDynamicObject(8613, 1266.81958, -1688.61780, 35.30072,   0.00000, 0.00000, 269.576810, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(18850, 1276.84741, -1629.52563, 21.68851,   0.00000, 0.00000, 0.509070, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(14782, 1225.07104, -1638.14172, 11.71435,   0.00000, 0.00000, 0.201000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(18766, 1254.98364, -1653.07263, 11.25776,   70.38840, 0.00000, 89.762370, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(18766, 1244.98499, -1653.63696, 10.46890,   72.38840, 0.00000, 90.468330, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(19905, 1248.33533, -1693.99072, 33.77090,   0.00000, 0.00000, 359.881470, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(19905, 1279.36816, -1665.72620, 33.77090,   0.00000, 0.00000, 269.497990, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(19909, 1282.73181, -1697.03625, 38.41956,   0.00000, 0.00000, 359.991330, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(18981, 1255.59802, -1655.90161, 26.88969,   0.00000, 90.00000, 0.000000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(8613, 1214.59766, -1635.71289, 30.65935,   0.00000, 0.00000, 359.270020, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(1267, 1254.44067, -1626.45142, 47.54469,   0.00000, 0.00000, 56.893260, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(14637, 1289.23706, -1652.41760, 20.79329,   0.00000, 0.00000, 0.000000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(9482, 1287.53723, -1652.40283, 18.45932,   0.00000, 0.00000, 0.000000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(8151, 1246.08374, -1649.53503, 28.84378,   0.00000, 0.00000, 90.187770, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(2774, 1206.52417, -1652.47852, 23.78114,   90.00000, 90.00000, 89.799000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(2774, 1206.41357, -1676.13452, 23.78114,   90.00000, 90.00000, 89.799000, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(8613, 1262.27930, -1650.04932, 31.01639,   0.00000, 0.00000, 269.296720, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(14782, 1278.97668, -1682.96460, 34.97759,   0.00000, 0.00000, 179.929630, .interiorid = -1, .worldid = -1, .streamdistance = 200);
+CreateDynamicObject(19909, 1236.50916, -1667.09180, 33.99400,   0.00000, 0.00000, 359.991300, .interiorid = -1, .worldid = -1, .streamdistance = 200);
 	//Hilltop
 		//Interior
 	CreateDynamicObject(19379, -72.12000, 573.31000, 1002.08002,   0.00000, 90.00000, 0.00000);

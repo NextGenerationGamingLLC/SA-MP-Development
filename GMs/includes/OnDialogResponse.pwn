@@ -7088,7 +7088,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialogEx(playerid, DIALOG_REPORTDM, DIALOG_STYLE_INPUT, "Report player - Deathmatch", "(Error - Invalid Player) Enter the name or ID of the player.", "Enter", "Cancel");
 			}
 			if(PlayerInfo[playerid][pDMRMuted] != 0) return SendClientMessage(playerid, COLOR_GRAD2, "You are blocked from submitting DM reports.");
-			if(PlayerInfo[playerid][pLevel] < 2) return SendClientMessage(playerid, COLOR_GRAD2, "You must be level 2 to use this command.");
+			//if(PlayerInfo[playerid][pLevel] < 2) return SendClientMessage(playerid, COLOR_GRAD2, "You must be level 2 to use this command.");
 			if(playerid == Player) return SendClientMessage(playerid, COLOR_GREY, "You can't use this command on yourself!");
 
 			if(PlayerInfo[Player][pAdmin] >= 2 && PlayerInfo[Player][pTogReports] != 1) return SendClientMessage(playerid, COLOR_GREY, "You can't use this command on admins!");

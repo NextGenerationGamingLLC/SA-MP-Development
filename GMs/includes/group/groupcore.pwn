@@ -3101,33 +3101,6 @@ stock IsABlankTexture(modelid)
 	return 0;
 }
 
-CMD:medbadge(playerid, params[]) { 
-    if(PlayerInfo[playerid][pMember] >= 0 && arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] != 0xFFFFFF && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
-	{
-		if(GetPVarType(playerid, "IsInArena") || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") != 0)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You can't use your medical badge now.");
-			return 1;
-		}
-		#if defined zombiemode
-		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
-		#endif
-		if(PlayerInfo[playerid][pDuty]) {
-			PlayerInfo[playerid][pDuty] = 0;
-			SetPlayerToTeamColor(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have hidden your badge, and will now be identified as being off-duty.");
-			Medics -= 1;
-		}
-		else {
-			PlayerInfo[playerid][pDuty] = 1;
-			SetPlayerColor(playerid, 0xFFC0CBAA);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have shown your badge, and will now be identified as being on-duty.");
-			Medics += 1;
-		}
-	}
-	return 1;
-}
-
 CMD:clearbugs(playerid, params[])
 {
 	if(IsACop(playerid))
@@ -3234,7 +3207,39 @@ CMD:badge(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have shown your badge, and will now be identified as being on-duty.");
 			if(IsAMedic(playerid) || IsFirstAid(playerid))
 			{
-				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1) { SetPlayerColor(playerid, 0xFFC0CBAA); }
+				Medics += 1;
+			}
+		}
+	}
+	return 1;
+}
+
+CMD:medbadge(playerid, params[]) {
+    if(PlayerInfo[playerid][pMember] >= 0 && arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] != 0xFFFFFF && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
+	{
+		if(GetPVarType(playerid, "IsInArena") || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") != 0)
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You can't use your badge now.");
+			return 1;
+		}
+		#if defined zombiemode
+		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+		#endif
+		if(PlayerInfo[playerid][pDuty]) {
+			PlayerInfo[playerid][pDuty] = 0;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have hidden your badge, and will now be identified as being off-duty.");
+			if(IsAMedic(playerid) || IsFirstAid(playerid))
+			{
+				Medics -= 1;
+			}
+		}
+		else {
+			PlayerInfo[playerid][pDuty] = 1;
+			SetPlayerToTeamColor(playerid);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have shown your badge, and will now be identified as being on-duty.");
+			if(IsAMedic(playerid) || IsFirstAid(playerid))
+			{
+				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1) { SetPlayerColor(playerid, 0xFF828200); }
 				Medics += 1;
 			}
 		}
@@ -5522,7 +5527,7 @@ CMD:locker(playerid, params[]) {
 							    format(szTitle, sizeof(szTitle), "%s - {AA3333}Locker Stock: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
 							}
 					    }
-					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE)
+					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL /*|| arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE*/)
 					    {
 					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nDrugs\nIngredients\nMaterials (%i)\nVault ($%s)\nAmmo\nBlack Market",
 					    		arrGroupData[iGroupID][g_iMaterials],
@@ -5548,7 +5553,7 @@ CMD:locker(playerid, params[]) {
 						{
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAmmo") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
-						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) {
+						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE) {
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nAmmo");
 						}
 						else

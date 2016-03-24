@@ -57,7 +57,7 @@ stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: I
 			SendClientMessageEx(i, hColor, szMessage);
 		}
 	}
-	//if(!IRC && iLevel <= 2) IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
+	if(!IRC && iLevel <= 2) IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
 	return 1;
 }
 
@@ -1853,7 +1853,7 @@ CMD:admin(playerid, params[])  {
 			}
 
 			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-			//IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
+			IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/a)dmin [admin chat]");
 	}
@@ -1881,7 +1881,7 @@ CMD:headadmin(playerid, params[])  {
 			}
 
 			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-			//IRC_Say(BotID[0], IRC_CHANNEL_HEADADMIN, szMessage);
+			IRC_Say(BotID[0], IRC_CHANNEL_HEADADMIN, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/ha)eadmin [Head admin+ chat]");
 	}
@@ -3015,7 +3015,6 @@ CMD:spec(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 		return 1;
 	}
-
 	if(strcmp(params, "off", true) == 0)
 	{
 		if(Spectating[playerid] > 0 && PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 1 && Spectating[playerid] > 0)
@@ -3039,6 +3038,8 @@ CMD:spec(playerid, params[])
 	new giveplayerid;
 
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /spec (playerid/off)");
+	if(PlayerInfo[playerid][pHelper] < PlayerInfo[giveplayerid][pHelper] && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can't spectate higher level helpers.");
+	if(PlayerInfo[playerid][pHelper] > 0 && IsPlayerAdmin(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't spectate an administrator");
 	if(IsPlayerConnected(giveplayerid))
 	{
 		if(PlayerInfo[playerid][pHelper] > 0) {
@@ -6161,3 +6162,4 @@ CMD:giveeventtokens(playerid, params[])
 	}
 	return 1;
 }
+

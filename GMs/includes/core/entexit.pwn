@@ -72,7 +72,9 @@ EntExit_GetID(playerid) {
 			return Business_Enter(playerid, i);
 		}
 		if(IsPlayerInRangeOfPoint(playerid, 2.0, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2])) {
-			return Business_Exit(playerid, i);
+
+			if(Businesses[i][bVW] == 0 && PlayerInfo[playerid][pVW] == BUSINESS_BASE_VW + i) return Business_Exit(playerid, i);
+			else if(PlayerInfo[playerid][pVW] == Businesses[i][bVW]) return Business_Exit(playerid, i);
 		}
 	}
 	if(!IsPlayerInAnyVehicle(playerid)) {
@@ -443,7 +445,7 @@ DDoor_Exit(playerid, i)
 	PlayerInfo[playerid][pInt] = DDoorsInfo[i][ddExteriorInt];
 	SetPlayerVirtualWorld(playerid, DDoorsInfo[i][ddExteriorVW]);
 	PlayerInfo[playerid][pVW] = DDoorsInfo[i][ddExteriorVW];
-	SetPlayerToTeamColor(playerid);
+//	SetPlayerToTeamColor(playerid);
 	if(DDoorsInfo[i][ddVehicleAble] > 0 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
 		SetVehiclePos(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddExteriorX],DDoorsInfo[i][ddExteriorY],DDoorsInfo[i][ddExteriorZ]);
 		SetVehicleZAngle(GetPlayerVehicleID(playerid), DDoorsInfo[i][ddExteriorA]);

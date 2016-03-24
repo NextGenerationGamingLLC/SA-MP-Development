@@ -2013,9 +2013,9 @@ CMD:prisoncraft(playerid, params[])
 		else if(strcmp(value, "pruno", true) == 0)
 		{
 			if(GetPVarInt(playerid, "pPrisonWine") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have wine.");
-			if(PlayerInfo[playerid][pPrisonMaterials] <= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain a prison material.");
-			if(GetPVarInt(playerid, "pPrisonSugar") <= 2) return SendClientMessageEx(playerid, COLOR_GREY, "You need to buy 3 packets of sugar.");
-			if(GetPVarInt(playerid, "pPrisonBread") <= 0) return SendClientMessageEx(playerid, COLOR_GREY, "You need to buy a loaf of bread.");
+			if(PlayerInfo[playerid][pPrisonMaterials] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain a prison material.");
+			if(GetPVarInt(playerid, "pPrisonSugar") < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You need to buy 3 packets of sugar.");
+			if(GetPVarInt(playerid, "pPrisonBread") == 0) return SendClientMessageEx(playerid, COLOR_GREY, "You need to buy a loaf of bread.");
 
 			if(IsPlayerInCell(playerid))
 			{
@@ -2037,7 +2037,7 @@ CMD:prisoncraft(playerid, params[])
 
 		else if(strcmp(value, "radio", true) == 0)
 		{
-			if(PlayerInfo[playerid][pPrisonMaterials] <= 9) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain ten prison materials.");
+			if(PlayerInfo[playerid][pPrisonMaterials] < 9) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain ten prison materials.");
 			if(PlayerInfo[playerid][pRadio] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a radio.");
 
 			format(string, sizeof string, "{FF8000}> {C2A2DA}%s crafts a radio with some materials.", GetPlayerNameEx(playerid));
@@ -2051,7 +2051,7 @@ CMD:prisoncraft(playerid, params[])
 		else if(strcmp(value, "chisel", true) == 0)
 		{
 			if(GetPVarInt(playerid, "pPrisonChisel") >= 1) return SendClientMessageEx(playerid, COLOR_GREY, "You already have a chisel.");
-			if(PlayerInfo[playerid][pPrisonMaterials] <= 4) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain five prison materials.");
+			if(PlayerInfo[playerid][pPrisonMaterials] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You need to obtain five prison materials.");
 
 			format(string, sizeof string, "{FF8000}> {C2A2DA}%s flattens some metal into an object.", GetPlayerNameEx(playerid));
 			SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 4000);

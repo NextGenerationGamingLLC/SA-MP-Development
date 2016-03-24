@@ -1394,7 +1394,6 @@ ptask PlayerHeartBeat[1000](i) {
 				ReleasePlayerFromPrison(i);
 			}
 		}
-
 		if(gettime() >= PlayerInfo[i][pPrisonWineTime] && GetPVarInt(i, "pPrisonMWine") == 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
 		{
 			SetPVarInt(i, "pPrisonMWine", 2);

@@ -237,6 +237,7 @@ CMD:eventstaff(playerid, params[])
 					SetPlayerVirtualWorld( playerid, EventKernel[ EventWorld ] );
 					PlayerInfo[playerid][pAGuns][GetWeaponSlot(38)] = 38;
 					GivePlayerValidWeapon(playerid, 38, 60000);
+					SyncPlayerAmmo(playerid, 38);
 					EventKernel[EventStaff][i] = playerid;
 					GetHealth(playerid,health);
 					SetPVarFloat(playerid, "pPreGodHealth", health);

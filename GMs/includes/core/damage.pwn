@@ -272,7 +272,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	if (playerid != INVALID_PLAYER_ID && (weaponid == 0 || weaponid == 1 || weaponid == 2 || weaponid == 3 || weaponid == 5 || weaponid == 6 || weaponid == 7 || weaponid == 8) )
 	{
 		new Float: multiply;
-		if(PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2 || (PlayerInfo[damagedid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) || HelpingNewbie[damagedid] != INVALID_PLAYER_ID || GetPVarInt(damagedid, "eventStaff") >= 1) return 1;
+		if(PlayerInfo[damagedid][pAdmin] >= 2 && PlayerInfo[damagedid][pTogReports] == 0 || PlayerInfo[damagedid][pWatchdog] >= 2 || (PlayerInfo[damagedid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) || HelpingNewbie[damagedid] != INVALID_PLAYER_ID || GetPVarInt(damagedid, "eventStaff") >= 1) return 1;
 		if(hgActive == 1 && HungerPlayerInfo[damagedid][hgInEvent] == 1) return 1;
 		if (PlayerInfo[playerid][pFitness] < 50)
 		{

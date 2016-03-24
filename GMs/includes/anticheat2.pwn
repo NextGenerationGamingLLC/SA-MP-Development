@@ -85,7 +85,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 ptask HackCheck[HACKTIMER_INTERVAL](playerid) {
 
 	ac_iPlayerKeySpam[playerid] = 0;
-	if(PlayerInfo[playerid][pAdmin] < 1) {
+	if(PlayerInfo[playerid][pAdmin] < 2) {
 		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
 			if(ac_ACToggle[CARSURFING] && AC_IsPlayerSurfing(playerid)) AC_Process(playerid, INVALID_PLAYER_ID, CARSURFING);
 			if(ac_ACToggle[HEALTHARMORHACKS] && AC_PlayerHealthArmor(playerid)) AC_Process(playerid, INVALID_PLAYER_ID, HEALTHARMORHACKS);

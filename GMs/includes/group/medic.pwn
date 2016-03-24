@@ -40,7 +40,7 @@ public ShowPlayerBeaconForMedics(playerid)
 {
 	foreach(new i: Player)
 	{
-		if(IsAMedic(i) || IsFirstAid(playerid))
+		if(IsAMedic(i))
 		{
 			SetPlayerMarkerForPlayer(i, playerid, COP_GREEN_COLOR);
 		}
@@ -53,7 +53,7 @@ public HidePlayerBeaconForMedics(playerid)
 {
 	foreach(new i: Player)
 	{
-		if(IsAMedic(i) || IsFirstAid(playerid))
+		if(IsAMedic(i))
 		{
 			SetPlayerMarkerForPlayer(i, playerid, TEAM_HIT_COLOR);
 		}
@@ -190,7 +190,7 @@ Medic_GetPatient(playerid, params[]) {
 				if(PlayerInfo[giveplayerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command on jailed players.");
 				format(string, sizeof(string), "EMS Driver %s (%s, R%d) has accepted the Emergency Dispatch call for (%d) %s.", GetPlayerNameEx(playerid),
 					arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], PlayerInfo[playerid][pRank], giveplayerid, GetPlayerNameEx(giveplayerid));
-				SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
+				SendMedicMessage(TEAM_MED_COLOR, string);
 				format(string, sizeof(string), "* You have accepted EMS Call from %s, you will see the marker until you have reached it.",GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "* EMS Driver %s has accepted your EMS Call; please wait at your current position.",GetPlayerNameEx(playerid));

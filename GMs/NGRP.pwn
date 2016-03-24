@@ -15,15 +15,15 @@
 
 				Current Developers:
 								*** Director of SA:MP Development:
-									Austin
+									Rothschild
 
 								**  Development Staff:
 									Dom
 									Miguel (s0nic)
+									Farva
+									Austin
 									Jingles
 									Winterfield
-									Rothschild
-
 				Past Developers:
 								*** Director of SA:MP Development:F
 									Akatony
@@ -93,7 +93,7 @@
 #include <YSI\y_utils>
 #include <mSelection>
 #include <gvar>
-//#include <irc>
+#include <irc>
 
 #if defined SOCKET_ENABLED
 #include <socket>
@@ -111,7 +111,7 @@
 #include "./includes/textdraws.pwn"
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
-//#include "./includes/irc.pwn"
+#include "./includes/irc.pwn"
 
 //streamer includes
 #include "./includes/streamer/removebuildings.pwn"
@@ -151,6 +151,7 @@
 #include "./includes/core/acceptcancel.pwn"
 #include "./includes/core/advertisements.pwn"
 #include "./includes/core/banking.pwn"
+//#include "./includes/banking/bankmain.pwn"
 #include "./includes/core/chat.pwn"
 //#include "./includes/core/enterexit.pwn"
 #include "./includes/core/fireworks.pwn"
@@ -324,6 +325,11 @@
 #include "./includes/anticheat2.pwn"
 #include "./includes/furniture.pwn"
 
+// Winterfield WIP
+
+#include "./includes/prison_system.pwn"
+//#include "./includes/garbagesystem.pwn"
+//#include "./includes/fishingsystem.pwn"
 
 main(){}
 

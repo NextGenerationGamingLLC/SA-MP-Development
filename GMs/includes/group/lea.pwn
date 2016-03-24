@@ -959,7 +959,8 @@ CMD:vticket(playerid, params[])
             SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait within a minute in order to use this command again!");
             return 1;
         }
-        if(amount > 50000) return SendClientMessageEx(playerid, COLOR_GREY, "The maximum vehicle ticket amount is $50000");
+        if(amount > 50000) return SendClientMessageEx(playerid, COLOR_GREY, "The maximum vehicle ticket amount is $50000.");
+        if(amount < 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't ticket negative amounts.");
         new Float: x, Float: y, Float: z, vehicleid = strval(registration);
         GetVehiclePos(vehicleid, x, y, z);
         if(IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z))

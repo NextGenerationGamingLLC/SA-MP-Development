@@ -36,7 +36,42 @@ new g_aFemaleSkins[77] = {
     75, 76, 77, 85, 88, 89, 90, 91, 92, 93, 129, 130, 131, 138, 140, 141,
     145, 148, 150, 151, 152, 157, 169, 178, 190, 191, 192, 193, 194, 195,
     196, 197, 198, 199, 201, 205, 207, 211, 214, 215, 216, 219, 224, 225,
-    226, 231, 232, 233, 237, 238, 243, 244, 245, 246, 251, 256, 257, 263,
+    226, 231, 232, 233, 237, 238, 243, 244, 245, 246, 251, 256, 257, 263,/*
+
+	 /$$   /$$  /$$$$$$          /$$$$$$$  /$$$$$$$
+	| $$$ | $$ /$$__  $$        | $$__  $$| $$__  $$
+	| $$$$| $$| $$  \__/        | $$  \ $$| $$  \ $$
+	| $$ $$ $$| $$ /$$$$ /$$$$$$| $$$$$$$/| $$$$$$$/
+	| $$  $$$$| $$|_  $$|______/| $$__  $$| $$____/
+	| $$\  $$$| $$  \ $$        | $$  \ $$| $$
+	| $$ \  $$|  $$$$$$/        | $$  | $$| $$
+	|__/  \__/ \______/         |__/  |__/|__/
+
+						Dynamic Group Core
+
+				Next Generation Gaming, LLC
+	(created by Next Generation Gaming Development Team)
+
+	* Copyright (c) 2016, Next Generation Gaming, LLC
+	*
+	* All rights reserved.
+	*
+	* Redistribution and use in source and binary forms, with or without modification,
+	* are not permitted in any case.
+	*
+	*
+	* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+	* CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+	* EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+	* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+	* PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+	* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
     298
 };
 
@@ -251,7 +286,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                		}
                		*/
 
-               		ShowPlayerDialog(playerid, DIALOG_REGISTER_SKIN, DIALOG_STYLE_MSGBOX, "NG:RP Character Creation | Skin Model", "Please enter a skin ID for your character.", "Select", "<<");
+               		ShowPlayerDialog(playerid, DIALOG_REGISTER_SKIN, DIALOG_STYLE_INPUT, "NG:RP Character Creation | Skin Model", "Please enter a skin ID for your character.", "Select", "<<");
                	}
 				case 6: return Register_MainMenu(playerid);
 				case 7:
@@ -273,7 +308,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_REGISTER_SKIN: {
 
-			if(response && !isnull(inputtext) && IsNumeric(inputtext)) {
+			if(response && !isnull(inputtext) && IsNumeric(inputtext) && IsValidSkin(strval(inputtext))) {
 
 			    PlayerInfo[playerid][pModel] = strval(inputtext);
 				Register_CreatePlayer(playerid, strval(inputtext));
@@ -548,12 +583,13 @@ Tutorial_Stage(playerid) {
 			strcat(szMiscArray, "\t\t{F69521}Developers{FFFFFF}:\n\
 				\t\t\tMiguel\n\
 				\t\t\tJingles\n\
+				\t\t\tDom\n\
 				\t\t\tWinterfield\n\
 				\t\t\tAustin\n\
 				\t\t\tFarva\n\
 				\t\t\tDom\n\
 				\t\t\t{F69500}Past Developers{FFFFFF}:\n\
-				\t\t\tAkatony\tJohn\t\tBrendan\n\
+				\t\t\tAkatony\t\tJohn\t\tBrendan\n\
 				\t\t\tBrian\t\tScott\t\tGhoulSlayer\n\
 				\t\t\tZhao\t\tDonuts\t\tMo Cena\n\
 				\t\t\tCalgon\t\tNeo\t\tThomasJWhite\n\
@@ -1037,6 +1073,7 @@ Register_Prison(playerid)
 	strcpy(PlayerInfo[playerid][pPrisonReason], "[IC] [DNRL] Prison Gang", 128);
 	strcpy(PlayerInfo[playerid][pPrisonedBy], "Winterfield (Script Prison) SIP", 128);
 	SendClientMessageEx(playerid, COLOR_GRAD1, "You have chosen to spawn in prison. Use /prisonhelp to view a list of the commands.");
+	DeletePVar(playerid, "pTut");
 	PlayerInfo[playerid][pJailTime] = 9999999;
 
 	PlayerInfo[playerid][pTut] = 2;

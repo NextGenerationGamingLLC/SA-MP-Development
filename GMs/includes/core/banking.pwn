@@ -104,7 +104,6 @@ public Bank_FetchData(playerid) {
 
 
 Bank_Bankrupt() {
-	if(!GetGVarInt("Bankrupt")) SendClientMessageToAll(COLOR_LIGHTRED, "[BANK]: We are terribly sorry. We are bankrupt. Goodbye!");
 	SetGVarInt("Bankrupt", 1);
 }
 

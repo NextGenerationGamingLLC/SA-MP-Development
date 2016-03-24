@@ -916,8 +916,8 @@ CMD:cratelimit(playerid, params[]) {
     {
 		new string[128];
 		new moneys;
-	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [0-50] (Limits the total production of crates)");
-		if(moneys < 0 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [0-50] (Limits the total production of crates)");
+	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
+		if(moneys < 5 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
 		MAXCRATES = moneys;
 		
 		//if(moneys == 0) HideCrate();
@@ -943,7 +943,7 @@ CMD:cratelimit(playerid, params[]) {
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, " Only the SAAS has the authority to do this! ");
+		SendClientMessageEx(playerid, COLOR_GRAD2, " Only the STAG has the authority to do this! ");
 	}
 	return 1;
 }
