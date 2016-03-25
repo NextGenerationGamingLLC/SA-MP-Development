@@ -165,7 +165,7 @@ CMD:resetvw(playerid, params[])
 	if(GetPVarType(playerid, "IsInArena")) return 1;
 	SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pVW]);
 	SetPlayerInterior(playerid, PlayerInfo[playerid][pInt]);
-	SendClientMessageEx(playerid, COLOR_WHITE, "Your virtual and interior world have been synced with the server!");
+	SendClientMessageEx(playerid, COLOR_WHITE, "Your virtual and interior world have been synced with the server. You might be desynced though - please relog.");
 	return 1;
 }
 
@@ -5274,6 +5274,7 @@ CMD:ah(playerid, params[])
 		if(PlayerInfo[playerid][pSMod] > 0) SendClientMessageEx(playerid, COLOR_GRAD1, "*** {FFFF00}SENIOR SERVER MODERATOR{B4B5B7} --* /jail /kick /staff /togstaff /changename");
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "--* {FFFF00}SERVER MODERATOR{B4B5B7} --* /mjail /kick /staff /togstaff");
 	}
+	/*
 	if (PlayerInfo[playerid][pWatchdog] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2,"--* WATCH DOG --* /startwatch /nextwatch /stopwatch /dmalert /wd /watchlist /refer");
@@ -5282,6 +5283,7 @@ CMD:ah(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2,"--* SENIOR WATCH DOG --* /watchspec /kick /ban /prison /n(un)mute /ad(un)mute /warn /kills /goto (MHC/LV)");
 	}
+	*/
 	if (PlayerInfo[playerid][pWatchdog] >= 3)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2,"--* RP SPECIALIST --* /watchdogs /restrictaccount /unrestrictaccount /togwd /makewatchdog");

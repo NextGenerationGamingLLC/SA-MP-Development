@@ -1822,7 +1822,7 @@ CMD:setbail(playerid, params[]) { // Can no longer set negative bail prices & ba
 	new uPlayer,
 		iBail;
 
-	if(sscanf(params, "dd", uPlayer, iBail)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /setbail [player] [amount]");
+	if(sscanf(params, "ud", uPlayer, iBail)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /setbail [player] [amount]");
 	if(strfind(PlayerInfo[uPlayer][pPrisonReason], "[IC]", true) == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This player is not in prison!");
 
 	if(!(0 < iBail <= 15000000)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount ($1 - $15,000,000).");

@@ -781,12 +781,12 @@ CMD:charity(playerid, params[])
 	if(moneys < 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "That is not enough.");
 	if(GetPlayerCash(playerid) < moneys) return SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have that much money.");
 	GivePlayerCash(playerid, -moneys);
-	new string[128];
-	format(string, sizeof(string), "%s, thank you for your donation of $%s.", GetPlayerNameEx(playerid), number_format(moneys));
+
+	format(szMiscArray, sizeof(szMiscArray), "%s, thank you for your donation of $%s.", GetPlayerNameEx(playerid), number_format(moneys));
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	format(string, sizeof(string), "[CHARITY] %s has donated $%s", GetPlayerNameEx(playerid), number_format(moneys));
-	Log("logs/pay.log", string);
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "[CHARITY] %s has donated $%s", GetPlayerNameEx(playerid), number_format(moneys));
+	Log("logs/pay.log", szMiscArray);
 	return 1;
 }
 

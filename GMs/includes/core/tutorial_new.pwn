@@ -236,7 +236,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 0: return Register_MainMenu(playerid);
 				case 1: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "NG:RP Character Creation | Skin Model", "Male\nFemale", "Select", "<<");
 				case 2: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_MONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Select", "<<");
-				case 3:
+				case 3: return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_NATION, DIALOG_STYLE_LIST, "NG:RP Character Creation | Nation", "San Andreas\nNew Eire", "Select", "<<");
+				case 4:
 				{
 					szMiscArray[0] = 0;
 					szMiscArray = "No accent\n\
@@ -269,8 +270,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Thai accent";
 					return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_ACCENT, DIALOG_STYLE_LIST, "NG:RP Character Creation | Accent", szMiscArray, "Select", "<<");
 				}
-				case 4: return Register_MainMenu(playerid);
-				case 5:
+				case 5: return Register_MainMenu(playerid);
+				case 6:
 				{
 					if(PlayerInfo[playerid][pSex] == 0) { 
 						SendClientMessage(playerid, COLOR_YELLOW, "Please select your gender first.");
@@ -288,8 +289,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
                		ShowPlayerDialog(playerid, DIALOG_REGISTER_SKIN, DIALOG_STYLE_INPUT, "NG:RP Character Creation | Skin Model", "Please enter a skin ID for your character.", "Select", "<<");
                	}
-				case 6: return Register_MainMenu(playerid);
-				case 7:
+				case 7: return Register_MainMenu(playerid);
+				case 8:
 				{
 					if(PlayerInfo[playerid][pSex] == 0)
 					{
@@ -335,6 +336,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 			}
 			else ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SEX, DIALOG_STYLE_LIST, "{FF0000}Is your character male or female?", "Male\nFemale", "Submit", "");
+		}
+		case DIALOG_REGISTER_NATION: {
+			if(response) {
+				PlayerInfo[playerid][pNation] = listitem;
+				switch(listitem) {
+					case 0: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of San Andreas.");
+					case 1: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of New Eire.");
+				}
+			}
+			Register_MainMenu(playerid);
 		}
 		case DIALOG_REGISTER_MONTH:
 	    {
@@ -931,26 +942,28 @@ Register_ShowQuestion(playerid, number)
 
 Register_MainMenu(iPlayerID)
 {
-	szMiscArray[0] = 0;
+	new szGender[12];
 	SetPVarInt(iPlayerID, PVAR_REGISTERING, 1);
 	switch(PlayerInfo[iPlayerID][pSex])
 	{
-		case 1: szMiscArray = "Male";
-		case 2: szMiscArray = "Female";
-		default: szMiscArray = "Unspecified";
+		case 1: szGender = "Male";
+		case 2: szGender = "Female";
+		default: szGender = "Unspecified";
 	}
 
 	format(szMiscArray, sizeof(szMiscArray), "Name:\t%s\n\
 		Gender:\t%s\n\
 		Date of Birth\t%s\n\
+		Nation\t%s\n\
 		Accent:\t%s\n\
 		----------------------\n\
 		Skin ID:\t%i\n\
 		----------------------\n\
 		Finish character creation", // Setup accessories (3)\n\ (case 6)
 		GetPlayerNameEx(iPlayerID),
-		szMiscArray,
+		szGender,
 		PlayerInfo[iPlayerID][pBirthDate],
+		GetPlayerNation(iPlayerID),
 		GetPlayerAccent(iPlayerID),
 		PlayerInfo[iPlayerID][pModel]);
 	return ShowPlayerDialogEx(iPlayerID, DIALOG_REGISTER_MENU, DIALOG_STYLE_TABLIST, "NG:RP | Character Creation Menu", szMiscArray, "Select", "");

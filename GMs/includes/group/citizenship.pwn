@@ -248,6 +248,17 @@ stock NationCheck(playerid, giveplayerid) {
 	return 1;
 }
 
+stock GetPlayerNation(playerid) {
+
+	szMiscArray[0] = 0;
+	switch(PlayerInfo[playerid][pNation]) {
+		case 0: szMiscArray = "San Andreas";
+		case 1: szMiscArray = "New Eire";
+		case 2: szMiscArray = "None";
+	}
+	return szMiscArray;
+}
+
 CMD:apply(playerid, params[])
 {
 	new choice[3];

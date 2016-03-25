@@ -2100,7 +2100,8 @@ CMD:wanted(playerid, params[])
 			{
 				switch(PlayerInfo[i][pNation]) {
 					case 0: szNation = "San Andreas";
-					default: szNation = "New Eire";
+					case 1: szNation = "New Eire";
+					default: szNation = "None";
 				}
 				format(szMiscArray, sizeof(szMiscArray), "%s%s: %d (%s)", szMiscArray, GetPlayerNameEx(i),PlayerInfo[i][pWantedLevel], szNation);
 				x++;

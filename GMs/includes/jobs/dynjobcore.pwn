@@ -442,7 +442,9 @@ Job_GetJob(playerid, i)
         format(szMiscArray, sizeof szMiscArray, "You need to be level %i to get this job.", arrJobData[i][job_iLevel]);
         return SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
     }
-
+    if(PlayerInfo[playerid][pJob] == arrJobData[i][job_iType] || PlayerInfo[playerid][pJob2] == arrJobData[i][job_iType] || PlayerInfo[playerid][pJob3] == arrJobData[i][job_iType]) {
+    	return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have this job.");
+    }
 	if(PlayerInfo[playerid][pJob] == 0) format(szMiscArray, sizeof(szMiscArray), "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}?", GetJobName(arrJobData[i][job_iType]));
 	if(0 < PlayerInfo[playerid][pDonateRank] < 4) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (VIP Job)", GetJobName(arrJobData[i][job_iType]));
 	if(PlayerInfo[playerid][pDonateRank] > 3) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (Platinum VIP Job)", GetJobName(arrJobData[i][job_iType]));

@@ -597,6 +597,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					SetPVarInt(extraid, "EmailConfirmed", cache_get_field_content_int(row, "EmailConfirmed", MainPipeline));
 					PlayerInfo[extraid][pEventTokens] = cache_get_field_content_int(row,  "pEventTokens", MainPipeline);
 					PlayerInfo[extraid][pBailPrice] = cache_get_field_content_int(row,  "pBailPrice", MainPipeline);
+					PlayerInfo[extraid][pLastPoll] = cache_get_field_content_int(row,  "pLastPoll", MainPipeline);
 
 
 					arrAmmoData[extraid][awp_iAmmo][0] = cache_get_field_content_int(row, "Ammo0", MainPipeline);
@@ -2572,6 +2573,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pLastPoll", PlayerInfo[playerid][pLastPoll]);
 
 	for(new d; d < sizeof(szDrugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Drugs_GetSQLName(d), PlayerInfo[playerid][p_iDrug][d]);
 	for(new d; d < sizeof(szIngredients); ++d) if(d != 9) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
@@ -2906,6 +2908,7 @@ public MDCQueryFinish(playerid, suspectid)
 	{
 		case 0: nation = "San Andreas";
 		case 1: nation = "New Eire";
+		default: nation = "None";
 	}
 
 	format(resultline, sizeof(resultline), "{FF6347}Name:{BFC0C2} %s\t{FF6347}Phone Number:{BFC0C2} %d\n{FF6347}Total Previous Crimes: {BFC0C2}%d\t {FF6347}Total Arrests: {BFC0C2}%d \n{FF6347}Citizenship: {BFC0C2}%s \n{FF6347}Crime Key: {FF7D7D}Currently Wanted/{BFC0C2}Past Crime\n\n", GetPlayerNameEx(suspectid),PlayerInfo[suspectid][pPnumber], crimes, arrests, nation);

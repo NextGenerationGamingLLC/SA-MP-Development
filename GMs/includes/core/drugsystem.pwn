@@ -260,6 +260,11 @@ task Point_Process[60000 * 10]() {
 	mysql_function_query(MainPipeline, szMiscArray, true, "Point_OnCapCheck", "");
 }
 
+task Drugs_Plants[60000 * 720]() {
+
+	Drugs_FlushDrugs();
+}
+
 ptask PlayerAddiction[60000 * ADDICT_TIMER_MINUTES](playerid)
 {
 	new i = random(3);
@@ -318,6 +323,7 @@ timer Point_Capture[1000 * 10](playerid, i, iGroupID) {
 	SetGVarInt("PO_CAPT", iGroupID, i);
 	GangZoneShowForAll(arrPoint[i][po_iZoneID], arrGroupData[iGroupID][g_hDutyColour] * 256 + 170);
 	GangZoneFlashForAll(arrPoint[i][po_iZoneID], COLOR_RED);
+	DeleteGVar("PO_Time", i);
 	SetGVarInt("PO_Time", 10, i);
 	defer PO_PointTimer(playerid, i, iGroupID);
 	defer PO_PointMicroTimer(iGroupID, i, 0);
@@ -3078,17 +3084,25 @@ CMD:flushdrugs(playerid, params[]) {
 	if(IsAdminLevel(playerid, ADMIN_SENIOR)) {
 
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You flushed the player drugs data.");
-		mysql_function_query(MainPipeline, "DELETE FROM `drugpool`", false, "OnQueryFinish", "i", SENDDATA_THREAD);
-		for(new i; i < MAX_DRUGS; ++i) {
-
-			if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
-			if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
-			// if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
-			arrDrugData[i][dr_iDrugQuality] = 0;
-			Iter_Remove(PlayerDrugs, i);
-		}
+		Drugs_FlushDrugs();
 	}
 	return 1;
+}
+
+Drugs_FlushDrugs() {
+
+	mysql_function_query(MainPipeline, "DELETE FROM `drugpool`", false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	for(new i; i < MAX_DRUGS; ++i) {
+
+		if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
+		if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
+		// if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
+		arrDrugData[i][dr_iDrugQuality] = 0;
+		arrDrugData[i][dr_fPos][0] = 0;
+		arrDrugData[i][dr_fPos][1] = 0;
+		arrDrugData[i][dr_fPos][2] = 0;
+		Iter_Remove(PlayerDrugs, i);
+	}
 }
 
 CMD:mydrugs(playerid, params[]) {

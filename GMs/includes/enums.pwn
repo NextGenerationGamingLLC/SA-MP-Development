@@ -1202,12 +1202,10 @@ enum pInfo
 	pPrisonWineTime,
 	pPrisonCell,
 	p_iPrisonDrug[sizeof(szDrugs)],
-	// FISHING
 	pFishWeight,
 	pFishingSkill,
-
-	// GARBAGE
-	pGarbageSkill
+	pGarbageSkill,
+	pLastPoll
 };
 
 enum pvInfo

@@ -324,12 +324,10 @@
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
 #include "./includes/furniture.pwn"
+#include "./includes/admin/poll.pwn"
 
 // Winterfield WIP
-
 #include "./includes/prison_system.pwn"
-//#include "./includes/garbagesystem.pwn"
-//#include "./includes/fishingsystem.pwn"
 
 main(){}
 

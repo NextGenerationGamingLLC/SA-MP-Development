@@ -43,11 +43,11 @@ CMD:help(playerid, params[])
 		SendClientMessageEx(playerid, TEAM_AZTECAS_COLOR,"*** HELP *** /report /requesthelp (/newb)ie /tognewbie");
 	}
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** ACCOUNT *** /(net)stats /inventory /quickstats /myguns /buylevel /upgrade /changepass /killcheckpoint /resetupgrades(100k)");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /w(hisper) /o(oc) /s(hout) /l(ow) /b /ad(vertisement)s /f(amily) /togooc /tognews /togfam /togwhisper /cancelcall");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /w(hisper) /o(oc) /s(hout) /l(ow) /b /ad(vertisement)s /f(amily) /togooc /tognews /togfam /cancelcall");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** CHAT *** /me /ame /lme /do /ldo /se(texamine) /examine");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /cashchecks /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /contract /service /families /joinevent /checkplant /nextpaycheck, /nextgift, /pointtime");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /contract /service /families /joinevent /nextpaycheck, /nextgift, /pointtime");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange /rld /myammo");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** SHOP *** /shophelp /credits /sellcredits /microshop /activeitems /cooldowns");
 
@@ -56,7 +56,7 @@ CMD:help(playerid, params[])
 		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
 		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted /offerappeal /finishappeal");
 		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
-		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getpot /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
+		case 4: cmd_drughelp(playerid, "");
 		case 5: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
 		case 7: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
 		case 8: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
@@ -64,7 +64,7 @@ CMD:help(playerid, params[])
 		case 10: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sellnewcar");
 		case 12: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
 		case 14: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
-		case 15: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
+		// case 15: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
 		case 17: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
 		case 18: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
@@ -77,7 +77,7 @@ CMD:help(playerid, params[])
 		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
 		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
 		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
-		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getpot /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
+		case 4: cmd_drughelp(playerid, "");
 		case 5: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
 		case 7: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
 		case 8: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
@@ -85,7 +85,7 @@ CMD:help(playerid, params[])
 		case 10: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sellnewcar");
 		case 12: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
 		case 14: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
-		case 15: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
+		// case 15: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
 		case 17: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
 		case 18: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
@@ -98,7 +98,7 @@ CMD:help(playerid, params[])
 		case 1: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /trace");
 		case 2: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /lawyerduty /free /defend /wanted");
 		case 3: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sex");
-		case 4: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sell /getcrack /getpot /getseeds /getopiumseeds /plantpotseeds /plantopiumseeds /pickplant /checkplant");
+		case 4: cmd_drughelp(playerid, "");
 		case 5: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /dropcar");
 		case 7: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fix /nos /hyd /repair /refill /mechduty");
 		case 8: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /guard /frisk");
@@ -106,7 +106,7 @@ CMD:help(playerid, params[])
 		case 10: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /sellnewcar");
 		case 12: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fight");
 		case 14: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getcrate");
-		case 15: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
+		// case 15: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /papers /bring /deliver");
 		case 17: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /fare");
 		case 18: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getmats /sell /craft");
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
