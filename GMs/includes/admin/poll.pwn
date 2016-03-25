@@ -119,7 +119,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new szPoll[64];
 			mysql_escape_string(inputtext, szPoll);
 
-			format(arrPolls[pol_szQuestion], sizeof(arrPolls[pol_szQuestion]), szMiscArray);
+			format(arrPolls[pol_szQuestion], sizeof(arrPolls[pol_szQuestion]), szPoll);
 			
 			format(szMiscArray, sizeof(szMiscArray), "Poll: Administrator %s set the Poll ID %d's question: %s", GetPlayerNameEx(playerid), arrPolls[pol_iPollID], szPoll);
 			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
@@ -281,13 +281,15 @@ public Poll_OnGetVotes(playerid) {
 		szVoteStr[2];
 
 	cache_get_data(iRows, iFields, MainPipeline);
+
 	format(szMiscArray, sizeof(szMiscArray), "----\tVotes\n\
 		POLL: %s\t_\n\
 		__________________________________________\t____\n", arrPolls[pol_szQuestion]);
 
 	for(new i; i < MAX_POLL_OPTIONS; ++i) {
 
-		if(!isnull(arrPollOption[i])) {
+		// if(!isnull(arrPollOption[i]))
+		{
 			format(szVoteStr, sizeof(szVoteStr), "OptionV%d", i);
 			iCount = cache_get_field_content_int(0, szVoteStr, MainPipeline);
 			iTotalCount += iCount;
