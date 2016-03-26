@@ -1831,6 +1831,7 @@ CMD:cuff(playerid, params[])
 					PlayerCuffed[giveplayerid] = 2;
 					SetPVarInt(giveplayerid, "PlayerCuffed", 2);
 					SetPVarInt(giveplayerid, "IsFrozen", 1);
+					DeletePVar(giveplayerid, "pBagged");
 					//Frozen[giveplayerid] = 1;
 					PlayerCuffedTime[giveplayerid] = 300;
 				}

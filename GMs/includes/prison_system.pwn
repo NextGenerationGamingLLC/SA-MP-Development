@@ -1647,6 +1647,7 @@ CMD:jailcuff(playerid, params[])
 					TogglePlayerControllable(giveplayerid, 0);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
 					TogglePlayerControllable(giveplayerid, 1);
+					DeletePVar(playerid, "pBagged");
 					SetPVarInt(giveplayerid, "jailcuffs", 1);
 				}
 				else if(GetPVarType(giveplayerid, "IsTackled"))
@@ -2431,7 +2432,7 @@ ShowPrisonInventory(playerid)
 forward _UnbeanbagTimer(playerid);
 public _UnbeanbagTimer(playerid)
 {
-	if(PlayerCuffed[playerid] <= 0 && GetPVarInt(playerid, "jailcuffs") <= 0)
+	if(GetPVarInt(playerid, "pBagged") >= 1)
 	{
 		ClearAnimations(playerid);
 		TogglePlayerControllable(playerid, TRUE);
@@ -2441,6 +2442,10 @@ public _UnbeanbagTimer(playerid)
 		DeletePVar(playerid, "pBagged");
 
 		ClearAnimations(playerid);
+	}
+	else
+	{
+		SetPlayerDrunkLevel(playerid, 0);
 	}
 	return 1;
 }

@@ -36,7 +36,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(dialogid == DIALOG_DISABLED) return ShowPlayerDialogEx(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
 	new sendername[MAX_PLAYER_NAME];
-	new string[128];
+	new string[256];
 	szMiscArray[0] = 0;
 
 	// Crash Bug Fix
@@ -13182,6 +13182,48 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(GetPVarType(playerid, "mEditingPriceValue")) SendClientMessageEx(playerid, COLOR_GREY, "You have canceled the price change.");
 			DeletePVar(playerid, "mEditingPrice");
 			DeletePVar(playerid, "mEditingPriceValue");
+		}
+	}
+	if(dialogid == DIALOG_WEPVEHSALE)
+	{
+		if(response)
+		{
+			new alarmstring[9], lockstring[11], worklockstring[10];
+			new giveplayerid = GetPVarInt(playerid, "WepVehSalePlayer");
+			new price = GetPVarInt(playerid, "WepVehSalePrice");
+			new d = GetPVarInt(playerid, "WepVehSaleVehicle");
+			new fine = GetPVarInt(playerid, "WepVehSaleFine");
+
+			SetPVarInt(playerid, "LastTransaction", gettime());
+            VehicleOffer[giveplayerid] = playerid;
+            VehicleId[giveplayerid] = d;
+            VehiclePrice[giveplayerid] = price;
+
+			switch(PlayerVehicleInfo[playerid][d][pvAlarm]) {
+				case 1: alarmstring = "Standard";
+				case 2: alarmstring = "Deluxe";
+				default: alarmstring = "no";
+			}
+			switch(PlayerVehicleInfo[playerid][d][pvLock]) {
+				case 2: lockstring = "Electronic";
+				case 3: lockstring = "Industrial";
+				default: lockstring = "no";
+			}
+
+			if(PlayerVehicleInfo[playerid][d][pvLocksLeft] < 1) worklockstring = "(Broken)";
+			format(string, sizeof(string), "* [WEPVEHICLE] You offered %s to buy this %s with %s Alarm & %s%s Lock for $%s with a %s fine.", GetPlayerNameEx(giveplayerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), alarmstring, worklockstring, lockstring, number_format(price), number_format(fine));
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(string, sizeof(string), "* [WEPVEHICLE] %s has offered you their %s (VID: %d) with %s Alarm & %s%s Lock for $%s, (type /accept car) to buy.", GetPlayerNameEx(playerid), GetVehicleName(PlayerVehicleInfo[playerid][d][pvId]), PlayerVehicleInfo[playerid][d][pvId], alarmstring, worklockstring, lockstring, number_format(price));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+			DeletePVar(playerid, "confirmvehsell");
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "You have canceled the weaponized vehicle sale. You will not be fined.");
+			DeletePVar(playerid, "WepVehSalePlayer");
+			DeletePVar(playerid, "WepVehSaleVehicle");
+			DeletePVar(playerid, "WepVehSalePrice");
+			DeletePVar(playerid, "WepVehSaleFine");
 		}
 	}
 	if(dialogid == DIALOG_REPORT_HSIGN)

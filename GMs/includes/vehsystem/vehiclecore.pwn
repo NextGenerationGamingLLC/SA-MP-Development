@@ -2531,11 +2531,11 @@ CMD:sellmycar(playerid, params[])
                 SendClientMessageEx(playerid, COLOR_GREY, "You can not use this command on yourself.");
                 return 1;
             }
-            if(IsWeaponizedVehicle(PlayerVehicleInfo[playerid][d][pvModelId]))
+            /*if(IsWeaponizedVehicle(PlayerVehicleInfo[playerid][d][pvModelId]))
             {
                 SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to sell this restricted vehicle.");
                 return 1;
-            }
+            }*/ // Uncomment to disallow the sale of weaponized vehicles. 
 			if(gettime()-GetPVarInt(playerid, "LastTransaction") < 60)
 			{
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You can only sell a car once every 60 seconds, please wait!");
@@ -2554,6 +2554,18 @@ CMD:sellmycar(playerid, params[])
 	            	SendClientMessageEx(giveplayerid, COLOR_WHITE, "ERROR: Your car assets are frozen, you cannot buy a car!");
 	            	SendClientMessageEx(playerid, COLOR_WHITE, "ERROR: Their car assets are frozen, they cannot buy a car!");
 	            	return 1;
+				}
+				if(IsWeaponizedVehicle(PlayerVehicleInfo[playerid][d][pvModelId]))
+				{
+					new dialogstring[255], fine = 15 * price / 100;
+					format(dialogstring, sizeof(dialogstring), "Selling weaponized vehicles results in a 15 percent fine for each vehicle sold.\n\n{FF0000}You will only recieve %s(fine: %s) for this transaction, proceed?", number_format(price-fine), number_format(fine));
+					ShowPlayerDialogEx(playerid, DIALOG_WEPVEHSALE, DIALOG_STYLE_MSGBOX, "{FF0000}Notice", dialogstring, "Proceed", "Exit");
+
+					SetPVarInt(playerid, "WepVehSalePlayer", giveplayerid);
+					SetPVarInt(playerid, "WepVehSaleVehicle", d);
+					SetPVarInt(playerid, "WepVehSalePrice", price);
+					SetPVarInt(playerid, "WepVehSaleFine", fine);
+					return 1;
 				}
 				SetPVarInt(playerid, "LastTransaction", gettime());
                 VehicleOffer[giveplayerid] = playerid;

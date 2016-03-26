@@ -429,8 +429,23 @@ CMD:accept(playerid, params[])
                             SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
                             format(szMessage, sizeof(szMessage), "* You sold your %s to %s for $%s.",GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), sendername, number_format(VehiclePrice[playerid]));
                             SendClientMessageEx(VehicleOffer[playerid], COLOR_LIGHTBLUE, szMessage);
-							GivePlayerCashEx(VehicleOffer[playerid], TYPE_ONHAND, VehiclePrice[playerid]);
 							GivePlayerCashEx(playerid, TYPE_ONHAND, -VehiclePrice[playerid]);
+
+							if(IsWeaponizedVehicle(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvModelId]))
+							{
+								new fine = GetPVarInt(VehicleOffer[playerid], "WepVehSaleFine");
+								GivePlayerCashEx(VehicleOffer[playerid], TYPE_ONHAND, VehiclePrice[playerid] - fine);
+
+								format(szMessage, sizeof(szMessage), "* You have been fined %s for this transaction", number_format(fine));
+                            	SendClientMessageEx(VehicleOffer[playerid], COLOR_LIGHTBLUE, szMessage);
+
+								DeletePVar(VehicleOffer[playerid], "WepVehSalePlayer");
+								DeletePVar(VehicleOffer[playerid], "WepVehSaleVehicle");
+								DeletePVar(VehicleOffer[playerid], "WepVehSalePrice");
+								DeletePVar(VehicleOffer[playerid], "WepVehSaleFine");
+							}
+							else GivePlayerCashEx(VehicleOffer[playerid], TYPE_ONHAND, VehiclePrice[playerid]);
+
                             /*GivePlayerCash( VehicleOffer[playerid], VehiclePrice[playerid] );
                             GivePlayerCash(playerid, -VehiclePrice[playerid]);*/
                             RemovePlayerFromVehicle(VehicleOffer[playerid]);
