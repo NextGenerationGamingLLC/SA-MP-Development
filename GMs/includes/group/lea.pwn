@@ -918,7 +918,7 @@ CMD:nobackup(playerid, params[])
 
 CMD:vmdc(playerid, params[])
 {
-    if(IsACop(playerid) || IsATowman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)
+    if(IsACop(playerid) || IsATowman(playerid) || IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 2)
     {
         new string[128], giveplayerid;
         if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vmdc [player]");

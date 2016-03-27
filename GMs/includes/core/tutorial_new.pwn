@@ -598,7 +598,6 @@ Tutorial_Stage(playerid) {
 				\t\t\tWinterfield\n\
 				\t\t\tAustin\n\
 				\t\t\tFarva\n\
-				\t\t\tDom\n\
 				\t\t\t{F69500}Past Developers{FFFFFF}:\n\
 				\t\t\tAkatony\t\tJohn\t\tBrendan\n\
 				\t\t\tBrian\t\tScott\t\tGhoulSlayer\n\
