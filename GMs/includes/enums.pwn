@@ -1879,8 +1879,8 @@ enum e_AntiCheat {
 }
 new arrAntiCheat[MAX_PLAYERS][e_AntiCheat];
 
-/*
-enum AntiCheat:(<<= 1) {
+
+enum e_bAntiCheat:(<<= 1) {
 
 	ac_bitValidPlayerHealth = 1, // keep 1
 	ac_bitValidPlayerPos,
@@ -1888,8 +1888,8 @@ enum AntiCheat:(<<= 1) {
 	ac_bitValidSpectating,
 	ac_bitDied
 };
-new AntiCheat:arrPlayerCheat[MAX_PLAYERS];
-*/
+new e_bAntiCheat:arrPAntiCheat[MAX_PLAYERS];
+
 
 enum eUfo {
 	ufo_iObjectID[13],

@@ -724,7 +724,8 @@ hook OnPlayerEnterCheckpoint(playerid) {
 				}
 			}
 
-			new iCash = GetPVarInt(playerid, "BM_PAY");
+			// new iCash = GetPVarInt(playerid, "BM_PAY");
+			new iCash = 500;
 
 			if(arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_iBudget] - iCash > 0) {
 
@@ -740,8 +741,12 @@ hook OnPlayerEnterCheckpoint(playerid) {
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 				SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
 
+				format(szMiscArray, sizeof(szMiscArray), "You received $%s from %s's (ID %d) point delivery to %s's (ID %d) black market",
+					number_format(iCash), GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), arrGroupData[arrPoint[iPointID][po_iGroupID]][g_szGroupName], arrPoint[iPointID][po_iGroupID]);
+				GroupLog(arrPoint[iPointID][po_iGroupID], szMiscArray);
+
 				format(szMiscArray, sizeof(szMiscArray), "%s (%d) has been paid $%s for a delivery to %s's (ID %d) black market",
-				GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), number_format(iCash), arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], arrBlackMarket[iBlackMarketID][bm_iGroupID]);
+					GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), number_format(iCash), arrGroupData[arrBlackMarket[iBlackMarketID][bm_iGroupID]][g_szGroupName], arrBlackMarket[iBlackMarketID][bm_iGroupID]);
 				Log("logs/drugsmuggles.log", szMiscArray);
 			}
 			else SendClientMessageEx(playerid, COLOR_RED, "There was insufficient money to pay you for your services!");
@@ -781,26 +786,37 @@ hook OnPlayerEnterCheckpoint(playerid) {
 
 			new iVehID = GetPlayerVehicleID(playerid),
 				iPointID = GetPVarInt(playerid, PVAR_ATDRUGPOINT),
-				iPointRevenue;
+				iPointRevenue,
+				iCash = 10;
 
 			SendClientMessageEx(playerid, COLOR_GREEN, "____________ Drug Smuggle Completed ____________");
-			format(szMiscArray, sizeof(szMiscArray), "po. %d", iPointID);
+			format(szMiscArray, sizeof(szMiscArray), "%s's Point (ID %d)", arrGroupData[arrPoint[iPointID][po_iGroupID]][g_szGroupName], iPointID);
 			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 
 			for(new i; i < sizeof(szIngredients); ++i) {
 
-				if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0)
-				{
+				if(arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] > 0) {
+
 					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 					PlayerInfo[playerid][p_iIngredient][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
-					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (10 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
-					iPointRevenue += (10 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
+					// arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (10 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
+					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += iCash;
+					// iPointRevenue += (10 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
+					iPointRevenue += iCash;
 					arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] = 0;
 				}
 			}
 
 			SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
+
+			format(szMiscArray, sizeof(szMiscArray), "You received $%s from %s's (ID %d) point delivery to %s's (ID %d) black market",
+				number_format(iCash), GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), arrGroupData[arrPoint[iPointID][po_iGroupID]][g_szGroupName], arrPoint[iPointID][po_iGroupID]);
+			GroupLog(arrPoint[iPointID][po_iGroupID], szMiscArray);
+
+			format(szMiscArray, sizeof(szMiscArray), "%s (%d) has received $10 for a delivery by %s's (ID %d).",
+				arrGroupData[arrPoint[iPointID][po_iGroupID]][g_szGroupName], arrPoint[iPointID][po_iGroupID], GetPlayerNameExt(playerid), GetPlayerSQLId(playerid));
+			Log("logs/drugsmuggles.log", szMiscArray);
 
 			Point_AddUsage(iPointID, iPointRevenue);
 
@@ -995,7 +1011,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_BLACKMARKET_ORDER_INGAM:
 		{
 			if(!response) return DeletePVar(playerid, PVAR_INGREDIENT_ORDERING), 1;
-			if(isnull(inputtext) || strval(inputtext) < 0 || !IsNumeric(inputtext)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount");
+			if(isnull(inputtext) || strval(inputtext) < 0 || !IsNumeric(inputtext) || strval(inputtext) > 1000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount");
 			Drug_OrderIngredient(playerid, GetPVarInt(playerid, PVAR_BLMARKETID), GetPVarInt(playerid, PVAR_INGREDIENT_ORDERING), strval(inputtext));
 			DeletePVar(playerid, PVAR_INGREDIENT_ORDERING);
 		}
@@ -1124,7 +1140,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					Smuggle_LoadIngredients(playerid);
 					return 1;
 				}
-				return ShowPlayerDialogEx(playerid, DIALOG_SMUGGLE_DELIVERTO, DIALOG_STYLE_LIST, "Smuggle | Deliver to Black Market or own storage?", "Black Market\nOwn Storage", "Select", "Cancel");
+				// return ShowPlayerDialogEx(playerid, DIALOG_SMUGGLE_DELIVERTO, DIALOG_STYLE_LIST, "Smuggle | Deliver to Black Market or own storage?", "Black Market\nOwn Storage", "Select", "Cancel");
+				Smuggle_StartSmuggle(playerid);
+				return 1;
 			}
 			SetPVarInt(playerid, PVAR_INGREDIENT_ORDERING, listitem - 1);
 			format(szMiscArray, sizeof(szMiscArray), "Specify the amount you would like to add to package:\n\n {FFFF00}%s.", szIngredients[listitem - 1]);
@@ -2281,11 +2299,11 @@ Drug_OrderIngredient(playerid, iBlackMarketID, iIngredientID, iAmount) // change
 	}
 
 	if(GetPlayerCash(playerid) < iCost)
-		SendClientMessage(playerid, COLOR_LIGHTRED, "You have insufficient funds to pay for this order.");
+		return SendClientMessage(playerid, COLOR_LIGHTRED, "You have insufficient funds to pay for this order.");
 
 	GivePlayerCash(playerid, -arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][iIngredientID] * iAmount);
 	arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][iIngredientID] -= iAmount;
-	arrGroupData[iGroupID][g_iBudget] += (arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][iIngredientID] * iAmount);
+	// arrGroupData[iGroupID][g_iBudget] += (arrBlackMarket[iBlackMarketID][bm_iIngredientPrice][iIngredientID] * iAmount);
 
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `blackmarkets` SET `%s` = '%d' WHERE `id` = '%d'",
 		DS_Ingredients_GetSQLName(iIngredientID), arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][iIngredientID], iBlackMarketID + 1);
@@ -3530,7 +3548,7 @@ CMD:getpostorder(playerid, params[]) {
 CMD:plantseeds(playerid, params[]) {
 
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot plant seeds inside a vehicle.");
-	
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot plant seeds as an OOC prisoner.");
 	new szChoice[16],
 		iDrugID = -1,
 		iIngredientID;

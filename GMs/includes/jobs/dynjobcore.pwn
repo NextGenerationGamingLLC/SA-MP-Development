@@ -96,7 +96,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				
 				new iJob = GetPVarInt(playerid, PVAR_JOB_OBTAINING);
 
-				if(PlayerInfo[playerid][pDonateRank] == 0 && PlayerInfo[playerid][pFamed] == 0 || PlayerInfo[playerid][pJob] == 0)	{
+				if(PlayerInfo[playerid][pJob] == 0)	{
 
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
 
@@ -446,10 +446,10 @@ Job_GetJob(playerid, i)
     	return SendClientMessageEx(playerid, COLOR_GRAD1, "You already have this job.");
     }
 	if(PlayerInfo[playerid][pJob] == 0) format(szMiscArray, sizeof(szMiscArray), "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}?", GetJobName(arrJobData[i][job_iType]));
-	if(0 < PlayerInfo[playerid][pDonateRank] < 4) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (VIP Job)", GetJobName(arrJobData[i][job_iType]));
-	if(PlayerInfo[playerid][pDonateRank] > 3) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (Platinum VIP Job)", GetJobName(arrJobData[i][job_iType]));
-	if(PlayerInfo[playerid][pFamed] > 0) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (OS/Famed Job)", GetJobName(arrJobData[i][job_iType]));
-	if(PlayerInfo[playerid][pJob] > 0 && PlayerInfo[playerid][pDonateRank] == 0 && PlayerInfo[playerid][pFamed] == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You already have a job, use '/quitjob' from your old job in order to obtain a new one.");
+	else if(0 < PlayerInfo[playerid][pDonateRank] < 4) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (VIP Job)", GetJobName(arrJobData[i][job_iType]));
+	else if(PlayerInfo[playerid][pDonateRank] > 3) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (Platinum VIP Job)", GetJobName(arrJobData[i][job_iType]));
+	else if(PlayerInfo[playerid][pFamed] > 0) format(szMiscArray, sizeof szMiscArray, "Would you like to proceed a career as a {FFFF00}%s{FFFFFF}? (OS/Famed Job)", GetJobName(arrJobData[i][job_iType]));
+	else if(PlayerInfo[playerid][pJob] > 0 && PlayerInfo[playerid][pDonateRank] == 0 && PlayerInfo[playerid][pFamed] == 0) return SendClientMessage(playerid, COLOR_GRAD1, "You already have a job, use '/quitjob' from your old job in order to obtain a new one.");
 	
 	SetPVarInt(playerid, PVAR_JOB_OBTAINING, arrJobData[i][job_iType]);
 	ShowPlayerDialogEx(playerid, DIALOG_JOBS_ACCEPTJOB, DIALOG_STYLE_MSGBOX, "Job Point", szMiscArray, "Yes", "No");

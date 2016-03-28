@@ -157,6 +157,8 @@ TurfWars_AddTraffic(iTurfID) {
 TurfWars_TurfTax(playerid, szType[], iAmount) {
 
 	new iTurfID = TurfWars_GetTurfID(playerid);
+	if(iAmount > 500000) SendClientMessageEx(playerid, COLOR_YELLOW, "[Turf] The tax you had to pay was larger than $500.000. You therefore only have to pay:");
+	iAmount = 500000;
 	if(iTurfID != 369 && arrTurfWars[iTurfID][tw_iGroupID] != INVALID_GROUP_ID && !Bit_State(arrTurfWarsBits[iTurfID], tw_bShutdown) &&
 		PlayerInfo[playerid][pMember] != arrTurfWars[iTurfID][tw_iGroupID] && !Bit_State(arrTurfWarsBits[iTurfID], tw_bDisabled)) {
 

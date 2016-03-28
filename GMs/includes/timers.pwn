@@ -294,7 +294,7 @@ task SyncTime[60000]()
 			else
 			{
 				new file[32];
-				format(szMiscArray, sizeof(szMiscArray), "The faction vault is at $%s", number_format(arrGroupData[iGroupID][g_iBudget]));
+				format(szMiscArray, sizeof(szMiscArray), "The faction vault is at $%s.", number_format(arrGroupData[iGroupID][g_iBudget]));
 				new month, day, year;
 				getdate(year, month, day);
 				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);

@@ -1181,7 +1181,8 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_REGISTER_NATION			(6161)
 
 #define 		DIALOG_WEPVEHSALE				(6162)
-
+#define 		DIALOG_AC_MAIN					(6163)
+        			
 // GangTags
 #define 			GANGTAG_TIME				60000
 
@@ -1433,7 +1434,9 @@ native IsValidVehicle(vehicleid);
 #define 			AC_INFINITESTAMINA			9
 #define 			AC_HEALTHARMORHACKS			10
 #define 			AC_DIALOGSPOOFING			11
-#define 			AC_MAX						12
+#define 			AC_REJECTHITS				12
+#define 			AC_MAX						13
+        			
 /* PVARS */
 #define 			PVAR_DRUGS_MIXSLOT				"DRM_S"
 #define 			PVAR_MAKINGDRUG					"DRM_D"
