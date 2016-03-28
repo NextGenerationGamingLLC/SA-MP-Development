@@ -4209,6 +4209,11 @@ CMD:deploy(playerid, params[])
 								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19954, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
 								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
 							}
+							case 14:
+							{
+								Signs[iGroup][i][sObjectID] = CreateDynamicObject(1233, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);
+								SetPlayerPos(playerid, Signs[iGroup][i][sX] + 1, Signs[iGroup][i][sY] + 1, Signs[iGroup][i][sZ]);
+							}
 							default:
 							{
 								Signs[iGroup][i][sObjectID] = CreateDynamicObject(19966, Signs[iGroup][i][sX], Signs[iGroup][i][sY], Signs[iGroup][i][sZ] - 1.0, 0.0, 0.0, f_TempAngle);

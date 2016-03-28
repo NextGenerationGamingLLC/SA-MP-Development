@@ -410,75 +410,12 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	}
 	return 1;
 }
-
+/*
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-	new iAT = GetAmmoType(weaponid);
-	new iCA = GetPlayerAmmo(playerid);
-	new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
-
-	szMiscArray[0] = 0;
-
-	if(iAT != -1 && !GetPVarType(playerid, "IsInArena") && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0 && !GetPVarInt(playerid, "z50Cal") && !zombieevent)
-	{
-		if(iCA <= 1 && arrAmmoData[playerid][awp_iAmmo][iAT] <= 1)
-		{
-			GameTextForPlayer(playerid, "No ammo!", 1000, 6);
-			format(szMiscArray, sizeof(szMiscArray), "** The weapon clicks **", GetPlayerNameEx(playerid));
-			SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10.0, 3000);
-			if(GetPlayerState(playerid) != PLAYER_STATE_PASSENGER) GivePlayerWeapon(playerid, weaponid, 99); // preventing a drive buy bug issue.
-			SetPlayerArmedWeapon(playerid, 0);
-			return 0; // preventing if the weapon if the ammo is empty and preventing them from loosing it.
-		}
-		if(iCA != arrAmmoData[playerid][awp_iAmmo][iAT])
-		{
-			SyncPlayerAmmo(playerid, weaponid);
-			return 0;
-		}
-
-		arrAmmoData[playerid][awp_iAmmo][iAT]--;
-	}
-	if(weaponid == WEAPON_SILENCED && pTazer{playerid} == 1) {
-		new iShots = GetPVarInt(playerid, "TazerShots");
-
-		if(iShots > 0) {
-			SetPVarInt(playerid, "TazerShots", iShots - 1);
-			SetPlayerAmmo(playerid, WEAPON_SILENCED, 3);
-		}
-		
-		if(iShots < 1) {
-			TazerTimeout[playerid] = 12;
-			SetTimerEx("TazerTimer",1000,false,"d",playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is recharging!");
-			
-			RemovePlayerWeapon(playerid, 23);
-			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
-			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
-			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			pTazer{playerid} = 0;
-		}
-	}
-	if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1) {
-		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid) return 1;
-	}
-
-	if(hittype == BULLET_HIT_TYPE_PLAYER)
-	{
-		if(!IsPlayerStreamedIn(playerid, hitid) || !IsPlayerStreamedIn(hitid, playerid)) return 0;
-	}
-	if(weaponid == 24 || weaponid == 25 || weaponid == 26/* || weaponid == 31*/)
-	{
-		++PlayerShots[playerid];
-	}
-	if(GetPVarInt(playerid, "FireStart") == 1)
-	{
-		if(fX != 0 && fY != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE)
-		{
-			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
-		}
-	}
 	return 1;
 }
+*/
 
 public OnPlayerDeath(playerid, killerid, reason)
 {

@@ -5169,6 +5169,15 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		return 0;
 	}
 
+	arrAntiCheat[playerid][ac_iCommandCount]++;
+	switch(arrAntiCheat[playerid][ac_iCommandCount]) {
+		case 0 .. 6: {}
+		default: {
+			AC_Process(playerid, AC_CMDSPAM, arrAntiCheat[playerid][ac_iCommandCount]);
+			return 0;
+		}
+	}
+
 	playerLastTyped[playerid] = 0;
 	printf("[zcmd] [%s]: %s", GetPlayerNameEx(playerid), (strfind(cmdtext, "/changepass", true) == 0 ? ("/changepass") : cmdtext));
 	if(PlayerInfo[playerid][pForcePasswordChange] == 1) return ShowLoginDialogs(playerid, 0), 0;

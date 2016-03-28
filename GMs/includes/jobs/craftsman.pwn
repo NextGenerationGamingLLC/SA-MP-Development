@@ -436,7 +436,7 @@ CMD:rccam(playerid, params[])
 			}
 			SetPVarInt(playerid, "rcveh", AddStaticVehicle(594, X, Y, Z, 0, 0, 0));
 			IsPlayerEntering{playerid} = true;
-			PutPlayerInVehicle(playerid, GetPVarInt(playerid, "rcveh"), 0);
+			AC_PutPlayerInVehicle(playerid, GetPVarInt(playerid, "rcveh"), 0);
 			SetPVarInt(playerid, "rccamtimer", SetTimerEx("rccam", 60000, 0, "d", playerid));
 			format(string, sizeof(string), "* %s places something on the ground.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

@@ -2225,6 +2225,7 @@ public ResetNews()
 	return true;
 }	
 
+/*
 forward Float: GetPlayerSpeed(playerid);
 public Float: GetPlayerSpeed(playerid)
 {
@@ -2232,6 +2233,7 @@ public Float: GetPlayerSpeed(playerid)
 	GetPlayerVelocity(playerid, fVelocity[0], fVelocity[1], fVelocity[2]);
 	return floatsqroot((fVelocity[0] * fVelocity[0]) + (fVelocity[1] * fVelocity[1]) + (fVelocity[2] * fVelocity[2])) * 100;
 }
+*/
 
 forward HidePlayerTextDraw(playerid, PlayerText:txd);
 public HidePlayerTextDraw(playerid, PlayerText:txd) return PlayerTextDrawHide(playerid, txd);

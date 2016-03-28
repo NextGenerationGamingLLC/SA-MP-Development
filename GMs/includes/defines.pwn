@@ -1419,6 +1419,21 @@ native IsValidVehicle(vehicleid);
 #define 	MAX_CHATSETS 				(23)
 
 
+/* ANTICHEAT */
+        			
+#define 			AC_AIMBOT					0
+#define 			AC_CBUG 					1
+#define 			AC_RANGEHACKS 				2
+#define 			AC_SPEEDHACKS 				3
+#define 			AC_VEHICLEHACKS				4
+#define 			AC_CMDSPAM					5
+#define 			AC_CARSURFING				6
+#define 			AC_NINJAJACK 				7
+#define 			AC_AIRBREAKING 				8
+#define 			AC_INFINITESTAMINA			9
+#define 			AC_HEALTHARMORHACKS			10
+#define 			AC_DIALOGSPOOFING			11
+#define 			AC_MAX						12
 /* PVARS */
 #define 			PVAR_DRUGS_MIXSLOT				"DRM_S"
 #define 			PVAR_MAKINGDRUG					"DRM_D"

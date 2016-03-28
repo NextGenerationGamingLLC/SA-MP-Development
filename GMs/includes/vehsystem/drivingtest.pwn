@@ -358,7 +358,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPlayerInterior(playerid, 0);
 					SetPVarInt(playerid, "PTestVeh", CreateVehicle(404, 814.0655,-600.5410,16.0355, 90.0, 3, 3, -1));
 					new pTestVeh = GetPVarInt(playerid, "PTestVeh");
-					PutPlayerInVehicle(playerid, pTestVeh, 0);
+					AC_PutPlayerInVehicle(playerid, pTestVeh, 0);
 					SendClientMessageEx(playerid, COLOR_WHITE, "Driving Instructor: Please make sure you go a max of 50mph in the residential areas. You may now begin.");
 					if(!PlayerInfo[playerid][pSpeedo])
 					{

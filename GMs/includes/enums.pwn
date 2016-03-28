@@ -1868,6 +1868,16 @@ enum eTurfWarsBits:(<<= 1) {
 };
 new eTurfWarsBits:arrTurfWarsBits[MAX_TURFS];
 
+enum e_AntiCheat {
+
+	ac_iVehID,
+	ac_iShots,
+	Float:ac_fPos[3],
+	Float:ac_fSpeed,
+	ac_iFlags[AC_MAX],
+	ac_iCommandCount,
+}
+new arrAntiCheat[MAX_PLAYERS][e_AntiCheat];
 
 /*
 enum AntiCheat:(<<= 1) {

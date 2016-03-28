@@ -572,7 +572,7 @@ public ParkVehicle(playerid, ownerid, vehicleid, d, Float:X, Float:Y, Float:Z)
 			SurfingCheck(vehicleid);
 			UpdatePlayerVehicleParkPosition(ownerid, d, x, y, z, angle, health, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 			IsPlayerEntering{playerid} = true;
-			PutPlayerInVehicle(playerid, vehicleid, 0);
+			AC_PutPlayerInVehicle(playerid, vehicleid, 0);
 			SetPlayerArmedWeapon(playerid, 0);
 			format(string, sizeof(string), "* %s has parked %s's vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(ownerid));
 		}
@@ -583,7 +583,7 @@ public ParkVehicle(playerid, ownerid, vehicleid, d, Float:X, Float:Y, Float:Z)
 			SurfingCheck(vehicleid);
 			UpdatePlayerVehicleParkPosition(playerid, d, x, y, z, angle, health, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 			IsPlayerEntering{playerid} = true;
-			PutPlayerInVehicle(playerid, vehicleid, 0);
+			AC_PutPlayerInVehicle(playerid, vehicleid, 0);
 			SetPlayerArmedWeapon(playerid, 0);
 			format(string, sizeof(string), "* %s has parked their vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(ownerid));
 		}

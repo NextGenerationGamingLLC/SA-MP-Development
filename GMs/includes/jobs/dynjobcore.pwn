@@ -708,7 +708,7 @@ public Job_OnCreateJobVehicle(i, iTypeID, iVehID, Float:x, Float:y, Float:z, Flo
 
 CMD:createjobveh(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	
 	new iTypeID,
 		iVehID,
