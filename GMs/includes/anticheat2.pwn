@@ -605,6 +605,7 @@ hook OnPlayerConnect(playerid) {
 	arrAntiCheat[playerid][ac_fSpeed] = 0;
 	for(new i; i < AC_MAX; ++i) arrAntiCheat[playerid][ac_iFlags][i] = 0;
 	Bit_Off(arrPAntiCheat[playerid], ac_bitValidPlayerPos);
+	Bit_Off(arrPAntiCheat[playerid], ac_bitValidSpectating);
 
 	ac_LastUpdate[playerid] = iTick;
 	ac_PlayerMaxHealth[playerid] = 100.0;
@@ -692,25 +693,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			if(arrLastBulletData[playerid][acl_Tick] && iDiff < 1200 && !ac_iCBugFreeze[playerid]) {
 
-				PlayerPlaySound(playerid, 1055, 0.0, 0.0, 0.0);
-				if(arrLastBulletData[playerid][acl_Valid] && floatabs(arrLastBulletData[playerid][acl_fHitPos][0]) > 1.0 && floatabs(arrLastBulletData[playerid][acl_fPos][1]) > 1.0) {
-					SetPlayerFacingAngle(playerid, AngleBetweenPoints(
-						arrLastBulletData[playerid][acl_fPos][0],
-						arrLastBulletData[playerid][acl_fPos][1],
-						arrLastBulletData[playerid][acl_fOrigin][0],
-						arrLastBulletData[playerid][acl_fOrigin][1]
-					));
-				}
-
-				new w, a;
-				GetPlayerWeaponData(playerid, 0, w, a);
-
-				ClearAnimations(playerid, 1);
-				ApplyAnimation(playerid, "PED", "IDLE_stance", 4.1, 0, 0, 0, 0, 0, 1);
-				// FreezeSyncData(playerid, true);
-				GivePlayerWeapon(playerid, w, 0);
 				AC_Process(playerid, AC_CBUG); //GetPlayerWeapon(playerid));
-
 				ac_iCBugFreeze[playerid] = GetTickCount();
 			}
 		}
@@ -1036,8 +1019,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	    if(fSpeed > 5) { // subject to discussion
     	
 			arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid]++;
-			if(!(++arrAntiCheat[playerid][ac_iShots] % ac_MaxWeaponContShots[weaponid]))
-				AC_Process(playerid, AC_AIMBOT, weaponid);
+			if(!(++arrAntiCheat[playerid][ac_iShots] % ac_MaxWeaponContShots[weaponid])) AC_Process(playerid, AC_AIMBOT, weaponid);
 
 			new iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] - arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] - arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid],
 				Float:fRatio;
@@ -1074,10 +1056,10 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 ptask HackCheck_Micro[1000](playerid) {
 
-	if(PlayerInfo[playerid][pAdmin] < 2) {
+	//if(PlayerInfo[playerid][pAdmin] < 2)
+	{
 		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
-			if(ac_ACToggle[AC_AIRBREAKING] && AC_AirBreaking(playerid) && !Bit_State(arrPAntiCheat[playerid], ac_bitValidPlayerPos) &&
-				!Bit_State(arrPAntiCheat[playerid], ac_bitValidSpectating)) AC_Process(playerid, AC_AIRBREAKING);
+			if(ac_ACToggle[AC_AIRBREAKING] && AC_AirBreaking(playerid)) AC_Process(playerid, AC_AIRBREAKING);
 
 			/* Reset arrPAntiCheat bits that were set in callback wrappers */
 			Bit_Off(arrPAntiCheat[playerid], ac_bitValidPlayerPos);
@@ -1092,7 +1074,8 @@ ptask HackCheck[HACKTIMER_INTERVAL](playerid) {
 	arrAntiCheat[playerid][ac_iCommandCount] = 0;
 	ac_iPlayerKeySpam[playerid] = 0;
 	arrAntiCheat[playerid][ac_fSpeed] = GetPlayerSpeed(playerid);
-	if(PlayerInfo[playerid][pAdmin] < 2) {
+	// if(PlayerInfo[playerid][pAdmin] < 2)
+	{
 		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
 			if(ac_ACToggle[AC_CARSURFING] && AC_IsPlayerSurfing(playerid)) AC_Process(playerid, AC_CARSURFING, INVALID_PLAYER_ID);
 			if(ac_ACToggle[AC_HEALTHARMORHACKS] && AC_PlayerHealthArmor(playerid)) AC_Process(playerid, AC_HEALTHARMORHACKS, INVALID_PLAYER_ID);
@@ -1124,44 +1107,46 @@ AC_InfiniteStamina(playerid) {
 
 AC_AirBreaking(i) {
 
-
 	new Float:fPos[3],
-		Float:fDistance;
+		iDistance;
 
 	GetPlayerPos(i, fPos[0], fPos[1], fPos[2]);
-	if(arrAntiCheat[i][ac_fPos][0] == 0.0 || arrAntiCheat[i][ac_fPos][1] == 0.0) {
+	if(arrAntiCheat[i][ac_fPos][0] == 0.0 || arrAntiCheat[i][ac_fPos][1] == 0.0 || arrAntiCheat[i][ac_fPos][2] == 0.0 ||
+		Bit_State(arrPAntiCheat[i], ac_bitValidPlayerPos) || Bit_State(arrPAntiCheat[i], ac_bitValidSpectating) || GetPlayerState(i) == PLAYER_STATE_SPECTATING) {
+
 		arrAntiCheat[i][ac_fPos][0] = fPos[0];
 		arrAntiCheat[i][ac_fPos][1] = fPos[1];
 		arrAntiCheat[i][ac_fPos][2] = fPos[2];
+		return 0;
 	}
 
-	fDistance = GetDistanceBetweenPoints(fPos[0], fPos[1], fPos[2], arrAntiCheat[i][ac_fPos][0], arrAntiCheat[i][ac_fPos][1], arrAntiCheat[i][ac_fPos][2]);
+	iDistance = floatround(GetDistanceBetweenPoints(fPos[0], fPos[1], fPos[2], arrAntiCheat[i][ac_fPos][0], arrAntiCheat[i][ac_fPos][1], arrAntiCheat[i][ac_fPos][2]));
+	arrAntiCheat[i][ac_fPos][0] = fPos[0];
+	arrAntiCheat[i][ac_fPos][1] = fPos[1];
+	arrAntiCheat[i][ac_fPos][2] = fPos[2];
+
 	#if defined AC_DEBUG
-	format(szMiscArray, sizeof(szMiscArray), "Distance: %f (%f, %f, %f, %f, %f, %f)", fDistance, fPos[0], fPos[1], fPos[2], arrAntiCheat[i][ac_fPos][0], arrAntiCheat[i][ac_fPos][1], arrAntiCheat[i][ac_fPos][2]);
+	format(szMiscArray, sizeof(szMiscArray), "Distance: %d (%f, %f, %f, %f, %f, %f)", iDistance, fPos[0], fPos[1], fPos[2], arrAntiCheat[i][ac_fPos][0], arrAntiCheat[i][ac_fPos][1], arrAntiCheat[i][ac_fPos][2]);
 	SendClientMessage(i, 0xFFFFFFFF, szMiscArray);
 	#endif
 
-	new Float:fSpeed = GetPlayerSpeed(i);
+	new iSpeed = floatround(GetPlayerSpeed(i));
 	if(IsPlayerInAnyVehicle(i)) {
 		
 		#if defined AC_DEBUG
-		format(szMiscArray, sizeof(szMiscArray), "VEH SPEED: %f", fSpeed);
+		format(szMiscArray, sizeof(szMiscArray), "VEH SPEED: %d", iSpeed);
 		SendClientMessage(i, 0xFFFFFFFF, szMiscArray);
 		#endif
-		if(fSpeed < 0.2 && fDistance > fSpeed + 30) return 1;
+		if(iSpeed < 0.2 && iDistance > iSpeed + 30) return 1;
 	}
 	else {
 
 		#if defined AC_DEBUG
-		format(szMiscArray, sizeof(szMiscArray), "FOOT SPEED: %f", fSpeed);
+		format(szMiscArray, sizeof(szMiscArray), "FOOT SPEED: %d", iSpeed);
 		SendClientMessage(i, 0xFFFFFFFF, szMiscArray);
 		#endif
-		if(fDistance > fSpeed + 30) return 1;
+		if(iDistance > iSpeed + 30) return 1;
 	}
-
-	arrAntiCheat[i][ac_fPos][0] = fPos[0];
-	arrAntiCheat[i][ac_fPos][1] = fPos[1];
-	arrAntiCheat[i][ac_fPos][2] = fPos[2];
 	return 0;
 }
 
@@ -1413,6 +1398,10 @@ timer AC_ResetPVars[2000](playerid, processid) {
 			DeletePVar(playerid, "PCMute");
 		}
 	}
+}
+
+timer AC_ResetAnim[2000](playerid) {
+	ClearAnimations(playerid, 1);
 }
 
 
@@ -2172,7 +2161,7 @@ AC_Flag(playerid, processid, iExtraID = INVALID_PLAYER_ID, Float:fInfo = 0.0) {
 
 AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 
-	if(PlayerInfo[playerid][pAdmin] > 1) return 1;
+	// if(PlayerInfo[playerid][pAdmin] > 1) return 1;
 	if(!ac_ACToggle[processid]) return 1;
 	arrAntiCheat[playerid][ac_iFlags][processid]++;
 	if(GetPVarType(playerid, "ACCooldown") && GetPVarInt(playerid, "ACCooldown") == processid) return 1;
@@ -2200,7 +2189,31 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			}
-			case AC_CBUG: format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is C-Bugging", GetPlayerNameEx(playerid));
+			case AC_CBUG: {
+				// format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is C-Bugging", GetPlayerNameEx(playerid));
+				PlayerPlaySound(playerid, 1055, 0.0, 0.0, 0.0);
+				if(arrLastBulletData[playerid][acl_Valid] && floatabs(arrLastBulletData[playerid][acl_fHitPos][0]) > 1.0 && floatabs(arrLastBulletData[playerid][acl_fPos][1]) > 1.0) {
+					SetPlayerFacingAngle(playerid, AngleBetweenPoints(
+						arrLastBulletData[playerid][acl_fPos][0],
+						arrLastBulletData[playerid][acl_fPos][1],
+						arrLastBulletData[playerid][acl_fOrigin][0],
+						arrLastBulletData[playerid][acl_fOrigin][1]
+					));
+				}
+
+				new w, a;
+				GetPlayerWeaponData(playerid, 0, w, a);
+
+				ClearAnimations(playerid, 1);
+				ApplyAnimation(playerid, "PED", "IDLE_stance", 4.1, 0, 0, 0, 0, 0, 1);
+				defer AC_ResetAnim(playerid);
+				// FreezeSyncData(playerid, true);
+				GivePlayerWeapon(playerid, w, 0);
+
+				szMiscArray = "[SYSTEM]: Please do not C-Bug / CS.";
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
+				return 1;
+			}
 			case AC_RANGEHACKS: {
 
 				new iTotalMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID],
@@ -2429,6 +2442,13 @@ CMD:aimcheck(playerid, params[]) {
 	}
 	format(szTitle, sizeof(szTitle), "Aimbot Check | Weapon Data {FFFF00}(%s)", GetPlayerNameEx(uPlayer));
 	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "---------- [ ANTICHEAT ] ----------");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Jingles:");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Player ratios for some weapons (especially Combat Shotguns (SPAS)) can be high even though they're not aimbotting.");
+	format(szMiscArray, sizeof(szMiscArray), "Only make conclusions if the total shots fired is higher than approx. 50. TIMESTAMP: %s", date(gettime(), 3));
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "------------------------------ ");
 	return 1;
 }
 
@@ -2454,6 +2474,11 @@ CMD:acflags(playerid, params[]) {
 	}
 	format(szTitle, sizeof(szTitle), "AC System Flags | {FFFF00}(%s)", GetPlayerNameEx(uPlayer));
 	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "---------- [ ANTICHEAT ] ----------");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Jingles:");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "These stats are still in beta.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "------------------------------ ");
 	return 1;
 }
 

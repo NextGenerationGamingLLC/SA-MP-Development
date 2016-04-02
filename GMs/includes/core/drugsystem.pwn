@@ -810,7 +810,7 @@ hook OnPlayerEnterCheckpoint(playerid) {
 
 			SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
 
-			format(szMiscArray, sizeof(szMiscArray), "You received $%s from %s's (ID %d) point delivery to %s's (ID %d) black market",
+			format(szMiscArray, sizeof(szMiscArray), "You received $%s from %s's (ID %d) point delivery to %s's (ID %d) point.",
 				number_format(iCash), GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), arrGroupData[arrPoint[iPointID][po_iGroupID]][g_szGroupName], arrPoint[iPointID][po_iGroupID]);
 			GroupLog(arrPoint[iPointID][po_iGroupID], szMiscArray);
 
