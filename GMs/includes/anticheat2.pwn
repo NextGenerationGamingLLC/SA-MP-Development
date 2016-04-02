@@ -620,13 +620,33 @@ hook OnPlayerConnect(playerid) {
 	// ac_PreviousHitI[playerid] = 0;
 	ac_iCBugFreeze[playerid] = 0;
 
-	arrLastBulletData[playerid][acl_Tick] = 0;
-
 	/*
 	for (new i = 0; i < sizeof(s_PreviousHits[]); i++) {
 		ac_PreviousHits[playerid][i][e_Tick] = 0;
 	}
 	*/
+
+	arrLastBulletData[playerid][acl_Tick] = 0;
+	arrLastBulletData[playerid][acl_Weapon] = 0;
+	arrLastBulletData[playerid][acl_HitType] = HIT_INVALID_HITTYPE;
+	arrLastBulletData[playerid][acl_HitId] = INVALID_PLAYER_ID;
+	arrLastBulletData[playerid][acl_fPos][0] = 0;
+	arrLastBulletData[playerid][acl_fPos][1] = 0;
+	arrLastBulletData[playerid][acl_fPos][2] = 0;
+	arrLastBulletData[playerid][acl_fOrigin][0] = 0;
+	arrLastBulletData[playerid][acl_fOrigin][1] = 0;
+	arrLastBulletData[playerid][acl_fOrigin][2] = 0;
+	arrLastBulletData[playerid][acl_fHitPos][0] = 0;
+	arrLastBulletData[playerid][acl_fHitPos][1] = 0;
+	arrLastBulletData[playerid][acl_fHitPos][2] = 0;
+	arrLastBulletData[playerid][acl_fDistance] = 0;
+	arrLastBulletData[playerid][acl_Hits] = 0;
+
+	for (new i; i < 46; i++) {
+		arrWeaponDataAC[playerid][ac_iBulletsFired][i] = 0;
+		arrWeaponDataAC[playerid][ac_iBulletsHit][i] = 0;
+		arrWeaponDataAC[playerid][ac_iFakeMiss][i] = 0;
+	}
 
 	for (new i; i < sizeof(arrRejectedHitData[]); i++) {
 		arrRejectedHitData[playerid][i][acr_iTime] = 0;
