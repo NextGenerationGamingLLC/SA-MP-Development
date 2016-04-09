@@ -165,13 +165,17 @@ TurfWars_TurfTax(playerid, szType[], iAmount) {
 		new iTurfTax = iAmount * arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iTurfTax] / 100;
 
 		if(iTurfTax > 500000) iTurfTax = 500000;
-
+		if(iTurfTax < 0) iTurfTax = 0;
+		new oldbalance = arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iBudget];
 		szMiscArray[0] = 0;
 		arrTurfWars[iTurfID][tw_iRevenue] += iTurfTax;
 		arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iBudget] += iTurfTax;
 		format(szMiscArray, sizeof(szMiscArray), "[Turf]: {CCCCCC}You paid {EEEEEE}$%s {CCCCCC}turf tax {EEEEEE}(%d percent) {CCCCCC}for the {EEEEEE}%s {CCCCCC}you sold.",
 			number_format(iTurfTax), arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iTurfTax], szType, number_format(iTurfTax));
 		SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "[GANG DEBUG] TURF TAX | GANG - %s, TURF TAX - %s, OLD GBALANCE - %s, NEW GBALANCE - %d.",
+		arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_szGroupName], number_format(iTurfTax), number_format(oldbalance), number_format(arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_iBudget]));
+		Log("logs/gangdebuglog.log", szMiscArray);
 		GivePlayerCash(playerid, -iTurfTax);
 	}
 }
@@ -920,7 +924,7 @@ public TurfWars_FetchData(playerid, area) {
 
 CMD:editturf(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR) && PlayerInfo[playerid][pGangModerator] != 2) return 1;
 
 	new szChoice[12],
 		iTurfID,

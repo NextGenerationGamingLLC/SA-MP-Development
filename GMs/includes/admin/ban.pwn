@@ -251,7 +251,7 @@ CMD:unbanip(playerid, params[]) {
 
 CMD:unban(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBanAppealer] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /unban [username]");
 
 	//if(strfind(params, "_", true, 0) != -1) SendClientMessage(playerid, COLOR_GRAD1, "Please use an underscore as spaces for non-admin accounts.");
@@ -378,7 +378,7 @@ CMD:banaccount(playerid, params[]) {
 		szReason[64],
 		iLength;
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBanAppealer] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
 	if(sscanf(params, "s[24]ds[64]", szName, iLength, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /banaccount [username] [length in days] [reason]");
 
 	if(IsPlayerConnected(ReturnUser(szName))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");

@@ -218,10 +218,15 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_field_content(i, "prisonerMOTD2", prisonerMOTD[1], MainPipeline, GROUP_MAX_MOTD_LEN);
 				cache_get_field_content(i, "prisonerMOTD3", prisonerMOTD[2], MainPipeline, GROUP_MAX_MOTD_LEN);
 
-				for(new x = 0; x < 6; x++)
+				for(new x = 0; x < 7; x++)
 				{
 					format(szResult, sizeof(szResult), "GunPrice%d",x);
 					GunPrices[x] = cache_get_field_content_int(i, szResult, MainPipeline);
+				}
+				for(new x = 0; x < 4; x++)
+				{
+					format(szResult, sizeof(szResult), "ammoMat%d",x);
+					AmmoMat[x] = cache_get_field_content_int(i, szResult, MainPipeline);
 				}
 
 				CallLocalFunction("LoadInactiveResourceSettings", "i", i);
@@ -604,7 +609,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					arrAmmoData[extraid][awp_iAmmo][1] = cache_get_field_content_int(row, "Ammo1", MainPipeline);
 					arrAmmoData[extraid][awp_iAmmo][2] = cache_get_field_content_int(row, "Ammo2", MainPipeline);
 					arrAmmoData[extraid][awp_iAmmo][3] = cache_get_field_content_int(row, "Ammo3", MainPipeline);
-					arrAmmoData[extraid][awp_iAmmo][4] = cache_get_field_content_int(row, "Ammo4", MainPipeline);
+					//arrAmmoData[extraid][awp_iAmmo][4] = cache_get_field_content_int(row, "Ammo4", MainPipeline);
 
 					PlayerInfo[extraid][pVIPGuncount] = cache_get_field_content_int(row, "VIPGunsCount", MainPipeline);
 
@@ -1569,7 +1574,11 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `CarVoucher` = '%d',", query, CarVoucher);
 	format(query, sizeof(query), "%s `PVIPVoucher` = '%d',", query, PVIPVoucher);
 	format(query, sizeof(query), "%s `GarageVW` = '%d',", query, GarageVW);
-	format(query, sizeof(query), "%s `PumpkinStock` = '%d',", query, PumpkinStock);
+	new qryLength = strlen(query);
+	if(query[qryLength-1] == ',') strdel(query, qryLength-1, qryLength);
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	format(query, sizeof(query), "UPDATE `misc` SET ");
+	format(query, sizeof(query), "`PumpkinStock` = '%d',", PumpkinStock);
 	format(query, sizeof(query), "%s `HalloweenShop` = '%d',", query, HalloweenShop);
 	format(query, sizeof(query), "%s `PassComplexCheck` = '%d',", query, PassComplexCheck);
 	format(query, sizeof(query), "%s `GunPrice0` = '%d',", query, GunPrices[0]);
@@ -1578,10 +1587,14 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `GunPrice3` = '%d',", query, GunPrices[3]);
 	format(query, sizeof(query), "%s `GunPrice4` = '%d',", query, GunPrices[4]);
 	format(query, sizeof(query), "%s `GunPrice5` = '%d'", query, GunPrices[5]);
+	format(query, sizeof(query), "%s `GunPrice6` = '%d'", query, GunPrices[6]);
+	format(query, sizeof(query), "%s `ammoMat0` = '%d'", query, AmmoMat[0]);
+	format(query, sizeof(query), "%s `ammoMat1` = '%d'", query, AmmoMat[1]);
+	format(query, sizeof(query), "%s `ammoMat2` = '%d'", query, AmmoMat[2]);
+	format(query, sizeof(query), "%s `ammoMat3` = '%d'", query, AmmoMat[3]);
 	CallLocalFunction("SaveInactiveResourceSettings", "is", sizeof(query), query);
 	SaveGangShipmentData(sizeof(query), query);
 
-	new qryLength = strlen(query);
 	if(query[qryLength-1] == ',') strdel(query, qryLength-1, qryLength);
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
@@ -2568,7 +2581,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo1", arrAmmoData[playerid][awp_iAmmo][1]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo2", arrAmmoData[playerid][awp_iAmmo][2]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo3", arrAmmoData[playerid][awp_iAmmo][3]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo4", arrAmmoData[playerid][awp_iAmmo][4]);
+	//SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo4", arrAmmoData[playerid][awp_iAmmo][4]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
 
@@ -5372,6 +5385,8 @@ public Group_QueryFinish(iType, iExtraID) {
 			arrGroupData[iIndex][g_iWithdrawRank][3] = cache_get_field_content_int(iIndex, "WithdrawRank4", MainPipeline);
 
 			arrGroupData[iIndex][g_iWithdrawRank][4] = cache_get_field_content_int(iIndex, "WithdrawRank5", MainPipeline);
+			cache_get_field_content(iIndex, "TollLockDown", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iTollLockdown] = strval(szResult);
 
 			cache_get_field_content(iIndex, "Tokens", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iTurfTokens] = strval(szResult);

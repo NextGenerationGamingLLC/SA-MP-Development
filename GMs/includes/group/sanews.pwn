@@ -1970,7 +1970,7 @@ CMD:news(playerid, params[])
 		if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /news [text]");
 
 		new newcar = GetPlayerVehicleID(playerid);
-		if(IsANewsCar(newcar) || IsPlayerInRangeOfPoint(playerid,7.0,639.7627,-11.1346,1107.9656))
+		if(IsANewsCar(newcar) || IsPlayerInRangeOfPoint(playerid, 35.0, 664.6821,-2.3673,1101.2085) || IsPlayerInRangeOfPoint(playerid, 35.0, 651.1910,-19.9795,1101.2200) || IsPlayerInRangeOfPoint(playerid, 35.0, 646.7300,-6.6966,1101.2085))
 		{
 			if(PlayerInfo[playerid][pRank] < 1)
 			{

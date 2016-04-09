@@ -458,7 +458,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-			    ShowPlayerDialog(playerid, DIALOG_SPAWNINPRISON, DIALOG_STYLE_MSGBOX, "Notice", "At NG:RP, we allow players to roleplay by spawning in our in-character prison.\nWould you like to be ICly imprisoned?\n\n\t{FF0000}Your sentence will be indefinate, but you can release yourself at any time.", "No, thanks.", "Yes, please!");
+			    format(szMiscArray, sizeof(szMiscArray), "Nobody");
+				strmid(PlayerInfo[playerid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
+				TogglePlayerSpectating(playerid, false);
+				SetHealth(playerid, 100.0);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information! Enjoy your time and trip to San Andreas!");
+				SetTimerEx("Register_FinishSetup2", 250, false, "i", playerid);
 			}
 		}
 		case DIALOG_SPAWNINPRISON:

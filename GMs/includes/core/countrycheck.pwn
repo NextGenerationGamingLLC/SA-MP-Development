@@ -24,7 +24,7 @@ public CountryCheckResponse(playerid, response_code, data[]) {
 	if(response_code == 200) {
 		new resCodeIndex = strfind(data, "GEORESULT:")+10;
 		new resCode = strval(data[resCodeIndex]);
-		if(data[resCodeIndex] > '4' || data[resCodeIndex] < '0') return printf("GEOCHECK ERROR: non-number result");
+		if(data[resCodeIndex] > '4' || data[resCodeIndex] < '0') { resCode = 1; }
 		/* Rescode response values:
 		0 = Response error
 		1 = Country code match / Allow login

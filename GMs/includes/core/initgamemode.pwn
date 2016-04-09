@@ -87,7 +87,7 @@ InitiateGamemode()
 	
 	gWeather = random(19) + 1;
 	if(gWeather == 1 || gWeather == 8 || gWeather == 9) gWeather=10;
-	SetWeather(gWeather);
+	SetWeather(1);
     
     // Streamer
     Streamer_TickRate(100);

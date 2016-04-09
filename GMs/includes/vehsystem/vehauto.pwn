@@ -74,8 +74,8 @@ ShowVehicleMenu(playerid, vehicleid) {
 		Boot\t%s",
 		((Seatbelt[playerid] == 0) ? ("Off") : ("On")),
 		((lights == VEHICLE_PARAMS_OFF) ? ("Off") : ("On")),
-		((bonnet == VEHICLE_PARAMS_OFF) ? ("Closed") : ("Open")),
-		((boot == VEHICLE_PARAMS_OFF) ? ("Closed") : ("Open"))
+		((bonnet == VEHICLE_PARAMS_OFF) ? ("Open") : ("Closed")),
+		((boot == VEHICLE_PARAMS_OFF) ? ("Open") : ("Closed"))
 	);
 
 	ShowPlayerDialogEx(playerid, VEHICLE_PARAMS_TOG, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle Options", szMiscArray, "Select", "Cancel");

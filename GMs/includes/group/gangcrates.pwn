@@ -372,11 +372,11 @@ GetItemNameFromIdx(itemid) {
 		case 10: szReturn = "Pump-Action Shotgun";
 		case 11: szReturn = "Sawn-Off Shotgun";
 		case 12: szReturn = "Spas-12";
-		case 13: szReturn = "9mm Ammo";
-		case 14: szReturn = "7.62x51 Ammo";
-		case 15: szReturn = "50 Cal Ammo";
-		case 16: szReturn = "7.52x39 Ammo";
-		case 17: szReturn = "12 Gauge Ammo";
+		case 13: szReturn = "Pistol Ammo";
+		case 14: szReturn = "Rifle Ammo";
+		case 15: szReturn = "Deagle Ammo";
+		case 16: szReturn = "Shotgun Ammo";
+		//case 17: szReturn = "12 Gauge Ammo";
 		case 18: szReturn = "Cannabis";
 		case 19: szReturn = "Crack";
 		case 20: szReturn = "Heroin";
@@ -405,7 +405,7 @@ GetGCItemSQLFldName(itemid) {
 		case 14: szReturn ="ammo1";
 		case 15: szReturn ="ammo2";
 		case 16: szReturn ="ammo3";
-		case 17: szReturn ="ammo4";
+		//case 17: szReturn ="ammo4";
 		case 18: szReturn ="Cannabis";
 		case 19: szReturn ="crack";
 		case 20: szReturn ="heroin";
@@ -671,7 +671,7 @@ public OnDeliverGCCrate(playerid, iGroupID, iCrateID) {
 	arrGroupData[iGroupID][g_iAmmo][1] += szMiscArray[4015];
 	arrGroupData[iGroupID][g_iAmmo][2] += szMiscArray[4016];
 	arrGroupData[iGroupID][g_iAmmo][3] += szMiscArray[4017];
-	arrGroupData[iGroupID][g_iAmmo][4] += szMiscArray[4018];
+	//arrGroupData[iGroupID][g_iAmmo][4] += szMiscArray[4018];
 
 	arrGroupData[iGroupID][g_iDrugs][1] += szMiscArray[4019];
 	arrGroupData[iGroupID][g_iDrugs][5] += szMiscArray[4020];

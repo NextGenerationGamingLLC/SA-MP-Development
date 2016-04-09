@@ -37,7 +37,7 @@
 
 CMD:tledit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] == 2 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 		new string[128], choice[32], labelid, amount;
 		if(sscanf(params, "s[32]dD", choice, labelid, amount))
@@ -118,7 +118,7 @@ CMD:tledit(playerid, params[])
 }
 
 CMD:tltext(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] == 2 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 		new szName[128], labelid;
 
@@ -150,7 +150,7 @@ CMD:tlstatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /tlstatus [labelid]");
 		return 1;
 	}
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] == 2 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 		new string[128];
 		format(string,sizeof(string),"|___________ Text Label Status (ID: %d) ___________|", labelid);
@@ -166,7 +166,7 @@ CMD:tlstatus(playerid, params[])
 
 CMD:tlnext(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] == 2 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available text label...");
 		for(new x = 0;x<MAX_3DLABELS;x++)
@@ -186,7 +186,7 @@ CMD:tlnext(playerid, params[])
 
 CMD:gotolabel(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] == 2 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 		new labelnum;
 		if(sscanf(params, "d", labelnum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotolabel [labelnumber]");

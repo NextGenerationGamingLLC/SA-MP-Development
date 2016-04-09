@@ -620,6 +620,17 @@ CMD:myc4(playerid, params[])
 	return 1;
 }
 
+CMD:setmylevel(playerid, params[])
+{
+	if (!IsAHitman(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command.");
+	new level;
+	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /setmylevel [level]");
+	if(PlayerInfo[playerid][pLevel] > level)  return SendClientMessageEx(playerid, COLOR_GREY, "The new level can't be greater than your current level.");
+	SetPVarInt(playerid, "TempLevel", level);
+	SetPlayerScore(playerid, level);
+	return 1;
+}
+
 CMD:givehit(playerid, params[])
 {
 	if (IsAHitman(playerid))
