@@ -454,14 +454,14 @@ CMD:admins(playerid, params[])
 				}
 
 				if(PlayerInfo[i][pBanAppealer] == 1) strcat(szMiscArray, " [BA]");
-				if(PlayerInfo[i][pBanAppealer] == 2) strcat(szMiscArray, " [DOCI]");
+				if(PlayerInfo[i][pBanAppealer] == 2) strcat(szMiscArray, " [DOBA]");
 				if(PlayerInfo[i][pShopTech] == 1) strcat(szMiscArray, " [ST]");
 				if(PlayerInfo[i][pShopTech] == 2) strcat(szMiscArray, " [SST]");
 				if(PlayerInfo[i][pShopTech] == 3) strcat(szMiscArray, " [DOCR]");
 				if(PlayerInfo[i][pUndercover] == 1) strcat(szMiscArray, " [UC]");
 				if(PlayerInfo[i][pUndercover] == 2) strcat(szMiscArray, " [DOSO]");
-				if(PlayerInfo[i][pFactionModerator] == 1) strcat(szMiscArray, " [DGA]");
-				if(PlayerInfo[i][pFactionModerator] == 2) strcat(szMiscArray, " [DGA]");
+				if(PlayerInfo[i][pFactionModerator] == 1) strcat(szMiscArray, " [FMOD]");
+				if(PlayerInfo[i][pFactionModerator] == 2) strcat(szMiscArray, " [DOFM]");
 				if(PlayerInfo[i][pGangModerator] == 1) strcat(szMiscArray, " [GMOD]");
 				if(PlayerInfo[i][pGangModerator] == 2) strcat(szMiscArray, " [DOGM]");
 				if(PlayerInfo[i][pTogReports]) strcat(szMiscArray, " [SPEC MODE]");
@@ -2539,21 +2539,20 @@ CMD:revivenear(playerid, params[])
 		}
         foreach(new i: Player)
         {
-        	if(ProxDetectorS(radius, playerid, i))
+			if(GetPVarInt(i, "Injured") == 1)
 			{
-				if(GetPVarInt(i, "Injured") == 1)
+				if(ProxDetectorS(radius, playerid, i))
 				{
-				
 					SetHealth(i, 100);
 					count++;
-					SendClientMessageEx(i, COLOR_WHITE, "You have been revived by an Admin.");
-					KillEMSQueue(i);
-					ClearAnimations(i);
-					SetHealth(i, 100);
-					format(string, sizeof(string), "AdmCmd: %s(%d) has been revived by %s", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerNameEx(playerid));
-					Log("logs/admin.log", string);
-					DBLog(playerid, i, "Admin", "revived (/revivenear)");
 				}
+				SendClientMessageEx(i, COLOR_WHITE, "You have been revived by an Admin.");
+				KillEMSQueue(i);
+				ClearAnimations(i);
+				SetHealth(i, 100);
+				format(string, sizeof(string), "AdmCmd: %s(%d) has been revived by %s", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerNameEx(playerid));
+				Log("logs/admin.log", string);
+				DBLog(playerid, i, "Admin", "revived (/revivenear)");
 			}
         }
 		format(string, sizeof(string), "You have revived everyone (%d) nearby.", count);
@@ -3016,7 +3015,6 @@ CMD:spec(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 		return 1;
 	}
-	if(GetPVarInt(playerid, "Injured") == 1 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessage(playerid, COLOR_GREY, "You are injured.");
 	if(strcmp(params, "off", true) == 0)
 	{
 		if(Spectating[playerid] > 0 && PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 1 && Spectating[playerid] > 0)
@@ -5653,7 +5651,6 @@ CMD:quickstats(playerid, params[])
 	format(string, sizeof(string), "** Level: %d | Bank: %s | Cash: %s | Radio Frequency: %dkhz | Warning: %d", PlayerInfo[playerid][pLevel],
 	number_format(PlayerInfo[playerid][pAccount]), number_format(PlayerInfo[playerid][pCash]), PlayerInfo[playerid][pRadioFreq], PlayerInfo[playerid][pWarns]);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
 	format(string, sizeof(string), "** Health: %d | Armour: %d | Hunger: %d | Fitness: %d", floatround(health), floatround(armor), PlayerInfo[playerid][pHunger], PlayerInfo[playerid][pFitness]);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	SendClientMessageEx(playerid, COLOR_GREEN, "--------------------------------------------------------------------------------------------------------------------");

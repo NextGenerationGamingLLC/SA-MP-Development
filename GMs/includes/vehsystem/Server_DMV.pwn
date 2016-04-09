@@ -515,7 +515,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pCarLic] = gettime() + (86400*80);
 				SendClientMessageEx(playerid, COLOR_WHITE, "Your license has been renewed for 80 days");
 			}
-			if(strcmp("Other Licenses", inputtext) == 0) ShowDMVMenu(playerid, 4);
 			if(strcmp("Purchase Other License", inputtext) == 0) ShowDMVMenu(playerid, 4);
 			if(strcmp("[LEO only] Release Impounded Vehicle", inputtext) == 0) ShowDMVMenu(playerid, 2);
 			if(strcmp("Driving Test", inputtext) == 0) ShowDMVMenu(playerid, 5);

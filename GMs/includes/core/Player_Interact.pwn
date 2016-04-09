@@ -11,7 +11,7 @@
 #define 	ITEM_AMMO76251		(8)
 #define 	ITEM_AMMO50AE		(9)
 #define 	ITEM_AMMO76239		(10)
-//#define 	ITEM_AMMO12GAUGE  	(11)
+#define 	ITEM_AMMO12GAUGE  	(11)
 #define 	ITEM_WEAPON			(12)
 
 #define 	INTERACT_AMOUNT			(10049)
@@ -77,10 +77,11 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 				Syringes\t%d\n\
 				Sprunk\t%d\n\
 				PB Tokens\t%d\n\
-				Pistol Ammo\t%d\n\
-				Rifle Ammo\t%d\n\
-				Deagle Ammo\t%d\n\
-				Shotgun Ammo\t%d\n\
+				9mm Ammo\t%d\n\
+				7.62x51 Ammo\t%d\n\
+				50 AE Ammo\t%d\n\
+				7.62x39 Ammo\t%d\n\
+				12 Gauge Ammo\t%d\n\
 				Weapon",
 				PlayerInfo[playerid][pMats],
 				PlayerInfo[playerid][pFirework],
@@ -90,8 +91,8 @@ Player_InteractMenu(playerid, giveplayerid, menu = 0) {
 				arrAmmoData[playerid][awp_iAmmo][0],
 				arrAmmoData[playerid][awp_iAmmo][1],
 				arrAmmoData[playerid][awp_iAmmo][2],
-				arrAmmoData[playerid][awp_iAmmo][3]
-				//arrAmmoData[playerid][awp_iAmmo][4]
+				arrAmmoData[playerid][awp_iAmmo][3],
+				arrAmmoData[playerid][awp_iAmmo][4]
 			);
 			return ShowPlayerDialogEx(playerid, INTERACT_GIVE, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "Select", "Back");
 		}
@@ -314,7 +315,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		}
 		case ITEM_AMMO9MM: {
 
-			if(arrAmmoData[playerid][awp_iAmmo][0] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many Pistol rounds.");
+			if(arrAmmoData[playerid][awp_iAmmo][0] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 9mm rounds.");
 
 			if((amount + arrAmmoData[giveplayerid][awp_iAmmo][0]) > Player_MaxCapacity(giveplayerid, itemid)) {
 				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
@@ -327,7 +328,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		}
 		case ITEM_AMMO76251: {
 
-			if(arrAmmoData[playerid][awp_iAmmo][1] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many Rifle rounds.");
+			if(arrAmmoData[playerid][awp_iAmmo][1] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 7.62x51 rounds.");
 
 			if((amount + arrAmmoData[giveplayerid][awp_iAmmo][1]) > Player_MaxCapacity(giveplayerid, itemid)) {
 				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
@@ -340,7 +341,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		}
 		case ITEM_AMMO50AE: {
 
-			if(arrAmmoData[playerid][awp_iAmmo][2] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many Deagle rounds.");
+			if(arrAmmoData[playerid][awp_iAmmo][2] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 50 AE rounds.");
 
 			if((amount + arrAmmoData[giveplayerid][awp_iAmmo][2]) > Player_MaxCapacity(giveplayerid, itemid)) {
 				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
@@ -353,7 +354,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 		}
 		case ITEM_AMMO76239: {
 
-			if(arrAmmoData[playerid][awp_iAmmo][3] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many Shotgun rounds.");
+			if(arrAmmoData[playerid][awp_iAmmo][3] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 7.62x39 rounds.");
 
 			if((amount + arrAmmoData[giveplayerid][awp_iAmmo][3]) > Player_MaxCapacity(giveplayerid, itemid)) {
 				format(szMiscArray, sizeof(szMiscArray), "That player can only hold %d more of that item.", Player_LeftCapacity(giveplayerid, itemid));
@@ -363,7 +364,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 			arrAmmoData[giveplayerid][awp_iAmmo][3] += amount;
 			arrAmmoData[playerid][awp_iAmmo][3] -= amount;
-		}/*
+		}
 		case ITEM_AMMO12GAUGE: {
 
 			if(arrAmmoData[playerid][awp_iAmmo][4] < amount) return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have that many 12-gauge rounds.");
@@ -376,7 +377,7 @@ Player_GiveItem(playerid, giveplayerid, itemid, amount, saleprice = 0) {
 
 			arrAmmoData[giveplayerid][awp_iAmmo][4] += amount;
 			arrAmmoData[playerid][awp_iAmmo][4] -= amount;
-		}*/
+		}
 	}
 
 	if(saleprice == 0) {
@@ -445,10 +446,10 @@ Player_MaxCapacity(playerid, itemid) {
 		}
 		case ITEM_AMMO76239: {
 			iTemp = GetMaxAmmoAllowed(playerid, 3);
-		}/*
+		}
 		case ITEM_AMMO12GAUGE: {
 			iTemp =  GetMaxAmmoAllowed(playerid, 4);
-		}*/
+		}
 		case ITEM_DRUG: {
 			iTemp = GetMaxDrugsAllowed(GetPVarInt(playerid, "Interact_Drug"));
 		}
@@ -475,7 +476,7 @@ Player_LeftCapacity(playerid, itemid) {
 		case ITEM_AMMO76251: return (iCapacity - arrAmmoData[playerid][awp_iAmmo][1]);
 		case ITEM_AMMO50AE: return (iCapacity - arrAmmoData[playerid][awp_iAmmo][2]);
 		case ITEM_AMMO76239: return (iCapacity - arrAmmoData[playerid][awp_iAmmo][3]);
-		//case ITEM_AMMO12GAUGE: return (iCapacity - arrAmmoData[playerid][awp_iAmmo][4]);
+		case ITEM_AMMO12GAUGE: return (iCapacity - arrAmmoData[playerid][awp_iAmmo][4]);
 		case ITEM_DRUG: return (iCapacity - PlayerInfo[playerid][p_iDrug][GetPVarInt(playerid, "Interact_Drug")]);
 		case ITEM_INGREDIENT: return (iCapacity - PlayerInfo[playerid][p_iIngredient][GetPVarInt(playerid, "Interact_Ingredient")]);
 		default: return 0;
@@ -494,11 +495,11 @@ Item_Getname(itemid) {
 		case ITEM_SYRINGES: szTemp = "syringes";
 		case ITEM_SPRUNKDRINK: szTemp = "sprunk";
 		case ITEM_PBTOKENS: szTemp = "paintball tokens";
-		case ITEM_AMMO9MM: szTemp = "Pistol rounds";
-		case ITEM_AMMO76251: szTemp = "Rifle rounds";
-		case ITEM_AMMO50AE: szTemp = "Deagle rounds";
-		case ITEM_AMMO76239: szTemp = "Shotgun rounds";
-		//case ITEM_AMMO12GAUGE: szTemp = "12-gauge rounds";
+		case ITEM_AMMO9MM: szTemp = "9mm rounds";
+		case ITEM_AMMO76251: szTemp = "7.52x51 rounds";
+		case ITEM_AMMO50AE: szTemp = "50AE rounds";
+		case ITEM_AMMO76239: szTemp = "7.62x39 rounds";
+		case ITEM_AMMO12GAUGE: szTemp = "12-gauge rounds";
 	}
 	return szTemp;
 }

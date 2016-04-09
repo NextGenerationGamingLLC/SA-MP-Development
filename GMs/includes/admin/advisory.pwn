@@ -834,7 +834,7 @@ CMD:findnewb(playerid, params[]) {
 	    SendClientMessageEx(playerid, COLOR_GREY, "You are not on duty as a Player Advisor.");
 	}
 	else {
-	    new Float: Pos[3][2], i[2], vw[2];
+	    new Float: Pos[3][2], i[2], vw[2], Message[38 + MAX_PLAYER_NAME];
 	    if(!GetPVarType(playerid, "HelpingSomeone")) {
      		foreach(new x: Player) {
 
@@ -859,8 +859,8 @@ CMD:findnewb(playerid, params[]) {
 					SetPVarInt(playerid, "HelpingSomeone", 1);
 					ShowPlayerDialogEx(x, 0, DIALOG_STYLE_MSGBOX, "Advisor Alert", "A Player Advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
 					if(i[0] > 0 || vw[0] > 0) Player_StreamPrep(playerid, Pos[0][0], Pos[1][0], Pos[2][0], FREEZE_TIME);
-					format(szMiscArray, sizeof(szMiscArray), "You have been teleported to newbie %s, retype the command to be teleported back.", GetPlayerNameEx(x));
-					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+					format(Message, sizeof(Message), "You have been teleported to newbie %s, retype the command to be teleported back.", GetPlayerNameEx(x));
+					SendClientMessageEx(playerid, COLOR_WHITE, Message);
 					break;
 				}
 			}	
@@ -1009,7 +1009,6 @@ CMD:pa(playerid, params[])
 	if(PlayerInfo[playerid][pHelper] < 1 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(PlayerInfo[playerid][pToggledChats][16] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have Player Advisor chat disabled - /tog pa or /settings to enable it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pa [text]");
-	if(strlen(params) >= 128)  return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long. ");
 	szMiscArray[0] = 0;
 	
 	format(szMiscArray, sizeof(szMiscArray), "- %s %s: %s", GetStaffRank(playerid), GetPlayerNameEx(playerid), params);

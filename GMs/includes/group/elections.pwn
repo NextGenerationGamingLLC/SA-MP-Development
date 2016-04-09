@@ -84,12 +84,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) return SendClientMessage(playerid, COLOR_WHITE, "You have not cast a vote");
 
 			if(strcmp(inputtext, "Add Candidate") == 0) {
-				if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GREY, "You're not an admin.");
 				return ShowPlayerDialogEx(playerid, ELECTIONS_ADD, DIALOG_STYLE_INPUT, "Add candidate", "Please enter the candidates name", "Select", "Cancel");
 			}
 
 			if(strcmp(inputtext, "Remove Candidate") == 0) {
-				if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GREY, "You're not an admin.");
 				new 
 					szTemp[MAX_PLAYER_NAME],
 					iCount = GetGVarInt("CandidateCount");
@@ -103,7 +101,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}	
 
 			if(strcmp(inputtext, "Start Elections") == 0) {
-				if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GREY, "You're not an admin.");
 				SendClientMessageToAll(COLOR_WHITE, "[ELECTION NEWS] The elections have been started.");
 				SendClientMessageToAll(COLOR_WHITE, "[ELECTION NEWS] Head over to your local city hall to vote!");
 				SetGVarInt("ElectionActive", 1);
@@ -111,7 +108,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 
 			if(strcmp(inputtext, "End Elections") == 0) {
-				if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GREY, "You're not an admin.");
 				DeleteGVar("ElectionActive");
 				return CountVotes(playerid);
 			}
@@ -123,7 +119,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case ELECTIONS_ADD: {
 
 			if(!response || isnull(inputtext) || IsNumeric(inputtext)) return 1;
-			if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GREY, "You're not an admin.");
 			new iOptionID = GetGVarInt("CandidateCount");
 			SetGVarString("CandidateName", inputtext, iOptionID);
 			iOptionID++;
@@ -136,7 +131,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case ELECTIONS_REMOVE: {
 
 			if(!response) return 1;
-			if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessage(playerid, COLOR_GREY, "You're not an admin.");
 			new szName[MAX_PLAYER_NAME],
 				iCount = GetGVarInt("CandidateCount");
 
@@ -157,29 +151,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 CastVote(playerid, iOptionID) {
 
 	szMiscArray[0] = 0;
-	if(PlayerInfo[playerid][pId] > 1000610779) return SendClientMessage(playerid, COLOR_GREY, "Sadly, you can't vote in this election.");
-	if(PlayerInfo[playerid][pNation] != 0) return SendClientMessage(playerid, COLOR_GREY, "You're not a San Andreas Citizen.");
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `electionresults` WHERE `ip` = '%s'", PlayerInfo[playerid][pIP]);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCastVote", "ii", playerid, iOptionID);
-	return 1;
-}
-forward OnIPVoteCheck(playerid, iOptionID);
-public OnIPVoteCheck(playerid, iOptionID)
-{
-	new 
-		iRows = cache_get_row_count(MainPipeline);
 
-	szMiscArray[0] = 0;
-
-	if(iRows > 0) {
-		return SendClientMessageEx(playerid, COLOR_WHITE, "You have voted already!");
-	} else {
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `electionresults` WHERE `accountid` = '%d'", PlayerInfo[playerid][pId]);
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnCastVote", "ii", playerid, iOptionID);
-	}
 	return 1;
-
 }
+
 forward OnCastVote(playerid, iOptionID);
 public OnCastVote(playerid, iOptionID) {
 
@@ -192,7 +169,7 @@ public OnCastVote(playerid, iOptionID) {
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You have voted already!");
 	}
 	else {
-		format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `electionresults` (`accountid`, `optionid`, `ip`) VALUES ('%d', '%d', '%s')", PlayerInfo[playerid][pId], iOptionID, PlayerInfo[playerid][pIP]);
+		format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `electionresults` (`accountid`, `optionid`) VALUES ('%d', '%d')", PlayerInfo[playerid][pId], iOptionID);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnFinaliseVote", "ii", playerid, iOptionID);
 	}
 	return 1;

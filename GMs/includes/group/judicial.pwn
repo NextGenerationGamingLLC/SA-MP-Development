@@ -709,9 +709,6 @@ CMD:warrant(playerid, params[])
 		SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 		format(string, sizeof(string), "%s", crime);
 		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
-		format(string, sizeof(string), "%s has warranted %s to answer for his charges against the Sovereign Republic.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
-		GroupLog(PlayerInfo[playerid][pMember], string);
 		return 1;
 	}
 	return 1;
@@ -740,9 +737,6 @@ CMD:warrantwd(playerid, params[])
 		format(PlayerInfo[giveplayerid][pWarrant], 128, "");
 		format(string, sizeof(string), "You have successfully recalled %s's warrant.", GetPlayerNameEx(giveplayerid));
   		SendClientMessageEx(playerid, COLOR_GRAD2, string);
-		format(string, sizeof(string), "%s has withdrawn the warrant on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
-		GroupLog(PlayerInfo[playerid][pMember], string);
 		return 1;
 	}
 	return 1;

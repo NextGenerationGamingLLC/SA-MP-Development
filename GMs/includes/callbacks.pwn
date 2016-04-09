@@ -1203,7 +1203,7 @@ public OnPlayerConnect(playerid)
 	gPlayerAnimLibsPreloaded[playerid] = 0;
 
 	SetPVarInt(playerid, "AOSlotPaintballFlag", -1);
-	SetPVarInt(playerid, "TempLevel", 0);
+
 	HackingMods[playerid] = 0;
 	pSpeed[playerid] = 0.0;
 	//SetTimerEx("HackingTimer", 1000, 0, "i", playerid);
@@ -1893,10 +1893,6 @@ public OnPlayerDisconnect(playerid, reason)
 
 		if(GetPVarType(playerid, "pTable")) {
 		    DestroyPokerTable(GetPVarInt(playerid, "pTable"));
-		}
-		if(GetPVarInt(playerid, "TempLevel") > 0)
-		{
-			DeletePVar(playerid, "TempLevel");
 		}
 		if(GetPVarType(playerid, "DraggingPlayer"))
 		{
@@ -5034,7 +5030,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
         }
 	    if(DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1)
 	    {
-	        SendClientMessageEx(playerid, COLOR_GRAD1, "Crate Related Commands: /loadforklift /(un)loadplane /cargo /announcetakeoff /cgun /crates /destroycrate /cratelimit");
+	        SendClientMessageEx(playerid, COLOR_GRAD1, "Crate Related Commands: /loadforklift /(un)loadplane /cargo /igps /announcetakeoff /cgun /crates /destroycrate /cratelimit");
 	        SendClientMessageEx(playerid, COLOR_GRAD1, " /(un)loadcrate /delivercrate");
 	    }
 		GetVehicleParamsEx(newcar,engine,lights,alarm,doors,bonnet,boot,objective);

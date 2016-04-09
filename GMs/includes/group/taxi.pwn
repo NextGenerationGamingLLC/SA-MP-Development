@@ -73,8 +73,8 @@ CMD:fare(playerid, params[])
 			TransportDuty[playerid] = 0;
 			format(string, sizeof(string), "* You are now off duty and earned $%d.", TransportMoney[playerid]);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-			GivePlayerCash(playerid, (TransportMoney[playerid] / 100 * 50));
-			arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += (TransportMoney[playerid] / 100 * 50);
+			GivePlayerCash(playerid, (TransportMoney[playerid] / 100 * 40));
+			arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += (TransportMoney[playerid] / 100 * 60);
 			if(TransportMoney[playerid]) format(szMiscArray, sizeof(szMiscArray), "%s is now off duty and earned $%s", GetPlayerNameEx(playerid), number_format(TransportMoney[playerid])), GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 			TransportValue[playerid] = 0; TransportMoney[playerid] = 0;
 			SetPlayerToTeamColor(playerid);
@@ -86,7 +86,6 @@ CMD:fare(playerid, params[])
 		new newcar = GetPlayerVehicleID(playerid);
 		if(IsAnBus(newcar))
 		{
-			fare = 1500;
 			BusDrivers += 1; TransportDuty[playerid] = 2; TransportValue[playerid] = fare;
 			format(string, sizeof(string), "You are now on-duty as Bus Driver, fare: $%d.", TransportValue[playerid]);
 		}

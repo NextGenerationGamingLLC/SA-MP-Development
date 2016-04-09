@@ -129,6 +129,7 @@ stock SaveHouse(houseid)
 		`Weapons1`=%d, \
 		`Weapons2`=%d, \
 		`Weapons3`=%d, \
+		`Weapons4`=%d, \
 		`GLUpgrade`=%d, \
 		`CustomInterior`=%d, \
 		`CustomExterior`=%d, \
@@ -156,7 +157,7 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hWeapons][1],
 		HouseInfo[houseid][hWeapons][2],
 		HouseInfo[houseid][hWeapons][3],
-		//HouseInfo[houseid][hWeapons][4],
+		HouseInfo[houseid][hWeapons][4],
 		HouseInfo[houseid][hGLUpgrade],
 		HouseInfo[houseid][hCustomInterior],
 		HouseInfo[houseid][hCustomExterior],
@@ -183,6 +184,7 @@ stock SaveHouse(houseid)
 		`Ammo1`=%d, \
 		`Ammo2`=%d, \
 		`Ammo3`=%d, \
+		`Ammo4`=%d, \
 		`LastLogin`=%d, \
 		`Expire`=%d, \
 		`Inactive`=%d, \
@@ -199,6 +201,7 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hAmmo][1],
 		HouseInfo[houseid][hAmmo][2],
 		HouseInfo[houseid][hAmmo][3],
+		HouseInfo[houseid][hAmmo][4],
 		HouseInfo[houseid][hLastLogin],
 		HouseInfo[houseid][hExpire],
 		HouseInfo[houseid][hInactive],
@@ -219,7 +222,6 @@ stock SaveHouse(houseid)
 		`ListingDescription`='%s', \
 		`LinkedGarage0`=%d, \
 		`LinkedGarage1`=%d \
-		`Workbench`=%d \
 		WHERE `id`=%d",
 		szMiscArray,
 		HouseInfo[houseid][Listed],
@@ -234,7 +236,6 @@ stock SaveHouse(houseid)
 		g_mysql_ReturnEscaped(HouseInfo[houseid][ListingDescription], MainPipeline),
 		HouseInfo[houseid][LinkedGarage][0],
 		HouseInfo[houseid][LinkedGarage][1],
-		HouseInfo[houseid][hWorkbench],
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
@@ -324,14 +325,13 @@ public OnLoadHouse(index)
 		HouseInfo[index][hAmmo][1] = cache_get_field_content_int(row, "Ammo1", MainPipeline);
 		HouseInfo[index][hAmmo][2] = cache_get_field_content_int(row, "Ammo2", MainPipeline);
 		HouseInfo[index][hAmmo][3] = cache_get_field_content_int(row, "Ammo3", MainPipeline);
-//		HouseInfo[index][hAmmo][4] = cache_get_field_content_int(row, "Ammo4", MainPipeline);
+		HouseInfo[index][hAmmo][4] = cache_get_field_content_int(row, "Ammo4", MainPipeline);
 
 		HouseInfo[index][hLastLogin] = cache_get_field_content_int(row, "LastLogin", MainPipeline);
 		HouseInfo[index][hExpire] = cache_get_field_content_int(row, "Expire", MainPipeline);
 		HouseInfo[index][hInactive] = cache_get_field_content_int(row, "Inactive", MainPipeline);
 		HouseInfo[index][hIgnore] = cache_get_field_content_int(row, "Ignore", MainPipeline);
 		HouseInfo[index][hCounter] = cache_get_field_content_int(row, "Counter", MainPipeline);
-		HouseInfo[index][hWorkbench] = cache_get_field_content_int(row, "Workbench", MainPipeline);
 		
 		HouseInfo[index][Listed] = cache_get_field_content_int(row, "Listed", MainPipeline); 
 		HouseInfo[index][PendingApproval] = cache_get_field_content_int(row, "PendingApproval", MainPipeline);
@@ -429,7 +429,6 @@ public OnLoadHouses()
 		HouseInfo[i][hInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
 		HouseInfo[i][hIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
 		HouseInfo[i][hCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
-		HouseInfo[i][hWorkbench] = cache_get_field_content_int(i, "Workbench", MainPipeline);
 
 		for(new j = 0; j != MAX_AMMO_TYPES; j++)
 		{
@@ -577,7 +576,7 @@ stock RehashHouse(houseid)
 	HouseInfo[houseid][hAmmo][1] = 0; 
 	HouseInfo[houseid][hAmmo][2] = 0; 
 	HouseInfo[houseid][hAmmo][3] = 0; 
-	//HouseInfo[houseid][hAmmo][4] = 0; 
+	HouseInfo[houseid][hAmmo][4] = 0; 
 	HouseInfo[houseid][hGLUpgrade] = 0;
 	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
@@ -589,7 +588,6 @@ stock RehashHouse(houseid)
 	HouseInfo[houseid][hMailType] = 0;
 	if(IsValidDynamicObject(HouseInfo[houseid][hMailObjectId])) DestroyDynamicObject(HouseInfo[houseid][hMailObjectId]);
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hMailTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hMailTextID]);
-	HouseInfo[houseid][hWorkbench] = 0;
 	HouseInfo[houseid][hClosetX] = 0.0;
 	HouseInfo[houseid][hClosetY] = 0.0;
 	HouseInfo[houseid][hClosetZ] = 0.0;
@@ -614,7 +612,7 @@ CMD:househelp(playerid, params[])
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /lockhouse /setrentable /setrent /evict /evictall /sellmyhouse /ringbell");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hwithdraw /hdeposit /hbalance /getgun /storegun /closet(add/remove) /houseinvite");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /movegate /setgatepass /placemailbox /destroymailbox /getmail /sendmail");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hammowithdraw /hammodeposit /workbench");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hammowithdraw /hammodeposit");
     return 1;
 }
 
@@ -1779,7 +1777,7 @@ public DeleteHouse(houseid, adminid)
 	HouseInfo[houseid][hAmmo][1] = 0; 
 	HouseInfo[houseid][hAmmo][2] = 0; 
 	HouseInfo[houseid][hAmmo][3] = 0; 
-	//HouseInfo[houseid][hAmmo][4] = 0; 
+	HouseInfo[houseid][hAmmo][4] = 0; 
 	HouseInfo[houseid][hGLUpgrade] = 0;
 	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]), HouseInfo[houseid][hPickupID] = -1;
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]), HouseInfo[houseid][hTextID] = Text3D:-1;
@@ -1807,7 +1805,6 @@ public DeleteHouse(houseid, adminid)
 	HouseInfo[houseid][hInactive] = 0;
 	HouseInfo[houseid][hIgnore] = 0;
 	HouseInfo[houseid][hCounter] = 0;
-	HouseInfo[houseid][hWorkbench] = 0;
 	SaveHouse(houseid);
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "%s has deleted house id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), houseid);

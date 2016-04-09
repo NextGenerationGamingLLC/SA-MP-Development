@@ -127,8 +127,7 @@ enum eGroupData {
 	g_iIngredients[sizeof(szIngredients)],
 	g_iGroupToyID,
 	g_iRivals[MAX_GROUP_RIVALS],
-	g_iTurfTax,
-	g_iTollLockdown
+	g_iTurfTax
 }
 
 enum eAmmoData {
@@ -1342,7 +1341,6 @@ enum hInfo
 	ListingDescription[128],
 	LinkedGarage[2],
 	hAreaID[2],
-	hWorkbench,
 	hFurniture[MAX_FURNITURE_SLOTS]
 };
 

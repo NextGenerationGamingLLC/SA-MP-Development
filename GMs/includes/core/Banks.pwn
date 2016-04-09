@@ -165,7 +165,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 
 				if(iAmount > GetPlayerCash(playerid)) {
-					SendClientMessageEx(playerid, COLOR_WHITE, "  You are trying to deopsit more than you have!");
+					SendClientMessageEx(playerid, COLOR_WHITE, "  You are trying to withdraw more than you have!");
 					return ShowBankMenu(playerid, 2);
 				}
 

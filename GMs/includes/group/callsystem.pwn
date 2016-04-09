@@ -279,7 +279,7 @@ Calls_Group(playerid) {
 								format(szMiscArray, sizeof(szMiscArray), "%s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 								SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 							}
-							else if(Calls[i][Type] == 3 && (IsATowman(playerid)))
+							else if(Calls[i][Type] == 3 && (IsACop(playerid) || IsATowman(playerid)))
 							{
 								format(szMiscArray, sizeof(szMiscArray), "[TOWING] %s | Call #%i | Description: %s | 10-20: %s | Pending: %d minutes", GetPlayerNameEx(Calls[i][CallFrom]), i, Calls[i][Description], Calls[i][Area], Calls[i][TimeToExpire]);
 								SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);

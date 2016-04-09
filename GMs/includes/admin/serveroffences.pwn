@@ -464,10 +464,6 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	PlayerInfo[giveplayerid][pJailedInfo][2] = 0;
 	PlayerInfo[giveplayerid][pJailedInfo][3] = 0;
 	PlayerInfo[giveplayerid][pJailedInfo][4] = 0;
-/*	arrAmmoData[giveplayerid][awp_iAmmo][0] = 0;
-	arrAmmoData[giveplayerid][awp_iAmmo][1] = 0;
-	arrAmmoData[giveplayerid][awp_iAmmo][2] = 0;
-	arrAmmoData[giveplayerid][awp_iAmmo][3] = 0; */
 	for(new i = 0; i < 12; i++) PlayerInfo[giveplayerid][pJailedWeapons][i] = 0;
 
 	if(time > 0) jailtime = time;

@@ -2707,8 +2707,8 @@ new Timer:DDSaleTimer[MAX_PLAYERS];
 new bool:DDSalePendingAdmin[MAX_PLAYERS];
 new bool:DDSalePendingPlayer[MAX_PLAYERS];
 
-new GunPrices[7];
-new AmmoMat[4];
+new GunPrices[6];
+
 new szJobNames[MAX_JOBTYPES][32];
 
 new PlayerText:phone_PTextDraw[MAX_PLAYERS][24];

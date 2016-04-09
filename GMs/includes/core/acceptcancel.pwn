@@ -837,7 +837,7 @@ CMD:accept(playerid, params[])
 
 				if (PlayerInfo[playerid][pCSFBanned]) {
 					if (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC)	{
-						SendClientMessageEx(playerid, COLOR_WHITE, "You are unable to accept this group invite, as you're banned from civil service groups. Contact a member of DGA.");
+						SendClientMessageEx(playerid, COLOR_WHITE, "You are unable to accept this group invite, as you're banned from civil service groups. Contact a head admin.");
 						DeletePVar(playerid, "Group_Invite");
 						DeletePVar(iInviter, "Group_Invited");
 						return 1;

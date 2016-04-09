@@ -39,7 +39,7 @@ ShowDynamicDoorDialog(playerid)
 	if(DDSalePendingPlayer[playerid] == true) return SendClientMessageEx(playerid, COLOR_GREY, "Your dynamic door sale is pending approval from the specified buyer.");
 	if(DDSalePendingAdmin[playerid] == true) return SendClientMessageEx(playerid, COLOR_GREY, "Your dynamic door sale is pending approval from server administration.");
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "Setting\tValue\nBuyer\t%s\nPrice\t$%s\nSeller Fine\t$%s\nDynamic Door 1\t%s\nDynamic Door 2\t%s\nDynamic Door 3\t%s\nDynamic Door 4\t%s\nDynamic Door 5\t%s\nGarage 1\t%s\nGarage 2\t%s\nFinalize And Submit", 
+	format(szMiscArray, sizeof(szMiscArray), "Setting\tValue\nBuyer\t%s\nPrice\t$%s\nSeller Fine\t$%s\nDynamic Door 1\t%s\nDynamic Door 2\t%s\nDynamic Door 3\t%s\nDynamic Door 4\t%s\nDynamic Door 5\t%s\nGarage 1\t%d\nGarage 2\t%s\nFinalize And Submit", 
 	GetPlayerNameEx(DDSaleTarget[playerid]), number_format(DDSalePrice[playerid]), number_format(CalculatePercentage(DDSalePrice[playerid], 10, 1000000)),
 	ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][0]), ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][1]), ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][2]), 
 	ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][3]), ReturnDoorLineDetails(playerid, DDSaleDoors[playerid][4]), ReturnGarageLineDetails(playerid, DDSaleDoors[playerid][5]), ReturnGarageLineDetails(playerid, DDSaleDoors[playerid][6]));
@@ -81,7 +81,7 @@ timer DDSaleTimerEx[30000](playerid)
 	return 1;
 }
 
-CMD:ads(playerid, params[]) return cmd_approvedoorsale(playerid, params);
+CMD:ad(playerid, params[]) return cmd_approvedoorsale(playerid, params);
 CMD:ds(playerid, params[]) return cmd_denydoorsale(playerid, params);
 
 CMD:doorsalehelp(playerid, params[])

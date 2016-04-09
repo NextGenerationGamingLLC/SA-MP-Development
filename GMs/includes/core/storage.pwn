@@ -2666,158 +2666,6 @@ CMD:hdeposit(playerid, params[])
 	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
 	return 1;
 }
-CMD:workbench(playerid, params[]) {
-        new szType[10], iChoice, iAmount, houseid;
-        if(sscanf(params, "s[6]ii", szType, iChoice, iAmount)) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /workbench [type] [choice] [amount]");
-            SendClientMessageEx(playerid, COLOR_GRAD2, "TYPE: ammo, melee, gun");
-            SendClientMessageEx(playerid, COLOR_GRAD2, "CHOICE AMMO: Pistol Ammo (0), Rifle Ammo (1), Deagle Ammo (2), Shotgun Ammo (3)");
-            SendClientMessageEx(playerid, COLOR_GRAD2, "CHOICE GUN: 9mm (0), SDPistol (1), Shotgun (2), Rifle (3)");
-            SendClientMessageEx(playerid, COLOR_GRAD2, "CHOICE MELEE: Brass Knuckles (0), Baseball Bat (1), Shovel (2), Pool Cue (3), Cane (4)");
-            return SendClientMessageEx(playerid, COLOR_GRAD2, "CHOICE MELEE: Dildo (5), Vibrator (6), Katana (7), Flowers (8), SprayCan (9)");
-        }
-        for(new i = 0; i < 3; i++)
-        {
-            if(i == 0) houseid = PlayerInfo[playerid][pPhousekey];
-            if(i == 1) houseid = PlayerInfo[playerid][pPhousekey2];
-            if(i == 2) houseid = PlayerInfo[playerid][pPhousekey3];
-            if(houseid != INVALID_HOUSE_ID && HouseInfo[houseid][hOwnerID] == GetPlayerSQLId(playerid) && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[houseid][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[houseid][hIntIW])
-            {
-       			if(iAmount <= 0) return SendClientMessageEx(playerid, -1, "You can't have negative amount values.");
-        		if(strcmp(szType,"ammo",true) == 0) 
-       			{
-            		if(playerid != INVALID_PLAYER_ID && iChoice >= 0 || iChoice <= 3) 
-                		{
-                   			if(HouseInfo[houseid][hAmmo][iChoice] + iAmount > 12000) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only store a maximum of 12000 rounds of each type.");
-                    		if(PlayerInfo[playerid][pMats] < (iAmount*AmmoMat[iChoice])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You dont have enough materials to produce the ammo.");
-                    		HouseInfo[houseid][hAmmo][iChoice] += iAmount;
-                    		PlayerInfo[playerid][pMats] -= (iAmount*AmmoMat[iChoice]);
-                    		SaveHouse(houseid);
-                    		format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has crafted %d (%d) rounds into their house (ID: %d) safe.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount, iChoice, houseid);
-                    		Log("logs/hsafe.log", szMiscArray);
-                    		format(szMiscArray, sizeof(szMiscArray), "You have crafted %d rounds into your house's safe.", iAmount);
-                    		return SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-               			}
-       			} 
-				if(strcmp(szType,"melee",true) == 0) 
-				{
-           			if(playerid != INVALID_PLAYER_ID && iChoice >= 0 || iChoice <= 9) 
-           	   		  	{
-                    		if(PlayerInfo[playerid][pMats] < 150) return SendClientMessageEx(playerid, COLOR_GRAD2, "You dont have enough materials to produce the weapon.");
-                    		if(PlayerInfo[playerid][pMats] < 2000 && iChoice == 9) return SendClientMessageEx(playerid, COLOR_GRAD2, "You dont have enough materials to produce the weapon.");
-                    		switch(iChoice)
-                    		{
-                    			case 0: GivePlayerValidWeapon(playerid, WEAPON_BRASSKNUCKLE, 99999);
-								case 1: GivePlayerValidWeapon(playerid, WEAPON_BAT, 99999);
-								case 2: GivePlayerValidWeapon(playerid, WEAPON_SHOVEL, 99999);	
-								case 3: GivePlayerValidWeapon(playerid, WEAPON_POOLSTICK, 99999);
-								case 4: GivePlayerValidWeapon(playerid, WEAPON_CANE, 99999);
-								case 5:	GivePlayerValidWeapon(playerid, WEAPON_DILDO, 99999);
-								case 6:	GivePlayerValidWeapon(playerid, WEAPON_VIBRATOR, 99999);
-								case 7:	GivePlayerValidWeapon(playerid, WEAPON_KATANA, 99999);
-								case 8: GivePlayerValidWeapon(playerid, WEAPON_FLOWER, 99999);
-								case 9: GivePlayerValidWeapon(playerid, WEAPON_SPRAYCAN, 99999);
-                    		}
-                    		if(iChoice == 9) { PlayerInfo[playerid][pMats] -= 1850; }
-                    		PlayerInfo[playerid][pMats] -= 150;
-                    		format(szMiscArray, sizeof(szMiscArray), "You have crafted a melee weapon.", iAmount);
-                    		return SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-               			}
-				}
-				if(strcmp(szType,"gun",true) == 0) 
-				{
-            		if(playerid != INVALID_PLAYER_ID && iChoice >= 0 || iChoice <= 3) 
-               		{
-                   		switch(iChoice)
-                   		{
-                   			case 0:
-                   			{
-                   				if(PlayerInfo[playerid][pMats] < 3000) return SendClientMessageEx(playerid, COLOR_GRAD2, "You dont have enough materials to produce the gun.");
-                   				GivePlayerValidWeapon(playerid, WEAPON_COLT45, 0);
-                   				PlayerInfo[playerid][pMats] -= 3000;
-                    			format(szMiscArray, sizeof(szMiscArray), "You have crafted a 9mm weapon.", iAmount);
-                   			}
-                   			case 1:
-                   			{
-                   				if(PlayerInfo[playerid][pMats] < 3000) return SendClientMessageEx(playerid, COLOR_GRAD2, "You dont have enough materials to produce the gun.");
-                   				GivePlayerValidWeapon(playerid, WEAPON_SILENCED, 0);
-                   				PlayerInfo[playerid][pMats] -= 3000;
-                    			format(szMiscArray, sizeof(szMiscArray), "You have crafted a Silenced weapon.", iAmount);
-                   			}
-                   			case 2:
-                   			{
-                   				if(PlayerInfo[playerid][pMats] < 4000) return SendClientMessageEx(playerid, COLOR_GRAD2, "You dont have enough materials to produce the gun.");
-                   				GivePlayerValidWeapon(playerid, WEAPON_SHOTGUN, 0);
-                   				PlayerInfo[playerid][pMats] -= 4000;
-                    			format(szMiscArray, sizeof(szMiscArray), "You have crafted a Shotgun weapon.", iAmount);
-                   			}
-                   			case 3:
-                   			{
-                   				if(PlayerInfo[playerid][pMats] < 4000) return SendClientMessageEx(playerid, COLOR_GRAD2, "You dont have enough materials to produce the gun.");
-                   				GivePlayerValidWeapon(playerid, WEAPON_RIFLE, 0);
-                   				PlayerInfo[playerid][pMats] -= 4000;
-                    			format(szMiscArray, sizeof(szMiscArray), "You have crafted a Country Rifle weapon.", iAmount);
-                   			}
-                   		}
-                    	for(new integer = 0; integer < 12; integer++) {
-							SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][integer]);
-						}
-                    	return SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-                	}
-            	}
-       		}
-        SendClientMessageEx(playerid, COLOR_WHITE, "You're not in a house you own.");
-    	}
-	return 1;
-}
-
-CMD:editammomats(playerid, params[]) {
-
-	szMiscArray[0] = 0;
-
-	new 
-		iChoice, 
-		iAmount;
-	if(sscanf(params, "ii", iChoice, iAmount)) {
-		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /editammomats [choice] [amount]"); 
-		SendClientMessageEx(playerid, COLOR_WHITE, "CHOICE: Pistol Ammo (0), Rifle Ammo (1), Deagle Ammo (2), Shotgun Ammo (3)");
-		format(szMiscArray, sizeof(szMiscArray), "Pistol Ammo: %s | Rifle Ammo: %s | Deagle Ammo: %s | Shotgun Ammo: %s", number_format(AmmoMat[0]), number_format(AmmoMat[1]), number_format(AmmoMat[2]), number_format(AmmoMat[3]));
-		return SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-	}
-	if(PlayerInfo[playerid][pAdmin] >= 99999)
-	{
-		switch(iChoice)
-		{
-			case 0:
-			{
-				AmmoMat[0] = iAmount;
-				g_mysql_SaveMOTD();
-				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has edited the Pistol ammo materials to %d.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount);
-			}
-			case 1:
-			{
-				AmmoMat[1] = iAmount;
-				g_mysql_SaveMOTD();
-				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has edited the Rifle ammo materials to %d.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount);
-			}
-			case 2:
-			{
-				AmmoMat[2] = iAmount;
-				g_mysql_SaveMOTD();
-				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has edited the Deagle ammo materials to %d.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount);
-			}
-			case 3:
-			{
-				AmmoMat[3] = iAmount;
-				g_mysql_SaveMOTD();
-				format(szMiscArray, sizeof(szMiscArray), "%s (SQL: %d) has edited the Shotgun ammo materials to %d.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], iAmount);
-			}
-		}
-	}
-	g_mysql_SaveMOTD();
-	return 1;
-}
-
 
 CMD:hammodeposit(playerid, params[]) {
 
@@ -2828,7 +2676,7 @@ CMD:hammodeposit(playerid, params[]) {
 
 		if(sscanf(params, "ii", iItemID, iAmount) || !(0 <= iItemID < 5)) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /hammodeposit [choice] [amount]");
-			return SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pistol Ammo (0), Rifle Ammo (1), Deagle Ammo (2), Shotgun Ammo (3)");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Available names: 9mm (0), 7.62x51 (1), .50cal (2), 7.62x39 (3), 12-gauge (4)");
 		}
 		for(new houseid, i = 0; i < 3; i++)
 		{
@@ -2839,7 +2687,7 @@ CMD:hammodeposit(playerid, params[]) {
 			{
 				szMiscArray[0] = 0;
 				if(!(0 < iAmount <= arrAmmoData[playerid][awp_iAmmo][iItemID])) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to deposit more than you have!");
-				if(HouseInfo[houseid][hAmmo][iItemID] + iAmount > 12000) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only store a maximum of 12000 rounds of each type.");
+				if(HouseInfo[houseid][hAmmo][iItemID] + iAmount > 800) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only store a maximum of 800 rounds of each type.");
 
 				HouseInfo[houseid][hAmmo][iItemID] += iAmount;
 				arrAmmoData[playerid][awp_iAmmo][iItemID] -= iAmount;
@@ -2868,7 +2716,7 @@ CMD:hammowithdraw(playerid, params[]) {
 
 		if(sscanf(params, "ii", iItemID, iAmount) || !(0 <= iItemID < 5)) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /hammowithdraw [choice] [amount]");
-			return SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pistol Ammo (0), Rifle Ammo (1), Deagle Ammo (2), Shotgun Ammo (3)");
+			return SendClientMessageEx(playerid, COLOR_GREY, "Available names: 9mm (0), 7.62x51 (1), .50cal (2), 7.62x39 (3), 12-gauge (4)");
 		}
 		for(new houseid, i = 0; i < 3; i++)
 		{
@@ -2899,7 +2747,6 @@ CMD:hammowithdraw(playerid, params[]) {
 	return 1;
 }
 
-
 CMD:hbalance(playerid, params[])
 {
 	if(Homes[playerid] > 0)
@@ -2915,7 +2762,7 @@ CMD:hbalance(playerid, params[])
 
 				for(new j = 0; j != MAX_AMMO_TYPES; j++)
 				{
-					format(szMiscArray, sizeof(szMiscArray), "%s: %i / 12000 rounds", GetAmmoName(j), HouseInfo[i][hAmmo][j]);
+					format(szMiscArray, sizeof(szMiscArray), "%s: %i / 800 rounds", GetAmmoName(j), HouseInfo[i][hAmmo][j]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 				}
 				
@@ -3052,10 +2899,6 @@ CMD:drop(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any syringes to throw away!");
 		}
-	}
-	else if(strcmp(choice,"cannabis",true) == 0)
-	{
-			SendClientMessageEx(playerid, COLOR_WHITE, "Use the /dropdrug command.");
 	}
 
 	else if(strcmp(choice,"materials",true) == 0)

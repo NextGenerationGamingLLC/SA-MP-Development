@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.300"
+#define SERVER_GM_TEXT "NG:RP v3.0.296"
 
 // #define AREA_DEBUG
 
@@ -325,7 +325,6 @@
 #include "./includes/anticheat2.pwn"
 #include "./includes/furniture.pwn"
 #include "./includes/admin/poll.pwn"
-#include "./includes/group/elections.pwn"
 
 main(){}
 

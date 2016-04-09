@@ -223,13 +223,14 @@ stock Vehicle_Enter(playerid, i) {
 			PlayerInfo[playerid][pInt] = 9;
 			SetPlayerInterior(playerid, 9);
 		}
+		/*
 		case 570: {
 			Player_StreamPrep(playerid, 2022.0273, 2235.2402, 2103.9536+2500, FREEZE_TIME);
             SetPlayerFacingAngle(playerid, 0);
             SetCameraBehindPlayer(playerid);
             SetPlayerInterior(playerid, 15);
 		}
-		
+		*/
 	}
 
 	SetCameraBehindPlayer(playerid);

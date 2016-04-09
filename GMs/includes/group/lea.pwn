@@ -745,7 +745,7 @@ CMD:backup(playerid, params[])
 		return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	}
 
-    if(IsACop(playerid) || IsAMedic(playerid) || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TOWING)
+    if(IsACop(playerid) || IsAMedic(playerid))
 	{
 	    new code[10],
 		zone[MAX_ZONE_NAME],
@@ -1082,7 +1082,7 @@ CMD:vcheck(playerid, params[])
 				new v = GetPlayerVehicle(i, closestcar);
 				if(v != -1)
 				{
-					new string[99 + MAX_PLAYER_NAME];
+					new string[78 + MAX_PLAYER_NAME];
 					format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%d | Speed: %.0f MPH %s", closestcar, GetVehicleName(PlayerVehicleInfo[i][v][pvId]), GetPlayerNameEx(i), PlayerVehicleInfo[i][v][pvTicket],  vehicle_get_speed(closestcar), szClamp);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					return 1;
@@ -1092,14 +1092,14 @@ CMD:vcheck(playerid, params[])
 			{
 			    if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CONTRACT && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
 			    {
-					new string[99 + MAX_PLAYER_NAME];
+					new string[78 + MAX_PLAYER_NAME];
                     format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: EXEMPT %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}
 				else if(DynVehicleInfo[dynveh][gv_igID] != INVALID_GROUP_ID && arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			    {
-					new string[99 + MAX_PLAYER_NAME];
+					new string[78 + MAX_PLAYER_NAME];
                     format(string, sizeof(string), "Vehicle registration: %d | Name: %s | Owner: %s %s", closestcar, GetVehicleName(closestcar), arrGroupData[DynVehicleInfo[dynveh][gv_igID]][g_szGroupName], szClamp);
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
@@ -1675,7 +1675,6 @@ CMD:tazer(playerid, params[])
 			format(string, sizeof(string), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
 			ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			pTazer{playerid} = 0;
-			cmd_rld(playerid, "");
 		}
 	}
 	else
