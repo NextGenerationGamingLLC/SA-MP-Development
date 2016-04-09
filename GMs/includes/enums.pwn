@@ -1881,7 +1881,6 @@ new arrAntiCheat[MAX_PLAYERS][e_AntiCheat];
 
 
 enum e_bAntiCheat:(<<= 1) {
-
 	ac_bitValidPlayerHealth = 1, // keep 1
 	ac_bitValidPlayerPos,
 	ac_bitValidPlayerArmour,
