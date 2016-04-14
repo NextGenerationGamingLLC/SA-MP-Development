@@ -2752,7 +2752,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "VIP: You have traded 3 tokens for a Desert Eagle, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				}
-				GivePlayerValidWeapon(playerid, 24, 14);
+				GivePlayerValidWeapon(playerid, 24, 70);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 1:
@@ -2769,7 +2769,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "VIP: You have traded 2 tokens for a shotgun, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				}
-				GivePlayerValidWeapon(playerid, 25, 20);
+				GivePlayerValidWeapon(playerid, 25, 40);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 2:
@@ -2785,7 +2785,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "VIP: You have traded 3 tokens for an MP5, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				}
-				GivePlayerValidWeapon(playerid, 29, 90);
+				GivePlayerValidWeapon(playerid, 29, 150);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 3:
@@ -2804,7 +2804,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 				}
-				GivePlayerValidWeapon(playerid, 23, 36);
+				GivePlayerValidWeapon(playerid, 23, 55);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 4:
@@ -2943,7 +2943,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		else return 0;
 		return 1;
 	}
-	/*if(dialogid == 3498) //Famed Weapon Locker
+	if(dialogid == 3498) //Famed Weapon Locker
 	{
 		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You exited the famed locker.");
 		if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
@@ -2952,27 +2952,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			case 0: //Deagle
 			{
-				GivePlayerValidWeapon(playerid, 24, 60000);
+				GivePlayerValidWeapon(playerid, 24, 70);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Desert Eagle from the famed locker.");
 			}
 			case 1: //MP5
 			{
-				GivePlayerValidWeapon(playerid, 29, 60000);
+				GivePlayerValidWeapon(playerid, 29, 180);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Semi-Automatic MP5 from the famed locker.");
 			}
 			case 2: //Shotgun
 			{
-				GivePlayerValidWeapon(playerid, 25, 60000);
+				GivePlayerValidWeapon(playerid, 25, 80);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Pump Shotgun from the famed locker.");
 			}
 			case 3: //Rifle
 			{
-				GivePlayerValidWeapon(playerid, 33, 60000);
+				GivePlayerValidWeapon(playerid, 33, 50);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a County Rifle from the famed locker.");
 			}
 			case 4: //SD Pistol
 			{
-				GivePlayerValidWeapon(playerid, 23, 60000);
+				GivePlayerValidWeapon(playerid, 23, 70);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Silenced Pistol from the famed locker.");
 			}
 			case 5: //Katana
@@ -3005,7 +3005,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
 			}
 		}
-	}*/
+	}
 	else if(dialogid == DIALOG_CHANGEPASS2)
 	{
 		if(!response || strlen(inputtext) == 0) return ShowLoginDialogs(playerid, 0);

@@ -2647,7 +2647,8 @@ ptask SyncUp[60000](i)
 	}
 	DeliverVehicleTimer(i);
 	RentVehicleTimer(i);
-	SetPlayerScore(i, PlayerInfo[i][pLevel]);
+	SetPlayerScore(i, PlayerInfo[i][pLevel]); 
+	if(GetPVarInt(i, "TempLevel") > 0) { SetPlayerScore(i, GetPVarInt(i, "TempLevel")); } 
 	if(PlayerInfo[i][pProbationTime] > 0 && !PlayerInfo[i][pBeingSentenced])
 	{
 		PlayerInfo[i][pProbationTime]--;

@@ -134,7 +134,7 @@ GenerateShipmentStock(iGroupID, iShipmentType) {
 			if(arrGroupData[iGroupID][g_iAmmo][1] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][1] += 3000; else arrGroupData[iGroupID][g_iAmmo][1] += (10000 - arrGroupData[iGroupID][g_iAmmo][1]);
 			if(arrGroupData[iGroupID][g_iAmmo][2] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][2] += 3000; else arrGroupData[iGroupID][g_iAmmo][2] += (10000 - arrGroupData[iGroupID][g_iAmmo][2]);
 			if(arrGroupData[iGroupID][g_iAmmo][3] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][3] += 3000; else arrGroupData[iGroupID][g_iAmmo][3] += (10000 - arrGroupData[iGroupID][g_iAmmo][3]);
-			if(arrGroupData[iGroupID][g_iAmmo][4] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][4] += 3000; else arrGroupData[iGroupID][g_iAmmo][4] += (10000 - arrGroupData[iGroupID][g_iAmmo][4]);
+			//if(arrGroupData[iGroupID][g_iAmmo][4] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][4] += 3000; else arrGroupData[iGroupID][g_iAmmo][4] += (10000 - arrGroupData[iGroupID][g_iAmmo][4]);
 		}
 	}
 
@@ -224,7 +224,6 @@ public OnLoadShipment(playerid) {
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_DELIVERSHIPMENT;
 
 	SendClientMessageEx(playerid, COLOR_YELLOW, "Follow your way to the marker to deliver your shipment.");
-
 	DeletePVar(playerid, "LoadShipmentTime");
 	DeletePVar(playerid, "IsFrozen");
 	TogglePlayerControllable(playerid, 1);

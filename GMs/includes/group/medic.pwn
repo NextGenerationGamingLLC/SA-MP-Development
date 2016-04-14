@@ -553,10 +553,10 @@ CMD:deliverpt(playerid, params[])
                             SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD anymore because of the hospital's help!");
                         }
                         GivePlayerCash(giveplayerid, -1000);
-						GivePlayerCash(playerid,2500);
-                        Tax += 1000;
+						GivePlayerCash(playerid, 10000);
+                        Tax -= 9000;
 						//SendClientMessageEx(giveplayerid, TEAM_CYAN_COLOR, "Doc: Your medical bill comes in at $1000. Have a nice day!");
-                        format(string,sizeof(string),"You received $2500 for successfully delivering the patient!");
+                        format(string,sizeof(string),"You received $10000 for successfully delivering the patient!");
                         SendClientMessageEx(playerid, TEAM_CYAN_COLOR, string);
 						
                         KillEMSQueue(giveplayerid);
@@ -571,7 +571,13 @@ CMD:deliverpt(playerid, params[])
                         
 						format(string, sizeof(string), "EMS Driver %s has successfully delivered Patient %s to the hospital.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
-						
+						foreach(new i: Player)
+						{
+							if(IsFirstAid(i))
+							{
+								SendClientMessage(i, TEAM_MED_COLOR, string);
+							}
+						}
 						PlayerInfo[giveplayerid][pHydration] = 100;
 					}
                     else

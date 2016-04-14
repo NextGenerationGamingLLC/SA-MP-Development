@@ -110,7 +110,7 @@ native IsValidVehicle(vehicleid);
 #define 		MAX_PAYNSPRAYS				(25)
 #define 		MAX_ARRESTPOINTS			(30)
 #define 		MAX_IMPOUNDPOINTS			(20)
-#define 		MAX_DRUGS					(400)
+#define 		MAX_DRUGS					(1000)
 #define         NATION_SAN_ANDREAS		 	0
 #define         NATION_TIERRA_ROBADA	 	1
 #define			MAX_ZONE_NAME				28
@@ -163,7 +163,7 @@ native IsValidVehicle(vehicleid);
 #define			MAX_STRUCTURE_FIRES			100
 #define			MAX_FIRE_HEALTH				1000
 
-#define			MAX_AMMO_TYPES				(5)
+#define			MAX_AMMO_TYPES				(4)
 
 // strcpy - Simon / Y_LESS
 /*#define strcpy(%0,%1,%2) \
@@ -1182,6 +1182,10 @@ native IsValidVehicle(vehicleid);
 
 #define 		DIALOG_WEPVEHSALE				(6162)
 #define 		DIALOG_AC_MAIN					(6163)
+#define 		DIALOG_GROUP_TOLLLOCKDOWN		(6164)
+#define 		ELECTIONS						(6165)
+#define 		ELECTIONS_ADD					(6166)
+#define 		ELECTIONS_REMOVE				(6167)
         			
 // GangTags
 #define 			GANGTAG_TIME				60000

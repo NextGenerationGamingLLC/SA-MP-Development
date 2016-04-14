@@ -70,7 +70,17 @@ CMD:gate(playerid, params[])
 	}
     return 1;
 }
-
+/*
+CMD:citylockdown(playerid, params[])
+{
+	for(new i = 0; i < sizeof(GateInfo); i++)
+	{
+		if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == GateInfo[i][gAllegiance] && GateInfo[i][gLocked] != 1 && arrGroupData[PlayerInfo[playerid][pMember]][g_iTollLockdown] >= PlayerInfo[playerid][pRank])
+		{
+			MoveGate(playerid, i);
+		}
+	}
+}*/
 CMD:gsave(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)

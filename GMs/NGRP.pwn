@@ -25,7 +25,7 @@
 									Jingles
 									Winterfield
 				Past Developers:
-								*** Director of SA:MP Development:
+								*** Director of SA:MP Development:F
 									Akatony
 									John
 									Brendan
@@ -325,6 +325,7 @@
 #include "./includes/anticheat2.pwn"
 #include "./includes/furniture.pwn"
 #include "./includes/admin/poll.pwn"
+#include "./includes/group/elections.pwn"
 
 main(){}
 

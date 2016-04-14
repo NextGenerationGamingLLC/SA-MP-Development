@@ -1341,6 +1341,7 @@ enum hInfo
 	ListingDescription[128],
 	LinkedGarage[2],
 	hAreaID[2],
+	hWorkbench,
 	hFurniture[MAX_FURNITURE_SLOTS]
 };
 
@@ -1881,6 +1882,7 @@ new arrAntiCheat[MAX_PLAYERS][e_AntiCheat];
 
 
 enum e_bAntiCheat:(<<= 1) {
+
 	ac_bitValidPlayerHealth = 1, // keep 1
 	ac_bitValidPlayerPos,
 	ac_bitValidPlayerArmour,

@@ -67,6 +67,7 @@ Group_DisbandGroup(iGroupID) {
 	arrGroupData[iGroupID][g_hRadioColour] = 0xFFFFFF;
 	arrGroupData[iGroupID][g_iMemberCount] = 0;
 	arrGroupData[iGroupID][g_iGroupToyID] = 0;
+
 	
 	DestroyDynamic3DTextLabel(arrGroupData[iGroupID][g_tCrate3DLabel]);
 
@@ -130,7 +131,7 @@ SaveGroup(iGroupID) {
 		return 0;
 
 	szMiscArray[0] = 0;
-
+	if(arrGroupData[iGroupID][g_iBudget] < 0) { arrGroupData[iGroupID][g_iBudget] = 0; }
 	new
 		i = 0;
 		//iIndex = 0;
@@ -163,7 +164,7 @@ SaveGroup(iGroupID) {
 	);
 	
 	for(i = 0; i != MAX_GROUP_RIVALS; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gRival%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iRivals][i]);
-	for(i = 0; i != 5; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gAmmo%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iAmmo][i]);
+	for(i = 0; i != 4; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gAmmo%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iAmmo][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%s'", szMiscArray, i, g_mysql_ReturnEscaped(arrGroupRanks[iGroupID][i], MainPipeline));
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
@@ -734,7 +735,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					else if(arrGroupData[iGroupID][g_iLockerCostType] != 0) SetArmour(playerid, 100.0);
 					else {
 						SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
-						SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
+						SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the STAG and organize a crate delivery.");
 					}
 					PlayerInfo[playerid][pDuty] = 1;
 					SetPlayerToTeamColor(playerid);
@@ -2467,7 +2468,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									GivePlayerCash(playerid, amount);
 									format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn $%s from the safe.", GetPlayerNameEx(playerid), number_format(iMoney));
 									GroupLog(iGroupID, szMiscArray);
-									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%s from the safe.", number_format(iMoney));
+									format(szMiscArray, sizeof(szMiscArray), "You have withdrawn $%s from the safe.", number_format(iMoney));		
+									format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has withdrawn $%s of the group money from their gang vault", GetPlayerNameEx(playerid), number_format(iMoney));
+									ABroadCast(COLOR_YELLOW, string, 2);
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
@@ -2803,9 +2806,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
 				DeletePVar(playerid, "AmmoTypeWD");
-				format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d %s ammo from the locker.", iAmmoQuantity, GetAmmoName(iAmmoType));
+				format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d %s from the locker.", iAmmoQuantity, GetAmmoName(iAmmoType));
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %d %s ammo from the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
+				format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %d %s from the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
 				GroupLog(iGroupID, szMiscArray);
 				SaveGroup(iGroupID);
 			}
@@ -2839,9 +2842,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
 				DeletePVar(playerid, "AmmoTypeWD");
-				format(szMiscArray, sizeof(szMiscArray), "You have deposited %d %s ammo into the locker.", iAmmoQuantity, GetAmmoName(iAmmoType));
+				format(szMiscArray, sizeof(szMiscArray), "You have deposited %d %s into the locker.", iAmmoQuantity, GetAmmoName(iAmmoType));
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has deposited %d %s ammo into the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
+				format(szMiscArray, sizeof(szMiscArray), "%s has deposited %d %s into the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
 				GroupLog(iGroupID, szMiscArray);
 				SaveGroup(iGroupID);
 			}
@@ -5168,7 +5171,7 @@ CMD:r(playerid, params[]) {
 				}
 				else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/r)adio [radio chat]");
 			}
-			else return SendClientMessageEx(playerid, COLOR_GREY, "Your radio is currently turned off, type /togradio to turn it back on.");
+			else return SendClientMessageEx(playerid, COLOR_GREY, "Your radio is currently turned off, type /tog radio to turn it back on.");
 		}
 		else return SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this radio frequency.");
 	}
@@ -6184,7 +6187,7 @@ CMD:turnout(playerid, params[])
 	new closestCar = GetClosestCar(playerid, .fRange = 8.0);
 	if(closestCar == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near any vehicle!");
 	if(!IsACopCar(closestCar) && !IsAnAmbulance(closestCar)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near a group vehicle!");
-	return ShowPlayerDialogEx(playerid, DIALOG_GROUP_TURNOUT, DIALOG_STYLE_LIST, "Turnout", IsACop(playerid) ? ("SWAT\nOriginal Clothes"):("LS Fire\nSF Fire\nLV Fire\nOriginal Clothes"), "Select", "Cancel");
+    return ShowPlayerDialogEx(playerid, DIALOG_GROUP_TURNOUT, DIALOG_STYLE_LIST, "Turnout", IsFirstAid(playerid) ? ("SWAT\nLS Fire\nSF Fire\nLV Fire\nOriginal Clothes"):("SWAT\nOriginal Clothes"), "Select", "Cancel"); 
 }
 
 MemberCount(groupID)

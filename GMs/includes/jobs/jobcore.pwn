@@ -702,7 +702,7 @@ CMD:skill(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "| 1: Detective																	 6: Arms Dealer");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 2: Lawyer						   											 7: Car Mechanic");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 3: Whore											  	 						 8: Boxer");
-		SendClientMessageEx(playerid, COLOR_GREY, "| 4: Drugs Dealer										  9: Fishing");
+		SendClientMessageEx(playerid, COLOR_GREY, "| 4: Drugs Dealer										  9: Coming Soon");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 5: Drug Smuggler								10: Shipment Contractor");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 11: Treasure Hunter							12: Vehicle Lock Picking");
 		SendClientMessageEx(playerid, COLOR_GREY, "| 13: Fishing");
@@ -783,12 +783,7 @@ CMD:skill(playerid, params[])
 		}
 		case 9://Fishing
 		{
-			new level = PlayerInfo[playerid][pFishSkill], string[48];
-			if(level >= 0 && level <= 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Skill Level = 1."); format(string, sizeof(string), "You need to Fish %d more Fishes to level up.", 50 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 50 && level <= 100) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Skill Level = 2."); format(string, sizeof(string), "You need to Fish %d more Fishes to level up.", 100 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 100 && level <= 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Skill Level = 3."); format(string, sizeof(string), "You need to Fish %d more Fishes to level up.", 200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 200 && level <= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Skill Level = 4."); format(string, sizeof(string), "You need to Fish %d more Fishes to level up.", 400 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 400) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Fishing Skill Level = 5."); }
+			return 1;
 		}
 		case 10://Trucker
 		{

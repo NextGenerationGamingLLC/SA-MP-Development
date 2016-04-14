@@ -640,7 +640,7 @@ CMD:loadplane(playerid, params[]) {
 		    }
 		    if(PlaneFound != INVALID_VEHICLE_ID)
 		    {
-			    for(new i = 0; i < 6; i++)
+			    for(new i = 0; i < 11; i++)
 			    {
 			        if(CrateVehicleLoad[PlaneFound][vCrateID][i] == -1)
 			        {

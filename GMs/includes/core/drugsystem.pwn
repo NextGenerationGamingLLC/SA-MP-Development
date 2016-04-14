@@ -714,7 +714,7 @@ hook OnPlayerEnterCheckpoint(playerid) {
 
 					format(szMiscArray, sizeof(szMiscArray), "Delivered: %s | Pieces: %d", szIngredients[i], arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]);
 					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
-					arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i];
+					arrBlackMarket[iBlackMarketID][bm_iIngredientAmount][i] += arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]; // ROTHSCHILD - MONEY EXPLOIT HERE
 					arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] += (10 * arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i]); // $10 per amount goes to Point's gang locker.
 					arrSmuggleVehicle[iVehID][smv_iIngredientAmount][i] = 0;
 
@@ -810,7 +810,7 @@ hook OnPlayerEnterCheckpoint(playerid) {
 
 			SendClientMessageEx(playerid, COLOR_GREEN, "____________________________________________");
 
-			format(szMiscArray, sizeof(szMiscArray), "You received $%s from %s's (ID %d) point delivery to %s's (ID %d) point.",
+			format(szMiscArray, sizeof(szMiscArray), "You received $%s from %s's (ID %d) point delivery to %s's (ID %d) black market",
 				number_format(iCash), GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), arrGroupData[arrPoint[iPointID][po_iGroupID]][g_szGroupName], arrPoint[iPointID][po_iGroupID]);
 			GroupLog(arrPoint[iPointID][po_iGroupID], szMiscArray);
 
@@ -3167,7 +3167,7 @@ CMD:dropdrug(playerid, params[]) {
 
 	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");
 
-	if(!(0 < iAmount < PlayerInfo[playerid][p_iDrug][iDrugID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+	if(!(0 < iAmount > PlayerInfo[playerid][p_iDrug][iDrugID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
 
 	PlayerInfo[playerid][p_iDrug][iDrugID] -= iAmount;
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You dropped %d pc of %s.", iAmount, szChoice);
@@ -3196,7 +3196,7 @@ CMD:usedrug(playerid, params[]) {
 	if(GetPVarType(playerid, PVAR_DRUGS_OVERDOSE)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are currently overdosed.");
 	if(GetPVarType(playerid, "WatchingTV") || GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot use drugs while watching TV.");
 
-	if(dr_iPlayerTimeStamp[playerid] > gettime() - 20) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been injured in the last two minutes");
+	if(dr_iPlayerTimeStamp[playerid] > gettime() - 120) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been injured in the last two minutes");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
 
    	#if defined zombiemode

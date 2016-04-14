@@ -1076,7 +1076,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 ptask HackCheck_Micro[1000](playerid) {
 
-	//if(PlayerInfo[playerid][pAdmin] < 2)
+	if(PlayerInfo[playerid][pAdmin] < 2)
 	{
 		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
 			if(ac_ACToggle[AC_AIRBREAKING] && AC_AirBreaking(playerid)) AC_Process(playerid, AC_AIRBREAKING);
@@ -1094,7 +1094,7 @@ ptask HackCheck[HACKTIMER_INTERVAL](playerid) {
 	arrAntiCheat[playerid][ac_iCommandCount] = 0;
 	ac_iPlayerKeySpam[playerid] = 0;
 	arrAntiCheat[playerid][ac_fSpeed] = GetPlayerSpeed(playerid);
-	// if(PlayerInfo[playerid][pAdmin] < 2)
+	if(PlayerInfo[playerid][pAdmin] < 2)
 	{
 		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
 			if(ac_ACToggle[AC_CARSURFING] && AC_IsPlayerSurfing(playerid)) AC_Process(playerid, AC_CARSURFING, INVALID_PLAYER_ID);
@@ -2181,7 +2181,7 @@ AC_Flag(playerid, processid, iExtraID = INVALID_PLAYER_ID, Float:fInfo = 0.0) {
 
 AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 
-	// if(PlayerInfo[playerid][pAdmin] > 1) return 1;
+	if(PlayerInfo[playerid][pAdmin] > 1) return 1;
 	if(!ac_ACToggle[processid]) return 1;
 	arrAntiCheat[playerid][ac_iFlags][processid]++;
 	if(GetPVarType(playerid, "ACCooldown") && GetPVarInt(playerid, "ACCooldown") == processid) return 1;

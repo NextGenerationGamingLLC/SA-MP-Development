@@ -762,7 +762,7 @@ CMD:businesshelp(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD3, "*** BUSINESS *** /editcarprice /editcarspawn");
 		}
 		else if(Businesses[PlayerInfo[playerid][pBusiness]][bType] == BUSINESS_TYPE_GUNSHOP) {
-		    SendClientMessageEx(playerid, COLOR_GRAD3, "*** BUSINESS *** /offergun /addmat(erial)s");
+		    SendClientMessageEx(playerid, COLOR_GRAD3, "*** BUSINESS *** /addmat(erial)s");
 		}
 		else if(Businesses[PlayerInfo[playerid][pBusiness]][bType] == BUSINESS_TYPE_STORE) {
 		    SendClientMessageEx(playerid, COLOR_GRAD3, "*** BUSINESS *** /offeritem /editprices");

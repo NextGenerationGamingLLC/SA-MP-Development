@@ -326,7 +326,7 @@ CMD:call(playerid, params[])
 			}
 			return 1;
 		}
-		case 1738: {
+		/*case 1738: {
 
 			if(!GetPVarType(playerid, "ShipmentCallActive"))
 			{
@@ -336,7 +336,7 @@ CMD:call(playerid, params[])
 				SetTimerEx("ShipmentConvo", 2000, false, "ii", playerid, 1);
 			}
 			return 1;
-		}
+		}*/
 	}
 
 	if(GetPVarType(playerid, "BUSICALL")) {
