@@ -420,7 +420,7 @@ CMD:accept(playerid, params[])
                             format(szMessage, sizeof(szMessage), "[CAR] %s(%d) (IP: %s) has paid $%s to %s(%d) for the %s (IP: %s)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, number_format(VehiclePrice[playerid]), GetPlayerNameEx(VehicleOffer[playerid]), GetPlayerSQLId(VehicleOffer[playerid]), GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), ipex);
                             Log("logs/pay.log", szMessage);
 
-                            format(szMiscArray, sizeof(szMiscArray), "[CARSALE][$%s] %s(%d) sold a %s to %s(%d)", number_format(VehiclePrice[playerid]), GetPlayerNameEx(playerid), playerid, GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), GetPlayerNameEx(VehicleOffer[playerid]), VehicleOffer[playerid]);
+                            format(szMiscArray, sizeof(szMiscArray), "[CARSALE][$%s] %s(%d) bought a %s from %s(%d)", number_format(VehiclePrice[playerid]), GetPlayerNameEx(playerid), playerid, GetVehicleName(PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId]), GetPlayerNameEx(VehicleOffer[playerid]), VehicleOffer[playerid]);
                             ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 
                             GetPlayerName(VehicleOffer[playerid], giveplayer, sizeof(giveplayer));
