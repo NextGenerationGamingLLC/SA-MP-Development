@@ -1864,7 +1864,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSafeMoney];
 
 					new fine = 10 * totalwealth / 100;
-					if(GetPlayerCash(playerid) < fine)
+					if(GetPlayerCash(playerid) < fine || fine < 0)
 					{
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has declined the Newbie Unmute (Insufficient Funds).", GetPlayerNameEx(playerid));
 						ABroadCast(COLOR_YELLOW, string, 2);

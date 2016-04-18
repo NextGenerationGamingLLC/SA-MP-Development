@@ -2819,11 +2819,22 @@ forward Drugs_OnCheckAmount(playerid, iDrugID);
 public Drugs_OnCheckAmount(playerid, iDrugID)
 {
 	new iRows = cache_get_row_count(MainPipeline);
-	if(iRows < MAX_PLAYERDRUGS) Drugs_CreateQuery(playerid, iDrugID);
+	if(iRows < MAX_PLAYERDRUGS) 
+	{
+		format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `drugpool`");
+		mysql_function_query(MainPipeline, szMiscArray, true, "Drugs_OnGLOBALCheckAmount", "ii", playerid, iDrugID);
+	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot plant any more cannabis.");
 	return 1;
 }
-
+forward Drugs_OnGLOBALCheckAmount(playerid, iDrugID);
+public Drugs_OnGLOBALCheckAmount(playerid, iDrugID)
+{
+	new iRows = cache_get_row_count(MainPipeline);
+	if(iRows < MAX_DRUGS) Drugs_CreateQuery(playerid, iDrugID);
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot plant any more cannabis.");
+	return 1;
+}
 Drugs_CreateQuery(playerid, iDrugID) {
 
 	new i = Iter_Free(PlayerDrugs),
@@ -3167,7 +3178,7 @@ CMD:dropdrug(playerid, params[]) {
 
 	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");
 
-	if(!(0 < iAmount > PlayerInfo[playerid][p_iDrug][iDrugID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+	if((0 < iAmount > PlayerInfo[playerid][p_iDrug][iDrugID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
 
 	PlayerInfo[playerid][p_iDrug][iDrugID] -= iAmount;
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You dropped %d pc of %s.", iAmount, szChoice);

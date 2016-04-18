@@ -131,7 +131,6 @@ SaveGroup(iGroupID) {
 		return 0;
 
 	szMiscArray[0] = 0;
-	if(arrGroupData[iGroupID][g_iBudget] < 0) { arrGroupData[iGroupID][g_iBudget] = 0; }
 	new
 		i = 0;
 		//iIndex = 0;
@@ -258,13 +257,14 @@ stock IsAJudge(playerid)
 stock IsALawyer(playerid)
 {
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_JUDICIAL) && PlayerInfo[playerid][pRank] > 1) return 1;
-	if(PlayerInfo[playerid][pJob] == 13 || PlayerInfo[playerid][pJob2] == 13 || PlayerInfo[playerid][pJob3] == 13) return 1;
+	if(PlayerInfo[playerid][pJob] == 2 || PlayerInfo[playerid][pJob2] == 2 || PlayerInfo[playerid][pJob3] == 2) return 1;
 	return 0;
 }
 
 stock IsATaxiDriver(playerid)
 {
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))	return 1;
+	if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17) return 1;
 	return 0;
 }
 
@@ -5559,7 +5559,7 @@ CMD:locker(playerid, params[]) {
 
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)) // name-change point in faction lockers for free namechange factions
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAmmo") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAmmo") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
 						}
 						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE) {
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nAmmo");

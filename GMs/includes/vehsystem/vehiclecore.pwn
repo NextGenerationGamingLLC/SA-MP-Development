@@ -2557,7 +2557,7 @@ CMD:sellmycar(playerid, params[])
 				}
 				if(IsWeaponizedVehicle(PlayerVehicleInfo[playerid][d][pvModelId]))
 				{
-					new dialogstring[255], fine = 15 * price / 100;
+					new dialogstring[255], fine = (price / 100) * 15;
 					format(dialogstring, sizeof(dialogstring), "Selling weaponized vehicles results in a 15 percent fine for each vehicle sold.\n\n{FF0000}You will only recieve %s(fine: %s) for this transaction, proceed?", number_format(price-fine), number_format(fine));
 					ShowPlayerDialogEx(playerid, DIALOG_WEPVEHSALE, DIALOG_STYLE_MSGBOX, "{FF0000}Notice", dialogstring, "Proceed", "Exit");
 

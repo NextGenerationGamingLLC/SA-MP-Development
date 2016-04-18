@@ -5563,6 +5563,9 @@ public OnPlayerText(playerid, text[])
 		else
 		{
 			SendClientMessageEx(playerid, COLOR_YELLOW,"There's nobody there!");
+			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
+			RemovePlayerAttachedObject(playerid, 8);
+			Mobile[playerid] = INVALID_PLAYER_ID;
 		}
 		return 0;
 	}

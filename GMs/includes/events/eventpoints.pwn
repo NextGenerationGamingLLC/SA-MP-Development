@@ -101,7 +101,7 @@ stock InitEventPoints()
 
 CMD:gotopoint(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] != 2)
+	if(PlayerInfo[playerid][pAdmin] < 4 || PlayerInfo[playerid][pGangModerator] != 2)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
 		return 1;
@@ -172,7 +172,7 @@ CMD:createpoint(playerid, params[])
 
 CMD:deletepoint(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] != 2)
+	if(PlayerInfo[playerid][pAdmin] < 4 || PlayerInfo[playerid][pGangModerator] != 2)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
 		return 1;

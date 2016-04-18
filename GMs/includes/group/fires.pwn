@@ -162,7 +162,7 @@ forward OnEnterFire(i, fireid);
 public OnEnterFire(i, fireid)
 {
 	if(GetPVarType(i, "pGodMode")) return 1;
-	if(arrStructureFires[fireid][fFirePos][0] == 0 && arrStructureFires[fireid][fFirePos][1] == 0 && arrStructureFires[fireid][fFirePos][2] == 0) return 1;
+	if(GetPVarType(i, "pBoomBox")) return 1;
 	if(IsValidStructureFire(fireid))
 	{
 		if(!GetPVarType(i, "pInFire")) SetTimerEx("Fire_HealthTimer", 1000, false, "i", i);

@@ -1341,8 +1341,8 @@ enum hInfo
 	ListingDescription[128],
 	LinkedGarage[2],
 	hAreaID[2],
-	hWorkbench,
-	hFurniture[MAX_FURNITURE_SLOTS]
+	hFurniture[MAX_FURNITURE_SLOTS],
+	hWorkbench
 };
 
 enum dmpInfo

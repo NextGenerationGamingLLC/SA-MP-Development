@@ -81,7 +81,7 @@ timer DDSaleTimerEx[30000](playerid)
 	return 1;
 }
 
-CMD:ads(playerid, params[]) return cmd_approvedoorsale(playerid, params);
+CMD:ad(playerid, params[]) return cmd_approvedoorsale(playerid, params);
 CMD:ds(playerid, params[]) return cmd_denydoorsale(playerid, params);
 
 CMD:doorsalehelp(playerid, params[])

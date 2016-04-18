@@ -269,7 +269,7 @@ public BackupClear(playerid, calledbytimer)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(IsACop(playerid) || IsAMedic(playerid))
+		if(IsACop(playerid) || IsAMedic(playerid) || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TOWING)
 		{
 			if (Backup[playerid] > 0)
 			{

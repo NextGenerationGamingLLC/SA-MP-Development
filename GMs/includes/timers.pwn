@@ -395,16 +395,16 @@ task SyncTime[60000]()
 		#if defined zombiemode
   		if(WeatherCalling > 20)
 		{
-  			WeatherCalling = 0;
+  			WeatherCalling = 1;
 	    	gWeather = random(19) + 1;
-		    if(gWeather == 1 || gWeather == 8 || gWeather == 9) gWeather=10;
+		    if(gWeather == 1 || gWeather == 8 || gWeather == 9) gWeather=1;
 		}
 		#else
 		if(WeatherCalling > 20)
 		{
- 			WeatherCalling = 0;
+ 			WeatherCalling = 1;
    			gWeather = random(19) + 1;
-		    if(gWeather == 1 || gWeather == 8 || gWeather == 9) gWeather=10;
+		    if(gWeather == 1 || gWeather == 8 || gWeather == 9) gWeather=1;
 		}
 		#endif
 

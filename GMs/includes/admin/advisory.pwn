@@ -857,6 +857,7 @@ CMD:findnewb(playerid, params[]) {
 					SetPlayerPos(playerid, Pos[0][0], Pos[1][0]+2, Pos[2][0]);
 					PlayerInfo[x][pHelpedBefore] = 1;
 					SetPVarInt(playerid, "HelpingSomeone", 1);
+					SetPlayerHealth(playerid, 999999);
 					ShowPlayerDialogEx(x, 0, DIALOG_STYLE_MSGBOX, "Advisor Alert", "A Player Advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
 					if(i[0] > 0 || vw[0] > 0) Player_StreamPrep(playerid, Pos[0][0], Pos[1][0], Pos[2][0], FREEZE_TIME);
 					format(szMiscArray, sizeof(szMiscArray), "You have been teleported to newbie %s, retype the command to be teleported back.", GetPlayerNameEx(x));
@@ -868,6 +869,7 @@ CMD:findnewb(playerid, params[]) {
 		else
 		{
 		    DeletePVar(playerid, "HelpingSomeone");
+			SetPlayerHealth(playerid, 100);
 			SetPlayerPos(playerid, GetPVarFloat(playerid, "AdvisorLastx"), GetPVarFloat(playerid, "AdvisorLasty"), GetPVarFloat(playerid, "AdvisorLastz"));
 			SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "AdvisorLastVW"));
 			SetPlayerInterior(playerid, GetPVarInt(playerid, "AdvisorLastInt"));

@@ -219,7 +219,6 @@ stock SaveHouse(houseid)
 		`ListingDescription`='%s', \
 		`LinkedGarage0`=%d, \
 		`LinkedGarage1`=%d \
-		`Workbench`=%d \
 		WHERE `id`=%d",
 		szMiscArray,
 		HouseInfo[houseid][Listed],
@@ -234,7 +233,6 @@ stock SaveHouse(houseid)
 		g_mysql_ReturnEscaped(HouseInfo[houseid][ListingDescription], MainPipeline),
 		HouseInfo[houseid][LinkedGarage][0],
 		HouseInfo[houseid][LinkedGarage][1],
-		HouseInfo[houseid][hWorkbench],
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
@@ -534,6 +532,7 @@ stock SaveHouses()
 	{
 		SaveHouse(i);
 	}
+	ABroadCast(COLOR_LIGHTRED, "House saving finished.", 4);
 	return 1;
 }
 

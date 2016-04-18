@@ -21,7 +21,7 @@
 - Copyright:
 ============
 
-	-	Yom's Scripts Factory ╘ ╝.
+	-	Yom's Scripts Factory О©╫ О©╫.
 	-	You can use this script and distribute it but,
 	-	You WILL NOT sell it or tell it's your own work.
 
@@ -369,11 +369,11 @@ public FS_PrintButtonsInfos()
 	print
 	(
 		"\n \
-		зддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©\n \
-		Ё                   Buttons Informations                  Ё\n \
-		цддддддддбддддддддбдддддддддбдддддддддбдддддддддбддддддддд╢\n \
-		ЁButtonIDЁObjectIDЁ    X    Ё    Y    Ё    Z    Ё    A    Ё\n \
-		цддддддддеддддддддедддддддддедддддддддедддддддддеддддддддд╢"
+		О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©\n \
+		О©╫                   Buttons Informations                  О©╫\n \
+		О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д╢\n \
+		О©╫ButtonIDО©╫ObjectIDО©╫    X    О©╫    Y    О©╫    Z    О©╫    A    О©╫\n \
+		О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д╢"
 	);
 
 	for (new buttonid = 1; buttonid <= MAX_BUTTONS; buttonid ++)
@@ -382,7 +382,7 @@ public FS_PrintButtonsInfos()
 		{
 			printf
 			(
-				" Ё%8dЁ%8dЁ%6.2fЁ%6.2fЁ%6.2fЁ%6.2fЁ",
+				" О©╫%8dО©╫%8dО©╫%6.2fО©╫%6.2fО©╫%6.2fО©╫%6.2fО©╫",
 				buttonid,
 				ButtonInfo[buttonid][ObjectID],
 				ButtonInfo[buttonid][Pos][0],
@@ -393,7 +393,7 @@ public FS_PrintButtonsInfos()
 		}
 	}
 
-	print(" юддддддддаддддддддадддддддддадддддддддадддддддддаддддддддды\n");
+	print(" О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫\n");
 }
 /*----------------------------------------------------------------------------*/
 
@@ -923,3 +923,8 @@ public OnGameModeExit()
 
 #endif
 /*----------------------------------------------------------------------------*/
+
+public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) // Calling Fix by Winterfield - Do not remove
+{
+	CallRemoteFunction("OnPlayerEditGate", "iddffffff", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
+}

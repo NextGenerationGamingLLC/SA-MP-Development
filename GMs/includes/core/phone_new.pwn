@@ -2140,7 +2140,7 @@ Phone_InitTD(playerid) {
 	PlayerTextDrawTextSize(playerid,phone_PTextDraw[playerid][17], 578.000000, -61.000000);
 	PlayerTextDrawSetSelectable(playerid,phone_PTextDraw[playerid][17], 0);
 
-	phone_PTextDraw[playerid][18] = CreatePlayerTextDraw(playerid,510.000000, 338.000000, "Google Maps");
+	phone_PTextDraw[playerid][18] = CreatePlayerTextDraw(playerid,510.000000, 338.000000, "Doogle Maps");
 	PlayerTextDrawBackgroundColor(playerid,phone_PTextDraw[playerid][18], 0x00000000);
 	PlayerTextDrawFont(playerid,phone_PTextDraw[playerid][18], 1);
 	PlayerTextDrawLetterSize(playerid,phone_PTextDraw[playerid][18], 0.170000, 0.999997);

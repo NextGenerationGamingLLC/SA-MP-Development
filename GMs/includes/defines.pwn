@@ -1182,7 +1182,6 @@ native IsValidVehicle(vehicleid);
 
 #define 		DIALOG_WEPVEHSALE				(6162)
 #define 		DIALOG_AC_MAIN					(6163)
-#define 		DIALOG_GROUP_TOLLLOCKDOWN		(6164)
 #define 		ELECTIONS						(6165)
 #define 		ELECTIONS_ADD					(6166)
 #define 		ELECTIONS_REMOVE				(6167)

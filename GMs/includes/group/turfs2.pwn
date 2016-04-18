@@ -362,7 +362,7 @@ TurfWars_CapCheck(playerid, iTurfID) {
 
 CMD:turfmode(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pGangModerator] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 1337 || PlayerInfo[playerid][pGangModerator] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command.");
 	new iTurfID = TurfWars_GetTurfID(playerid);
 	if(iTurfID == 369) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in an editable turf.");
 	
@@ -924,7 +924,7 @@ public TurfWars_FetchData(playerid, area) {
 
 CMD:editturf(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR) && PlayerInfo[playerid][pGangModerator] != 2) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR) || PlayerInfo[playerid][pGangModerator] != 2) return 1;
 
 	new szChoice[12],
 		iTurfID,

@@ -367,7 +367,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	return 1;
 }
 
-CMD:ad(playerid, params[]) {
+CMD:ads(playerid, params[]) {
 	return cmd_advertisements(playerid, params);
 }
 

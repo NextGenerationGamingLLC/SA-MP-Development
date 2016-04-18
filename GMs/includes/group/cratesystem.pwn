@@ -310,7 +310,7 @@ CMD:destroycrate(playerid, params[]) {
 }
 
 CMD:adestroycrate(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 	    if(servernumber == 2)
 		{
@@ -347,7 +347,7 @@ CMD:adestroycrate(playerid, params[]) {
 }
 
 CMD:gotocrate(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 	    new i;
 	    if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotocrate [crate id]");

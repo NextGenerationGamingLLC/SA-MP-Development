@@ -24,8 +24,19 @@ hook OnGameModeInit() {
 	TruckerVehicles[17] = AddStaticVehicleEx(514,-1628.41735840,72.35322571,3.69948244,225.00000000,-1,-1,300); //Tank truck
 	TruckerVehicles[18] = AddStaticVehicleEx(514,-1631.25317383,69.12777710,3.69948244,225.00000000,-1,-1,300); //Tank truck
 
-	PizzaVehicles[0] = AddStaticVehicleEx(448,-1701.99133301,1378.75817871,6.85771942,45.00000000,3,6,300); //Pizzaboy
-	PizzaVehicles[1] =	AddStaticVehicleEx(448,-1702.81005859,1378.07958984,6.85771942,45.00000000,3,6,300); //Pizzaboy
+	PizzaVehicles[0] = AddStaticVehicleEx(448, 2106.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[1] = AddStaticVehicleEx(448, 2107.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[2] = AddStaticVehicleEx(448, 2108.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[3] = AddStaticVehicleEx(448, 2109.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[4] = AddStaticVehicleEx(448, 2110.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[5] = AddStaticVehicleEx(448, 2111.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[6] = AddStaticVehicleEx(448, 2112.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[7] = AddStaticVehicleEx(448, 2113.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[8] = AddStaticVehicleEx(448, 2114.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[9] = AddStaticVehicleEx(448, 2115.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[10] = AddStaticVehicleEx(448, 2116.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+	PizzaVehicles[11] = AddStaticVehicleEx(448, 2117.4319, -1784.7222, 12.8745, 0.00000000 ,3,6,300); //Pizzaboy
+/*	PizzaVehicles[1] =	AddStaticVehicleEx(448,-1702.81005859,1378.07958984,6.85771942,45.00000000,3,6,300); //Pizzaboy
 	PizzaVehicles[2] =	AddStaticVehicleEx(448,-1703.49853516,1377.28295898,6.85771942,45.00000000,3,6,300); //Pizzaboy
 	PizzaVehicles[3] =	AddStaticVehicleEx(448,-1704.31005859,1376.46240234,6.85771942,45.00000000,3,6,300); //Pizzaboy
 	PizzaVehicles[4] =	AddStaticVehicleEx(448,-1705.17895508,1375.72802734,6.85771942,45.00000000,3,6,300); //Pizzaboy
@@ -36,7 +47,7 @@ hook OnGameModeInit() {
 	PizzaVehicles[9] =	AddStaticVehicleEx(448,-1712.32312012,1368.69396973,6.85771942,45.00000000,3,6,300); //Pizzaboy
 	PizzaVehicles[10] =	AddStaticVehicleEx(448,-1713.02709961,1367.94238281,6.85771942,45.00000000,3,6,300); //Pizzaboy
 	PizzaVehicles[11] =	AddStaticVehicleEx(448,-1713.83740234,1367.19580078,6.85771942,45.00000000,3,6,300); //Pizzaboy
-
+*/
 	/*
 	AddStaticVehicleEx(593,382.5172,2536.9561,16.5338,179.7261,-1,-1,2000);//Flyschool
 	AddStaticVehicleEx(513,348.3660,2536.9792,16.7418,178.8195,-1,-1,2000);//Flyschool

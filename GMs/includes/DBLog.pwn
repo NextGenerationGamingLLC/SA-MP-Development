@@ -80,6 +80,7 @@ hook OnGameModeExit() {
 
 */		
 DBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, szLogTable[], szLogText[]) {
+DBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, szLogTable[], szLogText[]) {
 
 	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `%s` (`Timestamp`,`PlayerID`,`TargetID`,`LogText`,`PlayerIP`,`TargetIP`) VALUES ('%d','%d','%d','%s','%s','%s')", szLogTable, gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iTargetID][pId], szLogText, PlayerInfo[iPlayerID][pIP], PlayerInfo[iTargetID][pIP]);
 	db_free_result(db_query(db_iHandle, szMiscArray));
@@ -119,14 +120,14 @@ PropertyDBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, PropertyID, szLogTable[]
 		
 		
 */
-/*GroupDBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, iGroupID, szLogTable[], szLogText) {
+GroupDBLog(iPlayerID, iGroupID, szLogText) {
 
-	format(szMiscArray, sizeof(szMiscArray),  "INSERT INTO `%s` (`Timestamp`,`GroupID`,`PlayerID`,`TargetID`,`LogText`,`PlayerIP`,`TargetIP`) VALUES ('%d','%d','%d','%d','%s','%s','%s')", szLogTable, gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iTargetID][pId], szLogText, PlayerInfo[iPlayerID][pIP], PlayerInfo[iTargetID][pIP]);
+	format(szMiscArray, sizeof(szMiscArray),  "INSERT INTO `cp_log_group` (`Timestamp`,`GroupID`,`PlayerID`,`LogText`,`PlayerIP`) VALUES ('%d','%d','%d','%s','%s')", gettime(), iGroupID, PlayerInfo[iPlayerID][pId], szLogText, PlayerInfo[iPlayerID][pIP]);
 	db_free_result(db_query(db_iHandle, szMiscArray));
 	printf("%s",szMiscArray);
 
 	return 1;
-}*/
+}
 
 
 /* 

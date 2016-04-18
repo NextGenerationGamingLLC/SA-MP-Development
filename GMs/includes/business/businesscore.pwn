@@ -132,7 +132,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 		}
   		case ITEM_SPRUNK:
 		{
-			PlayerInfo[playerid][pSprunk] = 1;
+			PlayerInfo[playerid][pSprunk] += 1;
 			SendClientMessageEx(playerid, COLOR_GRAD4, "Sprunk purchased.");
 			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /usesprunk to drink a can of Sprunk. Left mouse button to take a sip, F to throw it away.");
 		}

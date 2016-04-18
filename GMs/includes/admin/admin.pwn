@@ -182,7 +182,7 @@ CMD:id(playerid, params[]) {
 	if(IsNumeric(params) && IsPlayerConnected(strval(params)))
 	{
 	    if(PlayerInfo[playerid][pAdmin] >= 2) format(szMessage, sizeof szMessage, "%s (ID: %d) - (Level: %d) - (Ping: %d) - (FPS: %d)", GetPlayerNameEx(iTargetID), iTargetID, PlayerInfo[iTargetID][pLevel], GetPlayerPing(iTargetID), pFPS[iTargetID]);
-		else format(szMessage, sizeof szMessage, "%s (ID: %d) - (Level: %d) - (Ping: %d)", GetPlayerNameEx(iTargetID), iTargetID, PlayerInfo[iTargetID][pLevel], GetPlayerPing(iTargetID));
+		else format(szMessage, sizeof szMessage, "%s (ID: %d) - (Level: %d) - (Ping: %d)", GetPlayerNameEx(iTargetID), iTargetID, GetPlayerScore(iTargetID), GetPlayerPing(iTargetID));
 		return SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 	}
 	else if(strlen(params) < 3) {

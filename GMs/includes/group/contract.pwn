@@ -624,11 +624,12 @@ CMD:setmylevel(playerid, params[])
 {
 	if (!IsAHitman(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command.");
 	new level;
-	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /setmylevel [level]");
-	if(PlayerInfo[playerid][pLevel] > level)  return SendClientMessageEx(playerid, COLOR_GREY, "The new level can't be greater than your current level.");
+	if(sscanf(params, "d", level)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmylevel [level]");
+	if(PlayerInfo[playerid][pLevel] < level)  return SendClientMessageEx(playerid, COLOR_GREY, "The new level can't be greater than your current level.");
 	SetPVarInt(playerid, "TempLevel", level);
 	SetPlayerScore(playerid, level);
-	return 1;
+	format(szMiscArray, sizeof(szMiscArray), "You have set your level to %d", level);
+	return SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
 }
 
 CMD:givehit(playerid, params[])
@@ -784,8 +785,8 @@ CMD:contract(playerid, params[])
 		if(PlayerInfo[playerid][pLevel] < 3 || PlayerInfo[giveplayerid][pLevel] < 3)
 			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a contract unless both you and the hit are at least level 3.");
 
-		if(moneys < 100000 || moneys > 3000000)
-			return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts that are less than $100,000 or more than $3,000,000.");
+		if(moneys < 50000 || moneys > 3000000)
+			return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts that are less than $50,000 or more than $3,000,000.");
 
 		if((moneys < 150000 || moneys > 3000000) && IsACop(giveplayerid))
 			return SendClientMessageEx(playerid, COLOR_GREY, "The minimum hit amount for a law enforcement officer is $150,000.");
