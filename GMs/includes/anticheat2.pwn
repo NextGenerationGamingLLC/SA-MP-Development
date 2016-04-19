@@ -1,7 +1,5 @@
 /* Anti-Cheat v2.0
-
-	Slice (weapon-config.inc)
-	Jingles
+	[###] Jingles
 */
 
 // add autocbug
@@ -1044,11 +1042,11 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			if(!(++arrAntiCheat[playerid][ac_iShots] % ac_MaxWeaponContShots[weaponid])) AC_Process(playerid, AC_AIMBOT, weaponid);
 
 			new iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] - arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] - arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid],
-				iRatio;
+				Float:fRatio;
 
 			iRelevantMiss++; // Can't divide by 0.
-			iRatio = floatround(arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] / iRelevantMiss);
-			AC_WeaponRatios(playerid, weaponid, iRatio);
+			fRatio = arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] / iRelevantMiss;
+			if(arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] > 50 && fRatio > 3) AC_Flag(playerid, AC_AIMBOT, weaponid, fRatio);
 	    }
 	    else arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid]++;
 	}
@@ -1074,18 +1072,6 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		}
 	}
 	return 1;
-}
-
-AC_WeaponRatios(playerid, weaponid, iRatio) {
-
-	// reasonable ratios differ per weapon.
-	switch(weaponid) {
-
-		case WEAPON_SHOTGSPA: {
-			if(arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] > 50 && iRatio > 15) AC_Flag(playerid, AC_AIMBOT, weaponid, iRatio);
-		}
-		default: if(arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] > 50 && iRatio > 3) AC_Flag(playerid, AC_AIMBOT, weaponid, iRatio);
-	}
 }
 
 ptask HackCheck_Micro[1000](playerid) {
@@ -1120,15 +1106,12 @@ ptask HackCheck[HACKTIMER_INTERVAL](playerid) {
 
 AC_SpeedHacks(playerid) {
 
-	if(GetPlayerSurfingVehicleID(playerid) == INVALID_VEHCILE_ID) {
+	new Float:fSpeed = GetPlayerSpeed(playerid),
+		Float:fVel[3];
 
-		new Float:fSpeed = GetPlayerSpeed(playerid),
-			Float:fVel[3];
-
-		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK && fSpeed > 46) { // was 45, increased.
-			GetPlayerVelocity(playerid, fVel[0], fVel[1], fVel[2]);
-			if(fVel[2] == 0) AC_Process(playerid, AC_SPEEDHACKS);
-		}
+	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK && fSpeed > 45) {
+		GetPlayerVelocity(playerid, fVel[0], fVel[1], fVel[2]);
+		if(fVel[2] == 0) AC_Process(playerid, AC_SPEEDHACKS);
 	}
 }
 
