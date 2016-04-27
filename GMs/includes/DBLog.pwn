@@ -79,7 +79,7 @@ hook OnGameModeExit() {
 		-Voucher
 
 */		
-DBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, szLogTable[], szLogText[]) {
+//DBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, szLogTable[], szLogText[]) {
 DBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, szLogTable[], szLogText[]) {
 
 	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `%s` (`Timestamp`,`PlayerID`,`TargetID`,`LogText`,`PlayerIP`,`TargetIP`) VALUES ('%d','%d','%d','%s','%s','%s')", szLogTable, gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iTargetID][pId], szLogText, PlayerInfo[iPlayerID][pIP], PlayerInfo[iTargetID][pIP]);
@@ -120,6 +120,7 @@ PropertyDBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, PropertyID, szLogTable[]
 		
 		
 */
+		/*
 GroupDBLog(iPlayerID, iGroupID, szLogText) {
 
 	format(szMiscArray, sizeof(szMiscArray),  "INSERT INTO `cp_log_group` (`Timestamp`,`GroupID`,`PlayerID`,`LogText`,`PlayerIP`) VALUES ('%d','%d','%d','%s','%s')", gettime(), iGroupID, PlayerInfo[iPlayerID][pId], szLogText, PlayerInfo[iPlayerID][pIP]);
@@ -128,7 +129,7 @@ GroupDBLog(iPlayerID, iGroupID, szLogText) {
 
 	return 1;
 }
-
+*/
 
 /* 
 	Function: ConectionDBLog

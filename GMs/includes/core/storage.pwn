@@ -1803,11 +1803,12 @@ CMD:trunkput(playerid, params[])
 		Drugs_ShowTrunkMenu(playerid, pvid, 1);
 		return 1;
 	}
+	/*
 	if(PlayerVehicleInfo[playerid][pvid][pvWepUpgrade] == 0)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "You cant store weapons in this vehicle.");
 		return 1;
-	}
+	}*/
 	new maxslots = PlayerVehicleInfo[playerid][pvid][pvWepUpgrade]+1;
 	if(slot > maxslots)
 	{
@@ -2094,12 +2095,13 @@ CMD:trunktake(playerid, params[]) {
 				if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET) {
 					return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't take weapons from the trunk if it's closed! /car trunk to open it.");
 				}
-
+/*
 				if(PlayerVehicleInfo[playerid][d][pvWepUpgrade] == 0)
 				{
 					SendClientMessageEx(playerid, COLOR_GREY, "You cant store weapons in this vehicle.");
 					return 1;
 				}	
+				*/
 				if(strcmp(params, "drugs", true) == 0) {
 					Drugs_ShowTrunkMenu(playerid, d, 0);
 					return 1;

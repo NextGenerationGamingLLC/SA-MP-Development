@@ -604,7 +604,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pBailPrice] = cache_get_field_content_int(row,  "pBailPrice", MainPipeline);
 					PlayerInfo[extraid][pLastPoll] = cache_get_field_content_int(row,  "pLastPoll", MainPipeline);
 
-
 					arrAmmoData[extraid][awp_iAmmo][0] = cache_get_field_content_int(row, "Ammo0", MainPipeline);
 					arrAmmoData[extraid][awp_iAmmo][1] = cache_get_field_content_int(row, "Ammo1", MainPipeline);
 					arrAmmoData[extraid][awp_iAmmo][2] = cache_get_field_content_int(row, "Ammo2", MainPipeline);
@@ -794,6 +793,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 			{
 				Tutorial_Start(extraid);
 				g_mysql_AccountLoginCheck(extraid);
+				format(szMiscArray, sizeof(szMiscArray), "WARNING: %s (ID: %d) has registered from %s", GetPlayerNameEx(extraid), extraid, GetPlayerCountry(extraid));
+				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 				TotalRegister++;
 			}
 		}

@@ -1185,7 +1185,6 @@ native IsValidVehicle(vehicleid);
 #define 		ELECTIONS						(6165)
 #define 		ELECTIONS_ADD					(6166)
 #define 		ELECTIONS_REMOVE				(6167)
-        			
 // GangTags
 #define 			GANGTAG_TIME				60000
 

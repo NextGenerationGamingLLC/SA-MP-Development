@@ -2806,6 +2806,7 @@ public OnPlayerSpawn(playerid)
 			}
   		}
 	}
+	CrimeCheckHere(playerid);
 	if(GetPVarType(playerid, "WatchingTV")) return 1;
 	if(GetPVarInt(playerid, "NGPassenger") == 1)
 	{

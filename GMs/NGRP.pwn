@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.302"
+#define SERVER_GM_TEXT "NG:RP v3.0.304"
 
 // #define AREA_DEBUG
 
@@ -94,6 +94,7 @@
 #include <mSelection>
 #include <gvar>
 #include <irc>
+#include <geo_ip>
 
 #if defined SOCKET_ENABLED
 #include <socket>
@@ -191,7 +192,7 @@
 #include "./includes/core/emailcheck.pwn"
 #include "./includes/core/AccountSettings.pwn"
 #include "./includes/core/tutorial_new.pwn"
-
+\
 //WIP
 #include "./includes/core/deluxegps.pwn"
 

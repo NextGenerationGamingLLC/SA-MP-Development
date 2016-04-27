@@ -1342,7 +1342,6 @@ enum hInfo
 	LinkedGarage[2],
 	hAreaID[2],
 	hFurniture[MAX_FURNITURE_SLOTS],
-	hWorkbench
 };
 
 enum dmpInfo

@@ -738,11 +738,11 @@ hook OnPlayerSpawn(playerid) {
 	if(ac_IsDead[playerid]) ac_IsDead[playerid] = false;
 }
 
-
+/*
 hook OnPlayerRequestClass(playerid, classid) {
 	if(ac_IsDead[playerid]) ac_IsDead[playerid] = false;
 }
-
+*/
 hook OnPlayerDeath(playerid, killerid, reason) {
 
 	ac_IsDead[playerid] = true;

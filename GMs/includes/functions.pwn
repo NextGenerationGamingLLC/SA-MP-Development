@@ -316,7 +316,28 @@ String_Count(arrCount[][], iMax = sizeof arrCount) {
 }
 
 			/*  ---------------- PUBLIC FUNCTIONS -----------------  */
+forward CrimeCheckHere(playerid);
+public CrimeCheckHere(playerid)
+{
+	szMiscArray[0] = 0;
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnCrimeCheckHere", "i", playerid);
+	return 1;
+}
 
+forward OnCrimeCheckHere(playerid);
+public OnCrimeCheckHere(playerid)
+{
+	new 
+		iRows = cache_get_row_count(MainPipeline);
+
+	szMiscArray[0] = 0;
+
+	if(iRows > 0) {
+		PlayerInfo[playerid][pWantedLevel] = iRows;
+	} 
+	return 1;
+
+}
 forward HideReportText(playerid);
 public HideReportText(playerid)
 {
