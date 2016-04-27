@@ -79,7 +79,7 @@ hook OnGameModeExit() {
 		-Voucher
 
 */		
-DBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, szLogTable[], szLogText[]) {
+
 DBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, szLogTable[], szLogText[]) {
 
 	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `%s` (`Timestamp`,`PlayerID`,`TargetID`,`LogText`,`PlayerIP`,`TargetIP`) VALUES ('%d','%d','%d','%s','%s','%s')", szLogTable, gettime(), PlayerInfo[iPlayerID][pId], PlayerInfo[iTargetID][pId], szLogText, PlayerInfo[iPlayerID][pIP], PlayerInfo[iTargetID][pIP]);
