@@ -157,10 +157,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 CastVote(playerid, iOptionID) {
 
 	szMiscArray[0] = 0;
-	if(PlayerInfo[playerid][pId] > 1000610779) return SendClientMessage(playerid, COLOR_GREY, "Sadly, you can't vote in this election.");
 	if(PlayerInfo[playerid][pNation] != 0) return SendClientMessage(playerid, COLOR_GREY, "You're not a San Andreas Citizen.");
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `electionresults` WHERE `ip` = '%s'", PlayerInfo[playerid][pIP]);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCastVote", "ii", playerid, iOptionID);
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnIPVoteCheck", "ii", playerid, iOptionID);
 	return 1;
 }
 forward OnIPVoteCheck(playerid, iOptionID);

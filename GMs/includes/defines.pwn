@@ -93,7 +93,8 @@ native IsValidVehicle(vehicleid);
 #define 		NEW_VULNERABLE 				(24)
 #define 		TIME_TO_CLAIM 				(1)
 #define 		TIME_TO_TAKEOVER 			(10)
-#define 		MAX_POINTS 					(8)
+#define 		MAX_POINTS 					(20)
+#define 		MAX_PLANTS 					(500)
 #define 		MAX_DMAPICONS 				(400)
 #define 		MAX_DDOORS					(3000)
 #define 		MAX_GARAGES					(3000)
@@ -1185,7 +1186,17 @@ native IsValidVehicle(vehicleid);
 #define 		ELECTIONS						(6165)
 #define 		ELECTIONS_ADD					(6166)
 #define 		ELECTIONS_REMOVE				(6167)
-        			
+
+#define 		DIALOG_DRUG_RUN 				(6168)
+
+#define 		MAX_POINT_NAME 					  (48)
+#define 		DIALOG_LISTPOINTS 				(6169)
+#define 		DIALOG_EDITPOINT 				(6170)
+#define 		DIALOG_EDITPOINT_NAME 			(6171)
+#define 		DIALOG_EDITPOINT_TYPE 			(6172)
+#define 		DIALOG_EDITPOINT_POSITION 		(6173)
+#define 		DIALOG_EDITPOINT_MATERIALS		(6174)
+
 // GangTags
 #define 			GANGTAG_TIME				60000
 

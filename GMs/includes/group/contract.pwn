@@ -626,6 +626,7 @@ CMD:setmylevel(playerid, params[])
 	new level;
 	if(sscanf(params, "d", level)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmylevel [level]");
 	if(PlayerInfo[playerid][pLevel] < level)  return SendClientMessageEx(playerid, COLOR_GREY, "The new level can't be greater than your current level.");
+	DeletePVar(playerid, "TempLevel");
 	SetPVarInt(playerid, "TempLevel", level);
 	SetPlayerScore(playerid, level);
 	format(szMiscArray, sizeof(szMiscArray), "You have set your level to %d", level);
@@ -788,7 +789,7 @@ CMD:contract(playerid, params[])
 		if(moneys < 50000 || moneys > 3000000)
 			return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts that are less than $50,000 or more than $3,000,000.");
 
-		if((moneys < 150000 || moneys > 3000000) && IsACop(giveplayerid))
+		if((moneys < 50000 || moneys > 3000000) && IsACop(giveplayerid))
 			return SendClientMessageEx(playerid, COLOR_GREY, "The minimum hit amount for a law enforcement officer is $150,000.");
 
 		if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT)

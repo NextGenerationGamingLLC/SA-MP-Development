@@ -32,7 +32,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
  
-new const szDrugs[][] = {
+/*new const Drugs[][] = {
 	"LSD",
 	"Cannabis",
 	"Meth",
@@ -67,6 +67,14 @@ new const szIngredients[][] = {
 	"PMK Oil",
 	"MDMA Crystals",
 	"Caffeine"
+};*/ // see ya
+
+new const Drugs[][] = {
+	"Pot",
+	"Crack",
+	"Meth",
+	"Ecstasy",
+	"Heroin"
 };
 
 enum eGroupData {
@@ -110,6 +118,8 @@ enum eGroupData {
 	g_hOOCColor,
 	g_iPot,
 	g_iCrack,
+	g_iMeth,
+	g_iEcstasy,
 	g_iHeroin,
 	g_iSyringes,
 	g_iOpium,
@@ -123,12 +133,29 @@ enum eGroupData {
 	g_iMemberCount,
 	g_iCrimeType,
 	g_iAmmo[MAX_AMMO_TYPES],
-	g_iDrugs[sizeof(szDrugs)],
-	g_iIngredients[sizeof(szIngredients)],
+	g_iDrugs[sizeof(Drugs)],
+	//g_iIngredients[sizeof(szIngredients)],
 	g_iGroupToyID,
 	g_iRivals[MAX_GROUP_RIVALS],
 	g_iTurfTax
 }
+
+enum PlantData
+{
+	 pOwner,
+	 pObject,
+	 pPlantType,
+	Float: pPos[3],
+	 pVirtual,
+	 pInterior,
+	 pGrowth,
+	 pExpires,
+	pDrugsSkill,
+	pObjectSpawned,
+}
+
+new Plants[MAX_PLAYERS][PlantData];
+
 
 enum eAmmoData {
 	awp_iAmmo[MAX_AMMO_TYPES],
@@ -712,44 +739,6 @@ enum TurfWarsEnum
 	Float: twMaxY,
 };
 
-enum fPoint
-{
-	pointID,
-	pointVW,
-	Float:Pointx,
-	Float:Pointy,
-	Float:Pointz,
-	Type,
-	Vulnerable,
-	MatPoint,
-	CratePoint,
-	Announced,
-	ClaimerId,
-	ClaimerTeam,
-	TimeToClaim,
-	TimeLeft,
-	Owner[32],
-	PlayerNameCapping[MAX_PLAYER_NAME],
-	CapperName[MAX_PLAYER_NAME],
-	Name[32],
-	TakeOverTimerStarted,
-	TakeOverTimer,
-	Text3D:TextLabel,
-	CaptureTimerEx2,
-	Stock,
-	Text3D:CaptureProccess,
-	Text3D:CaptureProgress,
-	CaptureProccessEx,
-	Float: Capturex,
-	Float: Capturey,
-	Float: Capturez,
-	CapTime,
-	CapFam,
-	CapName[MAX_PLAYER_NAME],
-	CapCrash,
-	PointPickupID
-}
-
 enum pFishing
 {
 	pFish1[20],
@@ -919,9 +908,8 @@ enum pInfo
 	// pCannabis,
 	// pCrack,
 	pHelper,
-	pDrugsSkill,
 	pArmsSkill,
-	pSmugSkill,
+	pDrugSmuggler,
 	pFishSkill,
 	Float:pHealth,
 	Float:pArmor,
@@ -1144,7 +1132,7 @@ enum pInfo
 	pBackpack, // 0 = no bckpk 1 = small 2 = med 3 = large
 	pBEquipped,
 	pBItems[12], // 0 = food 5 = medkit 6 = gun1 7 = gun2 8 = gun3 9 = gun4 10 = gun5 11 = Energy Bars
-	pBDrugs[sizeof(szDrugs)],
+	pBDrugs[sizeof(Drugs)],
 	pBStoredH,
 	pBStoredV,
 	pBugReportTimeout,
@@ -1184,12 +1172,13 @@ enum pInfo
 	pBailPrice,
 	pWallpaper,
 	pPhoneColor,
-	p_iDrug[sizeof(szDrugs)],
-	p_iDrugQuality[sizeof(szDrugs)],
-	p_iDrugTaken[sizeof(szDrugs)],
-	p_iAddicted[sizeof(szDrugs)],
-	p_iAddictedLevel[sizeof(szDrugs)],
-	p_iIngredient[sizeof(szIngredients)],
+	/*p_iDrug[sizeof(Drugs)],
+	p_iDrugQuality[sizeof(Drugs)],
+	p_iDrugTaken[sizeof(Drugs)],
+	p_iAddicted[sizeof(Drugs)],
+	p_iAddictedLevel[sizeof(Drugs)],
+	p_iIngredient[sizeof(szIngredients)],*/ // see ya
+	pDrugs[sizeof(Drugs)],
 	pBAmmo[MAX_AMMO_TYPES],
 	pToggledChats[MAX_CHATSETS], // see AccountSettings.pwn for coressponding chat IDs.
 	pChatbox[MAX_CHATSETS], // see AccountSettings.pwn for coressponding chat IDs.
@@ -1201,7 +1190,7 @@ enum pInfo
 	pPrisonMaterials,
 	pPrisonWineTime,
 	pPrisonCell,
-	p_iPrisonDrug[sizeof(szDrugs)],
+	p_iPrisonDrug[sizeof(Drugs)],
 	pFishWeight,
 	pFishingSkill,
 	pGarbageSkill,
@@ -1251,7 +1240,7 @@ enum pvInfo
 	pvBeingPickLockedBy,
 	pvLastLockPickedBy[MAX_PLAYER_NAME],
 	pvLocksLeft,
-	pvDrugs[sizeof(szDrugs)]
+	pvDrugs[sizeof(Drugs)]
 };
 
 enum ptInfo
@@ -1342,7 +1331,6 @@ enum hInfo
 	LinkedGarage[2],
 	hAreaID[2],
 	hFurniture[MAX_FURNITURE_SLOTS],
-	hWorkbench
 };
 
 enum dmpInfo
@@ -1782,7 +1770,7 @@ enum e_JobData {
 new arrJobData[MAX_JOBPOINTS][e_JobData];
 
 
-enum eBlackMarket {
+/*enum eBlackMarket {
 	bm_iGroupID,
 	bm_iSeized,
 	bm_iPickupID,
@@ -1794,7 +1782,7 @@ enum eBlackMarket {
 	bm_iIngredientPrice[sizeof(szIngredients)],
 	bm_iIngredientSmugglePay[sizeof(szIngredients)]
 }
-new arrBlackMarket[MAX_GROUPS][eBlackMarket];
+new arrBlackMarket[MAX_GROUPS][eBlackMarket];*/
 
 enum e_PayPhoneData {
 	pp_iNumber,
@@ -1805,7 +1793,7 @@ enum e_PayPhoneData {
 }
 new arrPayPhoneData[MAX_PAYPHONES][e_PayPhoneData];
 
-enum eDynPoints {
+/*enum eDynPoints {
 	po_iType,
 	po_szPointName[MAX_PLAYER_NAME],
 	Float:po_fPos[3],
@@ -1818,7 +1806,74 @@ enum eDynPoints {
 	Text3D:po_iTextID,
 	Text3D:po_iDelTextID
 }
-new arrPoint[MAX_DYNPOINTS][eDynPoints];
+new arrPoint[MAX_DYNPOINTS][eDynPoints];*/
+
+enum PointData 
+{
+	poID,
+	poType,
+	poName[MAX_PLAYER_NAME],
+	Float:poPos[3],
+	Float:poPos2[3],
+	Float:CapturePos[3],
+	CapturePlayerName[MAX_PLAYER_NAME], // The person who SUCCESSFULLY captured the point.
+	PlayerNameCapping[MAX_PLAYER_NAME], // The person who is ATTEMPTING to capture the point.
+	poCapperGroup, // The ID of the group who is ATTEMPTING to capture the point.
+	poCapperGroupOwned, // The ID of the group who actually OWNS the point.
+	poCapturable,
+	poInactive,
+	poPickupID,
+	poPickup2ID,
+	poMaterials,
+	HasCrashed,
+	pointVW,
+	pointVW2,
+	poTimer,
+	poTimestamp1, // Timestamp til becomes capturable
+	poTimestamp2, // Timestamp til is captured
+	Text3D:poTextID,
+	poBeingCaptured,
+	poCaptureTime
+}
+new DynPoints[MAX_POINTS][PointData];
+
+enum fPoint
+{
+	pointID,
+	pointVW3,
+	Float:Pointx,
+	Float:Pointy,
+	Float:Pointz,
+	Type,
+	Vulnerable,
+	MatPoint,
+	CratePoint,
+	Announced,
+	ClaimerId,
+	ClaimerTeam,
+	TimeToClaim,
+	TimeLeft,
+	Owner[32],
+	PlayerNameCappings[MAX_PLAYER_NAME],
+	CapperName[MAX_PLAYER_NAME],
+	Name[32],
+	TakeOverTimerStarted,
+	TakeOverTimer,
+	Text3D:TextLabel,
+	CaptureTimerEx2,
+	Stock,
+	Text3D:CaptureProccess,
+	Text3D:CaptureProgress,
+	CaptureProccessEx,
+	Float: Capturex,
+	Float: Capturey,
+	Float: Capturez,
+	CapTime,
+	CapFam,
+	CapName[MAX_PLAYER_NAME],
+	CapCrash,
+	PointPickupID
+}
 
 
 enum eMetDetData {
@@ -1896,4 +1951,3 @@ enum eUfo {
 	ufo_iObjectID[13],
 	ufo_iPlayerID
 }
-new arrUfo[MAX_UFOS][eUfo];

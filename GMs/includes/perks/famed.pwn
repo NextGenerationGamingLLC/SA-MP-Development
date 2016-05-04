@@ -199,7 +199,7 @@ CMD:fmute(playerid, params[])
 		    {
 		        if(targetid != INVALID_PLAYER_ID)
 		        {
-			        if((PlayerInfo[targetid][pFamed] > PlayerInfo[playerid][pFamed] &&  PlayerInfo[playerid][pAdmin] < 2) || PlayerInfo[targetid][pAdmin] > PlayerInfo[playerid][pAdmin])
+			        if((PlayerInfo[targetid][pFamed] > PlayerInfo[playerid][pFamed] &&  PlayerInfo[playerid][pAdmin] < 2) || PlayerInfo[targetid][pAdmin] > 1)
 		 				return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command on this person!");
 
 					PlayerInfo[targetid][pFMuted] = 1;

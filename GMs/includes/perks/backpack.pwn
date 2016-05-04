@@ -94,21 +94,21 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 		}
 		case DIALOG_BNARCOTICS: {
 
-			for(new i; i < sizeof(szDrugs); ++i) {
+			for(new i; i < sizeof(Drugs); ++i) {
 
-				format(szMiscArray, sizeof(szMiscArray), "%s%s({FFF94D}%d{A9C4E4} Grams)\n", szMiscArray, szDrugs[i], PlayerInfo[playerid][pBDrugs][i]);
+				format(szMiscArray, sizeof(szMiscArray), "%s%s({FFF94D}%d{A9C4E4} Grams)\n", szMiscArray, Drugs[i], PlayerInfo[playerid][pBDrugs][i]);
 			}
 			ShowPlayerDialogEx(playerid, DIALOG_BNARCOTICS, DIALOG_STYLE_LIST, dgTitle, szMiscArray, "Select", "Cancel");
 		}
 		case DIALOG_BNARCOTICS2: {
 			new pbi = GetPVarInt(playerid, "pbitemindex");
-			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of %s ({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBDrugs][pbi], szDrugs[pbi], GetBackpackNarcoticsGrams(playerid));
+			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of %s ({B20400}%d{A9C4E4} Total Grams)", PlayerInfo[playerid][pBDrugs][pbi], Drugs[pbi], GetBackpackNarcoticsGrams(playerid));
 			ShowPlayerDialogEx(playerid, DIALOG_BNARCOTICS2, DIALOG_STYLE_LIST, dgTitle, "Withdraw\nDeposit", "Select", "Cancel");
 		}
 		case DIALOG_BNARCOTICS3: {
 			new pbi = GetPVarInt(playerid, "pbitemindex");
 
-			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of %s({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBDrugs][pbi], szDrugs[pbi], GetBackpackNarcoticsGrams(playerid));
+			format(dgTitle, sizeof(dgTitle), "{FFF94D}%d{A9C4E4} Grams of %s({B20400}%d{A9C4E4} Total Grams)\n", PlayerInfo[playerid][pBDrugs][pbi], Drugs[pbi], GetBackpackNarcoticsGrams(playerid));
 			format(szMiscArray, sizeof(szMiscArray), "%s\nEnter the amount to %s                                                        ", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
 			ShowPlayerDialogEx(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, dgTitle, szMiscArray, "Select", "Cancel");
 		}
@@ -172,7 +172,7 @@ stock GetBackpackName(backpackid) {
 stock GetBackpackNarcoticsGrams(playerid) {
 	
 	new grams;
-	for(new i; i < sizeof(szDrugs); ++i) grams += PlayerInfo[playerid][pBDrugs][i];
+	for(new i; i < sizeof(Drugs); ++i) grams += PlayerInfo[playerid][pBDrugs][i];
 	return grams;
 }
 
@@ -394,15 +394,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 
-					if(PlayerInfo[playerid][p_iDrug][pbi] >= namount) PlayerInfo[playerid][p_iDrug][pbi] -= namount;
+					if(PlayerInfo[playerid][pDrugs][pbi] >= namount) PlayerInfo[playerid][pDrugs][pbi] -= namount;
 					else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that that amount of grams.");
 					
 					PlayerInfo[playerid][pBDrugs][pbi] += namount;
-					format(szMiscArray, sizeof(szMiscArray), "You have deposited %d grams of %s in your backpack.", namount, szDrugs[pbi]);
+					format(szMiscArray, sizeof(szMiscArray), "You have deposited %d grams of %s in your backpack.", namount, Drugs[pbi]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 					new ip[MAX_PLAYER_NAME];
 					GetPlayerIp(playerid, ip, sizeof(ip));
-					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) deposited %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, szDrugs[pbi], PlayerInfo[playerid][p_iDrug][pbi], PlayerInfo[playerid][pBackpack]);
+					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) deposited %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, Drugs[pbi], PlayerInfo[playerid][pDrugs][pbi], PlayerInfo[playerid][pBackpack]);
 					Log("logs/backpack.log", szMiscArray);
 					ShowBackpackMenu(playerid, DIALOG_BNARCOTICS, "- {02B0F5}Select a narcotic");
 				}
@@ -412,17 +412,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(namount < 1) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1");
 					if(namount > PlayerInfo[playerid][pBDrugs][pbi]) 
 					{
-						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you only have %d grams of %s{A9C4E4}\nGrams trying to withdraw {FFF600}%d{A9C4E4}\nEnter the amount to deposit", PlayerInfo[playerid][pBDrugs][pbi], szDrugs[pbi], namount);
+						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you only have %d grams of %s{A9C4E4}\nGrams trying to withdraw {FFF600}%d{A9C4E4}\nEnter the amount to deposit", PlayerInfo[playerid][pBDrugs][pbi], Drugs[pbi], namount);
 						ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, dInfo);
 						return 1;
 					}
 					PlayerInfo[playerid][pBDrugs][pbi] -= namount;
-					PlayerInfo[playerid][p_iDrug][pbi] += namount;
-					format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d grams of %s in your backpack.", namount, szDrugs[pbi]);
+					PlayerInfo[playerid][pDrugs][pbi] += namount;
+					format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d grams of %s in your backpack.", namount, Drugs[pbi]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 					new ip[MAX_PLAYER_NAME];
 					GetPlayerIp(playerid, ip, sizeof(ip));
-					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) withdrawn %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, szDrugs[pbi], PlayerInfo[playerid][pBDrugs][pbi], PlayerInfo[playerid][pBackpack]);
+					format(szMiscArray, sizeof(szMiscArray), "[DRUGS] %s(%d) (IP:%s) withdrawn %d grams of %s (%d grams Total) [BACKPACK %d]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, namount, Drugs[pbi], PlayerInfo[playerid][pBDrugs][pbi], PlayerInfo[playerid][pBackpack]);
 					Log("logs/backpack.log", szMiscArray);
 					ShowBackpackMenu(playerid, DIALOG_BNARCOTICS, "- {02B0F5}Select a narcotic");
 				}
@@ -901,11 +901,11 @@ CMD:listbitems(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
 			
-			for(new i; i < sizeof(szDrugs); ++i) {
+			for(new i; i < sizeof(Drugs); ++i) {
 
 				if(PlayerInfo[giveplayerid][pBDrugs][i] > 0) {
 
-					format(string, sizeof(string), "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], szDrugs[i]);
+					format(string, sizeof(string), "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], Drugs[i]);
 					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
 			}
@@ -982,11 +982,11 @@ CMD:bsearch(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
 			
-			for(new i; i < sizeof(szDrugs); ++i) {
+			for(new i; i < sizeof(Drugs); ++i) {
 
 				if(PlayerInfo[giveplayerid][pBDrugs][i] > 0) {
 
-					format(string, sizeof(string), "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], szDrugs[i]);
+					format(string, sizeof(string), "(Backpack) %d grams of %s.", PlayerInfo[giveplayerid][pBDrugs][i], Drugs[i]);
 					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
 			}
@@ -1065,14 +1065,14 @@ CMD:bremove(playerid, params[])
 				case 3: bptype = "Large";
 			}
 
-			new iDrugID = Drug_GetID(item);
+			new iDrugID = GetDrugID(item);
 			if(iDrugID != -1) {
 
-				format(string, sizeof(string), "* You have taken away %s's %s from their backpack.", GetPlayerNameEx(giveplayerid), szDrugs[iDrugID]);
+				format(string, sizeof(string), "* You have taken away %s's %s from their backpack.", GetPlayerNameEx(giveplayerid), Drugs[iDrugID]);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away your %s from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), szDrugs[iDrugID]);
+				format(string, sizeof(string), "* Officer %s has taken away your %s from your backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Drugs[iDrugID]);
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* Officer %s has taken away %s's %s from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), szDrugs[iDrugID]);
+				format(string, sizeof(string), "* Officer %s has taken away %s's %s from their backpack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), Drugs[iDrugID]);
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				PlayerInfo[giveplayerid][pBDrugs][iDrugID] = 0;
 			}

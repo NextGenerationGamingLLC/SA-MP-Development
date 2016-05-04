@@ -85,6 +85,8 @@ hook OnGameModeInit() {
 	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 1973.0710, -1298.6427, 25.0172+0.6, 10.0);//Glen Park
 	
 	CreateDynamic3DTextLabel("Prisoner Delivery Point\n/deliverinmates", COLOR_YELLOW, -2053.6279,-198.0207,15.0703, 10.0);
+
+	CreateDynamic3DTextLabel("Drug Run\nType /getcrate here to get meth & ecsasy", COLOR_YELLOW, -1446.8916,1503.4746,1.7366, 10.0);
 	
 	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
 	{

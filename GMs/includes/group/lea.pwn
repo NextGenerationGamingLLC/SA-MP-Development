@@ -740,6 +740,7 @@ CMD:clearcargo(playerid, params[])
 
 CMD:backup(playerid, params[])
 {
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) {
 
 		return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
@@ -818,6 +819,7 @@ CMD:backup(playerid, params[])
 
 CMD:backupall(playerid, params[])
 {
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) {
 		
 		return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
@@ -1456,7 +1458,7 @@ CMD:take(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away %s's Cannabis.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					PlayerInfo[giveplayerid][p_iDrug][1] = 0;
+					PlayerInfo[giveplayerid][pDrugs][1] = 0;
 				}
 				else
 				{
@@ -1482,7 +1484,7 @@ CMD:take(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away %s's crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					PlayerInfo[giveplayerid][p_iDrug][5] = 0;
+					PlayerInfo[giveplayerid][pDrugs][2] = 0;
 				}
 				else
 				{

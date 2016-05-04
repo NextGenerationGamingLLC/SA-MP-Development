@@ -105,7 +105,7 @@
 #define 		BLACKMARKET_SEIZE_DAYS			1
 
 /*
-new const szDrugs[][] = {
+new const Drugs[][] = {
 	"LSD",
 	"Cannabis",
 	"Meth",
@@ -145,11 +145,11 @@ new const szIngredients[][] = {
 /*
 	pInfo enums:
 
-	p_iDrug[sizeof(szDrugs)],
-	p_iDrugQuality[sizeof(szDrugs)],
-	p_iDrugTaken[sizeof(szDrugs)],
-	p_iAddicted[sizeof(szDrugs)],
-	p_iAddictedLevel[sizeof(szDrugs)],
+	p_iDrug[sizeof(Drugs)],
+	p_iDrugQuality[sizeof(Drugs)],
+	p_iDrugTaken[sizeof(Drugs)],
+	p_iAddicted[sizeof(Drugs)],
+	p_iAddictedLevel[sizeof(Drugs)],
 	p_iIngredient[sizeof(szIngredients)]
 */
 
@@ -186,7 +186,7 @@ new Iterator:Points<MAX_DYNPOINTS>,
 CMD:givealldrugs(playerid) {
 
 	if(!IsAdminLevel(playerid, ADMIN_LEAD)) return 1;
-	for(new i; i < sizeof(szDrugs); ++i) PlayerInfo[playerid][p_iDrug][i] = 200;
+	for(new i; i < sizeof(Drugs); ++i) PlayerInfo[playerid][pDrugs][i] = 200;
 	for(new i; i < sizeof(szIngredients); ++i) PlayerInfo[playerid][p_iIngredient][i] = 200;
 	return 1;
 }
@@ -270,7 +270,7 @@ ptask PlayerAddiction[60000 * ADDICT_TIMER_MINUTES](playerid)
 	new i = random(3);
 	if(i == 2) {
 
-		for(new idx; idx < sizeof(szDrugs); ++idx) {
+		for(new idx; idx < sizeof(Drugs); ++idx) {
 
 			if(PlayerInfo[playerid][p_iAddicted][idx] == 1)	{
 
@@ -279,7 +279,7 @@ ptask PlayerAddiction[60000 * ADDICT_TIMER_MINUTES](playerid)
 			}
 		}
 	}
-	for(new x; x < sizeof(szDrugs); ++x) PlayerInfo[playerid][p_iDrugTaken][x] = 0;
+	for(new x; x < sizeof(Drugs); ++x) PlayerInfo[playerid][p_iDrugTaken][x] = 0;
 	return 1;
 }
 
@@ -393,7 +393,7 @@ timer Drug_ResetEffects[60000](playerid, iDrugID) {
 
 	switch(iDrugID) {
 
-		case 0 .. 9: format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {DDDDDD}%s's side-effect wore off.", szDrugs[iDrugID]);
+		case 0 .. 9: format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {DDDDDD}%s's side-effect wore off.", Drugs[iDrugID]);
 		default: szMiscArray = "[Drugs]: All side-effects wore off from the medicine.";
 	}
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
@@ -491,7 +491,7 @@ timer Addiction_Effects[60000](playerid, iDrugID, iTaken) {
 
 timer Drug_ResetOverDose[30000](playerid) {
 
-	for(new i; i < sizeof(szDrugs); ++i) PlayerInfo[playerid][p_iDrugTaken][i] = 0;
+	for(new i; i < sizeof(Drugs); ++i) PlayerInfo[playerid][p_iDrugTaken][i] = 0;
 	DeletePVar(playerid, PVAR_DRUGS_OVERDOSE);
 	SetPlayerDrunkLevel(playerid, 0);
 	TextDrawHideForPlayer(playerid, ODTextDraw);
@@ -594,8 +594,8 @@ timer BM_Seize[60000 * 15](i) {
 
 hook OnPlayerConnect(playerid) {
 
-	for(new i; i < sizeof(szDrugs); ++i) {
-		PlayerInfo[playerid][p_iDrug][i] = 0;
+	for(new i; i < sizeof(Drugs); ++i) {
+		PlayerInfo[playerid][pDrugs][i] = 0;
 		PlayerInfo[playerid][p_iDrugQuality][i] = 0;
 		PlayerInfo[playerid][p_iDrugTaken][i] = 0;
 		PlayerInfo[playerid][p_iAddicted][i] = 0;
@@ -859,7 +859,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(!response) return 1;
 			SetPVarInt(playerid, PVAR_MAKINGDRUG, listitem);
-			format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You started making: {FFFF00}%s{CCCCCC}. Use /clearmix to start over.", szDrugs[listitem]);
+			format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You started making: {FFFF00}%s{CCCCCC}. Use /clearmix to start over.", Drugs[listitem]);
 			SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 			Drug_ShowMix(playerid);
 		}
@@ -1242,7 +1242,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		case DIALOG_PVEHICLE_DRUGS: {
 			if(!response) return DeletePVar(playerid, "PVDTransfer"), DeletePVar(playerid, "PVehID");
-			if(listitem == sizeof(szDrugs)) return Drug_TransferAllToVeh(playerid, GetPVarInt(playerid, "PVehID"), GetPVarInt(playerid, "PVDTransfer"));
+			if(listitem == sizeof(Drugs)) return Drug_TransferAllToVeh(playerid, GetPVarInt(playerid, "PVehID"), GetPVarInt(playerid, "PVDTransfer"));
 			SetPVarInt(playerid, "PVDrug", listitem);
 			switch(GetPVarInt(playerid, "PVDTransfer")) {
 
@@ -1261,18 +1261,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(!(0 < strval(inputtext) <= PlayerVehicleInfo[playerid][GetPVarInt(playerid, "PVehID")][pvDrugs][iDrugID])) {
 						return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount.");
 					}
-					PlayerInfo[playerid][p_iDrug][iDrugID] += strval(inputtext);
+					PlayerInfo[playerid][pDrugs][iDrugID] += strval(inputtext);
 					PlayerVehicleInfo[playerid][GetPVarInt(playerid, "PVehID")][pvDrugs][iDrugID] -= strval(inputtext);
 
-					format(szMiscArray, sizeof(szMiscArray), "You took %d grams of %s from your vehicle.", strval(inputtext), szDrugs[iDrugID]);
+					format(szMiscArray, sizeof(szMiscArray), "You took %d grams of %s from your vehicle.", strval(inputtext), Drugs[iDrugID]);
 					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 				}
 				case 1: {
-					if(!(0 < strval(inputtext) <= PlayerInfo[playerid][p_iDrug][iDrugID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount.");
-					PlayerInfo[playerid][p_iDrug][iDrugID] -= strval(inputtext);
+					if(!(0 < strval(inputtext) <= PlayerInfo[playerid][pDrugs][iDrugID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount.");
+					PlayerInfo[playerid][pDrugs][iDrugID] -= strval(inputtext);
 					PlayerVehicleInfo[playerid][GetPVarInt(playerid, "PVehID")][pvDrugs][iDrugID] += strval(inputtext);
 
-					format(szMiscArray, sizeof(szMiscArray), "You put %d grams of %s in your vehicle.", strval(inputtext), szDrugs[iDrugID]);
+					format(szMiscArray, sizeof(szMiscArray), "You put %d grams of %s in your vehicle.", strval(inputtext), Drugs[iDrugID]);
 					SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 				}
 			}
@@ -1475,18 +1475,18 @@ Drug_TransferAllToVeh(playerid, iVehID, iChoiceID) {
 
 		case 0: { // withdraw
 			SendClientMessageEx(playerid, COLOR_GRAD1, "You have taken all your drugs from the vehicle.");
-			for(new i; i < sizeof(szDrugs); ++i) {
+			for(new i; i < sizeof(Drugs); ++i) {
 
-				PlayerInfo[playerid][p_iDrug][i] += PlayerVehicleInfo[playerid][iVehID][pvDrugs][i] ;
+				PlayerInfo[playerid][pDrugs][i] += PlayerVehicleInfo[playerid][iVehID][pvDrugs][i] ;
 				PlayerVehicleInfo[playerid][iVehID][pvDrugs][i] = 0;
 			}
 		}
 		case 1: { // deposit
 			SendClientMessageEx(playerid, COLOR_GRAD1, "You have put all your drugs in the vehicle.");
-			for(new i; i < sizeof(szDrugs); ++i) {
+			for(new i; i < sizeof(Drugs); ++i) {
 
-				PlayerVehicleInfo[playerid][iVehID][pvDrugs][i] += PlayerInfo[playerid][p_iDrug][i];
-				PlayerInfo[playerid][p_iDrug][i] = 0;
+				PlayerVehicleInfo[playerid][iVehID][pvDrugs][i] += PlayerInfo[playerid][pDrugs][i];
+				PlayerInfo[playerid][pDrugs][i] = 0;
 			}
 		}
 	}
@@ -1544,8 +1544,8 @@ GetMaxIngredientsAllowed(iIngredientID) {
 
 Drug_ListDrugs(playerid) {
 
-	format(szMiscArray, sizeof(szMiscArray),"%s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s", szDrugs[0], szDrugs[1], szDrugs[2], szDrugs[3], szDrugs[4], szDrugs[5], szDrugs[6],
-		szDrugs[7], szDrugs[8], szDrugs[9], szDrugs[10], szDrugs[11], szDrugs[12], szDrugs[13]);
+	format(szMiscArray, sizeof(szMiscArray),"%s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s", Drugs[0], Drugs[1], Drugs[2], Drugs[3], Drugs[4], Drugs[5], Drugs[6],
+		Drugs[7], Drugs[8], Drugs[9], Drugs[10], Drugs[11], Drugs[12], Drugs[13]);
 
 	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 }
@@ -1564,7 +1564,7 @@ Drug_StartMix(playerid) {
 
 	for(new i; i < 9; ++i) {
 
-		format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szDrugs[i]);
+		format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, Drugs[i]);
 	}
 
 	return ShowPlayerDialogEx(playerid, DIALOG_DRUGS_MIX_START, DIALOG_STYLE_LIST, "Drugs | Which drug would you like to make?", szMiscArray, "Select", "Cancel");
@@ -1574,7 +1574,7 @@ Drug_ShowMix(playerid) {
 
 	new szTitle[128];
 
-	format(szTitle, sizeof(szTitle), "Drug Mix | Preparing: %s", szDrugs[GetPVarInt(playerid, PVAR_MAKINGDRUG)]);
+	format(szTitle, sizeof(szTitle), "Drug Mix | Preparing: %s", Drugs[GetPVarInt(playerid, PVAR_MAKINGDRUG)]);
 
 	szMiscArray = "Slot\tIngredient\tPieces\n";
 
@@ -1942,9 +1942,9 @@ Drug_FinishMix(playerid, iDrugID) {
 
 Drug_CreateDrug(playerid, iDrugID, iAmount, iDrugQuality) {
 
-	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You made %d pc of %s with a quality of %dqP.", iAmount, szDrugs[iDrugID], iDrugQuality);
+	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You made %d pc of %s with a quality of %dqP.", iAmount, Drugs[iDrugID], iDrugQuality);
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
-	PlayerInfo[playerid][p_iDrug][iDrugID] += iAmount;
+	PlayerInfo[playerid][pDrugs][iDrugID] += iAmount;
 	PlayerInfo[playerid][p_iDrugQuality][iDrugID] += iDrugQuality;
 	if(PlayerInfo[playerid][p_iDrugQuality][iDrugID] > 100) PlayerInfo[playerid][p_iDrugQuality][iDrugID] = 100;
 	for(new i; i < MAX_DRUGINGREDIENT_SLOTS; ++i) dr_arrDrugMix[playerid][i][drm_iAmount] = 0;
@@ -1963,7 +1963,7 @@ Drug_Process(playerid, iDrugID, iTaken)
 	{
 		PlayerInfo[playerid][p_iAddicted][iDrugID] = 2;
 		PlayerInfo[playerid][p_iAddictedLevel][iDrugID] = DRUGS_ADDICTED_LEVEL;
-		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You are now addicted to %s.", szDrugs[iDrugID]);
+		format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You are now addicted to %s.", Drugs[iDrugID]);
 		SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	}
 	Addiction_Effects(playerid, iDrugID, iTaken);
@@ -1972,7 +1972,7 @@ Drug_Process(playerid, iDrugID, iTaken)
 
 Addicted_TimerProcess(playerid, iDrugID)
 {
-	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}Some effects started to kick in from %s addiction...", szDrugs[iDrugID]);
+	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}Some effects started to kick in from %s addiction...", Drugs[iDrugID]);
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	PlayerInfo[playerid][p_iAddicted][iDrugID] = 2;
 	PlayerInfo[playerid][p_iAddictedLevel][iDrugID] = DRUGS_ADDICTED_LEVEL;
@@ -1981,9 +1981,9 @@ Addicted_TimerProcess(playerid, iDrugID)
 
 Drug_GetID(szDrug[]) {
 
-	for(new i; i < sizeof(szDrugs); ++i) {
+	for(new i; i < sizeof(Drugs); ++i) {
 
-		if(strcmp(szDrugs[i], szDrug, true) == 0) return i;
+		if(strcmp(Drugs[i], szDrug, true) == 0) return i;
 	}
 
 	return -1;
@@ -2011,7 +2011,7 @@ public Drug_SideEffects(playerid, iDrugID, iTaken) {
 	defer Drug_ResetDrunkEffects(playerid);
 	GetHealth(playerid, fHealth), GetArmour(playerid, fArmour);
 
-	for(new i; i < sizeof(szDrugs); ++i) iAllTaken += PlayerInfo[playerid][p_iDrugTaken][i];
+	for(new i; i < sizeof(Drugs); ++i) iAllTaken += PlayerInfo[playerid][p_iDrugTaken][i];
 
 	if(iAllTaken > DRUGS_OVERDOSE_THRESHOLD - 5) {
 
@@ -2731,8 +2731,8 @@ public Drugs_OnLoadPlayerPlants()
 				arrDrugData[iFreeID][dr_iObjectID] = CreateDynamicObject(3409, arrDrugData[iFreeID][dr_fPos][0], arrDrugData[iFreeID][dr_fPos][1], arrDrugData[iFreeID][dr_fPos][2] - 1.25, 0.0, 0.0, 0.0, iVW, iINT);
 				format(szMiscArray, sizeof(szMiscArray), "UPDATE `drugpool` SET `spawned` = 1 WHERE `id` = '%d'", iCount);
 				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-				// format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to harvest it.", StripUnderscore(szName), szDrugs[arrDrugData[iFreeID][dr_iDrugID]], iCount);
-				format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Use /getplant to harvest it.", StripUnderscore(szName), szDrugs[arrDrugData[iFreeID][dr_iDrugID]], iCount);
+				// format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to harvest it.", StripUnderscore(szName), Drugs[arrDrugData[iFreeID][dr_iDrugID]], iCount);
+				format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Use /getplant to harvest it.", StripUnderscore(szName), Drugs[arrDrugData[iFreeID][dr_iDrugID]], iCount);
 				arrDrugData[iFreeID][dr_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, arrDrugData[iFreeID][dr_fPos][0], arrDrugData[iFreeID][dr_fPos][1], arrDrugData[iFreeID][dr_fPos][2], 10.0, .worldid = iVW, .interiorid = iINT);
 			}
 			else {
@@ -2804,7 +2804,7 @@ public Drugs_OnRetrievePlant(playerid, i) {
 	if(IsValidDynamicObject(arrDrugData[i][dr_iObjectID])) DestroyDynamicObject(arrDrugData[i][dr_iObjectID]);
 	if(IsValidDynamic3DTextLabel(arrDrugData[i][dr_iTextID])) DestroyDynamic3DTextLabel(arrDrugData[i][dr_iTextID]);
 	// if(IsValidDynamicArea(arrDrugData[i][dr_iAreaID])) DestroyDynamicArea(arrDrugData[i][dr_iAreaID]);
-	PlayerInfo[playerid][p_iDrug][iDrugID] += 20;
+	PlayerInfo[playerid][pDrugs][iDrugID] += 20;
 	PlayerInfo[playerid][p_iDrugQuality][iDrugID] = arrDrugData[i][dr_iDrugQuality];
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You have retrieved 20 pieces of cannabis/opium from the plant with a quality of %dqP.", arrDrugData[i][dr_iDrugQuality]);
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
@@ -2869,14 +2869,14 @@ public Drugs_OnCreateQuery(playerid, iDrugID, id, Float:X, Float:Y, Float:Z, iVW
 	if(mysql_errno(MainPipeline)) SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
 
 	Iter_Add(PlayerDrugs, id);
-	format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Growing.", GetPlayerNameEx(playerid), szDrugs[iDrugID], id);
+	format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Growing.", GetPlayerNameEx(playerid), Drugs[iDrugID], id);
 	arrDrugData[id][dr_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, X, Y, Z, 10.0, .worldid = iVW, .interiorid = iINT);
 	arrDrugData[id][dr_iDrugID] = iDrugID;
 
-	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {DDDDDD}You have successfully planted the %s plant. Type /myplants for more information.", szDrugs[iDrugID]);
+	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {DDDDDD}You have successfully planted the %s plant. Type /myplants for more information.", Drugs[iDrugID]);
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 
-	format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has placed an %s plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), szDrugs[iDrugID], id);
+	format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has placed an %s plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Drugs[iDrugID], id);
 	Log("logs/plant.log", szMiscArray);
 
 	format(szMiscArray, sizeof(szMiscArray), "* %s plants something.", GetPlayerNameEx(playerid));
@@ -2929,8 +2929,8 @@ public Drugs_OnGrowthCheck()
 					
 					arrDrugData[iFreeID][dr_iDBID] = iCount;
 					DestroyDynamic3DTextLabel(arrDrugData[iFreeID][dr_iTextID]);
-					// format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to harvest it.", StripUnderscore(szName), szDrugs[arrDrugData[iFreeID][dr_iDrugID]], iCount);
-					format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Use /getplant to harvest it.", StripUnderscore(szName), szDrugs[arrDrugData[iFreeID][dr_iDrugID]], iCount);
+					// format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to harvest it.", StripUnderscore(szName), Drugs[arrDrugData[iFreeID][dr_iDrugID]], iCount);
+					format(szMiscArray, sizeof(szMiscArray), "%s's %s\n{AAAAAA}(ID %d)\n{DDDDDD}Use /getplant to harvest it.", StripUnderscore(szName), Drugs[arrDrugData[iFreeID][dr_iDrugID]], iCount);
 					arrDrugData[iFreeID][dr_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, arrDrugData[iFreeID][dr_fPos][0], arrDrugData[iFreeID][dr_fPos][1], arrDrugData[iFreeID][dr_fPos][2], 10.0, .worldid = iVW, .interiorid = iINT);
 					arrDrugData[iFreeID][dr_iObjectID] = CreateDynamicObject(3409, arrDrugData[iFreeID][dr_fPos][0], arrDrugData[iFreeID][dr_fPos][1], arrDrugData[iFreeID][dr_fPos][2] - 1.25, 0.0, 0.0, 0.0, iVW, iINT);
 					format(szMiscArray, sizeof(szMiscArray), "UPDATE `drugpool` SET `spawned` = 1 WHERE `id` = '%d'", arrDrugData[iFreeID][dr_iDBID]);
@@ -2970,8 +2970,8 @@ public Drugs_OnSearchDrugs(playerid) {
 
 		ListItemTrackId[playerid][iDialogCount] = iCount;
 
-		if(cache_get_field_content_int(iCount, "int", MainPipeline) > 0) format(szMiscArray, sizeof(szMiscArray), "%s%s (INTERIOR!)\t%s\n", szMiscArray, szDrugs[iDrugID], szDate);
-		else format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, szDrugs[iDrugID], szDate);
+		if(cache_get_field_content_int(iCount, "int", MainPipeline) > 0) format(szMiscArray, sizeof(szMiscArray), "%s%s (INTERIOR!)\t%s\n", szMiscArray, Drugs[iDrugID], szDate);
+		else format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, Drugs[iDrugID], szDate);
 
 		++iCount;
 		++iDialogCount;
@@ -3139,10 +3139,10 @@ CMD:mydrugs(playerid, params[]) {
 	format(szMiscArray, sizeof(szMiscArray),"_______ %s's drugs _______", GetPlayerNameEx(playerid));
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 
-	for(new i; i < sizeof(szDrugs); ++i) {
+	for(new i; i < sizeof(Drugs); ++i) {
 
-		format(szMiscArray, sizeof(szMiscArray),"{CCCCCC}%s: %dpc {AAAAAA}(%dqP){CCCCCC} | %s: %d pc {AAAAAA}(%dqP)", szDrugs[i], PlayerInfo[playerid][p_iDrug][i], PlayerInfo[playerid][p_iDrugQuality][i],
-			szDrugs[i+1], PlayerInfo[playerid][p_iDrug][i+1], PlayerInfo[playerid][p_iDrugQuality][i+1]);
+		format(szMiscArray, sizeof(szMiscArray),"{CCCCCC}%s: %dpc {AAAAAA}(%dqP){CCCCCC} | %s: %d pc {AAAAAA}(%dqP)", Drugs[i], PlayerInfo[playerid][pDrugs][i], PlayerInfo[playerid][p_iDrugQuality][i],
+			Drugs[i+1], PlayerInfo[playerid][pDrugs][i+1], PlayerInfo[playerid][p_iDrugQuality][i+1]);
 		SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 
 		i++;
@@ -3178,9 +3178,9 @@ CMD:dropdrug(playerid, params[]) {
 
 	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");
 
-	if((0 < iAmount > PlayerInfo[playerid][p_iDrug][iDrugID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+	if((0 < iAmount > PlayerInfo[playerid][pDrugs][iDrugID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
 
-	PlayerInfo[playerid][p_iDrug][iDrugID] -= iAmount;
+	PlayerInfo[playerid][pDrugs][iDrugID] -= iAmount;
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC} You dropped %d pc of %s.", iAmount, szChoice);
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 	return 1;
@@ -3193,8 +3193,8 @@ CMD:addictchart(playerid, params[]) {
 
 	for(new i; i < 9; ++i) {
 
-		if(PlayerInfo[playerid][p_iAddicted][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s | Addicted: %dpQ", szDrugs[i], PlayerInfo[playerid][p_iAddictedLevel][i]);
-		else format(szMiscArray, sizeof(szMiscArray), "%s | Addicted: No", szDrugs[i]);
+		if(PlayerInfo[playerid][p_iAddicted][i] > 0) format(szMiscArray, sizeof(szMiscArray), "%s | Addicted: %dpQ", Drugs[i], PlayerInfo[playerid][p_iAddictedLevel][i]);
+		else format(szMiscArray, sizeof(szMiscArray), "%s | Addicted: No", Drugs[i]);
 		SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 	}
 
@@ -3239,11 +3239,11 @@ CMD:usedrug(playerid, params[]) {
 
 	if(iDrugID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid drug.");
 
-	if(PlayerInfo[playerid][p_iDrug][iDrugID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
+	if(PlayerInfo[playerid][pDrugs][iDrugID] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough on you.");
 
 	Bit_On(arrPlayerBits[playerid], dr_bitUsedDrug);
 
-	PlayerInfo[playerid][p_iDrug][iDrugID] -= iAmount;
+	PlayerInfo[playerid][pDrugs][iDrugID] -= iAmount;
 	format(szMiscArray, sizeof(szMiscArray), "[Drugs]: {CCCCCC}You used %dpc of %s.", iAmount, szChoice);
 
 	if(iAnim) ApplyAnimation(playerid, "FOOD", "EAT_Pizza", 4.1, 1, 0, 0, 0, 4000, 0);
@@ -3308,7 +3308,7 @@ CMD:dropingredient(playerid, params[]) {
 CMD:mymix(playerid, params[]) {
 
 	if(!GetPVarType(playerid, PVAR_MAKINGDRUG)) format(szMiscArray, sizeof(szMiscArray), "_______ %s's Drug Mix _______", GetPlayerNameEx(playerid));
-	else format(szMiscArray, sizeof(szMiscArray), "_______ %s's Drug Mix for %s _______", GetPlayerNameEx(playerid), szDrugs[GetPVarInt(playerid, PVAR_MAKINGDRUG)]);
+	else format(szMiscArray, sizeof(szMiscArray), "_______ %s's Drug Mix for %s _______", GetPlayerNameEx(playerid), Drugs[GetPVarInt(playerid, PVAR_MAKINGDRUG)]);
 
 	SendClientMessageEx(playerid, COLOR_GREEN, szMiscArray);
 
@@ -3992,11 +3992,11 @@ Smuggle_VehicleLoad(playerid, iVehID)
 	if(iTotalAmount == 0) {
 		szMiscArray[0] = 0;
 		szMiscArray = "Drugs\tAmount in vehicle\n";
-		for(new i; i < sizeof(szDrugs); ++i) {
+		for(new i; i < sizeof(Drugs); ++i) {
 
 			if(PlayerVehicleInfo[playerid][iVehID][pvDrugs][i] > 0) {
 
-				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, szDrugs[i], PlayerVehicleInfo[playerid][iVehID][pvDrugs][i]);
+				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, Drugs[i], PlayerVehicleInfo[playerid][iVehID][pvDrugs][i]);
 				iTotalAmount += PlayerVehicleInfo[playerid][iVehID][pvDrugs][i];
 			}
 		}
@@ -4673,42 +4673,6 @@ CMD:aliens(playerid, params) {
 }
 
 
-Character_Actor(playerid, choice)
-{
-	switch(choice) {
-
-		case 0:	{
-
-			PlayerInfo[playerid][pModel] = GetPlayerSkin(playerid);
-
-			new Float:fPos[4],
-				iVW = GetPlayerVirtualWorld(playerid),
-				iActorID,
-				Float:fHealth;
-
-			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-			GetPlayerFacingAngle(playerid, fPos[3]);
-			GetHealth(playerid, fHealth);
-			iActorID = CreateActor(PlayerInfo[playerid][pModel], fPos[0], fPos[1], fPos[2], fPos[3]);
-			SetActorVirtualWorld(iActorID, iVW);
-			SetActorInvulnerable(iActorID, false);
-			SetActorHealth(iActorID, fHealth);
-			SetPVarInt(playerid, PVAR_TEMPACTOR, iActorID);
-			format(szMiscArray, sizeof(szMiscArray), "%s (%d)", GetPlayerNameEx(playerid), playerid);
-			SetPVarInt(playerid, PVAR_TEMPTEXT, _:CreateDynamic3DTextLabel(szMiscArray, COLOR_WHITE, fPos[0], fPos[1], fPos[2] + 1.0, 5.0, .worldid = iVW));
-
-		}
-		case 1:	{
-
-			DestroyActor(GetPVarInt(playerid, PVAR_TEMPACTOR));
-			DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, PVAR_TEMPTEXT));
-			DeletePVar(playerid, PVAR_TEMPACTOR);
-			DeletePVar(playerid, PVAR_TEMPTEXT);
-		}
-	}
-}
-
-
 Main_CreateAttached3DTextLabel(playerid, szString[]) {
 
 	new Float:fPos[3];
@@ -4730,11 +4694,11 @@ Drugs_ShowTrunkMenu(playerid, iVehID, iChoiceID) {
 	szMiscArray = "Drug\tOn you\tIn vehicle";
 	SetPVarInt(playerid, "PVehID", iVehID);
 	SetPVarInt(playerid, "PVDTransfer", iChoiceID);
-	for(new i; i < sizeof(szDrugs); ++i) {
+	for(new i; i < sizeof(Drugs); ++i) {
 
 		format(szMiscArray, sizeof(szMiscArray), "%s\n%s\t%d\t%d",
-			szMiscArray, szDrugs[i],
-			PlayerInfo[playerid][p_iDrug][i],
+			szMiscArray, Drugs[i],
+			PlayerInfo[playerid][pDrugs][i],
 			PlayerVehicleInfo[playerid][iVehID][pvDrugs][i]);
 	}
 	switch(iChoiceID) {

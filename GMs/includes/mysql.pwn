@@ -325,9 +325,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pLawSkill]				= cache_get_field_content_int(row,  "LawSkill", MainPipeline);
 					PlayerInfo[extraid][pMechSkill]				= cache_get_field_content_int(row,  "MechSkill", MainPipeline);
 					PlayerInfo[extraid][pTruckSkill]			= cache_get_field_content_int(row,  "TruckSkill", MainPipeline);
-					PlayerInfo[extraid][pDrugsSkill]			= cache_get_field_content_int(row,  "DrugsSkill", MainPipeline);
+					PlayerInfo[extraid][pDrugSmuggler]			= cache_get_field_content_int(row,  "DrugSmuggler", MainPipeline);
 					PlayerInfo[extraid][pArmsSkill]				= cache_get_field_content_int(row,  "ArmsSkill", MainPipeline);
-					PlayerInfo[extraid][pSmugSkill]				= cache_get_field_content_int(row,  "SmugglerSkill", MainPipeline);
 					PlayerInfo[extraid][pFishSkill]				= cache_get_field_content_int(row,  "FishSkill", MainPipeline);
 					PlayerInfo[extraid][pFightStyle]			= cache_get_field_content_int(row,  "FightingStyle", MainPipeline);
 					PlayerInfo[extraid][pPnumber]				= cache_get_field_content_int(row,  "PhoneNr", MainPipeline);
@@ -552,7 +551,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 						format(szField, sizeof(szField), "BItem%d", i);
 						PlayerInfo[extraid][pBItems][i] = cache_get_field_content_int(row,  szField, MainPipeline);
 					}
-					for(new i = 0; i < sizeof(szDrugs); i++) {
+					for(new i = 0; i < sizeof(Drugs); i++) {
 
 						format(szField, sizeof(szField), "BDrug%d", i);
 						PlayerInfo[extraid][pBDrugs][i] = cache_get_field_content_int(row,  szField, MainPipeline);
@@ -604,7 +603,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pBailPrice] = cache_get_field_content_int(row,  "pBailPrice", MainPipeline);
 					PlayerInfo[extraid][pLastPoll] = cache_get_field_content_int(row,  "pLastPoll", MainPipeline);
 
-
 					arrAmmoData[extraid][awp_iAmmo][0] = cache_get_field_content_int(row, "Ammo0", MainPipeline);
 					arrAmmoData[extraid][awp_iAmmo][1] = cache_get_field_content_int(row, "Ammo1", MainPipeline);
 					arrAmmoData[extraid][awp_iAmmo][2] = cache_get_field_content_int(row, "Ammo2", MainPipeline);
@@ -626,21 +624,21 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 
 					// Jingles' Drug System:
-					for(new d; d != sizeof(szDrugs); ++d) PlayerInfo[extraid][p_iDrug][d] = cache_get_field_content_int(row, DS_Drugs_GetSQLName(d), MainPipeline);
-					for(new d; d != sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);
+					for(new d; d != sizeof(Drugs); ++d) PlayerInfo[extraid][pDrugs][d] = cache_get_field_content_int(row, GetDrugName(d), MainPipeline);
+					//for(new d; d != sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);
 
 					/*szMiscArray[0] = 0;	
-					for(new d; d != sizeof(szDrugs); ++d)
+					for(new d; d != sizeof(Drugs); ++d)
 					{
-						format(szMiscArray, sizeof(szMiscArray), "Prison%s", DS_Drugs_GetSQLName(d));
+						format(szMiscArray, sizeof(szMiscArray), "Prison%s", GetDrugName(d));
 						PlayerInfo[extraid][p_iPrisonDrug][d] = cache_get_field_content_int(row, szMiscArray, MainPipeline);
 					} old */
 
 					cache_get_field_content(row,  "PrisonDrugs", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iPrisonDrug]);
 
-					cache_get_field_content(row,  "DrugQuality", szResult, MainPipeline);
-					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);
+					/*cache_get_field_content(row,  "DrugQuality", szResult, MainPipeline);
+					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);*/
 
 					// Account settings:
 					/*cache_get_field_content(row,  "ToggledChats", szResult, MainPipeline);
@@ -794,6 +792,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 			{
 				Tutorial_Start(extraid);
 				g_mysql_AccountLoginCheck(extraid);
+				format(szMiscArray, sizeof(szMiscArray), "WARNING: %s (ID: %d) has registered from %s", GetPlayerNameEx(extraid), extraid, GetPlayerCountry(extraid));
+				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 				TotalRegister++;
 			}
 		}
@@ -885,9 +885,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 							format(szMiscArray, sizeof(szMiscArray), "pvMod%d", m);
 							PlayerVehicleInfo[extraid][i][pvMods][m] = cache_get_field_content_int(i,  szMiscArray, MainPipeline);
 						}
-						for(new m = 0; m < sizeof(szDrugs); m++)
+						for(new m = 0; m < sizeof(Drugs); m++)
 						{
-							PlayerVehicleInfo[extraid][i][pvDrugs][m] = cache_get_field_content_int(i,   DS_Drugs_GetSQLName(m), MainPipeline);
+							PlayerVehicleInfo[extraid][i][pvDrugs][m] = cache_get_field_content_int(i,   GetDrugName(m), MainPipeline);
 						}
 
 						PlayerVehicleInfo[extraid][i][pvCrashFlag] 			= cache_get_field_content_int(i,  "pvCrashFlag", MainPipeline);
@@ -2205,9 +2205,8 @@ stock g_mysql_SaveAccount(playerid)
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "LawSkill", PlayerInfo[playerid][pLawSkill]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "MechSkill", PlayerInfo[playerid][pMechSkill]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "TruckSkill", PlayerInfo[playerid][pTruckSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "DrugsSkill", PlayerInfo[playerid][pDrugsSkill]);
+    SavePlayerInteger(query, GetPlayerSQLId(playerid), "DrugSmuggler", PlayerInfo[playerid][pDrugSmuggler]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "ArmsSkill", PlayerInfo[playerid][pArmsSkill]);
-    SavePlayerInteger(query, GetPlayerSQLId(playerid), "SmugglerSkill", PlayerInfo[playerid][pSmugSkill]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishSkill", PlayerInfo[playerid][pFishSkill]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "CheckCash", PlayerInfo[playerid][pCheckCash]);
 
@@ -2441,7 +2440,7 @@ stock g_mysql_SaveAccount(playerid)
 		format(szForLoop, sizeof(szForLoop), "BItem%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBItems][x]);
 	}
-	for(new x = 0; x < sizeof(szDrugs); x++) {
+	for(new x = 0; x < sizeof(Drugs); x++) {
 
 		format(szForLoop, sizeof(szForLoop), "BDrug%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBDrugs][x]);
@@ -2506,18 +2505,18 @@ stock g_mysql_SaveAccount(playerid)
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedWeapons", mistring);
 
-	for(new idrugs = 0; idrugs < sizeof(szDrugs); ++idrugs)
+	/*for(new idrugs = 0; idrugs < sizeof(Drugs); ++idrugs)
 	{
 		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][p_iDrugQuality][idrugs]);
-		if(idrugs != sizeof(szDrugs) - 1) strcat(mistring, "|");
+		if(idrugs != sizeof(Drugs) - 1) strcat(mistring, "|");
 	}
-	SavePlayerString(query, GetPlayerSQLId(playerid), "DrugQuality", mistring);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "DrugQuality", mistring);*/
 
 	mistring[0] = 0;
-	for(new ipdrugs = 0; ipdrugs < sizeof(szDrugs); ++ipdrugs)
+	for(new ipdrugs = 0; ipdrugs < sizeof(Drugs); ++ipdrugs)
 	{
 		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][p_iPrisonDrug][ipdrugs]);
-		if(ipdrugs != sizeof(szDrugs) - 1) strcat(mistring, "|");
+		if(ipdrugs != sizeof(Drugs) - 1) strcat(mistring, "|");
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "PrisonDrugs", mistring);
 
@@ -2588,13 +2587,13 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pLastPoll", PlayerInfo[playerid][pLastPoll]);
 
-	for(new d; d < sizeof(szDrugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Drugs_GetSQLName(d), PlayerInfo[playerid][p_iDrug][d]);
-	for(new d; d < sizeof(szIngredients); ++d) if(d != 9) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
+	for(new d; d < sizeof(Drugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), GetDrugName(d), PlayerInfo[playerid][pDrugs][d]);
+	//for(new d; d < sizeof(szIngredients); ++d) if(d != 9) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
 
 	/*szMiscArray[0] = 0;
-	for(new d; d < sizeof(szDrugs); ++d) 
+	for(new d; d < sizeof(Drugs); ++d) 
 	{		
-		format(szMiscArray, sizeof(szMiscArray), "Prison%s", DS_Drugs_GetSQLName(d));
+		format(szMiscArray, sizeof(szMiscArray), "Prison%s", GetDrugName(d));
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szMiscArray, PlayerInfo[playerid][p_iPrisonDrug][d]);
 	} old */
 
@@ -5358,14 +5357,17 @@ public Group_QueryFinish(iType, iExtraID) {
 			cache_get_field_content(iIndex, "Crack", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iCrack] = strval(szResult);
 
+			cache_get_field_content(iIndex, "Meth", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iMeth] = strval(szResult);
+
+			cache_get_field_content(iIndex, "Ecstasy", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iEcstasy] = strval(szResult);
+
 			cache_get_field_content(iIndex, "Heroin", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iHeroin] = strval(szResult);
 
 			cache_get_field_content(iIndex, "Syringes", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iSyringes] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Opium", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iOpium] = strval(szResult);
 
 			cache_get_field_content(iIndex, "Mats", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iMaterials] = strval(szResult);
@@ -5441,8 +5443,8 @@ public Group_QueryFinish(iType, iExtraID) {
 			i = 0;
 
 			// Jingles' Drug System:
-			for(i = 0; i < sizeof(szDrugs); ++i) arrGroupData[iIndex][g_iDrugs][i] = cache_get_field_content_int(iIndex, DS_Drugs_GetSQLName(i), MainPipeline);
-			for(i = 0; i < sizeof(szIngredients); ++i) arrGroupData[iIndex][g_iIngredients][i] = cache_get_field_content_int(iIndex, DS_Ingredients_GetSQLName(i), MainPipeline);
+			for(i = 0; i < sizeof(Drugs); ++i) arrGroupData[iIndex][g_iDrugs][i] = cache_get_field_content_int(iIndex, GetDrugName(i), MainPipeline);
+			//for(i = 0; i < sizeof(szIngredients); ++i) arrGroupData[iIndex][g_iIngredients][i] = cache_get_field_content_int(iIndex, DS_Ingredients_GetSQLName(i), MainPipeline);
 			i = 0;
 
 			if (arrGroupData[iIndex][g_szGroupName][0] && arrGroupData[iIndex][g_fCratePos][0] != 0.0)

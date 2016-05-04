@@ -766,10 +766,10 @@ new MatsOffer[MAX_PLAYERS];
 new MatsStorageID[MAX_PLAYERS];
 new MatsPrice[MAX_PLAYERS];
 new MatsAmount[MAX_PLAYERS];
-new CannabisOffer[MAX_PLAYERS];
-new CannabisStorageID[MAX_PLAYERS];
-new CannabisPrice[MAX_PLAYERS];
-new CannabisGram[MAX_PLAYERS];
+new PotOffer[MAX_PLAYERS];
+new PotStorageID[MAX_PLAYERS];
+new PotPrice[MAX_PLAYERS];
+new PotGram[MAX_PLAYERS];
 new CrackOffer[MAX_PLAYERS];
 new CrackStorageID[MAX_PLAYERS];
 new CrackPrice[MAX_PLAYERS];
@@ -2724,7 +2724,6 @@ new iVehExits[3]; // for shamal, nevada and journey
 /* Iterators - More efficient looping for changing/dynamic structures */
 new Iterator:Vehicles<MAX_VEHICLES>;
 new Iterator:GangTags<MAX_GANGTAGS>;
-new Iterator:PlayerDrugs<MAX_DRUGS>;
 
 new const szFonts[][] = {
 	"Arial",

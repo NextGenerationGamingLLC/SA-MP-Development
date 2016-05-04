@@ -1708,7 +1708,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new range = GetPVarInt(playerid, "aURLrange");
 			new Float:aX, Float:aY, Float:aZ;
 			GetPlayerPos(playerid, aX, aY, aZ);
-			SendAudioURLToRange(inputtext,aX,aY,aZ,range);
+			//SendAudioURLToRange(inputtext,aX,aY,aZ,range);
+			SetGVarInt("MusicArea", CreateDynamicSphere(aX, aY, aZ, range, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid)));
+
 
 			if(range > 100)
 			{
@@ -12511,22 +12513,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 3:
 				{
-					if(PlayerInfo[playerid][pDrugsSkill] >= 400)
-					{
-						SendClientMessageEx(playerid, COLOR_GREY, "Your skill level of this job is already the highest one.");
-						return 1;
-					}
-					PlayerInfo[playerid][pDrugsSkill] = 400;
-					SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drugs Dealer skill level has been set to 5.");
+					return 1;
 				}
 				case 4:
 				{
-					if(PlayerInfo[playerid][pSmugSkill] >= 200)
+					if(PlayerInfo[playerid][pDrugSmuggler] >= 200)
 					{
 						SendClientMessageEx(playerid, COLOR_GREY, "Your skill level of this job is already the highest one.");
 						return 1;
 					}
-					PlayerInfo[playerid][pSmugSkill] = 200;
+					PlayerInfo[playerid][pDrugSmuggler] = 200;
 					SendClientMessageEx(playerid, COLOR_YELLOW, "Your Drugs Smuggling skill level has been set to 5.");
 				}
 				case 5:

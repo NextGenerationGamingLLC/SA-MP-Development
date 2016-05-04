@@ -2158,9 +2158,9 @@ CMD:celldeposit(playerid, params[])
 			    case 1 .. 14:
 			    {
 					new string[255];
-			        if(PlayerInfo[playerid][p_iDrug][value - 1] >= amount)
+			        if(PlayerInfo[playerid][pDrugs][value - 1] >= amount)
 			        {
-			        	PlayerInfo[playerid][p_iDrug][value - 1] -= amount;
+			        	PlayerInfo[playerid][pDrugs][value - 1] -= amount;
 			        	PlayerInfo[playerid][p_iPrisonDrug][value - 1] += amount;
 
 			        	format(string, sizeof string, "{FF8000}> {C2A2DA}%s stashes some drugs in their cell.", GetPlayerNameEx(playerid));
@@ -2206,7 +2206,7 @@ CMD:cellwithdraw(playerid, params[])
 					new string[255];
 			        if(PlayerInfo[playerid][p_iPrisonDrug][value - 1] >= amount)
 			        {
-			        	PlayerInfo[playerid][p_iDrug][value - 1] += amount;
+			        	PlayerInfo[playerid][pDrugs][value - 1] += amount;
 			        	PlayerInfo[playerid][p_iPrisonDrug][value - 1] -= amount;
 
 			        	format(string, sizeof string, "{FF8000}> {C2A2DA}%s takes some drugs stashed their cell.", GetPlayerNameEx(playerid));

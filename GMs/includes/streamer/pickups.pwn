@@ -38,6 +38,7 @@ hook OnGameModeInit() {
 	CreateDynamicPickup(1239, 23, 366.54, 159.09, 1008.38, -1); // LICENSES @ CITY HALL
 	CreateDynamicPickup(1239, 23, -1560.963867, 127.491157, 3.554687); //Trucker registration
 	CreateDynamicPickup(371, 23, 1544.2,-1353.4,329.4); //LS towertop
+	CreateDynamicPickup(1239, 23, -1446.8916,1503.4746,1.7366); //Drug Boatrun
 
 	CreateDynamicPickup(371, 23, 1536.0, -1360.0, 1150.0); //LS towertop
 	CreateDynamicPickup(1242, 23, 1527.5,-12.1,1002.0); //binco armor

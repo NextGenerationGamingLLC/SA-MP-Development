@@ -329,7 +329,6 @@ public OnLoadHouse(index)
 		HouseInfo[index][hInactive] = cache_get_field_content_int(row, "Inactive", MainPipeline);
 		HouseInfo[index][hIgnore] = cache_get_field_content_int(row, "Ignore", MainPipeline);
 		HouseInfo[index][hCounter] = cache_get_field_content_int(row, "Counter", MainPipeline);
-		HouseInfo[index][hWorkbench] = cache_get_field_content_int(row, "Workbench", MainPipeline);
 		
 		HouseInfo[index][Listed] = cache_get_field_content_int(row, "Listed", MainPipeline); 
 		HouseInfo[index][PendingApproval] = cache_get_field_content_int(row, "PendingApproval", MainPipeline);
@@ -427,7 +426,6 @@ public OnLoadHouses()
 		HouseInfo[i][hInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
 		HouseInfo[i][hIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
 		HouseInfo[i][hCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
-		HouseInfo[i][hWorkbench] = cache_get_field_content_int(i, "Workbench", MainPipeline);
 
 		for(new j = 0; j != MAX_AMMO_TYPES; j++)
 		{
@@ -588,7 +586,6 @@ stock RehashHouse(houseid)
 	HouseInfo[houseid][hMailType] = 0;
 	if(IsValidDynamicObject(HouseInfo[houseid][hMailObjectId])) DestroyDynamicObject(HouseInfo[houseid][hMailObjectId]);
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hMailTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hMailTextID]);
-	HouseInfo[houseid][hWorkbench] = 0;
 	HouseInfo[houseid][hClosetX] = 0.0;
 	HouseInfo[houseid][hClosetY] = 0.0;
 	HouseInfo[houseid][hClosetZ] = 0.0;
@@ -1806,7 +1803,6 @@ public DeleteHouse(houseid, adminid)
 	HouseInfo[houseid][hInactive] = 0;
 	HouseInfo[houseid][hIgnore] = 0;
 	HouseInfo[houseid][hCounter] = 0;
-	HouseInfo[houseid][hWorkbench] = 0;
 	SaveHouse(houseid);
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "%s has deleted house id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), houseid);

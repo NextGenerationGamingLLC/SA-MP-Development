@@ -47,6 +47,8 @@ InitiateGamemode()
 	InitEventPoints();
 	LoadEventPoints();
 	LoadGates();
+	LoadPoints();
+	LoadPlants();
 	LoadElevatorStuff();
 	ClearCalls();
 	//LoadHelp();
@@ -106,7 +108,7 @@ InitiateGamemode()
 
     Job_LoadJobs();
     GangTag_Load();
-    DS_LoadDrugSystem();
+    //DS_LoadDrugSystem();
 
     TurfWars_LoadData();
 

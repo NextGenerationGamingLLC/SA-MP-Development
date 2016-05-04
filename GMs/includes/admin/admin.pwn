@@ -269,6 +269,42 @@ CMD:givegun(playerid, params[])
     return 1;
 }
 
+CMD:givedrug(playerid, params[])
+{
+    if (PlayerInfo[playerid][pAdmin] >= 4) 
+    {
+        new id, drugstring[16], amount;
+
+        if(sscanf(params, "us[16]d", id, drugstring, amount)) 
+        {
+            SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givedrug [player] [drug] [amount]");
+            ListDrugs(playerid);
+            return 1;
+        }
+
+        new drug = GetDrugID(drugstring);
+        if(drug == -1) 
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givedrug [player] [drug] [amount]");
+			ListDrugs(playerid);
+			return 1;
+		}
+
+		if(IsPlayerConnected(id))
+		{
+			PlayerInfo[id][pDrugs][drug] += amount;
+        	format(szMiscArray, sizeof(szMiscArray), "You have given %s drug %s (%dg)!", GetPlayerNameEx(id), GetDrugName(drug), amount);
+        	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+
+			format(szMiscArray, sizeof(szMiscArray), "%s(%s) has given %s(%d) (%s) some %s(%dg)", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(id), GetPlayerSQLId(id), GetPlayerIpEx(id), GetDrugName(drug), amount);
+			Log("logs/admingive.log", szMiscArray);
+		}
+		else return SendClientMessage(playerid, COLOR_GRAD1, "That player is not connected.");
+    }
+    else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+    return 1;
+}
+
 CMD:jetpack(playerid, params[])
 {
 	new plo;
@@ -3601,7 +3637,7 @@ CMD:setstat(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setstat [player] [statcode] [amount]");
 			SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |5 BankAccount |6 PhoneNumber |7 RespectPoints |8 House1 |9 House2 |10 House3");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Cannabis |23 Crack");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Pot |23 Crack");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "|24 Fishing |25 Job |26 Rank |27 Packages |28 Crates |29 Smuggler |30 Insurance |31 Warnings |32 Screwdriver");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
@@ -3700,8 +3736,7 @@ CMD:setstat(playerid, params[])
 				}
 			case 17:
 				{
-					PlayerInfo[giveplayerid][pDrugsSkill] = amount;
-					format(string, sizeof(string), "   %s's(%d) Drug Dealer Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
+					return 1;
 				}
 			case 18:
 				{
@@ -3725,12 +3760,12 @@ CMD:setstat(playerid, params[])
 				}
 			case 22:
 				{
-					PlayerInfo[giveplayerid][p_iDrug][1] = amount;
-					format(string, sizeof(string), "   %s's(%d) Cannabis has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
+					PlayerInfo[giveplayerid][pDrugs][0] = amount;
+					format(string, sizeof(string), "   %s's(%d) Pot has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 23:
 				{
-					PlayerInfo[giveplayerid][p_iDrug][5] = amount;
+					PlayerInfo[giveplayerid][pDrugs][1] = amount;
 					format(string, sizeof(string), "   %s's(%d) Crack has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 24:
@@ -3760,7 +3795,7 @@ CMD:setstat(playerid, params[])
 				}
 			case 29:
 				{
-					PlayerInfo[giveplayerid][pSmugSkill] = amount;
+					PlayerInfo[giveplayerid][pDrugSmuggler] = amount;
 					format(string, sizeof(string), "   %s's(%d) Smuggler Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 			case 30:
@@ -4075,8 +4110,8 @@ CMD:setmystat(playerid, params[])
 			}
 		case 17:
 			{
-				PlayerInfo[playerid][pDrugsSkill] = amount;
-				format(string, sizeof(string), "   %s's Drug Dealer Skill has been set to %d.", GetPlayerNameEx(playerid), amount);
+				PlayerInfo[playerid][pDrugSmuggler] = amount;
+				format(string, sizeof(string), "   %s's Drug Smuggler Skill has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 18:
 			{
@@ -4100,12 +4135,12 @@ CMD:setmystat(playerid, params[])
 			}
 		case 22:
 			{
-				PlayerInfo[playerid][p_iDrug][1] = amount;
+				PlayerInfo[playerid][pDrugs][1] = amount;
 				format(string, sizeof(string), "   %s's Cannabis has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 23:
 			{
-				PlayerInfo[playerid][p_iDrug][5] = amount;
+				PlayerInfo[playerid][pDrugs][2] = amount;
 				format(string, sizeof(string), "   %s's Crack has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 24:
@@ -4135,7 +4170,7 @@ CMD:setmystat(playerid, params[])
 			}
 		case 29:
 			{
-				PlayerInfo[playerid][pSmugSkill] = amount;
+				PlayerInfo[playerid][pDrugSmuggler] = amount;
 				format(string, sizeof(string), "   %s's Smuggler Skill has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 30:

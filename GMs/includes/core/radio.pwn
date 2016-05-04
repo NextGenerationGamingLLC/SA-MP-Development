@@ -241,12 +241,16 @@ stock ShowSetStation(playerid, title[] = "Radio Menu")
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
-	if(areaid == audiourlid) PlayAudioStreamForPlayerEx(playerid, audiourlurl, audiourlparams[0], audiourlparams[1], audiourlparams[2], audiourlparams[3], 1);
+	//if(areaid == audiourlid) PlayAudioStreamForPlayerEx(playerid, audiourlurl, audiourlparams[0], audiourlparams[1], audiourlparams[2], audiourlparams[3], 1);
+	if(areaid == GetGVarInt("MusicArea")) {
+		PlayAudioStreamForPlayerEx(playerid, audiourlurl);
+	}
 }
 
 hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 
-	if(areaid == audiourlid) StopAudioStreamForPlayerEx(playerid);
+	//if(areaid == audiourlid) StopAudioStreamForPlayerEx(playerid);
+	if(areaid == GetGVarInt("MusicArea")) StopAudioStreamForPlayerEx(playerid);
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -397,9 +401,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(GetPVarType(playerid, "pBoomBox"))
 					{
 						SendClientMessage(playerid, COLOR_WHITE, "You have turned off the boom box.");
+						new Float:playerPos[3];
+						GetPlayerPos(playerid, playerPos[0], playerPos[1], playerPos[2]);
 						foreach(new i: Player)
 						{						
-							if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea"))) StopAudioStreamForPlayerEx(i);
+							if(IsPlayerInRangeOfPoint(i, 35, playerPos[0], playerPos[1], playerPos[2])) StopAudioStreamForPlayerEx(i);
 						}
 						DeletePVar(playerid, "pBoomBoxStation");
 					}
@@ -737,17 +743,16 @@ CMD:setstation(playerid, params[]) {
 CMD:audiostopurl(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4) {
-    	if(IsValidDynamicArea(audiourlid))
+    	if(IsValidDynamicArea(GetGVarInt("MusicArea")))
     	{
 	        new string[128];
 
 	        foreach(new i: Player)
 			{
-				if(IsPlayerInRangeOfPoint(i, audiourlparams[3], audiourlparams[0], audiourlparams[1], audiourlparams[2]))
-				{
-					StopAudioStreamForPlayerEx(i);
-				}
-			}	
+				StopAudioStreamForPlayerEx(i);
+			}
+			DestroyDynamicArea(GetGVarInt("MusicArea"));
+			DeleteGVar("MusicArea");
 	        DestroyDynamicArea(audiourlid);
 	        format(string,sizeof(string),"{AA3333}AdmWarning{FFFF00}: %s has stopped the audiourl",GetPlayerNameEx(playerid));
 	        ABroadCast(COLOR_YELLOW, string, 4);
