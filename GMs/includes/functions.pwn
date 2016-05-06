@@ -64,7 +64,7 @@ CheckPointCheck(iTargetID)  {
 	if(GetPVarType(iTargetID, "hFind") > 0 || GetPVarType(iTargetID, "TrackCar") > 0 || GetPVarType(iTargetID, "DV_TrackCar") > 0 || GetPVarType(iTargetID, "Packages") > 0 || TaxiAccepted[iTargetID] != INVALID_PLAYER_ID || EMSAccepted[iTargetID] != INVALID_PLAYER_ID || BusAccepted[iTargetID] != INVALID_PLAYER_ID || gPlayerCheckpointStatus[iTargetID] != CHECKPOINT_NONE || MedicAccepted[iTargetID] != INVALID_PLAYER_ID || MechanicCallTime[iTargetID] >= 1) {
 		return 1;
 	}
-	if(GetPVarType(iTargetID, "TrackVehicleBurglary") > 0 || GetPVarType(iTargetID, "DeliveringVehicleTime") > 0 || GetPVarType(iTargetID, "pDTest") > 0 || GetPVarType(iTargetID, "pGarbageRun") > 0 || GetPVarType(iTargetID, "pSellingFish") > 0 ) 
+	if(GetPVarType(iTargetID, "TrackVehicleBurglary") > 0 || GetPVarType(iTargetID, "DeliveringVehicleTime") > 0 || GetPVarType(iTargetID, "pDTest") > 0 || GetPVarType(iTargetID, "pGarbageRun") > 0 || GetPVarType(iTargetID, "pSellingFish") > 0 || GetPVarType(iTargetID, "pDrugRun")) 
 		return 1;
 	return 0;
 }
@@ -316,28 +316,6 @@ String_Count(arrCount[][], iMax = sizeof arrCount) {
 }
 
 			/*  ---------------- PUBLIC FUNCTIONS -----------------  */
-forward CrimeCheckHere(playerid);
-public CrimeCheckHere(playerid)
-{
-	szMiscArray[0] = 0;
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCrimeCheckHere", "i", playerid);
-	return 1;
-}
-
-forward OnCrimeCheckHere(playerid);
-public OnCrimeCheckHere(playerid)
-{
-	new 
-		iRows = cache_get_row_count(MainPipeline);
-
-	szMiscArray[0] = 0;
-
-	if(iRows > 0) {
-		PlayerInfo[playerid][pWantedLevel] = iRows;
-	} 
-	return 1;
-
-}
 forward HideReportText(playerid);
 public HideReportText(playerid)
 {

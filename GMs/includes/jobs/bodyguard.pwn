@@ -103,19 +103,10 @@ CMD:frisk(playerid, params[])
 				}
 
 				SendClientMessageEx(playerid, COLOR_WHITE, "** Drugs **");
-				for(new i = 0; i < sizeof(szDrugs); ++i) {
+				for(new i = 0; i < sizeof(Drugs); ++i) {
 
-					if(PlayerInfo[giveplayerid][p_iDrug][i] > 0) {
-						format(string, sizeof(string), "%s: %dpc", szDrugs[i], PlayerInfo[giveplayerid][p_iDrug][i]);
-						SendClientMessageEx(playerid, COLOR_GRAD1, string);
-					}
-				}
-
-				SendClientMessageEx(playerid, COLOR_WHITE, "** Ingredients **");
-				for(new i = 0; i < sizeof(szIngredients); ++i) {
-
-					if(PlayerInfo[giveplayerid][p_iIngredient][i] > 0) {
-						format(string, sizeof(string), "%s: %dpc", szIngredients[i], PlayerInfo[giveplayerid][p_iIngredient][i]);
+					if(PlayerInfo[giveplayerid][pDrugs][i] > 0) {
+						format(string, sizeof(string), "%s: %dpc", Drugs[i], PlayerInfo[giveplayerid][pDrugs][i]);
 						SendClientMessageEx(playerid, COLOR_GRAD1, string);
 					}
 				}

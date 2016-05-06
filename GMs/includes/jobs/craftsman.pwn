@@ -56,39 +56,28 @@ CMD:getmats(playerid, params[])
 	GetPlayerName(playerid, playername, sizeof(playername));
 	for (new i=0; i<MAX_POINTS; i++)
 	{
-		if (IsPlayerInRangeOfPoint(playerid, 3.0, Points[i][Pointx], Points[i][Pointy], Points[i][Pointz]) && Points[i][Type] == 1)
+		if (IsPlayerInRangeOfPoint(playerid, 3.0, DynPoints[i][poPos][0], DynPoints[i][poPos][1], DynPoints[i][poPos][2]) && DynPoints[i][poType] == 0)
 		{
-			mypoint = i;
-			mypointex = i;
-			mydeliver = Points[i][MatPoint];
-		}
-	}
+			if(DynPoints[i][poType] == 0) 
+			{
 
-	new iPointID = Point_GetPointID(playerid);
-	if(iPointID != -1 && arrPoint[iPointID][po_iType] == 0) {
+				if(GetPlayerCash(playerid) < 750) return SendClientMessageEx(playerid, COLOR_GREY," You can't afford $750 for some material packages.");
 
-		if(GetPlayerCash(playerid) < 750) {
-			return SendClientMessageEx(playerid, COLOR_GREY," You can't afford $750 for some material packages.");
-		}
-		GivePlayerCash(playerid, -750);
-		SetPVarInt(playerid, "Packages", 10);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You bought 10 Materials Packages for $750.");
+				GivePlayerCash(playerid, -750);
+				SetPVarInt(playerid, "Packages", 10);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You bought 10 Materials Packages for $750.");
 
-		SetPVarInt(playerid, "MatDeliver", 9090);
-		SetPVarInt(playerid, "tpMatRunTimer", 10);
-		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPMATRUNTIMER);
+				SetPVarInt(playerid, "MatDeliver", 9090);
+				SetPVarInt(playerid, "tpMatRunTimer", 10);
+				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPMATRUNTIMER);
 		
-		if(arrPoint[iPointID][po_iGroupID] != INVALID_GROUP_ID) {
-			arrGroupData[arrPoint[iPointID][po_iGroupID]][g_iBudget] +=125;
-			Point_AddUsage(iPointID, 125);
-		}
-		new Float:fPos[3];
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[iPointID][po_iDelTextID], E_STREAMER_X, fPos[0]);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[iPointID][po_iDelTextID], E_STREAMER_Y, fPos[1]);
-		Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrPoint[iPointID][po_iDelTextID], E_STREAMER_Z, fPos[2]);
+				if(DynPoints[i][poCapperGroupOwned] != INVALID_GROUP_ID) arrGroupData[DynPoints[i][poCapperGroupOwned]][g_iBudget] +=500;
 
-		SetPlayerCheckpoint(playerid, fPos[0], fPos[1], fPos[2], 5);
-		return 1;
+				if(DynPoints[i][poPos2][0] < 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Sorry, this point is still being set up!");
+				SetPlayerCheckpoint(playerid, DynPoints[i][poPos2][0], DynPoints[i][poPos2][1], DynPoints[i][poPos2][2], 5);
+				return 1;
+			}
+		}
 	}
 
 	if (IsPlayerInRangeOfPoint(playerid, 10.0, 2102.71, -103.97, 2.28)) // Matrun 3

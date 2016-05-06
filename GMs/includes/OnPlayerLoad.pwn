@@ -251,9 +251,8 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pLawSkill] = 0;
 		PlayerInfo[playerid][pMechSkill] = 0;
 		PlayerInfo[playerid][pTruckSkill] = 0;
-		PlayerInfo[playerid][pDrugsSkill] = 0;
 		PlayerInfo[playerid][pArmsSkill] = 0;
-		PlayerInfo[playerid][pSmugSkill] = 0;
+		PlayerInfo[playerid][pDrugSmuggler] = 0;
 		PlayerInfo[playerid][pFishSkill] = 0;
 		PlayerInfo[playerid][pSHealth] = 0.0;
 		PlayerInfo[playerid][pHealth] = 50.0;
@@ -589,9 +588,9 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pJob3] = 0;
 		SendClientMessageEx(playerid, COLOR_YELLOW, "You have lost your third job due to the fact that you are no longer a Gold VIP+.");
 	}	
-	if(PlayerInfo[playerid][pDonateRank] >= 4 && PlayerInfo[playerid][pArmsSkill] < 400)
+	if(PlayerInfo[playerid][pDonateRank] >= 4 && PlayerInfo[playerid][pArmsSkill] < 500)
 	{
-		PlayerInfo[playerid][pArmsSkill] = 401;
+		PlayerInfo[playerid][pArmsSkill] = 500;
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Platinum VIP Feature: You have been given Level 5 Arms Dealer.");
 	}
 	if(PlayerInfo[playerid][pDonateRank] >= 4)
@@ -823,10 +822,10 @@ public OnPlayerLoad(playerid)
 	{
 		for(new i = 0; i < MAX_POINTS; i++)
 		{
-			if(Points[i][CapCrash] == 1)
+			if(DynPoints[i][HasCrashed] == 1)
 			{
 				SendClientMessageEx(playerid, COLOR_YELLOW, "Point Crash Protection:");
-				format(string, sizeof(string), "%s has attempted to take control of the %s for %s, it will be theirs in %d minutes.", Points[i][PlayerNameCapping], Points[i][Name], arrGroupData[Points[i][ClaimerTeam]][g_szGroupName], Points[i][TakeOverTimer]);
+				format(string, sizeof(string), "%s has attempted to take control of the %s for %s, it will be theirs in %d minutes.", DynPoints[i][PlayerNameCapping], DynPoints[i][poName], arrGroupData[DynPoints[i][poCapperGroup]][g_szGroupName], DynPoints[i][poTimestamp2]);
 				SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			}
 		}

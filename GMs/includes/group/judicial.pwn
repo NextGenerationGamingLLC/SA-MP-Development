@@ -767,13 +767,13 @@ CMD:judgejail(playerid, params[])
 	if(IsPlayerConnected(giveplayerid))
 	{
 		if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
-		if(jailtime < 0)
+		if(jailtime < 5)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD5, "Sentence must be at least 1 minute!");
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Sentence must be at least 5 minute!");
 		}
-		if(jailtime > 360)
+		if(jailtime > 120)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD5, "Maximum sentence is 6 Hours / 360 Minutes");
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Maximum sentence is 2 Hours / 120 Minutes");
 		}
 		PlayerInfo[giveplayerid][pJudgeJailType] = 1;
 		PlayerInfo[giveplayerid][pJudgeJailTime] = jailtime*60;
@@ -822,13 +822,13 @@ CMD:judgeprison(playerid, params[])
 	if(IsPlayerConnected(giveplayerid))
 	{
 	    if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
-		if(jailtime < 0)
+		if(jailtime < 5)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD5, "Sentence must be at least 1 minute!");
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Sentence must be at least 5 minute!");
 		}
-		if(jailtime > 360)
+		if(jailtime > 120)
 		{
-			return SendClientMessageEx(playerid, COLOR_GRAD5, "Maximum sentence is 6 Hours / 360 Minutes");
+			return SendClientMessageEx(playerid, COLOR_GRAD5, "Maximum sentence is 2 Hours / 120 Minutes");
 		}
 		PlayerInfo[giveplayerid][pJudgeJailType] = 2;
 		PlayerInfo[giveplayerid][pJudgeJailTime] = jailtime*60;
@@ -868,7 +868,7 @@ CMD:judgefine(playerid, params[])
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
 	totalwealth = PlayerInfo[giveplayerid][pCash] + PlayerInfo[giveplayerid][pAccount];
 	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
-	if(!(1 <= judgefine <= 2000000)) return SendClientMessageEx(playerid, COLOR_GREY, "Fine amount cannot be lower than $1 or higher than $2,000,000!");
+	if(!(1 <= judgefine <= 500000)) return SendClientMessageEx(playerid, COLOR_GREY, "Fine amount cannot be lower than $1 or higher than $500,000!");
 	if(totalwealth < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is already in debt - contact an administrator.");
 	if(!PlayerInfo[giveplayerid][pBeingSentenced]) return SendClientMessageEx(playerid, COLOR_GRAD5, "That person isn't being sentenced!");
 	SetPVarInt(playerid, "judgefine", judgefine);

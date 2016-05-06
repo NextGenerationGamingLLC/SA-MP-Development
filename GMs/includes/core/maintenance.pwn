@@ -133,6 +133,11 @@ public FinishMaintenance()
 	SaveMailboxes();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Speed Cameras...", 1);
 	SaveSpeedCameras();
+	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Points...", 1);
+	for (new i=0; i<MAX_POINTS; i++)
+	{
+		SavePoint(i);	
+	}
 	if(rflstatus > 0) {
 		ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving RFL Teams...", 1);
 		SaveRelayForLifeTeams();

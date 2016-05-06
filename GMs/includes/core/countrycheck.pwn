@@ -1,4 +1,4 @@
-new bool:cCheck = true;
+new bool:cCheck = false;
 CMD:togcountrycheck(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1337) return 0;
@@ -24,7 +24,10 @@ public CountryCheckResponse(playerid, response_code, data[]) {
 	if(response_code == 200) {
 		new resCodeIndex = strfind(data, "GEORESULT:")+10;
 		new resCode = strval(data[resCodeIndex]);
-		if(data[resCodeIndex] > '4' || data[resCodeIndex] < '0') { resCode = 1; }
+		if(data[resCodeIndex] != '4' && data[resCodeIndex] != '0' && data[resCodeIndex] !=  '1' && data[resCodeIndex] !=  '2' && data[resCodeIndex] !=  '3') 
+		{ 
+			resCode = '1'; 
+		}
 		/* Rescode response values:
 		0 = Response error
 		1 = Country code match / Allow login

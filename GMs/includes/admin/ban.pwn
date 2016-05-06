@@ -275,7 +275,7 @@ CMD:ban(playerid, params[]) {
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
 	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
 
-	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, PlayerInfo[iTargetID][pIP], szReason, iLength);
+	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, GetPlayerIpEx(iTargetID), szReason, iLength);
 
 	return 1;
 }

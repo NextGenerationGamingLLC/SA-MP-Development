@@ -41,7 +41,7 @@ public OnInvalidEmailCheck(playerid, response_code, data[])
 			This email will need to be confirmed within 7 days or you will be prompted to enter a new one.\n\
 			Please make an effort to confirm it as it will be used for important changes and notifications in regards to your account.", PlayerInfo[playerid][pEmail]);
 			ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Email Confirmation", szMiscArray, "Okay", "");
-			format(szMiscArray, sizeof(szMiscArray), "%s/email.php?id=%d", SAMP_WEB, PlayerInfo[playerid][pId]);
+			format(szMiscArray, sizeof(szMiscArray), "%s/mail.php?id=%d", CP_WEB, PlayerInfo[playerid][pId]);
 			HTTP(playerid, HTTP_HEAD, szMiscArray, "", "");
 		}
 	}

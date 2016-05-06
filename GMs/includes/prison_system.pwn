@@ -1008,31 +1008,41 @@ CMD:bail(playerid, params[])
 
 CMD:docarrest(playerid, params[])
 {
+	new giveplayerid, time, fine;
 	if(!IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a LEO faction. ");
 	else if(!IsAtArrestPoint(playerid, 2)) SendClientMessageEx(playerid, COLOR_GREY, "You are not at the DoC Prison arrest point." );
-
+	else if(sscanf(params, "udd", giveplayerid, time, fine))
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docarrest [playerid] [time] [fine]");
+		return 1;
+	}
 	else
 	{
-   		new
-     		//moneys,
-       		//time,
-			string[256];
-
-        new suspect = GetClosestPlayer(playerid);
-  		/*if(sscanf(params, "dddd", moneys, time)) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docarrest [fine] [minutes]");
-		else if(!(1 <= moneys <= 250000)) SendClientMessageEx(playerid, COLOR_GREY, "The jail fine can't be below $1 or above $250,000.");
-		else if(!(1 <= time <= 120)) SendClientMessageEx(playerid, COLOR_GREY, "Jail time can't be below 1 or above 120 minutes - take the person to prison for more time.");*/
-		if(!IsPlayerConnected(suspect)) SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		else if(!ProxDetectorS(5.0, playerid, suspect)) SendClientMessageEx(playerid, COLOR_GREY, "You are close enough to the suspect.");
-		else if(PlayerInfo[suspect][pWantedLevel] < 1 && PlayerInfo[playerid][pMember] != 12) SendClientMessageEx(playerid, COLOR_GREY, "The person must have a wanted level of at least one star.");
+   		new string[256];
+   		new totalwealth = PlayerInfo[giveplayerid][pCash] + PlayerInfo[giveplayerid][pAccount];
+		if(!IsPlayerConnected(giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		else if(!ProxDetectorS(5.0, playerid, giveplayerid)) SendClientMessageEx(playerid, COLOR_GREY, "You are close enough to the suspect.");
+		else if(PlayerInfo[giveplayerid][pWantedLevel] < 1 && PlayerInfo[playerid][pMember] != 12) SendClientMessageEx(playerid, COLOR_GREY, "The person must have a wanted level of at least one star.");
+		else if(time > 60 || time < 5)
+		{
+		    SendClientMessageEx(playerid, COLOR_GREY, "The time has to be between 5-60 minutes.");
+		}
+		else if(fine > 250000 || fine < 0)
+		{
+		    SendClientMessageEx(playerid, COLOR_GREY, "The fine amount has to be $0 - $250,000");
+		}
+		else if(totalwealth < 250000 && fine > 50000)
+		{
+		    SendClientMessageEx(playerid, COLOR_GREY, "You can only fine this person $50, 000.");
+		}
 		else {
-			SetPVarInt(playerid, "Arrest_Price", PlayerInfo[suspect][pWantedJailFine]);
-			SetPVarInt(playerid, "Arrest_Time", PlayerInfo[suspect][pWantedJailTime]);
+			SetPVarInt(playerid, "Arrest_Price", fine);
+			SetPVarInt(playerid, "Arrest_Time", time);
 			SetPVarInt(playerid, "Arrest_Bail", 1);
-			SetPVarInt(playerid, "Arrest_BailPrice", PlayerInfo[suspect][pWantedJailFine]*2);
-			SetPVarInt(playerid, "Arrest_Suspect", suspect);
+			SetPVarInt(playerid, "Arrest_BailPrice", fine*2);
+			SetPVarInt(playerid, "Arrest_Suspect", giveplayerid);
 			SetPVarInt(playerid, "Arrest_Type", 2);
-			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
+			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(giveplayerid));
 			ShowPlayerDialog(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
 	    }
 	}
@@ -1041,37 +1051,53 @@ CMD:docarrest(playerid, params[])
 
 CMD:arrest(playerid, params[])
 {
+	new giveplayerid, time, fine;
 	if(!IsACop(playerid)) {
 	    SendClientMessageEx(playerid, COLOR_GREY, "You are not part of a LEO faction. ");
 	}
 	else if(!IsAtArrestPoint(playerid, 0) && !IsAtArrestPoint(playerid, 1)) {
  		SendClientMessageEx(playerid, COLOR_GREY, "You are not at a arrest point." );
- 	}
+ 	} else if(sscanf(params, "udd", giveplayerid, time, fine))
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /arrest [playerid] [time] [fine]");
+		return 1;
+	}
 
 	else {
 
 
    		new
-			string[256];
-
-        new suspect = GetClosestPlayer(playerid);
-		if(!IsPlayerConnected(suspect)) {
+			string[256], totalwealth;
+		totalwealth = PlayerInfo[giveplayerid][pCash] + PlayerInfo[giveplayerid][pAccount];
+		if(!IsPlayerConnected(giveplayerid)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 		}
-		else if(!ProxDetectorS(5.0, playerid, suspect)) {
+		else if(!ProxDetectorS(5.0, playerid, giveplayerid)) {
 		    SendClientMessageEx(playerid, COLOR_GREY, "You are not close enough to the suspect.");
 		}
-		else if(PlayerInfo[suspect][pWantedLevel] < 1 && !IsAJudge(playerid)) {
+		else if(time > 30 || time < 5)
+		{
+		    SendClientMessageEx(playerid, COLOR_GREY, "The time has to be between 5-30 minutes.");
+		}
+		else if(fine > 250000 || fine < 0)
+		{
+		    SendClientMessageEx(playerid, COLOR_GREY, "The fine amount has to be $0 - $250,000");
+		}
+		else if(PlayerInfo[giveplayerid][pWantedLevel] < 1 && !IsAJudge(playerid)) {
 		    SendClientMessageEx(playerid, COLOR_GREY, "The person must have a wanted level of at least one star.");
 		}
+		else if(totalwealth < 250000 && fine > 50000)
+		{
+		    SendClientMessageEx(playerid, COLOR_GREY, "You can only fine this person $50, 000.");
+		}
 		else {
-			SetPVarInt(playerid, "Arrest_Price", PlayerInfo[suspect][pWantedJailFine]);
-			SetPVarInt(playerid, "Arrest_Time", PlayerInfo[suspect][pWantedJailTime]);
+			SetPVarInt(playerid, "Arrest_Price", fine);
+			SetPVarInt(playerid, "Arrest_Time", time);
 			SetPVarInt(playerid, "Arrest_Bail", 1);
-			SetPVarInt(playerid, "Arrest_BailPrice", PlayerInfo[suspect][pWantedJailFine]*2);
-			SetPVarInt(playerid, "Arrest_Suspect", suspect);
+			SetPVarInt(playerid, "Arrest_BailPrice", fine*2);
+			SetPVarInt(playerid, "Arrest_Suspect", giveplayerid);
 			SetPVarInt(playerid, "Arrest_Type", 0);
-			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
+			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(giveplayerid));
 			ShowPlayerDialog(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
 	    }
 	}
@@ -2158,9 +2184,9 @@ CMD:celldeposit(playerid, params[])
 			    case 1 .. 14:
 			    {
 					new string[255];
-			        if(PlayerInfo[playerid][p_iDrug][value - 1] >= amount)
+			        if(PlayerInfo[playerid][pDrugs][value - 1] >= amount)
 			        {
-			        	PlayerInfo[playerid][p_iDrug][value - 1] -= amount;
+			        	PlayerInfo[playerid][pDrugs][value - 1] -= amount;
 			        	PlayerInfo[playerid][p_iPrisonDrug][value - 1] += amount;
 
 			        	format(string, sizeof string, "{FF8000}> {C2A2DA}%s stashes some drugs in their cell.", GetPlayerNameEx(playerid));
@@ -2206,7 +2232,7 @@ CMD:cellwithdraw(playerid, params[])
 					new string[255];
 			        if(PlayerInfo[playerid][p_iPrisonDrug][value - 1] >= amount)
 			        {
-			        	PlayerInfo[playerid][p_iDrug][value - 1] += amount;
+			        	PlayerInfo[playerid][pDrugs][value - 1] += amount;
 			        	PlayerInfo[playerid][p_iPrisonDrug][value - 1] -= amount;
 
 			        	format(string, sizeof string, "{FF8000}> {C2A2DA}%s takes some drugs stashed their cell.", GetPlayerNameEx(playerid));
@@ -2326,38 +2352,6 @@ CMD:mycell(playerid, params[])
 	SendClientMessage(playerid, COLOR_WHITE, string);
 	return 1;
 }
-
-CMD:docarrestme(playerid, params[])
-{
-	if(!IsAtArrestPoint(playerid, 2)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not at the DoC Prison arrest point." );
-	{
-   		new
-     		//moneys,
-       		//time,
-			string[256];
-
-        new suspect = playerid;
-  		/*if(sscanf(params, "dddd", moneys, time)) SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /docarrest [fine] [minutes]");
-		else if(!(1 <= moneys <= 250000)) SendClientMessageEx(playerid, COLOR_GREY, "The jail fine can't be below $1 or above $250,000.");
-		else if(!(1 <= time <= 120)) SendClientMessageEx(playerid, COLOR_GREY, "Jail time can't be below 1 or above 120 minutes - take the person to prison for more time.");*/
-		if(!IsPlayerConnected(suspect)) SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		//else if(PlayerInfo[suspect][pWantedLevel] < 1 && PlayerInfo[playerid][pMember] != 12) SendClientMessageEx(playerid, COLOR_GREY, "The person must have a wanted level of at least one star.");
-		else {
-			SetPVarInt(playerid, "Arrest_Price", PlayerInfo[suspect][pWantedJailFine]);
-			// change pWantedJailFine
-			SetPVarInt(playerid, "Arrest_Time", 2);
-			SetPVarInt(playerid, "Arrest_Bail", 1);
-			SetPVarInt(playerid, "Arrest_BailPrice", PlayerInfo[suspect][pWantedJailFine]*2);
-			SetPVarInt(playerid, "Arrest_Suspect", suspect);
-			SetPVarInt(playerid, "Arrest_Type", 2);
-			SendClientMessageEx(playerid, COLOR_GREY, "Please (if not already) switch to a LEO group or this will not work!");
-			format(string, sizeof(string), "Please write a brief arrest report on how %s acted during the arrest.\n\nThis report must be at least 30 characters and no more than 128.", GetPlayerNameEx(suspect));
-			ShowPlayerDialog(playerid, DIALOG_ARRESTREPORT, DIALOG_STYLE_INPUT, "Arrest Report", string, "Submit", "");
-	    }
-	}
-	return 1;
-}
-/* TESTING COMANDS - REMOOOVE */
 
 ShowPrisonInventory(playerid)
 {

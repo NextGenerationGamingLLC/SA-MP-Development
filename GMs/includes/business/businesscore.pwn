@@ -340,6 +340,12 @@ stock IsAt247(playerid)
    	return (iBusiness != INVALID_BUSINESS_ID && (Businesses[iBusiness][bType] == BUSINESS_TYPE_STORE || Businesses[iBusiness][bType] == BUSINESS_TYPE_GASSTATION));
 }
 
+stock IsAtCasino(playerid)
+{
+    new iBusiness = InBusiness(playerid);
+   	return (iBusiness != INVALID_BUSINESS_ID && (Businesses[iBusiness][bType] == BUSINESS_TYPE_CASINO));
+}
+
 stock IsAtClothingStore(playerid)
 {
     new iBusiness = InBusiness(playerid);

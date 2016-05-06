@@ -2329,7 +2329,7 @@ CMD:cancel(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cancel [name]");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Cannabis, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Drink, House, Shipment, Help, Firstaid, Garbage");
-		SendClientMessageEx(playerid, COLOR_GREY, "FoodOffer, RenderAid");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: FoodOffer, RenderAid, DrugRun");
 		if(IsAHitman(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "Special: contract"); }
 		SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
 		return 1;
@@ -2381,6 +2381,19 @@ CMD:cancel(playerid, params[])
 		{
 			KillTimer(GetPVarInt(playerid, "firstaid5"));
 			SetPVarInt(playerid, "usingfirstaid", 0);
+		}
+	}
+	else if(strcmp(choice,"drugrun",true) == 0)
+	{
+		if(GetPVarInt(playerid, "pDrugRun"))
+		{
+			Player_KillCheckPoint(playerid);
+			DeletePVar(playerid, "pDrugRun");
+			DeletePVar(playerid, "pDrugBoat");
+			DeletePVar(playerid, "pPotPackages");
+			DeletePVar(playerid, "pCrackPackages");
+			DeletePVar(playerid, "pMethPackages");
+			DeletePVar(playerid, "pEcstasyPackages");
 		}
 	}
 	else if(strcmp(choice,"shipment",true) == 0)

@@ -99,17 +99,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(PlayerInfo[playerid][pJob] == 0)	{
 
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
-
-					if(iJob == 14) {
-
-						SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You can find drug crates in blueberry. ( Goto checkpoint )");
-						if(CheckPointCheck(playerid)) {
-
-							SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
-				    		return 1;
-						}
-						SetPlayerCheckpoint(playerid, 51.9720,-292.6349,1.7031, 3);
-					}
 					if(iJob == 21) {
 
 						SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
@@ -127,11 +116,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	                SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
 	                SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have taken this as a secondary job.");
 
-	                if(iJob == 14) {
-
-	                    SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You can find drug crates in blueberry. ( Goto checkpoint )");
-	                    SetPlayerCheckpoint(playerid, 51.9720,-292.6349,1.7031, 3);
-	                }
 	                if(iJob == 21) {
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been accepted to Pizza Nation; one of the most secret societies in the world.");
@@ -147,11 +131,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
 	                SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have taken this as a third job.");
-					if(iJob == 14) {
 
-	                    SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You can find drug crates in blueberry. ( Goto checkpoint )");
-	                    SetPlayerCheckpoint(playerid, 51.9720,-292.6349,1.7031, 3);
-	                }
 					if(iJob == 21) {
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been given a Pizza Stack uniform!");
 	                	SendClientMessageEx(playerid, COLOR_WHITE, "You have been accepted to Pizza Nation; one of the most secret societies in the world.");

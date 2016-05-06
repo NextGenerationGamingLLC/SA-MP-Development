@@ -231,6 +231,8 @@ task SyncTime[60000]()
 		}
 	}
 
+	PlantTimer();
+
 	new tmphour, tmpminute, tmpsecond;
 	gettime(tmphour, tmpminute, tmpsecond);
 	FixHour(tmphour);
@@ -474,25 +476,34 @@ task SyncTime[60000]()
 
 		if(tmphour == 0) CountCitizens();
 
-		/*
 		for (new x = 0; x < MAX_POINTS; x++)
 		{
-			Points[x][Announced] = 0;
-			if (Points[x][Vulnerable] > 0)
+			if (DynPoints[x][poTimestamp1] > 0)
 			{
-				Points[x][Vulnerable]--;
-				UpdatePoints();
+				DynPoints[x][poTimestamp1]--;
+				SavePoint(x);
 			}
-			if (Points[x][Vulnerable] == 0 && Points[x][Type] >= 0 && Points[x][Announced] == 0 && Points[x][ClaimerId] == INVALID_PLAYER_ID)
+			if (DynPoints[x][poTimestamp1] == 0 && DynPoints[x][poInactive] != 1 && DynPoints[x][poBeingCaptured] == INVALID_PLAYER_ID)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%s has become available for capture.", Points[x][Name]);
+				format(szMiscArray, sizeof(szMiscArray), "%s has become available for capture.", DynPoints[x][poName]);
 				SendClientMessageToAllEx(COLOR_YELLOW, szMiscArray);
-				//SetPlayerCheckpoint(i, Points[i][Pointx], Points[i][Pointy], Points[i][Pointz], 3);
-				ReadyToCapture(x);
-				Points[x][Announced] = 1;
+				DynPoints[x][poCapturable] = 1;
+				SavePoint(x);
+			}
+			if(DynPoints[x][poCapperGroupOwned] != INVALID_GROUP_ID)
+			{
+				format(szMiscArray, sizeof(szMiscArray), "Your family has recieved a %d materials for owning %s.", DynPoints[x][poMaterials], DynPoints[x][poName]);
+				arrGroupData[DynPoints[x][poCapperGroupOwned]][g_iMaterials] += DynPoints[x][poMaterials];
+
+				foreach(new i: Player)
+				{
+					if(PlayerInfo[i][pMember] == DynPoints[x][poCapperGroupOwned]) {
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, szMiscArray);
+					}
+				}
 			}
 		}
-		*/
+
 		Misc_Save();
 
 		for(new i = 0; i < MAX_TURFS; i++)

@@ -676,7 +676,7 @@ CMD:sellfish(playerid, params[]) {
     if(GetPVarInt(playerid, "pFishSellTime") < gettime())
     {
         if(PlayerInfo[playerid][pFishWeight] < 50) return SendClientMessageEx(playerid, COLOR_GREY, "You must at least have fifty pounds of fish to sell them.");
-        if(IsPlayerInRangeOfPoint(playerid, 30.0, 2286.7698, -2425.2292, 3.0000))
+        if(IsPlayerInRangeOfPoint(playerid, 30.0, 2161.0513,-98.5897,2.7893))
         {
         	if(sscanf(params, "d", amount))
 			{
@@ -705,7 +705,7 @@ CMD:sellfish(playerid, params[]) {
 
 		    GameTextForPlayer(playerid, "~g~CHECKPOINT ~r~SET", 5000, 4);
             SetPVarInt(playerid, "pSellingFish", 1);
-		    SetPlayerCheckpoint(playerid, 2286.7698, -2425.2292, 3.0000, 10.0);
+		    SetPlayerCheckpoint(playerid, 2161.0513,-98.5897,2.7893, 10.0);
 			return SendClientMessageEx(playerid, COLOR_YELLOW, "Make your way to the checkpoint to sell your fish.");
 		}
     }

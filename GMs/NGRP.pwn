@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.304"
+#define SERVER_GM_TEXT "NG:RP v3.0.307"
 
 // #define AREA_DEBUG
 
@@ -192,8 +192,7 @@
 #include "./includes/core/emailcheck.pwn"
 #include "./includes/core/AccountSettings.pwn"
 #include "./includes/core/tutorial_new.pwn"
-\
-//WIP
+
 #include "./includes/core/deluxegps.pwn"
 
 // #tryinclude "./includes/core/inactive.pwn"
@@ -215,6 +214,7 @@
 #include "./includes/dynamic/ddsale.pwn"
 #include "./includes/dynamic/parking.pwn"
 #include "./includes/dynamic/MetalDetectors.pwn"
+#include "./includes/dynamic/points.pwn"
 
 //vehicle system includes
 #include "./includes/vehsystem/vehiclecore.pwn"
@@ -258,7 +258,6 @@
 #include "./includes/group/taxi.pwn"
 #include "./includes/group/towing.pwn"
 #include "./includes/group/turfs.pwn"
-#include "./includes/group/points.pwn"
 #include "./includes/group/cratesystem.pwn"
 #include "./includes/group/callsystem.pwn"
 #include "./includes/group/gangshipment.pwn"
@@ -291,6 +290,8 @@
 #include "./includes/jobs/taxi.pwn"
 #include "./includes/jobs/treasure.pwn"
 #include "./includes/jobs/whore.pwn"
+#include "./includes/jobs/armsdealer.pwn"
+#include "./includes/core/drugcore.pwn"
 
 
 //perk system includes
@@ -303,9 +304,9 @@
 #include "./includes/perks/tokens.pwn"
 #include "./includes/perks/toys.pwn"
 #include "./includes/perks/vipcore.pwn"
+//#include "./includes/perks/casino.pwn"
 
 #include "./includes/core/ammo.pwn"
-#include "./includes/core/drugsystem.pwn"
 #include "./includes/core/phone_new.pwn"
 #include "./includes/core/payphones.pwn"
 #include "./includes/group/rivalry.pwn"
