@@ -331,7 +331,7 @@ CMD:showid(playerid, params[])
 
 CMD:showlicenses(playerid, params[])
 {
-	new string[128], giveplayerid;
+	new giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /showlicenses [player]");
 
 	if(IsPlayerConnected(giveplayerid))
@@ -339,38 +339,7 @@ CMD:showlicenses(playerid, params[])
 		if (ProxDetectorS(8.0, playerid, giveplayerid))
 		{
 			if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You can't show licenses to yourself - use /licenses for that."); return 1; }
-			new text1[20], text2[20], text3[20], text4[20], text5[40];
-			if(PlayerInfo[playerid][pCarLic]) { text1 = "Acquired"; } else { text1 = "Not acquired"; }
-			if(PlayerInfo[playerid][pFlyLic]) { text4 = "Acquired"; } else { text4 = "Not acquired"; }
-			if(PlayerInfo[playerid][pBoatLic]) { text2 = "Acquired"; } else { text2 = "Not acquired"; }
-			if(PlayerInfo[playerid][pTaxiLicense]) { text3 = "Acquired"; } else { text3 = "Not acquired"; }
-			if(PlayerInfo[playerid][pGunLic] == 0) {text5 = "Not acquired"; }
-			else {text5 = date(PlayerInfo[playerid][pGunLic], 1);}
-
-			switch(PlayerInfo[playerid][pNation])
-			{
-				case 0:	SendClientMessageEx(giveplayerid, COLOR_WHITE, "** Citizen of San Andreas **");
-				case 1: SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of New Eire **");
-				default: SendClientMessageEx(giveplayerid, COLOR_TR, "** No citizenship **");
-			}
-			format(string, sizeof(string), "Listing %s's licenses...", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "Date of Birth: %s", PlayerInfo[playerid][pBirthDate]);
-			SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "** Driver's license: %s.", text1);
-			SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-			format(string, sizeof(string), "** Pilot license: %s.", text4);
-			SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-			format(string, sizeof(string), "** Boating license: %s.", text2);
-			SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-			format(string, sizeof(string), "** Taxi license: %s.", text3);
-			SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-			format(string, sizeof(string), "** SA Firearm license: %s.", text5);
-			SendClientMessageEx(giveplayerid, COLOR_GREY, string);
-			format(string, sizeof(string), "* %s has shown their licenses to you.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* You have shown your licenses to %s.", GetPlayerNameEx(giveplayerid));
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			PlayerShowLicenses(playerid, giveplayerid);
 		}
 		else
 		{
@@ -385,4 +354,40 @@ CMD:showlicenses(playerid, params[])
 		return 1;
 	}
 	return 1;
+}
+
+PlayerShowLicenses(playerid, giveplayerid);
+{
+	new text1[20], text2[20], text3[20], text4[20], text5[40], string[256];
+	if(PlayerInfo[playerid][pCarLic]) { text1 = "Acquired"; } else { text1 = "Not acquired"; }
+	if(PlayerInfo[playerid][pFlyLic]) { text4 = "Acquired"; } else { text4 = "Not acquired"; }
+	if(PlayerInfo[playerid][pBoatLic]) { text2 = "Acquired"; } else { text2 = "Not acquired"; }
+	if(PlayerInfo[playerid][pTaxiLicense]) { text3 = "Acquired"; } else { text3 = "Not acquired"; }
+	if(PlayerInfo[playerid][pGunLic] == 0) {text5 = "Not acquired"; }
+	else {text5 = date(PlayerInfo[playerid][pGunLic], 1);}
+
+	switch(PlayerInfo[playerid][pNation])
+	{
+		case 0:	SendClientMessageEx(giveplayerid, COLOR_WHITE, "** Citizen of San Andreas **");
+		case 1: SendClientMessageEx(giveplayerid, COLOR_TR, "** Citizen of New Eire **");
+		default: SendClientMessageEx(giveplayerid, COLOR_TR, "** No citizenship **");
+	}
+	format(string, sizeof(string), "Listing %s's licenses...", GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "Date of Birth: %s", PlayerInfo[playerid][pBirthDate]);
+	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+	format(string, sizeof(string), "** Driver's license: %s.", text1);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
+	format(string, sizeof(string), "** Pilot license: %s.", text4);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
+	format(string, sizeof(string), "** Boating license: %s.", text2);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
+	format(string, sizeof(string), "** Taxi license: %s.", text3);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
+	format(string, sizeof(string), "** SA Firearm license: %s.", text5);
+	SendClientMessageEx(giveplayerid, COLOR_GREY, string);
+	format(string, sizeof(string), "* %s has shown their licenses to you.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+	format(string, sizeof(string), "* You have shown your licenses to %s.", GetPlayerNameEx(giveplayerid));
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 }

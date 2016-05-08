@@ -411,6 +411,8 @@ CMD:sellgun(playerid, params[])
 			if(id == playerid) { format(szMiscArray, sizeof(szMiscArray), "%s crafts a %s from their materials, handing it to themselves.", GetPlayerNameEx(playerid), weapon); }
 			else format(szMiscArray, sizeof(szMiscArray), "%s crafts a %s from their materials, handing it to %s.", GetPlayerNameEx(playerid), weapon, GetPlayerNameEx(id));
 
+			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
 			SetPVarInt(playerid, "pSellGunTime", gettime() + 30);
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); // Just a little 'classic' feel to it. -Winterfield
 			return 1; // Added so the error message would work.

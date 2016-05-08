@@ -118,7 +118,7 @@ CMD:usedrug(playerid, params[])
 CMD:getcrate(playerid, params[])
 {
 	new string[256], vip;
-	if (PlayerInfo[playerid][pJob] != 14 && PlayerInfo[playerid][pJob2] != 14 && PlayerInfo[playerid][pJob3] != 14 || !IsACriminal(playerid)) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler or in a family!");
+	if (PlayerInfo[playerid][pJob] != 14 && PlayerInfo[playerid][pJob2] != 14 && PlayerInfo[playerid][pJob3] != 14 && !IsACriminal(playerid)) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler or in a family!");
 	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 
 	switch(PlayerInfo[playerid][pDonateRank])
@@ -180,7 +180,7 @@ CMD:getcrate(playerid, params[])
 			{
 				switch(PlayerInfo[playerid][pDrugSmuggler])
 				{
-					case 0 .. 199: return SendClientMessage(playerid, COLOR_GRAD1, "You need to be at least Drug Smuggler level 4 to run here.");
+					case 0 .. 199: return SendClientMessage(playerid, COLOR_GRAD1, "You need to be a level four drug smuggler to run here!");
 					case 200 .. 399:
 					{
 						ShowPlayerDialog(playerid, DIALOG_DRUG_RUN, DIALOG_STYLE_TABLIST_HEADERS, "Purchase Drug Packages",
