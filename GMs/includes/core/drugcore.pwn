@@ -602,7 +602,7 @@ GetDrugName(id)
 {
 	switch(id) 
 	{
-		case 0: szMiscArray = "Cannabis";
+		case 0: szMiscArray = "Pot";
 		case 1: szMiscArray = "Crack";
 		case 2: szMiscArray = "Meth";
 		case 3: szMiscArray = "Ecstasy";

@@ -1891,10 +1891,6 @@ public OnPlayerDisconnect(playerid, reason)
 		if(GetPVarType(playerid, "pTable")) {
 		    DestroyPokerTable(GetPVarInt(playerid, "pTable"));
 		}
-		if(GetPVarInt(playerid, "TempLevel") > 0)
-		{
-			DeletePVar(playerid, "TempLevel");
-		}
 		if(GetPVarType(playerid, "DraggingPlayer"))
 		{
             DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");

@@ -297,7 +297,7 @@ CMD:sellgun(playerid, params[])
 				if(PlayerInfo[playerid][pMats] >= 800)
 				{
 					PlayerInfo[playerid][pMats] -= 800;
-					GivePlayerValidWeapon(id, 25, 0);
+					GivePlayerValidWeapon(id, 23, 0);
 
 					PlayerInfo[playerid][pArmsSkill] += 3;
 				}
@@ -308,7 +308,7 @@ CMD:sellgun(playerid, params[])
 				if(PlayerInfo[playerid][pMats] >= 1000)
 				{
 					PlayerInfo[playerid][pMats] -= 1000;
-					GivePlayerValidWeapon(id, 25, 0);
+					GivePlayerValidWeapon(id, 28, 0);
 
 					PlayerInfo[playerid][pArmsSkill] += 4;
 				}
@@ -319,7 +319,7 @@ CMD:sellgun(playerid, params[])
 				if(PlayerInfo[playerid][pMats] >= 1000)
 				{
 					PlayerInfo[playerid][pMats] -= 1000;
-					GivePlayerValidWeapon(id, 25, 0);
+					GivePlayerValidWeapon(id, 32, 0);
 
 					PlayerInfo[playerid][pArmsSkill] += 4;
 				}

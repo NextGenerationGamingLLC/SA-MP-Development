@@ -1066,8 +1066,7 @@ CMD:arrest(playerid, params[])
 	else {
 
 
-   		new
-			string[256], totalwealth;
+   		new	string[256], totalwealth;
 		totalwealth = PlayerInfo[giveplayerid][pCash] + PlayerInfo[giveplayerid][pAccount];
 		if(!IsPlayerConnected(giveplayerid)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");

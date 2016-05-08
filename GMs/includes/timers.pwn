@@ -230,9 +230,6 @@ task SyncTime[60000]()
 			SaveZombieStats(i);
 		}
 	}
-
-	PlantTimer();
-
 	new tmphour, tmpminute, tmpsecond;
 	gettime(tmphour, tmpminute, tmpsecond);
 	FixHour(tmphour);
@@ -540,6 +537,7 @@ task SyncTime[60000]()
 		        }
 		    }
 		}
+		PlantTimer();
 		//SaveFamilies();
 		//CallRemoteFunction("ActivateRandomQuestion", "");//Olympics
 	}
@@ -1154,362 +1152,385 @@ task hungerGames[1000]()
 
 /* Player Tasks - (Optimized from tasks + foreach loop) - Jingles */
 
-ptask PlayerHeartBeat[1000](i) {
+task PlayerHeartBeat[1000]() {
+foreach(new i: Player)
+{
+		// alerttimer - Merged by Jingles
+		if(AlertTime[i] != 0) AlertTime[i]--;
 
-	// alerttimer - Merged by Jingles
-	if(AlertTime[i] != 0) AlertTime[i]--;
+		// playertabbedloop - Merged by Jingles
+		new
+			iTick = gettime() - 1;
 
-	// playertabbedloop - Merged by Jingles
-	new
-		iTick = gettime() - 1;
-
-	if(1 <= GetPlayerState(i) <= 3) {
-		if(playerTabbed[i] >= 1) {
-			if(++playerTabbed[i] >= 1200 && PlayerInfo[i][pAdmin] < 2) {
-				SendClientMessageEx(i, COLOR_WHITE, "You have been automatically kicked for alt-tabbing.");
-				return Disconnect(i);
+		if(1 <= GetPlayerState(i) <= 3) {
+			if(playerTabbed[i] >= 1) {
+				if(++playerTabbed[i] >= 1200 && PlayerInfo[i][pAdmin] < 2) {
+					SendClientMessageEx(i, COLOR_WHITE, "You have been automatically kicked for alt-tabbing.");
+					return Disconnect(i);
+				}
 			}
-		}
-		else if(++playerSeconds[i] < iTick && playerTabbed[i] == 0) {
-			playerTabbed[i] = 1;
-		}
-		else if((IsPlayerInRangeOfPoint(i, 2.0, PlayerPos[i][0], PlayerPos[i][1], PlayerPos[i][2]) || InsidePlane[i] != INVALID_PLAYER_ID) && ++playerLastTyped[i] >= 10) {
-			if(++playerAFK[i] >= 1200 && PlayerInfo[i][pAdmin] < 2) {
-				SendClientMessageEx(i, COLOR_WHITE, "You have been automatically kicked for idling.");
-				return Disconnect(i);
+			else if(++playerSeconds[i] < iTick && playerTabbed[i] == 0) {
+				playerTabbed[i] = 1;
 			}
+			else if((IsPlayerInRangeOfPoint(i, 2.0, PlayerPos[i][0], PlayerPos[i][1], PlayerPos[i][2]) || InsidePlane[i] != INVALID_PLAYER_ID) && ++playerLastTyped[i] >= 10) {
+				if(++playerAFK[i] >= 1200 && PlayerInfo[i][pAdmin] < 2) {
+					SendClientMessageEx(i, COLOR_WHITE, "You have been automatically kicked for idling.");
+					return Disconnect(i);
+				}
+			}
+			else playerAFK[i] = 0;
+			GetPlayerPos(i, PlayerPos[i][0], PlayerPos[i][1], PlayerPos[i][2]);
 		}
-		else playerAFK[i] = 0;
-		GetPlayerPos(i, PlayerPos[i][0], PlayerPos[i][1], PlayerPos[i][2]);
-	}
 
-	// MoneyHeartBeat - Merged by Jingles
-	if(gPlayerLogged{i})
-	{
-		if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337)
+		// MoneyHeartBeat - Merged by Jingles
+		if(gPlayerLogged{i})
 		{
-			SpawnKick[i]++;
-			if(SpawnKick[i] >= 120)
+			if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337)
 			{
-				IsSpawned[i] = 1;
+				SpawnKick[i]++;
+				if(SpawnKick[i] >= 120)
+				{
+					IsSpawned[i] = 1;
+					SpawnKick[i] = 0;
+
+					SendClientMessageEx(i, COLOR_WHITE, "SERVER: You have been kicked for being AFK.");
+					format(szMiscArray, sizeof(szMiscArray), " %s(%d) (ID: %d) (IP: %s) has been kicked for not being spawned over 2 minutes.", GetPlayerNameEx(i), GetPlayerSQLId(i), i, GetPlayerIpEx(i));
+					Log("logs/spawnafk.log", szMiscArray);
+					SetTimerEx("KickEx", 1000, 0, "i", i);
+				}
+			}
+			if(IsSpawned[i] > 0 && SpawnKick[i] > 0)
+			{
 				SpawnKick[i] = 0;
-
-				SendClientMessageEx(i, COLOR_WHITE, "SERVER: You have been kicked for being AFK.");
-				format(szMiscArray, sizeof(szMiscArray), " %s(%d) (ID: %d) (IP: %s) has been kicked for not being spawned over 2 minutes.", GetPlayerNameEx(i), GetPlayerSQLId(i), i, GetPlayerIpEx(i));
-				Log("logs/spawnafk.log", szMiscArray);
-				SetTimerEx("KickEx", 1000, 0, "i", i);
 			}
-		}
-		if(IsSpawned[i] > 0 && SpawnKick[i] > 0)
-		{
-			SpawnKick[i] = 0;
-		}
-		if(GetPlayerPing(i) > MAX_PING)
-		{
-			if(playerTabbed[i] == 0)
+			if(GetPlayerPing(i) > MAX_PING)
 			{
-				if(GetPVarInt(i, "BeingKicked") != 1)
+				if(playerTabbed[i] == 0)
 				{
-					new ping;
-
-					ping = GetPlayerPing(i);
-					if(ping != 65535) // Invalid Ping
+					if(GetPVarInt(i, "BeingKicked") != 1)
 					{
-						format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has just been kicked for %d ping (maximum: "#MAX_PING").", GetPlayerNameEx(i), ping);
-						ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-						SendClientMessageEx(i, COLOR_WHITE, "You have been kicked because your ping is higher than the maximum.");
-						SetPVarInt(i, "BeingKicked", 1);
-						SetTimerEx("KickEx", 1000, 0, "i", i);
-					}
-				}
-			}
-		}
-		if(rBigEarT[i] > 0) {
-			rBigEarT[i]--;
-			if(rBigEarT[i] == 0) {
-				DeletePVar(i, "BigEar");
-				DeletePVar(i, "BigEarPlayer");
-				SendClientMessageEx(i, COLOR_WHITE, "Big Ears has been turned off.");
-			}
-		}
-		if(PlayerInfo[i][pTriageTime] != 0)	PlayerInfo[i][pTriageTime]--;
-		if(PlayerInfo[i][pTicketTime] != 0)	PlayerInfo[i][pTicketTime]--;
+						new ping;
 
-		if(GetPVarInt(i, "InRangeBackup") > 0) SetPVarInt(i, "InRangeBackup", GetPVarInt(i, "InRangeBackup")-1);
-
-		if(GetPVarInt(i, "HitCooldown") > 0) {
-
-			SetPVarInt(i, "HitCooldown", GetPVarInt(i, "HitCooldown")-1);
-			format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~%d seconds until approval", GetPVarInt(i, "HitCooldown"));
-			GameTextForPlayer(i, szMiscArray, 1100, 3);
-			if(GetPVarInt(i, "HitCooldown") == 0)
-			{
-				GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Contract Approved.", 5000, 3);
-			}
-		}
-		if(GetPVarType(i, "IsTackled"))	{
-
-			new copcount;
-			foreach(new j: Player)
-			{
-				if(ProxDetectorS(4.0, i, j) && IsACop(j) && j != i)
-				{
-					copcount++;
-				}
-			}
-			if(copcount == 0 || !ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
-			{
-				SendClientMessageEx(i, COLOR_GREEN, "You're able to escape due to the cops leaving you unrestrained.");
-				ClearTackle(i);
-			}
-			if(GetPVarInt(i, "TackleCooldown") > 0)
-			{
-				if(IsPlayerConnected(GetPVarInt(i, "IsTackled")) && GetPVarInt(GetPVarInt(i, "IsTackled"), "Tackling") == i)
-				{
-					format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~%d", GetPVarInt(i, "TackleCooldown"));
-					GameTextForPlayer(i, szMiscArray, 1100, 3);
-					SetPVarInt(i, "TackleCooldown", GetPVarInt(i, "TackleCooldown")-1);
-					if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 2 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
-					{
-						new escapechance = random(100);
-						switch(escapechance)
+						ping = GetPlayerPing(i);
+						if(ping != 65535) // Invalid Ping
 						{
-							case 35,40,22,72,11..16, 62..64:
-							{
-								GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
-								SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
-								format(szMiscArray, sizeof(szMiscArray), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
-								ProxDetector(30.0, i, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), 0);
-								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
-								SetTimerEx("CopGetUp", 2500, 0, "i", GetPVarInt(i, "IsTackled"));
-								ClearTackle(i);
-							}
+							format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has just been kicked for %d ping (maximum: "#MAX_PING").", GetPlayerNameEx(i), ping);
+							ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+							SendClientMessageEx(i, COLOR_WHITE, "You have been kicked because your ping is higher than the maximum.");
+							SetPVarInt(i, "BeingKicked", 1);
+							SetTimerEx("KickEx", 1000, 0, "i", i);
 						}
 					}
-					else if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 3 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
+				}
+			}
+			if(rBigEarT[i] > 0) {
+				rBigEarT[i]--;
+				if(rBigEarT[i] == 0) {
+					DeletePVar(i, "BigEar");
+					DeletePVar(i, "BigEarPlayer");
+					SendClientMessageEx(i, COLOR_WHITE, "Big Ears has been turned off.");
+				}
+			}
+			if(PlayerInfo[i][pTriageTime] != 0)	PlayerInfo[i][pTriageTime]--;
+			if(PlayerInfo[i][pTicketTime] != 0)	PlayerInfo[i][pTicketTime]--;
+
+			if(GetPVarInt(i, "InRangeBackup") > 0) SetPVarInt(i, "InRangeBackup", GetPVarInt(i, "InRangeBackup")-1);
+
+			if(GetPVarInt(i, "HitCooldown") > 0) {
+
+				SetPVarInt(i, "HitCooldown", GetPVarInt(i, "HitCooldown")-1);
+				format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~%d seconds until approval", GetPVarInt(i, "HitCooldown"));
+				GameTextForPlayer(i, szMiscArray, 1100, 3);
+				if(GetPVarInt(i, "HitCooldown") == 0)
+				{
+					GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Contract Approved.", 5000, 3);
+				}
+			}
+			if(GetPVarType(i, "IsTackled"))	{
+
+				new copcount;
+				foreach(new j: Player)
+				{
+					if(ProxDetectorS(4.0, i, j) && IsACop(j) && j != i)
 					{
-						new escapechance = random(100);
-						switch(escapechance)
+						copcount++;
+					}
+				}
+				if(copcount == 0 || !ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
+				{
+					SendClientMessageEx(i, COLOR_GREEN, "You're able to escape due to the cops leaving you unrestrained.");
+					ClearTackle(i);
+				}
+				if(GetPVarInt(i, "TackleCooldown") > 0)
+				{
+					if(IsPlayerConnected(GetPVarInt(i, "IsTackled")) && GetPVarInt(GetPVarInt(i, "IsTackled"), "Tackling") == i)
+					{
+						format(szMiscArray, sizeof(szMiscArray), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~%d", GetPVarInt(i, "TackleCooldown"));
+						GameTextForPlayer(i, szMiscArray, 1100, 3);
+						SetPVarInt(i, "TackleCooldown", GetPVarInt(i, "TackleCooldown")-1);
+						if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 2 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
 						{
-							case 35,40,22,62:
+							new escapechance = random(100);
+							switch(escapechance)
 							{
-								GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
-								SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
-								format(szMiscArray, sizeof(szMiscArray), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
-								ProxDetector(30.0, i, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), 0);
-								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
-								SetTimerEx("CopGetUp", 2500, 0, "i", GetPVarInt(i, "IsTackled"));
-								ClearTackle(i);
+								case 35,40,22,72,11..16, 62..64:
+								{
+									GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
+									SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
+									format(szMiscArray, sizeof(szMiscArray), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
+									ProxDetector(30.0, i, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+									TogglePlayerControllable(GetPVarInt(i, "IsTackled"), 0);
+									ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+									SetTimerEx("CopGetUp", 2500, 0, "i", GetPVarInt(i, "IsTackled"));
+									ClearTackle(i);
+								}
+							}
+						}
+						else if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 3 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
+						{
+							new escapechance = random(100);
+							switch(escapechance)
+							{
+								case 35,40,22,62:
+								{
+									GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
+									SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
+									format(szMiscArray, sizeof(szMiscArray), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
+									ProxDetector(30.0, i, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+									TogglePlayerControllable(GetPVarInt(i, "IsTackled"), 0);
+									ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+									SetTimerEx("CopGetUp", 2500, 0, "i", GetPVarInt(i, "IsTackled"));
+									ClearTackle(i);
+								}
 							}
 						}
 					}
 				}
-			}
-			else
-			{
-				if(ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
+				else
 				{
-					CopGetUp(GetPVarInt(i, "IsTackled"));
-				}
-				SetPVarInt(GetPVarInt(i, "IsTackled"), "CopTackleCooldown", 30);
-				ShowPlayerDialogEx(i, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
-				ClearTackle(i);
-			}
-		}
-		if(GetPVarInt(i, "CopTackleCooldown") > 0)
-		{
-			SetPVarInt(i, "CopTackleCooldown", GetPVarInt(i, "CopTackleCooldown")-1);
-		}
-		if(GetPVarInt(i, "CantBeTackledCount") > 0)
-		{
-			SetPVarInt(i, "CantBeTackledCount", GetPVarInt(i, "CantBeTackledCount")-1);
-		}
-		if(PlayerInfo[i][pCash] != GetPlayerMoney(i))
-		{
-			ResetPlayerMoney(i);
-			GivePlayerMoney(i, PlayerInfo[i][pCash]);
-		}
-		if(PlayerInfo[i][pGPS] > 0 && GetPVarType(i, "gpsonoff"))
-		{
-			new zone[28];
-			GetPlayer3DZone(i, zone, MAX_ZONE_NAME);
-			TextDrawSetString(GPS[i], zone);
-		}
-		if(GetPVarType(i, "Injured")) SetPlayerArmedWeapon(i, 0);
-		if(GetPVarType(i, "IsFrozen")) TogglePlayerControllable(i, 0);
-		if(PlayerCuffed[i] > 1) {
-			SetHealth(i, 1000);
-			SetArmour(i, GetPVarFloat(i, "cuffarmor"));
-		}
-		if(IsPlayerInAnyVehicle(i) && TruckUsed[i] != INVALID_VEHICLE_ID)
-		{
-			if(TruckUsed[i] == GetPlayerVehicleID(i) && GetPVarInt(i, "Gas_TrailerID") != 0)
-			{
-				if(Businesses[TruckDeliveringTo[TruckUsed[i]]][bType] == BUSINESS_TYPE_GASSTATION)
-				{
-					if(GetVehicleTrailer(GetPlayerVehicleID(i)) != GetPVarInt(i, "Gas_TrailerID"))
+					if(ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
 					{
-						SetPVarInt(i, "GasWarnings", GetPVarInt(i, "GasWarnings") + 1);
-						if(GetPVarInt(i, "GasWarnings") > 10)
+						CopGetUp(GetPVarInt(i, "IsTackled"));
+					}
+					SetPVarInt(GetPVarInt(i, "IsTackled"), "CopTackleCooldown", 30);
+					ShowPlayerDialogEx(i, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+					ClearTackle(i);
+				}
+			}
+			if(GetPVarInt(i, "CopTackleCooldown") > 0)
+			{
+				SetPVarInt(i, "CopTackleCooldown", GetPVarInt(i, "CopTackleCooldown")-1);
+			}
+			if(GetPVarInt(i, "CantBeTackledCount") > 0)
+			{
+				SetPVarInt(i, "CantBeTackledCount", GetPVarInt(i, "CantBeTackledCount")-1);
+			}
+			if(PlayerInfo[i][pCash] != GetPlayerMoney(i))
+			{
+				ResetPlayerMoney(i);
+				GivePlayerMoney(i, PlayerInfo[i][pCash]);
+			}
+			if(PlayerInfo[i][pGPS] > 0 && GetPVarType(i, "gpsonoff"))
+			{
+				new zone[28];
+				GetPlayer3DZone(i, zone, MAX_ZONE_NAME);
+				TextDrawSetString(GPS[i], zone);
+			}
+			if(GetPVarType(i, "Injured")) SetPlayerArmedWeapon(i, 0);
+			if(GetPVarType(i, "IsFrozen")) TogglePlayerControllable(i, 0);
+			if(PlayerCuffed[i] > 1) {
+				SetHealth(i, 1000);
+				SetArmour(i, GetPVarFloat(i, "cuffarmor"));
+			}
+			if(IsPlayerInAnyVehicle(i) && TruckUsed[i] != INVALID_VEHICLE_ID)
+			{
+				if(TruckUsed[i] == GetPlayerVehicleID(i) && GetPVarInt(i, "Gas_TrailerID") != 0)
+				{
+					if(Businesses[TruckDeliveringTo[TruckUsed[i]]][bType] == BUSINESS_TYPE_GASSTATION)
+					{
+						if(GetVehicleTrailer(GetPlayerVehicleID(i)) != GetPVarInt(i, "Gas_TrailerID"))
 						{
-							CancelTruckDelivery(i);
-							DeletePVar(i, "GasWarnings");
-							SendClientMessageEx(i, COLOR_REALRED, "You have failed your delivery as you lost your load!");
+							SetPVarInt(i, "GasWarnings", GetPVarInt(i, "GasWarnings") + 1);
+							if(GetPVarInt(i, "GasWarnings") > 10)
+							{
+								CancelTruckDelivery(i);
+								DeletePVar(i, "GasWarnings");
+								SendClientMessageEx(i, COLOR_REALRED, "You have failed your delivery as you lost your load!");
+							}
 						}
 					}
 				}
 			}
 		}
-	}
 
-	if(playerTabbed[i] == 0) {
+		if(playerTabbed[i] == 0) {
 
-		switch(PlayerInfo[i][pLevel]) {
+			switch(PlayerInfo[i][pLevel]) {
 
-			case 0 .. 2: PlayerInfo[i][pPayCheck] += 1;
-			case 3 .. 4: PlayerInfo[i][pPayCheck] += 2;
-			case 5 .. 6: PlayerInfo[i][pPayCheck] += 3;
-			case 7 .. 8: PlayerInfo[i][pPayCheck] += 4;
-			case 9 .. 10: PlayerInfo[i][pPayCheck] += 5;
-			case 11 .. 12: PlayerInfo[i][pPayCheck] += 6;
-			case 13 .. 14: PlayerInfo[i][pPayCheck] += 7;
-			case 15 .. 16: PlayerInfo[i][pPayCheck] += 8;
-			case 17 .. 18: PlayerInfo[i][pPayCheck] += 9;
-			case 19 .. 20: PlayerInfo[i][pPayCheck] += 10;
-			default: PlayerInfo[i][pPayCheck] += 11;
-		}
-		if(++PlayerInfo[i][pConnectSeconds] >= 3600) {
-			PayDay(i);
-		}
-	}
-
-	if (GetPVarInt(i, "MailTime") > 0) SetPVarInt(i, "MailTime", GetPVarInt(i, "MailTime") - 1);
-	else DeletePVar(i, "MailTime");
-
-	if(PlayerInfo[i][pJudgeJailType] != 0 && PlayerInfo[i][pJudgeJailTime] > 0 && !PlayerInfo[i][pBeingSentenced]) PlayerInfo[i][pJudgeJailTime]--;
-	if(PlayerInfo[i][pJudgeJailTime] <= 0 && PlayerInfo[i][pJudgeJailType] != 0) PlayerInfo[i][pJudgeJailType] = 0;
-
-
-	if(playerTabbed[i] == 0)
-	{
-		if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0)
-		{
-			if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
-			{
-		    	ShowPlayerDialog(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
+				case 0 .. 2: PlayerInfo[i][pPayCheck] += 1;
+				case 3 .. 4: PlayerInfo[i][pPayCheck] += 2;
+				case 5 .. 6: PlayerInfo[i][pPayCheck] += 3;
+				case 7 .. 8: PlayerInfo[i][pPayCheck] += 4;
+				case 9 .. 10: PlayerInfo[i][pPayCheck] += 5;
+				case 11 .. 12: PlayerInfo[i][pPayCheck] += 6;
+				case 13 .. 14: PlayerInfo[i][pPayCheck] += 7;
+				case 15 .. 16: PlayerInfo[i][pPayCheck] += 8;
+				case 17 .. 18: PlayerInfo[i][pPayCheck] += 9;
+				case 19 .. 20: PlayerInfo[i][pPayCheck] += 10;
+				default: PlayerInfo[i][pPayCheck] += 11;
 			}
-			else
-			{
-				ReleasePlayerFromPrison(i);
+			if(++PlayerInfo[i][pConnectSeconds] >= 3600) {
+				PayDay(i);
 			}
 		}
-		if(gettime() >= PlayerInfo[i][pPrisonWineTime] && GetPVarInt(i, "pPrisonMWine") == 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
+
+		if (GetPVarInt(i, "MailTime") > 0) SetPVarInt(i, "MailTime", GetPVarInt(i, "MailTime") - 1);
+		else DeletePVar(i, "MailTime");
+
+		if(PlayerInfo[i][pJudgeJailType] != 0 && PlayerInfo[i][pJudgeJailTime] > 0 && !PlayerInfo[i][pBeingSentenced]) PlayerInfo[i][pJudgeJailTime]--;
+		if(PlayerInfo[i][pJudgeJailTime] <= 0 && PlayerInfo[i][pJudgeJailType] != 0) PlayerInfo[i][pJudgeJailType] = 0;
+
+
+		if(playerTabbed[i] == 0)
 		{
-			SetPVarInt(i, "pPrisonMWine", 2);
-		    SendClientMessageEx(i, COLOR_GREY, "Your pruno is finished. Go to your cell and type /finishpruno to collect it.");
-		}
-		
+			if(PlayerInfo[i][pJailTime] > 0 && --PlayerInfo[i][pJailTime] <= 0)
+			{
+				if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
+				{
+			    	ShowPlayerDialog(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
+				}
+				else
+				{
+					ReleasePlayerFromPrison(i);
+				}
+			}
+			if(gettime() >= PlayerInfo[i][pPrisonWineTime] && GetPVarInt(i, "pPrisonMWine") == 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
+			{
+				SetPVarInt(i, "pPrisonMWine", 2);
+			    SendClientMessageEx(i, COLOR_GREY, "Your pruno is finished. Go to your cell and type /finishpruno to collect it.");
+			}
+			
 
-		if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
+			if(GetPVarType(i, "AttemptingLockPick") && GetPVarType(i, "LockPickCountdown")) {
 
-			new Float: vehSize[3],
-				Float: Pos[3],
-				vehicleid = GetPVarInt(i, "LockPickVehicle"),
-				ownerid = GetPVarInt(i, "LockPickPlayer");
-			GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
-			GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
-			GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);
-			if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
-				SetPVarInt(i, "LockPickCountdown", GetPVarInt(i, "LockPickCountdown")-1);
-				UpdateVLPTextDraws(i, vehicleid);
-				if(GetPVarType(i, "LockPickVehicleSQLId")) {
+				new Float: vehSize[3],
+					Float: Pos[3],
+					vehicleid = GetPVarInt(i, "LockPickVehicle"),
+					ownerid = GetPVarInt(i, "LockPickPlayer");
+				GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, vehSize[0], vehSize[1], vehSize[2]);
+				GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_FRONTSEAT, Pos[0], Pos[1], Pos[2]);
+				GetVehicleRelativePos(vehicleid, Pos[0], Pos[1], Pos[2], Pos[0]+((vehSize[0] / 2)-(vehSize[0])), Pos[1], 0.0);
+				if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
+					SetPVarInt(i, "LockPickCountdown", GetPVarInt(i, "LockPickCountdown")-1);
+					UpdateVLPTextDraws(i, vehicleid);
+					if(GetPVarType(i, "LockPickVehicleSQLId")) {
+						if(GetPVarInt(i, "LockPickCountdown") <= 0) {
+							LockStatus{vehicleid} = 0;
+							vehicle_unlock_doors(vehicleid);
+							SetPVarInt(i, "VLPLocksLeft", GetPVarInt(i, "VLPLocksLeft")-1);
+							mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `vehicles` SET `pvLocksLeft` = '%d', `pvLastLockPickedBy` = '%e' WHERE `id` = '%d' AND `sqlID` = '%d'", GetPVarInt(i, "VLPLocksLeft"), GetPlayerNameExt(i), GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+							mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
+							new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME];
+							GetPlayerIp(i, ip, sizeof(ip)), GetPVarString(i, "LockPickPlayerName", ownername, sizeof(ownername));
+							format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s (IP:%s, SQLId: %d) successfully lock picked a %s(VID:%d SQLId %d) owned by %s(Offline, SQLId: %d)", GetPlayerNameEx(i), ip, GetPlayerSQLId(i), GetVehicleName(vehicleid), vehicleid, GetPVarInt(i, "LockPickVehicleSQLId"), ownername, GetPVarInt(i, "LockPickPlayerSQLId"));
+							Log("logs/playervehicle.log", szMiscArray);
+							/* DeletePVar(i, "LockPickVehicle");
+							DeletePVar(i, "LockPickPlayer"); */
+						}
+					}
+					else {
+						new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+						if(!PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] && (GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.4), floatround_ceil))) {
+							TriggerVehicleAlarm(i, ownerid, vehicleid);
+						}
+						if(GetPVarInt(i, "LockPickCountdown") <= 0) {
+							PlayerVehicleInfo[ownerid][slot][pvLocked] = 0;
+							UnLockPlayerVehicle(ownerid, PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvLock]);
+							PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 2;
+							if(--PlayerVehicleInfo[ownerid][slot][pvLocksLeft] <= 0 && PlayerVehicleInfo[ownerid][slot][pvLock]) {
+								SendClientMessageEx(i, COLOR_PURPLE, "(( The lock has been damaged as result of the lock pick! ))");
+							}
+							strcpy(PlayerVehicleInfo[ownerid][slot][pvLastLockPickedBy], GetPlayerNameEx(i));
+							new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+							GetPlayerIp(i, ip, sizeof(ip));
+							GetPlayerIp(ownerid, ip2, sizeof(ip2));
+							format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s (IP:%s SQLId: %d) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s SQLId: %d)", GetPlayerNameEx(i), ip, GetPlayerSQLId(i), GetVehicleName(vehicleid), vehicleid, slot, GetPlayerNameEx(ownerid), ip2, GetPlayerSQLId(ownerid));
+							Log("logs/playervehicle.log", szMiscArray);
+						}
+					}
+
 					if(GetPVarInt(i, "LockPickCountdown") <= 0) {
-						LockStatus{vehicleid} = 0;
-						vehicle_unlock_doors(vehicleid);
-						SetPVarInt(i, "VLPLocksLeft", GetPVarInt(i, "VLPLocksLeft")-1);
-						mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `vehicles` SET `pvLocksLeft` = '%d', `pvLastLockPickedBy` = '%e' WHERE `id` = '%d' AND `sqlID` = '%d'", GetPVarInt(i, "VLPLocksLeft"), GetPlayerNameExt(i), GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
-						mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
-						new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME];
-						GetPlayerIp(i, ip, sizeof(ip)), GetPVarString(i, "LockPickPlayerName", ownername, sizeof(ownername));
-						format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s (IP:%s, SQLId: %d) successfully lock picked a %s(VID:%d SQLId %d) owned by %s(Offline, SQLId: %d)", GetPlayerNameEx(i), ip, GetPlayerSQLId(i), GetVehicleName(vehicleid), vehicleid, GetPVarInt(i, "LockPickVehicleSQLId"), ownername, GetPVarInt(i, "LockPickPlayerSQLId"));
-						Log("logs/playervehicle.log", szMiscArray);
+						if(--PlayerInfo[i][pToolBox] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
+						if(++PlayerInfo[i][pLockPickVehCount] > 11) {
+							PlayerInfo[i][pLockPickTime] = gettime() + 21600;
+							PlayerInfo[i][pLockPickVehCount] = 0;
+						}
+						ClearCheckpoint(i);
+						new engine, lights, alarm, doors, bonnet, boot, objective;
+						GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+						SetVehicleParamsEx(vehicleid,engine,lights,VEHICLE_PARAMS_OFF,doors,bonnet,boot,objective);
+						SendClientMessageEx(i, COLOR_YELLOW, "You have successfully picked this vehicle lock, you may now deliver this to the checkpoint mark to get money.");
+						if(PlayerInfo[i][pCrowBar] > 0) SendClientMessageEx(i, COLOR_CYAN, "Optionally, you may try to open the trunk to see what's inside (/cracktrunk).");
+						PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
+						SetPlayerSkin(i, GetPlayerSkin(i));
+						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
+						new rand = random(sizeof(lpRandomLocations));
+						while(IsPlayerInRangeOfPoint(i, 1000.0, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2]))
+							rand = random(sizeof(lpRandomLocations));
+						SetPlayerCheckpoint(i, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2], 8.0);
+						SetPVarInt(i, "DeliveringVehicleTime", gettime()+900);
+						new Float: pX, Float: pY, Float: pZ;
+						GetPlayerPos(i, pX, pY, pZ);
+						SetPVarFloat(i, "tpDeliverVehX", pX);
+				 		SetPVarFloat(i, "tpDeliverVehY", pY);
+				  		SetPVarFloat(i, "tpDeliverVehZ", pZ);
+						SetPVarInt(i, "tpDeliverVehTimer", 80);
+						SetTimerEx("OtherTimerEx", 1000, false, "ii", i, TYPE_DELIVERVEHICLE);
+						DestroyVLPTextDraws(i);
+						DeletePVar(i, "AttemptingLockPick");
+						DeletePVar(i, "LockPickCountdown");
+						DeletePVar(i, "LockPickTotalTime");
+						ClearAnimations(i, 1);
+
+						if(PlayerInfo[i][pDoubleEXP] > 0) {
+							format(szMiscArray, sizeof(szMiscArray), "You have gained 2 Vehicle Lock Picking skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
+							SendClientMessageEx(i, COLOR_YELLOW, szMiscArray);
+							PlayerInfo[i][pCarLockPickSkill] += 2;
+						}
+						else ++PlayerInfo[i][pCarLockPickSkill];
+
+						switch(PlayerInfo[i][pCarLockPickSkill]) {
+							case 50: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 2, you will get more rewards & time will be reduced.");
+							case 125: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 3, you will get more rewards & time will be reduced.");
+							case 225: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 4, you will get more rewards & time will be reduced.");
+							case 350: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 5, you will get more rewards & time will be reduced.");
+						}
 						/* DeletePVar(i, "LockPickVehicle");
 						DeletePVar(i, "LockPickPlayer"); */
 					}
+					else if((GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.9), floatround_ceil)) && GetPlayerAnimationIndex(i) != 368) {
+						SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+						DeletePVar(i, "AttemptingLockPick");
+						DeletePVar(i, "LockPickCountdown");
+						DeletePVar(i, "LockPickTotalTime");
+						if(GetPVarType(i, "LockPickVehicleSQLId")) {
+							DeletePVar(i, "LockPickVehicleSQLId");
+							DeletePVar(i, "LockPickPlayerSQLId");
+							DeletePVar(i, "LockPickPlayerName");
+							DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
+						}
+						else {
+							new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
+							PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+						}
+						DeletePVar(i, "LockPickVehicle");
+						DeletePVar(i, "LockPickPlayer");
+						DestroyVLPTextDraws(i);
+						ClearAnimations(i, 1);
+					}
 				}
 				else {
-					new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
-					if(!PlayerVehicleInfo[ownerid][slot][pvAlarmTriggered] && (GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.4), floatround_ceil))) {
-						TriggerVehicleAlarm(i, ownerid, vehicleid);
-					}
-					if(GetPVarInt(i, "LockPickCountdown") <= 0) {
-						PlayerVehicleInfo[ownerid][slot][pvLocked] = 0;
-						UnLockPlayerVehicle(ownerid, PlayerVehicleInfo[ownerid][slot][pvId], PlayerVehicleInfo[ownerid][slot][pvLock]);
-						PlayerVehicleInfo[ownerid][slot][pvBeingPickLocked] = 2;
-						if(--PlayerVehicleInfo[ownerid][slot][pvLocksLeft] <= 0 && PlayerVehicleInfo[ownerid][slot][pvLock]) {
-							SendClientMessageEx(i, COLOR_PURPLE, "(( The lock has been damaged as result of the lock pick! ))");
-						}
-						strcpy(PlayerVehicleInfo[ownerid][slot][pvLastLockPickedBy], GetPlayerNameEx(i));
-						new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
-						GetPlayerIp(i, ip, sizeof(ip));
-						GetPlayerIp(ownerid, ip2, sizeof(ip2));
-						format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s (IP:%s SQLId: %d) successfully lock picked a %s(VID:%d Slot %d) owned by %s(IP:%s SQLId: %d)", GetPlayerNameEx(i), ip, GetPlayerSQLId(i), GetVehicleName(vehicleid), vehicleid, slot, GetPlayerNameEx(ownerid), ip2, GetPlayerSQLId(ownerid));
-						Log("logs/playervehicle.log", szMiscArray);
-					}
-				}
-
-				if(GetPVarInt(i, "LockPickCountdown") <= 0) {
-					if(--PlayerInfo[i][pToolBox] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
-					if(++PlayerInfo[i][pLockPickVehCount] > 11) {
-						PlayerInfo[i][pLockPickTime] = gettime() + 21600;
-						PlayerInfo[i][pLockPickVehCount] = 0;
-					}
-					ClearCheckpoint(i);
-					new engine, lights, alarm, doors, bonnet, boot, objective;
-					GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
-					SetVehicleParamsEx(vehicleid,engine,lights,VEHICLE_PARAMS_OFF,doors,bonnet,boot,objective);
-					SendClientMessageEx(i, COLOR_YELLOW, "You have successfully picked this vehicle lock, you may now deliver this to the checkpoint mark to get money.");
-					if(PlayerInfo[i][pCrowBar] > 0) SendClientMessageEx(i, COLOR_CYAN, "Optionally, you may try to open the trunk to see what's inside (/cracktrunk).");
-					PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
-					SetPlayerSkin(i, GetPlayerSkin(i));
-					SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-					new rand = random(sizeof(lpRandomLocations));
-					while(IsPlayerInRangeOfPoint(i, 1000.0, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2]))
-						rand = random(sizeof(lpRandomLocations));
-					SetPlayerCheckpoint(i, lpRandomLocations[rand][0], lpRandomLocations[rand][1], lpRandomLocations[rand][2], 8.0);
-					SetPVarInt(i, "DeliveringVehicleTime", gettime()+900);
-					new Float: pX, Float: pY, Float: pZ;
-					GetPlayerPos(i, pX, pY, pZ);
-					SetPVarFloat(i, "tpDeliverVehX", pX);
-			 		SetPVarFloat(i, "tpDeliverVehY", pY);
-			  		SetPVarFloat(i, "tpDeliverVehZ", pZ);
-					SetPVarInt(i, "tpDeliverVehTimer", 80);
-					SetTimerEx("OtherTimerEx", 1000, false, "ii", i, TYPE_DELIVERVEHICLE);
-					DestroyVLPTextDraws(i);
-					DeletePVar(i, "AttemptingLockPick");
-					DeletePVar(i, "LockPickCountdown");
-					DeletePVar(i, "LockPickTotalTime");
-					ClearAnimations(i, 1);
-
-					if(PlayerInfo[i][pDoubleEXP] > 0) {
-						format(szMiscArray, sizeof(szMiscArray), "You have gained 2 Vehicle Lock Picking skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
-						SendClientMessageEx(i, COLOR_YELLOW, szMiscArray);
-						PlayerInfo[i][pCarLockPickSkill] += 2;
-					}
-					else ++PlayerInfo[i][pCarLockPickSkill];
-
-					switch(PlayerInfo[i][pCarLockPickSkill]) {
-						case 50: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 2, you will get more rewards & time will be reduced.");
-						case 125: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 3, you will get more rewards & time will be reduced.");
-						case 225: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 4, you will get more rewards & time will be reduced.");
-						case 350: SendClientMessageEx(i, COLOR_YELLOW, "* Your Car Lock Picking Skill is now Level 5, you will get more rewards & time will be reduced.");
-					}
-					/* DeletePVar(i, "LockPickVehicle");
-					DeletePVar(i, "LockPickPlayer"); */
-				}
-				else if((GetPVarInt(i, "LockPickCountdown") <= floatround((GetPVarInt(i, "LockPickTotalTime") * 0.9), floatround_ceil)) && GetPlayerAnimationIndex(i) != 368) {
 					SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
 					DeletePVar(i, "AttemptingLockPick");
 					DeletePVar(i, "LockPickCountdown");
@@ -1531,76 +1552,62 @@ ptask PlayerHeartBeat[1000](i) {
 					ClearAnimations(i, 1);
 				}
 			}
-			else {
-				SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
-				DeletePVar(i, "AttemptingLockPick");
-				DeletePVar(i, "LockPickCountdown");
-				DeletePVar(i, "LockPickTotalTime");
-				if(GetPVarType(i, "LockPickVehicleSQLId")) {
-					DeletePVar(i, "LockPickVehicleSQLId");
-					DeletePVar(i, "LockPickPlayerSQLId");
-					DeletePVar(i, "LockPickPlayerName");
-					DestroyVehicle(GetPVarInt(i, "LockPickVehicle"));
+			if(GetPVarType(i, "AttemptingCrackTrunk") && GetPVarType(i, "CrackTrunkCountdown")) {
+				new	vehicleid = GetPVarInt(i, "LockPickVehicle"),
+					Float: Pos[3];
+
+				GetPosBehindVehicle(vehicleid, Pos[0], Pos[1], Pos[2], 1.0);
+				if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
+					SetPVarInt(i, "CrackTrunkCountdown", GetPVarInt(i, "CrackTrunkCountdown")-1);
+					UpdateVLPTextDraws(i, vehicleid, 1);
+					if(GetPVarInt(i, "CrackTrunkCountdown") <= 0) {
+						new
+							wslot,
+							ownerid = GetPVarInt(i, "LockPickPlayer");
+						SendClientMessageEx(i, COLOR_PURPLE, "(( The trunk cracks, you begin to search for any items ))");
+						PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
+						new engine, lights, alarm, doors, bonnet, boot, objective;
+						GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
+						SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,VEHICLE_PARAMS_ON,objective);
+						ClearAnimations(i, 1);
+						SetPlayerSkin(i, GetPlayerSkin(i));
+						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
+						if(GetPVarType(i, "LockPickVehicleSQLId")) {
+							format(szMiscArray, sizeof(szMiscArray), "SELECT `pvWeapon0`, `pvWeapon1`, `pvWeapon2` FROM `vehicles` WHERE `id` = '%d' AND `sqlID` = '%d'", GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+							mysql_function_query(MainPipeline, szMiscArray, true, "CheckTrunkContents", "i", i);
+						}
+						else {
+							new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
+							wslot = FindGunInVehicleForPlayer(ownerid, slot, i);
+							if(wslot != -1) {
+								format(szMiscArray, sizeof(szMiscArray), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
+								SendClientMessageEx(i, COLOR_YELLOW, szMiscArray);
+								GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], 0);
+								PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] = 0;
+								g_mysql_SaveVehicle(ownerid, slot);
+								new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
+								GetPlayerIp(i, ip, sizeof(ip));
+								GetPlayerIp(ownerid, ip2, sizeof(ip2));
+								format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s(%s) (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
+								Log("logs/playervehicle.log", szMiscArray);
+							}
+							else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
+						}
+						DestroyVLPTextDraws(i);
+						if(--PlayerInfo[i][pCrowBar] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
+						SetPVarInt(i, "TrunkAlreadyCracked", 1);
+						DeletePVar(i, "AttemptingCrackTrunk");
+						DeletePVar(i, "CrackTrunkCountdown");
+					}
+					if(GetPlayerAnimationIndex(i) != 368 && GetPVarInt(i, "CrackTrunkCountdown") <= 50) {
+						DestroyVLPTextDraws(i);
+						SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
+						DeletePVar(i, "AttemptingCrackTrunk");
+						DeletePVar(i, "CrackTrunkCountdown");
+						ClearAnimations(i, 1);
+					}
 				}
 				else {
-					new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
-					PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
-					PlayerVehicleInfo[GetPVarInt(i, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
-				}
-				DeletePVar(i, "LockPickVehicle");
-				DeletePVar(i, "LockPickPlayer");
-				DestroyVLPTextDraws(i);
-				ClearAnimations(i, 1);
-			}
-		}
-		if(GetPVarType(i, "AttemptingCrackTrunk") && GetPVarType(i, "CrackTrunkCountdown")) {
-			new	vehicleid = GetPVarInt(i, "LockPickVehicle"),
-				Float: Pos[3];
-
-			GetPosBehindVehicle(vehicleid, Pos[0], Pos[1], Pos[2], 1.0);
-			if(IsPlayerInRangeOfPoint(i, 1.0, Pos[0], Pos[1], Pos[2]) && !IsPlayerInAnyVehicle(i)) {
-				SetPVarInt(i, "CrackTrunkCountdown", GetPVarInt(i, "CrackTrunkCountdown")-1);
-				UpdateVLPTextDraws(i, vehicleid, 1);
-				if(GetPVarInt(i, "CrackTrunkCountdown") <= 0) {
-					new
-						wslot,
-						ownerid = GetPVarInt(i, "LockPickPlayer");
-					SendClientMessageEx(i, COLOR_PURPLE, "(( The trunk cracks, you begin to search for any items ))");
-					PlayerPlaySound(i, 1145, 0.0, 0.0, 0.0);
-					new engine, lights, alarm, doors, bonnet, boot, objective;
-					GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
-					SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,VEHICLE_PARAMS_ON,objective);
-					ClearAnimations(i, 1);
-					SetPlayerSkin(i, GetPlayerSkin(i));
-					SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-					if(GetPVarType(i, "LockPickVehicleSQLId")) {
-						format(szMiscArray, sizeof(szMiscArray), "SELECT `pvWeapon0`, `pvWeapon1`, `pvWeapon2` FROM `vehicles` WHERE `id` = '%d' AND `sqlID` = '%d'", GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
-						mysql_function_query(MainPipeline, szMiscArray, true, "CheckTrunkContents", "i", i);
-					}
-					else {
-						new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
-						wslot = FindGunInVehicleForPlayer(ownerid, slot, i);
-						if(wslot != -1) {
-							format(szMiscArray, sizeof(szMiscArray), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
-							SendClientMessageEx(i, COLOR_YELLOW, szMiscArray);
-							GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], 0);
-							PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] = 0;
-							g_mysql_SaveVehicle(ownerid, slot);
-							new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
-							GetPlayerIp(i, ip, sizeof(ip));
-							GetPlayerIp(ownerid, ip2, sizeof(ip2));
-							format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s(%s) (IP:%s) successfully cracked the trunk of a %s(VID:%d Slot %d Weapon ID: %d) owned by %s(IP:%s)", GetPlayerNameEx(i), GetPlayerSQLId(i), ip, GetVehicleName(vehicleid), vehicleid, slot, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], GetPlayerNameEx(ownerid), ip2);
-							Log("logs/playervehicle.log", szMiscArray);
-						}
-						else SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: There was nothing inside the trunk.");
-					}
-					DestroyVLPTextDraws(i);
-					if(--PlayerInfo[i][pCrowBar] <= 0) SendClientMessageEx(i, COLOR_PURPLE, "(( The tools from the Tool Box look spoiled, you may need to get a new Tool Box ))");
-					SetPVarInt(i, "TrunkAlreadyCracked", 1);
-					DeletePVar(i, "AttemptingCrackTrunk");
-					DeletePVar(i, "CrackTrunkCountdown");
-				}
-				if(GetPlayerAnimationIndex(i) != 368 && GetPVarInt(i, "CrackTrunkCountdown") <= 50) {
 					DestroyVLPTextDraws(i);
 					SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
 					DeletePVar(i, "AttemptingCrackTrunk");
@@ -1608,192 +1615,257 @@ ptask PlayerHeartBeat[1000](i) {
 					ClearAnimations(i, 1);
 				}
 			}
-			else {
-				DestroyVLPTextDraws(i);
-				SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
-				DeletePVar(i, "AttemptingCrackTrunk");
-				DeletePVar(i, "CrackTrunkCountdown");
-				ClearAnimations(i, 1);
-			}
-		}
-		if(GetPVarType(i, "TrackVehicleBurglary")) {
-			if(IsPlayerConnected(GetPVarInt(i, "CallId"))) {
-				SetPVarInt(i, "TrackVehicleBurglary", GetPVarInt(i, "TrackVehicleBurglary")-1);
-				new Float: carPos[3];
-				GetVehiclePos(Calls[GetPVarInt(i, "CallId")][CallVehicleId], carPos[0], carPos[1], carPos[2]);
-				if(GetPVarFloat(i, "CarLastX") != carPos[0] || GetPVarFloat(i, "CarLastY") != carPos[1] || GetPVarFloat(i, "CarLastZ") != carPos[2])
-					SetPVarFloat(i, "CarLastX", carPos[0]), SetPVarFloat(i, "CarLastY", carPos[1]), SetPVarFloat(i, "CarLastZ", carPos[2]), SetPlayerCheckpoint(i, carPos[0], carPos[1], carPos[2], 15.0);
-				if(GetPVarInt(i, "TrackVehicleBurglary") <= 0) {
+			if(GetPVarType(i, "TrackVehicleBurglary")) {
+				if(IsPlayerConnected(GetPVarInt(i, "CallId"))) {
+					SetPVarInt(i, "TrackVehicleBurglary", GetPVarInt(i, "TrackVehicleBurglary")-1);
+					new Float: carPos[3];
+					GetVehiclePos(Calls[GetPVarInt(i, "CallId")][CallVehicleId], carPos[0], carPos[1], carPos[2]);
+					if(GetPVarFloat(i, "CarLastX") != carPos[0] || GetPVarFloat(i, "CarLastY") != carPos[1] || GetPVarFloat(i, "CarLastZ") != carPos[2])
+						SetPVarFloat(i, "CarLastX", carPos[0]), SetPVarFloat(i, "CarLastY", carPos[1]), SetPVarFloat(i, "CarLastZ", carPos[2]), SetPlayerCheckpoint(i, carPos[0], carPos[1], carPos[2], 15.0);
+					if(GetPVarInt(i, "TrackVehicleBurglary") <= 0) {
+						DisablePlayerCheckpoint(i);
+						DeletePVar(i, "TrackVehicleBurglary");
+						DeletePVar(i, "CallId");
+						DeletePVar(i, "CarLastX");
+						DeletePVar(i, "CarLastY");
+						DeletePVar(i, "CarLastZ");
+						SendClientMessageEx(i, COLOR_PURPLE, "(( The 2 minutes have been reached, you lost trace of this vehicle! ))");
+					}
+				}
+				else {
 					DisablePlayerCheckpoint(i);
 					DeletePVar(i, "TrackVehicleBurglary");
 					DeletePVar(i, "CallId");
 					DeletePVar(i, "CarLastX");
 					DeletePVar(i, "CarLastY");
 					DeletePVar(i, "CarLastZ");
-					SendClientMessageEx(i, COLOR_PURPLE, "(( The 2 minutes have been reached, you lost trace of this vehicle! ))");
+					SendClientMessageEx(i, COLOR_PURPLE, "The caller has disconnected!");
 				}
 			}
-			else {
-				DisablePlayerCheckpoint(i);
-				DeletePVar(i, "TrackVehicleBurglary");
-				DeletePVar(i, "CallId");
-				DeletePVar(i, "CarLastX");
-				DeletePVar(i, "CarLastY");
-				DeletePVar(i, "CarLastZ");
-				SendClientMessageEx(i, COLOR_PURPLE, "The caller has disconnected!");
+			if(GetPVarType(i, "wheelclampcountdown")) {
+				SetPVarInt(i, "wheelclampcountdown", GetPVarInt(i, "wheelclampcountdown")-1);
+				new vehicleid = GetPVarInt(i, "wheelclampvehicle"),
+					Float:CarPos[3],
+					arrVehParams[7];
+				GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
+				if(!IsPlayerInRangeOfPoint(i, 5.0, CarPos[0], CarPos[1], CarPos[2]) || IsPlayerInAnyVehicle(i)) {
+					DeletePVar(i, "wheelclampvehicle");
+					DeletePVar(i, "wheelclampcountdown");
+					SendClientMessageEx(i, COLOR_PURPLE, "(( You failed placing the Wheel Clamp in the vehicle's front tire. ))");
+				}
+				else if(GetPVarInt(i, "wheelclampcountdown") <= 0) {
+					WheelClamp{vehicleid} = 1;
+					arr_Engine{vehicleid} = 0;
+					GetVehicleParamsEx(vehicleid, arrVehParams[0], arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
+					if(arrVehParams[0] == VEHICLE_PARAMS_ON) SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_OFF, arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
+					DeletePVar(i, "wheelclampvehicle");
+					DeletePVar(i, "wheelclampcountdown");
+					format(szMiscArray, sizeof(szMiscArray), "* %s has attached a Wheel Clamp on the %s's front tire.", GetPlayerNameEx(i), GetVehicleName(vehicleid), vehicleid);
+					ProxDetector(30.0, i, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				}
 			}
-		}
-		if(GetPVarType(i, "wheelclampcountdown")) {
-			SetPVarInt(i, "wheelclampcountdown", GetPVarInt(i, "wheelclampcountdown")-1);
-			new vehicleid = GetPVarInt(i, "wheelclampvehicle"),
-				Float:CarPos[3],
-				arrVehParams[7];
-			GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
-			if(!IsPlayerInRangeOfPoint(i, 5.0, CarPos[0], CarPos[1], CarPos[2]) || IsPlayerInAnyVehicle(i)) {
-				DeletePVar(i, "wheelclampvehicle");
-				DeletePVar(i, "wheelclampcountdown");
-				SendClientMessageEx(i, COLOR_PURPLE, "(( You failed placing the Wheel Clamp in the vehicle's front tire. ))");
-			}
-			else if(GetPVarInt(i, "wheelclampcountdown") <= 0) {
-				WheelClamp{vehicleid} = 1;
-				arr_Engine{vehicleid} = 0;
-				GetVehicleParamsEx(vehicleid, arrVehParams[0], arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
-				if(arrVehParams[0] == VEHICLE_PARAMS_ON) SetVehicleParamsEx(vehicleid,VEHICLE_PARAMS_OFF, arrVehParams[1], arrVehParams[2], arrVehParams[3], arrVehParams[4], arrVehParams[5], arrVehParams[6]);
-				DeletePVar(i, "wheelclampvehicle");
-				DeletePVar(i, "wheelclampcountdown");
-				format(szMiscArray, sizeof(szMiscArray), "* %s has attached a Wheel Clamp on the %s's front tire.", GetPlayerNameEx(i), GetVehicleName(vehicleid), vehicleid);
-				ProxDetector(30.0, i, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			}
-		}
-		if(CommandSpamTimes[i] != 0)
-		{
-			CommandSpamTimes[i]--;
-		}
-		if(TextSpamTimes[i] != 0)
-		{
-			TextSpamTimes[i]--;
-		}
-		if(PlayerInfo[i][pRMuted] == 2) {
-			PlayerInfo[i][pRMutedTime]--;
-			if(PlayerInfo[i][pRMutedTime] <= 0) {
-				PlayerInfo[i][pRMuted] = 0;
-			}
-		}
-		if(PlayerInfo[i][pVMuted] == 2) {
-			PlayerInfo[i][pVMutedTime]--;
-			if(PlayerInfo[i][pVMutedTime] <= 0) {
-				PlayerInfo[i][pVMuted] = 0;
-			}
-		}
-		if(PlayerInfo[i][pRHMuteTime] > 0) {
-			PlayerInfo[i][pRHMuteTime]--;
-		}
-
-		if(GetPVarType(i, "hFind"))
-		{
-			new Float:X, Float:Y, Float:Z, pID = GetPVarInt(i, "hFind");
-			if(IsPlayerConnected(pID))
+			if(CommandSpamTimes[i] != 0)
 			{
-				if(PhoneOnline[pID] == 0 && PlayerInfo[pID][pPnumber] != 0|| PlayerInfo[pID][pBugged] == PlayerInfo[i][pMember])
+				CommandSpamTimes[i]--;
+			}
+			if(TextSpamTimes[i] != 0)
+			{
+				TextSpamTimes[i]--;
+			}
+			if(PlayerInfo[i][pRMuted] == 2) {
+				PlayerInfo[i][pRMutedTime]--;
+				if(PlayerInfo[i][pRMutedTime] <= 0) {
+					PlayerInfo[i][pRMuted] = 0;
+				}
+			}
+			if(PlayerInfo[i][pVMuted] == 2) {
+				PlayerInfo[i][pVMutedTime]--;
+				if(PlayerInfo[i][pVMutedTime] <= 0) {
+					PlayerInfo[i][pVMuted] = 0;
+				}
+			}
+			if(PlayerInfo[i][pRHMuteTime] > 0) {
+				PlayerInfo[i][pRHMuteTime]--;
+			}
+
+			if(GetPVarType(i, "hFind"))
+			{
+				new Float:X, Float:Y, Float:Z, pID = GetPVarInt(i, "hFind");
+				if(IsPlayerConnected(pID))
 				{
-					if(GetPlayerInterior(pID) != 0) {
+					if(PhoneOnline[pID] == 0 && PlayerInfo[pID][pPnumber] != 0|| PlayerInfo[pID][pBugged] == PlayerInfo[i][pMember])
+					{
+						if(GetPlayerInterior(pID) != 0) {
+							DeletePVar(i, "hFind");
+							DisablePlayerCheckpoint(i);
+							SendClientMessageEx(i, COLOR_GREY, "The signal is too weak to track (Interior).");
+						}
+						else {
+							GetPlayerPos(pID, X, Y, Z);
+							SetPlayerCheckpoint(i, X, Y, Z, 4.0);
+						}
+					}
+					else
+					{
+
+						SendClientMessageEx(i, COLOR_GRAD2, "Your tracker has lost its signal.");
 						DeletePVar(i, "hFind");
 						DisablePlayerCheckpoint(i);
-						SendClientMessageEx(i, COLOR_GREY, "The signal is too weak to track (Interior).");
-					}
-					else {
-						GetPlayerPos(pID, X, Y, Z);
-						SetPlayerCheckpoint(i, X, Y, Z, 4.0);
 					}
 				}
-				else
+			}
+			if(PlayerDrunk[i] >= 5)
+			{
+				PlayerDrunkTime[i] += 1;
+				if(PlayerDrunkTime[i] == 8)
 				{
+					PlayerDrunkTime[i] = 0;
 
-					SendClientMessageEx(i, COLOR_GRAD2, "Your tracker has lost its signal.");
-					DeletePVar(i, "hFind");
-					DisablePlayerCheckpoint(i);
-				}
-			}
-		}
-		if(PlayerDrunk[i] >= 5)
-		{
-			PlayerDrunkTime[i] += 1;
-			if(PlayerDrunkTime[i] == 8)
-			{
-				PlayerDrunkTime[i] = 0;
-
-				if(IsPlayerInAnyVehicle(i))
-				{
-					if(GetPlayerState(i) == 2)
+					if(IsPlayerInAnyVehicle(i))
 					{
-						new Float:angle;
-						GetPlayerFacingAngle(i, angle);
-						SetVehicleZAngle(GetPlayerVehicleID(i), angle + random(10) - 5);
-					}
-				}
-				else
-				{
-					ApplyAnimation(i,"PED", "WALK_DRUNK",4.0,0,1,0,0,0);
-				}
-			}
-		}
-		if(PlayerStoned[i] >= 3)
-		{
-			PlayerStoned[i] += 1;
-			SetPlayerDrunkLevel(i, 40000);
-			if(PlayerStoned[i] == 50)
-			{
-				PlayerStoned[i] = 0;
-				SetPlayerDrunkLevel(i, 0);
-				SendClientMessageEx(i, COLOR_GRAD1, " You are no longer stoned!");
-			}
-		}
-		if(BoxWaitTime[i] > 0)
-		{
-			if(BoxWaitTime[i] >= BoxDelay)
-			{
-				BoxDelay = 0;
-				BoxWaitTime[i] = 0;
-				PlayerPlaySound(i, 1057, 0.0, 0.0, 0.0);
-				GameTextForPlayer(i, "~g~Match Started", 5000, 1);
-				TogglePlayerControllable(i, 1);
-				RoundStarted = 1;
-			}
-			else
-			{
-				format(szMiscArray, sizeof(szMiscArray), "%d", BoxDelay - BoxWaitTime[i]);
-				GameTextForPlayer(i, szMiscArray, 1500, 6);
-				BoxWaitTime[i] += 1;
-			}
-		}
-		if(RoundStarted > 0)
-		{
-			if(PlayerBoxing[i] > 0)
-			{
-				new trigger = 0;
-				new Lost = 0;
-				new Float:angle;
-				new Float:health;
-				GetHealth(i, health);
-				if(health < 12)
-				{
-					if(i == Boxer1) { Lost = 1; trigger = 1; }
-					else if(i == Boxer2) { Lost = 2; trigger = 1; }
-				}
-				if(health < 28) { GetPlayerFacingAngle(i, angle); SetPlayerFacingAngle(i, angle + 85); }
-				if(trigger)
-				{
-					new winner[MAX_PLAYER_NAME];
-					new loser[MAX_PLAYER_NAME];
-					new titel[MAX_PLAYER_NAME];
-					if(Lost == 1)
-					{
-						if(IsPlayerConnected(Boxer1) && IsPlayerConnected(Boxer2))
+						if(GetPlayerState(i) == 2)
 						{
-							if(IsPlayerInRangeOfPoint(Boxer1,25.0,768.48, -73.66, 1000.57) || IsPlayerInRangeOfPoint(Boxer2,25.0,768.48, -73.66, 1000.57))
+							new Float:angle;
+							GetPlayerFacingAngle(i, angle);
+							SetVehicleZAngle(GetPlayerVehicleID(i), angle + random(10) - 5);
+						}
+					}
+					else
+					{
+						ApplyAnimation(i,"PED", "WALK_DRUNK",4.0,0,1,0,0,0);
+					}
+				}
+			}
+			if(PlayerStoned[i] >= 3)
+			{
+				PlayerStoned[i] += 1;
+				SetPlayerDrunkLevel(i, 40000);
+				if(PlayerStoned[i] == 50)
+				{
+					PlayerStoned[i] = 0;
+					SetPlayerDrunkLevel(i, 0);
+					SendClientMessageEx(i, COLOR_GRAD1, " You are no longer stoned!");
+				}
+			}
+			if(BoxWaitTime[i] > 0)
+			{
+				if(BoxWaitTime[i] >= BoxDelay)
+				{
+					BoxDelay = 0;
+					BoxWaitTime[i] = 0;
+					PlayerPlaySound(i, 1057, 0.0, 0.0, 0.0);
+					GameTextForPlayer(i, "~g~Match Started", 5000, 1);
+					TogglePlayerControllable(i, 1);
+					RoundStarted = 1;
+				}
+				else
+				{
+					format(szMiscArray, sizeof(szMiscArray), "%d", BoxDelay - BoxWaitTime[i]);
+					GameTextForPlayer(i, szMiscArray, 1500, 6);
+					BoxWaitTime[i] += 1;
+				}
+			}
+			if(RoundStarted > 0)
+			{
+				if(PlayerBoxing[i] > 0)
+				{
+					new trigger = 0;
+					new Lost = 0;
+					new Float:angle;
+					new Float:health;
+					GetHealth(i, health);
+					if(health < 12)
+					{
+						if(i == Boxer1) { Lost = 1; trigger = 1; }
+						else if(i == Boxer2) { Lost = 2; trigger = 1; }
+					}
+					if(health < 28) { GetPlayerFacingAngle(i, angle); SetPlayerFacingAngle(i, angle + 85); }
+					if(trigger)
+					{
+						new winner[MAX_PLAYER_NAME];
+						new loser[MAX_PLAYER_NAME];
+						new titel[MAX_PLAYER_NAME];
+						if(Lost == 1)
+						{
+							if(IsPlayerConnected(Boxer1) && IsPlayerConnected(Boxer2))
 							{
-								SetPlayerPos(Boxer1, 768.48, -73.66, 1000.57); SetPlayerPos(Boxer2, 768.48, -73.66, 1000.57);
-								SetPlayerInterior(Boxer1, 7); SetPlayerInterior(Boxer2, 7);
+								if(IsPlayerInRangeOfPoint(Boxer1,25.0,768.48, -73.66, 1000.57) || IsPlayerInRangeOfPoint(Boxer2,25.0,768.48, -73.66, 1000.57))
+								{
+									SetPlayerPos(Boxer1, 768.48, -73.66, 1000.57); SetPlayerPos(Boxer2, 768.48, -73.66, 1000.57);
+									SetPlayerInterior(Boxer1, 7); SetPlayerInterior(Boxer2, 7);
+									GetPlayerName(Boxer1, loser, sizeof(loser));
+									GetPlayerName(Boxer2, winner, sizeof(winner));
+									SetPlayerWeapons(Boxer1);
+									SetPlayerWeapons(Boxer2);
+									if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12) { PlayerInfo[Boxer1][pLoses] += 1; }
+									if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12) { PlayerInfo[Boxer2][pWins] += 1; }
+									if(TBoxer != INVALID_PLAYER_ID)
+									{
+										if(IsPlayerConnected(TBoxer))
+										{
+											if(TBoxer != Boxer2)
+											{
+												if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12)
+												{
+													TBoxer = Boxer2;
+													GetPlayerName(TBoxer, titel, sizeof(titel));
+													format(szMiscArray, sizeof(szMiscArray), "%s", titel);
+													strmid(Titel[TitelName], szMiscArray, 0, strlen(szMiscArray), 255);
+													Titel[TitelWins] = PlayerInfo[TBoxer][pWins];
+													Titel[TitelLoses] = PlayerInfo[TBoxer][pLoses];
+													Misc_Save();
+													format(szMiscArray, sizeof(szMiscArray), "Boxing News: %s has Won the fight against Champion %s and is now the new Boxing Champion.",  titel, loser);
+													ProxDetector(30.0, Boxer1, szMiscArray, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
+												}
+												else
+												{
+													SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You would have been the Champion if you had the Boxer Job!");
+												}
+											}
+											else
+											{
+												GetPlayerName(TBoxer, titel, sizeof(titel));
+												format(szMiscArray, sizeof(szMiscArray), "Boxing News: Boxing Champion %s has Won the fight against %s.",  titel, loser);
+												ProxDetector(30.0, Boxer1, szMiscArray, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
+												Titel[TitelWins] = PlayerInfo[TBoxer][pWins];
+												Titel[TitelLoses] = PlayerInfo[Boxer2][pLoses];
+												Misc_Save();
+											}
+										}
+									}//TBoxer
+									format(szMiscArray, sizeof(szMiscArray), "* You have Lost the Fight against %s.", winner);
+									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, szMiscArray);
+									GameTextForPlayer(Boxer1, "~r~You lost", 3500, 1);
+									format(szMiscArray, sizeof(szMiscArray), "* You have Won the Fight against %s.", loser);
+									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, szMiscArray);
+									GameTextForPlayer(Boxer2, "~r~You won", 3500, 1);
+									if(GetHealth(Boxer1, health) < 20)
+									{
+										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
+										SetHealth(Boxer1, 30.0);
+									}
+									else
+									{
+										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
+										SetHealth(Boxer1, 50.0);
+									}
+									if(GetHealth(Boxer2, health) < 20)
+									{
+										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
+										SetHealth(Boxer2, 30.0);
+									}
+									else
+									{
+										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
+										SetHealth(Boxer2, 50.0);
+									}
+									GameTextForPlayer(Boxer1, "~g~Match Over", 5000, 1); GameTextForPlayer(Boxer2, "~g~Match Over", 5000, 1);
+									if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12) { PlayerInfo[Boxer2][pBoxSkill] += 1; }
+									PlayerBoxing[Boxer1] = 0;
+									PlayerBoxing[Boxer2] = 0;
+								}
+								SetPlayerPos(Boxer1, 765.8433,3.2924,1000.7186); SetPlayerPos(Boxer2, 765.8433,3.2924,1000.7186);
+								SetPlayerInterior(Boxer1, 5); SetPlayerInterior(Boxer2, 5);
 								GetPlayerName(Boxer1, loser, sizeof(loser));
 								GetPlayerName(Boxer2, winner, sizeof(winner));
 								SetPlayerWeapons(Boxer1);
@@ -1865,87 +1937,87 @@ ptask PlayerHeartBeat[1000](i) {
 								PlayerBoxing[Boxer1] = 0;
 								PlayerBoxing[Boxer2] = 0;
 							}
-							SetPlayerPos(Boxer1, 765.8433,3.2924,1000.7186); SetPlayerPos(Boxer2, 765.8433,3.2924,1000.7186);
-							SetPlayerInterior(Boxer1, 5); SetPlayerInterior(Boxer2, 5);
-							GetPlayerName(Boxer1, loser, sizeof(loser));
-							GetPlayerName(Boxer2, winner, sizeof(winner));
-							SetPlayerWeapons(Boxer1);
-							SetPlayerWeapons(Boxer2);
-							if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12) { PlayerInfo[Boxer1][pLoses] += 1; }
-							if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12) { PlayerInfo[Boxer2][pWins] += 1; }
-							if(TBoxer != INVALID_PLAYER_ID)
+						}
+						else if(Lost == 2)
+						{
+							if(IsPlayerConnected(Boxer1) && IsPlayerConnected(Boxer2))
 							{
-								if(IsPlayerConnected(TBoxer))
+								if(IsPlayerInRangeOfPoint(Boxer1,25.0,768.48, -73.66, 1000.57) || IsPlayerInRangeOfPoint(Boxer2,25.0, 768.48, -73.66, 1000.57))
 								{
-									if(TBoxer != Boxer2)
+									SetPlayerPos(Boxer1, 768.48, -73.66, 1000.57); SetPlayerPos(Boxer2, 768.48, -73.66, 1000.57);
+									SetPlayerInterior(Boxer1, 7); SetPlayerInterior(Boxer2, 7);
+									GetPlayerName(Boxer1, winner, sizeof(winner));
+									GetPlayerName(Boxer2, loser, sizeof(loser));
+									if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12) { PlayerInfo[Boxer2][pLoses] += 1; }
+									if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12) { PlayerInfo[Boxer1][pWins] += 1; }
+									if(TBoxer != INVALID_PLAYER_ID)
 									{
-										if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12)
+										if(IsPlayerConnected(TBoxer))
 										{
-											TBoxer = Boxer2;
-											GetPlayerName(TBoxer, titel, sizeof(titel));
-											format(szMiscArray, sizeof(szMiscArray), "%s", titel);
-											strmid(Titel[TitelName], szMiscArray, 0, strlen(szMiscArray), 255);
-											Titel[TitelWins] = PlayerInfo[TBoxer][pWins];
-											Titel[TitelLoses] = PlayerInfo[TBoxer][pLoses];
-											Misc_Save();
-											format(szMiscArray, sizeof(szMiscArray), "Boxing News: %s has Won the fight against Champion %s and is now the new Boxing Champion.",  titel, loser);
-											ProxDetector(30.0, Boxer1, szMiscArray, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
+											if(TBoxer != Boxer1)
+											{
+												if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12)
+												{
+													TBoxer = Boxer1;
+													GetPlayerName(TBoxer, titel, sizeof(titel));
+													format(szMiscArray, sizeof(szMiscArray), "%s", titel);
+													strmid(Titel[TitelName], szMiscArray, 0, strlen(szMiscArray), 255);
+													Titel[TitelWins] = PlayerInfo[TBoxer][pWins];
+													Titel[TitelLoses] = PlayerInfo[TBoxer][pLoses];
+													Misc_Save();
+													format(szMiscArray, sizeof(szMiscArray), "Boxing News: %s has Won the fight against Champion %s and is now the new Boxing Champion.",  titel, loser);
+													ProxDetector(30.0, Boxer1, szMiscArray, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
+												}
+												else
+												{
+													SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You would have been the Champion if you had the Boxer Job!");
+												}
+											}
+											else
+											{
+												GetPlayerName(TBoxer, titel, sizeof(titel));
+												format(szMiscArray, sizeof(szMiscArray), "Boxing News: Boxing Champion %s has Won the fight against %s.",  titel, loser);
+												ProxDetector(30.0, Boxer1, szMiscArray, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
+												Titel[TitelWins] = PlayerInfo[TBoxer][pWins];
+												Titel[TitelLoses] = PlayerInfo[Boxer1][pLoses];
+												Misc_Save();
+											}
 										}
-										else
-										{
-											SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You would have been the Champion if you had the Boxer Job!");
-										}
+									}
+									//TBoxer
+									format(szMiscArray, sizeof(szMiscArray), "* You have Lost the Fight against %s.", winner);
+									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, szMiscArray);
+									GameTextForPlayer(Boxer2, "~r~You lost", 3500, 1);
+									format(szMiscArray, sizeof(szMiscArray), "* You have Won the Fight against %s.", loser);
+									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, szMiscArray);
+									GameTextForPlayer(Boxer1, "~g~You won", 3500, 1);
+									if(GetHealth(Boxer1, health) < 20)
+									{
+										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the fight, go eat somewhere.");
+										SetHealth(Boxer1, 30.0);
 									}
 									else
 									{
-										GetPlayerName(TBoxer, titel, sizeof(titel));
-										format(szMiscArray, sizeof(szMiscArray), "Boxing News: Boxing Champion %s has Won the fight against %s.",  titel, loser);
-										ProxDetector(30.0, Boxer1, szMiscArray, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
-										Titel[TitelWins] = PlayerInfo[TBoxer][pWins];
-										Titel[TitelLoses] = PlayerInfo[Boxer2][pLoses];
-										Misc_Save();
+										SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
+										SetHealth(Boxer1, 50.0);
 									}
+									if(GetHealth(Boxer2, health) < 20)
+									{
+										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the fight, go eat somewhere.");
+										SetHealth(Boxer2, 30.0);
+									}
+									else
+									{
+										SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the fight.");
+										SetHealth(Boxer2, 50.0);
+									}
+									GameTextForPlayer(Boxer1, "~g~Match Over", 5000, 1); GameTextForPlayer(Boxer2, "~g~Match Over", 5000, 1);
+									if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12) { PlayerInfo[Boxer1][pBoxSkill] += 1; }
+									PlayerBoxing[Boxer1] = 0;
+									PlayerBoxing[Boxer2] = 0;
 								}
-							}//TBoxer
-							format(szMiscArray, sizeof(szMiscArray), "* You have Lost the Fight against %s.", winner);
-							SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, szMiscArray);
-							GameTextForPlayer(Boxer1, "~r~You lost", 3500, 1);
-							format(szMiscArray, sizeof(szMiscArray), "* You have Won the Fight against %s.", loser);
-							SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, szMiscArray);
-							GameTextForPlayer(Boxer2, "~r~You won", 3500, 1);
-							if(GetHealth(Boxer1, health) < 20)
-							{
-								SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-								SetHealth(Boxer1, 30.0);
-							}
-							else
-							{
-								SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-								SetHealth(Boxer1, 50.0);
-							}
-							if(GetHealth(Boxer2, health) < 20)
-							{
-								SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-								SetHealth(Boxer2, 30.0);
-							}
-							else
-							{
-								SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-								SetHealth(Boxer2, 50.0);
-							}
-							GameTextForPlayer(Boxer1, "~g~Match Over", 5000, 1); GameTextForPlayer(Boxer2, "~g~Match Over", 5000, 1);
-							if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12) { PlayerInfo[Boxer2][pBoxSkill] += 1; }
-							PlayerBoxing[Boxer1] = 0;
-							PlayerBoxing[Boxer2] = 0;
-						}
-					}
-					else if(Lost == 2)
-					{
-						if(IsPlayerConnected(Boxer1) && IsPlayerConnected(Boxer2))
-						{
-							if(IsPlayerInRangeOfPoint(Boxer1,25.0,768.48, -73.66, 1000.57) || IsPlayerInRangeOfPoint(Boxer2,25.0, 768.48, -73.66, 1000.57))
-							{
-								SetPlayerPos(Boxer1, 768.48, -73.66, 1000.57); SetPlayerPos(Boxer2, 768.48, -73.66, 1000.57);
+								SetPlayerPos(Boxer1, 768.48, -73.66, 1000.57);
+								SetPlayerPos(Boxer2, 768.48, -73.66, 1000.57);
 								SetPlayerInterior(Boxer1, 7); SetPlayerInterior(Boxer2, 7);
 								GetPlayerName(Boxer1, winner, sizeof(winner));
 								GetPlayerName(Boxer2, loser, sizeof(loser));
@@ -1994,7 +2066,7 @@ ptask PlayerHeartBeat[1000](i) {
 								GameTextForPlayer(Boxer1, "~g~You won", 3500, 1);
 								if(GetHealth(Boxer1, health) < 20)
 								{
-									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the fight, go eat somewhere.");
+									SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 									SetHealth(Boxer1, 30.0);
 								}
 								else
@@ -2004,12 +2076,12 @@ ptask PlayerHeartBeat[1000](i) {
 								}
 								if(GetHealth(Boxer2, health) < 20)
 								{
-									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the fight, go eat somewhere.");
+									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
 									SetHealth(Boxer2, 30.0);
 								}
 								else
 								{
-									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the fight.");
+									SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
 									SetHealth(Boxer2, 50.0);
 								}
 								GameTextForPlayer(Boxer1, "~g~Match Over", 5000, 1); GameTextForPlayer(Boxer2, "~g~Match Over", 5000, 1);
@@ -2017,761 +2089,690 @@ ptask PlayerHeartBeat[1000](i) {
 								PlayerBoxing[Boxer1] = 0;
 								PlayerBoxing[Boxer2] = 0;
 							}
-							SetPlayerPos(Boxer1, 768.48, -73.66, 1000.57);
-							SetPlayerPos(Boxer2, 768.48, -73.66, 1000.57);
-							SetPlayerInterior(Boxer1, 7); SetPlayerInterior(Boxer2, 7);
-							GetPlayerName(Boxer1, winner, sizeof(winner));
-							GetPlayerName(Boxer2, loser, sizeof(loser));
-							if(PlayerInfo[Boxer2][pJob] == 12 || PlayerInfo[Boxer2][pJob2] == 12 || PlayerInfo[Boxer2][pJob3] == 12) { PlayerInfo[Boxer2][pLoses] += 1; }
-							if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12) { PlayerInfo[Boxer1][pWins] += 1; }
-							if(TBoxer != INVALID_PLAYER_ID)
-							{
-								if(IsPlayerConnected(TBoxer))
-								{
-									if(TBoxer != Boxer1)
-									{
-										if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12)
-										{
-											TBoxer = Boxer1;
-											GetPlayerName(TBoxer, titel, sizeof(titel));
-											format(szMiscArray, sizeof(szMiscArray), "%s", titel);
-											strmid(Titel[TitelName], szMiscArray, 0, strlen(szMiscArray), 255);
-											Titel[TitelWins] = PlayerInfo[TBoxer][pWins];
-											Titel[TitelLoses] = PlayerInfo[TBoxer][pLoses];
-											Misc_Save();
-											format(szMiscArray, sizeof(szMiscArray), "Boxing News: %s has Won the fight against Champion %s and is now the new Boxing Champion.",  titel, loser);
-											ProxDetector(30.0, Boxer1, szMiscArray, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
-										}
-										else
-										{
-											SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You would have been the Champion if you had the Boxer Job!");
-										}
-									}
-									else
-									{
-										GetPlayerName(TBoxer, titel, sizeof(titel));
-										format(szMiscArray, sizeof(szMiscArray), "Boxing News: Boxing Champion %s has Won the fight against %s.",  titel, loser);
-										ProxDetector(30.0, Boxer1, szMiscArray, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
-										Titel[TitelWins] = PlayerInfo[TBoxer][pWins];
-										Titel[TitelLoses] = PlayerInfo[Boxer1][pLoses];
-										Misc_Save();
-									}
-								}
-							}
-							//TBoxer
-							format(szMiscArray, sizeof(szMiscArray), "* You have Lost the Fight against %s.", winner);
-							SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, szMiscArray);
-							GameTextForPlayer(Boxer2, "~r~You lost", 3500, 1);
-							format(szMiscArray, sizeof(szMiscArray), "* You have Won the Fight against %s.", loser);
-							SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, szMiscArray);
-							GameTextForPlayer(Boxer1, "~g~You won", 3500, 1);
-							if(GetHealth(Boxer1, health) < 20)
-							{
-								SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-								SetHealth(Boxer1, 30.0);
-							}
-							else
-							{
-								SendClientMessageEx(Boxer1, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-								SetHealth(Boxer1, 50.0);
-							}
-							if(GetHealth(Boxer2, health) < 20)
-							{
-								SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel exhausted from the Fight, go eat somewhere.");
-								SetHealth(Boxer2, 30.0);
-							}
-							else
-							{
-								SendClientMessageEx(Boxer2, COLOR_LIGHTBLUE, "* You feel perfect, even after the Fight.");
-								SetHealth(Boxer2, 50.0);
-							}
-							GameTextForPlayer(Boxer1, "~g~Match Over", 5000, 1); GameTextForPlayer(Boxer2, "~g~Match Over", 5000, 1);
-							if(PlayerInfo[Boxer1][pJob] == 12 || PlayerInfo[Boxer1][pJob2] == 12 || PlayerInfo[Boxer1][pJob3] == 12) { PlayerInfo[Boxer1][pBoxSkill] += 1; }
-							PlayerBoxing[Boxer1] = 0;
-							PlayerBoxing[Boxer2] = 0;
 						}
+						InRing = 0;
+						RoundStarted = 0;
+						Boxer1 = INVALID_PLAYER_ID;
+						Boxer2 = INVALID_PLAYER_ID;
+						TBoxer = INVALID_PLAYER_ID;
+						trigger = 0;
 					}
-					InRing = 0;
-					RoundStarted = 0;
-					Boxer1 = INVALID_PLAYER_ID;
-					Boxer2 = INVALID_PLAYER_ID;
-					TBoxer = INVALID_PLAYER_ID;
-					trigger = 0;
 				}
 			}
-		}
-		if(FindTime[i] >= 1)
-		{
-			if(FindTime[i] == FindTimePoints[i]) {
-				FindTime[i] = 0;
-				FindTimePoints[i] = 0;
-				SetPlayerToTeamColor(FindingPlayer[i]);
-				FindingPlayer[i] = -1;
-				PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0);
-				GameTextForPlayer(i, "~r~Signal lost", 2500, 1);
-			}
-			else
+			if(FindTime[i] >= 1)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%d", FindTimePoints[i] - FindTime[i]);
-				GameTextForPlayer(i, szMiscArray, 1500, 6);
-				FindTime[i] += 1;
-			}
-		}
-		if(CalledCops[i] >= 1)
-		{
-			if(CopsCallTime[i] < 1) { CopsCallTime[i] = 0; HidePlayerBeaconForCops(i); CalledCops[i] = 0; }
-			else
-			{
-				CopsCallTime[i]--;
-			}
-		}
-		if(CalledMedics[i] >= 1)
-		{
-			if(MedicsCallTime[i] < 1) { MedicsCallTime[i] = 0; HidePlayerBeaconForMedics(i); CalledMedics[i] = 0; }
-			else
-			{
-				MedicsCallTime[i]--;
-			}
-		}
-		if(JustReported[i] > 0)
-		{
-			JustReported[i]--;
-		}
-		if(TaxiCallTime[i] > 0)
-		{
-			if(TaxiAccepted[i] != INVALID_PLAYER_ID)
-			{
-				if(IsPlayerConnected(TaxiAccepted[i]))
+				if(FindTime[i] == FindTimePoints[i]) {
+					FindTime[i] = 0;
+					FindTimePoints[i] = 0;
+					SetPlayerToTeamColor(FindingPlayer[i]);
+					FindingPlayer[i] = -1;
+					PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0);
+					GameTextForPlayer(i, "~r~Signal lost", 2500, 1);
+				}
+				else
 				{
-					new Float:X,Float:Y,Float:Z;
-					GetPlayerPos(TaxiAccepted[i], X, Y, Z);
-					SetPlayerCheckpoint(i, X, Y, Z, 5);
+					format(szMiscArray, sizeof(szMiscArray), "%d", FindTimePoints[i] - FindTime[i]);
+					GameTextForPlayer(i, szMiscArray, 1500, 6);
+					FindTime[i] += 1;
 				}
 			}
-		}
-		if(EMSCallTime[i] > 0)
-		{
-			if(EMSAccepted[i] != INVALID_PLAYER_ID)
+			if(CalledCops[i] >= 1)
 			{
-				if(IsPlayerConnected(EMSAccepted[i]))
+				if(CopsCallTime[i] < 1) { CopsCallTime[i] = 0; HidePlayerBeaconForCops(i); CalledCops[i] = 0; }
+				else
 				{
-					if(!GetPlayerInterior(EMSAccepted[i])) {
-
+					CopsCallTime[i]--;
+				}
+			}
+			if(CalledMedics[i] >= 1)
+			{
+				if(MedicsCallTime[i] < 1) { MedicsCallTime[i] = 0; HidePlayerBeaconForMedics(i); CalledMedics[i] = 0; }
+				else
+				{
+					MedicsCallTime[i]--;
+				}
+			}
+			if(JustReported[i] > 0)
+			{
+				JustReported[i]--;
+			}
+			if(TaxiCallTime[i] > 0)
+			{
+				if(TaxiAccepted[i] != INVALID_PLAYER_ID)
+				{
+					if(IsPlayerConnected(TaxiAccepted[i]))
+					{
 						new Float:X,Float:Y,Float:Z;
-						GetPlayerPos(EMSAccepted[i], X, Y, Z);
-						new zone[MAX_ZONE_NAME];
-						Get3DZone(X, Y, Z, zone, sizeof(zone));
-						format(szMiscArray, sizeof(szMiscArray), "Your patient is located in %s.", zone);
+						GetPlayerPos(TaxiAccepted[i], X, Y, Z);
 						SetPlayerCheckpoint(i, X, Y, Z, 5);
 					}
 				}
 			}
-		}
+			if(EMSCallTime[i] > 0)
+			{
+				if(EMSAccepted[i] != INVALID_PLAYER_ID)
+				{
+					if(IsPlayerConnected(EMSAccepted[i]))
+					{
+						if(!GetPlayerInterior(EMSAccepted[i])) {
 
-		if(BusCallTime[i] > 0)
-		{
-			if(BusAccepted[i] != INVALID_PLAYER_ID)
+							new Float:X,Float:Y,Float:Z;
+							GetPlayerPos(EMSAccepted[i], X, Y, Z);
+							new zone[MAX_ZONE_NAME];
+							Get3DZone(X, Y, Z, zone, sizeof(zone));
+							format(szMiscArray, sizeof(szMiscArray), "Your patient is located in %s.", zone);
+							SetPlayerCheckpoint(i, X, Y, Z, 5);
+						}
+					}
+				}
+			}
+
+			if(BusCallTime[i] > 0)
 			{
-				if(IsPlayerConnected(BusAccepted[i]))
+				if(BusAccepted[i] != INVALID_PLAYER_ID)
 				{
+					if(IsPlayerConnected(BusAccepted[i]))
+					{
+						new Float:X,Float:Y,Float:Z;
+						GetPlayerPos(BusAccepted[i], X, Y, Z);
+						SetPlayerCheckpoint(i, X, Y, Z, 5);
+					}
+				}
+			}
+			if(MedicCallTime[i] > 0)
+			{
+				// if(MedicCallTime[i] == 45) { MedicCallTime[i] = 0; DisablePlayerCheckpoint(i); PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0); GameTextForPlayer(i, "~r~RedMarker gone", 2500, 1); }
+				// else
+				{
+					format(szMiscArray, sizeof(szMiscArray), "%d", 45 - MedicCallTime[i]);
 					new Float:X,Float:Y,Float:Z;
-					GetPlayerPos(BusAccepted[i], X, Y, Z);
+					GetPlayerPos(MedicAccepted[i], X, Y, Z);
 					SetPlayerCheckpoint(i, X, Y, Z, 5);
+					GameTextForPlayer(i, szMiscArray, 1500, 6);
+					MedicCallTime[i] += 1;
 				}
 			}
-		}
-		if(MedicCallTime[i] > 0)
-		{
-			// if(MedicCallTime[i] == 45) { MedicCallTime[i] = 0; DisablePlayerCheckpoint(i); PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0); GameTextForPlayer(i, "~r~RedMarker gone", 2500, 1); }
-			// else
+			if(MechanicCallTime[i] > 0)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%d", 45 - MedicCallTime[i]);
-				new Float:X,Float:Y,Float:Z;
-				GetPlayerPos(MedicAccepted[i], X, Y, Z);
-				SetPlayerCheckpoint(i, X, Y, Z, 5);
-				GameTextForPlayer(i, szMiscArray, 1500, 6);
-				MedicCallTime[i] += 1;
-			}
-		}
-		if(MechanicCallTime[i] > 0)
-		{
-			if(MechanicCallTime[i] == 30) { MechanicCallTime[i] = 0; DisablePlayerCheckpoint(i); PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0); GameTextForPlayer(i, "~r~RedMarker gone", 2500, 1); }
-			else
-			{
-				format(szMiscArray, sizeof(szMiscArray), "%d", 30 - MechanicCallTime[i]);
-				GameTextForPlayer(i, szMiscArray, 1500, 6);
-				MechanicCallTime[i] += 1;
-			}
-		}
-		if(PlayerCuffed[i] == 1)
-		{
-			if(PlayerCuffedTime[i] <= 0)
-			{
-				//Frozen[i] = 0;
-				DeletePVar(i, "IsFrozen");
-				TogglePlayerControllable(i, 1);
-				PlayerCuffed[i] = 0;
-				DeletePVar(i, "PlayerCuffed");
-				PlayerCuffedTime[i] = 0;
-				ClearAnimations(i);
-				new Float:X, Float:Y, Float:Z;
-				GetPlayerPos(i, X, Y, Z);
-				SetPlayerPos(i, X, Y, Z);
-				SetPlayerDrunkLevel(i, 0);
-			}
-			else
-			{
-				if(playerTabbed[i] == 0)
+				if(MechanicCallTime[i] == 30) { MechanicCallTime[i] = 0; DisablePlayerCheckpoint(i); PlayerPlaySound(i, 1056, 0.0, 0.0, 0.0); GameTextForPlayer(i, "~r~RedMarker gone", 2500, 1); }
+				else
 				{
-					PlayerCuffedTime[i] -= 1;
-					SetPlayerDrunkLevel(i, 10000);
+					format(szMiscArray, sizeof(szMiscArray), "%d", 30 - MechanicCallTime[i]);
+					GameTextForPlayer(i, szMiscArray, 1500, 6);
+					MechanicCallTime[i] += 1;
 				}
 			}
-		}
-		if(PlayerCuffed[i] == 2)
-		{
-			if(PlayerCuffedTime[i] <= 0)
+			if(PlayerCuffed[i] == 1)
+			{
+				if(PlayerCuffedTime[i] <= 0)
+				{
+					//Frozen[i] = 0;
+					DeletePVar(i, "IsFrozen");
+					TogglePlayerControllable(i, 1);
+					PlayerCuffed[i] = 0;
+					DeletePVar(i, "PlayerCuffed");
+					PlayerCuffedTime[i] = 0;
+					ClearAnimations(i);
+					new Float:X, Float:Y, Float:Z;
+					GetPlayerPos(i, X, Y, Z);
+					SetPlayerPos(i, X, Y, Z);
+					SetPlayerDrunkLevel(i, 0);
+				}
+				else
+				{
+					if(playerTabbed[i] == 0)
+					{
+						PlayerCuffedTime[i] -= 1;
+						SetPlayerDrunkLevel(i, 10000);
+					}
+				}
+			}
+			if(PlayerCuffed[i] == 2)
+			{
+				if(PlayerCuffedTime[i] <= 0)
+				{
+					new Float:X, Float:Y, Float:Z;
+					GetPlayerPos(i, X, Y, Z);
+					new copinrange;
+					foreach(new j: Player)
+					{
+						if(IsPlayerInRangeOfPoint(j, 15, X, Y, Z) && IsACop(j))
+						{
+							copinrange = 1;
+						}
+					}
+
+					if(copinrange == 0)
+					{
+						//Frozen[i] = 0;
+						DeletePVar(i, "IsFrozen");
+						GameTextForPlayer(i, "~r~No-one is looking, run!", 2500, 3);
+						TogglePlayerControllable(i, 1);
+						PlayerCuffed[i] = 3;
+						//SetHealth(i, GetPVarFloat(i, "cuffhealth"));
+						//SetArmour(i, GetPVarFloat(i, "cuffarmor"));
+						//DeletePVar(i, "cuffhealth");
+						//DeletePVar(i, "PlayerCuffed");
+						PlayerCuffedTime[i] = 180;
+						//SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
+						//ClearAnimations(i);
+					}
+					else
+					{
+						PlayerCuffedTime[i] = 60;
+					}
+				}
+				else
+				{
+					if(playerTabbed[i] == 0)
+					{
+						PlayerCuffedTime[i] -= 1;
+					}
+				}
+			}
+			if(PlayerCuffed[i] == 3)
 			{
 				new Float:X, Float:Y, Float:Z;
 				GetPlayerPos(i, X, Y, Z);
 				new copinrange;
 				foreach(new j: Player)
 				{
-					if(IsPlayerInRangeOfPoint(j, 15, X, Y, Z) && IsACop(j))
+					if(IsPlayerInRangeOfPoint(j, 4, X, Y, Z) && IsACop(j))
 					{
 						copinrange = 1;
 					}
 				}
 
-				if(copinrange == 0)
+				if(copinrange == 1) {
+					TogglePlayerControllable(i, 0);
+					PlayerCuffed[i] = 2;
+					GameTextForPlayer(i, "~r~They caught you again!", 2500, 3);
+				}
+
+				if(PlayerCuffedTime[i] <= 0)
 				{
-					//Frozen[i] = 0;
-					DeletePVar(i, "IsFrozen");
-					GameTextForPlayer(i, "~r~No-one is looking, run!", 2500, 3);
-					TogglePlayerControllable(i, 1);
-					PlayerCuffed[i] = 3;
-					//SetHealth(i, GetPVarFloat(i, "cuffhealth"));
-					//SetArmour(i, GetPVarFloat(i, "cuffarmor"));
-					//DeletePVar(i, "cuffhealth");
-					//DeletePVar(i, "PlayerCuffed");
-					PlayerCuffedTime[i] = 180;
-					//SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-					//ClearAnimations(i);
+
+					if(copinrange == 0)
+					{
+						//Frozen[i] = 0;
+						DeletePVar(i, "IsFrozen");
+						GameTextForPlayer(i, "~r~The cuffs broke!", 2500, 3);
+						TogglePlayerControllable(i, 1);
+						PlayerCuffed[i] = 0;
+						SetHealth(i, GetPVarFloat(i, "cuffhealth"));
+						SetArmour(i, GetPVarFloat(i, "cuffarmor"));
+						DeletePVar(i, "cuffhealth");
+						DeletePVar(i, "PlayerCuffed");
+						PlayerCuffedTime[i] = 0;
+						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
+						ClearAnimations(i);
+					}
 				}
 				else
 				{
-					PlayerCuffedTime[i] = 60;
-				}
-			}
-			else
-			{
-				if(playerTabbed[i] == 0)
-				{
-					PlayerCuffedTime[i] -= 1;
-				}
-			}
-		}
-		if(PlayerCuffed[i] == 3)
-		{
-			new Float:X, Float:Y, Float:Z;
-			GetPlayerPos(i, X, Y, Z);
-			new copinrange;
-			foreach(new j: Player)
-			{
-				if(IsPlayerInRangeOfPoint(j, 4, X, Y, Z) && IsACop(j))
-				{
-					copinrange = 1;
-				}
-			}
-
-			if(copinrange == 1) {
-				TogglePlayerControllable(i, 0);
-				PlayerCuffed[i] = 2;
-				GameTextForPlayer(i, "~r~They caught you again!", 2500, 3);
-			}
-
-			if(PlayerCuffedTime[i] <= 0)
-			{
-
-				if(copinrange == 0)
-				{
-					//Frozen[i] = 0;
-					DeletePVar(i, "IsFrozen");
-					GameTextForPlayer(i, "~r~The cuffs broke!", 2500, 3);
-					TogglePlayerControllable(i, 1);
-					PlayerCuffed[i] = 0;
-					SetHealth(i, GetPVarFloat(i, "cuffhealth"));
-					SetArmour(i, GetPVarFloat(i, "cuffarmor"));
-					DeletePVar(i, "cuffhealth");
-					DeletePVar(i, "PlayerCuffed");
-					PlayerCuffedTime[i] = 0;
-					SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-					ClearAnimations(i);
-				}
-			}
-			else
-			{
-				if(playerTabbed[i] == 0)
-				{
-					if(copinrange == 0) PlayerCuffedTime[i] -= 1;
-				}
-			}
-		}
-		UpdateSpeedCamerasForPlayer(i);
-	}
-	if ((PlayerInfo[i][pAdmin] < 2 && PlayerInfo[i][pWatchdog] < 2) || HelpingNewbie[i] != INVALID_PLAYER_ID)
-	{
-		if (PlayerInfo[i][pHospital] == 0 && GetPVarInt(i, "Injured") != 1 && GetPVarInt(i, "IsFrozen") == 0 && GetPVarInt(i, "PlayerCuffed") == 0)
-		{
-			if (++PlayerInfo[i][pHungerTimer] >= 1800 && PlayerInfo[i][pHunger] > 0) // 30 minutes
-			{
-				PlayerInfo[i][pHungerTimer] = 0;
-				PlayerInfo[i][pHunger] -= 8;
-				if (PlayerInfo[i][pHunger] < 0)
-					PlayerInfo[i][pHunger] = 0;
-
-				if (PlayerInfo[i][pHunger] == 0)
-				{
-					SendClientMessageEx(i, COLOR_RED, "You hear your stomach rumble - you need to eat!");
-					/*if(!PlayerInfo[i][pShopNotice])
+					if(playerTabbed[i] == 0)
 					{
-						PlayerTextDrawSetszMiscArray(i, MicroNotice[i], ShopMsg[5]);
-						PlayerTextDrawShow(i, MicroNotice[i]);
-						SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
-					}*/
+						if(copinrange == 0) PlayerCuffedTime[i] -= 1;
+					}
 				}
 			}
-
-			if(PlayerCuffed[i] == 0)
-			{
-				if (PlayerInfo[i][pHunger] == 0 && ++PlayerInfo[i][pHungerDeathTimer] >= 600) // 10 minutes
-				{
-					SendClientMessageEx(i, COLOR_RED, "You fall unconcious due to starvation.");
-					SetHealth(i, 0);
-					PlayerInfo[i][pHungerDeathTimer] = 0;
-				}
-			}
+			UpdateSpeedCamerasForPlayer(i);
 		}
-
-		// update hunger text draw
-		switch (PlayerInfo[i][pHunger])
+		if ((PlayerInfo[i][pAdmin] < 2 && PlayerInfo[i][pWatchdog] < 2) || HelpingNewbie[i] != INVALID_PLAYER_ID)
 		{
-			case 80..100:
-				PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~g~Bloated");
-			case 40..79:
-				PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~y~Satisfied");
-			case 20..39:
-				PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~y~Hungry");
-			case 0..19:
-				PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~r~Starving");
-		}
-	}
-
-	if (GetPVarInt(i, "_BoxingQueue") == 1)
-	{
-		SetPVarInt(i, "_BoxingQueueTick", GetPVarInt(i, "_BoxingQueueTick") + 1);
-		new tick = GetPVarInt(i, "_BoxingQueueTick");
-
-		if (tick == 10)
-		{
-			SetPVarInt(i, "_BoxingQueueTick", 1);
-
-			foreach(new ii: Player)
+			if (PlayerInfo[i][pHospital] == 0 && GetPVarInt(i, "Injured") != 1 && GetPVarInt(i, "IsFrozen") == 0 && GetPVarInt(i, "PlayerCuffed") == 0)
 			{
-				if (GetPVarInt(ii, "_BoxingQueue") == 1 && i != ii)
+				if (++PlayerInfo[i][pHungerTimer] >= 1800 && PlayerInfo[i][pHunger] > 0) // 30 minutes
 				{
-					new biz = InBusiness(i),
-						biz2 = InBusiness(ii);
+					PlayerInfo[i][pHungerTimer] = 0;
+					PlayerInfo[i][pHunger] -= 8;
+					if (PlayerInfo[i][pHunger] < 0)
+						PlayerInfo[i][pHunger] = 0;
 
-					if(biz == biz2)
+					if (PlayerInfo[i][pHunger] == 0)
 					{
-						if (Businesses[biz][bGymBoxingArena1][0] == INVALID_PLAYER_ID)
+						SendClientMessageEx(i, COLOR_RED, "You hear your stomach rumble - you need to eat!");
+						/*if(!PlayerInfo[i][pShopNotice])
 						{
-							Businesses[biz][bGymBoxingArena1][0] = i;
-							Businesses[biz][bGymBoxingArena1][1] = ii;
+							PlayerTextDrawSetszMiscArray(i, MicroNotice[i], ShopMsg[5]);
+							PlayerTextDrawShow(i, MicroNotice[i]);
+							SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
+						}*/
+					}
+				}
 
-							DeletePVar(i, "_BoxingQueue");
-							DeletePVar(i, "_BoxingQueueTick");
-							DeletePVar(ii, "_BoxingQueue");
-							DeletePVar(ii, "_BoxingQueueTick");
+				if(PlayerCuffed[i] == 0)
+				{
+					if (PlayerInfo[i][pHunger] == 0 && ++PlayerInfo[i][pHungerDeathTimer] >= 600) // 10 minutes
+					{
+						SendClientMessageEx(i, COLOR_RED, "You fall unconcious due to starvation.");
+						SetHealth(i, 0);
+						PlayerInfo[i][pHungerDeathTimer] = 0;
+					}
+				}
+			}
 
-							SetPlayerPos(i, 2924.0735, -2293.3145, 8.0905);
-							SetPlayerFacingAngle(i, 136.0062);
-							SetPlayerPos(ii, 2920.4709, -2296.9460, 8.0905);
-							SetPlayerFacingAngle(ii, 308.0462);
+			// update hunger text draw
+			switch (PlayerInfo[i][pHunger])
+			{
+				case 80..100:
+					PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~g~Bloated");
+				case 40..79:
+					PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~y~Satisfied");
+				case 20..39:
+					PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~y~Hungry");
+				case 0..19:
+					PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~r~Starving");
+			}
+		}
 
-							new Float:health, Float:armour;
+		if (GetPVarInt(i, "_BoxingQueue") == 1)
+		{
+			SetPVarInt(i, "_BoxingQueueTick", GetPVarInt(i, "_BoxingQueueTick") + 1);
+			new tick = GetPVarInt(i, "_BoxingQueueTick");
 
-							GetHealth(i, health);
-							GetArmour(i, armour);
-							SetPVarFloat(i, "_BoxingCacheHP", health);
-							SetPVarFloat(i, "_BoxingCacheArmour", armour);
+			if (tick == 10)
+			{
+				SetPVarInt(i, "_BoxingQueueTick", 1);
 
-							GetHealth(ii, health);
-							GetArmour(ii, armour);
-							SetPVarFloat(ii, "_BoxingCacheHP", health);
-							SetPVarFloat(ii, "_BoxingCacheArmour", armour);
+				foreach(new ii: Player)
+				{
+					if (GetPVarInt(ii, "_BoxingQueue") == 1 && i != ii)
+					{
+						new biz = InBusiness(i),
+							biz2 = InBusiness(ii);
 
-							SetHealth(i, 100.0);
-							SetHealth(ii, 100.0);
-							RemoveArmor(i);
-							RemoveArmor(ii);
-
-							ResetPlayerWeapons(i);
-							ResetPlayerWeapons(ii);
-
-							TogglePlayerControllable(i, 0);
-							TogglePlayerControllable(ii, 0);
-
-							SetPVarInt(i, "_BoxingFight", ii + 1);
-							SetPVarInt(ii, "_BoxingFight", i + 1);
-							SetPVarInt(i, "_BoxingFightCountdown", 4);
-
-							format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
-							SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
-							format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(i));
-							SendClientMessageEx(ii, COLOR_WHITE, szMiscArray);
-							break;
-						}
-						else if (Businesses[biz][bGymBoxingArena2][0] == INVALID_PLAYER_ID)
+						if(biz == biz2)
 						{
-							Businesses[biz][bGymBoxingArena2][0] = i;
-							Businesses[biz][bGymBoxingArena2][1] = ii;
+							if (Businesses[biz][bGymBoxingArena1][0] == INVALID_PLAYER_ID)
+							{
+								Businesses[biz][bGymBoxingArena1][0] = i;
+								Businesses[biz][bGymBoxingArena1][1] = ii;
 
-							DeletePVar(i, "_BoxingQueue");
-							DeletePVar(i, "_BoxingQueueTick");
-							DeletePVar(ii, "_BoxingQueue");
-							DeletePVar(ii, "_BoxingQueueTick");
+								DeletePVar(i, "_BoxingQueue");
+								DeletePVar(i, "_BoxingQueueTick");
+								DeletePVar(ii, "_BoxingQueue");
+								DeletePVar(ii, "_BoxingQueueTick");
 
-							SetPlayerPos(i, 2920.6958, -2257.4312, 8.0905);
-							SetPlayerFacingAngle(i, 310.5444);
-							SetPlayerPos(ii, 2924.3989, -2253.8279, 8.0905);
-							SetPlayerFacingAngle(ii, 134.5329);
+								SetPlayerPos(i, 2924.0735, -2293.3145, 8.0905);
+								SetPlayerFacingAngle(i, 136.0062);
+								SetPlayerPos(ii, 2920.4709, -2296.9460, 8.0905);
+								SetPlayerFacingAngle(ii, 308.0462);
 
-							new Float:health, Float:armour;
+								new Float:health, Float:armour;
 
-							GetHealth(i, health);
-							GetArmour(i, armour);
-							SetPVarFloat(i, "_BoxingCacheHP", health);
-							SetPVarFloat(i, "_BoxingCacheArmour", armour);
+								GetHealth(i, health);
+								GetArmour(i, armour);
+								SetPVarFloat(i, "_BoxingCacheHP", health);
+								SetPVarFloat(i, "_BoxingCacheArmour", armour);
 
-							GetHealth(ii, health);
-							GetArmour(ii, armour);
-							SetPVarFloat(ii, "_BoxingCacheHP", health);
-							SetPVarFloat(ii, "_BoxingCacheArmour", armour);
+								GetHealth(ii, health);
+								GetArmour(ii, armour);
+								SetPVarFloat(ii, "_BoxingCacheHP", health);
+								SetPVarFloat(ii, "_BoxingCacheArmour", armour);
 
-							ResetPlayerWeapons(i);
-							ResetPlayerWeapons(ii);
+								SetHealth(i, 100.0);
+								SetHealth(ii, 100.0);
+								RemoveArmor(i);
+								RemoveArmor(ii);
 
-							SetHealth(i, 100.0);
-							SetHealth(ii, 100.0);
-							RemoveArmor(i);
-							RemoveArmor(ii);
+								ResetPlayerWeapons(i);
+								ResetPlayerWeapons(ii);
 
-							TogglePlayerControllable(i, 0);
-							TogglePlayerControllable(ii, 0);
+								TogglePlayerControllable(i, 0);
+								TogglePlayerControllable(ii, 0);
 
-							SetPVarInt(i, "_BoxingFight", ii + 1);
-							SetPVarInt(ii, "_BoxingFight", i + 1);
-							SetPVarInt(i, "_BoxingFightCountdown", 4);
+								SetPVarInt(i, "_BoxingFight", ii + 1);
+								SetPVarInt(ii, "_BoxingFight", i + 1);
+								SetPVarInt(i, "_BoxingFightCountdown", 4);
 
-							format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
-							SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
-							format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(i));
-							SendClientMessageEx(ii, COLOR_WHITE, szMiscArray);
-							break;
-						}
-						else // NO ARENA AVAILABLE
-						{
+								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
+								SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(i));
+								SendClientMessageEx(ii, COLOR_WHITE, szMiscArray);
+								break;
+							}
+							else if (Businesses[biz][bGymBoxingArena2][0] == INVALID_PLAYER_ID)
+							{
+								Businesses[biz][bGymBoxingArena2][0] = i;
+								Businesses[biz][bGymBoxingArena2][1] = ii;
+
+								DeletePVar(i, "_BoxingQueue");
+								DeletePVar(i, "_BoxingQueueTick");
+								DeletePVar(ii, "_BoxingQueue");
+								DeletePVar(ii, "_BoxingQueueTick");
+
+								SetPlayerPos(i, 2920.6958, -2257.4312, 8.0905);
+								SetPlayerFacingAngle(i, 310.5444);
+								SetPlayerPos(ii, 2924.3989, -2253.8279, 8.0905);
+								SetPlayerFacingAngle(ii, 134.5329);
+
+								new Float:health, Float:armour;
+
+								GetHealth(i, health);
+								GetArmour(i, armour);
+								SetPVarFloat(i, "_BoxingCacheHP", health);
+								SetPVarFloat(i, "_BoxingCacheArmour", armour);
+
+								GetHealth(ii, health);
+								GetArmour(ii, armour);
+								SetPVarFloat(ii, "_BoxingCacheHP", health);
+								SetPVarFloat(ii, "_BoxingCacheArmour", armour);
+
+								ResetPlayerWeapons(i);
+								ResetPlayerWeapons(ii);
+
+								SetHealth(i, 100.0);
+								SetHealth(ii, 100.0);
+								RemoveArmor(i);
+								RemoveArmor(ii);
+
+								TogglePlayerControllable(i, 0);
+								TogglePlayerControllable(ii, 0);
+
+								SetPVarInt(i, "_BoxingFight", ii + 1);
+								SetPVarInt(ii, "_BoxingFight", i + 1);
+								SetPVarInt(i, "_BoxingFightCountdown", 4);
+
+								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(ii));
+								SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+								format(szMiscArray, sizeof(szMiscArray), "You are now in a boxing match with %s.", GetPlayerNameEx(i));
+								SendClientMessageEx(ii, COLOR_WHITE, szMiscArray);
+								break;
+							}
+							else // NO ARENA AVAILABLE
+							{
+							}
 						}
 					}
 				}
 			}
 		}
-	}
-	else if (GetPVarInt(i, "_BoxingFightCountdown") >= 1)
-	{
-		new countdown = GetPVarInt(i, "_BoxingFightCountdown");
-		new ii = GetPVarInt(i, "_BoxingFight") - 1;
+		else if (GetPVarInt(i, "_BoxingFightCountdown") >= 1)
+		{
+			new countdown = GetPVarInt(i, "_BoxingFightCountdown");
+			new ii = GetPVarInt(i, "_BoxingFight") - 1;
 
-		if (countdown == 4)
-		{
-			SendClientMessageEx(i, COLOR_RED, "3..");
-			SendClientMessageEx(ii, COLOR_RED, "3..");
-			SetPVarInt(i, "_BoxingFightCountdown", 3);
-		}
-		else if (countdown == 3)
-		{
-			SendClientMessageEx(i, COLOR_RED, "2..");
-			SendClientMessageEx(ii, COLOR_RED, "2..");
-			SetPVarInt(i, "_BoxingFightCountdown", 2);
-		}
-		else if (countdown == 2)
-		{
-			SendClientMessageEx(i, COLOR_RED, "1..");
-			SendClientMessageEx(ii, COLOR_RED, "1..");
-			SetPVarInt(i, "_BoxingFightCountdown", 1);
-		}
-		else if (countdown == 1)
-		{
-			SendClientMessageEx(i, COLOR_RED, "Fight!");
-			SendClientMessageEx(ii, COLOR_RED, "Fight!");
-			DeletePVar(i, "_BoxingFightCountdown");
-			TogglePlayerControllable(i, 1);
-			TogglePlayerControllable(ii, 1);
-		}
-	}
-	if(GetPVarInt(i, "_BoxingFightOver") != 0 && gettime() >= GetPVarInt(i, "_BoxingFightOver"))
-	{
-		if (GetPVarInt(i, "Injured") == 1)
-		{
-			KillEMSQueue(i);
-			ClearAnimations(i);
-			new biz = InBusiness(i);
-
-			if (Businesses[biz][bGymBoxingArena1][0] == i || Businesses[biz][bGymBoxingArena1][1] == i) // first arena
+			if (countdown == 4)
 			{
-				Businesses[biz][bGymBoxingArena1][0] = INVALID_PLAYER_ID;
-				Businesses[biz][bGymBoxingArena1][1] = INVALID_PLAYER_ID;
+				SendClientMessageEx(i, COLOR_RED, "3..");
+				SendClientMessageEx(ii, COLOR_RED, "3..");
+				SetPVarInt(i, "_BoxingFightCountdown", 3);
 			}
-			else if (Businesses[biz][bGymBoxingArena2][0] == i || Businesses[biz][bGymBoxingArena2][1] == i) // second arena
+			else if (countdown == 3)
 			{
-				Businesses[biz][bGymBoxingArena2][0] = INVALID_PLAYER_ID;
-				Businesses[biz][bGymBoxingArena2][1] = INVALID_PLAYER_ID;
+				SendClientMessageEx(i, COLOR_RED, "2..");
+				SendClientMessageEx(ii, COLOR_RED, "2..");
+				SetPVarInt(i, "_BoxingFightCountdown", 2);
+			}
+			else if (countdown == 2)
+			{
+				SendClientMessageEx(i, COLOR_RED, "1..");
+				SendClientMessageEx(ii, COLOR_RED, "1..");
+				SetPVarInt(i, "_BoxingFightCountdown", 1);
+			}
+			else if (countdown == 1)
+			{
+				SendClientMessageEx(i, COLOR_RED, "Fight!");
+				SendClientMessageEx(ii, COLOR_RED, "Fight!");
+				DeletePVar(i, "_BoxingFightCountdown");
+				TogglePlayerControllable(i, 1);
+				TogglePlayerControllable(ii, 1);
 			}
 		}
-        else SetPlayerPos(i, 2907.50, -2275.39, 7.25);
-
-		SetHealth(i, GetPVarFloat(i, "_BoxingCacheHP"));
-		SetArmour(i, GetPVarFloat(i, "_BoxingCacheArmour"));
-		DeletePVar(i, "_BoxingCacheHP");
-		DeletePVar(i, "_BoxingCacheArmour");
-		DeletePVar(i, "_BoxingFightOver");
-		SetPlayerWeapons(i);
-	}
-	if(GetPVarInt(i, "BackpackDisabled") > 0) SetPVarInt(i, "BackpackDisabled", GetPVarInt(i, "BackpackDisabled")-1);
-	else DeletePVar(i, "BackpackDisabled");
-
-	// ServerHeartBeatTwo (merged by Jingles)
-	if(IsPlayerInAnyVehicle(i)) {
-		if(GetPlayerState(i) == PLAYER_STATE_DRIVER) SetPlayerArmedWeapon(i, 0);
-		else if(!IsADriveByWeapon(GetPlayerWeapon(i))) SetPlayerArmedWeapon(i, 0);
-	}
-	if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && JetPack[i] == 0 && PlayerInfo[i][pAdmin] < 4)
-	{
-		if(GetPVarType(i, "Autoban")) return 1;
-		SetPVarInt(i, "Autoban", 1);
-		CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Jetpack Hacking", 180);
-		TotalAutoBan++;
-	}
-
-	if(CellTime[i] > 0 && 0 <= Mobile[i] < sizeof Mobile)
-	{
-		if (CellTime[i] == 60)
+		if(GetPVarInt(i, "_BoxingFightOver") != 0 && gettime() >= GetPVarInt(i, "_BoxingFightOver"))
 		{
-			CellTime[i] = 1;
-			if(Mobile[Mobile[i]] == i)
+			if (GetPVarInt(i, "Injured") == 1)
 			{
-				CallCost[i] += 10;
-			}
-		}
-		CellTime[i]++;
-		if (Mobile[Mobile[i]] == INVALID_PLAYER_ID && CellTime[i] == 5)
-		{
-			if(IsPlayerConnected(Mobile[i]))
-			{
-				new Float:rX, Float:rY, Float:rZ;
-				GetPlayerPos(i, rX, rY, rZ);
+				KillEMSQueue(i);
+				ClearAnimations(i);
+				new biz = InBusiness(i);
 
-				format(szMiscArray, sizeof(szMiscArray), "* %s's phone rings.", GetPlayerNameEx(Mobile[i]));
-				RingTone[Mobile[i]] = 10;
-				ProxDetector(30.0, Mobile[i], szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-			}
-		}
-	}
-
-	if(CellTime[i] == 0 && CallCost[i] > 0)
-	{
-		format(szMiscArray, sizeof(szMiscArray), "~w~The call cost~n~~r~$%d",CallCost[i]);
-		GivePlayerCash(i, -CallCost[i]);
-		GameTextForPlayer(i, szMiscArray, 5000, 1);
-		CallCost[i] = 0;
-	}
-
-	if(TransportDriver[i] != INVALID_PLAYER_ID)
-	{
-		if(GetPlayerVehicleID(i) != GetPlayerVehicleID(TransportDriver[i]) || !TransportDuty[TransportDriver[i]])
-		{
-			if(IsPlayerConnected(TransportDriver[i]))
-			{
-				TransportMoney[TransportDriver[i]] += TransportCost[i];
-				TransportTime[TransportDriver[i]] = 0;
-				TransportCost[TransportDriver[i]] = 0;
-
-				format(szMiscArray, sizeof(szMiscArray), "~w~Passenger left~n~~g~Earned $%d", TransportCost[i]);
-				GameTextForPlayer(TransportDriver[i], szMiscArray, 5000, 1);
-				TransportDriver[i] = INVALID_PLAYER_ID;
-			}
-		}
-		else if(TransportTime[i] >= 16)
-		{
-			TransportTime[i] = 1;
-			if(TransportDriver[i] != INVALID_PLAYER_ID)
-			{
-				if(IsPlayerConnected(TransportDriver[i]))
+				if (Businesses[biz][bGymBoxingArena1][0] == i || Businesses[biz][bGymBoxingArena1][1] == i) // first arena
 				{
-					TransportCost[i] += TransportValue[TransportDriver[i]];
-					TransportCost[TransportDriver[i]] = TransportCost[i];
+					Businesses[biz][bGymBoxingArena1][0] = INVALID_PLAYER_ID;
+					Businesses[biz][bGymBoxingArena1][1] = INVALID_PLAYER_ID;
+				}
+				else if (Businesses[biz][bGymBoxingArena2][0] == i || Businesses[biz][bGymBoxingArena2][1] == i) // second arena
+				{
+					Businesses[biz][bGymBoxingArena2][0] = INVALID_PLAYER_ID;
+					Businesses[biz][bGymBoxingArena2][1] = INVALID_PLAYER_ID;
+				}
+			}
+	        else SetPlayerPos(i, 2907.50, -2275.39, 7.25);
+
+			SetHealth(i, GetPVarFloat(i, "_BoxingCacheHP"));
+			SetArmour(i, GetPVarFloat(i, "_BoxingCacheArmour"));
+			DeletePVar(i, "_BoxingCacheHP");
+			DeletePVar(i, "_BoxingCacheArmour");
+			DeletePVar(i, "_BoxingFightOver");
+			SetPlayerWeapons(i);
+		}
+		if(GetPVarInt(i, "BackpackDisabled") > 0) SetPVarInt(i, "BackpackDisabled", GetPVarInt(i, "BackpackDisabled")-1);
+		else DeletePVar(i, "BackpackDisabled");
+
+		// ServerHeartBeatTwo (merged by Jingles)
+		if(IsPlayerInAnyVehicle(i)) {
+			if(GetPlayerState(i) == PLAYER_STATE_DRIVER) SetPlayerArmedWeapon(i, 0);
+			else if(!IsADriveByWeapon(GetPlayerWeapon(i))) SetPlayerArmedWeapon(i, 0);
+		}
+		if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && JetPack[i] == 0 && PlayerInfo[i][pAdmin] < 4)
+		{
+			if(GetPVarType(i, "Autoban")) return 1;
+			SetPVarInt(i, "Autoban", 1);
+			CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Jetpack Hacking", 180);
+			TotalAutoBan++;
+		}
+
+		if(CellTime[i] > 0 && 0 <= Mobile[i] < sizeof Mobile)
+		{
+			if (CellTime[i] == 60)
+			{
+				CellTime[i] = 1;
+				if(Mobile[Mobile[i]] == i)
+				{
+					CallCost[i] += 10;
+				}
+			}
+			CellTime[i]++;
+			if (Mobile[Mobile[i]] == INVALID_PLAYER_ID && CellTime[i] == 5)
+			{
+				if(IsPlayerConnected(Mobile[i]))
+				{
+					new Float:rX, Float:rY, Float:rZ;
+					GetPlayerPos(i, rX, rY, rZ);
+
+					format(szMiscArray, sizeof(szMiscArray), "* %s's phone rings.", GetPlayerNameEx(Mobile[i]));
+					RingTone[Mobile[i]] = 10;
+					ProxDetector(30.0, Mobile[i], szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				}
 			}
 		}
-		TransportTime[i] += 1;
-		format(szMiscArray, sizeof(szMiscArray), "~r~%d ~w~: ~g~$%d",TransportTime[i],TransportCost[i]);
-		GameTextForPlayer(i, szMiscArray, 15000, 6);
-		if(TransportCost[i] > GetPlayerCash(i))
+
+		if(CellTime[i] == 0 && CallCost[i] > 0)
 		{
-			RemovePlayerFromVehicle(i);
-			new Float:slx, Float:sly, Float:slz;
-			GetPlayerPos(i, slx, sly, slz);
-			SetPlayerPos(i, slx, sly, slz + 2);
-			GameTextForPlayer(i, "~r~You're flat out of cash!", 4000, 4);
+			format(szMiscArray, sizeof(szMiscArray), "~w~The call cost~n~~r~$%d",CallCost[i]);
+			GivePlayerCash(i, -CallCost[i]);
+			GameTextForPlayer(i, szMiscArray, 5000, 1);
+			CallCost[i] = 0;
+		}
+
+		if(TransportDriver[i] != INVALID_PLAYER_ID)
+		{
+			if(GetPlayerVehicleID(i) != GetPlayerVehicleID(TransportDriver[i]) || !TransportDuty[TransportDriver[i]])
+			{
+				if(IsPlayerConnected(TransportDriver[i]))
+				{
+					TransportMoney[TransportDriver[i]] += TransportCost[i];
+					TransportTime[TransportDriver[i]] = 0;
+					TransportCost[TransportDriver[i]] = 0;
+
+					format(szMiscArray, sizeof(szMiscArray), "~w~Passenger left~n~~g~Earned $%d", TransportCost[i]);
+					GameTextForPlayer(TransportDriver[i], szMiscArray, 5000, 1);
+					TransportDriver[i] = INVALID_PLAYER_ID;
+				}
+			}
+			else if(TransportTime[i] >= 16)
+			{
+				TransportTime[i] = 1;
+				if(TransportDriver[i] != INVALID_PLAYER_ID)
+				{
+					if(IsPlayerConnected(TransportDriver[i]))
+					{
+						TransportCost[i] += TransportValue[TransportDriver[i]];
+						TransportCost[TransportDriver[i]] = TransportCost[i];
+					}
+				}
+			}
+			TransportTime[i] += 1;
+			format(szMiscArray, sizeof(szMiscArray), "~r~%d ~w~: ~g~$%d",TransportTime[i],TransportCost[i]);
+			GameTextForPlayer(i, szMiscArray, 15000, 6);
+			if(TransportCost[i] > GetPlayerCash(i))
+			{
+				RemovePlayerFromVehicle(i);
+				new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(i, slx, sly, slz);
+				SetPlayerPos(i, slx, sly, slz + 2);
+				GameTextForPlayer(i, "~r~You're flat out of cash!", 4000, 4);
+			}
+		}
+
+		if(GetVehicleModel(GetPlayerVehicleID(i)) != 594 && GetPVarType(i, "rccam")) {
+			DestroyVehicle(GetPVarInt(i, "rcveh"));
+			KillTimer(GetPVarInt(i, "rccamtimer"));
 		}
 	}
-
-	if(GetVehicleModel(GetPlayerVehicleID(i)) != 594 && GetPVarType(i, "rccam")) {
-		DestroyVehicle(GetPVarInt(i, "rcveh"));
-		KillTimer(GetPVarInt(i, "rccamtimer"));
-	}
-	return 1;
+return 1;
 }
 
 // Timer Name: SyncUp()
 // TickRate: 1 Minute.
-ptask SyncUp[60000](i)
+task SyncUp[60000]()
 {
-
-	SyncMinTime(i);
-
-	if(PlayerInfo[i][pDedicatedWarn] > 0)
+	foreach(new i: Player)
 	{
-		PlayerInfo[i][pDedicatedWarn]--;
-	}
-	DeliverVehicleTimer(i);
-	RentVehicleTimer(i);
-	SetPlayerScore(i, PlayerInfo[i][pLevel]); 
-	if(GetPVarInt(i, "TempLevel") > 0) { SetPlayerScore(i, GetPVarInt(i, "TempLevel")); } 
-	if(PlayerInfo[i][pProbationTime] > 0 && !PlayerInfo[i][pBeingSentenced])
-	{
-		PlayerInfo[i][pProbationTime]--;
-	}
-	if(PlayerInfo[i][pBeingSentenced] > 1) {
-		if(--PlayerInfo[i][pBeingSentenced] == 1)
+		SyncMinTime(i);
+
+		if(PlayerInfo[i][pDedicatedWarn] > 0)
 		{
-			TogglePlayerControllable(i, true);
-			DeletePVar(i, "IsFrozen");
-			//Frozen[i] = 0;
-			SetPlayerPos(i, 1415.5137,-1702.2272,13.5395);
-			SetPlayerFacingAngle(i, 240.0264);
-			SendClientMessageEx(i, COLOR_WHITE, "No Judge has attended your pending trial, you are free!");
-			PlayerInfo[i][pBeingSentenced] = 0;
+			PlayerInfo[i][pDedicatedWarn]--;
 		}
-	}
-	if(PlayerInfo[i][pGiftTime] > 0) {
-		PlayerInfo[i][pGiftTime] -= 1;
-	}
-	if(PlayerInfo[i][pDefendTime] > 0) {
-		PlayerInfo[i][pDefendTime] -= 1;
-	}
-	#if defined zombiemode
-	if(GetPVarType(i, "pZombieBit"))
-	{
-		new Float:health;
-		GetHealth(i, health);
-		SetHealth(i, health - 10.0);
-		SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 10 health due to virus.");
-		SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Seek a medic to cure you!");
-	}
-	#endif
-	switch(GetPVarInt(i, "STD")) {
-		case 1: {
-			new Float: health;
-			GetHealth(i, health);
-			SetHealth(i, health - 5.0);
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 4 health due to STD.");
-		}
-		case 2: {
-			new Float: health;
-			GetHealth(i, health);
-			SetHealth(i, health - 12.0);
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 8 health due to STD.");
-		}
-		case 3: {
-			new Float: health;
-			GetHealth(i, health);
-			SetHealth(i, health - 20.0);
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 12 health due to STD.");
-		}
-	}
-	if(GetPlayerCash(i) < 0) {
-		if(!GetPVarType(i, "debtMsg")) {
-			format(szMiscArray, sizeof(szMiscArray), "You're now in debt; you must repay the debt of $%s. If not, you will be arrested...", number_format(GetPlayerCash(i)));
-			SendClientMessageEx(i, COLOR_LIGHTRED, szMiscArray);
-			SetPVarInt(i, "debtMsg", 1);
-		}
-	}
-	else DeletePVar(i, "debtMsg");
-
-	if(PlayerInfo[i][mPurchaseCount][1] && --PlayerInfo[i][mCooldown][1] <= 0)
-	{
-		format(szMiscArray, sizeof(szMiscArray), "Your Job Boost has expired! Reset Info: Job: %s | Skill: %d (Level: %d)", GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
-		SendClientMessageEx(i, COLOR_GREY, szMiscArray);
-		format(szMiscArray, sizeof(szMiscArray), "[JOBBOOST - Expired] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(i), GetPlayerSQLId(i), GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][0], PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
-		Log("logs/micro.log", szMiscArray);
-		new skill;
-		switch(PlayerInfo[i][mBoost][0])
+		DeliverVehicleTimer(i);
+		RentVehicleTimer(i);
+		SetPlayerScore(i, PlayerInfo[i][pLevel]); 
+		if(GetPVarInt(i, "TempLevel") > 0) { SetPlayerScore(i, GetPVarInt(i, "TempLevel")); } 
+		if(PlayerInfo[i][pProbationTime] > 0 && !PlayerInfo[i][pBeingSentenced])
 		{
-			case 1: skill = pInfo:pDetSkill;
-			case 2: skill = pInfo:pLawSkill;
-			case 3: skill = pInfo:pSexSkill;
-			case 4: skill = pInfo:pDrugsSkill;
-			case 7: skill = pInfo:pMechSkill;
-			case 9: skill = pInfo:pArmsSkill;
-			case 12: skill = pInfo:pBoxSkill;
-			case 20: skill = pInfo:pTruckSkill;
+			PlayerInfo[i][pProbationTime]--;
 		}
-		PlayerInfo[i][pInfo:skill] = PlayerInfo[i][mBoost][1];
-		PlayerInfo[i][mPurchaseCount][1] = 0;
-		PlayerInfo[i][mCooldown][1] = 0;
-		PlayerInfo[i][mBoost][0] = 0;
-		PlayerInfo[i][mBoost][1] = 0;
+		if(PlayerInfo[i][pBeingSentenced] > 1) {
+			if(--PlayerInfo[i][pBeingSentenced] == 1)
+			{
+				TogglePlayerControllable(i, true);
+				DeletePVar(i, "IsFrozen");
+				//Frozen[i] = 0;
+				SetPlayerPos(i, 1415.5137,-1702.2272,13.5395);
+				SetPlayerFacingAngle(i, 240.0264);
+				SendClientMessageEx(i, COLOR_WHITE, "No Judge has attended your pending trial, you are free!");
+				PlayerInfo[i][pBeingSentenced] = 0;
+			}
+		}
+		if(PlayerInfo[i][pGiftTime] > 0) {
+			PlayerInfo[i][pGiftTime] -= 1;
+		}
+		if(PlayerInfo[i][pDefendTime] > 0) {
+			PlayerInfo[i][pDefendTime] -= 1;
+		}
+		#if defined zombiemode
+		if(GetPVarType(i, "pZombieBit"))
+		{
+			new Float:health;
+			GetHealth(i, health);
+			SetHealth(i, health - 10.0);
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 10 health due to virus.");
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Seek a medic to cure you!");
+		}
+		#endif
+		switch(GetPVarInt(i, "STD")) {
+			case 1: {
+				new Float: health;
+				GetHealth(i, health);
+				SetHealth(i, health - 5.0);
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 4 health due to STD.");
+			}
+			case 2: {
+				new Float: health;
+				GetHealth(i, health);
+				SetHealth(i, health - 12.0);
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 8 health due to STD.");
+			}
+			case 3: {
+				new Float: health;
+				GetHealth(i, health);
+				SetHealth(i, health - 20.0);
+				SendClientMessageEx(i, COLOR_LIGHTBLUE, "* Lost 12 health due to STD.");
+			}
+		}
+		if(GetPlayerCash(i) < 0) {
+			if(!GetPVarType(i, "debtMsg")) {
+				format(szMiscArray, sizeof(szMiscArray), "You're now in debt; you must repay the debt of $%s. If not, you will be arrested...", number_format(GetPlayerCash(i)));
+				SendClientMessageEx(i, COLOR_LIGHTRED, szMiscArray);
+				SetPVarInt(i, "debtMsg", 1);
+			}
+		}
+		else DeletePVar(i, "debtMsg");
+
+		if(PlayerInfo[i][mPurchaseCount][1] && --PlayerInfo[i][mCooldown][1] <= 0)
+		{
+			format(szMiscArray, sizeof(szMiscArray), "Your Job Boost has expired! Reset Info: Job: %s | Skill: %d (Level: %d)", GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
+			SendClientMessageEx(i, COLOR_GREY, szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "[JOBBOOST - Expired] %s(%d) Job: %s (%d) Skill: %d (%d)", GetPlayerNameEx(i), GetPlayerSQLId(i), GetJobName(PlayerInfo[i][mBoost][0]), PlayerInfo[i][mBoost][0], PlayerInfo[i][mBoost][1], GetJobLevel(i, PlayerInfo[i][mBoost][0]));
+			Log("logs/micro.log", szMiscArray);
+			new skill;
+			switch(PlayerInfo[i][mBoost][0])
+			{
+				case 1: skill = pInfo:pDetSkill;
+				case 2: skill = pInfo:pLawSkill;
+				case 3: skill = pInfo:pSexSkill;
+				case 4: skill = pInfo:pDrugsSkill;
+				case 7: skill = pInfo:pMechSkill;
+				case 9: skill = pInfo:pArmsSkill;
+				case 12: skill = pInfo:pBoxSkill;
+				case 20: skill = pInfo:pTruckSkill;
+			}
+			PlayerInfo[i][pInfo:skill] = PlayerInfo[i][mBoost][1];
+			PlayerInfo[i][mPurchaseCount][1] = 0;
+			PlayerInfo[i][mCooldown][1] = 0;
+			PlayerInfo[i][mBoost][0] = 0;
+			PlayerInfo[i][mBoost][1] = 0;
+		}
+		if(PlayerInfo[i][mCooldown][4] && --PlayerInfo[i][mCooldown][4] <= 0)
+		{
+			SendClientMessageEx(i, COLOR_GREY, "Your Energy Bar has expired!");
+			PlayerInfo[i][mCooldown][4] = 0;
+		}
+		if(PlayerInfo[i][mPurchaseCount][12] && --PlayerInfo[i][mCooldown][12] <= 0)
+		{
+			SendClientMessageEx(i, COLOR_GREY, "Your Quick Bank Access has expired!");
+			PlayerInfo[i][mPurchaseCount][12] = 0;
+			PlayerInfo[i][mCooldown][12] = 0;
+		}
+		if(PlayerInfo[i][pBuddyInvited] == 1 && --PlayerInfo[i][pTempVIP] <= 0)
+		{
+			PlayerInfo[i][pTempVIP] = 0;
+			PlayerInfo[i][pBuddyInvited] = 0;
+			PlayerInfo[i][pDonateRank] = 0;
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your temporary VIP subscription has expired.");
+			SetPlayerToTeamColor(i);
+		}
+		/*if(PlayerInfo[i][pBuddyInvited] == 1 && PlayerInfo[i][pTempVIP] == 15 && !PlayerInfo[i][pShopNotice])
+		{
+			PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[4]);
+			PlayerTextDrawShow(i, MicroNotice[i]);
+			SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
+		}*/
 	}
-	if(PlayerInfo[i][mCooldown][4] && --PlayerInfo[i][mCooldown][4] <= 0)
-	{
-		SendClientMessageEx(i, COLOR_GREY, "Your Energy Bar has expired!");
-		PlayerInfo[i][mCooldown][4] = 0;
-	}
-	if(PlayerInfo[i][mPurchaseCount][12] && --PlayerInfo[i][mCooldown][12] <= 0)
-	{
-		SendClientMessageEx(i, COLOR_GREY, "Your Quick Bank Access has expired!");
-		PlayerInfo[i][mPurchaseCount][12] = 0;
-		PlayerInfo[i][mCooldown][12] = 0;
-	}
-	if(PlayerInfo[i][pBuddyInvited] == 1 && --PlayerInfo[i][pTempVIP] <= 0)
-	{
-		PlayerInfo[i][pTempVIP] = 0;
-		PlayerInfo[i][pBuddyInvited] = 0;
-		PlayerInfo[i][pDonateRank] = 0;
-		SendClientMessageEx(i, COLOR_LIGHTBLUE, "Your temporary VIP subscription has expired.");
-		SetPlayerToTeamColor(i);
-	}
-	/*if(PlayerInfo[i][pBuddyInvited] == 1 && PlayerInfo[i][pTempVIP] == 15 && !PlayerInfo[i][pShopNotice])
-	{
-		PlayerTextDrawSetString(i, MicroNotice[i], ShopMsg[4]);
-		PlayerTextDrawShow(i, MicroNotice[i]);
-		SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
-	}*/
 }
-
 // Player Task Name: AFKUpdate()
 // TickRate: 10 Secs.
 ptask AFKUpdate[10000](i)
