@@ -1355,7 +1355,7 @@ CMD:accept(playerid, params[])
                             SendClientMessageEx(GuardOffer[playerid], COLOR_LIGHTBLUE, szMessage);
                             GivePlayerCash(GuardOffer[playerid], GuardPrice[playerid]);
                             GivePlayerCash(playerid, -GuardPrice[playerid]);
-                            TurfWars_TurfTax(GuardOffer[playerid], "vest", GuardPrice[playerid]);
+                            ExtortionTurfsWarsZone(GuardOffer[playerid], 2, GuardPrice[playerid]);
                             GuardOffer[playerid] = INVALID_PLAYER_ID;
                             GuardPrice[playerid] = 0;
                             return 1;
@@ -1452,7 +1452,6 @@ CMD:accept(playerid, params[])
 	                    GetPlayerName(playerid, sendername, sizeof(sendername));
 	                    format(szMessage, sizeof(szMessage), "* %s has bought your %d rim kits, $%d was added to your money.",sendername,GetPVarInt(playerid, "RimCount"),GetPVarInt(playerid, "RimPrice"));
 	                    SendClientMessageEx(GetPVarInt(playerid, "RimOffer"), COLOR_LIGHTBLUE, szMessage);
-	                    TurfWars_TurfTax(GetPVarInt(playerid, "RimOffer"), "rim kit", GetPVarInt(playerid, "RimPrice"));
 	                    PlayerInfo[GetPVarInt(playerid, "RimOffer")][pRimMod] -= GetPVarInt(playerid, "RimCount");
 	                    PlayerInfo[playerid][pRimMod] += GetPVarInt(playerid, "RimCount");
 
@@ -1949,7 +1948,7 @@ CMD:accept(playerid, params[])
                                 ABroadCast(COLOR_YELLOW, szMessage, 2);
                             }
 
-                            TurfWars_TurfTax(SexOffer[playerid], "sex", SexPrice[playerid]);
+                            ExtortionTurfsWarsZone(SexOffer[playerid], 6, SexPrice[playerid]);
                             GivePlayerCash(SexOffer[playerid], SexPrice[playerid]);
                             GivePlayerCash(playerid, -SexPrice[playerid]);
 

@@ -58,7 +58,7 @@ CMD:mydrugs(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	for(new i; i < sizeof(Drugs); ++i) 
 	{
-		if(i==4) format(string, sizeof(string),"%s: %dg", Drugs[i], PlayerInfo[playerid][pDrugs][i], Drugs[i + 1], PlayerInfo[playerid][pDrugs][i + 1]); // REMOVE IF AN ODD NUMBER OF DRUGS ARE ADDED, IF AN EVEN NUMBER ARE ADDED INCREASE THE 4
+		if(i==4) format(string, sizeof(string),"%s: %dg", Drugs[i], PlayerInfo[playerid][pDrugs][i], Drugs[i + 1], PlayerInfo[playerid][pDrugs][i + 1]); // REMOVE THE IF STATEMENT IF AN ODD NUMBER OF DRUGS ARE ADDED, IF AN EVEN NUMBER ARE ADDED INCREASE THE 4
 		else format(string, sizeof(string),"%s: %dg {CCCCCC}| %s: %dg", Drugs[i], PlayerInfo[playerid][pDrugs][i], Drugs[i + 1], PlayerInfo[playerid][pDrugs][i + 1]);
 		SendClientMessageEx(playerid, COLOR_GRAD1, string);
 		i++;
@@ -200,6 +200,8 @@ CMD:getcrate(playerid, params[])
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a boat.");
 		}
+
+		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPDRUGRUNTIMER);
 	}
 	return 1;
 }
@@ -345,9 +347,15 @@ hook OnPlayerEnterCheckpoint(playerid)
 					case 4: vip = 4;
 				}
 
+				if(GetPVarInt(playerid, "tpDrugRunTimer") != 0)
+	    		{
+			   		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport drugrunning.", GetPlayerNameEx(playerid), playerid);
+			   		ABroadCast( COLOR_YELLOW, string, 2 );
+				}
+
 				if(GetPVarInt(playerid, "pPotPackages"))
 				{
-					PlayerInfo[playerid][pDrugs][0] += 10;
+					PlayerInfo[playerid][pDrugs][0] += 10 * vip;
 					format(string, sizeof(string), "You have delivered the packages an gained %dg of Pot", 10 * vip);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					FinishDrugRun(playerid);
@@ -355,7 +363,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 
 				if(GetPVarInt(playerid, "pCrackPackages"))
 				{
-					PlayerInfo[playerid][pDrugs][1] += 10;
+					PlayerInfo[playerid][pDrugs][1] += 10 * vip;
 					format(string, sizeof(string), "You have delivered the packages an gained %dg of Crack", 10 * vip);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					FinishDrugRun(playerid);

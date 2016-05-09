@@ -143,7 +143,7 @@ new BikeParkourObjectStage[2];
 new Selected[MAX_PLAYERS][MAX_BUSINESSSALES];
 new Businesses[MAX_BUSINESSES][eBiz];
 new PlayerText:PlayerPokerUI[MAX_PLAYERS][MAX_PLAYERPOKERUI];
-new PlayerText:PullDraw[MAX_PLAYERS][9];
+//new PlayerText:PullDraw[MAX_PLAYERS][9]; Removed cause I got OCD about the warning -Winterfield
 new StoreItemCost[][StoreItemCostEnum] =
 {
 	{1},
@@ -369,7 +369,7 @@ new Text:PriorityReport[MAX_PLAYERS];
 new Text:TD_ServerError;
 new Text:TD_LoginScreen;
 new PlayerText:TD_ChatBox[11];
-new Text:PointTime;
+//new Text:PointTime;
 
 
 // Sobeit Check Variable
@@ -1241,6 +1241,9 @@ new freeweekend,
 	nonvipcredits;
 
 new PlayerHoldingObject[MAX_PLAYERS][10];
+
+new turfWarsRadar[MAX_PLAYERS] = 0;
+new turfWarsMiniMap[MAX_PLAYERS] = 0;
 
 // Dynamic Gift Box Stuff
 new dgVar[dgItems][4];

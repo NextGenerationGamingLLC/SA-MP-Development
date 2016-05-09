@@ -225,8 +225,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 
 				format(szMiscArray, sizeof(szMiscArray), "[RIVALS]: {FFFF00}%s {CCCCCC}and {FFFF00}%s {CCCCCC}are now rivals.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iAddGroupID][g_szGroupName]);
-				TurfWars_SendGroupMessage(iGroupID, COLOR_GREEN, szMiscArray);
-				TurfWars_SendGroupMessage(iAddGroupID, COLOR_GREEN, szMiscArray);
+				foreach(new i: Player)
+				{
+					if(PlayerInfo[i][pMember] == iGroupID) {
+						ChatTrafficProcess(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+					}
+					if(PlayerInfo[i][pMember] == iAddGroupID) {
+						ChatTrafficProcess(i, arrGroupData[iAddGroupID][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+					}
+				}
 
 				format(szMiscArray, sizeof(szMiscArray), "Successfully added %s to %s's rivals.", arrGroupData[iAddGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
@@ -255,8 +262,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				DeletePVar(playerid, "RGroupID");
 				format(szMiscArray, sizeof(szMiscArray), "[RIVALS]: {FFFF00}%s {CCCCCC}and {FFFF00}%s {CCCCCC}are no longer rivals.", arrGroupData[iGroupID][g_szGroupName], arrGroupData[iRemGroupID][g_szGroupName]);
-				TurfWars_SendGroupMessage(iGroupID, COLOR_GREEN, szMiscArray);
-				TurfWars_SendGroupMessage(iRemGroupID, COLOR_GREEN, szMiscArray);
+				foreach(new i: Player)
+				{
+					if(PlayerInfo[i][pMember] == iGroupID) {
+						ChatTrafficProcess(i, arrGroupData[iGroupID][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+					}
+					if(PlayerInfo[i][pMember] == iRemGroupID) {
+						ChatTrafficProcess(i, arrGroupData[iRemGroupID][g_hRadioColour] * 256 + 255, szMiscArray, 12);
+					}
+				}
 
 				format(szMiscArray, sizeof(szMiscArray), "Successfully removed %s from %s's rivals.", arrGroupData[iRemGroupID][g_szGroupName], arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);

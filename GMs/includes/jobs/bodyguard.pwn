@@ -90,6 +90,7 @@ CMD:frisk(playerid, params[])
 
 PlayerFriskPlayer(playerid, giveplayerid)
 {
+	szMiscArray[0] = 0;
 	new packages = GetPVarInt(giveplayerid, "Packages");
 	new crates = PlayerInfo[giveplayerid][pCrates];
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
@@ -98,37 +99,37 @@ PlayerFriskPlayer(playerid, giveplayerid)
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Items **");
 	if(PlayerInfo[giveplayerid][pMats] > 0)
 	{
-		format(string, sizeof(string), "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);
+		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
 	if(PlayerInfo[giveplayerid][pSyringes] > 0)
 	{
-		format(string, sizeof(string), "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d syringes.", PlayerInfo[giveplayerid][pSyringes]);
+		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
     if(packages > 0)
 	{
-		format(string, sizeof(string), "(Pocket) %d material packages.", packages);
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d material packages.", packages);
+		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
 	if(crates > 0)
 	{
-		format(string, sizeof(string), "(Pocket) %d drug crates.", crates);
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d drug crates.", crates);
+		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Drugs **");
 	for(new i = 0; i < sizeof(Drugs); ++i) {
 
 		if(PlayerInfo[giveplayerid][pDrugs][i] > 0) {
-			format(string, sizeof(string), "%s: %dpc", Drugs[i], PlayerInfo[giveplayerid][pDrugs][i]);
-			SendClientMessageEx(playerid, COLOR_GRAD1, string);
+			format(szMiscArray, sizeof(szMiscArray), "%s: %dg", Drugs[i], PlayerInfo[giveplayerid][pDrugs][i]);
+			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 			}
 	}
 	if(Fishes[giveplayerid][pWeight1] > 0 || Fishes[giveplayerid][pWeight2] > 0 || Fishes[giveplayerid][pWeight3] > 0 || Fishes[giveplayerid][pWeight4] > 0 || Fishes[giveplayerid][pWeight5] > 0)
 	{
-		format(string, sizeof(string), "(Pocket) %d fish.", PlayerInfo[giveplayerid][pFishes]);
-		SendClientMessageEx(playerid, COLOR_GREY, string);
+		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d fish.", PlayerInfo[giveplayerid][pFishes]);
+		SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 	}
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Misc **");
 	if(PlayerInfo[giveplayerid][pPhoneBook] > 0) SendClientMessageEx(playerid, COLOR_GREY, "Phone book.");
@@ -140,16 +141,16 @@ PlayerFriskPlayer(playerid, giveplayerid)
 		if(PlayerInfo[giveplayerid][pGuns][i] > 0)
 		{
 			GetWeaponName(PlayerInfo[giveplayerid][pGuns][i], weaponname, sizeof(weaponname));
-			format(string, sizeof(string), "Weapon: %s.", weaponname);
-			SendClientMessageEx(playerid, COLOR_GRAD1, string);
+			format(szMiscArray, sizeof(szMiscArray), "Weapon: %s.", weaponname);
+			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 		}
 	}
 	for(new i = 0; i != MAX_AMMO_TYPES; i++)
 	{
 		if(arrAmmoData[giveplayerid][awp_iAmmo][i] > 0)
 		{
-			format(string, sizeof(string), "%s rounds: %d", GetAmmoName(i), arrAmmoData[giveplayerid][awp_iAmmo][i]);
-			SendClientMessageEx(playerid, COLOR_GREY, string);
+			format(szMiscArray, sizeof(szMiscArray), "%s rounds: %d", GetAmmoName(i), arrAmmoData[giveplayerid][awp_iAmmo][i]);
+			SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");

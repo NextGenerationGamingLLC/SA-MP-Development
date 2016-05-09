@@ -209,11 +209,37 @@ task ServerHeartbeat[1000]() {
 	//CharmTimer();
 }
 
+// Timer Name: TurfWarsUpdate()
+// TickRate: 1 secs.
+task TurfWarsUpdate[1000]()
+{
+	for(new i = 0; i < MAX_TURFS; i++)
+	{
+	    if(TurfWars[i][twActive] == 1)
+	    {
+	        if(TurfWars[i][twTimeLeft] > 0)
+	        {
+	            TurfWars[i][twTimeLeft]--;
+	        }
+	        else
+	        {
+	            if(TurfWars[i][twAttemptId] != -1)
+	            {
+					CaptureTurfWarsZone(TurfWars[i][twAttemptId],i);
+	            }
+	            TurfWars[i][twVulnerable] = 12;
+				ResetTurfWarsZone(1, i);
+	        }
+	    }
+	}
+}
+
 // Task Name: SyncTime()
 // TickRate: 60 Secs
 task SyncTime[60000]()
 {
-
+	PlantTimer();
+	
 	for(new i = 0; i < MAX_ITEMS; i++) // Moved from 1000 to 60000 check - Jingles
 	{
 	    if(Price[i] != ShopItems[i][sItemPrice])
@@ -537,7 +563,6 @@ task SyncTime[60000]()
 		        }
 		    }
 		}
-		PlantTimer();
 		//SaveFamilies();
 		//CallRemoteFunction("ActivateRandomQuestion", "");//Olympics
 	}

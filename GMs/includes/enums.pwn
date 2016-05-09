@@ -1897,7 +1897,7 @@ enum eTurfWars {
 	tw_iRevenue,
 	bool:tw_bVulnerable
 }
-new arrTurfWars[MAX_TURFS][eTurfWars];
+//new arrTurfWars[MAX_TURFS][eTurfWars];
 
 
 // All player booleans variables go here to reduce memory:
@@ -1914,7 +1914,7 @@ enum PlayerBit:(<<= 1) {
 };
 new PlayerBit:arrPlayerBits[MAX_PLAYERS];
 
-enum eTurfWarsBits:(<<= 1) {
+/*enum eTurfWarsBits:(<<= 1) {
 
 	// tw_bVulnerable = 1,
 	tw_bDisabled = 1,
@@ -1923,7 +1923,7 @@ enum eTurfWarsBits:(<<= 1) {
 	tw_bTurfMode
 
 };
-new eTurfWarsBits:arrTurfWarsBits[MAX_TURFS];
+new eTurfWarsBits:arrTurfWarsBits[MAX_TURFS];*/
 
 enum e_AntiCheat {
 

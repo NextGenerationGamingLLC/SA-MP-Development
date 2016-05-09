@@ -40,8 +40,9 @@ CMD:sellgun(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJob] == 9 || PlayerInfo[playerid][pJob2] == 9 || PlayerInfo[playerid][pJob3] == 9)
 	{
-		if(GetPVarInt(playerid, "pSellGunTime") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait 30 seconds before selling another gun.");
+		if(GetPVarInt(playerid, "pSellGunTime") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD1, "You must wait 10 seconds before selling another gun.");
 		if(GetPVarType(playerid, "WatchingTV") || GetPVarType(playerid, "PreviewingTV")) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot use drugs while watching TV.");
+		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot sell a gun while in a vehicle!");
 		if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
    		#if defined zombiemode
 		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
@@ -189,6 +190,9 @@ CMD:sellgun(playerid, params[])
 
 		if(IsPlayerConnected(id))
 		{
+			if(IsPlayerInAnyVehicle(id)) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot sell a gun to someone in a vehicle!");
+			if(!ProxDetectorS(8.0, playerid, id)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near that player.");
+
 			if(strcmp(weapon, "Flowers", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
@@ -266,7 +270,7 @@ CMD:sellgun(playerid, params[])
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
 					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 11, 9999);
+					GivePlayerValidWeapon(id, 10, 9999);
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -274,7 +278,7 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 500)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
+					PlayerInfo[playerid][pMats] -= 500;
 					GivePlayerValidWeapon(id, 22, 0);
 
 					PlayerInfo[playerid][pArmsSkill] += 1;
@@ -325,7 +329,7 @@ CMD:sellgun(playerid, params[])
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
-			else if(strcmp(weapon, "rifle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 500)
+			else if(strcmp(weapon, "Rifle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 500)
 			{
 				if(PlayerInfo[playerid][pMats] >= 1000)
 				{
@@ -413,7 +417,7 @@ CMD:sellgun(playerid, params[])
 
 			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
-			SetPVarInt(playerid, "pSellGunTime", gettime() + 30);
+			SetPVarInt(playerid, "pSellGunTime", gettime() + 10);
 			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); // Just a little 'classic' feel to it. -Winterfield
 			return 1; // Added so the error message would work.
 		}

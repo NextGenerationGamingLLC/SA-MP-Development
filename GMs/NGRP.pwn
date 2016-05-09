@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.307"
+#define SERVER_GM_TEXT "NG:RP v3.0.310"
 
 // #define AREA_DEBUG
 
@@ -269,7 +269,8 @@
 #include "./includes/group/GunLicense.pwn"
 //#include "./includes/group/URLrace.pwn"
 #include "./includes/group/sanews.pwn"
-#include "./includes/group/turfs2.pwn"
+#include "./includes/group/turfs.pwn"
+//#include "./includes/group/turfs2.pwn"
 
 //job system includes
 #include "./includes/jobs/bartender.pwn"

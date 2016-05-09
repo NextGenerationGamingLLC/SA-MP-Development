@@ -1,75 +1,68 @@
--- phpMyAdmin SQL Dump
--- version 4.4.1.1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Aug 12, 2015 at 06:11 AM
--- Server version: 5.5.44
--- PHP Version: 5.6.0
+/*
+Navicat MySQL Data Transfer
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+Source Server         : Peak Gaming
+Source Server Version : 50617
+Source Host           : localhost:3306
+Source Database       : ngrp
 
+Target Server Type    : MYSQL
+Target Server Version : 50617
+File Encoding         : 65001
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+Date: 2016-05-08 20:44:25
+*/
 
---
--- Database: `ngrp_main`
---
+SET FOREIGN_KEY_CHECKS=0;
 
--- --------------------------------------------------------
+-- ----------------------------
+-- Table structure for dynpoints
+-- ----------------------------
+DROP TABLE IF EXISTS `dynpoints`;
+CREATE TABLE `dynpoints` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `pointname` varchar(255) NOT NULL,
+  `type` int(255) NOT NULL,
+  `posx` float(20,5) NOT NULL,
+  `posy` float(20,5) NOT NULL,
+  `posz` float(20,5) NOT NULL,
+  `pos2x` float(20,5) NOT NULL,
+  `pos2y` float(20,5) NOT NULL,
+  `pos2z` float(20,5) NOT NULL,
+  `vw` int(255) NOT NULL,
+  `vw2` int(255) NOT NULL,
+  `capturable` int(255) NOT NULL,
+  `captureplayername` varchar(255) NOT NULL,
+  `playernamecapping` varchar(255) NOT NULL,
+  `cappergroup` int(255) NOT NULL DEFAULT '-1',
+  `cappergroupowned` int(255) NOT NULL DEFAULT '-1',
+  `inactive` int(255) NOT NULL DEFAULT '1',
+  `materials` int(255) NOT NULL,
+  `timestamp1` int(255) NOT NULL,
+  `timestamp2` int(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
---
--- Table structure for table `dynpoints`
---
-
-CREATE TABLE IF NOT EXISTS `dynpoints` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `type` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(32) NOT NULL DEFAULT 'Factory',
-  `captureable` int(11) NOT NULL DEFAULT '1',
-  `groupid` int(11) NOT NULL DEFAULT '0',
-  `posx` float NOT NULL DEFAULT '0',
-  `posy` float NOT NULL DEFAULT '0',
-  `posz` float NOT NULL DEFAULT '0',
-  `delposx` float NOT NULL DEFAULT '0',
-  `delposy` float NOT NULL DEFAULT '0',
-  `delposz` float NOT NULL DEFAULT '0',
-  `vw` int(11) NOT NULL DEFAULT '0',
-  `int` int(11) NOT NULL DEFAULT '0',
-  `9mm` int(11) NOT NULL DEFAULT '0',
-  `sdpistol` int(11) NOT NULL DEFAULT '0',
-  `deagle` int(11) NOT NULL DEFAULT '0',
-  `uzi` int(11) NOT NULL DEFAULT '0',
-  `tec9` int(11) NOT NULL DEFAULT '0',
-  `mp5` int(11) NOT NULL DEFAULT '0',
-  `m4` int(11) NOT NULL DEFAULT '0',
-  `ak47` int(11) NOT NULL DEFAULT '0',
-  `rifle` int(11) NOT NULL DEFAULT '0',
-  `sniper` int(11) NOT NULL DEFAULT '0',
-  `shotty` int(11) NOT NULL DEFAULT '0',
-  `sawnoff` int(11) NOT NULL DEFAULT '0',
-  `spas` int(11) NOT NULL DEFAULT '0',
-  `ammo0` int(11) NOT NULL DEFAULT '0',
-  `ammo1` int(11) NOT NULL DEFAULT '0',
-  `ammo2` int(11) NOT NULL DEFAULT '0',
-  `ammo3` int(11) NOT NULL DEFAULT '0',
-  `ammo4` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `dynpoints`
---
-ALTER TABLE `dynpoints`
-  ADD PRIMARY KEY (`id`);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- ----------------------------
+-- Records of dynpoints
+-- ----------------------------
+INSERT INTO `dynpoints` VALUES ('1', 'Materials Pickup 1', '0', '1423.87769', '-1319.38586', '13.55469', '2167.88696', '-2273.65161', '13.38234', '0', '0', '0', 'Jason', 'Jason', '-1', '19', '0', '500', '15', '-1');
+INSERT INTO `dynpoints` VALUES ('2', 'Materials Pickup 2', '0', '2390.53979', '-2009.37781', '13.55370', '2287.68481', '-1106.71497', '37.97656', '0', '0', '0', 'Jason', 'Jason', '-1', '19', '0', '0', '15', '-1');
+INSERT INTO `dynpoints` VALUES ('3', 'Materials Factory 1', '3', '2167.06226', '-2273.33887', '13.37262', '0.00000', '0.00000', '0.00000', '0', '0', '0', 'Jason', 'Jason', '-1', '19', '0', '0', '15', '-1');
+INSERT INTO `dynpoints` VALUES ('4', 'Materials Factory 2', '3', '2288.05420', '-1104.90759', '38.31731', '0.00000', '0.00000', '0.00000', '0', '0', '0', 'Jason', 'Jason', '-1', '19', '0', '0', '15', '-1');
+INSERT INTO `dynpoints` VALUES ('5', 'Drug House', '1', '2176.32959', '-1671.48743', '14.94541', '51.61081', '-285.93063', '1.28122', '0', '0', '0', 'Jason', 'Jason', '-1', '19', '0', '0', '15', '-1');
+INSERT INTO `dynpoints` VALUES ('6', 'Crack Lab', '2', '2352.11133', '-1167.48218', '27.68519', '51.61081', '-285.93063', '1.28122', '0', '0', '0', 'Jason', 'Jason', '-1', '3', '0', '9999', '17', '-1');
+INSERT INTO `dynpoints` VALUES ('7', 'San Fierro Docks', '3', '-1549.16870', '123.95258', '3.55469', '0.00000', '0.00000', '0.00000', '0', '0', '0', 'Jason', 'Jason', '-1', '19', '0', '6000', '15', '-1');
+INSERT INTO `dynpoints` VALUES ('8', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('9', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('10', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('11', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('12', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('13', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('14', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('15', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('16', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('17', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('18', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('19', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');
+INSERT INTO `dynpoints` VALUES ('20', '', '0', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0.00000', '0', '0', '1', '', '', '-1', '-1', '1', '0', '0', '0');

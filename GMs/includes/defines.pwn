@@ -1198,7 +1198,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_EDITPOINT_POSITION 		(6173)
 #define 		DIALOG_EDITPOINT_MATERIALS		(6174)
 
-#define 		DIALOG_INTERACT 				(6175)
+/*#define 		DIALOG_INTERACT 				(6175)
 #define 		DIALOG_INTERACT_COP 			(6176)
 #define 		DIALOG_INTERACT_MEDIC			(6177)
 #define 		DIALOG_INTERACT_GUARD			(6178)
@@ -1206,7 +1206,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_INTERACT_PAY2			(6180)
 #define 		DIALOG_INTERACT_GIVEITEM		(6181)
 #define 		DIALOG_INTERACT_SELLITEM		(6182)
-/*#define 		DIALOG_INTERACT_PAY				(6182)
+#define 		DIALOG_INTERACT_PAY				(6182)
 #define 		DIALOG_INTERACT_PAY				(6183)
 #define 		DIALOG_INTERACT_PAY				(6184)
 #define 		DIALOG_INTERACT_PAY				(6185)
