@@ -192,13 +192,23 @@ CMD:sellgun(playerid, params[])
 		{
 			if(IsPlayerInAnyVehicle(id)) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot sell a gun to someone in a vehicle!");
 			if(!ProxDetectorS(8.0, playerid, id)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near that player.");
+			if(PlayerInfo[id][pConnectHours] < 2 || PlayerInfo[id][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently weapon restricted!");
 
 			if(strcmp(weapon, "Flowers", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 14, 9999);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 100;
+						GivePlayerValidWeapon(id, 14, 9999);
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 14);
+						SetPVarInt(id, "pSellGunMats", 100);
+						SetPVarInt(id, "pSellGunID", playerid);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -206,8 +216,17 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 1, 9999);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 100;
+						GivePlayerValidWeapon(id, 1, 9999);
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 1);
+						SetPVarInt(id, "pSellGunMats", 100);
+						SetPVarInt(id, "pSellGunID", playerid);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -215,8 +234,17 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 5, 9999);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 100;
+						GivePlayerValidWeapon(id, 5, 9999);
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 5);
+						SetPVarInt(id, "pSellGunMats", 100);
+						SetPVarInt(id, "pSellGunID", playerid);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -224,8 +252,17 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 15, 9999);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 100;
+						GivePlayerValidWeapon(id, 15, 9999);
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 15);
+						SetPVarInt(id, "pSellGunMats", 100);
+						SetPVarInt(id, "pSellGunID", playerid);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -233,8 +270,17 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 6, 9999);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 100;
+						GivePlayerValidWeapon(id, 6, 9999);
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 6);
+						SetPVarInt(id, "pSellGunMats", 100);
+						SetPVarInt(id, "pSellGunID", playerid);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -242,8 +288,17 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 2, 9999);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 100;
+						GivePlayerValidWeapon(id, 2, 9999);
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 2);
+						SetPVarInt(id, "pSellGunMats", 100);
+						SetPVarInt(id, "pSellGunID", playerid);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -251,8 +306,17 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 7, 9999);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 100;
+						GivePlayerValidWeapon(id, 7, 9999);
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 7);
+						SetPVarInt(id, "pSellGunMats", 100);
+						SetPVarInt(id, "pSellGunID", playerid);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -260,8 +324,17 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 8, 9999);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 100;
+						GivePlayerValidWeapon(id, 8, 9999);
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 8);
+						SetPVarInt(id, "pSellGunMats", 100);
+						SetPVarInt(id, "pSellGunID", playerid);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -269,8 +342,17 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 100)
 				{
-					PlayerInfo[playerid][pMats] -= 100;
-					GivePlayerValidWeapon(id, 10, 9999);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 100;
+						GivePlayerValidWeapon(id, 10, 9999);
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 10);
+						SetPVarInt(id, "pSellGunMats", 100);
+						SetPVarInt(id, "pSellGunID", playerid);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -278,10 +360,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 500)
 				{
-					PlayerInfo[playerid][pMats] -= 500;
-					GivePlayerValidWeapon(id, 22, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 500;
+						GivePlayerValidWeapon(id, 22, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 1;
+						PlayerInfo[playerid][pArmsSkill] += 1;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 22);
+						SetPVarInt(id, "pSellGunMats", 500);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 1);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -289,10 +381,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 650)
 				{
-					PlayerInfo[playerid][pMats] -= 650;
-					GivePlayerValidWeapon(id, 25, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 650;
+						GivePlayerValidWeapon(id, 25, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 2;
+						PlayerInfo[playerid][pArmsSkill] += 2;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 25);
+						SetPVarInt(id, "pSellGunMats", 650);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 2);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -300,10 +402,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 800)
 				{
-					PlayerInfo[playerid][pMats] -= 800;
-					GivePlayerValidWeapon(id, 23, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 800;
+						GivePlayerValidWeapon(id, 23, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 3;
+						PlayerInfo[playerid][pArmsSkill] += 3;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 23);
+						SetPVarInt(id, "pSellGunMats", 800);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 3);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -311,10 +423,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 1000)
 				{
-					PlayerInfo[playerid][pMats] -= 1000;
-					GivePlayerValidWeapon(id, 28, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 1000;
+						GivePlayerValidWeapon(id, 28, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 4;
+						PlayerInfo[playerid][pArmsSkill] += 4;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 28);
+						SetPVarInt(id, "pSellGunMats", 1000);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 4);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -322,10 +444,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 1000)
 				{
-					PlayerInfo[playerid][pMats] -= 1000;
-					GivePlayerValidWeapon(id, 32, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 1000;
+						GivePlayerValidWeapon(id, 32, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 4;
+						PlayerInfo[playerid][pArmsSkill] += 4;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 32);
+						SetPVarInt(id, "pSellGunMats", 1000);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 4);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -333,10 +465,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 1000)
 				{
-					PlayerInfo[playerid][pMats] -= 1000;
-					GivePlayerValidWeapon(id, 33, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 1000;
+						GivePlayerValidWeapon(id, 33, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 5;
+						PlayerInfo[playerid][pArmsSkill] += 5;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 33);
+						SetPVarInt(id, "pSellGunMats", 1000);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 5);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -344,10 +486,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 2500)
 				{
-					PlayerInfo[playerid][pMats] -= 2500;
-					GivePlayerValidWeapon(id, 29, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 2500;
+						GivePlayerValidWeapon(id, 29, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 6;
+						PlayerInfo[playerid][pArmsSkill] += 6;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 29);
+						SetPVarInt(id, "pSellGunMats", 2500);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 6);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -355,10 +507,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 4000)
 				{
-					PlayerInfo[playerid][pMats] -= 4000;
-					GivePlayerValidWeapon(id, 24, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 4000;
+						GivePlayerValidWeapon(id, 24, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 7;
+						PlayerInfo[playerid][pArmsSkill] += 7;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 24);
+						SetPVarInt(id, "pSellGunMats", 4000);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 7);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -366,10 +528,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 12000)
 				{
-					PlayerInfo[playerid][pMats] -= 12000;
-					GivePlayerValidWeapon(id, 30, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 12000;
+						GivePlayerValidWeapon(id, 30, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 8;
+						PlayerInfo[playerid][pArmsSkill] += 8;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 30);
+						SetPVarInt(id, "pSellGunMats", 12000);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 8);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -377,10 +549,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 20000)
 				{
-					PlayerInfo[playerid][pMats] -= 20000;
-					GivePlayerValidWeapon(id, 31, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 20000;
+						GivePlayerValidWeapon(id, 31, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 9;
+						PlayerInfo[playerid][pArmsSkill] += 9;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 31);
+						SetPVarInt(id, "pSellGunMats", 20000);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 9);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -388,10 +570,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 30000)
 				{
-					PlayerInfo[playerid][pMats] -= 30000;
-					GivePlayerValidWeapon(id, 27, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 30000;
+						GivePlayerValidWeapon(id, 27, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 10;
+						PlayerInfo[playerid][pArmsSkill] += 10;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 27);
+						SetPVarInt(id, "pSellGunMats", 30000);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 10);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -399,10 +591,20 @@ CMD:sellgun(playerid, params[])
 			{
 				if(PlayerInfo[playerid][pMats] >= 30000)
 				{
-					PlayerInfo[playerid][pMats] -= 30000;
-					GivePlayerValidWeapon(id, 34, 0);
+					if(id == playerid)
+					{
+						PlayerInfo[playerid][pMats] -= 30000;
+						GivePlayerValidWeapon(id, 34, 0);
 
-					PlayerInfo[playerid][pArmsSkill] += 10;
+						PlayerInfo[playerid][pArmsSkill] += 10;
+					}
+					else
+					{
+						SetPVarInt(id, "pSellGun", 34);
+						SetPVarInt(id, "pSellGunMats", 30000);
+						SetPVarInt(id, "pSellGunID", playerid);
+						SetPVarInt(id, "pSellGunXP", 10);
+					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
@@ -412,13 +614,22 @@ CMD:sellgun(playerid, params[])
 			}
 			weapon[0] = toupper(weapon[0]);
 
-			if(id == playerid) { format(szMiscArray, sizeof(szMiscArray), "%s crafts a %s from their materials, handing it to themselves.", GetPlayerNameEx(playerid), weapon); }
-			else format(szMiscArray, sizeof(szMiscArray), "%s crafts a %s from their materials, handing it to %s.", GetPlayerNameEx(playerid), weapon, GetPlayerNameEx(id));
+			if(id == playerid) 
+			{ 
+				format(szMiscArray, sizeof(szMiscArray), "%s crafts a %s from their materials, handing it to themselves.", GetPlayerNameEx(playerid), weapon); 
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
-			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); // Just a little 'classic' feel to it. -Winterfield
+			}
+			else 
+			{
+				format(szMiscArray, sizeof(szMiscArray), "You have offered %s a %s.", GetPlayerNameEx(id), weapon);
+				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered to sell you a %s, type /accept sellgun to accept it.", GetPlayerNameEx(playerid), weapon);
+				SendClientMessage(id, COLOR_LIGHTBLUE, szMiscArray);
+			}
 
 			SetPVarInt(playerid, "pSellGunTime", gettime() + 10);
-			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); // Just a little 'classic' feel to it. -Winterfield
 			return 1; // Added so the error message would work.
 		}
 		else return SendClientMessageEx(playerid, COLOR_WHITE, "That player is not currently online, please try again!");

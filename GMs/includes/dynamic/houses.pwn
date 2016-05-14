@@ -125,6 +125,8 @@ stock SaveHouse(houseid)
 		`Crack`=%d, \
 		`Materials`=%d, \
 		`Heroin`=%d, \
+		`Meth`=%d, \
+		`Ecstasy`=%d \
 		`Weapons0`=%d, \
 		`Weapons1`=%d, \
 		`Weapons2`=%d, \
@@ -152,6 +154,8 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hCrack],
 		HouseInfo[houseid][hMaterials],
 		HouseInfo[houseid][hHeroin],
+		HouseInfo[houseid][hMeth],
+		HouseInfo[houseid][hEcstasy],
 		HouseInfo[houseid][hWeapons][0],
 		HouseInfo[houseid][hWeapons][1],
 		HouseInfo[houseid][hWeapons][2],
@@ -289,10 +293,12 @@ public OnLoadHouse(index)
 		HouseInfo[index][hRentFee] = cache_get_field_content_int(row, "RentFee", MainPipeline); 
 		HouseInfo[index][hValue] = cache_get_field_content_int(row, "Value", MainPipeline); 
 		HouseInfo[index][hSafeMoney] = cache_get_field_content_int(row, "SafeMoney", MainPipeline); 
-		HouseInfo[index][hPot] = cache_get_field_content_int(row, "Pot", MainPipeline); 
+		HouseInfo[index][hPot] = cache_get_field_content_int(row, "Pot", MainPipeline);
 		HouseInfo[index][hCrack] = cache_get_field_content_int(row, "Crack", MainPipeline); 
 		HouseInfo[index][hMaterials] = cache_get_field_content_int(row, "Materials", MainPipeline); 
 		HouseInfo[index][hHeroin] = cache_get_field_content_int(row, "Heroin", MainPipeline); 
+		HouseInfo[index][hMeth] = cache_get_field_content_int(row, "Meth", MainPipeline); 
+		HouseInfo[index][hEcstasy] = cache_get_field_content_int(row, "Ecstasy", MainPipeline); 
 		
 		for(new i; i < 5; i++)
 		{

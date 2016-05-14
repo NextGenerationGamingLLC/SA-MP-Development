@@ -50,7 +50,7 @@ SaveTurfWar(turfid)
 	TurfWars[turfid][twMinY],
 	TurfWars[turfid][twMaxX],
 	TurfWars[turfid][twMaxY],
-	turfid);
+	turfid + 1);
 	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }

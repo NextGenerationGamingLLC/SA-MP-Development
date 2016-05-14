@@ -76,9 +76,9 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.310"
+#define SERVER_GM_TEXT "NG:RP v3.0.311"
 
-// #define AREA_DEBUG
+//#define AREA_DEBUG
 
 #include <a_samp>
 #undef  MAX_PLAYERS

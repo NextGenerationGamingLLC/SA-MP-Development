@@ -1294,6 +1294,8 @@ enum hInfo
 	hCrack,
 	hMaterials,
 	hHeroin,
+	hMeth,
+	hEcstasy,
 	hWeapons[ 5 ],
 	hGLUpgrade,
 	hPickupID,

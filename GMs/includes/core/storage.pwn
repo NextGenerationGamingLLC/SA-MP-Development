@@ -328,6 +328,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 
     if(special == 1 && itemid == 2) // Pot Special "Selling"
 	{
+		ExtortionTurfsWarsZone(PotOffer[playerid], 0, PotPrice[playerid]);
 
         GivePlayerCash(PotOffer[playerid], PotPrice[playerid]);
 		GivePlayerCash(playerid, -PotPrice[playerid]);
@@ -361,6 +362,8 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 	}
 	if(special == 1 && itemid == 3) // Crack Special "Selling"
 	{
+		ExtortionTurfsWarsZone(CrackOffer[playerid], 0, CrackPrice[playerid]);
+
 
         GivePlayerCash(CrackOffer[playerid], CrackPrice[playerid]);
 		GivePlayerCash(playerid, -CrackPrice[playerid]);
@@ -552,14 +555,14 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 				}
 				return 1;
 			}
-			if(itemid == 2 && (PlayerInfo[playerid][pDrugs][0] + amount <= onhandlimit[itemid-1]))
+			if(itemid == 2 && (PlayerInfo[playerid][pDrugs][1] + amount <= onhandlimit[itemid-1]))
 			{
 				// Check if Sending Player has sufficient amount.
 				if(fromplayerid != -1 && fromstorageid != -1)
 				{
 					if(fromstorageid == 0)
 					{
-						if(PlayerInfo[fromplayerid][pDrugs][0] < amount)
+						if(PlayerInfo[fromplayerid][pDrugs][1] < amount)
 						{
 							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
@@ -576,12 +579,12 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						}
 					}
 
-					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][0] -= amount;
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][1] -= amount;
 					else StorageInfo[fromplayerid][fromstorageid-1][sPot] -= amount;
 				}
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-				PlayerInfo[playerid][pDrugs][0] += amount;
-				format(string, sizeof(string), "%d Pot has been transfered to your Pocket (%d).", amount, PlayerInfo[playerid][pDrugs][0]);
+				PlayerInfo[playerid][pDrugs][1] += amount;
+				format(string, sizeof(string), "%d Pot has been transfered to your Pocket (%d).", amount, PlayerInfo[playerid][pDrugs][1]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
 
 				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
@@ -611,14 +614,14 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 				}
 				return 1;
 			}
-			if(itemid == 3 && (PlayerInfo[playerid][pDrugs][1] + amount <= onhandlimit[itemid-1]))
+			if(itemid == 3 && (PlayerInfo[playerid][pDrugs][2] + amount <= onhandlimit[itemid-1]))
 			{
 				// Check if Sending Player has sufficient amount.
 				if(fromplayerid != -1 && fromstorageid != -1)
 				{
 					if(fromstorageid == 0)
 					{
-						if(PlayerInfo[fromplayerid][pDrugs][1] < amount)
+						if(PlayerInfo[fromplayerid][pDrugs][2] < amount)
 						{
 							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
@@ -635,12 +638,12 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						}
 					}
 
-					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][1] -= amount;
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][2] -= amount;
 					else StorageInfo[fromplayerid][fromstorageid-1][sCrack] -= amount;
 				}
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 				PlayerInfo[playerid][pDrugs][2] += amount;
-				format(string, sizeof(string), "%d Crack has been transfered to your Pocket (%d).", amount, PlayerInfo[playerid][pDrugs][1]);
+				format(string, sizeof(string), "%d Crack has been transfered to your Pocket (%d).", amount, PlayerInfo[playerid][pDrugs][2]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
 
 				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {
@@ -842,7 +845,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						}
 					}
 
-					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][0] -= amount;
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][1] -= amount;
 					else StorageInfo[fromplayerid][fromstorageid-1][sPot] -= amount;
 				}
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
@@ -888,7 +891,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 				{
 					if(fromstorageid == 0)
 					{
-						if(PlayerInfo[fromplayerid][pDrugs][1] < amount)
+						if(PlayerInfo[fromplayerid][pDrugs][2] < amount)
 						{
 							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
@@ -905,7 +908,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						}
 					}
 
-					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][1] -= amount;
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][2] -= amount;
 					else StorageInfo[fromplayerid][fromstorageid-1][sCrack] -= amount;
 				}
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
@@ -1093,7 +1096,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 				{
 					if(fromstorageid == 0)
 					{
-						if(PlayerInfo[fromplayerid][pDrugs][0] < amount)
+						if(PlayerInfo[fromplayerid][pDrugs][1] < amount)
 						{
 							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
@@ -1110,7 +1113,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						}
 					}
 
-					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][0] -= amount;
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][1] -= amount;
 					else StorageInfo[fromplayerid][fromstorageid-1][sPot] -= amount;
 				}
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
@@ -1156,7 +1159,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 				{
 					if(fromstorageid == 0)
 					{
-						if(PlayerInfo[fromplayerid][pDrugs][1] < amount)
+						if(PlayerInfo[fromplayerid][pDrugs][2] < amount)
 						{
 							format(string, sizeof(string), "You do not have sufficient amount to give $%d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
@@ -1173,7 +1176,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						}
 					}
 
-					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][1] -= amount;
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][2] -= amount;
 					else StorageInfo[fromplayerid][fromstorageid-1][sCrack] -= amount;
 				}
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
@@ -1359,7 +1362,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 				{
 					if(fromstorageid == 0)
 					{
-						if(PlayerInfo[fromplayerid][pDrugs][0] < amount)
+						if(PlayerInfo[fromplayerid][pDrugs][1] < amount)
 						{
 							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
@@ -1376,7 +1379,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						}
 					}
 
-					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][0] -= amount;
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][1] -= amount;
 					else StorageInfo[fromplayerid][fromstorageid-1][sPot] -= amount;
 				}
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
@@ -1422,7 +1425,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 				{
 					if(fromstorageid == 0)
 					{
-						if(PlayerInfo[fromplayerid][pDrugs][1] < amount)
+						if(PlayerInfo[fromplayerid][pDrugs][2] < amount)
 						{
 							format(string, sizeof(string), "You do not have sufficient amount to give %d %s.", amount, itemtype[itemid]);
 							SendClientMessageEx(fromplayerid, COLOR_WHITE, string);
@@ -1439,7 +1442,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 						}
 					}
 
-					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][1] -= amount;
+					if(fromstorageid == 0) PlayerInfo[fromplayerid][pDrugs][2] -= amount;
 					else StorageInfo[fromplayerid][fromstorageid-1][sCrack] -= amount;
 				}
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
@@ -1603,9 +1606,9 @@ stock ShowInventory(playerid,targetid)
 		number_format(PlayerInfo[targetid][pDoubleEXP]),
 		number_format(PlayerInfo[targetid][pEventTokens]),
 		number_format(PlayerInfo[targetid][pMats]),
+		number_format(PlayerInfo[targetid][pDrugs][2]),
 		number_format(PlayerInfo[targetid][pDrugs][1]),
-		number_format(PlayerInfo[targetid][pDrugs][0]),
-		number_format(PlayerInfo[targetid][pDrugs][4]),
+		number_format(PlayerInfo[targetid][pDrugs][3]),
 		number_format(PlayerInfo[targetid][pCrates]),
 		number_format(PlayerInfo[targetid][pPaper]),
 		number_format(PlayerInfo[targetid][pRope]),
@@ -2468,12 +2471,12 @@ CMD:hwithdraw(playerid, params[])
 				if(sscanf(params, "dd", itemid, amount))
 				{
 					SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hwithdraw [itemid] [amount]");
-					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Heroin");
+					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Meth - (6) Ecstasy - (7) Heroin");
 					return 1;
 				}
-				if(itemid < 1 || itemid > 5) {
+				if(itemid < 1 || itemid > 7) {
 					SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hwithdraw [itemid] [amount]");
-					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Heroin");
+					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Meth - (6) Ecstasy - (7) Heroin");
 					return 1;
 				}
 
@@ -2545,7 +2548,39 @@ CMD:hwithdraw(playerid, params[])
 						}
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
 					}
-					case 5: // Heroin
+					case 5: // Meth
+					{
+						if(HouseInfo[i][hMeth] >= amount)
+						{
+							HouseInfo[i][hMeth] -= amount;
+							PlayerInfo[playerid][pDrugs][2] += amount;
+							OnPlayerStatsUpdate(playerid);
+							SaveHouse(i);
+							format(string, sizeof(string), "You have withdrawn %d meth from your house safe.", amount);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d meth from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
+							Log("logs/hsafe.log", string);
+							return 1;
+						}
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
+					}
+					case 6: // Ecstasy
+					{
+						if(HouseInfo[i][hEcstasy] >= amount)
+						{
+							HouseInfo[i][hEcstasy] -= amount;
+							PlayerInfo[playerid][pDrugs][3] += amount;
+							OnPlayerStatsUpdate(playerid);
+							SaveHouse(i);
+							format(string, sizeof(string), "You have withdrawn %d ecstasy from your house safe.", amount);
+							SendClientMessageEx(playerid, COLOR_WHITE, string);
+							format(string, sizeof(string), "%s (SQL: %d) has withdrawn %d ecstasy from their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
+							Log("logs/hsafe.log", string);
+							return 1;
+						}
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to withdraw!");
+					}
+					case 7: // Heroin
 					{
 						if(HouseInfo[i][hHeroin] >= amount)
 						{
@@ -2583,12 +2618,12 @@ CMD:hdeposit(playerid, params[])
 				if(sscanf(params, "dd", itemid, amount))
 				{
 					SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hdeposit [itemid] [amount]");
-					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Heroin");
+					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Meth - (6) Ecstasy - (7) Heroin");
 					return 1;
 				}
-				if(itemid < 1 || itemid > 5) {
+				if(itemid < 1 || itemid > 7) {
 					SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /hdeposit [itemid] [amount]");
-					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Heroin");
+					SendClientMessageEx(playerid, COLOR_GREY, "ItemIDs: (1) Cash - (2) Pot - (3) Crack - (4) Materials - (5) Meth - (6) Ecstasy - (7) Heroin");
 					return 1;
 				}
 
@@ -2651,7 +2686,35 @@ CMD:hdeposit(playerid, params[])
 						Log("logs/hsafe.log", string);
 						return 1;
 					}
-					case 5: // Heroin
+					case 5: // Meth
+					{
+						if(PlayerInfo[playerid][pDrugs][2] >= amount) PlayerInfo[playerid][pDrugs][2] -= amount;
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
+
+						HouseInfo[i][hHeroin] += amount;
+						format(string, sizeof(string), "You have deposited %d meth to your house's safe.", amount);
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						OnPlayerStatsUpdate(playerid);
+						SaveHouse(i);
+						format(string, sizeof(string), "%s (SQL: %d) has deposited %d meth into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
+						Log("logs/hsafe.log", string);
+						return 1;
+					}
+					case 6: // Ecstasy
+					{
+						if(PlayerInfo[playerid][pDrugs][3] >= amount) PlayerInfo[playerid][pDrugs][3] -= amount;
+						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
+
+						HouseInfo[i][hHeroin] += amount;
+						format(string, sizeof(string), "You have deposited %d Ecstasy to your house's safe.", amount);
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						OnPlayerStatsUpdate(playerid);
+						SaveHouse(i);
+						format(string, sizeof(string), "%s (SQL: %d) has deposited %d Ecstasy into their house (ID: %d) safe.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), amount, i);
+						Log("logs/hsafe.log", string);
+						return 1;
+					}
+					case 7: // Heroin
 					{
 						if(PlayerInfo[playerid][pDrugs][4] >= amount) PlayerInfo[playerid][pDrugs][4] -= amount;
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
@@ -3224,7 +3287,7 @@ CMD:show(playerid, params[])
 			}
 			if (strcmp(choice, "pot", true) == 0)
 			{
-			    new amount = PlayerInfo[playerid][pDrugs][0];
+			    new amount = PlayerInfo[playerid][pDrugs][1];
 			    if(amount < 1)
 			    {
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Pot!");
@@ -3242,7 +3305,7 @@ CMD:show(playerid, params[])
 			}
 			if (strcmp(choice, "crack", true) == 0)
 			{
-			    new amount = PlayerInfo[playerid][pDrugs][1];
+			    new amount = PlayerInfo[playerid][pDrugs][2];
 			    if(amount < 1)
 			    {
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any crack!");

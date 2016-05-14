@@ -231,6 +231,7 @@ task TurfWarsUpdate[1000]()
 				ResetTurfWarsZone(1, i);
 	        }
 	    }
+	    SaveTurfWar(i);
 	}
 }
 

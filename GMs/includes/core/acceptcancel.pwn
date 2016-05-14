@@ -48,7 +48,7 @@ CMD:accept(playerid, params[])
         if(isnull(params)) {
             SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accept [name]");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Crack, Cannabis, Weapon, Craft, Repair, Lawyer, Bodyguard, Job, Live, Refill");
-            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Firework, Group, Boxing, Medic, Mechanic, Ticket, Car, Death, Backpack");
+            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Firework, Group, Boxing, Medic, Mechanic, Ticket, Car, Death, Backpack, Sellgun");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Business, Item, Offer, Heroin, Rawopium, Syringes, Rimkit, Voucher, Kiss, RenderAid");
             return 1;
         }
@@ -115,6 +115,37 @@ CMD:accept(playerid, params[])
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			DeletePVar(playerid, "renderaid");
 			DeletePVar(target, "MedVestKit");
+		}
+		else if(strcmp(params, "sellgun", true) == 0)
+		{
+			if(!GetPVarType(playerid, "pSellGunID") || GetPVarInt(playerid, "pSellGunID") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "No one has offered you a gun!");
+
+			new id = GetPVarInt(playerid, "pSellGunID");
+
+			if(PlayerInfo[id][pMats] < GetPVarInt(playerid, "pSellGunMats")) 
+			{
+				SendClientMessage(id, COLOR_WHITE, "You do not have enough materials to sell this item!");
+				return SendClientMessage(playerid, COLOR_WHITE, "The seller no longer has enough materials to sell this item!");
+			}
+
+			new weapon[16];
+			GetWeaponName(GetPVarInt(playerid, "pSellGun"), weapon, sizeof(weapon));
+
+			PlayerInfo[id][pMats] -= GetPVarInt(playerid, "pSellGunMats");
+			GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "pSellGun"), 0);
+
+			PlayerInfo[id][pArmsSkill] += GetPVarInt(playerid, "pSellGunXP");
+
+			format(szMiscArray, sizeof(szMiscArray), "%s crafts a %s from their materials, handing it to %s.", GetPlayerNameEx(id), weapon, GetPlayerNameEx(playerid)); 
+			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+			PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); // Just a little 'classic' feel to it. -Winterfield
+			PlayerPlaySound(id, 1052, 0.0, 0.0, 0.0);
+
+			DeletePVar(playerid, "pSellGun");
+			DeletePVar(playerid, "pSellGunID");
+			DeletePVar(playerid, "pSellGunMats");
+			DeletePVar(playerid, "pSellGunXP");
 		}
         else if(strcmp(params, "valentine", true) == 0)
 		{
