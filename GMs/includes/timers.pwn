@@ -517,6 +517,26 @@ task SyncTime[60000]()
 			if(DynPoints[x][poCapperGroupOwned] != INVALID_GROUP_ID)
 			{
 				format(szMiscArray, sizeof(szMiscArray), "Your family has recieved a %d materials for owning %s.", DynPoints[x][poMaterials], DynPoints[x][poName]);
+				for(new g = 0; g < 14; g++)
+				{
+					switch(g)
+					{
+						case 0: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_DEAGLE, 25);
+						case 1: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SHOTGUN, 25);
+						case 2: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SILENCED, 25);
+						case 3: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_AK47, 25);
+						case 4: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_MP5, 25);
+						case 5: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_RIFLE, 25);
+						case 6: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_COLT45, 25);
+						case 7: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_TEC9, 25);
+						case 8: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_UZI, 25);
+						case 9: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SNIPER, 5);
+						case 10: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_M4, 5);
+						case 11: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SHOTGSPA, 5);
+						case 12: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SAWEDOFF, 5);
+						case 13: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SPRAYCAN, 1);
+					}
+				}
 				arrGroupData[DynPoints[x][poCapperGroupOwned]][g_iMaterials] += DynPoints[x][poMaterials];
 
 				foreach(new i: Player)

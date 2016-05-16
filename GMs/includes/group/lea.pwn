@@ -139,12 +139,12 @@ public DragPlayer(dragger, dragee)
 		floatsub(dY, 0.4);
 
 		SetPVarFloat(dragee, "DragX", dX);
-		SetPVarFloat(dragee, "DragY", dY);
+		SetPVarFloat(dragee, "DragY", dY-1);
 		SetPVarFloat(dragee, "DragZ", dZ);
 		SetPVarInt(dragee, "DragWorld", GetPlayerVirtualWorld(dragger));
 		SetPVarInt(dragee, "DragInt", GetPlayerInterior(dragger));
-		Streamer_UpdateEx(dragee, dX, dY, dZ);
-		SetPlayerPos(dragee, dX, dY, dZ);
+		Streamer_UpdateEx(dragee, dX, dY-1, dZ);
+		SetPlayerPos(dragee, dX, dY-1, dZ);
 		SetPlayerInterior(dragee, GetPlayerInterior(dragger));
 		SetPlayerVirtualWorld(dragee, GetPlayerVirtualWorld(dragger));
 		ClearAnimations(dragee);
@@ -2090,7 +2090,7 @@ CMD:drag(playerid, params[])
 
 CMD:wanted(playerid, params[])
 {
-	if(IsACop(playerid) || IsAGovernment(playerid) || PlayerInfo[playerid][pJob] == 2 || PlayerInfo[playerid][pJob2] == 2 || PlayerInfo[playerid][pJob3] == 2)
+	if(IsACop(playerid) || IsAJudge(playerid) || IsAGovernment(playerid) || PlayerInfo[playerid][pJob] == 2 || PlayerInfo[playerid][pJob2] == 2 || PlayerInfo[playerid][pJob3] == 2)
 	{
 		szMiscArray[0] = 0;
 		

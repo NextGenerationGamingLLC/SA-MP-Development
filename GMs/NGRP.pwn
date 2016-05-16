@@ -25,7 +25,7 @@
 									Jingles
 									Winterfield
 				Past Developers:
-								*** Director of SA:MP Development:F
+								*** Director of SA:MP Development:
 									Akatony
 									John
 									Brendan
@@ -76,8 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.311"
-
+#define SERVER_GM_TEXT "NG:RP v3.0.312"
 //#define AREA_DEBUG
 
 #include <a_samp>

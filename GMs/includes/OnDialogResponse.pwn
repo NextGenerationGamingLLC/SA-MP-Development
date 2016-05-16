@@ -1078,7 +1078,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if((dialogid == BUYTOYSGOLD) && response)
 	{
 		if(PlayerInfo[playerid][pDonateRank] < 3) return SendClientMessageEx(playerid, COLOR_WHITE, "* You must be a Gold VIP +");
-		new stringg[512], icount = GetPlayerToySlots(playerid);
+		new icount = GetPlayerToySlots(playerid);
 		for(new x;x<icount;x++)
 		{
 			new name[24] = "None";
@@ -1094,9 +1094,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				format(name, sizeof(name), "ID: %d", PlayerToyInfo[playerid][x][ptModelID]);
 			}
-			format(stringg, sizeof(stringg), "%s(%d) %s (Bone: %s)\n", stringg, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
+			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (Bone: %s)\n", szMiscArray, x, name, HoldingBones[PlayerToyInfo[playerid][x][ptBone]]);
 		}
-		ShowPlayerDialogEx(playerid, BUYTOYSGOLD2, DIALOG_STYLE_LIST, "Select a Slot", stringg, "Select", "Cancel");
+		ShowPlayerDialogEx(playerid, BUYTOYSGOLD2, DIALOG_STYLE_LIST, "Select a Slot", szMiscArray, "Select", "Cancel");
 	}
 
 	if((dialogid == BUYTOYSGOLD2) && response)
@@ -1109,12 +1109,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 		SetPVarInt(playerid, "ToySlot", listitem);
 
-		new stringg[5256];
 		for(new x;x<sizeof(HoldingObjectsAll);x++)
 		{
-			format(stringg, sizeof(stringg), "%s%s ($%d)\n", stringg, HoldingObjectsAll[x][holdingmodelname], HoldingObjectsAll[x][holdingprice]);
+			format(szMiscArray, sizeof(szMiscArray), "%s%s ($%d)\n", szMiscArray, HoldingObjectsAll[x][holdingmodelname], HoldingObjectsAll[x][holdingprice]);
 		}
-		ShowPlayerDialogEx(playerid, BUYTOYSGOLD3, DIALOG_STYLE_LIST, "Select an Item", stringg, "Buy", "Cancel");
+		ShowPlayerDialogEx(playerid, BUYTOYSGOLD3, DIALOG_STYLE_LIST, "Select an Item", szMiscArray, "Buy", "Cancel");
 	}
 	if((dialogid == BUYTOYSGOLD3) && response)
 	{
@@ -3753,7 +3752,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			case 8: // Drugs Smuggler
 			{
-				//SetPVarInt(playerid, "jobSelection", 14);
+				SetPVarInt(playerid, "jobSelection", 14);
 			}
 			case 9: // Taxi Driver
 			{

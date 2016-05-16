@@ -896,7 +896,7 @@ CMD:plantopium(playerid, params[])
 		}
 		SendClientMessageEx(playerid, COLOR_GREY, "The server has reached the max number of plants. Try again later!");
 	}
-	else SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough seeds to plant opium - head to the crack house and pick up some seeds (/getopium).");
+	else SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough seeds to plant opium - head to the crack house and pick up some seeds (/buyopium).");
 	return 1;
 }
 

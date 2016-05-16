@@ -1560,7 +1560,7 @@ public OnPlayerConnect(playerid)
 
 	SetPlayerColor(playerid,TEAM_HIT_COLOR);
 	SendClientMessage( playerid, COLOR_WHITE, "SERVER: Welcome to Next Generation Roleplay." );
-
+	
 	SyncPlayerTime(playerid);
 
 	ShowNoticeGUIFrame(playerid, 1);

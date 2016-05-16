@@ -118,7 +118,7 @@ CMD:pointtime(playerid, params[])
 
 CMD:editpoints(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pAdmin] >= 1337)
+	if(PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		ListPoints(playerid);
 	}

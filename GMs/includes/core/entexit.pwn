@@ -97,6 +97,12 @@ CMD:enter(playerid) {
 /*	new areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid);
 	Process_Entrance(playerid, areaid[0]);*/
+	if(GetPVarType(playerid, "IsInArena")) {
+		SendClientMessage(playerid, COLOR_RED, "Exploiting out of PB is frowned upon.");
+		format(szMiscArray, sizeof(szMiscArray), "%s attempted to exploit out of Paint Ball");
+		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+		Kick(playerid);
+	} else
 	EntExit_GetID(playerid);
 	return 1;
 }
@@ -107,6 +113,12 @@ CMD:exit(playerid) {
 /*	new areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid);
 	Process_Entrance(playerid, areaid[0]);*/
+	if(GetPVarType(playerid, "IsInArena")) {
+		SendClientMessage(playerid, COLOR_RED, "Exploiting out of PB is frowned upon.");
+		format(szMiscArray, sizeof(szMiscArray), "%s attempted to exploit out of Paint Ball");
+		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+		Kick(playerid);
+	} else
 	EntExit_GetID(playerid);
 	return 1;
 }
@@ -254,8 +266,8 @@ stock Vehicle_Exit(playerid) {
 	    
 		if(!IsAPlane(PlayerInfo[playerid][pVW]))
 		{
-			SetPlayerPos(playerid, X-1.00, Y+1.00, Z);
-			Player_StreamPrep(playerid, X-1.00, Y+1.00,Z, FREEZE_TIME);
+			SetPlayerPos(playerid, X-1.00, Y+3.00, Z);
+			Player_StreamPrep(playerid, X-1.00, Y+3.00,Z, FREEZE_TIME);
 		}
 		else
 		{

@@ -602,7 +602,7 @@ public LoadTextDraws()
 	TextDrawAlignment(WristWatch, 2);
 	TextDrawBackgroundColor(WristWatch, 255);
 	TextDrawFont(WristWatch, 3);
-	TextDrawLetterSize(WristWatch, 0.709998, 2.100001);
+	TextDrawLetterSize(WristWatch, 0.309998, 1.100001);
 	TextDrawColor(WristWatch, -1);
 	TextDrawSetOutline(WristWatch, 1);
 	TextDrawSetProportional(WristWatch, 0);

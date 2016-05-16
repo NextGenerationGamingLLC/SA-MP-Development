@@ -810,6 +810,15 @@ CMD:loadforklift(playerid, params[]) {
 		            {
 		            	format(szMiscArray, sizeof(szMiscArray), "%s %s has created a weapon crate.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 		              	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
+		              	GroupLog(30, szMiscArray);
+		              	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+		              	foreach(new i : Player)
+		              	{
+		              		if(PlayerInfo[i][pMember] == 30 || PlayerInfo[i][pLeader] == 30) 
+		              		{
+		              			SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
+		              		}
+		              	}
 		              	LoadForkliftStatus = 1;
 		                SetPVarInt(playerid, "LoadForkliftTime", 5);
 		                SetPVarInt(playerid, "ForkliftID", vehicleid);
@@ -863,6 +872,7 @@ CMD:loadforklift(playerid, params[]) {
 		}
 		else
 		{
+			if(IsPlayerInRangeOfPoint(playerid, 500, 134.5410,-4396.7666,51.8603)) return SendClientMessage(playerid, COLOR_LIGHTRED, "Crates can't be unloaded on the Island.");
 		    new Float: vX, Float: vY, Float: vZ;
 		    GetVehiclePos(vehicleid, vX, vY, vZ);
 		    GetXYInFrontOfPlayer(playerid, vX, vY, 2);
