@@ -183,10 +183,6 @@ stock SaveHouse(houseid)
 		`SignZ`=%f, \
 		`SignA`=%f, \
 		`SignExpire`=%d, \
-		`Ammo0`=%d, \
-		`Ammo1`=%d, \
-		`Ammo2`=%d, \
-		`Ammo3`=%d, \
 		`LastLogin`=%d, \
 		`Expire`=%d, \
 		`Inactive`=%d, \
@@ -199,10 +195,6 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hSign][2],
 		HouseInfo[houseid][hSign][3],
 		HouseInfo[houseid][hSignExpire],
-		HouseInfo[houseid][hAmmo][0],
-		HouseInfo[houseid][hAmmo][1],
-		HouseInfo[houseid][hAmmo][2],
-		HouseInfo[houseid][hAmmo][3],
 		HouseInfo[houseid][hLastLogin],
 		HouseInfo[houseid][hExpire],
 		HouseInfo[houseid][hInactive],
@@ -324,12 +316,6 @@ public OnLoadHouse(index)
 		HouseInfo[index][hSign][3] = cache_get_field_content_float(row, "SignA", MainPipeline);
 		HouseInfo[index][hSignExpire] = cache_get_field_content_int(row, "SignExpire", MainPipeline);
 
-		HouseInfo[index][hAmmo][0] = cache_get_field_content_int(row, "Ammo0", MainPipeline);
-		HouseInfo[index][hAmmo][1] = cache_get_field_content_int(row, "Ammo1", MainPipeline);
-		HouseInfo[index][hAmmo][2] = cache_get_field_content_int(row, "Ammo2", MainPipeline);
-		HouseInfo[index][hAmmo][3] = cache_get_field_content_int(row, "Ammo3", MainPipeline);
-//		HouseInfo[index][hAmmo][4] = cache_get_field_content_int(row, "Ammo4", MainPipeline);
-
 		HouseInfo[index][hLastLogin] = cache_get_field_content_int(row, "LastLogin", MainPipeline);
 		HouseInfo[index][hExpire] = cache_get_field_content_int(row, "Expire", MainPipeline);
 		HouseInfo[index][hInactive] = cache_get_field_content_int(row, "Inactive", MainPipeline);
@@ -432,12 +418,6 @@ public OnLoadHouses()
 		HouseInfo[i][hInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
 		HouseInfo[i][hIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
 		HouseInfo[i][hCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
-
-		for(new j = 0; j != MAX_AMMO_TYPES; j++)
-		{
-			format(szField, sizeof(szField), "Ammo%d", j);
-			HouseInfo[i][hAmmo][j] = cache_get_field_content_int(i, szField, MainPipeline);
-		}
 		
 		HouseInfo[i][Listed] = cache_get_field_content_int(i, "Listed", MainPipeline); 
 		HouseInfo[i][PendingApproval] = cache_get_field_content_int(i, "PendingApproval", MainPipeline);
@@ -576,11 +556,6 @@ stock RehashHouse(houseid)
 	HouseInfo[houseid][hWeapons][2] = 0;
 	HouseInfo[houseid][hWeapons][3] = 0;
 	HouseInfo[houseid][hWeapons][4] = 0;
-	HouseInfo[houseid][hAmmo][0] = 0; 
-	HouseInfo[houseid][hAmmo][1] = 0; 
-	HouseInfo[houseid][hAmmo][2] = 0; 
-	HouseInfo[houseid][hAmmo][3] = 0; 
-	//HouseInfo[houseid][hAmmo][4] = 0; 
 	HouseInfo[houseid][hGLUpgrade] = 0;
 	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]);
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]);
@@ -616,7 +591,7 @@ CMD:househelp(playerid, params[])
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /lockhouse /setrentable /setrent /evict /evictall /sellmyhouse /ringbell");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hwithdraw /hdeposit /hbalance /getgun /storegun /closet(add/remove) /houseinvite");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /movegate /setgatepass /placemailbox /destroymailbox /getmail /sendmail");
-    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /hammowithdraw /hammodeposit /workbench");
+    SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /workbench");
     return 1;
 }
 
@@ -1777,11 +1752,6 @@ public DeleteHouse(houseid, adminid)
 	HouseInfo[houseid][hWeapons][2] = 0;
 	HouseInfo[houseid][hWeapons][3] = 0;
 	HouseInfo[houseid][hWeapons][4] = 0;
-	HouseInfo[houseid][hAmmo][0] = 0; 
-	HouseInfo[houseid][hAmmo][1] = 0; 
-	HouseInfo[houseid][hAmmo][2] = 0; 
-	HouseInfo[houseid][hAmmo][3] = 0; 
-	//HouseInfo[houseid][hAmmo][4] = 0; 
 	HouseInfo[houseid][hGLUpgrade] = 0;
 	if(IsValidDynamicPickup(HouseInfo[houseid][hPickupID])) DestroyDynamicPickup(HouseInfo[houseid][hPickupID]), HouseInfo[houseid][hPickupID] = -1;
 	if(IsValidDynamic3DTextLabel(HouseInfo[houseid][hTextID])) DestroyDynamic3DTextLabel(HouseInfo[houseid][hTextID]), HouseInfo[houseid][hTextID] = Text3D:-1;

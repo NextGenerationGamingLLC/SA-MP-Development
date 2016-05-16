@@ -223,14 +223,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 					format(szResult, sizeof(szResult), "GunPrice%d",x);
 					GunPrices[x] = cache_get_field_content_int(i, szResult, MainPipeline);
 				}
-				for(new x = 0; x < 4; x++)
-				{
-					format(szResult, sizeof(szResult), "ammoMat%d",x);
-					AmmoMat[x] = cache_get_field_content_int(i, szResult, MainPipeline);
-				}
 
 				CallLocalFunction("LoadInactiveResourceSettings", "i", i);
-				LoadGangShipmentData(i);
 				break;
 			}
 		}
@@ -472,9 +466,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pHeroin]				= cache_get_field_content_int(row,  "Heroin", MainPipeline);
 					PlayerInfo[extraid][pSyringes]				= cache_get_field_content_int(row,  "Syringe", MainPipeline);
 					PlayerInfo[extraid][pSkins]					= cache_get_field_content_int(row,  "Skins", MainPipeline);
-					PlayerInfo[extraid][pHunger]				= cache_get_field_content_int(row,  "Hunger", MainPipeline);
-					PlayerInfo[extraid][pHungerTimer]			= cache_get_field_content_int(row,  "HungerTimer", MainPipeline);
-					PlayerInfo[extraid][pHungerDeathTimer]		= cache_get_field_content_int(row,  "HungerDeathTimer", MainPipeline);
 					PlayerInfo[extraid][pFitness]				= cache_get_field_content_int(row,  "Fitness", MainPipeline);
 					PlayerInfo[extraid][pForcePasswordChange]	= cache_get_field_content_int(row,  "ForcePasswordChange", MainPipeline);
 					PlayerInfo[extraid][pCredits]				= cache_get_field_content_int(row,  "Credits", MainPipeline);
@@ -603,12 +594,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pBailPrice] = cache_get_field_content_int(row,  "pBailPrice", MainPipeline);
 					PlayerInfo[extraid][pLastPoll] = cache_get_field_content_int(row,  "pLastPoll", MainPipeline);
 
-					arrAmmoData[extraid][awp_iAmmo][0] = cache_get_field_content_int(row, "Ammo0", MainPipeline);
-					arrAmmoData[extraid][awp_iAmmo][1] = cache_get_field_content_int(row, "Ammo1", MainPipeline);
-					arrAmmoData[extraid][awp_iAmmo][2] = cache_get_field_content_int(row, "Ammo2", MainPipeline);
-					arrAmmoData[extraid][awp_iAmmo][3] = cache_get_field_content_int(row, "Ammo3", MainPipeline);
-					//arrAmmoData[extraid][awp_iAmmo][4] = cache_get_field_content_int(row, "Ammo4", MainPipeline);
-
 					PlayerInfo[extraid][pVIPGuncount] = cache_get_field_content_int(row, "VIPGunsCount", MainPipeline);
 
 					PlayerInfo[extraid][pGroupToyBone] = cache_get_field_content_int(row, "GroupToyBone", MainPipeline);
@@ -655,12 +640,6 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 					/*cache_get_field_content(row,  "ChatboxSettings", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pChatbox]);*/
-
-					for(new i = 0; i != MAX_AMMO_TYPES; i++)
-					{
-						format(szField, sizeof(szField), "pBAmmo%d", i);
-						PlayerInfo[extraid][pBAmmo][i] = cache_get_field_content_int(row, szField, MainPipeline);
-					}
 
 					if(PlayerInfo[extraid][pCredits] > 0)
 					{
@@ -1592,12 +1571,7 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `GunPrice4` = '%d',", query, GunPrices[4]);
 	format(query, sizeof(query), "%s `GunPrice5` = '%d'", query, GunPrices[5]);
 	format(query, sizeof(query), "%s `GunPrice6` = '%d'", query, GunPrices[6]);
-	format(query, sizeof(query), "%s `ammoMat0` = '%d'", query, AmmoMat[0]);
-	format(query, sizeof(query), "%s `ammoMat1` = '%d'", query, AmmoMat[1]);
-	format(query, sizeof(query), "%s `ammoMat2` = '%d'", query, AmmoMat[2]);
-	format(query, sizeof(query), "%s `ammoMat3` = '%d'", query, AmmoMat[3]);
 	CallLocalFunction("SaveInactiveResourceSettings", "is", sizeof(query), query);
-	SaveGangShipmentData(sizeof(query), query);
 
 	if(query[qryLength-1] == ',') strdel(query, qryLength-1, qryLength);
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -2359,9 +2333,6 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Heroin", PlayerInfo[playerid][pHeroin]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Syringe", PlayerInfo[playerid][pSyringes]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Skins", PlayerInfo[playerid][pSkins]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Hunger", PlayerInfo[playerid][pHunger]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HungerTimer", PlayerInfo[playerid][pHungerTimer]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HungerDeathTimer", PlayerInfo[playerid][pHungerDeathTimer]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Fitness", PlayerInfo[playerid][pFitness]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HealthCare", PlayerInfo[playerid][pHealthCare]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ReceivedCredits", PlayerInfo[playerid][pReceivedCredits]);
@@ -2585,12 +2556,6 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pEventTokens", PlayerInfo[playerid][pEventTokens]);
 
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo0", arrAmmoData[playerid][awp_iAmmo][0]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo1", arrAmmoData[playerid][awp_iAmmo][1]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo2", arrAmmoData[playerid][awp_iAmmo][2]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo3", arrAmmoData[playerid][awp_iAmmo][3]);
-	//SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ammo4", arrAmmoData[playerid][awp_iAmmo][4]);
-
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
@@ -2605,12 +2570,6 @@ stock g_mysql_SaveAccount(playerid)
 		format(szMiscArray, sizeof(szMiscArray), "Prison%s", GetDrugName(d));
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szMiscArray, PlayerInfo[playerid][p_iPrisonDrug][d]);
 	} old */
-
-	for(new i = 0; i != MAX_AMMO_TYPES; i++)
-	{
-		format(mistring, sizeof(mistring), "pBAmmo%d", i);
-		SavePlayerInteger(query, GetPlayerSQLId(playerid), mistring, PlayerInfo[playerid][pBAmmo][i]);
-	}
 
 	MySQLUpdateFinish(query, GetPlayerSQLId(playerid));
 	if(FIFEnabled) g_mysql_SaveFIF(playerid);
@@ -5404,12 +5363,6 @@ public Group_QueryFinish(iType, iExtraID) {
 			arrGroupData[iIndex][g_iGroupToyID] = cache_get_field_content_int(iIndex, "GroupToyID", MainPipeline);
 			arrGroupData[iIndex][g_iTurfTax] = cache_get_field_content(iIndex, "TurfTax", szResult, MainPipeline);
 
-			for(i = 0; i < 5; ++i)
-			{
-				format(szResult, sizeof(szResult), "gAmmo%i", i);
-				arrGroupData[iIndex][g_iAmmo][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
-			}
-
 			for(i = 0; i < MAX_GROUP_RIVALS; ++i)
 			{
 				format(szResult, sizeof(szResult), "gRival%i", i);
@@ -6569,7 +6522,7 @@ public CheckTrunkContents(playerid)
 	else {
 		format(string, sizeof(string), "You found a %s.", GetWeaponNameEx(TrunkWeaps[i]));
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		GivePlayerValidWeapon(playerid, TrunkWeaps[i], 0);
+		GivePlayerValidWeapon(playerid, TrunkWeaps[i]);
 		format(string, sizeof(string), "UPDATE `vehicles` SET `pvWeapon%d` = '0' WHERE `id` = '%d' AND `sqlID` = '%d'", i, GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
 		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME], vehicleid = GetPVarInt(playerid, "LockPickVehicle");

@@ -145,14 +145,6 @@ PlayerFriskPlayer(playerid, giveplayerid)
 			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 		}
 	}
-	for(new i = 0; i != MAX_AMMO_TYPES; i++)
-	{
-		if(arrAmmoData[giveplayerid][awp_iAmmo][i] > 0)
-		{
-			format(szMiscArray, sizeof(szMiscArray), "%s rounds: %d", GetAmmoName(i), arrAmmoData[giveplayerid][awp_iAmmo][i]);
-			SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-		}
-	}
 	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
 	return 0;
 }

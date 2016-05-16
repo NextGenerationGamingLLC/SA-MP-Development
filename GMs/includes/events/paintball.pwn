@@ -905,9 +905,9 @@ stock SpawnPaintballArena(playerid, arenaid)
  	if(PaintBallArena[arenaid][pbArmor] >= 0) {
  		SetArmour(playerid, PaintBallArena[arenaid][pbArmor]);
  	}
- 	GivePlayerValidWeapon(playerid, PaintBallArena[arenaid][pbWeapons][0], 60000);
- 	GivePlayerValidWeapon(playerid, PaintBallArena[arenaid][pbWeapons][1], 60000);
- 	GivePlayerValidWeapon(playerid, PaintBallArena[arenaid][pbWeapons][2], 60000);
+ 	GivePlayerValidWeapon(playerid, PaintBallArena[arenaid][pbWeapons][0]);
+ 	GivePlayerValidWeapon(playerid, PaintBallArena[arenaid][pbWeapons][1]);
+ 	GivePlayerValidWeapon(playerid, PaintBallArena[arenaid][pbWeapons][2]);
 }
 
 stock JoinPaintballArena(playerid, arenaid, password[])
@@ -3432,7 +3432,7 @@ CMD:joinarena(playerid, params[])
         if(pTazer{playerid} != 0)
 		{
 			RemovePlayerWeapon(playerid, 23);
-			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
+			GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
  			pTazer{playerid} = 0;
  		}

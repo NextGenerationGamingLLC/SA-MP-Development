@@ -391,10 +391,6 @@ new CarRadars[MAX_PLAYERS];
 new PlayerText:BackupText[MAX_PLAYERS];
 new BackupClearTimer[MAX_PLAYERS]; // backup clear timer
 
-// Hunger text
-new PlayerText:_hungerText[MAX_PLAYERS];
-new _hungerTextVisible[MAX_PLAYERS];
-
 // Countdown var
 new CountDown = 0;
 
@@ -2712,7 +2708,6 @@ new bool:DDSalePendingAdmin[MAX_PLAYERS];
 new bool:DDSalePendingPlayer[MAX_PLAYERS];
 
 new GunPrices[7];
-new AmmoMat[4];
 new szJobNames[MAX_JOBTYPES][32];
 
 new PlayerText:phone_PTextDraw[MAX_PLAYERS][24];

@@ -2753,7 +2753,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "VIP: You have traded 3 tokens for a Desert Eagle, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				}
-				GivePlayerValidWeapon(playerid, 24, 70);
+				GivePlayerValidWeapon(playerid, 24);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 1:
@@ -2770,7 +2770,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "VIP: You have traded 2 tokens for a shotgun, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				}
-				GivePlayerValidWeapon(playerid, 25, 40);
+				GivePlayerValidWeapon(playerid, 25);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 2:
@@ -2786,7 +2786,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(string, sizeof(string), "VIP: You have traded 3 tokens for an MP5, you now have %d token(s).", PlayerInfo[playerid][pTokens]);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
 				}
-				GivePlayerValidWeapon(playerid, 29, 150);
+				GivePlayerValidWeapon(playerid, 29);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 3:
@@ -2805,7 +2805,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 				}
-				GivePlayerValidWeapon(playerid, 23, 55);
+				GivePlayerValidWeapon(playerid, 23);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 4:
@@ -2824,7 +2824,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 				}
-				GivePlayerValidWeapon(playerid, 2, 60000);
+				GivePlayerValidWeapon(playerid, 2);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 5:
@@ -2843,7 +2843,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 				}
-				GivePlayerValidWeapon(playerid, 5, 60000);
+				GivePlayerValidWeapon(playerid, 5);
 			}
 			case 6:
 			{
@@ -2861,7 +2861,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 				}
-				GivePlayerValidWeapon(playerid, 10, 60000);
+				GivePlayerValidWeapon(playerid, 10);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
 			case 7:
@@ -2880,7 +2880,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 				}
-				GivePlayerValidWeapon(playerid, 8, 60000);
+				GivePlayerValidWeapon(playerid, 8);
 			}
 			case 8:
 			{
@@ -2898,12 +2898,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						return 1;
 					}
 				}
-				GivePlayerValidWeapon(playerid, 22, 36);
+				GivePlayerValidWeapon(playerid, 22);
 				PlayerInfo[playerid][pVIPGuncount]++;
 			}
-		}
-		for(new i = 0; i < 12; i++) {
-			SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
 		}
 	}
 	if( dialogid == 3497) //famed change skin
@@ -2953,55 +2950,55 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			case 0: //Deagle
 			{
-				GivePlayerValidWeapon(playerid, 24, 70);
+				GivePlayerValidWeapon(playerid, 24);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Desert Eagle from the famed locker.");
 			}
 			case 1: //MP5
 			{
-				GivePlayerValidWeapon(playerid, 29, 180);
+				GivePlayerValidWeapon(playerid, 29);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Semi-Automatic MP5 from the famed locker.");
 			}
 			case 2: //Shotgun
 			{
-				GivePlayerValidWeapon(playerid, 25, 80);
+				GivePlayerValidWeapon(playerid, 25);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Pump Shotgun from the famed locker.");
 			}
 			case 3: //Rifle
 			{
-				GivePlayerValidWeapon(playerid, 33, 50);
+				GivePlayerValidWeapon(playerid, 33);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a County Rifle from the famed locker.");
 			}
 			case 4: //SD Pistol
 			{
-				GivePlayerValidWeapon(playerid, 23, 70);
+				GivePlayerValidWeapon(playerid, 23);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Silenced Pistol from the famed locker.");
 			}
 			case 5: //Katana
 			{
-				GivePlayerValidWeapon(playerid, 8, 60000);
+				GivePlayerValidWeapon(playerid, 8);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Japanese Katana from the famed locker.");
 			}
 			case 6: //Purple Dildo
 			{
-				GivePlayerValidWeapon(playerid, 10, 60000);
+				GivePlayerValidWeapon(playerid, 10);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Purple Dildo from the famed locker.");
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
 			}
 			case 7: //White Dildo
 			{
-				GivePlayerValidWeapon(playerid, 11, 60000);
+				GivePlayerValidWeapon(playerid, 11);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a White Dildo from the famed locker.");
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
 			}
 			case 8: //Big Vibrator
 			{
-				GivePlayerValidWeapon(playerid, 12, 60000);
+				GivePlayerValidWeapon(playerid, 12);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Big Vibrator from the famed locker.");
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
 			}
 			case 9: //Silver Vibrator
 			{
-				GivePlayerValidWeapon(playerid, 13, 60000);
+				GivePlayerValidWeapon(playerid, 13);
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] You have taken a Silver Vibrator from the famed locker.");
 				SendClientMessageEx(playerid, COLOR_YELLOW, "[Famed Locker] Have Fun...");
 			}
@@ -3900,17 +3897,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				SendClientMessage(playerid, COLOR_GRAD2, string);
 
 				printf("%s\n%i", RestaurantItems[iItem], iItem);
-
 				if (strcmp("Starter Meal", RestaurantItems[iItem]) == 0) // starter
 				{
-					PlayerInfo[playerid][pHunger] += 33;
-
 					if (PlayerInfo[playerid][pFitness] >= 3)
 						PlayerInfo[playerid][pFitness] -= 3;
 					else
 						PlayerInfo[playerid][pFitness] = 0;
 				}
-				else if (strcmp("Full Meal", RestaurantItems[iItem]) == 0) // full meal
+				if (strcmp("Full Meal", RestaurantItems[iItem]) == 0) // full meal
 				{
 					switch(PlayerInfo[playerid][pBackpack]) {
 						case 1: if(PlayerInfo[playerid][pBItems][0] < 1 && PlayerInfo[playerid][pBEquipped]) {
@@ -3926,20 +3920,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 							return 1;
 						}
 					}
-					PlayerInfo[playerid][pHunger] += 83;
-
-					if (PlayerInfo[playerid][pFitness] >= 5)
-						PlayerInfo[playerid][pFitness] -= 5;
-					else
-						PlayerInfo[playerid][pFitness] = 0;
 				}
 
-				// reset hunger timers because player has just eaten
-				PlayerInfo[playerid][pHungerTimer] = 0;
-				PlayerInfo[playerid][pHungerDeathTimer] = 0;
-
-				if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
-				if(PlayerInfo[playerid][pHealth] > 100)  SendClientMessageEx(playerid, COLOR_GRAD1, "Your health getting back to normal due to eating some food.");
 				SetHealth(playerid, 100.0);
 			}
 		}
@@ -3964,34 +3946,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			Businesses[business][bSafeBalance] += TaxSale(Businesses[business][bItemPrices][listitem]);
 			Businesses[business][bTotalSales]++;
 			Businesses[business][bTotalProfits] += Businesses[business][bItemPrices][listitem];
-
-			if (listitem == 0 || listitem == 1) // food items
-			{
-				if (listitem == 0) // starter
-				{
-					PlayerInfo[playerid][pHunger] += 33;
-
-					if (PlayerInfo[playerid][pFitness] >= 3)
-						PlayerInfo[playerid][pFitness] -= 3;
-					else
-						PlayerInfo[playerid][pFitness] = 0;
-				}
-				else if (listitem == 1) // full meal
-				{
-					PlayerInfo[playerid][pHunger] += 83;
-
-					if (PlayerInfo[playerid][pFitness] >= 5)
-						PlayerInfo[playerid][pFitness] -= 5;
-					else
-						PlayerInfo[playerid][pFitness] = 0;
-				}
-
-				// reset hunger timers because player has just eaten
-				PlayerInfo[playerid][pHungerTimer] = 0;
-				PlayerInfo[playerid][pHungerDeathTimer] = 0;
-
-				if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
-			}
 
 			new buf[128];
 			format(buf, sizeof(buf), "You have purchased a '%s'.", RestaurantItems[listitem]);
@@ -4070,22 +4024,22 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0:
 				{
-					GivePlayerValidWeapon(playerid, WEAPON_DILDO, 99999);
+					GivePlayerValidWeapon(playerid, WEAPON_DILDO);
 					SendClientMessageEx(playerid, COLOR_GRAD4, "Purple Dildo purchased, you can now pleasure yourself.");
 				}
 				case 1:
 				{
-					GivePlayerValidWeapon(playerid, WEAPON_VIBRATOR, 99999);
+					GivePlayerValidWeapon(playerid, WEAPON_VIBRATOR);
 					SendClientMessageEx(playerid, COLOR_GRAD4, "Short Vibrator purchased, you can now pleasure yourself.");
 				}
 				case 2:
 				{
-					GivePlayerValidWeapon(playerid, WEAPON_VIBRATOR2, 99999);
+					GivePlayerValidWeapon(playerid, WEAPON_VIBRATOR2);
 					SendClientMessageEx(playerid, COLOR_GRAD4, "Long Vibrator purchased, you can now pleasure yourself.");
 				}
 				case 3:
 				{
-					GivePlayerValidWeapon(playerid, WEAPON_DILDO2, 99999);
+					GivePlayerValidWeapon(playerid, WEAPON_DILDO2);
 					SendClientMessageEx(playerid, COLOR_GRAD4, "White Dildo purchased, you can now pleasure yourself.");
 				}
 			}
@@ -5272,7 +5226,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			for(new i; i < 10; i++) {
 				PlayerHoldingObject[suspect][i] = 0;
 			}
-			for(new i = 0; i < 5; i++) arrAmmoData[suspect][awp_iAmmo][i] = 0;
 			DeletePVar(suspect, "jailcuffs");
 			DeletePVar(playerid, "Arrest_Price");
 			DeletePVar(playerid, "Arrest_Time");
@@ -6153,7 +6106,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else if(listitem == 1)
 			{
-				ShowPlayerDialogEx(playerid, INTERACTGIVE, DIALOG_STYLE_LIST, name, "Cannabis\nCrack\nMaterials\nFirework\nHeroin\nRawOpium\nSyringes\nOpiumSeeds\nSprunk\nAmmo1\nAmmo2\nAmmo3\nAmmo4\nAmmo5", "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, INTERACTGIVE, DIALOG_STYLE_LIST, name, "Cannabis\nCrack\nMaterials\nFirework\nHeroin\nRawOpium\nSyringes\nOpiumSeeds\nSprunk", "Select", "Cancel");
 			}
 		}
 		else
@@ -6717,7 +6670,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 4)
 					{
-						GivePlayerValidWeapon(playerid, 24, 0); // deagle
+						GivePlayerValidWeapon(playerid, 24); // deagle
 						CrateInfo[CrateID][GunQuantity] -= 4;
 					}
 				}
@@ -6725,7 +6678,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 8)
 					{
-						GivePlayerValidWeapon(playerid, 27, 0); //spas
+						GivePlayerValidWeapon(playerid, 27); //spas
 						CrateInfo[CrateID][GunQuantity] -= 8;
 					}
 				}
@@ -6733,7 +6686,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 5)
 					{
-						GivePlayerValidWeapon(playerid, 29, 0);//mp5
+						GivePlayerValidWeapon(playerid, 29);//mp5
 						CrateInfo[CrateID][GunQuantity] -= 5;
 					}
 				}
@@ -6741,7 +6694,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 6)
 					{
-						GivePlayerValidWeapon(playerid, 31, 0); //m4
+						GivePlayerValidWeapon(playerid, 31); //m4
 						CrateInfo[CrateID][GunQuantity] -= 6;
 					}
 				}
@@ -6749,7 +6702,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 5)
 					{
-						GivePlayerValidWeapon(playerid, 30, 0); //ak47
+						GivePlayerValidWeapon(playerid, 30); //ak47
 						CrateInfo[CrateID][GunQuantity] -= 5;
 					}
 				}
@@ -6757,7 +6710,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 5)
 					{
-						GivePlayerValidWeapon(playerid, 34, 0);//sniper
+						GivePlayerValidWeapon(playerid, 34);//sniper
 						CrateInfo[CrateID][GunQuantity] -= 5;
 					}
 				}
@@ -6765,7 +6718,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 3)
 					{
-						GivePlayerValidWeapon(playerid, 25, 0);//shotgun
+						GivePlayerValidWeapon(playerid, 25);//shotgun
 						CrateInfo[CrateID][GunQuantity] -= 3;
 					}
 				}
@@ -6773,7 +6726,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					if(CrateInfo[CrateID][GunQuantity] >= 1)
 					{
-						GivePlayerValidWeapon(playerid, 22, 0);//shotgun
+						GivePlayerValidWeapon(playerid, 22);//shotgun
 						CrateInfo[CrateID][GunQuantity] -= 1;
 					}
 				}
@@ -12714,26 +12667,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == DIALOG_HOLSTER && response)
 	{
-		new time;
-
-		switch(PlayerInfo[playerid][pFitness])
-		{
-			case 0 .. 20: time = 2000;
-			case 21 .. 50: time = 1700;
-			case 51 .. 70: time = 1500;
-			case 71 .. 100: time = 1000;
-		}
-
 		if(listitem == 0)
 		{
-			GameTextForPlayer(playerid, "holstering", time, 6);
+			GameTextForPlayer(playerid, "holstering", 1000, 6);
 		}
 		else
 		{
-			GameTextForPlayer(playerid, "unholstering", time, 6);
+			GameTextForPlayer(playerid, "unholstering", 1000, 6);
 		}
 
-		SetTimerEx("UnholsterWeapon", time, false, "ii", playerid, listitem);
+		SetTimerEx("UnholsterWeapon", 1000, false, "ii", playerid, listitem);
 	}
 	if(dialogid == DIALOG_MICROSHOP)
 	{

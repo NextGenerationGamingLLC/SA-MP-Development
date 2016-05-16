@@ -91,12 +91,6 @@ CMD:corndog(playerid, params[])
 	if(GetPlayerCash(playerid) < 2000) return SendClientMessage(playerid, COLOR_GREY, "You need $2000 to buy a corn dog.");
 	SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a 'Corn Dog' for $2000.");
 	GivePlayerCash(playerid, -2000);
-	PlayerInfo[playerid][pHunger] += 83;
-	if (PlayerInfo[playerid][pFitness] >= 5) PlayerInfo[playerid][pFitness] -= 5;
-	else PlayerInfo[playerid][pFitness] = 0;
-	PlayerInfo[playerid][pHungerTimer] = 0;
-	PlayerInfo[playerid][pHungerDeathTimer] = 0;
-	if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
 	new Float:health;
 	GetHealth(playerid, health);
 	if(health < 100) 
@@ -113,12 +107,6 @@ CMD:pizza(playerid, params[])
 	if(GetPlayerCash(playerid) < 2000) return SendClientMessage(playerid, COLOR_GREY, "You need $2000 to buy a pizza.");
 	SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a 'Pizza' for $2000.");
 	GivePlayerCash(playerid, -2000);
-	PlayerInfo[playerid][pHunger] += 83;
-	if (PlayerInfo[playerid][pFitness] >= 10) PlayerInfo[playerid][pFitness] -= 10;
-	else PlayerInfo[playerid][pFitness] = 0;
-	PlayerInfo[playerid][pHungerTimer] = 0;
-	PlayerInfo[playerid][pHungerDeathTimer] = 0;
-	if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
 	new Float:health;
 	GetHealth(playerid, health);
 	if(health < 100) 
@@ -135,12 +123,6 @@ CMD:frieddough(playerid, params[])
 	if(GetPlayerCash(playerid) < 2000) return SendClientMessage(playerid, COLOR_GREY, "You need $2000 to buy a fried dough.");
 	SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a 'Fried Dough' for $2000.");
 	GivePlayerCash(playerid, -2000);
-	PlayerInfo[playerid][pHunger] += 83;
-	if (PlayerInfo[playerid][pFitness] >= 15) PlayerInfo[playerid][pFitness] -= 15;
-	else PlayerInfo[playerid][pFitness] = 0;
-	PlayerInfo[playerid][pHungerTimer] = 0;
-	PlayerInfo[playerid][pHungerDeathTimer] = 0;
-	if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
 	new Float:health;
 	GetHealth(playerid, health);
 	if(health < 100) 

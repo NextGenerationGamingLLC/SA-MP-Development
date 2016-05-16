@@ -164,8 +164,6 @@ native IsValidVehicle(vehicleid);
 #define			MAX_STRUCTURE_FIRES			100
 #define			MAX_FIRE_HEALTH				1000
 
-#define			MAX_AMMO_TYPES				(4)
-
 // strcpy - Simon / Y_LESS
 /*#define strcpy(%0,%1,%2) \
     strcat((%0[0] = '\0', %0), %1, %2)*/
@@ -670,10 +668,6 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_GROUP_WEAPONSAFE_DEPOSIT		(3413)
 #define			DIALOG_GROUP_TURNOUT				(3414)
 #define 		DIALOG_GROUP_CRIMETYPE				(3415)
-#define 		G_AMMO_LOCKER						(3416)
-#define 		G_AMMO_LOCKER_SELECTION				(3417)
-#define 		G_AMMO_LOCKER_WITHDRAW				(3418)
-#define 		G_AMMO_LOCKER_DEPOSIT				(3419)
 #define 		DIALOG_GROUP_PLISTPAY 				(3420)
 #define 		DIALOG_GROUP_PEDITPAY 				(3421)
 #define 		DIALOG_GROUP_GOVLISTPAY 			(3422)
@@ -979,7 +973,6 @@ native IsValidVehicle(vehicleid);
 #define			DIALOG_BMEDKIT				(5094)
 #define			DIALOG_BDROP				(5095)
 #define			DIALOG_ENERGYBARS			(5096)
-#define			DIALOG_BAMMO				(5097)
 
 #define			DIALOG_DOC_ELEVATOR			(5500)
 #define			DIALOG_DOC_CP				(5550)
@@ -1049,7 +1042,6 @@ native IsValidVehicle(vehicleid);
 
 #define 		DIALOG_AMMUNATION_MAIN		(6043)
 #define 		DIALOG_AMMUNATION_GUNS		(6044)
-#define 		DIALOG_AMMUNATION_AMMO		(6045)
 
 #define 		DIALOG_GANG_CRATE1 			(6046)
 #define 		DIALOG_GANG_CRATE2 			(6047)

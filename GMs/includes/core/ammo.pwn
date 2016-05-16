@@ -53,17 +53,6 @@ SyncPlayerAmmo(playerid, iWeaponID)
 	return 1;
 }
 
-CanGetVIPWeapon(playerid)
-{
-	switch(PlayerInfo[playerid][pDonateRank])
-	{
-		case 1: return 1;
-		case 2: return 1;
-		case 3: if(PlayerInfo[playerid][pVIPGuncount] < 4) return 1;
-		case 4:  if(PlayerInfo[playerid][pVIPGuncount] < 8) return 1;
-	}
-	return 0;
-}
 ResetVIPAmmoCount()
 {
 	foreach(new i : Player)

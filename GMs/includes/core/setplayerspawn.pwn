@@ -60,7 +60,7 @@ SetPlayerSpawn(playerid)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w]);
 						}
 					}
 				}
@@ -89,7 +89,7 @@ SetPlayerSpawn(playerid)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w]);
 						}
 					}	
 						
@@ -120,7 +120,7 @@ SetPlayerSpawn(playerid)
 								PlayerInfo[i][pGuns][w] = HungerPlayerInfo[i][hgLastWeapon][w];
 								if(PlayerInfo[i][pGuns][w] > 0 && PlayerInfo[i][pAGuns][w] == 0)
 								{
-									GivePlayerValidWeapon(i, PlayerInfo[i][pGuns][w], 0);
+									GivePlayerValidWeapon(i, PlayerInfo[i][pGuns][w]);
 								}
 							}
 						}
@@ -163,7 +163,7 @@ SetPlayerSpawn(playerid)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w]);
 						}
 					}
 				}

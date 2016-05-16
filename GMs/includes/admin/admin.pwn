@@ -226,10 +226,10 @@ CMD:near(playerid, params[])
 CMD:givegun(playerid, params[])
 {
     if (PlayerInfo[playerid][pAdmin] >= 4) {
-        new playa, gun, ammo;
+        new playa, gun;
 
-        if(sscanf(params, "udd", playa, gun, ammo)) {
-            SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givegun [player] [weaponid] [ammo]");
+        if(sscanf(params, "udd", playa, gun)) {
+            SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givegun [player] [weaponid]");
             SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________");
             SendClientMessageEx(playerid, COLOR_GRAD4, "(1)Brass Knuckles (2)Golf Club (3)Nite Stick (4)Knife (5)Baseball Bat (6)Shovel (7)Pool Cue (8)Katana (9)Chainsaw");
             SendClientMessageEx(playerid, COLOR_GRAD4, "(10)Purple Dildo (11)Small White Vibrator (12)Large White Vibrator (13)Silver Vibrator (14)Flowers (15)Cane (16)Frag Grenade");
@@ -250,9 +250,8 @@ CMD:givegun(playerid, params[])
 			if(PlayerInfo[playa][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to someone that has his account restricted!");
 		    if(playa != INVALID_PLAYER_ID && gun <= 20 || gun >= 22) {
                 PlayerInfo[playa][pAGuns][GetWeaponSlot(gun)] = gun;
-                GivePlayerValidWeapon(playa, gun, ammo);
+                GivePlayerValidWeapon(playa, gun);
                 SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
-				SyncPlayerAmmo(playerid, gun);
             }
             else if(playa != INVALID_PLAYER_ID && gun == 21) {
                 JetPack[playa] = 1;
@@ -3919,25 +3918,12 @@ CMD:setstat(playerid, params[])
 
 			case 52:
 				{
-					if (amount <= 0)
-					{
-						amount = 1;
-						PlayerInfo[giveplayerid][pHungerTimer] = 1799;
-					} else if (amount > 100)
-					{
-						amount = 100;
-					}
-
-					PlayerInfo[giveplayerid][pHungerDeathTimer] = 0;
-
-					PlayerInfo[giveplayerid][pHunger] = amount;
-					format(string, sizeof(string), "   %s's(%d) Hunger has been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
+					return 1;
 				}
 
 			case 53:
 				{
-					PlayerInfo[giveplayerid][pFitness] = amount;
-					format(string, sizeof(string), "   %s's(%d) Fitness has been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
+					return 1;
 				}
 
 			case 54:
@@ -4013,7 +3999,7 @@ CMD:setmystat(playerid, params[])
 			}
 			else if (PlayerInfo[playerid][pUndercover] >= 1) {
 				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmystat [statcode] [amount]");
-				SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |6 PhoneNumber |26 Rank |33 Age |34 Gender |37 Faction |52 Hunger ");
+				SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |6 PhoneNumber |26 Rank |33 Age |34 Gender |37 Faction ");
 				return 1;
 			}
 
@@ -4293,25 +4279,12 @@ CMD:setmystat(playerid, params[])
 
 		case 52:
 			{
-				if (amount <= 0)
-				{
-					amount = 1;
-					PlayerInfo[playerid][pHungerTimer] = 1799;
-				} else if (amount > 100)
-				{
-					amount = 100;
-				}
-
-				PlayerInfo[playerid][pHungerDeathTimer] = 0;
-
-				PlayerInfo[playerid][pHunger] = amount;
-				format(string, sizeof(string), "   %s's Hunger has been set to %i.", GetPlayerNameEx(playerid), amount);
+				return 1;
 			}
 
 		case 53:
 			{
-				PlayerInfo[playerid][pFitness] = amount;
-				format(string, sizeof(string), "   %s's Fitness has been set to %i.", GetPlayerNameEx(playerid), amount);
+				return 1;
 			}
 
 		case 54:
@@ -5356,7 +5329,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /hedit /dd(edit/next/name/pass) /dmpedit /dmpnear /gotomapicon /gangwarn /gangunban /setcapping /banaccount");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /removepvehicle /rcabuse /createmailbox /adestroymailbox /b(edit/next/name) /adestroycrate /gotocrate /srelease");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /(create/edit/delete)gaspump /(goto/goin)biz /dvcreate /dvstatus /dvrespawn /dvedit /dveditslot /dvplate /checkvouchers");
-		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine /setammo");
+		SendClientMessageEx(playerid, COLOR_GRAD4,"--* {EE9A4D}SENIOR ADMIN{D8D8D8} --* /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 1337)
 	{
@@ -5688,8 +5661,7 @@ CMD:quickstats(playerid, params[])
 	format(string, sizeof(string), "** Level: %d | Bank: %s | Cash: %s | Radio Frequency: %dkhz | Warning: %d", PlayerInfo[playerid][pLevel],
 	number_format(PlayerInfo[playerid][pAccount]), number_format(PlayerInfo[playerid][pCash]), PlayerInfo[playerid][pRadioFreq], PlayerInfo[playerid][pWarns]);
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
-	format(string, sizeof(string), "** Health: %d | Armour: %d | Hunger: %d | Fitness: %d", floatround(health), floatround(armor), PlayerInfo[playerid][pHunger], PlayerInfo[playerid][pFitness]);
+	format(string, sizeof(string), "** Health: %d | Armour: %d", floatround(health), floatround(armor));
 	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	SendClientMessageEx(playerid, COLOR_GREEN, "--------------------------------------------------------------------------------------------------------------------");
 	return 1;

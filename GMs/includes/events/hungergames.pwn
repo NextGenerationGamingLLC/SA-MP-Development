@@ -140,7 +140,7 @@ CMD:endhunger(playerid, params[])
 						PlayerInfo[i][pGuns][w] = HungerPlayerInfo[i][hgLastWeapon][w];
 						if(PlayerInfo[i][pGuns][w] > 0 && PlayerInfo[i][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(i, PlayerInfo[i][pGuns][w], 0);
+							GivePlayerValidWeapon(i, PlayerInfo[i][pGuns][w]);
 						}
 					}
 							
@@ -207,7 +207,7 @@ CMD:leavehunger(playerid, params[])
 				PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 				if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 				{
-					GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
+					GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w]);
 				}
 			}
 		}
@@ -236,7 +236,7 @@ CMD:leavehunger(playerid, params[])
 				PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 				if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 				{
-					GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
+					GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w]);
 				}
 			}
 					
@@ -268,7 +268,7 @@ CMD:leavehunger(playerid, params[])
 						PlayerInfo[i][pGuns][w] = HungerPlayerInfo[i][hgLastWeapon][w];
 						if(PlayerInfo[i][pGuns][w] > 0 && PlayerInfo[i][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(i, PlayerInfo[i][pGuns][w], 60000);
+							GivePlayerValidWeapon(i, PlayerInfo[i][pGuns][w]);
 						}
 					}
 				}
@@ -310,7 +310,7 @@ CMD:leavehunger(playerid, params[])
 				PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 				if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 				{
-					GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
+					GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w]);
 				}
 			}
 		}
@@ -433,7 +433,7 @@ CMD:openbackpack(playerid, params[])
 				new rand = Random(1, 35);
 				if(rand > 0 && rand < 6)
 				{
-					GivePlayerValidWeapon(playerid, 24, 60000);
+					GivePlayerValidWeapon(playerid, 24);
 					SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received a deagle.");
 					HungerBackpackInfo[backpack][hgActiveEx] = 0;
 					DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -441,7 +441,7 @@ CMD:openbackpack(playerid, params[])
 				}
 				else if(rand > 5 && rand < 11)
 				{
-					GivePlayerValidWeapon(playerid, 25, 60000);
+					GivePlayerValidWeapon(playerid, 25);
 					SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received a shotgun.");
 					HungerBackpackInfo[backpack][hgActiveEx] = 0;
 					DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -449,7 +449,7 @@ CMD:openbackpack(playerid, params[])
 				}
 				else if(rand > 10 && rand < 16)
 				{
-					GivePlayerValidWeapon(playerid, 29, 60000);
+					GivePlayerValidWeapon(playerid, 29);
 					SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received a MP5.");
 					HungerBackpackInfo[backpack][hgActiveEx] = 0;
 					DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -457,7 +457,7 @@ CMD:openbackpack(playerid, params[])
 				}
 				else if(rand > 15 && rand < 26)
 				{
-					GivePlayerValidWeapon(playerid, 5, 60000);
+					GivePlayerValidWeapon(playerid, 5);
 					SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received a baseball bat.");
 					HungerBackpackInfo[backpack][hgActiveEx] = 0;
 					DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -465,7 +465,7 @@ CMD:openbackpack(playerid, params[])
 				}
 				else if(rand > 25 && rand < 36)
 				{
-					GivePlayerValidWeapon(playerid, 22, 60000);
+					GivePlayerValidWeapon(playerid, 22);
 					SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received a 9mm.");
 					HungerBackpackInfo[backpack][hgActiveEx] = 0;
 					DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);
@@ -474,7 +474,6 @@ CMD:openbackpack(playerid, params[])
 			}
 			else if(HungerBackpackInfo[backpack][hgBackpackType] == 3)
 			{
-				PlayerInfo[playerid][pHunger] = 100;
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You have picked up the backpack and received 100 percent hunger.");
 				HungerBackpackInfo[backpack][hgActiveEx] = 0;
 				DestroyDynamic3DTextLabel(HungerBackpackInfo[backpack][hgBackpack3DText]);

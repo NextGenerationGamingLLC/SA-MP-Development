@@ -44,7 +44,7 @@ stock GetWeaponParam(id, WeaponsEnum: param)
 	return 0;
 }
 
-stock GivePlayerValidWeapon( playerid, WeaponID, Ammo )
+stock GivePlayerValidWeapon( playerid, WeaponID )
 {
     #if defined zombiemode
    	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't have guns.");
@@ -58,70 +58,66 @@ stock GivePlayerValidWeapon( playerid, WeaponID, Ammo )
   		case 0, 1:
 		{
 			PlayerInfo[playerid][pGuns][ 0 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 2, 3, 4, 5, 6, 7, 8, 9:
 		{
 			PlayerInfo[playerid][pGuns][ 1 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 22, 23, 24:
 		{
 			PlayerInfo[playerid][pGuns][ 2 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 25, 26, 27:
 		{
 			PlayerInfo[playerid][pGuns][ 3 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 28, 29, 32:
 		{
 			PlayerInfo[playerid][pGuns][ 4 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 30, 31:
 		{
 			PlayerInfo[playerid][pGuns][ 5 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 33, 34:
 		{
 			PlayerInfo[playerid][pGuns][ 6 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 35, 36, 37, 38:
 		{
 			PlayerInfo[playerid][pGuns][ 7 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 16, 17, 18, 39, 40:
 		{
 			PlayerInfo[playerid][pGuns][ 8 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 41, 42, 43:
 		{
 			PlayerInfo[playerid][pGuns][ 9 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 10, 11, 12, 13, 14, 15:
 		{
 			PlayerInfo[playerid][pGuns][ 10 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 		case 44, 45, 46:
 		{
 			PlayerInfo[playerid][pGuns][ 11 ] = WeaponID;
-			GivePlayerWeapon( playerid, WeaponID, Ammo );
+			GivePlayerWeapon( playerid, WeaponID, 99999 );
 		}
 	}
 
-	GivePlayerWeapon(playerid, WeaponID, 1);
-	SyncPlayerAmmo(playerid, WeaponID);
-	new iAmmoType = GetAmmoType(WeaponID); // the if check prevents OOB index issues
-	if(iAmmoType != -1 && !zombieevent) arrAmmoData[playerid][awp_iAmmo][iAmmoType] += Ammo;
-	
+	GivePlayerWeapon(playerid, WeaponID, 1);	
 	return 1;
 }
 
@@ -152,8 +148,8 @@ public SetPlayerWeapons(playerid)
 	{
 		if(PlayerInfo[playerid][pGuns][s] > 0 && PlayerInfo[playerid][pAGuns][s] == 0)
 		{
-			if(zombieevent) GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 60000);
-			else GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 0);
+			if(zombieevent) GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s]);
+			else GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s]);
 		}
 	}
 	return 1;
@@ -167,8 +163,8 @@ stock SetPlayerWeaponsEx(playerid)
 	{
 		if(PlayerInfo[playerid][pGuns][s] > 0)
 		{
-			if(zombieevent) GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 60000);
-			else GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s], 0);
+			if(zombieevent) GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s]);
+			else GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][s]);
 		}
 	}
 	SetPlayerArmedWeapon(playerid, GetPVarInt(playerid, "LastWeapon"));
@@ -330,11 +326,6 @@ OnPlayerChangeWeapon(playerid, newweapon)
 	    SetPlayerArmedWeapon(playerid, 0);
 	}
 	
-	if(!GetPVarType(playerid, "IsInArena") && !GetPVarType(playerid, "Injured") && !GetPVarType(playerid, "EventToken")) {
-		//if(!IsNotAGun(newweapon)) ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
-		SyncPlayerAmmo(playerid, newweapon);
-	} 
-
 	/*if(Weapon_ReturnSlot(newweapon) != PlayerInfo[playerid][pHolsteredWeapon])
 	{
 		SetPlayerArmedWeapon(playerid, PlayerInfo[playerid][pGuns][PlayerInfo[playerid][pHolsteredWeapon]]);
@@ -605,7 +596,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their silenced pistol.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 23);
-				GivePlayerValidWeapon(giveplayerid, 23, 0);
+				GivePlayerValidWeapon(giveplayerid, 23);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
@@ -632,7 +623,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their 9mm pistol.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 22);
-				GivePlayerValidWeapon(giveplayerid, 22, 0);
+				GivePlayerValidWeapon(giveplayerid, 22);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));
@@ -661,7 +652,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their shotgun.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 25);
-				GivePlayerValidWeapon(giveplayerid, 25, 0);
+				GivePlayerValidWeapon(giveplayerid, 25);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s(IP:%s) has given %s (IP:%s) their shotgun.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -690,7 +681,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their MP5.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 29);
-				GivePlayerValidWeapon(giveplayerid, 29, 0);
+				GivePlayerValidWeapon(giveplayerid, 29);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their MP5.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -717,7 +708,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their Micro SMG.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 28);
-				GivePlayerValidWeapon(giveplayerid, 28, 0);
+				GivePlayerValidWeapon(giveplayerid, 28);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their Micro SMG.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -744,7 +735,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their Tec-9.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 32);
-				GivePlayerValidWeapon(giveplayerid, 32, 0);
+				GivePlayerValidWeapon(giveplayerid, 32);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their Tec-9.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -773,7 +764,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their Desert Eagle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 24);
-				GivePlayerValidWeapon(giveplayerid, 24, 0);
+				GivePlayerValidWeapon(giveplayerid, 24);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their Desert Eagle.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -801,7 +792,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their rifle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 33);
-				GivePlayerValidWeapon(giveplayerid, 33, 0);
+				GivePlayerValidWeapon(giveplayerid, 33);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their rifle.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -828,7 +819,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their AK-47.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 30);
-				GivePlayerValidWeapon(giveplayerid, 30, 0);
+				GivePlayerValidWeapon(giveplayerid, 30);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their AK-47.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -855,7 +846,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their M4.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 31);
-				GivePlayerValidWeapon(giveplayerid, 31, 0);
+				GivePlayerValidWeapon(giveplayerid, 31);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their M4.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -882,7 +873,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their SPAS-12.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 27);
-				GivePlayerValidWeapon(giveplayerid, 27, 0);
+				GivePlayerValidWeapon(giveplayerid, 27);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their SPAS-12.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -909,7 +900,7 @@ CMD:giveweapon(playerid, params[])
 				format(string, sizeof(string), "* %s has given %s their sniper rifle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				RemovePlayerWeapon(playerid, 34);
-				GivePlayerValidWeapon(giveplayerid, 34, 0);
+				GivePlayerValidWeapon(giveplayerid, 34);
 				/*new ip[32], ipex[32];
 				GetPlayerIp(playerid, ip, sizeof(ip));
 				GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their sniper rifle.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -934,7 +925,7 @@ CMD:giveweapon(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s their flowers.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerWeapon(playerid, 14);
-			GivePlayerValidWeapon(giveplayerid, 14, 0);
+			GivePlayerValidWeapon(giveplayerid, 14);
 			/*new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their flowers.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -954,7 +945,7 @@ CMD:giveweapon(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s their brass knuckles.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerWeapon(playerid, 1);
-			GivePlayerValidWeapon(giveplayerid, 1, 0);
+			GivePlayerValidWeapon(giveplayerid, 1);
 			/*new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their brass knuckles.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -974,7 +965,7 @@ CMD:giveweapon(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s their baseball bat.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerWeapon(playerid, 5);
-			GivePlayerValidWeapon(giveplayerid, 5, 0);
+			GivePlayerValidWeapon(giveplayerid, 5);
 			/*new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their baseball bat.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -994,7 +985,7 @@ CMD:giveweapon(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s their cane.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerWeapon(playerid, 15);
-			GivePlayerValidWeapon(giveplayerid, 15, 0);
+			GivePlayerValidWeapon(giveplayerid, 15);
 			/*new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their cane.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -1014,7 +1005,7 @@ CMD:giveweapon(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s their shovel.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerWeapon(playerid, 6);
-			GivePlayerValidWeapon(giveplayerid, 6, 0);
+			GivePlayerValidWeapon(giveplayerid, 6);
 			/*new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their shovel.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -1036,7 +1027,7 @@ CMD:giveweapon(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s golf club.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerWeapon(playerid, 2);
-			GivePlayerValidWeapon(giveplayerid, 2, 0);
+			GivePlayerValidWeapon(giveplayerid, 2);
 			/*new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their golf club.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -1058,7 +1049,7 @@ CMD:giveweapon(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s their katana.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerWeapon(playerid, 8);
-			GivePlayerValidWeapon(giveplayerid, 8, 0);
+			GivePlayerValidWeapon(giveplayerid, 8);
 			/*new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their katana.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -1080,7 +1071,7 @@ CMD:giveweapon(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s their dildo.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerWeapon(playerid, 10);
-			GivePlayerValidWeapon(giveplayerid, 10, 0);
+			GivePlayerValidWeapon(giveplayerid, 10);
 			/*new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));format(string, sizeof(string), "%s (IP:%s) has given %s (IP:%s) their dildo.", GetPlayerNameEx(playerid), ip, GetPlayerNameEx(giveplayerid), ipex);
@@ -1100,7 +1091,7 @@ CMD:giveweapon(playerid, params[])
 			format(string, sizeof(string), "* %s has given %s their parachute.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			RemovePlayerWeapon(playerid, 46);
-			GivePlayerValidWeapon(giveplayerid, 46, 0);
+			GivePlayerValidWeapon(giveplayerid, 46);
 			/*new ip[32], ipex[32];
 			GetPlayerIp(playerid, ip, sizeof(ip));
 			GetPlayerIp(giveplayerid, ipex, sizeof(ipex));

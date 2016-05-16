@@ -1118,7 +1118,7 @@ CMD:craft(playerid, params[])
 					}
 				case 8:
 					{
-						GivePlayerValidWeapon(playerid, 43, 0);
+						GivePlayerValidWeapon(playerid, 43);
 					}
 				case 9:
 					{
@@ -1144,7 +1144,7 @@ CMD:craft(playerid, params[])
 					}
 				case 13:
 					{
-						GivePlayerValidWeapon(playerid, 46, 99999);
+						GivePlayerValidWeapon(playerid, 46);
 					}
 				case 14:
 					{
@@ -1228,15 +1228,15 @@ CMD:craft(playerid, params[])
 						PlayerInfo[playerid][pCrowBar] += 25;
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /cracktrunk in any car that you already lock picked to attempt to open the trunk.");
 					}
-				case 20: GivePlayerValidWeapon(playerid, WEAPON_FLOWER, 99999);
-				case 21: GivePlayerValidWeapon(playerid, WEAPON_BRASSKNUCKLE, 99999);
-				case 22: GivePlayerValidWeapon(playerid, WEAPON_BAT, 99999);
-				case 23: GivePlayerValidWeapon(playerid, WEAPON_CANE, 99999);
-				case 24: GivePlayerValidWeapon(playerid, WEAPON_SHOVEL, 99999);	
-				case 25: GivePlayerValidWeapon(playerid, WEAPON_POOLSTICK, 99999);
-				case 26: GivePlayerValidWeapon(playerid, WEAPON_KATANA, 99999);
-				case 27: GivePlayerValidWeapon(playerid, WEAPON_DILDO, 99999);
-				case 28: GivePlayerValidWeapon(playerid, WEAPON_SPRAYCAN, 99999);
+				case 20: GivePlayerValidWeapon(playerid, WEAPON_FLOWER);
+				case 21: GivePlayerValidWeapon(playerid, WEAPON_BRASSKNUCKLE);
+				case 22: GivePlayerValidWeapon(playerid, WEAPON_BAT);
+				case 23: GivePlayerValidWeapon(playerid, WEAPON_CANE);
+				case 24: GivePlayerValidWeapon(playerid, WEAPON_SHOVEL);	
+				case 25: GivePlayerValidWeapon(playerid, WEAPON_POOLSTICK);
+				case 26: GivePlayerValidWeapon(playerid, WEAPON_KATANA);
+				case 27: GivePlayerValidWeapon(playerid, WEAPON_DILDO);
+				case 28: GivePlayerValidWeapon(playerid, WEAPON_SPRAYCAN);
 				case 29: {
 					PlayerInfo[playerid][pRimMod]++;
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /userimkit as a mechanic in any car to modify your rims.");

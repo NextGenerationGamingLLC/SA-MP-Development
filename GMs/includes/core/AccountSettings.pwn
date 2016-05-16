@@ -36,7 +36,6 @@ ShowAccountSettings(playerid, menu = 0) {
 				{FFFFFF}Whispers\t%s\n\
 				{FFFFFF}First ChatBox\t%s\n\
 				{FFFFFF}Private Radio\t%s\n\
-				{FFFFFF}Hunger Meter\t%s\n\
 				{FFFFFF}Phone\t%s\n\
 				{FFFFFF}Famed\t%s\n\
 				{FFFFFF}VIP\t%s\n",
@@ -187,7 +186,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(strcmp(inputtext, "First ChatBox", true) == 0) id = 4;
 			else if(strcmp(inputtext, "Secondary ChatBox", true) == 0) id = 19;
 			else if(strcmp(inputtext, "Private Radio", true) == 0) id = 5;
-			else if(strcmp(inputtext, "Hunger Meter", true) == 0) id = 6;
 			else if(strcmp(inputtext, "Phone", true) == 0) id = 7;
 			else if(strcmp(inputtext, "Famed", true) == 0) id = 8;
 			else if(strcmp(inputtext, "VIP", true) == 0) id = 9;
@@ -208,7 +206,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pToggledChats][id] = 1;
 				switch(id) {
 
-					case 6: PlayerTextDrawHide(playerid, _hungerText[playerid]);
 					case 7: PhoneOnline[playerid] = 1;
 					case 15: advisorchat[playerid] = 0;
 					case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
@@ -218,7 +215,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				PlayerInfo[playerid][pToggledChats][id] = 0;
 				switch(id) {
-					case 6: PlayerTextDrawShow(playerid, _hungerText[playerid]);
 					case 7: PhoneOnline[playerid] = 0;
 					case 15: advisorchat[playerid] = 1;
 					case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
@@ -274,7 +270,7 @@ CMD:tog(playerid, params[]) {
 
 		SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /tog [option]");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: newbie | ooc | whisper | pr | phone | famed | vip | dept | gooc | radio | bug");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | hunger | advisor | points");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | advisor | points");
 		return 1;
 	}
 
@@ -297,7 +293,6 @@ CMD:tog(playerid, params[]) {
 	else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
 	else if(strcmp(params, "news", true) == 0) iChatID = 1;
 	else if(strcmp(params, "chatbox", true) == 0) iChatID = 4; 
-	else if(strcmp(params, "hunger", true) == 0) iChatID = 6;
 	else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
 	else if(strcmp(params, "points", true) == 0) iChatID = 22;
 
@@ -308,7 +303,6 @@ CMD:tog(playerid, params[]) {
 		PlayerInfo[playerid][pToggledChats][iChatID] = 1;
 		switch(iChatID) {
 
-			case 6: PlayerTextDrawHide(playerid, _hungerText[playerid]);
 			case 7: PhoneOnline[playerid] = 1;
 			case 15: advisorchat[playerid] = 0;
 			case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
@@ -320,7 +314,6 @@ CMD:tog(playerid, params[]) {
 
 		PlayerInfo[playerid][pToggledChats][iChatID] = 0;
 		switch(iChatID) {
-			case 6: PlayerTextDrawShow(playerid, _hungerText[playerid]);
 			case 7: PhoneOnline[playerid] = 0;
 			case 15: advisorchat[playerid] = 1;
 			case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);

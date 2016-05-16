@@ -2312,26 +2312,6 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetProportional(playerid,BackupText[playerid] , true);
 	PlayerTextDrawSetShadow(playerid, BackupText[playerid] , 1);
 	
-	//Hunger Games Textdraws
-	_hungerText[playerid] = CreatePlayerTextDraw(playerid, 633.000000, 420.000000, "Hunger: ~y~Satisfied");
-	PlayerTextDrawAlignment(playerid, _hungerText[playerid], 3);
-	PlayerTextDrawBackgroundColor(playerid, _hungerText[playerid], 255);
-	PlayerTextDrawFont(playerid, _hungerText[playerid], 1);
-	PlayerTextDrawLetterSize(playerid, _hungerText[playerid], 0.420000, 2.000000);
-	PlayerTextDrawColor(playerid, _hungerText[playerid], -1);
-	PlayerTextDrawSetOutline(playerid, _hungerText[playerid], 1);
-	PlayerTextDrawSetProportional(playerid, _hungerText[playerid], 1);
-
-	if (PlayerInfo[playerid][pAdmin] < 2) // not an admin
-	{
-		PlayerTextDrawShow(playerid, _hungerText[playerid]);
-		_hungerTextVisible[playerid] = 1;
-	}
-	else
-	{
-		_hungerTextVisible[playerid] = 0;
-	}
-	
 	//Vehicle Textdraws
 	_vhudFlash[playerid] = CreatePlayerTextDraw(playerid, -20.000000, 2.000000,"|");
 	PlayerTextDrawUseBox(playerid,_vhudFlash[playerid],1);

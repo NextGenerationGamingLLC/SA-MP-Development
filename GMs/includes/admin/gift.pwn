@@ -3796,19 +3796,6 @@ CMD:getgift(playerid, params[])
 				{
 					GiftPlayer(MAX_PLAYERS, playerid);
 				}
-				if(month == 12 && day == 25) // Christmas event.
-				{
-					SetHealth(playerid, 100);
-					SetArmour(playerid, 100);
-					PlayerInfo[playerid][pHungerTimer] = 0;
-					PlayerInfo[playerid][pHungerDeathTimer] = 0;
-					PlayerInfo[playerid][pHunger] += 83;
-					
-					if(PlayerInfo[playerid][pHunger] > 100) 
-						PlayerInfo[playerid][pHunger] = 100;
-
-					SendClientMessageEx(playerid, COLOR_GRAD2, "* Your hunger has been refilled!  Merry christmas!");
-				}
 				format(string, sizeof(string), "* %s reaches inside the bag of gifts with their eyes closed.", GetPlayerNameEx(playerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			}

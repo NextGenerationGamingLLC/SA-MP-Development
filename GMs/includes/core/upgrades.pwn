@@ -46,7 +46,7 @@ CMD:resetupgrades(playerid, params[]) {
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You must be at least level 2.");
 	}
 	else {
-		PlayerInfo[playerid][gPupgrade] = (PlayerInfo[playerid][pLevel]-2)*2;
+		PlayerInfo[playerid][gPupgrade] = (PlayerInfo[playerid][pLevel]-1)*2;
 		PlayerInfo[playerid][pSHealth] = 0.0;
 
 		if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID) {

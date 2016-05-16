@@ -665,7 +665,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) {
 				
 				switch(PlayerInfo[playerid][pTruckSkill]) {
-					case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45, 10);
+					case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45);
 					case 50 .. 100: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun", "Select", "");
 					case 101 .. 200: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5", "Select", "");
 					case 201 .. 400: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle", "Select", "");
@@ -676,11 +676,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else {
 				switch(listitem) {
-					case 0: GivePlayerValidWeapon(playerid, WEAPON_COLT45, 10);
-					case 1: GivePlayerValidWeapon(playerid, WEAPON_SHOTGUN, 10);
-					case 2: GivePlayerValidWeapon(playerid, WEAPON_MP5, 30);
-					case 3: GivePlayerValidWeapon(playerid, WEAPON_DEAGLE, 7);
-					case 4: GivePlayerValidWeapon(playerid, WEAPON_AK47, 30);
+					case 0: GivePlayerValidWeapon(playerid, WEAPON_COLT45);
+					case 1: GivePlayerValidWeapon(playerid, WEAPON_SHOTGUN);
+					case 2: GivePlayerValidWeapon(playerid, WEAPON_MP5);
+					case 3: GivePlayerValidWeapon(playerid, WEAPON_DEAGLE);
+					case 4: GivePlayerValidWeapon(playerid, WEAPON_AK47);
 				}
 				return 1;
 			}

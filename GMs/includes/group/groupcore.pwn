@@ -163,7 +163,6 @@ SaveGroup(iGroupID) {
 	);
 	
 	for(i = 0; i != MAX_GROUP_RIVALS; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gRival%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iRivals][i]);
-	for(i = 0; i != 4; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gAmmo%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iAmmo][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%s'", szMiscArray, i, g_mysql_ReturnEscaped(arrGroupRanks[iGroupID][i], MainPipeline));
 	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
@@ -926,10 +925,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Money Vault", "Deposit\nWithdraw", "Select", "Back");
 			}
 
-			if (strcmp("Ammo", inputtext) == 0) {
-				return ShowGroupAmmoDialog(playerid, iGroupID);
-			}
-
 			if (strcmp("Tazer & Cuffs", inputtext) == 0) {
 				if(PlayerInfo[playerid][pHasTazer] == 0) {
 					new szMessage[128];
@@ -1010,7 +1005,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						GivePlayerCash(playerid, -arrGroupData[iGroupID][g_iLockerCost][listitem]);
 					}
 				}
-				GivePlayerValidWeapon(playerid, iGunID, (iGunID == 16 || iGunID == 17 || iGunID == 41 || iGunID == 42 || iGunID == 43) ? 60000:0);
+				GivePlayerValidWeapon(playerid, iGunID);
 			}
 		}
 		case G_LOCKER_UNIFORM: if(response)	{
@@ -2731,107 +2726,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			SetPVarInt(playerid, "turnoutVeh", closestCar);
 			return 1;
-		}
-		case G_AMMO_LOCKER:
-		{
-			if(response)
-			{
-				ShowPlayerDialogEx(playerid, G_AMMO_LOCKER_SELECTION, DIALOG_STYLE_LIST, "Ammo Locker", "Withdraw\nDeposit", "Select", "Cancel");
-				SetPVarInt(playerid, "AmmoTypeWD", listitem);
-			}
-		}
-		case G_AMMO_LOCKER_SELECTION:
-		{
-			if(response)
-			{
-				if(!listitem)
-				{
-					WithdrawAmmo(playerid);
-				}
-				else
-				{
-					DepositAmmo(playerid);
-				}
-			}
-		}
-		case G_AMMO_LOCKER_WITHDRAW:
-		{
-			new iGroupID = PlayerInfo[playerid][pMember];
-			if(!response)
-			{
-				DeletePVar(playerid, "AmmoTypeWD");
-			}
-			else
-			{
-				if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][4] && (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE)) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw ammo.");
-				new iAmmoType = GetPVarInt(playerid, "AmmoTypeWD");
-				new iAmmoQuantity = strval(inputtext);
-				new iMaxAmmo = GetMaxAmmoAllowed(playerid, iAmmoType);
-				if(iAmmoQuantity < 1)
-				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "Negative ammo values are not allowed!");
-					return WithdrawAmmo(playerid);
-				}
-				if(arrGroupData[iGroupID][g_iAmmo][iAmmoType] < iAmmoQuantity)
-				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to withdraw more ammo than there is in the locker!");
-					return DeletePVar(playerid, "AmmoTypeWD");
-				}
-				if(arrAmmoData[playerid][awp_iAmmo][iAmmoType] + iAmmoQuantity > iMaxAmmo)
-				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to withdraw more ammo than you can carry!");
-					return DeletePVar(playerid, "AmmoTypeWD");
-				}
-				arrAmmoData[playerid][awp_iAmmo][iAmmoType] += iAmmoQuantity;
-				arrGroupData[iGroupID][g_iAmmo][iAmmoType] -= iAmmoQuantity;
-
-				for(new i = 0; i < 12; i++) {
-					SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
-				}
-				ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
-				DeletePVar(playerid, "AmmoTypeWD");
-				format(szMiscArray, sizeof(szMiscArray), "You have withdrawn %d %s from the locker.", iAmmoQuantity, GetAmmoName(iAmmoType));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn %d %s from the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
-				GroupLog(iGroupID, szMiscArray);
-				SaveGroup(iGroupID);
-			}
-		}
-		case G_AMMO_LOCKER_DEPOSIT:
-		{
-			new iGroupID = PlayerInfo[playerid][pMember];
-			if(!response)
-			{
-				DeletePVar(playerid, "AmmoTypeWD");
-			}
-			else
-			{
-				new iAmmoType = GetPVarInt(playerid, "AmmoTypeWD");
-				new iAmmoQuantity = strval(inputtext);
-				if(iAmmoQuantity < 1)
-				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "Negative ammo values are not allowed!");
-					return DepositAmmo(playerid);
-				}
-				if(iAmmoQuantity > arrAmmoData[playerid][awp_iAmmo][iAmmoType])
-				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "You are trying to deposit more ammo than you have!");
-					return DeletePVar(playerid, "AmmoTypeWD");
-				}
-				arrAmmoData[playerid][awp_iAmmo][iAmmoType] -= iAmmoQuantity;
-				arrGroupData[iGroupID][g_iAmmo][iAmmoType] += iAmmoQuantity;
-
-				for(new i = 0; i < 12; i++) {
-					SyncPlayerAmmo(playerid, PlayerInfo[playerid][pGuns][i]);
-				}
-				ApplyAnimation(playerid, "PYTHON", "python_reload", 4.0, 0, 0, 0, 0, 0, 1);
-				DeletePVar(playerid, "AmmoTypeWD");
-				format(szMiscArray, sizeof(szMiscArray), "You have deposited %d %s into the locker.", iAmmoQuantity, GetAmmoName(iAmmoType));
-				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has deposited %d %s into the locker.", GetPlayerNameEx(playerid), iAmmoQuantity, GetAmmoName(iAmmoType));
-				GroupLog(iGroupID, szMiscArray);
-				SaveGroup(iGroupID);
-			}
 		}
 		// END DYNAMIC GROUP CODE
 	}
@@ -5528,7 +5422,7 @@ CMD:locker(playerid, params[]) {
 					    }
 					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL /*|| arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE*/)
 					    {
-					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nDrugs\nMaterials (%i)\nVault ($%s)\nAmmo",
+					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nDrugs\nMaterials (%i)\nVault ($%s)",
 					    		arrGroupData[iGroupID][g_iMaterials],
 					    		number_format(arrGroupData[iGroupID][g_iBudget])
 					    	);
@@ -5550,14 +5444,14 @@ CMD:locker(playerid, params[]) {
 
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)) // name-change point in faction lockers for free namechange factions
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAmmo") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
 						}
 						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE) {
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nAmmo");
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
 						}
 						else
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nAmmo") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
 						ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;
@@ -6064,14 +5958,14 @@ CMD:adjustwithdrawrank(playerid, params[])
 		new iRank,
 			iChoice;
 		if(sscanf(params, "dd", iChoice, iRank)) {
-			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs (Rank: %d) | Weapons(Rank: %d) | Ammo(Rank: %d)",
+			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /adjustwithdrawrank [choice] [rank]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Choice: Money - 0 | Materials - 1 | Drugs - 2 | Weapons - 3");
+			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs (Rank: %d) | Weapons(Rank: %d)",
 				arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2],
-				arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4]);
-			SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjustwithdrawrank [choice] [rank]");
-			return SendClientMessageEx(playerid, COLOR_GREY, "CHOICES: Money(0) Materials(1) Drugs(2) Weapons(3) Ammo(4)");
+				arrGroupData[iGroupID][g_iWithdrawRank][3]);
+			return SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 		}
-		if(!(0 <= iChoice <= 4)) {
+		if(!(0 <= iChoice <= 3)) {
 			return SendClientMessageEx(playerid, COLOR_GREY, "Specify a valid choice!");
 		}
 		else
@@ -6195,19 +6089,6 @@ public OnMemberCount(groupID)
 	arrGroupData[groupID][g_iMemberCount] = cache_get_row_count(MainPipeline);
 }
 
-ShowGroupAmmoDialog(playerid, iGroupID)
-	return ShowAmmoDialog(playerid, G_AMMO_LOCKER, "Ammo Locker", arrGroupData[iGroupID][g_iAmmo]);
-
-WithdrawAmmo(playerid) {
-	ShowPlayerDialogEx(playerid, G_AMMO_LOCKER_WITHDRAW, DIALOG_STYLE_INPUT, "Ammo Locker", "Enter the quantity you wish to withdraw.", "Withdraw", "Cancel");
-	return 1;
-}
-
-DepositAmmo(playerid) {
-	ShowPlayerDialogEx(playerid, G_AMMO_LOCKER_DEPOSIT, DIALOG_STYLE_INPUT, "Ammo Locker", "Enter the quantity you wish to deposit.", "Deposit", "Cancel");
-	return 1;
-}
-
 /*ShowGroupWeapons(playerid, iGroupID, iPage = 1) {
 
 	szMiscArray[0] = 0;
@@ -6297,7 +6178,7 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 	szMiscArray[0]  = 0;
 
 	if(playerid != INVALID_PLAYER_ID) {
-		GivePlayerValidWeapon(playerid, iWeaponID, 0);
+		GivePlayerValidWeapon(playerid, iWeaponID);
 
 		format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn a %s from the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
 		GroupLog(iGroupID-1, szMiscArray);

@@ -132,7 +132,6 @@ enum eGroupData {
 	g_iTurfTokens,
 	g_iMemberCount,
 	g_iCrimeType,
-	g_iAmmo[MAX_AMMO_TYPES],
 	g_iDrugs[sizeof(Drugs)],
 	//g_iIngredients[sizeof(szIngredients)],
 	g_iGroupToyID,
@@ -155,14 +154,6 @@ enum PlantData
 }
 
 new Plants[MAX_PLAYERS][PlantData];
-
-
-enum eAmmoData {
-	awp_iAmmo[MAX_AMMO_TYPES],
-	awp_iUpgrade
-}
-
-new arrAmmoData[MAX_PLAYERS][eAmmoData];
 
 enum eLockerData {
 	g_iLockerSQLId,
@@ -201,8 +192,7 @@ enum eGroupVehData {
 	Float:gv_fRotZ, // Vehicle Z Rotation
 	gv_iUpkeep, // Upkeep fee - costs faction $
 	gv_iMod[15],
-	gv_iSiren,
-	gv_iAmmoLoaded
+	gv_iSiren
 }
 
 enum eGroupVehObjectData {
@@ -908,6 +898,7 @@ enum pInfo
 	// pCannabis,
 	// pCrack,
 	pHelper,
+	pFitness,
 	pArmsSkill,
 	pDrugSmuggler,
 	pFishSkill,
@@ -1079,10 +1070,6 @@ enum pInfo
 	pHeroin,
 	pSyringes,
 	pSkins,
-	pHunger,
-	pHungerTimer,
-	pHungerDeathTimer,
-	pFitness,
 	pForcePasswordChange,
 	pCredits,
 	pHealthCare,
@@ -1179,7 +1166,6 @@ enum pInfo
 	p_iAddictedLevel[sizeof(Drugs)],
 	p_iIngredient[sizeof(szIngredients)],*/ // see ya
 	pDrugs[sizeof(Drugs)],
-	pBAmmo[MAX_AMMO_TYPES],
 	pToggledChats[MAX_CHATSETS], // see AccountSettings.pwn for coressponding chat IDs.
 	pChatbox[MAX_CHATSETS], // see AccountSettings.pwn for coressponding chat IDs.
 	Float:pGroupToy[9],
@@ -1320,7 +1306,6 @@ enum hInfo
 	hSignObj,
 	Text3D:hSignText,
 	hLastLogin,
-	hAmmo[MAX_AMMO_TYPES],
 	hExpire,
 	hInactive,
 	hIgnore,

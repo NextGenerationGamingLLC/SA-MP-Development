@@ -10,13 +10,6 @@ new SHIPMENT_MATS_NEEDED = 60;
 #define SHIPMENT_TYPE_ARMS 		1
 #define SHIPMENT_TYPE_DRUGS		2
 
-enum eGangShipmentData {
-	gs_iStock = 0,
-	gs_iVehicle = INVALID_VEHICLE_ID
-}
-
-new arrGangShipmentData[MAX_SHIPMENT_POINTS][eGangShipmentData];
-
 new Float:arrShipPositions[2][3] = {
 	{-1450.52, 1506.85, 0.0}, // large container ship with stairs
 	{-2329.41, 1524.87, 0.75} // container ship nearer to Gant Bridge
@@ -88,59 +81,6 @@ DeliverShipment(playerid, iShipmentPoint) {
 	return 1;
 }
 
-GenerateShipmentStock(iGroupID, iShipmentType) {
-
-	switch(iShipmentType) {
-
-		case SHIPMENT_TYPE_ARMS: {
-
-			/*switch(random(4)) {
-				case 0: {
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 5); // 5 sdpistol
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 20); // 20 deagles
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 5); // 5 pump action shotguns
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 6); // 6 aks
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4, 3); // 3 m4s
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, 3); // 3 spas-12s
-				}
-				case 1: {
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_COLT45, 7); // 7 colt 45
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 8); // 8 deagles
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 4); // 4 pump action shotgun
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_UZI, 8); // 8 UZI
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 4); // 4 ak47s
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER, 4); // 4 snipe rifles
-				}
-				case 2: {
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SILENCED, 7); // 7 sd pistol
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 9); // 9 deagles
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGUN, 4); // 4 pump action shotty
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_TEC9, 8); // 8 UZI
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_AK47, 4); // 4 ak47s
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SNIPER, 1); // 1 sniper rifles
-				}
-				case 3: {
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_MP5, 3); // 3 MP5s
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_DEAGLE, 8); // 8 deagles
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_M4, 3); // 3 m4s
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_RIFLE, 3); // 3 rifles
-					AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, 4); // 4 spas 12s
-				}
-			}*/
-
-			foreach(new i: Player) if(PlayerInfo[i][pMember] == iGroupID) SendClientMessageEx(i, COLOR_WHITE, "An ammo shipment has been delivered to your group.");
-
-			if(arrGroupData[iGroupID][g_iAmmo][0] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][0] += 3000; else arrGroupData[iGroupID][g_iAmmo][0] += (10000 - arrGroupData[iGroupID][g_iAmmo][0]);
-			if(arrGroupData[iGroupID][g_iAmmo][1] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][1] += 3000; else arrGroupData[iGroupID][g_iAmmo][1] += (10000 - arrGroupData[iGroupID][g_iAmmo][1]);
-			if(arrGroupData[iGroupID][g_iAmmo][2] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][2] += 3000; else arrGroupData[iGroupID][g_iAmmo][2] += (10000 - arrGroupData[iGroupID][g_iAmmo][2]);
-			if(arrGroupData[iGroupID][g_iAmmo][3] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][3] += 3000; else arrGroupData[iGroupID][g_iAmmo][3] += (10000 - arrGroupData[iGroupID][g_iAmmo][3]);
-			//if(arrGroupData[iGroupID][g_iAmmo][4] + 3000 <= 10000) arrGroupData[iGroupID][g_iAmmo][4] += 3000; else arrGroupData[iGroupID][g_iAmmo][4] += (10000 - arrGroupData[iGroupID][g_iAmmo][4]);
-		}
-	}
-
-	return 1;
-}
-
 /*ReturnShipmentType(iShipmentPoint) {
 
 	switch(iShipmentPoint) {
@@ -160,15 +100,6 @@ GetStockPointName(iShipmentPoint) {
 		case 3: szReturn = "East Beach";
 	}
 	return szReturn;
-}
-
-
-IsAGangShipmentTruck(iCarID) {
-
-	for(new v = 0; v < MAX_SHIPMENT_POINTS; v++) {
-	    if(iCarID == arrGangShipmentData[v][gs_iVehicle] && IsValidVehicle(arrGangShipmentData[v][gs_iVehicle])) return 1;
-	}
-	return 0;
 }
 
 forward ShipmentConvo(playerid, iStage);

@@ -1795,7 +1795,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		else if(IsAHelicopter(vehicleid))
 		{
 		    PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
-			GivePlayerValidWeapon(playerid, 46, 60000);
+			GivePlayerValidWeapon(playerid, 46);
 		}
 		else if(IsAnTaxi(vehicleid) || IsAnBus(vehicleid))
 		{

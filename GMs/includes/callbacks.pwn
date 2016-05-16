@@ -129,7 +129,7 @@ public OnVehicleSpawn(vehicleid) {
 			if(ZB > 50.0)
 			{
 				PlayerInfo[i][pAGuns][GetWeaponSlot(46)] = 46;
-				GivePlayerValidWeapon(i, 46, 60000);
+				GivePlayerValidWeapon(i, 46);
 			}
 			PlayerInfo[i][pVW] = 0;
 			SetPlayerVirtualWorld(i, 0);
@@ -1647,7 +1647,7 @@ public OnPlayerDisconnect(playerid, reason)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w]);
 						}
 					}
 				}
@@ -1676,7 +1676,7 @@ public OnPlayerDisconnect(playerid, reason)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 0);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w]);
 						}
 					}
 
@@ -1707,7 +1707,7 @@ public OnPlayerDisconnect(playerid, reason)
 								PlayerInfo[i][pGuns][w] = HungerPlayerInfo[i][hgLastWeapon][w];
 								if(PlayerInfo[i][pGuns][w] > 0 && PlayerInfo[i][pAGuns][w] == 0)
 								{
-									GivePlayerValidWeapon(i, PlayerInfo[i][pGuns][w], 60000);
+									GivePlayerValidWeapon(i, PlayerInfo[i][pGuns][w]);
 								}
 							}
 						}
@@ -1749,7 +1749,7 @@ public OnPlayerDisconnect(playerid, reason)
 						PlayerInfo[playerid][pGuns][w] = HungerPlayerInfo[playerid][hgLastWeapon][w];
 						if(PlayerInfo[playerid][pGuns][w] > 0 && PlayerInfo[playerid][pAGuns][w] == 0)
 						{
-							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w], 60000);
+							GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pGuns][w]);
 						}
 					}
 				}
@@ -1895,8 +1895,8 @@ public OnPlayerDisconnect(playerid, reason)
 		{
             DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
 		}
-		if(pTazer{playerid} == 1) GivePlayerValidWeapon(playerid,pTazerReplace{playerid},0);
-		if(GetPVarInt(playerid, "SpeedRadar") == 1) GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "RadarReplacement"), 0);
+		if(pTazer{playerid} == 1) GivePlayerValidWeapon(playerid,pTazerReplace{playerid});
+		if(GetPVarInt(playerid, "SpeedRadar") == 1) GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "RadarReplacement"));
 
 		if(GetPVarType(playerid, "MovingStretcher")) {
 			KillTimer(GetPVarInt(playerid, "TickEMSMove"));
@@ -2272,7 +2272,7 @@ public OnPlayerDisconnect(playerid, reason)
 		{
 			if(!IsAPlane(InsidePlane[playerid]))
 			{
-				GivePlayerValidWeapon(playerid, 46, 60000);
+				GivePlayerValidWeapon(playerid, 46);
 				PlayerInfo[playerid][pPos_x] = 0.000000;
 				PlayerInfo[playerid][pPos_y] = 0.000000;
 				PlayerInfo[playerid][pPos_z] = 420.000000;
@@ -2286,7 +2286,7 @@ public OnPlayerDisconnect(playerid, reason)
 				PlayerInfo[playerid][pPos_z] = Z;
 				if(Z > 50.0)
 				{
-					GivePlayerValidWeapon(playerid, 46, 60000);
+					GivePlayerValidWeapon(playerid, 46);
 				}
 			}
 			PlayerInfo[playerid][pVW] = 0;
@@ -2586,7 +2586,7 @@ public OnVehicleDeath(vehicleid) {
 			if(ZB > 50.0)
 			{
 				PlayerInfo[i][pAGuns][GetWeaponSlot(46)] = 46;
-				GivePlayerValidWeapon(i, 46, 60000);
+				GivePlayerValidWeapon(i, 46);
 			}
 			PlayerInfo[i][pVW] = 0;
 			SetPlayerVirtualWorld(i, 0);
@@ -2806,7 +2806,7 @@ public OnPlayerSpawn(playerid)
 	    GetVehiclePos(GetPVarInt(playerid, "NGPassengerVeh"), X, Y, Z);
 	    SetPlayerPos(playerid, (X-2.557), (Y-3.049), Z);
 	    SetPlayerWeaponsEx(playerid);
-        GivePlayerValidWeapon(playerid, 46, 60000);
+        GivePlayerValidWeapon(playerid, 46);
         SetPlayerSkin(playerid, GetPVarInt(playerid, "NGPassengerSkin"));
         SetHealth(playerid, GetPVarFloat(playerid, "NGPassengerHP"));
         if(GetPVarFloat(playerid, "NGPassengerArmor") > 0) {
@@ -3807,7 +3807,7 @@ public OnPlayerEnterCheckpoint(playerid)
 						if(PlayerInfo[playerid][pConnectHours] >= 2 && PlayerInfo[playerid][pWRestricted] <= 0)
 						{
 							switch(level) {
-								case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45, 10);
+								case 0 .. 49: GivePlayerValidWeapon(playerid, WEAPON_COLT45);
 								case 50 .. 100: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun", "Select", "");
 								case 101 .. 200: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5", "Select", "");
 								case 201 .. 400: ShowPlayerDialogEx(playerid, D_TRUCKDELIVER_WEPCHOICE, DIALOG_STYLE_LIST, "Select your reward", "9mm\nShotgun\nMP5\nDeagle", "Select", "");
@@ -4020,27 +4020,20 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					return 1;
 				}
 				#endif
-	            if(PlayerInfo[playerid][pFitness] >= PlayerInfo[GetPlayerTargetPlayer(playerid)][pFitness]) // Player is more fit or as fit as the player they are tackling
-	            {
-			        TacklePlayer(playerid, GetPlayerTargetPlayer(playerid));
-	            }
-	            else if(PlayerInfo[playerid][pFitness] < PlayerInfo[GetPlayerTargetPlayer(playerid)][pFitness])
-	            {
-					new tacklechance = random(10);
-					switch(tacklechance)
+	            new tacklechance = random(10);
+				switch(tacklechance)
+				{
+					case 0..6: //success
 					{
-					    case 0..6: //success
-					    {
-					        TacklePlayer(playerid, GetPlayerTargetPlayer(playerid));
-						}
-					    default: // fail
-					    {
-							format(string, sizeof(string), "** %s leaps at %s attempting to tackle them but is not able.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPlayerTargetPlayer(playerid)));
-							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-							TogglePlayerControllable(playerid, 0);
-							SetTimerEx("CopGetUp", 2500, 0, "i", playerid);
-							ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
-					    }
+					    TacklePlayer(playerid, GetPlayerTargetPlayer(playerid));
+					}
+					default: // fail
+					{
+						format(string, sizeof(string), "** %s leaps at %s attempting to tackle them but is not able.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPlayerTargetPlayer(playerid)));
+						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						TogglePlayerControllable(playerid, 0);
+						SetTimerEx("CopGetUp", 2500, 0, "i", playerid);
+						ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
 					}
 	            }
 	        }
@@ -4913,20 +4906,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			    SendClientMessageEx(playerid, COLOR_YELLOW, "Famed: This is a Famed vehicle from the Famed garage, therefore it has unlimited fuel.");
 			}
 		}
-		else if(IsAGangShipmentTruck(vehicleid))
-		{
-			if(!IsACriminal(playerid))
-			{
-				new Float:slx, Float:sly, Float:slz;
-				GetPlayerPos(playerid, slx, sly, slz);
-				SetPlayerPos(playerid, slx, sly, slz+1.3);
-				PlayerPlaySound(playerid, 1130, slx, sly, slz+1.3);
-			    RemovePlayerFromVehicle(playerid);
-			    defer NOPCheck(playerid);
-			    SendClientMessageEx(playerid, COLOR_GRAD2, "You are not in a criminal organization!");
-			}
-			else SendClientMessageEx(playerid, COLOR_YELLOW, "You have taken control of the shipment, drive this truck back to your HQ to deliver its contents.");
-		}
 		else if(DynVeh[vehicleid] != -1)
 		{
 			new string[128], Float:slx, Float:sly, Float:slz;
@@ -4981,7 +4960,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		else if(IsAHelicopter(vehicleid))
 		{
 		    PlayerInfo[playerid][pAGuns][GetWeaponSlot(46)] = 46;
-			GivePlayerValidWeapon(playerid, 46, 60000);
+			GivePlayerValidWeapon(playerid, 46);
 		}
 		else if(IsAnTaxi(vehicleid) || IsAnBus(vehicleid))
 		{
@@ -5046,7 +5025,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	if((newstate == 2 || newstate == 3 || newstate == 7 || newstate == 9) && pTazer{playerid} == 1)
 	{
 		RemovePlayerWeapon(playerid, 23);
-		GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
+		GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 		pTazer{playerid} = 0;
 	}
 	if(newstate == PLAYER_STATE_SPAWNED)

@@ -66,19 +66,13 @@ CMD:buyhotdog(playerid, params[])
 	if(GetPlayerCash(playerid) < 2000) return SendClientMessage(playerid, COLOR_GREY, "You need $2000 to buy a hot dog.");
 	SendClientMessageEx(playerid, COLOR_GRAD4, "You have purchased a 'Hot Dog' for $2000.");
 	GivePlayerCash(playerid, -2000);
-	PlayerInfo[playerid][pHunger] += 83;
+	new Float:health;
 	if (PlayerInfo[playerid][pFitness] >= 5) {
 		PlayerInfo[playerid][pFitness] -= 5;
 	}
 	else {
 		PlayerInfo[playerid][pFitness] = 0;
 	}
-	PlayerInfo[playerid][pHungerTimer] = 0;
-	PlayerInfo[playerid][pHungerDeathTimer] = 0;
-	if (PlayerInfo[playerid][pHunger] > 100) {
-		PlayerInfo[playerid][pHunger] = 100;
-	}
-	new Float:health;
 	GetHealth(playerid, health);
 	if(health < 100) 
 	{

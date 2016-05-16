@@ -109,9 +109,8 @@ stock ShowStats(playerid,targetid)
 		Married To: %s\n\
 		Health: %.1f\n\
 		Armor: %.1f\n\
-		Hunger: %d\n\
-		Fitness: %d\n\
 		Playing Hours: %s\n\
+		Fitness: %d\n\
 		Upgrade Points: %s\n\
 		Next Level: %s{303030}/{FFFFFF}%s hours ($%s)\n\
 		Nation: %s\n\
@@ -134,9 +133,8 @@ stock ShowStats(playerid,targetid)
 		PlayerInfo[targetid][pMarriedName],
 		health,
 		armor,
-		PlayerInfo[targetid][pHunger],
-		PlayerInfo[targetid][pFitness],
 		number_format(PlayerInfo[targetid][pConnectHours]),
+		PlayerInfo[targetid][pFitness],
 		number_format(PlayerInfo[targetid][gPupgrade]),
 		number_format(PlayerInfo[targetid][pExp]),
 		number_format(expamount),

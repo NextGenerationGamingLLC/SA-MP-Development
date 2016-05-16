@@ -1162,7 +1162,7 @@ public Register_Plane(playerid)
 			SetPlayerVirtualWorld(playerid, 100);
 			SetPlayerInterior(playerid, 0);
 			SetHealth(playerid, 100.0);
-			GivePlayerValidWeapon(playerid, 46, 1);
+			GivePlayerValidWeapon(playerid, 46);
 			ClearChatbox(playerid);
 		    SendClientMessage(playerid, COLOR_YELLOW,"[INTERCOM] The plane won't be flying for much longer! Jump, quick!!");
 		    gPlayerCheckpointStatus[playerid] = CHECKPOINT_REGISTER_PLANE;

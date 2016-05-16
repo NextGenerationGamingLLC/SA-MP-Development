@@ -118,17 +118,6 @@ timer FinishMeal[5000](playerid)
 {
 	if(GetPVarInt(playerid, "BackpackMeal") == 1)
 	{
-		PlayerInfo[playerid][pHunger] += 83;
-
-		if (PlayerInfo[playerid][pFitness] >= 5)
-			PlayerInfo[playerid][pFitness] -= 5;
-		else
-			PlayerInfo[playerid][pFitness] = 0;
-		PlayerInfo[playerid][pHungerTimer] = 0;
-		PlayerInfo[playerid][pHungerDeathTimer] = 0;
-
-		if (PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
-
 		PlayerInfo[playerid][pBItems][0]--;
 		format(szMiscArray, sizeof(szMiscArray),"* You have used a Full Meal from your backpack(%d remaining meals).",PlayerInfo[playerid][pBItems][0]);
 		SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
@@ -280,8 +269,6 @@ task SyncTime[60000]()
 				mysql_function_query(MainPipeline, "UPDATE `accounts` SET `ReceivedPrize` = 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}*/
 		}
-
-	    if(tmphour == 0) ResetVIPAmmoCount();
 	    if(tmphour == 3 || tmphour == 6 || tmphour == 9 || tmphour == 12 || tmphour == 15 || tmphour == 18 || tmphour == 21 || tmphour == 0) PrepareLotto();
 		else
 		{
@@ -1175,7 +1162,7 @@ task hungerGames[1000]()
 
 					if(GetPVarInt(i, "HungerVoucher") == 1)
 					{
-						GivePlayerValidWeapon(i, 29, 60000);
+						GivePlayerValidWeapon(i, 29);
 						SetHealth(i, 100.0);
 						DeletePVar(i, "HungerVoucher");
 					}
@@ -1628,7 +1615,7 @@ foreach(new i: Player)
 							if(wslot != -1) {
 								format(szMiscArray, sizeof(szMiscArray), "You found a %s.", GetWeaponNameEx(PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]));
 								SendClientMessageEx(i, COLOR_YELLOW, szMiscArray);
-								GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot], 0);
+								GivePlayerValidWeapon(i, PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot]);
 								PlayerVehicleInfo[ownerid][slot][pvWeapons][wslot] = 0;
 								g_mysql_SaveVehicle(ownerid, slot);
 								new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
@@ -2363,53 +2350,6 @@ foreach(new i: Player)
 				}
 			}
 			UpdateSpeedCamerasForPlayer(i);
-		}
-		if ((PlayerInfo[i][pAdmin] < 2 && PlayerInfo[i][pWatchdog] < 2) || HelpingNewbie[i] != INVALID_PLAYER_ID)
-		{
-			if (PlayerInfo[i][pHospital] == 0 && GetPVarInt(i, "Injured") != 1 && GetPVarInt(i, "IsFrozen") == 0 && GetPVarInt(i, "PlayerCuffed") == 0)
-			{
-				if (++PlayerInfo[i][pHungerTimer] >= 1800 && PlayerInfo[i][pHunger] > 0) // 30 minutes
-				{
-					PlayerInfo[i][pHungerTimer] = 0;
-					PlayerInfo[i][pHunger] -= 8;
-					if (PlayerInfo[i][pHunger] < 0)
-						PlayerInfo[i][pHunger] = 0;
-
-					if (PlayerInfo[i][pHunger] == 0)
-					{
-						SendClientMessageEx(i, COLOR_RED, "You hear your stomach rumble - you need to eat!");
-						/*if(!PlayerInfo[i][pShopNotice])
-						{
-							PlayerTextDrawSetszMiscArray(i, MicroNotice[i], ShopMsg[5]);
-							PlayerTextDrawShow(i, MicroNotice[i]);
-							SetTimerEx("HidePlayerTextDraw", 10000, false, "ii", i, _:MicroNotice[i]);
-						}*/
-					}
-				}
-
-				if(PlayerCuffed[i] == 0)
-				{
-					if (PlayerInfo[i][pHunger] == 0 && ++PlayerInfo[i][pHungerDeathTimer] >= 600) // 10 minutes
-					{
-						SendClientMessageEx(i, COLOR_RED, "You fall unconcious due to starvation.");
-						SetHealth(i, 0);
-						PlayerInfo[i][pHungerDeathTimer] = 0;
-					}
-				}
-			}
-
-			// update hunger text draw
-			switch (PlayerInfo[i][pHunger])
-			{
-				case 80..100:
-					PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~g~Bloated");
-				case 40..79:
-					PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~y~Satisfied");
-				case 20..39:
-					PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~y~Hungry");
-				case 0..19:
-					PlayerTextDrawSetString(i, _hungerText[i], "Hunger: ~r~Starving");
-			}
 		}
 
 		if (GetPVarInt(i, "_BoxingQueue") == 1)

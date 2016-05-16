@@ -1286,23 +1286,18 @@ CMD:acceptjailfood(playerid, params[])
 	else if(!IsPlayerConnected(GetPVarInt(playerid, "OfferedMealBy"))) return SendClientMessageEx(playerid, COLOR_WHITE, "The person offering you food has disconnected.");
 	else if(ProxDetectorS(5.0, playerid, iOffering))
 	{
-		if(PlayerInfo[playerid][pHunger] <= 100)
-		{
-			PlayerInfo[playerid][pHunger] += 33;
-			if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
-			if (PlayerInfo[playerid][pFitness] >= 3)
-			{
-				PlayerInfo[playerid][pFitness] -= 3;
-			}
-			else
-			{
-				PlayerInfo[playerid][pFitness] = 0;
-			}
-		}
 		SetPVarInt(iOffering, "inmatefood", GetPVarInt(iOffering, "inmatefood") - 1);
 		if(!GetPVarInt(iOffering, "inmatefood")) {
 			RemovePlayerAttachedObject(iOffering, 9);
 			SetPlayerSpecialAction(iOffering, SPECIAL_ACTION_NONE);
+		}
+		if (PlayerInfo[playerid][pFitness] >= 3)
+		{
+			PlayerInfo[playerid][pFitness] -= 3;
+		}
+		else
+		{
+			PlayerInfo[playerid][pFitness] = 0;
 		}
 		DeletePVar(playerid, "OfferedMeal");
 		DeletePVar(playerid, "OfferedMealBy");
@@ -1346,18 +1341,13 @@ CMD:eatfood(playerid, params[])
 	if(GetPVarInt(playerid, "carryingfood") == 1)
 	{
 		new string[94];
-		if(PlayerInfo[playerid][pHunger] <= 100)
+		if (PlayerInfo[playerid][pFitness] >= 3)
 		{
-			PlayerInfo[playerid][pHunger] += 33;
-			if(PlayerInfo[playerid][pHunger] > 100) PlayerInfo[playerid][pHunger] = 100;
-			if (PlayerInfo[playerid][pFitness] >= 3)
-			{
-				PlayerInfo[playerid][pFitness] -= 3;
-			}
-			else
-			{
-				PlayerInfo[playerid][pFitness] = 0;
-			}
+			PlayerInfo[playerid][pFitness] -= 3;
+		}
+		else
+		{
+			PlayerInfo[playerid][pFitness] = 0;
 		}
 		format(string, sizeof(string), "* %s grabs the food from the tray and eats it.", GetPlayerNameEx(playerid));
 		ProxDetector(4.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

@@ -132,7 +132,7 @@ CMD:accept(playerid, params[])
 			GetWeaponName(GetPVarInt(playerid, "pSellGun"), weapon, sizeof(weapon));
 
 			PlayerInfo[id][pMats] -= GetPVarInt(playerid, "pSellGunMats");
-			GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "pSellGun"), 0);
+			GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "pSellGun"));
 
 			PlayerInfo[id][pArmsSkill] += GetPVarInt(playerid, "pSellGunXP");
 
@@ -296,7 +296,7 @@ CMD:accept(playerid, params[])
             PlayerPlaySound(offerer, 1052, 0.0, 0.0, 0.0);
             format(string, sizeof(string), "* %s creates a gun from materials and sells it to %s.", GetPlayerNameEx(offerer), GetPlayerNameEx(playerid));
             ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-            GivePlayerValidWeapon(playerid,GetPVarInt(playerid, "Business_WeapType"),50000);
+            GivePlayerValidWeapon(playerid,GetPVarInt(playerid, "Business_WeapType"));
 
 			format(string, sizeof(string), "%s %s(%d) (IP: %s) has sold a %s to %s(%d) (IP: %s) for $%d in %s (%d)", GetBusinessRankName(PlayerInfo[offerer][pBusinessRank]), GetPlayerNameEx(offerer), GetPlayerSQLId(offerer), GetPlayerIpEx(offerer), Weapon_ReturnName(GetPVarInt(playerid, "Business_WeapType")), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "Business_WeapPrice"), Businesses[business][bName], business);
 			Log("logs/business.log", string);
@@ -1784,7 +1784,7 @@ CMD:accept(playerid, params[])
                             }
                             case 8:
                             {
-                                GivePlayerValidWeapon(playerid, 43, 50);
+                                GivePlayerValidWeapon(playerid, 43);
                             }
                             case 9:
                             {
@@ -1810,7 +1810,7 @@ CMD:accept(playerid, params[])
                             }
                             case 13:
                             {
-                                GivePlayerValidWeapon(playerid, 46, 99999);
+                                GivePlayerValidWeapon(playerid, 46);
                             }
 							case 14:
 							{
@@ -1876,15 +1876,15 @@ CMD:accept(playerid, params[])
 								PlayerInfo[playerid][pCrowBar] += 25;
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /cracktrunk in any car that you already lock picked to attempt to open the trunk.");
 							}
-							case 20: GivePlayerValidWeapon(playerid, WEAPON_FLOWER, 99999);
-							case 21: GivePlayerValidWeapon(playerid, WEAPON_BRASSKNUCKLE, 99999);
-							case 22: GivePlayerValidWeapon(playerid, WEAPON_BAT, 99999);
-							case 23: GivePlayerValidWeapon(playerid, WEAPON_CANE, 99999);
-							case 24: GivePlayerValidWeapon(playerid, WEAPON_SHOVEL, 99999);
-							case 25: GivePlayerValidWeapon(playerid, WEAPON_POOLSTICK, 99999);
-							case 26: GivePlayerValidWeapon(playerid, WEAPON_KATANA, 99999);
-							case 27: GivePlayerValidWeapon(playerid, WEAPON_DILDO, 99999);
-							case 28: GivePlayerValidWeapon(playerid, WEAPON_SPRAYCAN, 99999);
+							case 20: GivePlayerValidWeapon(playerid, WEAPON_FLOWER);
+							case 21: GivePlayerValidWeapon(playerid, WEAPON_BRASSKNUCKLE);
+							case 22: GivePlayerValidWeapon(playerid, WEAPON_BAT);
+							case 23: GivePlayerValidWeapon(playerid, WEAPON_CANE);
+							case 24: GivePlayerValidWeapon(playerid, WEAPON_SHOVEL);
+							case 25: GivePlayerValidWeapon(playerid, WEAPON_POOLSTICK);
+							case 26: GivePlayerValidWeapon(playerid, WEAPON_KATANA);
+							case 27: GivePlayerValidWeapon(playerid, WEAPON_DILDO);
+							case 28: GivePlayerValidWeapon(playerid, WEAPON_SPRAYCAN);
 							case 29: {
 								PlayerInfo[playerid][pRimMod]++;
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Type /userimkit as a mechanic in any car to modify your rims.");

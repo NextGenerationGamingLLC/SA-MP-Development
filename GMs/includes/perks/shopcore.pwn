@@ -117,12 +117,11 @@ public JumpStart(playerid, vehicleid)
 forward EatBar(playerid);
 public EatBar(playerid)
 {
-	PlayerInfo[playerid][pHunger] = 100;
 	PlayerInfo[playerid][mInventory][4]--;
 	PlayerInfo[playerid][mCooldown][4] = 60;
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
 	SendClientMessageEx(playerid, -1, "You have consumed a energy bar, effects will last for 1 hour.");
-	SendClientMessageEx(playerid, -1, "Your hunger has been filled, fitness increase has a 50%% boost and health will decrease slower when in a injured state.");
+	SendClientMessageEx(playerid, -1, "Your health will decrease slower when in a injured state.");
 	new string[128];
 	format(string, sizeof(string), "[ENERGYBAR] %s(%d) used a energy bar. Left: %d", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][mInventory][4]);
 	Log("logs/micro.log", string);

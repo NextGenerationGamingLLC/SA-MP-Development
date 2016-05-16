@@ -162,7 +162,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 		}
   		case ITEM_CAMERA:
 		{
-			GivePlayerValidWeapon(playerid, WEAPON_CAMERA, 99999);
+			GivePlayerValidWeapon(playerid, WEAPON_CAMERA);
 			SendClientMessageEx(playerid, COLOR_GRAD4, "Camera purchased.");
 			SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Remember look into the viewfinder and take a picture.");
 		}

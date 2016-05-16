@@ -69,8 +69,6 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				}
 				return 1;
 			}
-			new iAmmoType = GetAmmoType(weaponid);
-			if(GetPlayerAmmo(playerid) <= 1 && iAmmoType != -1 && arrAmmoData[playerid][awp_iAmmo][iAmmoType] <= 1 && !zombieevent) return 1;
 		}
 		if(PlayerInfo[playerid][pAccountRestricted] == 1 || PlayerInfo[damagedid][pAccountRestricted] == 1) return 1;
 		if(PlayerInfo[playerid][pHospital] == 1 || PlayerInfo[damagedid][pHospital] == 1) return 1;
@@ -108,7 +106,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		{
 			if(weaponid !=  23) {
 				RemovePlayerWeapon(playerid, 23);
-				GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
+				GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 				format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				pTazer{playerid} = 0;
@@ -190,7 +188,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		if(pTazer{damagedid} == 1 && (!IsNotAGun(weaponid)))
 		{
 			RemovePlayerWeapon(damagedid, 23);
-			GivePlayerValidWeapon(damagedid, pTazerReplace{damagedid}, 0);
+			GivePlayerValidWeapon(damagedid, pTazerReplace{damagedid});
 			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(damagedid));
 			ProxDetector(4.0, damagedid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			pTazer{damagedid} = 0;
@@ -268,30 +266,6 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	if(GetPlayerCameraMode(playerid) == 55 && amount > 9.0) amount = 9.0;
 
 	new Float:actual_damage = amount;
-	//fitness damage modifier
-	if (playerid != INVALID_PLAYER_ID && (weaponid == 0 || weaponid == 1 || weaponid == 2 || weaponid == 3 || weaponid == 5 || weaponid == 6 || weaponid == 7 || weaponid == 8) )
-	{
-		new Float: multiply;
-		if(PlayerInfo[damagedid][pAdmin] >= 2 && PlayerInfo[damagedid][pTogReports] == 0 || PlayerInfo[damagedid][pWatchdog] >= 2 || (PlayerInfo[damagedid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) || HelpingNewbie[damagedid] != INVALID_PLAYER_ID || GetPVarInt(damagedid, "eventStaff") >= 1) return 1;
-		if(hgActive == 1 && HungerPlayerInfo[damagedid][hgInEvent] == 1) return 1;
-		if (PlayerInfo[playerid][pFitness] < 50)
-		{
- 			multiply = 2;
-		}
-		else if (PlayerInfo[playerid][pFitness] >= 50 && PlayerInfo[playerid][pFitness] <= 79)
-		{
-			multiply = 3.5;
-		}
-		else if (PlayerInfo[playerid][pFitness] >= 80)
-		{
-			multiply = 5;
-		}
-		if (PlayerInfo[damagedid][pFitness] >= 80)
-		{
-			actual_damage = actual_damage/2;
-		}
-		actual_damage *= multiply;
-	}
 
 	if(playerid != INVALID_PLAYER_ID && (weaponid == WEAPON_COLT45 || weaponid == WEAPON_SILENCED || weaponid == WEAPON_AK47))
 	{
@@ -507,17 +481,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 			DeletePVar(winner, "_BoxingFight");
 			DeletePVar(playerid, "_BoxingFight");
 
-			if(PlayerInfo[winner][mCooldown][4]) PlayerInfo[winner][pFitness] += 9;
-			else PlayerInfo[winner][pFitness] += 6;
-			if(PlayerInfo[winner][mCooldown][4]) PlayerInfo[playerid][pFitness] += 6;
-			else PlayerInfo[playerid][pFitness] += 4;
-
-			if (PlayerInfo[winner][pFitness] > 100)
-				PlayerInfo[winner][pFitness] = 100;
-
-			if (PlayerInfo[playerid][pFitness] > 100)
-				PlayerInfo[playerid][pFitness] = 100;
-
 			new time = gettime();
 			SetPVarInt(playerid, "_BoxingFightOver", time + 8);
 			SetPVarInt(winner, "_BoxingFightOver", time + 1);
@@ -534,12 +497,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 				format(string, sizeof(string), "** [Boxing News (Arena:%d)] %s has won! **", (GetPVarInt(playerid, "_InJailBoxing") - 1), GetPlayerNameEx(killerid));
 				ProxDetector(10.0, playerid, string, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000, 0xEB41000);
 
-				PlayerInfo[playerid][pFitness] -= 10;
-				PlayerInfo[playerid][pHunger] -= 10;
-				PlayerInfo[killerid][pHunger] -= 10;
-				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 15;
-				else PlayerInfo[killerid][pFitness] += 10;
-
 				arrJailBoxingData[GetPVarInt(playerid, "_InJailBoxing") - 1][bInProgress] = false;
 				RemoveFromJailBoxing(playerid);
 				RemoveFromJailBoxing(killerid);
@@ -555,15 +512,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 		{
 			if(killerid == GetPVarInt(playerid, "_InJailBrawl") - 1)
 			{
-				PlayerInfo[playerid][pFitness] -= 5;
-				PlayerInfo[playerid][pHunger] -= 10;
-				if(PlayerInfo[playerid][pHunger] < 0) PlayerInfo[playerid][pHunger] = 0;
-
-				PlayerInfo[killerid][pHunger] -= 10;
-				if(PlayerInfo[killerid][pHunger] < 0) PlayerInfo[killerid][pHunger] = 0;
-				if(PlayerInfo[killerid][mCooldown][4]) PlayerInfo[killerid][pFitness] += 8;
-				else PlayerInfo[killerid][pFitness] += 5;
-
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have lost the brawl.");
 				SendClientMessageEx(killerid, COLOR_WHITE, "You have won the brawl.");
 			}

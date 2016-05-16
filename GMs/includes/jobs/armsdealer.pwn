@@ -203,7 +203,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 14, 9999);
+						GivePlayerValidWeapon(id, 14);
 					}
 					else
 					{
@@ -221,7 +221,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 1, 9999);
+						GivePlayerValidWeapon(id, 1);
 					}
 					else
 					{
@@ -239,7 +239,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 5, 9999);
+						GivePlayerValidWeapon(id, 5);
 					}
 					else
 					{
@@ -257,7 +257,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 15, 9999);
+						GivePlayerValidWeapon(id, 15);
 					}
 					else
 					{
@@ -275,7 +275,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 6, 9999);
+						GivePlayerValidWeapon(id, 6);
 					}
 					else
 					{
@@ -293,7 +293,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 2, 9999);
+						GivePlayerValidWeapon(id, 2);
 					}
 					else
 					{
@@ -311,7 +311,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 7, 9999);
+						GivePlayerValidWeapon(id, 7);
 					}
 					else
 					{
@@ -329,7 +329,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 8, 9999);
+						GivePlayerValidWeapon(id, 8);
 					}
 					else
 					{
@@ -347,7 +347,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 100;
-						GivePlayerValidWeapon(id, 10, 9999);
+						GivePlayerValidWeapon(id, 10);
 					}
 					else
 					{
@@ -365,7 +365,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 500;
-						GivePlayerValidWeapon(id, 22, 0);
+						GivePlayerValidWeapon(id, 22);
 
 						PlayerInfo[playerid][pArmsSkill] += 1;
 					}
@@ -386,7 +386,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 650;
-						GivePlayerValidWeapon(id, 25, 0);
+						GivePlayerValidWeapon(id, 25);
 
 						PlayerInfo[playerid][pArmsSkill] += 2;
 					}
@@ -407,7 +407,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 800;
-						GivePlayerValidWeapon(id, 23, 0);
+						GivePlayerValidWeapon(id, 23);
 
 						PlayerInfo[playerid][pArmsSkill] += 3;
 					}
@@ -428,7 +428,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 1000;
-						GivePlayerValidWeapon(id, 28, 0);
+						GivePlayerValidWeapon(id, 28);
 
 						PlayerInfo[playerid][pArmsSkill] += 4;
 					}
@@ -449,7 +449,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 1000;
-						GivePlayerValidWeapon(id, 32, 0);
+						GivePlayerValidWeapon(id, 32);
 
 						PlayerInfo[playerid][pArmsSkill] += 4;
 					}
@@ -470,7 +470,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 1000;
-						GivePlayerValidWeapon(id, 33, 0);
+						GivePlayerValidWeapon(id, 33);
 
 						PlayerInfo[playerid][pArmsSkill] += 5;
 					}
@@ -491,7 +491,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 2500;
-						GivePlayerValidWeapon(id, 29, 0);
+						GivePlayerValidWeapon(id, 29);
 
 						PlayerInfo[playerid][pArmsSkill] += 6;
 					}
@@ -512,7 +512,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 4000;
-						GivePlayerValidWeapon(id, 24, 0);
+						GivePlayerValidWeapon(id, 24);
 
 						PlayerInfo[playerid][pArmsSkill] += 7;
 					}
@@ -533,7 +533,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 12000;
-						GivePlayerValidWeapon(id, 30, 0);
+						GivePlayerValidWeapon(id, 30);
 
 						PlayerInfo[playerid][pArmsSkill] += 8;
 					}
@@ -554,7 +554,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 20000;
-						GivePlayerValidWeapon(id, 31, 0);
+						GivePlayerValidWeapon(id, 31);
 
 						PlayerInfo[playerid][pArmsSkill] += 9;
 					}
@@ -575,7 +575,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 30000;
-						GivePlayerValidWeapon(id, 27, 0);
+						GivePlayerValidWeapon(id, 27);
 
 						PlayerInfo[playerid][pArmsSkill] += 10;
 					}
@@ -596,7 +596,7 @@ CMD:sellgun(playerid, params[])
 					if(id == playerid)
 					{
 						PlayerInfo[playerid][pMats] -= 30000;
-						GivePlayerValidWeapon(id, 34, 0);
+						GivePlayerValidWeapon(id, 34);
 
 						PlayerInfo[playerid][pArmsSkill] += 10;
 					}

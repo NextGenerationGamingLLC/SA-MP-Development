@@ -46,7 +46,6 @@
 #define GANG_CRATE_COST 150000
 
 #define MAX_CRATE_GUNS 30
-#define MAX_CRATE_AMMO	2000
 #define MAX_CRATE_DRUGS 200
 #define MAX_GANG_SIMUL_CRATES 2
 
@@ -59,7 +58,7 @@ CreateGCrate(playerid, iGroupID) {
 		if(!IsValidDynamicObject(arrGCrateData[i][gcr_iObject])) {
 			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `gCrates` \
 				(`iCrateID`, `iGroupID`, `9mm`,`sdpistol`,`deagle`,`uzi`,`tec9`,`mp5`,`m4`, `ak47`,`rifle`,`sniper`,`shotty`,`sawnoff`,`spas`,\
-					`ammo0`,`ammo1`,`ammo2`,`ammo3`, `ammo4`,`pot`,`crack`,`heroin`) VALUES (%d, %d, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", 
+					`pot`,`crack`,`heroin`) VALUES (%d, %d, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", 
 				i,
 				iGroupID
 			);
@@ -193,14 +192,9 @@ public OnShowGCrateItems(iPlayerID, iCrateID, itemid) {
 		szMiscArray[4011] 	= 	cache_get_field_content_int(iCount, "shotty", MainPipeline);
 		szMiscArray[4012] 	= 	cache_get_field_content_int(iCount, "sawnoff", MainPipeline);
 		szMiscArray[4013] 	= 	cache_get_field_content_int(iCount, "spas", MainPipeline);
-		szMiscArray[4014] 	= 	cache_get_field_content_int(iCount, "ammo0", MainPipeline);
-		szMiscArray[4015] 	= 	cache_get_field_content_int(iCount, "ammo1", MainPipeline);
-		szMiscArray[4016] 	= 	cache_get_field_content_int(iCount, "ammo2", MainPipeline);
-		szMiscArray[4017] 	= 	cache_get_field_content_int(iCount, "ammo3", MainPipeline);
-		szMiscArray[4018] 	= 	cache_get_field_content_int(iCount, "ammo4", MainPipeline);
-		szMiscArray[4019] 	= 	cache_get_field_content_int(iCount, "pot", MainPipeline);
-		szMiscArray[4020] 	= 	cache_get_field_content_int(iCount, "crack", MainPipeline);
-		szMiscArray[4021] 	= 	cache_get_field_content_int(iCount, "heroin", MainPipeline);
+		szMiscArray[4014] 	= 	cache_get_field_content_int(iCount, "pot", MainPipeline);
+		szMiscArray[4015] 	= 	cache_get_field_content_int(iCount, "crack", MainPipeline);
+		szMiscArray[4016] 	= 	cache_get_field_content_int(iCount, "heroin", MainPipeline);
 
 		iCount++;
 	}
@@ -225,11 +219,6 @@ public OnShowGCrateItems(iPlayerID, iCrateID, itemid) {
 			Pump-Action Shotgun\t%d\n\
 			Sawn-off Shotguns\t%d\n\
 			Spas-12\t%d\n\
-			9mm Ammo\t%d\n\
-			7.62x51 Ammo\t%d\n\
-			50 Cal Ammo\t%d\n\
-			7.62x39 Ammo\t%d\n\
-			12 Gauge Ammo\t%d\n\
 			Cannabis\t%d\n\
 			Crack\t%d\n\
 			Heroin\t%d",
@@ -372,11 +361,6 @@ GetItemNameFromIdx(itemid) {
 		case 10: szReturn = "Pump-Action Shotgun";
 		case 11: szReturn = "Sawn-Off Shotgun";
 		case 12: szReturn = "Spas-12";
-		case 13: szReturn = "Pistol Ammo";
-		case 14: szReturn = "Rifle Ammo";
-		case 15: szReturn = "Deagle Ammo";
-		case 16: szReturn = "Shotgun Ammo";
-		//case 17: szReturn = "12 Gauge Ammo";
 		case 18: szReturn = "Cannabis";
 		case 19: szReturn = "Crack";
 		case 20: szReturn = "Heroin";
@@ -401,11 +385,6 @@ GetGCItemSQLFldName(itemid) {
 		case 10: szReturn ="shotty";
 		case 11: szReturn ="sawnoff";
 		case 12: szReturn ="spas";
-		case 13: szReturn ="ammo0";
-		case 14: szReturn ="ammo1";
-		case 15: szReturn ="ammo2";
-		case 16: szReturn ="ammo3";
-		//case 17: szReturn ="ammo4";
 		case 18: szReturn ="Cannabis";
 		case 19: szReturn ="crack";
 		case 20: szReturn ="heroin";
@@ -509,10 +488,9 @@ public OnTransferItemFromCrate(playerid, itemid, iAmount,  iCrateID) {
 				AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, GetWepIDFromGCIdx(itemid)); 
 			}
 		}
-		case 13 .. 17: arrGroupData[iGroupID][g_iAmmo][itemid-13] += iAmount;
-		case 18: arrGroupData[iGroupID][g_iDrugs][0] += iAmount; // Cannabis
-		case 19: arrGroupData[iGroupID][g_iDrugs][1] += iAmount; // crack 	
-		case 20: arrGroupData[iGroupID][g_iDrugs][4] += iAmount; // heroin
+		case 13: arrGroupData[iGroupID][g_iDrugs][0] += iAmount; // Cannabis
+		case 14: arrGroupData[iGroupID][g_iDrugs][1] += iAmount; // crack 	
+		case 15: arrGroupData[iGroupID][g_iDrugs][4] += iAmount; // heroin
 			
 	}
 	
@@ -539,16 +517,13 @@ TransferItemToCrate(playerid, itemid, iAmount, iCrateID) {
 			mysql_function_query(MainPipeline, szMiscArray, true, "OnPlayerCountLockerGuns", "iiii", playerid, iGroupID, iWeaponID, iAmount);
 			if(GetPVarType(playerid, "GC_CHECK")) return DeletePVar(playerid, "GC_CHECK"), SendClientMessage(playerid, COLOR_GRAD1, "You are trying to transfer more than there is!");
 		}
-		case 13 .. 17: { // ammo
-			if(0 < arrGroupData[iGroupID][g_iAmmo][itemid-13] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
-		}
-		case 18: { // Cannabis
+		case 13: { // Cannabis
 			if(0 < arrGroupData[iGroupID][g_iDrugs][0] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
 		}
-		case 19: { // crack 
+		case 14: { // crack 
 			if(0 < arrGroupData[iGroupID][g_iDrugs][1] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
 		}
-		case 20: { // heroin
+		case 15: { // heroin
 			if(0 < arrGroupData[iGroupID][g_iDrugs][4] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
 		}
 	}
@@ -595,10 +570,9 @@ public OnFinalizeItemTransfer(playerid, itemid, iAmount, iCrateID) {
 
 	switch(itemid) {
 		case 0 .. 12: for(new i = 0; i < iAmount; i++) { WithdrawGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, GetWepIDFromGCIdx(itemid)); }
-		case 13 .. 17: arrGroupData[iGroupID][g_iAmmo][itemid-13] -= iAmount;
-		case 18: arrGroupData[iGroupID][g_iDrugs][0] -= iAmount; // Cannabis
-		case 19: arrGroupData[iGroupID][g_iDrugs][1] -= iAmount; // crack 	
-		case 20: arrGroupData[iGroupID][g_iDrugs][4] -= iAmount; // heroin
+		case 13: arrGroupData[iGroupID][g_iDrugs][0] -= iAmount; // Cannabis
+		case 14: arrGroupData[iGroupID][g_iDrugs][1] -= iAmount; // crack 	
+		case 15: arrGroupData[iGroupID][g_iDrugs][4] -= iAmount; // heroin
 			
 	}
 	return 1;
@@ -641,14 +615,9 @@ public OnDeliverGCCrate(playerid, iGroupID, iCrateID) {
 		szMiscArray[4011] 	= 	cache_get_field_content_int(iCount, "shotty", MainPipeline);
 		szMiscArray[4012] 	= 	cache_get_field_content_int(iCount, "sawnoff", MainPipeline);
 		szMiscArray[4013] 	= 	cache_get_field_content_int(iCount, "spas", MainPipeline);
-		szMiscArray[4014] 	= 	cache_get_field_content_int(iCount, "ammo0", MainPipeline);
-		szMiscArray[4015] 	= 	cache_get_field_content_int(iCount, "ammo1", MainPipeline);
-		szMiscArray[4016] 	= 	cache_get_field_content_int(iCount, "ammo2", MainPipeline);
-		szMiscArray[4017] 	= 	cache_get_field_content_int(iCount, "ammo3", MainPipeline);
-		szMiscArray[4018] 	= 	cache_get_field_content_int(iCount, "ammo4", MainPipeline);
-		szMiscArray[4019] 	= 	cache_get_field_content_int(iCount, "pot", MainPipeline);
-		szMiscArray[4020] 	= 	cache_get_field_content_int(iCount, "crack", MainPipeline);
-		szMiscArray[4021] 	= 	cache_get_field_content_int(iCount, "heroin", MainPipeline);
+		szMiscArray[4014] 	= 	cache_get_field_content_int(iCount, "pot", MainPipeline);
+		szMiscArray[4015] 	= 	cache_get_field_content_int(iCount, "crack", MainPipeline);
+		szMiscArray[4016] 	= 	cache_get_field_content_int(iCount, "heroin", MainPipeline);
 
 		++iCount;
 	}
@@ -667,15 +636,9 @@ public OnDeliverGCCrate(playerid, iGroupID, iCrateID) {
 	if(szMiscArray[4012] != 0) /*for(new i = 0; i < szMiscArray[4012]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SAWEDOFF, szMiscArray[4012]);
 	if(szMiscArray[4013] != 0) /*for(new i = 0; i < szMiscArray[4013]; i++)*/ AddGroupSafeWeapon(INVALID_PLAYER_ID, iGroupID, WEAPON_SHOTGSPA, szMiscArray[4013]);
 
-	arrGroupData[iGroupID][g_iAmmo][0] += szMiscArray[4014];
-	arrGroupData[iGroupID][g_iAmmo][1] += szMiscArray[4015];
-	arrGroupData[iGroupID][g_iAmmo][2] += szMiscArray[4016];
-	arrGroupData[iGroupID][g_iAmmo][3] += szMiscArray[4017];
-	//arrGroupData[iGroupID][g_iAmmo][4] += szMiscArray[4018];
-
-	arrGroupData[iGroupID][g_iDrugs][0] += szMiscArray[4019];
-	arrGroupData[iGroupID][g_iDrugs][4] += szMiscArray[4020];
-	arrGroupData[iGroupID][g_iDrugs][1] += szMiscArray[4021];
+	arrGroupData[iGroupID][g_iDrugs][0] += szMiscArray[4014];
+	arrGroupData[iGroupID][g_iDrugs][4] += szMiscArray[4015];
+	arrGroupData[iGroupID][g_iDrugs][1] += szMiscArray[4016];
 
 	DeleteGCrate(playerid, iCrateID);
 	SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully delivered the crate to your locker.");

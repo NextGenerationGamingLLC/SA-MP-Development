@@ -76,7 +76,12 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
+<<<<<<< Updated upstream
 #define SERVER_GM_TEXT "NG:RP v3.0.312"
+=======
+#define SERVER_GM_TEXT "NG:RP v3.0.313"
+
+>>>>>>> Stashed changes
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -157,7 +162,7 @@
 #include "./includes/core/fireworks.pwn"
 #include "./includes/core/helpcmds.pwn"
 #include "./includes/core/hospital.pwn"
-#include "./includes/core/hunger.pwn"
+//#include "./includes/core/hunger.pwn"
 #include "./includes/core/lotto.pwn"
 #include "./includes/core/lselevator.pwn"
 #include "./includes/core/marriage.pwn"
@@ -259,7 +264,7 @@
 #include "./includes/group/turfs.pwn"
 #include "./includes/group/cratesystem.pwn"
 #include "./includes/group/callsystem.pwn"
-#include "./includes/group/gangshipment.pwn"
+//#include "./includes/group/gangshipment.pwn"
 #include "./includes/group/gangcrates.pwn"
 //#include "./includes/group/gangrobbery.pwn"
 #include "./includes/group/GovArms.pwn"
@@ -306,7 +311,7 @@
 #include "./includes/perks/vipcore.pwn"
 //#include "./includes/perks/casino.pwn"
 
-#include "./includes/core/ammo.pwn"
+//#include "./includes/core/ammo.pwn"
 #include "./includes/core/phone_new.pwn"
 #include "./includes/core/payphones.pwn"
 #include "./includes/group/rivalry.pwn"

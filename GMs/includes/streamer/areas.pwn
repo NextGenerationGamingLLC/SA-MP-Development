@@ -21,6 +21,6 @@ hook OnGameModeInit() {
 
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
-	if(areaid == ParachuteArea) GivePlayerValidWeapon(playerid, 46, 9 );
+	if(areaid == ParachuteArea) GivePlayerValidWeapon(playerid, 46);
 	return 1;
 }

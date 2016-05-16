@@ -88,8 +88,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	szMiscArray[0] = 0;
 
-	new iGroupID = PlayerInfo[playerid][pMember];
-
 	switch(dialogid)
 	{
 		case DIALOG_ORDER_HMA1:
@@ -156,7 +154,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Back");
 					}
-					case 4: ShowGroupAmmoDialog(playerid, iGroupID);
 				}
 			}
 		}
@@ -170,119 +167,119 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				switch(listitem) {
 					case 0: { // tear gas - $5000
 						if(GetPlayerCash(playerid) >= 5000) {
-							GivePlayerValidWeapon(playerid, 17, 0);
+							GivePlayerValidWeapon(playerid, 17);
 							GivePlayerCash(playerid, - 5000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 1: { // knife - $12000
 						if(GetPlayerCash(playerid) >= 12000) {
-							GivePlayerValidWeapon(playerid, 4, 0);
+							GivePlayerValidWeapon(playerid, 4);
 							GivePlayerCash(playerid, - 12000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 2: {// baton - $5000
 						if(GetPlayerCash(playerid) >= 5000) {
-							GivePlayerValidWeapon(playerid, 3, 0);
+							GivePlayerValidWeapon(playerid, 3);
 							GivePlayerCash(playerid, - 5000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 3: { // Spraycan - $4500
 						if(GetPlayerCash(playerid) >= 4500) {
-							GivePlayerValidWeapon(playerid, 41, 60000);
+							GivePlayerValidWeapon(playerid, 41);
 							GivePlayerCash(playerid, - 4500);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 4: { // Colt.45 - $5000
 						if(GetPlayerCash(playerid) >= 5000) {
-							GivePlayerValidWeapon(playerid, 22, 0);
+							GivePlayerValidWeapon(playerid, 22);
 							GivePlayerCash(playerid, - 5000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 5: { // SD Pistol - $7500
 						if(GetPlayerCash(playerid) >= 7500) {
-							GivePlayerValidWeapon(playerid, 23, 0);
+							GivePlayerValidWeapon(playerid, 23);
 							GivePlayerCash(playerid, - 7500);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 6: { // Deagle - $12000
 						if(GetPlayerCash(playerid) >= 12000) {
-							GivePlayerValidWeapon(playerid, 24, 0);
+							GivePlayerValidWeapon(playerid, 24);
 							GivePlayerCash(playerid, - 12000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 7: { // MP5 - $17500
 						if(GetPlayerCash(playerid) >= 17500) {
-							GivePlayerValidWeapon(playerid, 29, 0);
+							GivePlayerValidWeapon(playerid, 29);
 							GivePlayerCash(playerid, - 17500);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 8: { // UZI - $17500
 						if(GetPlayerCash(playerid) >= 17500) {
-							GivePlayerValidWeapon(playerid, 28, 0);
+							GivePlayerValidWeapon(playerid, 28);
 							GivePlayerCash(playerid, - 17500);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 9: { // TEC9 - $17500
 						if(GetPlayerCash(playerid) >= 17500) {
-							GivePlayerValidWeapon(playerid, 32, 0);
+							GivePlayerValidWeapon(playerid, 32);
 							GivePlayerCash(playerid, - 17500);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 10: { // Shotgun - $11000
 						if(GetPlayerCash(playerid) >= 11000) {
-							GivePlayerValidWeapon(playerid, 25, 0);
+							GivePlayerValidWeapon(playerid, 25);
 							GivePlayerCash(playerid, - 11000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 11: { // SPAS - $90000
 						if(GetPlayerCash(playerid) >= 90000) {
-							GivePlayerValidWeapon(playerid, 27, 0);
+							GivePlayerValidWeapon(playerid, 27);
 							GivePlayerCash(playerid, - 90000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 12: { // AK47 - $35000
 						if(GetPlayerCash(playerid) >= 35000) {
-							GivePlayerValidWeapon(playerid, 30, 0);
+							GivePlayerValidWeapon(playerid, 30);
 							GivePlayerCash(playerid, - 35000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 13: { // M4 - $70000
 						if(GetPlayerCash(playerid) >= 70000) {
-							GivePlayerValidWeapon(playerid, 31, 0);
+							GivePlayerValidWeapon(playerid, 31);
 							GivePlayerCash(playerid, - 70000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 14: { // Rifle - $10000
 						if(GetPlayerCash(playerid) >= 10000) {
-							GivePlayerValidWeapon(playerid, 33, 0);
+							GivePlayerValidWeapon(playerid, 33);
 							GivePlayerCash(playerid, - 10000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 15: { // Sniper - $65000
 						if(GetPlayerCash(playerid) >= 65000) {
-							GivePlayerValidWeapon(playerid, 34, 0);
+							GivePlayerValidWeapon(playerid, 34);
 							GivePlayerCash(playerid, - 65000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
 					}
 					case 16: { // Chainsaws - $20000
 						if(GetPlayerCash(playerid) >= 20000) {
-							GivePlayerValidWeapon(playerid, 9, 0);
+							GivePlayerValidWeapon(playerid, 9);
 							GivePlayerCash(playerid, - 20000);
 						}
 						else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
@@ -337,7 +334,7 @@ CMD:order(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
 			new string[128];
-			format(string, sizeof(string), "Health and Armour\t\t $2000\nWeapons\nUniform\nName Change\nAmmo");
+			format(string, sizeof(string), "Health and Armour\t\t $2000\nWeapons\nUniform\nName Change");
 			ShowPlayerDialogEx(playerid, DIALOG_ORDER_HMA1, DIALOG_STYLE_LIST, "HMA Order Weapons", string, "Order", "Cancel");
 		}
 		else
@@ -834,7 +831,7 @@ CMD:knife(playerid, params[])
 {
 	if(IsAHitman(playerid)) {
 		if(GetPVarInt(playerid, "HidingKnife") == 1) {
-			GivePlayerValidWeapon(playerid, 4, 1);
+			GivePlayerValidWeapon(playerid, 4);
 			DeletePVar(playerid, "HidingKnife");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "You have pulled out your knife.");
 		}

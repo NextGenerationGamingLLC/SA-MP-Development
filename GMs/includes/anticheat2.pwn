@@ -788,37 +788,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
 
-	new iAT = GetAmmoType(weaponid),
-		iCA = GetPlayerAmmo(playerid),
-		vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
+	new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
 
 	szMiscArray[0] = 0;
 
-	if(iAT != -1 && !GetPVarType(playerid, "IsInArena") && GetPVarInt(playerid, "EventToken") == 0 && pTazer{playerid} == 0 && !GetPVarInt(playerid, "z50Cal") && !zombieevent)
-	{
-		if(iCA <= 1 && arrAmmoData[playerid][awp_iAmmo][iAT] <= 1)
-		{
-			GameTextForPlayer(playerid, "No ammo!", 1000, 6);
-			format(szMiscArray, sizeof(szMiscArray), "** The weapon clicks **", GetPlayerNameEx(playerid));
-			SetPlayerChatBubble(playerid, szMiscArray, COLOR_PURPLE, 10.0, 3000);
-			if(GetPlayerState(playerid) != PLAYER_STATE_PASSENGER) GivePlayerWeapon(playerid, weaponid, 99); // preventing a drive buy bug issue.
-			SetPlayerArmedWeapon(playerid, 0);
-			return 0; // preventing if the weapon if the ammo is empty and preventing them from loosing it.
-		}
-		if(iCA != arrAmmoData[playerid][awp_iAmmo][iAT])
-		{
-			SyncPlayerAmmo(playerid, weaponid);
-			return 0;
-		}
-
-		arrAmmoData[playerid][awp_iAmmo][iAT]--;
-	}
 	if(weaponid == WEAPON_SILENCED && pTazer{playerid} == 1) {
 		new iShots = GetPVarInt(playerid, "TazerShots");
 
 		if(iShots > 0) {
 			SetPVarInt(playerid, "TazerShots", iShots - 1);
-			SetPlayerAmmo(playerid, WEAPON_SILENCED, 3);
 		}
 		
 		if(iShots < 1) {
@@ -827,7 +805,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is recharging!");
 			
 			RemovePlayerWeapon(playerid, 23);
-			GivePlayerValidWeapon(playerid, pTazerReplace{playerid}, 0);
+			GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
 			format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
 			ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			pTazer{playerid} = 0;

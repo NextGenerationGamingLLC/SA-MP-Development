@@ -86,8 +86,6 @@ DeliverPlayerToHospital(playerid, iHospital)
 		
 		PlayerInfo[playerid][pHasCuff] = 0;
 		PlayerInfo[playerid][pHasTazer] = 0;
-
-		for(new i = 0; i < MAX_AMMO_TYPES; i++) arrAmmoData[playerid][awp_iAmmo][i] = 0;
 	} 
 	new string[128];
 	
@@ -341,15 +339,12 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
 		format(file, sizeof(file), "grouppay/5/%d-%d-%d.log", month, day, year);
 		Log(file, string);
-		if(!GetPVarType(playerid, "HealthCareActive")) PlayerInfo[playerid][pHunger] = 50;
-		else PlayerInfo[playerid][pHunger] = 83;
 		if(!GetPVarType(playerid, "HealthCareActive")) SetHealth(playerid, 50);
 		else SetHealth(playerid, 100), DeletePVar(playerid, "HealthCareActive");
 		PlayerInfo[playerid][pHydration] = 100;
 		if(PlayerInfo[playerid][pDonateRank] >= 3)
 		{
 			SetHealth(playerid, 100.0);
-			PlayerInfo[playerid][pHunger] = 100;
 		}
 		DeletePVar(playerid, "VIPSpawn");
 		arrHospitalBedData[iHospital][iCountDown][iBed] = 0;
