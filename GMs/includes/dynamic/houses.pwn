@@ -126,7 +126,7 @@ stock SaveHouse(houseid)
 		`Materials`=%d, \
 		`Heroin`=%d, \
 		`Meth`=%d, \
-		`Ecstasy`=%d \
+		`Ecstasy`=%d, \
 		`Weapons0`=%d, \
 		`Weapons1`=%d, \
 		`Weapons2`=%d, \
