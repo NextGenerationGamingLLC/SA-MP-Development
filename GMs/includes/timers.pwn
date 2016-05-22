@@ -503,7 +503,14 @@ task SyncTime[60000]()
 			}
 			if(DynPoints[x][poCapperGroupOwned] != INVALID_GROUP_ID)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "Your family has recieved a %d materials for owning %s.", DynPoints[x][poMaterials], DynPoints[x][poName]);
+				format(szMiscArray, sizeof(szMiscArray), "Your family has recieved weapons for owning %s.", DynPoints[x][poName]);
+				foreach(new i: Player)
+				{
+					if(PlayerInfo[i][pMember] == DynPoints[x][poCapperGroupOwned]) {
+						SendClientMessageEx(i, COLOR_LIGHTBLUE, szMiscArray);
+					}
+				}
+				//format(szMiscArray, sizeof(szMiscArray), "Your family has recieved a %d materials for owning %s.", DynPoints[x][poMaterials], DynPoints[x][poName]);
 				for(new g = 0; g < 14; g++)
 				{
 					switch(g)
@@ -524,14 +531,7 @@ task SyncTime[60000]()
 						case 13: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SPRAYCAN, 1);
 					}
 				}
-				arrGroupData[DynPoints[x][poCapperGroupOwned]][g_iMaterials] += DynPoints[x][poMaterials];
-
-				foreach(new i: Player)
-				{
-					if(PlayerInfo[i][pMember] == DynPoints[x][poCapperGroupOwned]) {
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, szMiscArray);
-					}
-				}
+				//arrGroupData[DynPoints[x][poCapperGroupOwned]][g_iMaterials] += DynPoints[x][poMaterials];
 			}
 		}
 
@@ -542,6 +542,7 @@ task SyncTime[60000]()
 			if(TurfWars[i][twVulnerable] > 0)
 			{
 			    TurfWars[i][twVulnerable]--;
+
 			    if(TurfWars[i][twVulnerable] == 0)
 			    {
 			    	if(TurfWars[i][twOwnerId] != -1)
@@ -551,25 +552,16 @@ task SyncTime[60000]()
 			    	}
 				}
 			}
-		}
+			if(TurfWars[i][twOwnerId] != INVALID_GROUP_ID)
+			{
+				arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][0] += 20;
+			    arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][1] += 20;
+			    arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][2] += 10;
+			    arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][3] += 10;
+			    arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][4] += 5;
 
-		for(new i = 1; i < MAX_GROUPS; i++)
-		{
-		    if(arrGroupData[i][g_iTurfTokens] < 24 && arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL)
-		    {
-		        arrGroupData[i][g_iTurfTokens]++;
-		        switch(arrGroupData[i][g_iTurfTokens])
-		        {
-					case 12:
-					{
-		        		foreach(new x: Player) if(PlayerInfo[x][pMember] == i) SendClientMessageEx(x, COLOR_WHITE, "Your group now has 1 Turf Token, you may now /claim to use it.");
-					}
-					case 24:
-					{
-					    foreach(new x: Player) if(PlayerInfo[x][pMember] == i) SendClientMessageEx(x, COLOR_WHITE, "Your group now has 2 Turf Tokens, you may now /claim to use them.");
-					}
-		        }
-		    }
+			    foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_LIGHTBLUE, "Your family has recieved drugs for owning a drug turf.");
+			}
 		}
 		//SaveFamilies();
 		//CallRemoteFunction("ActivateRandomQuestion", "");//Olympics

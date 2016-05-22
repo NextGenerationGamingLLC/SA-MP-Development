@@ -77,7 +77,7 @@ CMD:sellgun(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(850)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)");
 				}
 				case 150 .. 299: // level 3
 				{

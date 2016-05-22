@@ -207,6 +207,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(strlen(inputtext) > 25) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_NAME, DIALOG_STYLE_INPUT, "Edit Points - Name", "Please enter a new name for the point.\n\nPlease specify a name under 25 characters.", "Select", "Cancel"); 
 			strcpy(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName], inputtext, 25);
 
+			format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's name to %s", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), inputtext);
+			Log("logs/editpoint.log", szMiscArray);
+
 			format(szMiscArray, sizeof szMiscArray, "Name: %s\nType: %s\nPosition\nMaterial Amount (%d)\nInactive (%d)\nReset", 
 				DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName], 
 				PointTypeToName(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poType]), 
@@ -226,6 +229,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 0 .. 3:
 				{
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poType] = listitem;
+
+					format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's type to %s", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), listitem);
+					Log("logs/editpoint.log", szMiscArray);
 
 					format(szMiscArray, sizeof szMiscArray, "Name: %s\nType: %s\nPosition\nMaterial Amount (%d)\nInactive (%d)\t%d\nReset", 
 						DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName], 
@@ -264,6 +270,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					SavePoint(GetPVarInt(playerid, "pEditingPoint"));
 				}
 			}
+
+			format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's position %d amount to X: %f, Y: %f, Z: %f, VW: %d", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), listitem, pvPos[0], pvPos[0], pvPos[0], GetPlayerVirtualWorld(playerid));
+			Log("logs/editpoint.log", szMiscArray);
 		}
 		case DIALOG_EDITPOINT_MATERIALS:
 		{
@@ -271,6 +280,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(!IsNumeric(inputtext)) return ShowPlayerDialogEx(playerid, DIALOG_EDITPOINT_MATERIALS, DIALOG_STYLE_INPUT, "Edit Points - Materials", "Please enter the amount of materials the point will give each hour.\n\nPlease enter a numerical integer.", "Select", "Cancel");
 
 			DynPoints[GetPVarInt(playerid, "pEditingPoint")][poMaterials] = strval(inputtext);
+
+			format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's material amount to %d", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), inputtext);
+			Log("logs/editpoint.log", szMiscArray);
 
 			format(szMiscArray, sizeof szMiscArray, "Name: %s\nType: %s\nPosition\nMaterial Amount (%d)\nInactive (%d)\t%d\nReset", 
 				DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName], 

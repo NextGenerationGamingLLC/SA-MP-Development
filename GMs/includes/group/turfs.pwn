@@ -459,7 +459,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 4: // Edit Perks
 					{
-						ShowPlayerDialog(playerid,TWEDITTURFSPERKS,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Perks Menu:","None\nExtortion","Change","Back");
+						ShowPlayerDialog(playerid,TWEDITTURFSPERKS,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Perks Menu:","None\nExtortion\nDrugs","Change","Back");
 					}
 					case 5: // Reset War
 					{
@@ -606,6 +606,10 @@ CMD:turfinfo(playerid, params[])
             case 1:
             {
                 format(string,sizeof(string),"Special Perks: Extortion.");
+            }
+            case 2:
+            {
+            	format(string,sizeof(string),"Special Perks: Drugs.");
             }
             default:
             {

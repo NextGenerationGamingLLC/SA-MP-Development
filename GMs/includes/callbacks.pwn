@@ -2908,58 +2908,6 @@ public OnPlayerLeaveCheckpoint(playerid)
 
 public OnPlayerEnterCheckpoint(playerid)
 {
-	if(GetPVarInt(playerid, "MatDeliver") == 9090) {
-
-		if(GetPVarInt(playerid, "Packages") > 0)
-		{
-			if(IsPlayerInAnyVehicle(playerid))
-			{
-				if(PlayerInfo[playerid][pDonateRank] == 1)
-				{
-			    	TransferStorage(playerid, -1, -1, -1, 4, 450, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 450 materials for your 10 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Bronze VIP: You received 1.5x more materials than normal.");
-				}
-				else if(PlayerInfo[playerid][pDonateRank] == 2 || PlayerInfo[playerid][pDonateRank] == 3)
-				{
-			    	TransferStorage(playerid, -1, -1, -1, 4, 600, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 600 materials for your 10 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Silver & Gold VIP: You received 2x more materials than normal.");
-
-				}
-				else if(PlayerInfo[playerid][pDonateRank] >= 4)
-				{
-			    	TransferStorage(playerid, -1, -1, -1, 4, 750, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 750 materials for your 10 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Platinum VIP: You received 2.5x more materials than normal.");
-
-				}
-				else
-				{
-					TransferStorage(playerid, -1, -1, -1, 4, 300, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 300 materials for your 10 materials packages.");
-				}
-				DeletePVar(playerid, "Packages");
-				DeletePVar(playerid, "MatDeliver");
-				DisablePlayerCheckpoint(playerid);
-			}
-			else
-			{
-				GameTextForPlayer(playerid, "~r~You are not in a vehicle!", 3000, 1);
-				return 1;
-			}
-
-			if(GetPVarInt(playerid, "tpMatRunTimer") != 0)
-		    {
-				new string[128];
-		    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
-		    	ABroadCast( COLOR_YELLOW, string, 2 );
-		    	// format(string, sizeof(string), "%s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
-		    	// Log("logs/hack.log", string);
-			}
-			return 1;
-		}
-	}
     if(GetPVarInt(playerid, "EventToken") == 1)
 	{
 	    if(EventKernel[EventFootRace] == 1 && IsPlayerInAnyVehicle(playerid))
@@ -3160,160 +3108,35 @@ public OnPlayerEnterCheckpoint(playerid)
 	}
 	for(new h = 0; h < MAX_POINTS; h++)
 	{
-		/*if(Points[h][Type] == 3 && GetPVarInt(playerid, "CrateDeliver") == 1 && IsPlayerInRangeOfPoint(playerid, 6.0, 2166.3772,-1675.3829,15.0859))
-		{
-			new string[128];
-		    if(GetPVarInt(playerid, "tpDrugRunTimer") != 0)
-	    	{
-			   	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport drugrunning.", GetPlayerNameEx(playerid), playerid);
-			   	ABroadCast( COLOR_YELLOW, string, 2 );
-			   	// format(string, sizeof(string), "%s (ID %d) is possibly teleport drugrunning.", GetPlayerNameEx(playerid), playerid);
-			   	// Log("logs/hack.log", string);
-			}
-			DisablePlayerCheckpoint(playerid);
-			new level = PlayerInfo[playerid][pSmugSkill];
-   			if(level >= 0 && level <= 20)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $1250 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 1250);
-			}
-			else if(level >= 21 && level <= 50)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $1500 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 1500);
-			}
-			else if(level >= 51 && level <= 100)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $2000 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 2000);
-			}
-			else if(level >= 101 && level <= 200)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $3000 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 3000);
-			}
-			else if(level >= 201)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $4000 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 4000);
-			}
-			DeletePVar(playerid, "CrateDeliver");
-			PlayerInfo[playerid][pCrates] = 0;
-			Points[h][Stock] += 10;
-
- 			if(PlayerInfo[playerid][pDoubleEXP] > 0)
-		    {
-				format(string, sizeof(string), "You have gained 2 smuggler skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
-   				PlayerInfo[playerid][pSmugSkill] += 2;
-			}
-			else
-			{
-  				PlayerInfo[playerid][pSmugSkill] += 1;
-			}
-
-			format(string, sizeof(string), " Cannabis/OPIUM AVAILABLE: %d/1000.", Points[h][Stock]);
-			UpdateDynamic3DTextLabelText(Points[h][TextLabel], COLOR_YELLOW, string);
-			return 1;
-		}
-		else if(Points[h][Type] == 4 && GetPVarInt(playerid, "CrateDeliver") == 2 && IsPlayerInRangeOfPoint(playerid, 6.0, 2354.2808,-1169.2959,28.0066))
-		{
-			new string[128];
-		    if(GetPVarInt(playerid, "tpDrugRunTimer") != 0)
-	    	{
-			   	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport drugrunning.", GetPlayerNameEx(playerid), playerid);
-			   	ABroadCast( COLOR_YELLOW, string, 2 );
-			   	// format(string, sizeof(string), "%s (ID %d) is possibly teleport drugrunning.", GetPlayerNameEx(playerid), playerid);
-			   	// Log("logs/hack.log", string);
-			}
-			DisablePlayerCheckpoint(playerid);
-			new level = PlayerInfo[playerid][pSmugSkill];
-			if(level >= 0 && level <= 20)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $1250 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 1250);
-			}
-			else if(level >= 21 && level <= 50)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $1500 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 1500);
-			}
-			else if(level >= 51 && level <= 100)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $2000 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 2000);
-			}
-			else if(level >= 101 && level <= 200)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $3000 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 3000);
-			}
-			else if(level >= 201)
-			{
-			    SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"* You received $4000 for delivering the Drug Crates.");
-				GivePlayerCash(playerid, 4000);
-			}
-			DeletePVar(playerid, "CrateDeliver");
-			PlayerInfo[playerid][pCrates] = 0;
-			Points[h][Stock] += 10;
-			PlayerInfo[playerid][pSmugSkill]++;
-			format(string, sizeof(string), " CRACK AVAILABLE: %d/1000.", Points[h][Stock]);
-			UpdateDynamic3DTextLabelText(Points[h][TextLabel], COLOR_YELLOW, string);
-			return 1;
-		}*/
-		if(Points[h][Type] == 2 && GetPVarInt(playerid, "MatDeliver") == Points[h][MatPoint] && IsPlayerInRangeOfPoint(playerid, 6.0, Points[h][Pointx], Points[h][Pointy], Points[h][Pointz]))
+		if(IsPlayerInRangeOfPoint(playerid, 6.0, DynPoints[h][poPos2][0], DynPoints[h][poPos2][1], DynPoints[h][poPos2][2]) && DynPoints[h][poType] == 0)
 		{
 			if(GetPVarInt(playerid, "Packages") > 0)
 			{
 				new string[128];
+				new vip;
+				switch(PlayerInfo[playerid][pDonateRank])
+				{
+					case 0: vip = 1;
+					case 1: vip = 2;
+					case 2: vip = 2;
+					case 3: vip = 3;
+					case 4: vip = 4;
+					default: vip = 1;
+				}
+
+				new mats = DynPoints[h][poMaterials] * vip;
+
+				format(string, sizeof(string), "* The factory gave you %d materials for your materials packages.", mats);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+
+				TransferStorage(playerid, -1, -1, -1, 4, mats, -1, 2);
+
 				if(GetPVarInt(playerid, "tpMatRunTimer") != 0)
 			    {
 			    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
 			    	ABroadCast( COLOR_YELLOW, string, 2 );
-			    	// format(string, sizeof(string), "%s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
-			    	// Log("logs/hack.log", string);
 				}
-				new payout = (25)*(GetPVarInt(playerid, "Packages"));
-
-				if(PlayerInfo[playerid][pDonateRank] == 1)
-				{
-					TransferStorage(playerid, -1, -1, -1, 4, 375, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 375 materials for your 15 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Bronze VIP: You received 1.5x more materials than normal.");
-
-				}
-				else if(PlayerInfo[playerid][pDonateRank] == 2 || PlayerInfo[playerid][pDonateRank] == 3)
-				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 500, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 500 materials for your 20 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Silver & Gold VIP: You received 2x more materials than normal.");
-
-				}
-				else if(PlayerInfo[playerid][pDonateRank] >= 4)
-				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 625, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 625 materials for your 25 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Platinum VIP: You received 2.5x more materials than normal.");
-
-				}
-				else
-				{
-    				TransferStorage(playerid, -1, -1, -1, 4, 250, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 250 materials for your 10 materials packages.");
-				}
-
-				DeletePVar(playerid, "Packages");
-				DeletePVar(playerid, "MatDeliver");
-				DisablePlayerCheckpoint(playerid);
-				gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
-				for(new p = 0; p < MAX_GROUPS; p++)
-				{
-					if(strcmp(Points[h][Owner], arrGroupData[p][g_szGroupName], true) == 0)
-					{
-						arrGroupData[p][g_iBudget] += (payout/3);
-					}
-				}
-				return 1;
+				
 			}
 		}
 		else if(GetPVarInt(playerid, "MatDeliver") == 333 && IsPlayerInRangeOfPoint(playerid, 6.0, -330.44, -467.54, 0.85))
@@ -3357,98 +3180,6 @@ public OnPlayerEnterCheckpoint(playerid)
 					GameTextForPlayer(playerid, "~r~You are not in a boat!", 3000, 1);
 					return 1;
 				}
-
-				if(GetPVarInt(playerid, "tpMatRunTimer") != 0)
-			    {
-					new string[128];
-			    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
-			    	ABroadCast( COLOR_YELLOW, string, 2 );
-			    	// format(string, sizeof(string), "%s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
-			    	// Log("logs/hack.log", string);
-				}
-				return 1;
-			}
-		}
-		else if(GetPVarInt(playerid, "MatDeliver") == 444 && IsPlayerInRangeOfPoint(playerid, 6.0, -1872.879760, 1416.312500, 7.180089))
-		{
-			if(GetPVarInt(playerid, "Packages") > 0)
-			{
-				if(PlayerInfo[playerid][pDonateRank] == 1)
-				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 450, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 450 materials for your 18 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Bronze VIP: You received 1.5x more materials than normal.");
-
-				}
-				else if(PlayerInfo[playerid][pDonateRank] == 2 || PlayerInfo[playerid][pDonateRank] == 3)
-				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 600, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 600 materials for your 24 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Silver & Gold VIP: You received 2x more materials than normal.");
-
-				}
-				else if(PlayerInfo[playerid][pDonateRank] >= 4)
-				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 750, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 750 materials for your 30 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Platinum VIP: You received 2.5x more materials than normal.");
-
-				}
-				else
-				{
-			    	TransferStorage(playerid, -1, -1, -1, 4, 300, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 300 materials for your 12 materials packages.");
-				}
-
-				DeletePVar(playerid, "Packages");
-				DeletePVar(playerid, "MatDeliver");
-				DisablePlayerCheckpoint(playerid);
-
-				if(GetPVarInt(playerid, "tpMatRunTimer") != 0)
-			    {
-					new string[128];
-			    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
-			    	ABroadCast( COLOR_YELLOW, string, 2 );
-			    	// format(string, sizeof(string), "%s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
-			    	// Log("logs/hack.log", string);
-				}
-				return 1;
-			}
-		}
-		else if(GetPVarInt(playerid, "MatDeliver") == 555 && IsPlayerInRangeOfPoint(playerid, 6.0, -688.7897,966.1434,12.1627))
-		{
-			if(GetPVarInt(playerid, "Packages") > 0)
-			{
-				if(PlayerInfo[playerid][pDonateRank] == 1)
-				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 750, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 750 materials for your 30 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Bronze VIP: You received 1.5x more materials than normal.");
-
-				}
-				else if(PlayerInfo[playerid][pDonateRank] == 2 || PlayerInfo[playerid][pDonateRank] == 3)
-				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 1000, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 1,000 materials for your 40 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Silver & Gold VIP: You received 2x more materials than normal.");
-
-				}
-				else if(PlayerInfo[playerid][pDonateRank] >= 4)
-				{
-				    TransferStorage(playerid, -1, -1, -1, 4, 1250, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 1,250 materials for your 50 materials packages.");
-					SendClientMessageEx(playerid, COLOR_YELLOW,"Platinum VIP: You received 2.5x more materials than normal.");
-
-				}
-				else
-				{
-			    	TransferStorage(playerid, -1, -1, -1, 4, 500, -1, 2);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The factory gave you 500 materials for your 20 materials packages.");
-				}
-
-				DeletePVar(playerid, "Packages");
-				DeletePVar(playerid, "MatDeliver");
-				DisablePlayerCheckpoint(playerid);
 
 				if(GetPVarInt(playerid, "tpMatRunTimer") != 0)
 			    {

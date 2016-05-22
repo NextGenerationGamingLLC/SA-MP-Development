@@ -811,10 +811,13 @@ CMD:loadforklift(playerid, params[]) {
 		            	format(szMiscArray, sizeof(szMiscArray), "%s %s has created a weapon crate.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 		              	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 		              	GroupLog(30, szMiscArray);
-		              	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 		              	foreach(new i : Player)
 		              	{
-		              		if(PlayerInfo[i][pMember] == 30 || PlayerInfo[i][pLeader] == 30) 
+		              		if(PlayerInfo[i][pAdmin] >= 2)
+		              		{
+		              			SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
+		              		}
+		              		else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iCrateIsland] != INVALID_RANK) 
 		              		{
 		              			SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
 		              		}
@@ -872,7 +875,7 @@ CMD:loadforklift(playerid, params[]) {
 		}
 		else
 		{
-			if(IsPlayerInRangeOfPoint(playerid, 500, 134.5410,-4396.7666,51.8603)) return SendClientMessage(playerid, COLOR_LIGHTRED, "Crates can't be unloaded on the Island.");
+			if(IsPlayerInRangeOfPoint(playerid, 800, 134.5410,-4396.7666,51.8603)) return SendClientMessage(playerid, COLOR_LIGHTRED, "Crates can't be unloaded on the Island.");
 		    new Float: vX, Float: vY, Float: vZ;
 		    GetVehiclePos(vehicleid, vX, vY, vZ);
 		    GetXYInFrontOfPlayer(playerid, vX, vY, 2);
@@ -910,6 +913,45 @@ CMD:loadforklift(playerid, params[]) {
 	else
 	{
 	    return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not in a forklift!");
+	}
+	return 1;
+}
+
+CMD:cvrespawn(playerid, params[])
+{
+	new szString[128];
+
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
+    {
+		for(new i; i < MAX_DYNAMIC_VEHICLES; i++)
+		{
+			if(DynVehicleInfo[i][gv_iType] == 1)
+			{
+				if(!IsVehicleOccupied(DynVehicleInfo[i][gv_iSpawnedID])) DynVeh_Spawn(i, 1); else DynVeh_Spawn(i);
+			}
+		}
+
+		format(szString,sizeof(szString),"{AA3333}AdmWarning{FFFF00}: %s has respawn all dynamic crate vehicles.", GetPlayerNameEx(playerid));
+		ABroadCast(COLOR_YELLOW, szString, 2);
+        format(szString, sizeof(szString), "%s has respawned all dynamic crate vehicles.", GetPlayerNameEx(playerid));
+   		Log("logs/group.log", szString);
+	}
+	return 1;
+}
+
+CMD:cvlist(playerid, params[])
+{
+	szMiscArray[0] = 0;
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
+    {
+		for(new i; i < MAX_DYNAMIC_VEHICLES; i++)
+		{
+			if(DynVehicleInfo[i][gv_iType] == 1)
+			{
+				format(szMiscArray, sizeof(szMiscArray), "ID: %d | Name: %s", i, VehicleName[i]);
+				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+			}
+		}
 	}
 	return 1;
 }

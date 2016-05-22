@@ -5991,14 +5991,14 @@ CMD:orgs(playerid, params[])
 	szMiscArray[0] = 0;
 	for(new i = 0; i < MAX_GROUPS; i++)
 	{
-		if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL)
+		if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL && strlen(arrGroupData[i][g_szGroupName]) > 0)
 		{
 			new iMemberCount = 0;
 			foreach(new x: Player)
 			{
 				if(PlayerInfo[x][pMember] == i) iMemberCount++;
 			}
-			format(szMiscArray, sizeof(szMiscArray), "** %s | Total Members: %d | Members Online: %i | Tokens: %d", arrGroupData[i][g_szGroupName], arrGroupData[i][g_iMemberCount], iMemberCount, arrGroupData[i][g_iTurfTokens] < 12 ? 0 : arrGroupData[i][g_iTurfTokens]/12);
+			format(szMiscArray, sizeof(szMiscArray), "** %s | Total Members: %d | Members Online: %i", arrGroupData[i][g_szGroupName], arrGroupData[i][g_iMemberCount], iMemberCount);
 			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 		}
 	}

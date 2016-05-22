@@ -34,16 +34,17 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-cmd:rules(playerid, params[])
+
+CMD:rules(playerid, params[])
 {
 	format(szMiscArray, sizeof(szMiscArray), "Death Matching: Attacking a player in any way without a proper in character reason.");
-	format(szMiscArray, sizeof(szMiscArray), "%s\nKilling on Sight: Attacking a player in any way with little/insufficient/no roleplay, even if you have RP reason to attack the player.", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\nRevenge Killing: Attempting to kill the person who killed you or returning to the situation in which you died.", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\nPowergaming: Forcing roleplay on another player or roleplaying impossible god-like/superhero abilities or the use of futuristic technologies.", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\nMetagaming: Mixing of out of character and in character information. Using IC info oocly or using OOC info icly. Use of acronyms or smilies. (ex. 'wtf' or :)", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\nNon-roleplay behavior: Acting in a manner that is deemed unrealstic or non-roleplay, including but not limited to: improper use of toys,\n ramming vehicles into players excessively, car surfing etc", szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "%s\nAvoiding Roleplay: Disconnecting or using /kill to avoid roleplay/arrest etc.", szMiscArray);
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TEXT, "RULES", szMiscArray, "OK", "");
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nKilling on Sight: Attacking a player in any way with little/insufficient/no roleplay, even if you have RP reason to attack the player.", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nRevenge Killing: Attempting to kill the person who killed you or returning to the situation in which you died.", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nPowergaming: Forcing roleplay on another player or roleplaying impossible god-like/superhero abilities or the use of futuristic technologies.", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nMetagaming: Mixing of out of character and in character information. Using IC info oocly or using OOC info icly. Use of acronyms or smilies. (ex. 'wtf' or :)", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nNon-roleplay behavior: Acting in a manner that is deemed unrealstic or non-roleplay, including but not limited to: improper use of toys,\n ramming vehicles into players excessively, car surfing etc", szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s\n\nAvoiding Roleplay: Disconnecting or using /kill to avoid roleplay/arrest etc.", szMiscArray);
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "NG-RP: Server Offences", szMiscArray, "Okay", "");
 	return 1;
 }
 CMD:help(playerid, params[])

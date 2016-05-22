@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.314"
+#define SERVER_GM_TEXT "NG:RP v3.0.315"
 
 //#define AREA_DEBUG
 
@@ -329,6 +329,9 @@
 #include "./includes/furniture.pwn"
 #include "./includes/admin/poll.pwn"
 #include "./includes/group/elections.pwn"
+
+// Winterfield WIP
+//#include "./includes/admin/punishments.pwn"
 
 main(){}
 

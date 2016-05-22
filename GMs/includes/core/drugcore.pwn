@@ -200,7 +200,7 @@ CMD:getcrate(playerid, params[])
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You must be in a boat.");
 		}
-
+		SetPVarInt(playerid, "tpDrugRunTimer", 60);
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_TPDRUGRUNTIMER);
 	}
 	return 1;
@@ -457,7 +457,7 @@ GivePlayerDrugEffects(playerid, id, amount)
 		case 1: // Crack
 		{
 			new Float:increase = amount * 2;
-			SetArmour(playerid, health + increase);
+			SetArmour(playerid, armour + increase);
 			if(armour + increase > 100) SetArmour(playerid, 100);
 
 			format(string, sizeof(string), "* %s has used some crack.", GetPlayerNameEx(playerid));
