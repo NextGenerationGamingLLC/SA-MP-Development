@@ -1619,8 +1619,8 @@ stock mysql_SaveCrates()
 
 stock CheckBanEx(playerid)
 {
-	new string[60];
-	format(string, sizeof(string), "SELECT `ip` FROM `ip_bans` WHERE `ip` = '%s'", GetPlayerIpEx(playerid));
+	new string[280];
+	format(string, sizeof(string), "SELECT `IP` FROM `ban` WHERE `IP` = '%s' AND `active` = '1'", GetPlayerIpEx(playerid));
 	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", IPBAN_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
@@ -1670,16 +1670,16 @@ stock AddCrime(cop, suspect, crime[])
 
 stock ClearCrimes(playerid, clearerid = INVALID_PLAYER_ID)
 {
-	new query[80], iAllegiance;
+	new iAllegiance;
 	if(clearerid != INVALID_PLAYER_ID && (0 <= PlayerInfo[clearerid][pMember] < MAX_GROUPS))
 	{
 		iAllegiance = arrGroupData[PlayerInfo[clearerid][pMember]][g_iAllegiance];
-		format(query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);
 	}
 	else {
-		format(query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
+		format(szMiscArray, sizeof(szMiscArray), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
 	}
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
