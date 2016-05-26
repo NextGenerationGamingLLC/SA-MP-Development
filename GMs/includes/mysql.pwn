@@ -612,6 +612,12 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pDrugs][3] 	  = cache_get_field_content_int(row, "Ecstasy", MainPipeline);
 					PlayerInfo[extraid][pDrugs][4] 	  = cache_get_field_content_int(row, "Heroin", MainPipeline);
 
+					/*for(new i = 0; i < MAX_POLLS; i++)
+					{
+						format(szField, sizeof(szField), "HasVoted%d", i);
+						PlayerInfo[extraid][pGuns][i] = cache_get_field_content_int(row,  szField, MainPipeline);
+					}*/
+
 					// Jingles' Drug System:
 					//for(new d; d != sizeof(Drugs); ++d) PlayerInfo[extraid][pDrugs][d] = cache_get_field_content_int(row, GetDrugName(d), MainPipeline);
 					//for(new d; d != sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);

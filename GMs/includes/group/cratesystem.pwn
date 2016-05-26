@@ -927,7 +927,10 @@ CMD:cvrespawn(playerid, params[])
 		{
 			if(DynVehicleInfo[i][gv_iType] == 1)
 			{
-				if(!IsVehicleOccupied(DynVehicleInfo[i][gv_iSpawnedID])) DynVeh_Spawn(i, 1); else DynVeh_Spawn(i);
+				if(!IsVehicleOccupied(DynVehicleInfo[i][gv_iSpawnedID])) 
+				{
+					DynVeh_Spawn(i);
+				}
 			}
 		}
 
@@ -948,7 +951,7 @@ CMD:cvlist(playerid, params[])
 		{
 			if(DynVehicleInfo[i][gv_iType] == 1)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "ID: %d | Name: %s", i, VehicleName[i]);
+				format(szMiscArray, sizeof(szMiscArray), "ID: %d | Name: %s", i, VehicleName[DynVehicleInfo[i][gv_iModel]]);
 				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 			}
 		}

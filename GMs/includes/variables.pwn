@@ -1158,6 +1158,9 @@ new RFLInfo[MAX_RFLTEAMS][rflinfo];
 //new GangTags[MAX_GANGTAGS][GANG_TAG_INFO];
 new fireworktog = 1;
 
+new Polls[MAX_POLLS][PollData];
+new PollChoices[MAX_POLLS_CHOICES][255];
+
 // Vehicle Lock Pick Timer Textdraw
 new PlayerText:VLPTextDraws[MAX_PLAYERS][4];
 

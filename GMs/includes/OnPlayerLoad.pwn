@@ -58,6 +58,7 @@ public OnPlayerLoad(playerid)
 	}
 	ConnectionDBLog(playerid);
 	CheckBan(playerid);
+	//CheckPlayerPollStatus(playerid);
 
 	if(PlayerInfo[playerid][pDisabled] == 2)
 	{
@@ -964,6 +965,17 @@ public OnPlayerLoad(playerid)
 		mysql_function_query(MainPipeline, string, true, "OnZombieCheck", "i", playerid);
 	}
 	#endif
+
+	if(PlayerInfo[playerid][pWeedObject] != 0) {
+	    for(new i; i < MAX_PLANTS; i++)
+	    {
+	        if(Plants[i][pOwner] == GetPlayerSQLId(playerid))
+	        {
+				return 1;
+	        }
+	    }
+		PlayerInfo[playerid][pWeedObject] = 0;
+	}
 
 	if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] == 0 && !IsValidName(GetPlayerNameExt(playerid)))
 	{

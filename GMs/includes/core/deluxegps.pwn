@@ -236,7 +236,7 @@ CMD:map(playerid, params[]) {
 }
 
 CMD:mygps(playerid, params[]) {
-	// if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
+	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint).");
 	ShowPlayerDialogEx(playerid, DIALOG_GPS_ONE, DIALOG_STYLE_LIST, "Doodle Maps | Main Menu", "Businesses\n\
 		Jobs\n\
 		General Locations\n\

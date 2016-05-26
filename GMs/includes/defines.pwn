@@ -1165,7 +1165,7 @@ native IsValidVehicle(vehicleid);
 #define			DIALOG_SHOW_OFFLINE_CRIMES		(6151)
 #define 		DIALOG_REGISTER_SKIN			(6152)
 
-#define 		DIALOG_POLLS_VOTE				(6153)
+//#define 		DIALOG_POLLS_VOTE				(6153)
 #define 		DIALOG_POLLS_EDIT				(6154)
 #define 		DIALOG_POLLS_QUESTION			(6156)
 #define 		DIALOG_POLLS_OPTIONS			(6157)
@@ -1189,6 +1189,17 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_EDITPOINT_TYPE 			(6172)
 #define 		DIALOG_EDITPOINT_POSITION 		(6173)
 #define 		DIALOG_EDITPOINT_MATERIALS		(6174)
+
+#define 		MAX_POLLS 			              (50)
+#define 		MAX_POLLS_CHOICES                  (5)
+
+#define 		DIALOG_POLLS		           (6175)
+#define 		DIALOG_POLLS_VOTE	           (6176)
+#define 		DIALOG_POLLS_CHOICES	       (6177)
+#define 		DIALOG_EDITPOLLS		       (6178)
+#define 		DIALOG_EDITPOLLS2		       (6179)
+#define 		DIALOG_EDITPOLLS_NAME	       (6180)
+#define 		DIALOG_EDITPOLLS_CHOICES       (6181)
 
 /*#define 		DIALOG_INTERACT 				(6175)
 #define 		DIALOG_INTERACT_COP 			(6176)

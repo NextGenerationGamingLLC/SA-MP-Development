@@ -1086,6 +1086,7 @@ enum pInfo
 	pFMuted,
 	pDefendTime,
 	pPVIPVoucher,
+	HasVoted[MAX_POLLS],
 	pVehicleSlot,
 	pToySlot,
 	pRFLTeam,
@@ -1673,6 +1674,14 @@ enum dgItems
 	dgRestrictedCarVoucher,
 	dgPlatinumVIPVoucher
 };
+
+enum PollData 
+{
+	PollID,
+	PollQuestion[255],
+	PollVotes[MAX_POLLS_CHOICES],
+	LastReset
+}
 
 enum garInfo
 {

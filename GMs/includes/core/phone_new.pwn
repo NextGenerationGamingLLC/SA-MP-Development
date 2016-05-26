@@ -986,6 +986,7 @@ Phone_Music(iPlayerID)
 
 Phone_Map(iPlayerID)
 {
+	
 	DisablePlayerCheckpoint(iPlayerID);
 	cmd_mygps(iPlayerID, "");
 }

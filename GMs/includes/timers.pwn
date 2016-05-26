@@ -552,7 +552,7 @@ task SyncTime[60000]()
 			    	}
 				}
 			}
-			if(TurfWars[i][twOwnerId] != INVALID_GROUP_ID)
+			if(TurfWars[i][twOwnerId] != INVALID_GROUP_ID && TurfWars[i][twSpecial] == 2)
 			{
 				arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][0] += 20;
 			    arrGroupData[TurfWars[i][twOwnerId]][g_iDrugs][1] += 20;
