@@ -417,7 +417,9 @@ task SyncTime[60000]()
 		{
  			WeatherCalling = 1;
    			gWeather = random(19) + 1;
+   			gWeather = 1;
 		    if(gWeather == 1 || gWeather == 8 || gWeather == 9) gWeather=1;
+
 		}
 		#endif
 
@@ -1206,7 +1208,13 @@ foreach(new i: Player)
 			else playerAFK[i] = 0;
 			GetPlayerPos(i, PlayerPos[i][0], PlayerPos[i][1], PlayerPos[i][2]);
 		}
-
+		if(GetPVarType(i, "IsInArena") && PlayerInfo[i][pVW] == 0)
+		{
+			SendClientMessageEx(i, COLOR_WHITE, "SERVER: You have been kicked for PaintBall Exploiting.");
+			format(szMiscArray, sizeof(szMiscArray), " %s(%d) (ID: %d) (IP: %s) has been kicked for attempting to Paint Ball Exploit.", GetPlayerNameEx(i), GetPlayerSQLId(i), i, GetPlayerIpEx(i));
+			Log("logs/pbexploit.log", szMiscArray);
+			SetTimerEx("KickEx", 1000, 0, "i", i);
+		}
 		// MoneyHeartBeat - Merged by Jingles
 		if(gPlayerLogged{i})
 		{

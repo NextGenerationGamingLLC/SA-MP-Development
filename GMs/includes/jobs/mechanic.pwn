@@ -107,9 +107,9 @@ CMD:fix(playerid, params[])
     			else 
     			{
 					SetPVarInt(playerid, "FixVehicleTimer", SetTimerEx("FixVehicle", 15000, false, "ii", playerid, closestcar));
+					TogglePlayerControllable(playerid, 0);
+					ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, 1, 1, 1, 1, 1, 1);
     			}
-				TogglePlayerControllable(playerid, 0);
-				ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, 1, 1, 1, 1, 1, 1);
 				defer Fix_PlayerInVehicleCheck(playerid);
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not close enough to any vehicle.");

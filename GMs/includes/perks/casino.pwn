@@ -1,0 +1,600 @@
+/*
+
+	 /$$   /$$  /$$$$$$          /$$$$$$$  /$$$$$$$
+	| $$$ | $$ /$$__  $$        | $$__  $$| $$__  $$
+	| $$$$| $$| $$  \__/        | $$  \ $$| $$  \ $$
+	| $$ $$ $$| $$ /$$$$ /$$$$$$| $$$$$$$/| $$$$$$$/
+	| $$  $$$$| $$|_  $$|______/| $$__  $$| $$____/
+	| $$\  $$$| $$  \ $$        | $$  \ $$| $$
+	| $$ \  $$|  $$$$$$/        | $$  | $$| $$
+	|__/  \__/ \______/         |__/  |__/|__/
+
+						Casino System
+						  ROTHSCHILD
+				Next Generation Gaming, LLC
+	(created by Next Generation Gaming Development Team)
+					
+	* Copyright (c) 2016, Next Generation Gaming, LLC
+	*
+	* All rights reserved.
+	*
+	* Redistribution and use in source and binary forms, with or without modification,
+	* are not permitted in any case.
+	*
+	*
+	* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+	* CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+	* EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+	* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+	* PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+	* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+#include <YSI\y_hooks>
+
+new CASINOPoint[16]; 
+
+stock randomEx(min, max)
+{
+    new rand = random(max-min)+min;
+    return rand;
+}
+
+CMD:rolldice(playerid, params[])
+{
+	new amount, dice, theplayer;
+	if(!IsAtCasino(playerid)) return SendClientMessage(playerid, COLOR_GREY, "You are not in a Casino.");
+	if (PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || Businesses[PlayerInfo[playerid][pBusiness]][bType] != BUSINESS_TYPE_CASINO) {
+		return SendClientMessageEx(playerid, COLOR_GREY, "You are not working for a Casino!");
+	}
+	if(GetPVarInt(playerid, "pRollDiceID") != INVALID_PLAYER_ID) return SendClientMessage(playerid, COLOR_GREY, "You are already in a game.");
+	if(sscanf(params, "udd", theplayer, amount, dice)) return SendClientMessage(playerid, COLOR_GREY, "Usage: /rolldice [PlayerID] [Money Amount] [Amount of Dice]");
+	if(!IsPlayerConnected(theplayer)) return SendClientMessage(playerid, COLOR_GREY, "This players isn't connected.");
+	if(playerid == theplayer) return SendClientMessage(playerid, COLOR_GREY, "You can't dice with yourself.");
+	if(amount > 10000000 || amount < 1000) return SendClientMessage(playerid, COLOR_GREY, "You can only bet $1000-$10,000,000");
+	if(dice > 3 || dice <= 0) return SendClientMessage(playerid, COLOR_GREY, "You can only use 1-3 Dice.");
+	if(PlayerInfo[theplayer][pCash] < amount) 
+	{
+		SendClientMessage(playerid, COLOR_GREY, "The Player doesn't have enough money.");
+		return SendClientMessage(theplayer, COLOR_GREY, "You don't have enough money.");
+	}
+	if(PlayerInfo[theplayer][pCash] < 0) return SendClientMessage(playerid, COLOR_GREY, "You're broke.");
+	if(Businesses[InBusiness(playerid)][bSafeBalance] <= 0) return SendClientMessage(playerid, COLOR_GREY, "This casino is bankrupt.");
+	Businesses[InBusiness(playerid)][bSafeBalance] += amount;
+	SetPVarInt(theplayer, "pRollDiceID", playerid);
+	SetPVarInt(theplayer, "pRollDiceMoney", amount);
+	SetPVarInt(theplayer, "pRollDiceAmount", dice);
+	SetPVarInt(playerid, "pRollDiceID", theplayer);
+	SetPVarInt(playerid, "pRollDiceMoney", amount);
+	SetPVarInt(playerid, "pRollDiceAmount", dice);
+	format(szMiscArray, sizeof(szMiscArray), "CASINO: %s has offered you a game of dice for %s with %d dice rolls. (/acceptdice)", GetPlayerNameEx(playerid), number_format(amount), dice);
+	SendClientMessage(theplayer, COLOR_LIGHTBLUE, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "CASINO: You have offered %s a game of dice for %s with %d dice rolls. (/canceldice)", GetPlayerNameEx(theplayer), number_format(amount), dice);
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	return 1;
+}
+
+CMD:acceptdice(playerid, params[])
+{
+	if(GetPVarInt(playerid, "pRollDiceID") == INVALID_PLAYER_ID) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "You don't have a pending dice game.");
+	if(PlayerInfo[playerid][pCash] < GetPVarInt(playerid, "pRollDiceMoney")) {
+		DeletePVar(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceID");
+		DeletePVar(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceMoney");
+		DeletePVar(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceAmount");
+		SendClientMessage(GetPVarInt(playerid, "pRollDiceID"), COLOR_LIGHTBLUE, "The player couldn't afford the dice game. (/rolldice)");
+		DeletePVar(playerid, "pRollDiceID");
+		DeletePVar(playerid, "pRollDiceMoney");
+		DeletePVar(playerid, "pRollDiceAmount");
+		return SendClientMessage(playerid, COLOR_LIGHTBLUE, "You don't have enough money for the Dice Game.");
+	}
+	new player1, player2;
+	PlayerInfo[playerid][pCash] -= GetPVarInt(playerid, "pRollDiceMoney");
+	Businesses[InBusiness(playerid)][bSafeBalance] += GetPVarInt(playerid, "pRollDiceMoney");
+	player1 = CalculateDiceRoll(GetPVarInt(playerid, "pRollDiceID"), GetPVarInt(playerid, "pRollDiceAmount"));
+	player2 = CalculateDiceRoll(playerid, GetPVarInt(playerid, "pRollDiceAmount"));
+	format(szMiscArray, sizeof(szMiscArray), "%s says: Casino got %d, Player got %d.", GetPlayerNameEx(GetPVarInt(playerid, "pRollDiceID")), player1, player2);
+	ProxDetector(5.0, GetPVarInt(playerid, "pRollDiceID"), szMiscArray,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
+	if(player1 > player2) 
+	{
+		format(szMiscArray, sizeof(szMiscArray), "%s says: Casino Wins.", GetPlayerNameEx(GetPVarInt(playerid, "pRollDiceID")));
+		ProxDetector(5.0, GetPVarInt(playerid, "pRollDiceID"), szMiscArray,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
+		CasinoDBLog(playerid, "DICE", GetPVarInt(playerid, "pRollDiceMoney"), 0, player1, player2, 0);
+		DeleteDiceData(playerid);
+	} 
+	else if (player1 == player2) {
+		format(szMiscArray, sizeof(szMiscArray), "%s says: It's a Draw.", GetPlayerNameEx(GetPVarInt(playerid, "pRollDiceID")));	
+		ProxDetector(5.0, GetPVarInt(playerid, "pRollDiceID"), szMiscArray,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
+		PlayerInfo[playerid][pCash] += GetPVarInt(playerid, "pRollDiceMoney");		
+		DeleteDiceData(playerid);
+	}
+	else {
+		format(szMiscArray, sizeof(szMiscArray), "%s says: Player Wins.", GetPlayerNameEx(GetPVarInt(playerid, "pRollDiceID")));	
+		ProxDetector(5.0, GetPVarInt(playerid, "pRollDiceID"), szMiscArray,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
+		PlayerInfo[playerid][pCash] += GetPVarInt(playerid, "pRollDiceMoney") * 2;	
+		CasinoDBLog(playerid, "DICE", GetPVarInt(playerid, "pRollDiceMoney"), GetPVarInt(playerid, "pRollDiceMoney")*2, player1, player2, 0);	
+		DeleteDiceData(playerid);
+	}
+	return 1;
+}
+
+CMD:canceldice(playerid, params[])
+{	
+	if(GetPVarInt(playerid, "pRollDiceID") == INVALID_PLAYER_ID) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "You don't have a pending dice game.");
+	format(szMiscArray, sizeof(szMiscArray), "CASINO: %s has cancelled the Dice Game.", GetPlayerNameEx(playerid));
+	SendClientMessage(GetPVarInt(playerid, "pRollDiceID"), COLOR_LIGHTBLUE, szMiscArray);
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "CASINO: You have cancelled the Dice Game.");
+	DeleteDiceData(playerid);
+	return 1;
+}
+
+CMD:slots(playerid, params[])
+{
+	new amount, rand[3], randsymbol[3], winPrize, areaid[1];
+	GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
+	for(new i; i < sizeof(CASINOPoint); ++i) {
+	if(areaid[0] == CASINOPoint[i]) {
+		SetPVarInt(playerid, "INCASINOAREA", 1);
+		}
+	}
+	if(!GetPVarInt(playerid, "INCASINOAREA")) return SendClientMessage(playerid, COLOR_GREY, "You're not at a Slot Machine.");
+	if(GetPVarInt(playerid, "UsedSlot") > gettime()) return SendClientMessage(playerid, COLOR_GREY, "You need to wait ten seconds.");
+	if(!IsAtCasino(playerid)) return SendClientMessage(playerid, COLOR_GREY, "You are not in a Casino.");
+	if(sscanf(params, "d", amount)) return SendClientMessage(playerid, COLOR_GREY, "Usage: /slots [Money Amount]");
+	if(amount > 1000000 || amount < 1000) return SendClientMessage(playerid, COLOR_GREY, "You can only bet $1000-$1,000,000");
+	if(PlayerInfo[playerid][pCash] < amount) return SendClientMessage(playerid, COLOR_GREY, "You don't have enough money.");
+	if(PlayerInfo[playerid][pCash] < 0) return SendClientMessage(playerid, COLOR_GREY, "You're broke.");
+	if(Businesses[InBusiness(playerid)][bSafeBalance] <= 0) return SendClientMessage(playerid, COLOR_GREY, "This casino is bankrupt.");
+	Businesses[InBusiness(playerid)][bSafeBalance] += amount;
+	PlayerInfo[playerid][pCash] -= amount;
+	rand[0] = randomEx(1, 128);
+	rand[1] = randomEx(1, 128);
+	rand[2] = randomEx(1, 128);
+	switch(rand[0])
+	{
+		case 1 .. 73: randsymbol[0] = 1;
+		case 74 .. 78: randsymbol[0] = 2;
+		case 79 .. 94: randsymbol[0] = 3;
+		case 95 .. 107: randsymbol[0] = 4;
+		case 108 .. 118: randsymbol[0] = 5;
+		case 119 .. 126: randsymbol[0] = 6;
+		case 127 .. 128: randsymbol[0] = 7;
+	}
+	switch(rand[1])
+	{
+		case 1 .. 73: randsymbol[1] = 1;
+		case 74 .. 78: randsymbol[1] = 2;
+		case 79 .. 94: randsymbol[1] = 3;
+		case 95 .. 107: randsymbol[1] = 4;
+		case 108 .. 118: randsymbol[1] = 5;
+		case 119 .. 126: randsymbol[1] = 6;
+		case 127 .. 128: randsymbol[1] = 7;
+	}
+	switch(rand[2])
+	{
+		case 1 .. 73: randsymbol[2] = 1;
+		case 74 .. 78: randsymbol[2] = 2;
+		case 79 .. 94: randsymbol[2] = 3;
+		case 95 .. 107: randsymbol[2] = 4;
+		case 108 .. 118: randsymbol[2] = 5;
+		case 119 .. 126: randsymbol[2] = 6;
+		case 127 .. 128: randsymbol[2] = 7;
+	}
+	winPrize = CalculateCasinoWinning(amount, randsymbol[0], randsymbol[1], randsymbol[2]);
+	format(szMiscArray, sizeof(szMiscArray), "%d", randsymbol[0]);
+	PlayerTextDrawSetString(playerid, PullDraw[playerid][7], szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%d", randsymbol[1]);
+	PlayerTextDrawSetString(playerid, PullDraw[playerid][8], szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%d", randsymbol[2]);
+	PlayerTextDrawSetString(playerid, PullDraw[playerid][9], szMiscArray);
+	DisplayPullDraws(playerid);
+	SetTimerEx("RemovePullDraws", 5000, false, "i", playerid);
+	SetPVarInt(playerid, "UsedSlot", gettime() + 10);
+	CasinoDBLog(playerid, "SLOTS", amount, winPrize, randsymbol[0], randsymbol[1], randsymbol[2]);
+	DeletePVar(playerid, "INCASINOAREA");
+	if(winPrize == 0)
+	{
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, "You lose! Better luck, next time!");
+		return 1;
+	} 
+	else if(randsymbol[0] == randsymbol[1] && randsymbol[1] == randsymbol[2] && randsymbol[1] == 7)
+	{
+		format(szMiscArray, sizeof(szMiscArray), "%s has just won the Casino %s JackPot of %s", GetPlayerNameEx(playerid), Businesses[InBusiness(playerid)][bName], number_format(winPrize));
+		SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
+	}
+	format(szMiscArray, sizeof(szMiscArray), "Congratulations, you won %s", number_format(winPrize));
+	PlayerInfo[playerid][pCash] += winPrize;
+	Businesses[InBusiness(playerid)][bSafeBalance] -= winPrize;
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	return 1;
+}
+
+CalculateCasinoWinning(amount, rand0, rand1, rand2)
+{
+	new prize, calc;
+	if(rand0 != rand1 && rand0 != rand2 && rand1 != rand2)
+	{
+		return 0;
+	} 
+	else if(rand0 == rand1 && rand1 != rand2)
+	{
+		switch(rand0)
+		{
+			case 1:
+			{
+				calc = amount / 100 * 42;
+				prize = amount + calc;
+			}
+			case 2:
+			{
+				calc = amount / 100 * 112;
+				prize = amount + calc;
+			}
+			case 3:
+			{
+				calc = amount / 100 * 61;
+				prize = amount + calc;
+			}
+			case 4:
+			{
+				calc = amount / 100 * 76;
+				prize = amount + calc;
+			}
+			case 5:
+			{
+				calc = amount / 100 * 92;
+				prize = amount + calc;
+			}
+			case 6:
+			{
+				calc = amount / 100 * 248;
+				prize = amount + calc;
+			}
+			case 7:
+			{
+				calc = amount / 100 * 677;
+				prize = amount + calc;
+			}
+		}
+	} 
+	else if(rand1 == rand2 && rand1 != rand0)
+	{
+		switch(rand1)
+		{
+			case 1:
+			{
+				calc = amount / 100 * 42;
+				prize = amount + calc;
+			}
+			case 2:
+			{
+				calc = amount / 100 * 112;
+				prize = amount + calc;
+			}
+			case 3:
+			{
+				calc = amount / 100 * 61;
+				prize = amount + calc;
+			}
+			case 4:
+			{
+				calc = amount / 100 * 76;
+				prize = amount + calc;
+			}
+			case 5:
+			{
+				calc = amount / 100 * 92;
+				prize = amount + calc;
+			}
+			case 6:
+			{
+				calc = amount / 100 * 248;
+				prize = amount + calc;
+			}
+			case 7:
+			{
+				calc = amount / 100 * 677;
+				prize = amount + calc;
+			}
+		}
+	} 
+	else if(rand0 == rand1 && rand1 == rand2)
+	{
+		switch(rand2)
+		{
+			case 1:
+			{
+				calc = amount / 100 * 92;
+				prize = amount + calc;
+			}
+			case 2:
+			{
+				calc = amount / 100 * 262;
+				prize = amount + calc;
+			}
+			case 3:
+			{
+				calc = amount / 100 * 146;
+				prize = amount + calc;
+			}
+			case 4:
+			{
+				calc = amount / 100 * 222;
+				prize = amount + calc;
+			}
+			case 5:
+			{
+				calc = amount / 100 * 338;
+				prize = amount + calc;
+			}
+			case 6:
+			{
+				calc = amount / 100 * 763;
+				prize = amount + calc;
+			}
+			case 7:
+			{
+				calc = amount / 100 * 28190;
+				prize = amount + calc;
+			}
+		}	
+	}
+	return prize;
+}
+
+
+CalculateDiceRoll(playerid, dice)
+{		
+	new total;
+	for(new i; i < dice; i++)
+	{
+		new rand = randomEx(1, 7);
+		format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s rolls a dice that lands on %d.", GetPlayerNameEx(playerid), rand);
+        ProxDetector(4.0, playerid, szMiscArray, COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE);
+        total += rand;
+	}
+	return total;
+}
+
+DeleteDiceData(playerid)
+{
+	DeletePVar(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceID");
+	DeletePVar(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceMoney");
+	DeletePVar(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceAmount");
+	DeletePVar(playerid, "pRollDiceID");
+	DeletePVar(playerid, "pRollDiceMoney");
+	DeletePVar(playerid, "pRollDiceAmount");
+}
+
+forward DisplayPullDraws(playerid);
+public DisplayPullDraws(playerid)
+{
+	PlayerTextDrawShow(playerid, PullDraw[playerid][0]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][1]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][2]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][3]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][4]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][5]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][6]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][7]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][8]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][9]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][10]);
+	PlayerTextDrawShow(playerid, PullDraw[playerid][11]);
+}
+
+forward RemovePullDraws(playerid);
+public RemovePullDraws(playerid)
+{
+	PlayerTextDrawHide(playerid, PullDraw[playerid][0]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][1]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][2]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][3]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][4]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][5]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][6]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][7]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][8]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][9]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][10]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][11]);
+}
+
+LoadCASINOPoints()
+{
+	CASINOPoint[0] = CreateDynamicSphere(1013.1113,2031.8489,1085.8635,3);
+	CASINOPoint[1] = CreateDynamicSphere(1013.2083,2034.5366,1085.8635,3);
+	CASINOPoint[2] = CreateDynamicSphere(1013.0143,2037.4117,1085.8635,3);
+	CASINOPoint[3] = CreateDynamicSphere(1013.0143,2039.6158,1085.8635,3);
+	CASINOPoint[4] = CreateDynamicSphere(1013.0143,2042.0161,1085.8635,3);
+	CASINOPoint[5] = CreateDynamicSphere(1009.4449,2043.0975,1085.8625,3);
+	CASINOPoint[6] = CreateDynamicSphere(1009.4628,2041.2740,1085.8561,3);
+	CASINOPoint[7] = CreateDynamicSphere(1009.4800,2039.5184,1085.8561,3);
+	CASINOPoint[8] = CreateDynamicSphere(1009.5288,2034.5476,1085.8561,3);
+	CASINOPoint[9] = CreateDynamicSphere(1009.5517,2032.2096,1085.8561,3);
+	CASINOPoint[10] = CreateDynamicSphere(1013.0884,2028.7816,1085.8635,3);
+	CASINOPoint[11] = CreateDynamicSphere(1013.6237,2026.3546,1085.8571,3);
+	CASINOPoint[12] = CreateDynamicSphere(986.0547,2031.5149,1085.8635,3);
+	CASINOPoint[13] = CreateDynamicSphere(986.0516,2033.1676,1085.8635,3);
+	CASINOPoint[14] = CreateDynamicSphere(986.0516,2035.1279,1085.8635,3);
+	CASINOPoint[15] = CreateDynamicSphere(986.0516,2036.5135,1085.8635,3);
+
+
+}
+
+CasinoPullLoad(playerid)
+{
+	PullDraw[playerid][0] = CreatePlayerTextDraw(playerid,247.000000, 244.000000, "LD_SPAC:white");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][0], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][0], -65281);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][0], 4);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][0], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][0], 255);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][0], 1);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][0], 1);
+	PlayerTextDrawUseBox(playerid,PullDraw[playerid][0], 1);
+	PlayerTextDrawBoxColor(playerid,PullDraw[playerid][0], 255);
+	PlayerTextDrawTextSize(playerid,PullDraw[playerid][0], 140.000000, 29.000000);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][0], 0);
+
+	PullDraw[playerid][1] = CreatePlayerTextDraw(playerid,211.000000, 272.000000, "LD_SPAC:white");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][1], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][1], 255);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][1], 4);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][1], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][1], -65281);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][1], 0);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][1], 1);
+	PlayerTextDrawSetShadow(playerid,PullDraw[playerid][1], 1);
+	PlayerTextDrawUseBox(playerid,PullDraw[playerid][1], 1);
+	PlayerTextDrawBoxColor(playerid,PullDraw[playerid][1], 255);
+	PlayerTextDrawTextSize(playerid,PullDraw[playerid][1], 208.000000, 76.000000);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][1], 0);
+
+	PullDraw[playerid][2] = CreatePlayerTextDraw(playerid,212.000000, 273.000000, "LD_SPAC:white");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][2], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][2], 255);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][2], 4);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][2], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][2], -16776961);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][2], 0);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][2], 1);
+	PlayerTextDrawSetShadow(playerid,PullDraw[playerid][2], 1);
+	PlayerTextDrawUseBox(playerid,PullDraw[playerid][2], 1);
+	PlayerTextDrawBoxColor(playerid,PullDraw[playerid][2], 255);
+	PlayerTextDrawTextSize(playerid,PullDraw[playerid][2], 206.000000, 74.000000);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][2], 0);
+
+	PullDraw[playerid][3] = CreatePlayerTextDraw(playerid,213.000000, 274.000000, "LD_SPAC:white");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][3], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][3], 255);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][3], 4);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][3], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][3], 65535);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][3], 0);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][3], 1);
+	PlayerTextDrawSetShadow(playerid,PullDraw[playerid][3], 1);
+	PlayerTextDrawUseBox(playerid,PullDraw[playerid][3], 1);
+	PlayerTextDrawBoxColor(playerid,PullDraw[playerid][3], 255);
+	PlayerTextDrawTextSize(playerid,PullDraw[playerid][3], 204.000000, 72.000000);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][3], 0);
+
+	PullDraw[playerid][4] = CreatePlayerTextDraw(playerid,214.000000, 275.000000, "LD_SPAC:white");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][4], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][4], 255);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][4], 4);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][4], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][4], 255);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][4], 0);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][4], 1);
+	PlayerTextDrawSetShadow(playerid,PullDraw[playerid][4], 1);
+	PlayerTextDrawUseBox(playerid,PullDraw[playerid][4], 1);
+	PlayerTextDrawBoxColor(playerid,PullDraw[playerid][4], 255);
+	PlayerTextDrawTextSize(playerid,PullDraw[playerid][4], 202.000000, 70.000000);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][4], 0);
+
+	PullDraw[playerid][5] = CreatePlayerTextDraw(playerid,280.000000, 275.000000, "LD_SPAC:white");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][5], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][5], 255);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][5], 4);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][5], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][5], -65281);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][5], 0);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][5], 1);
+	PlayerTextDrawSetShadow(playerid,PullDraw[playerid][5], 1);
+	PlayerTextDrawUseBox(playerid,PullDraw[playerid][5], 1);
+	PlayerTextDrawBoxColor(playerid,PullDraw[playerid][5], 255);
+	PlayerTextDrawTextSize(playerid,PullDraw[playerid][5], 2.000000, 70.000000);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][5], 0);
+
+	PullDraw[playerid][6] = CreatePlayerTextDraw(playerid,354.000000, 275.000000, "LD_SPAC:white");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][6], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][6], 255);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][6], 4);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][6], 0.500000, 1.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][6], -65281);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][6], 0);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][6], 1);
+	PlayerTextDrawSetShadow(playerid,PullDraw[playerid][6], 1);
+	PlayerTextDrawUseBox(playerid,PullDraw[playerid][6], 1);
+	PlayerTextDrawBoxColor(playerid,PullDraw[playerid][6], 255);
+	PlayerTextDrawTextSize(playerid,PullDraw[playerid][6], 2.000000, 70.000000);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][6], 0);
+
+	PullDraw[playerid][7] = CreatePlayerTextDraw(playerid,247.000000, 281.000000, "7");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][7], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][7], 65535);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][7], 3);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][7], 1.190000, 6.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][7], -1);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][7], 1);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][7], 1);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][7], 0);
+
+	PullDraw[playerid][8] = CreatePlayerTextDraw(playerid,319.000000, 281.000000, "7");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][8], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][8], 65535);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][8], 3);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][8], 1.190000, 6.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][8], -1);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][8], 1);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][8], 1);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][8], 0);
+
+	PullDraw[playerid][9] = CreatePlayerTextDraw(playerid,389.000000, 281.000000, "7");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][9], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][9], 65535);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][9], 3);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][9], 1.190000, 6.000000);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][9], -1);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][9], 1);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][9], 1);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][9], 0);
+
+	PullDraw[playerid][10] = CreatePlayerTextDraw(playerid,319.000000, 249.000000, "ROTHSCHILD INC");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][10], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][10], -1);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][10], 2);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][10], 0.410000, 2.099999);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][10], 65535);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][10], 0);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][10], 1);
+	PlayerTextDrawSetShadow(playerid,PullDraw[playerid][10], 0);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][10], 0);
+
+	PullDraw[playerid][11] = CreatePlayerTextDraw(playerid,318.000000, 247.000000, "ROTHSCHILD INC");
+	PlayerTextDrawAlignment(playerid,PullDraw[playerid][11], 2);
+	PlayerTextDrawBackgroundColor(playerid,PullDraw[playerid][11], -1);
+	PlayerTextDrawFont(playerid,PullDraw[playerid][11], 2);
+	PlayerTextDrawLetterSize(playerid,PullDraw[playerid][11], 0.410000, 2.099999);
+	PlayerTextDrawColor(playerid,PullDraw[playerid][11], -1);
+	PlayerTextDrawSetOutline(playerid,PullDraw[playerid][11], 0);
+	PlayerTextDrawSetProportional(playerid,PullDraw[playerid][11], 1);
+	PlayerTextDrawSetShadow(playerid,PullDraw[playerid][11], 0);
+	PlayerTextDrawSetSelectable(playerid,PullDraw[playerid][11], 0);
+
+}
+
+hook OnPlayerConnect(playerid)
+{
+	CasinoPullLoad(playerid);
+	SetPVarInt(playerid, "pRollDiceID", INVALID_PLAYER_ID);
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	PlayerTextDrawHide(playerid, PullDraw[playerid][0]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][1]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][2]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][3]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][4]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][5]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][6]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][7]);
+	PlayerTextDrawHide(playerid, PullDraw[playerid][8]);
+	SendClientMessage(GetPVarInt(playerid, "pRollDiceID"), COLOR_LIGHTBLUE, "The player you offered dice to, left the server.");
+	DeleteDiceData(playerid);
+}

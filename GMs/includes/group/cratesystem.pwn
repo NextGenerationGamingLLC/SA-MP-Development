@@ -966,12 +966,13 @@ CMD:cratelimit(playerid, params[]) {
 	    SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
 	    return 1;
 	}
-    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])
+    //if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])
+    if(PlayerInfo[playerid][pAdmin] >= 4)
     {
 		new string[128];
 		new moneys;
 	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
-		if(moneys < 5 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
+		if(moneys < 5 || moneys > 50) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
 		MAXCRATES = moneys;
 		
 		//if(moneys == 0) HideCrate();

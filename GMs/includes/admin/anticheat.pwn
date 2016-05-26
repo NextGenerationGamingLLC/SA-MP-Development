@@ -116,11 +116,11 @@ public sobeitCheck(playerid)
  	return 1;
 }
 
-//Dom
+//Dom - Adjusted to account for latest rapid fire exploits - Rothschild. 
 ptask Anti_Rapidfire[1000](i)
 {
 	new weaponid = GetPlayerWeapon(i);
-	if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10)/* || (weaponid == 31 && PlayerShots[i] > 20)*/)
+	if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10) || (weaponid == 34 && PlayerShots[i] > 2))
 	{
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (%d): %d shots in 1 second -- Weapon ID: %d", GetPlayerNameEx(i), i, GetPVarInt(i, "pSQLID"), PlayerShots[i], weaponid);
 		Log("logs/rapid.log", szMiscArray);
@@ -133,10 +133,10 @@ ptask Anti_Rapidfire[1000](i)
 			if(GetPVarType(i, "Autoban")) return 1;
 			SetPVarInt(i, "Autoban", 1); 
 			DeletePVar(i, "MaxRFWarn");
-			CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Anticheat: Rapidfire Hacking", 180);
+			CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Anti-Cheat: RapidFire Hacking", 180);
 			TotalAutoBan++;
 		}
-	}
+	} 
 	PlayerShots[i] = 0;
 	return 1;
 }

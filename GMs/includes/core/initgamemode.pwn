@@ -80,6 +80,7 @@ InitiateGamemode()
 	GovGuns_LoadCosts();
 	MetDet_LoadMetDets();
 	LoadATMPoints();
+	LoadCASINOPoints();
 	LoadBanks();
 	LoadPayPhones();
 	

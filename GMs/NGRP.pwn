@@ -76,7 +76,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
  
-#define SERVER_GM_TEXT "NG:RP v3.0.317"
+#define SERVER_GM_TEXT "NG:RP v3.0.318"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -304,7 +304,7 @@
 #include "./includes/perks/tokens.pwn"
 #include "./includes/perks/toys.pwn"
 #include "./includes/perks/vipcore.pwn"
-//#include "./includes/perks/casino.pwn"
+#include "./includes/perks/casino.pwn"
 
 //#include "./includes/core/ammo.pwn"
 #include "./includes/core/phone_new.pwn"

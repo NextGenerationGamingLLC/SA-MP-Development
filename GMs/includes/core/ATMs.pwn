@@ -5,7 +5,7 @@
 #define ATM_TRANSFER_TO		10002
 #define ATM_TRANSFER_AMT	10003
 
-new ATMPoint[37]; 
+new ATMPoint[40]; 
 
 LoadATMPoints() {
 	
@@ -46,6 +46,9 @@ LoadATMPoints() {
 	ATMPoint[34] = CreateDynamicSphere(986.4434,2056.2480,1085.8531, 3.0);
 	ATMPoint[35] = CreateDynamicSphere(1014.1396,2060.8284,1085.8531, 3.0);
 	ATMPoint[36] = CreateDynamicSphere(1013.4720,2023.8784,1085.8531, 3.0);
+	ATMPoint[37] = CreateDynamicSphere(985.53719, 2056.1026, 1085.5, 3.0);
+	ATMPoint[38] = CreateDynamicSphere(1014.48039, 2023.90137, 1085.5, 3.0);
+	ATMPoint[39] = CreateDynamicSphere(1014.1004, 2061.80117, 1085.5, 3.0);
 
 	// for(new i = 0; i < 37; i++) Streamer_SetIntData(STREAMER_TYPE_AREA, ATMPoint[i], E_STREAMER_EXTRA_ID, i);
 

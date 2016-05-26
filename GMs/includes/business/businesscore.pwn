@@ -584,6 +584,7 @@ stock GetBusinessTypeName(type)
 		case 10: string = "Club";
 		case 11: string = "Sex Shop";
 		case 12: string = "Gym";
+		case 13: string = "Casino";
 		default: string = "Undefined";
 	}
 	return string;

@@ -819,7 +819,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	{
 		if(!IsPlayerStreamedIn(playerid, hitid) || !IsPlayerStreamedIn(hitid, playerid)) return 0;
 	}
-	if(weaponid == 24 || weaponid == 25 || weaponid == 26/* || weaponid == 31*/)
+	if(weaponid == 24 || weaponid == 25 || weaponid == 26 || weaponid == 34/* || weaponid == 31*/)
 	{
 		++PlayerShots[playerid];
 	}
@@ -830,7 +830,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
 		}
 	}
-
+	
 	/*
 	#if defined AC_DEBUG
 	if(hittype == BULLET_HIT_TYPE_PLAYER) {
@@ -1086,8 +1086,7 @@ AC_SpeedHacks(playerid) {
 
 	new Float:fSpeed = GetPlayerSpeed(playerid),
 		Float:fVel[3];
-
-	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK && fSpeed > 45) {
+	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && !IsPlayerInRangeOfVehicle(playerid, GetClosestCar(playerid), 5.0) && GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK && fSpeed > 45) {
 		GetPlayerVelocity(playerid, fVel[0], fVel[1], fVel[2]);
 		if(fVel[2] == 0) AC_Process(playerid, AC_SPEEDHACKS);
 	}

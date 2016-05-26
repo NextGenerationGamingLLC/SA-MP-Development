@@ -343,6 +343,11 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 public OnPlayerUpdate(playerid)
 {
 	// Do not put heavy cpu checks in here. Use the 1 second timer.
+	new Float:health = GetHealth(playerid, health);
+	if(health <= 0)
+	{
+		OnPlayerDeath(playerid, INVALID_PLAYER_ID, 0);
+	}
 	if(playerTabbed[playerid] >= 1)
 	{
 		playerTabbed[playerid] = 0;

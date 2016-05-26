@@ -1526,7 +1526,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == CONFIRMSELLTOY)
 	{
-		if(response)
+		if(response && GetPVarInt(playerid, "ttCost") != 0)
 		{
 			CompleteToyTrade(playerid);
 		}
@@ -3611,6 +3611,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
+			if(!IsPlayerInRangeOfPoint(playerid, 7.0, 2555.747314, 1404.106079, 7699.584472)|| !IsPlayerInRangeOfPoint(playerid, 7.0, 1832.0533, 1380.7281, 1464.3822) || !IsPlayerInRangeOfPoint(playerid, 7.0, 772.4844, 1715.7213, 1938.0391) || !IsPlayerInRangeOfPoint(playerid, 7.0, 1378.0017, 1747.4668, 927.3564)) SendClientMessageEx(playerid, COLOR_GRAD1, "You're not at a VIP Locker.");
 			if(listitem == 0)
 			{
 				new Float:health;
@@ -7206,7 +7207,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTSPAM)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7237,7 +7238,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTGDE)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7268,7 +7269,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTHACK)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7296,7 +7297,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTMF)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7322,7 +7323,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTSA)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7350,7 +7351,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTNRPN)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7381,7 +7382,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTBANEVADE)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7407,7 +7408,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTGE)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7435,7 +7436,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTRHN)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7461,7 +7462,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTRSE)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7489,7 +7490,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTCARSURF)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player,
@@ -7520,7 +7521,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTNRPB)
 	{
-		if(response)
+		if(response && !GetPVarType(playerid, "HasReport"))
 		{
 			new
 				Player;
@@ -7543,7 +7544,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTNRPB2)
 	{
-		if(response == 1)
+		if(response == 1 && !GetPVarType(playerid, "HasReport"))
 		{
 			if(isnull(inputtext)) return ShowPlayerDialogEx(playerid, DIALOG_REPORTNRPB2, DIALOG_STYLE_INPUT,"Report player - NonRP Behavior","Explain what the person is doing.","Send","Cancel");
 
@@ -7569,7 +7570,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTFREE)
 	{
-		if(response == 1)
+		if(response == 1 && !GetPVarType(playerid, "HasReport"))
 		{
 			if(isnull(inputtext)) {
 				ShowPlayerDialogEx(playerid, DIALOG_REPORTFREE, DIALOG_STYLE_INPUT,"Other / Free Text","(Error - No Message) Enter the message you want to send to the admin team.","Send","Cancel");
@@ -7581,7 +7582,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTNOTLIST)
 	{
-		if(response == 1)
+		if(response == 1 && !GetPVarType(playerid, "HasReport"))
 		{
 			if(isnull(inputtext)) {
 				ShowPlayerDialogEx(playerid, DIALOG_REPORTNOTLIST, DIALOG_STYLE_INPUT,"Not Listed","(Error - No Message) Using this category will receive a slower response from the admin team, please consider using the most appropriate category for a faster response","Send","Cancel");
@@ -7594,7 +7595,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	else if(dialogid == DIALOG_REPORTNOTLIST2)
 	{
-		if(response == 1)
+		if(response == 1 && !GetPVarType(playerid, "HasReport"))
 		{
 			new Message[128];
 

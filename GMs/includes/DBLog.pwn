@@ -98,6 +98,15 @@ ChatDBLog(iPlayerID, szLogTable[], szLogText[]) {
 	return 1;
 }
 
+CasinoDBLog(iPlayerID, game[], amount, prize, num1, num2, num3) {
+
+	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `cp_casino_log` (`Timestamp`,`PlayerID`, `game`, `amount`,`prize`,`num1`,`num2`,`num3`,`PlayerIP`) VALUES ('%d','%d','%s','%d','%d','%d','%d','%d','%s')", gettime(), PlayerInfo[iPlayerID][pId], game, amount, prize, num1, num2, num3, PlayerInfo[iPlayerID][pIP]);
+	mysql_tquery(MainPipeline, szMiscArray);
+	//db_free_result(db_query(db_iHandle, szMiscArray));
+	printf("%s",szMiscArray);
+
+	return 1;
+}
 /*
 PropertyDBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, PropertyID, szLogTable[], szLogText[]) {
 

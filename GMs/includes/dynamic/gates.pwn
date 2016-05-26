@@ -70,6 +70,20 @@ CMD:gate(playerid, params[])
 	}
     return 1;
 }
+
+CMD:agate(playerid, params[])
+{
+	new Float:X, Float:Y, Float:Z;
+	for(new i = 0; i < sizeof(GateInfo); i++)
+	{
+		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
+		if(IsPlayerInRangeOfPoint(playerid, 15, X, Y, Z) && PlayerInfo[playerid][pAdmin] >= 4)
+		{
+			MoveGate(playerid, i);
+		}
+	}
+}
+
 /*
 CMD:citylockdown(playerid, params[])
 {
