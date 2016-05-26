@@ -34,7 +34,6 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
 CMD:rules(playerid, params[])
 {
 	format(szMiscArray, sizeof(szMiscArray), "Death Matching: Attacking a player in any way without a proper in character reason.");
@@ -47,6 +46,7 @@ CMD:rules(playerid, params[])
 	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "NG-RP: Server Offences", szMiscArray, "Okay", "");
 	return 1;
 }
+
 CMD:help(playerid, params[])
 {
 	new string[512];

@@ -810,16 +810,15 @@ CMD:loadforklift(playerid, params[]) {
 		            {
 		            	format(szMiscArray, sizeof(szMiscArray), "%s %s has created a weapon crate.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 		              	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
-		              	GroupLog(30, szMiscArray);
 		              	foreach(new i : Player)
 		              	{
 		              		if(PlayerInfo[i][pAdmin] >= 2)
 		              		{
-		              			SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
+		              			SendClientMessage(i, COLOR_LIGHTRED, szMiscArray);
 		              		}
-		              		else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iCrateIsland] != INVALID_RANK) 
+		              		else if(arrGroupData[PlayerInfo[i][pMember]][g_iCrateIsland] != INVALID_RANK && PlayerInfo[i][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iCrateIsland]) 
 		              		{
-		              			SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
+		              			SendClientMessage(i, COLOR_LIGHTRED, szMiscArray);
 		              		}
 		              	}
 		              	LoadForkliftStatus = 1;
@@ -947,7 +946,7 @@ CMD:cvlist(playerid, params[])
 	szMiscArray[0] = 0;
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
     {
-		for(new i; i < MAX_DYNAMIC_VEHICLES; i++)
+		for(new i; i < MAX_VEHICLES; i++)
 		{
 			if(DynVehicleInfo[i][gv_iType] == 1)
 			{

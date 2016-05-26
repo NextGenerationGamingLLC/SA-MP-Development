@@ -43,6 +43,7 @@ CMD:dm(playerid, params[])
     new string[128], giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dm [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
+	if(PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
 		new playerip[32];
 		ResetPlayerWeaponsEx(giveplayerid);

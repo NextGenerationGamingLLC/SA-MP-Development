@@ -515,15 +515,15 @@ task SyncTime[60000]()
 				{
 					switch(g)
 					{
-						case 0: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_DEAGLE, 25);
-						case 1: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SHOTGUN, 25);
-						case 2: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SILENCED, 25);
-						case 3: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_AK47, 25);
-						case 4: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_MP5, 25);
-						case 5: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_RIFLE, 25);
-						case 6: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_COLT45, 25);
-						case 7: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_TEC9, 25);
-						case 8: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_UZI, 25);
+						case 0: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_DEAGLE, 10);
+						case 1: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SHOTGUN, 10);
+						case 2: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SILENCED, 10);
+						case 3: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_AK47, 10);
+						case 4: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_MP5, 10);
+						case 5: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_RIFLE, 10);
+						case 6: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_COLT45, 10);
+						case 7: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_TEC9, 10);
+						case 8: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_UZI, 10);
 						case 9: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SNIPER, 5);
 						case 10: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_M4, 5);
 						case 11: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SHOTGSPA, 5);

@@ -143,7 +143,7 @@ new BikeParkourObjectStage[2];
 new Selected[MAX_PLAYERS][MAX_BUSINESSSALES];
 new Businesses[MAX_BUSINESSES][eBiz];
 new PlayerText:PlayerPokerUI[MAX_PLAYERS][MAX_PLAYERPOKERUI];
-//new PlayerText:PullDraw[MAX_PLAYERS][9]; Removed cause I got OCD about the warning -Winterfield
+//new PlayerText:PullDraw[MAX_PLAYERS][9];
 new StoreItemCost[][StoreItemCostEnum] =
 {
 	{1},
@@ -1158,8 +1158,8 @@ new RFLInfo[MAX_RFLTEAMS][rflinfo];
 //new GangTags[MAX_GANGTAGS][GANG_TAG_INFO];
 new fireworktog = 1;
 
-new Polls[MAX_POLLS][PollData];
-new PollChoices[MAX_POLLS_CHOICES][255];
+/*new Polls[MAX_POLLS][PollData];
+new PollChoices[MAX_POLLS_CHOICES][255];*/
 
 // Vehicle Lock Pick Timer Textdraw
 new PlayerText:VLPTextDraws[MAX_PLAYERS][4];

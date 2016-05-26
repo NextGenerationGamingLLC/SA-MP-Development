@@ -89,6 +89,7 @@ CMD:fix(playerid, params[])
   			if(IsPlayerInRangeOfVehicle(playerid, closestcar, 10.0))
   			{
 				new engine,lights,alarm,doors,bonnet,boot,objective;
+				new level = PlayerInfo[playerid][pMechSkill];
 				GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
 				if(!IsABike(closestcar) && !IsAPlane(closestcar)) {
 					if(bonnet == VEHICLE_PARAMS_OFF || bonnet == VEHICLE_PARAMS_UNSET)
@@ -99,7 +100,14 @@ CMD:fix(playerid, params[])
 				}
     			format(string, sizeof(string), "* %s has began repairing the vehicle.", GetPlayerNameEx(playerid));
     			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-				SetPVarInt(playerid, "FixVehicleTimer", SetTimerEx("FixVehicle", 15000, false, "ii", playerid, closestcar));
+    			if(level >= 400)
+    			{
+    				FixVehicle(playerid, closestcar);
+    			} 
+    			else 
+    			{
+					SetPVarInt(playerid, "FixVehicleTimer", SetTimerEx("FixVehicle", 15000, false, "ii", playerid, closestcar));
+    			}
 				TogglePlayerControllable(playerid, 0);
 				ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, 1, 1, 1, 1, 1, 1);
 				defer Fix_PlayerInVehicleCheck(playerid);
