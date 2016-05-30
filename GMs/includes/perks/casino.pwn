@@ -36,7 +36,7 @@
 */
 #include <YSI\y_hooks>
 
-new CASINOPoint[16]; 
+new CASINOPoint[10]; 
 
 stock randomEx(min, max)
 {
@@ -64,7 +64,6 @@ CMD:rolldice(playerid, params[])
 	}
 	if(PlayerInfo[theplayer][pCash] < 0) return SendClientMessage(playerid, COLOR_GREY, "You're broke.");
 	if(Businesses[InBusiness(playerid)][bSafeBalance] <= 0) return SendClientMessage(playerid, COLOR_GREY, "This casino is bankrupt.");
-	Businesses[InBusiness(playerid)][bSafeBalance] += amount;
 	SetPVarInt(theplayer, "pRollDiceID", playerid);
 	SetPVarInt(theplayer, "pRollDiceMoney", amount);
 	SetPVarInt(theplayer, "pRollDiceAmount", dice);
@@ -103,12 +102,14 @@ CMD:acceptdice(playerid, params[])
 		format(szMiscArray, sizeof(szMiscArray), "%s says: Casino Wins.", GetPlayerNameEx(GetPVarInt(playerid, "pRollDiceID")));
 		ProxDetector(5.0, GetPVarInt(playerid, "pRollDiceID"), szMiscArray,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
 		CasinoDBLog(playerid, "DICE", GetPVarInt(playerid, "pRollDiceMoney"), 0, player1, player2, 0);
+		SaveBusiness(InBusiness(playerid));
 		DeleteDiceData(playerid);
 	} 
 	else if (player1 == player2) {
 		format(szMiscArray, sizeof(szMiscArray), "%s says: It's a Draw.", GetPlayerNameEx(GetPVarInt(playerid, "pRollDiceID")));	
 		ProxDetector(5.0, GetPVarInt(playerid, "pRollDiceID"), szMiscArray,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
-		PlayerInfo[playerid][pCash] += GetPVarInt(playerid, "pRollDiceMoney");		
+		PlayerInfo[playerid][pCash] += GetPVarInt(playerid, "pRollDiceMoney");	
+		Businesses[InBusiness(playerid)][bSafeBalance] -= GetPVarInt(playerid, "pRollDiceMoney");
 		DeleteDiceData(playerid);
 	}
 	else {
@@ -116,6 +117,8 @@ CMD:acceptdice(playerid, params[])
 		ProxDetector(5.0, GetPVarInt(playerid, "pRollDiceID"), szMiscArray,COLOR_WHITE,COLOR_WHITE,COLOR_WHITE,COLOR_FADE1,COLOR_FADE2, 1);
 		PlayerInfo[playerid][pCash] += GetPVarInt(playerid, "pRollDiceMoney") * 2;	
 		CasinoDBLog(playerid, "DICE", GetPVarInt(playerid, "pRollDiceMoney"), GetPVarInt(playerid, "pRollDiceMoney")*2, player1, player2, 0);	
+		Businesses[InBusiness(playerid)][bSafeBalance] -= GetPVarInt(playerid, "pRollDiceMoney") * 2;
+		SaveBusiness(InBusiness(playerid));
 		DeleteDiceData(playerid);
 	}
 	return 1;
@@ -208,6 +211,7 @@ CMD:slots(playerid, params[])
 	format(szMiscArray, sizeof(szMiscArray), "Congratulations, you won %s", number_format(winPrize));
 	PlayerInfo[playerid][pCash] += winPrize;
 	Businesses[InBusiness(playerid)][bSafeBalance] -= winPrize;
+	SaveBusiness(InBusiness(playerid));
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 	return 1;
 }
@@ -361,10 +365,10 @@ CalculateDiceRoll(playerid, dice)
 
 DeleteDiceData(playerid)
 {
-	DeletePVar(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceID");
+	SetPVarInt(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceID", INVALID_PLAYER_ID);
 	DeletePVar(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceMoney");
 	DeletePVar(GetPVarInt(playerid, "pRollDiceID"), "pRollDiceAmount");
-	DeletePVar(playerid, "pRollDiceID");
+	SetPVarInt(playerid, "pRollDiceID", INVALID_PLAYER_ID);
 	DeletePVar(playerid, "pRollDiceMoney");
 	DeletePVar(playerid, "pRollDiceAmount");
 }
@@ -405,24 +409,16 @@ public RemovePullDraws(playerid)
 
 LoadCASINOPoints()
 {
-	CASINOPoint[0] = CreateDynamicSphere(1013.1113,2031.8489,1085.8635,3);
-	CASINOPoint[1] = CreateDynamicSphere(1013.2083,2034.5366,1085.8635,3);
-	CASINOPoint[2] = CreateDynamicSphere(1013.0143,2037.4117,1085.8635,3);
-	CASINOPoint[3] = CreateDynamicSphere(1013.0143,2039.6158,1085.8635,3);
-	CASINOPoint[4] = CreateDynamicSphere(1013.0143,2042.0161,1085.8635,3);
-	CASINOPoint[5] = CreateDynamicSphere(1009.4449,2043.0975,1085.8625,3);
-	CASINOPoint[6] = CreateDynamicSphere(1009.4628,2041.2740,1085.8561,3);
-	CASINOPoint[7] = CreateDynamicSphere(1009.4800,2039.5184,1085.8561,3);
-	CASINOPoint[8] = CreateDynamicSphere(1009.5288,2034.5476,1085.8561,3);
-	CASINOPoint[9] = CreateDynamicSphere(1009.5517,2032.2096,1085.8561,3);
-	CASINOPoint[10] = CreateDynamicSphere(1013.0884,2028.7816,1085.8635,3);
-	CASINOPoint[11] = CreateDynamicSphere(1013.6237,2026.3546,1085.8571,3);
-	CASINOPoint[12] = CreateDynamicSphere(986.0547,2031.5149,1085.8635,3);
-	CASINOPoint[13] = CreateDynamicSphere(986.0516,2033.1676,1085.8635,3);
-	CASINOPoint[14] = CreateDynamicSphere(986.0516,2035.1279,1085.8635,3);
-	CASINOPoint[15] = CreateDynamicSphere(986.0516,2036.5135,1085.8635,3);
-
-
+	CASINOPoint[0] = CreateDynamicSphere(-2792.5225,91.8275,4500.2012,5);
+	CASINOPoint[1] = CreateDynamicSphere(-2793.6812,85.8193,4500.201,5);
+	CASINOPoint[2] = CreateDynamicSphere(-2792.5415,79.5602,4500.2012,5);
+	CASINOPoint[3] = CreateDynamicSphere(-2761.8157,85.8474,4500.2012,5);
+	CASINOPoint[4] = CreateDynamicSphere(-2761.8154,87.5817,4500.2012,5);
+	CASINOPoint[5] = CreateDynamicSphere(-2759.2878,87.7986,4500.2012,5);
+	CASINOPoint[6] = CreateDynamicSphere(-2759.2888,86.0897,4500.2012,5);
+	CASINOPoint[7] = CreateDynamicSphere(-2780.5718,50.6592,4500.2012,5);
+	CASINOPoint[8] = CreateDynamicSphere(-2780.5603,52.8230,4500.2012,5);
+	CASINOPoint[9] = CreateDynamicSphere(-2780.5342,54.3733,4500.2012,5);
 }
 
 CasinoPullLoad(playerid)

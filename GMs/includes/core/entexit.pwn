@@ -69,11 +69,13 @@ EntExit_GetID(playerid) {
 	}
 	for(new i; i < MAX_BUSINESSES; ++i) {
 		if(IsPlayerInRangeOfPoint(playerid, 2.0, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2])) {
+			if(PlayerInfo[playerid][pLevel] < 3 && Businesses[i][bType] == 13) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "Sadly, you can't enter the Casino");
 			return Business_Enter(playerid, i);
 		}
 		if(IsPlayerInRangeOfPoint(playerid, 2.0, Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2])) {
 
 			if(Businesses[i][bVW] == 0 && PlayerInfo[playerid][pVW] == BUSINESS_BASE_VW + i) return Business_Exit(playerid, i);
+			if(PlayerInfo[playerid][pLevel] < 3 && Businesses[i][bType] == 13) return SendClientMessage(playerid, COLOR_LIGHTBLUE, "Sadly, you can't enter the Casino");
 			else if(PlayerInfo[playerid][pVW] == Businesses[i][bVW]) return Business_Exit(playerid, i);
 		}
 	}

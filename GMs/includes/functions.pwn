@@ -2293,7 +2293,7 @@ stock randomString(strDest[], strLen = 10)
 {
 	while(strLen--) strDest[strLen] = random(2) ? (random(26) + (random(2) ? 'a' : 'A')) : (random(10) + '0');
 }
-
+/*
 CanGetVIPWeapon(playerid)
 {
 	switch(PlayerInfo[playerid][pDonateRank])
@@ -2304,7 +2304,7 @@ CanGetVIPWeapon(playerid)
 		case 4:  if(PlayerInfo[playerid][pVIPGuncount] < 8) return 1;
 	}
 	return 0;
-}
+}*/
 
 SpawnPlayerInPrisonCell(playerid, cellid)
 {

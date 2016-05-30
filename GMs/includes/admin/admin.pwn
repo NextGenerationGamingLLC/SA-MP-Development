@@ -2139,7 +2139,8 @@ CMD:createpvehicle(playerid, params[]) {
 		else if(IsATrain(iModelID)) SendClientMessageEx(playerid, COLOR_GREY, "Trains cannot be spawned during runtime.");
 		else if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
 		else if(!vehicleCountCheck(iTargetID)) SendClientMessageEx(playerid, COLOR_GREY, "That person can't have more vehicles - they own too many.");
-		else if(!vehicleSpawnCountCheck(iTargetID)) SendClientMessageEx(playerid, COLOR_GREY, "That person has too many vehicles spawned - they must store one first.");
+		else if(!vehicleSpawnCountCheck(iTargetID)) SendClientMessageEx(playerid, COLOR_GREY, "That person has too many vehicles spawned - they must store one first.");	
+		else if(PlayerInfo[iTargetID][pLevel] == 1 && PlayerInfo[iTargetID][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /givemoney on level 1's");
 		else
 		{
 			new Float: arr_fPlayerPos[4], szMessage[84];
@@ -3644,7 +3645,7 @@ CMD:setstat(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Jack Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time |59 Tool Box |60 Crowbar");
 			return 1;
 		}
-
+		if(PlayerInfo[giveplayerid][pLevel] == 1 && PlayerInfo[giveplayerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /setstat on level 1's");
 		if(IsPlayerConnected(giveplayerid))
 		{
 			switch (statcode)
@@ -4606,7 +4607,7 @@ CMD:gethere(playerid, params[])
 			    ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
 			    return 1;
 			}
-			Furniture_ResetPVars(playerid);
+//			Furniture_ResetPVars(playerid);
 			GetPlayerPos(playerid, plocx, plocy, plocz);
 			SetPlayerVirtualWorld(giveplayerid, PlayerInfo[playerid][pVW]);
 			Streamer_UpdateEx(giveplayerid, plocx, plocy, plocz);
@@ -4770,6 +4771,7 @@ CMD:setmoney(playerid, params[])
 	{
 		new string[128], giveplayerid, money;
 		if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmoney [player] [money]");
+		if(PlayerInfo[giveplayerid][pLevel] == 1 && PlayerInfo[giveplayerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /setmoney on level 1's");
 		if(IsPlayerConnected(giveplayerid))
 		{
 			ResetPlayerCash(giveplayerid);
@@ -4795,7 +4797,7 @@ CMD:givemoney(playerid, params[])
 	{
 		new string[128], giveplayerid, money;
 		if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givemoney [player] [money]");
-
+		if(PlayerInfo[giveplayerid][pLevel] == 1 && PlayerInfo[giveplayerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /givemoney on level 1's");
 		if(money < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot give less than $1!");
 		if(IsPlayerConnected(giveplayerid))
 		{

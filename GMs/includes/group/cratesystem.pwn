@@ -948,7 +948,7 @@ CMD:cvlist(playerid, params[])
     {
 		for(new i; i < MAX_VEHICLES; i++)
 		{
-			if(DynVehicleInfo[i][gv_iType] == 1)
+			if(DynVeh[i] != -1 && DynVehicleInfo[DynVeh[i]][gv_iType] == 1)
 			{
 				format(szMiscArray, sizeof(szMiscArray), "ID: %d | Name: %s", i, VehicleName[DynVehicleInfo[i][gv_iModel]]);
 				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
@@ -972,7 +972,7 @@ CMD:cratelimit(playerid, params[]) {
 		new string[128];
 		new moneys;
 	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
-		if(moneys < 5 || moneys > 50) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
+		if(moneys < 5 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
 		MAXCRATES = moneys;
 		
 		//if(moneys == 0) HideCrate();

@@ -1487,7 +1487,8 @@ public OnPlayerConnect(playerid)
 	}
 	SpecTime[playerid] = 0;
 	PlayerShots[playerid] = 0;
-
+	PlayerSniperShots[playerid] = 0;
+	PlayerKills[playerid] = 0;
 	// These need to be reset to prevent some bugs (DO NOT REMOVE)
 	PlayerInfo[playerid][pModel] = 0;
 	PlayerInfo[playerid][pLeader] = INVALID_GROUP_ID;
@@ -5519,7 +5520,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		}
 		SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more barricades, limit is " #MAX_BARRICADES# ".");
 		return 1;
-	}
+	}/*
 	if(extraid == 1505) {
 
 		if(response) {
@@ -5530,7 +5531,7 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		else {
 			FurnitureMenu(playerid, 0);
 		}
-	}
+	}*/
 	if(extraid == DYNAMIC_FAMILY_CLOTHES)
 	{
 		if(response)

@@ -1600,7 +1600,7 @@ CMD:shopbusinessname(playerid, params[])
 	if(!IsPlayerConnected(ownername)) {
     	return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	}
-
+	if(PlayerInfo[ownername][pLevel] == 1 && PlayerInfo[ownername][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /shopbusinessname on level 1's");
 	if(PlayerInfo[ownername][pBusiness] != INVALID_BUSINESS_ID) {
 	    return SendClientMessageEx(playerid, COLOR_GREY, "That player already owns another business.");
 	}

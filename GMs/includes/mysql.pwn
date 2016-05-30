@@ -463,7 +463,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pTable]					= cache_get_field_content_int(row,  "Table", MainPipeline);
 					PlayerInfo[extraid][pOpiumSeeds]			= cache_get_field_content_int(row,  "OpiumSeeds", MainPipeline);
 					PlayerInfo[extraid][pRawOpium]				= cache_get_field_content_int(row,  "RawOpium", MainPipeline);
-					PlayerInfo[extraid][pHeroin]				= cache_get_field_content_int(row,  "Heroin", MainPipeline);
+					//PlayerInfo[extraid][pHeroin]				= cache_get_field_content_int(row,  "Heroin", MainPipeline);
 					PlayerInfo[extraid][pSyringes]				= cache_get_field_content_int(row,  "Syringe", MainPipeline);
 					PlayerInfo[extraid][pSkins]					= cache_get_field_content_int(row,  "Skins", MainPipeline);
 					PlayerInfo[extraid][pFitness]				= cache_get_field_content_int(row,  "Fitness", MainPipeline);
@@ -1563,11 +1563,7 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `CarVoucher` = '%d',", query, CarVoucher);
 	format(query, sizeof(query), "%s `PVIPVoucher` = '%d',", query, PVIPVoucher);
 	format(query, sizeof(query), "%s `GarageVW` = '%d',", query, GarageVW);
-	new qryLength = strlen(query);
-	if(query[qryLength-1] == ',') strdel(query, qryLength-1, qryLength);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	format(query, sizeof(query), "UPDATE `misc` SET ");
-	format(query, sizeof(query), "`PumpkinStock` = '%d',", PumpkinStock);
+	format(query, sizeof(query), "%s `PumpkinStock` = '%d',", query, PumpkinStock);
 	format(query, sizeof(query), "%s `HalloweenShop` = '%d',", query, HalloweenShop);
 	format(query, sizeof(query), "%s `PassComplexCheck` = '%d',", query, PassComplexCheck);
 	format(query, sizeof(query), "%s `GunPrice0` = '%d',", query, GunPrices[0]);
@@ -1576,13 +1572,12 @@ stock g_mysql_SaveMOTD()
 	format(query, sizeof(query), "%s `GunPrice3` = '%d',", query, GunPrices[3]);
 	format(query, sizeof(query), "%s `GunPrice4` = '%d',", query, GunPrices[4]);
 	format(query, sizeof(query), "%s `GunPrice5` = '%d'", query, GunPrices[5]);
-	format(query, sizeof(query), "%s `GunPrice6` = '%d'", query, GunPrices[6]);
 	CallLocalFunction("SaveInactiveResourceSettings", "is", sizeof(query), query);
 
+	new qryLength = strlen(query);
 	if(query[qryLength-1] == ',') strdel(query, qryLength-1, qryLength);
 	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
-
 // g_mysql_LoadMOTD()
 // Description: Loads the Crates from the MySQL Database.
 stock mysql_LoadCrates()
@@ -1676,16 +1671,16 @@ stock AddCrime(cop, suspect, crime[])
 
 stock ClearCrimes(playerid, clearerid = INVALID_PLAYER_ID)
 {
-	new iAllegiance;
+	new query[220], iAllegiance;
 	if(clearerid != INVALID_PLAYER_ID && (0 <= PlayerInfo[clearerid][pMember] < MAX_GROUPS))
 	{
 		iAllegiance = arrGroupData[PlayerInfo[clearerid][pMember]][g_iAllegiance];
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);
+		format(query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);
 	}
 	else {
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
+		format(query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
 	}
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -2336,7 +2331,7 @@ stock g_mysql_SaveAccount(playerid)
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "OpiumSeeds", PlayerInfo[playerid][pOpiumSeeds]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "RawOpium", PlayerInfo[playerid][pRawOpium]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Heroin", PlayerInfo[playerid][pHeroin]);
+	//SavePlayerInteger(query, GetPlayerSQLId(playerid), "Heroin", PlayerInfo[playerid][pHeroin]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Syringe", PlayerInfo[playerid][pSyringes]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Skins", PlayerInfo[playerid][pSkins]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Fitness", PlayerInfo[playerid][pFitness]);
