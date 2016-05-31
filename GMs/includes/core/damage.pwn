@@ -550,6 +550,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 		new query[256];
 		format(query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '%s')", GetPlayerSQLId(killerid), GetPlayerSQLId(playerid), weaponname);
+		PlayerKills[killerid]++;
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 		if(GetPVarType(killerid, "IsInArena")) PlayerInfo[killerid][pDMKills]++;

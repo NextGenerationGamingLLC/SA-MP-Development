@@ -325,7 +325,7 @@
 // Jingles WIP
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
-#include "./includes/furniture.pwn"
+//#include "./includes/furniture.pwn"
 //#include "./includes/admin/poll.pwn"
 #include "./includes/group/elections.pwn"
 

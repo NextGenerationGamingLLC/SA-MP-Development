@@ -37,7 +37,7 @@
 
 timer Fix_PlayerInVehicleCheck[3000](playerid) {
 
-	if(IsPlayerInAnyVehicle(playerid)) {
+	if(IsPlayerInAnyVehicle(playerid) && PlayerInfo[playerid][pMechSkill] < 400) {
 
 		TogglePlayerControllable(playerid, true);
 		RemovePlayerFromVehicle(playerid);

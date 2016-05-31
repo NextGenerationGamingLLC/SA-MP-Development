@@ -14,7 +14,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	
 	switch(response) {
 
-		case EDIT_RESPONSE_CANCEL: {
+		/*case EDIT_RESPONSE_CANCEL: {
 
 			if(GetPVarType(playerid, PVAR_FURNITURE_EDITING)) {
 				new iModelID = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
@@ -91,7 +91,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				// printf("%d, %d, %d, %f, %f, %f, %f, %f, %f", playerid, objectid, response, x, y, z, rx, ry, rz);
 				// SelectTextDraw(playerid, 0xF6FBFCFF);
 			}
-		}
+		}*/
 	}
 	
 	if(response == EDIT_RESPONSE_FINAL)

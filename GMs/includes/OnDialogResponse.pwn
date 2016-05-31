@@ -1526,7 +1526,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == CONFIRMSELLTOY)
 	{
-		if(response && GetPVarInt(playerid, "ttCost") != 0)
+		if(response)
 		{
 			CompleteToyTrade(playerid);
 		}
@@ -2736,7 +2736,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			return 1;
 		}
 		if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
-		if(!CanGetVIPWeapon(playerid) && (listitem < 4 || listitem == 8)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can no longer withdraw anymore VIP weapons today, wait until tomorrow!");
+		//if(!CanGetVIPWeapon(playerid) && (listitem < 4 || listitem == 8)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can no longer withdraw anymore VIP weapons today, wait until tomorrow!");
 		switch( listitem )
 		{
 			case 0:

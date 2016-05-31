@@ -100,13 +100,14 @@ ChatDBLog(iPlayerID, szLogTable[], szLogText[]) {
 
 CasinoDBLog(iPlayerID, game[], amount, prize, num1, num2, num3) {
 
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `cp_casino_log` (`Timestamp`,`PlayerID`, `game`, `amount`,`prize`,`num1`,`num2`,`num3`,`PlayerIP`) VALUES ('%d','%d','%s','%d','%d','%d','%d','%d','%s')", gettime(), PlayerInfo[iPlayerID][pId], game, amount, prize, num1, num2, num3, PlayerInfo[iPlayerID][pIP]);
-	mysql_tquery(MainPipeline, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `cp_casino_log` (`Timestamp`, `PlayerID`, `game`, `amount`,`prize`,`num1`,`num2`,`num3`,`PlayerIP`) VALUES ('%d','%d','%s','%d','%d','%d','%d','%d','%s')", gettime(), PlayerInfo[iPlayerID][pId], game, amount, prize, num1, num2, num3, PlayerInfo[iPlayerID][pIP]);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	//db_free_result(db_query(db_iHandle, szMiscArray));
 	printf("%s",szMiscArray);
 
 	return 1;
 }
+
 /*
 PropertyDBLog(iPlayerID, iTargetID = INVALID_PLAYER_ID, PropertyID, szLogTable[], szLogText[]) {
 

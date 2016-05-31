@@ -47,7 +47,7 @@ CMD:interact(playerid, params[])
 	if(IsPlayerConnected(id))
 	{
 		if(!ProxDetectorS(8.0, playerid, GetPVarInt(playerid, "pInteract"))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you!.");
-
+		if(id == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You can't interact with yourself.");
 		SetPVarInt(playerid, "pInteract", id);
 		ShowInteractionMenu(playerid, 0);
 	}

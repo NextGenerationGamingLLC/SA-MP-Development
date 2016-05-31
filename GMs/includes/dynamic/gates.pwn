@@ -82,6 +82,7 @@ CMD:agate(playerid, params[])
 			MoveGate(playerid, i);
 		}
 	}
+	return 1;
 }
 
 /*

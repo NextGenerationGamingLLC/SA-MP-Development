@@ -116,8 +116,8 @@ InitiateGamemode()
     //TurfWars_LoadData();
 
     // Bank_LoadBank();
-    LoadFurniture();
-    FurnitureListInit();
+//    LoadFurniture();
+//    FurnitureListInit();
     //Poll_LoadPolls();
 
 	print("\n-------------------------------------------");

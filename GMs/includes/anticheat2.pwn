@@ -819,9 +819,13 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	{
 		if(!IsPlayerStreamedIn(playerid, hitid) || !IsPlayerStreamedIn(hitid, playerid)) return 0;
 	}
-	if(weaponid == 24 || weaponid == 25 || weaponid == 26 || weaponid == 34/* || weaponid == 31*/)
+	if(weaponid == 24 || weaponid == 25 || weaponid == 26/* || weaponid == 31*/)
 	{
 		++PlayerShots[playerid];
+	}
+	if(weaponid == 34)
+	{
+		++PlayerSniperShots[playerid];	
 	}
 	if(GetPVarInt(playerid, "FireStart") == 1)
 	{

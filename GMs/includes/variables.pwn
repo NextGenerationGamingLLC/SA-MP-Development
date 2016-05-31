@@ -1184,6 +1184,8 @@ new Float:shop_vertices[] = {
 new restarting;
 new PassComplexCheck;
 new PlayerShots[MAX_PLAYERS];
+new PlayerSniperShots[MAX_PLAYERS];
+new PlayerKills[MAX_PLAYERS];
 new GarageInfo[MAX_GARAGES][garInfo];
 #define MicroSpecifier "p<|>e<dddddddddddddddddddd>"
 new MicroItems[MAX_MICROITEMS],
@@ -2745,6 +2747,7 @@ new const szFonts[][] = {
 };
 
 
+/*
 new szFurnitureCategories[][] = {
 	"Bathroom",
 	"Comfort",
@@ -2762,7 +2765,6 @@ new szFurnitureCategories[][] = {
 	"VIP"
 };
 // new FurnitureList[sizeof(szFurnitureCategories)];
-
 
 new const szFurnitureTextures[][][] = {
 	{"Beach sand", "19537", "beach_sfs", "ws_drysand"},
@@ -2889,10 +2891,10 @@ new const szFurnitureTextures[][][] = {
 	{"SpeedLimitBlankSign", "19978", "samproadsigns", "SpeedLimitBlankSign"},
 	{"Radiation", "19978", "samproadsigns", "Radiation"}
 };
-
+*/
 // for(new i; i < sizeof(szFurnitureCategories); ++i) FurnitureList[i] = mS_INVALID_LISTID;
 
-new Text:Furniture_TD[26];
+//new Text:Furniture_TD[26];
 
 
 /* IRC/Slack */
