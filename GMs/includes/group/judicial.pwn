@@ -6,7 +6,7 @@
 	| $$ $$ $$| $$ /$$$$ /$$$$$$| $$$$$$$/| $$$$$$$/
 	| $$  $$$$| $$|_  $$|______/| $$__  $$| $$____/
 	| $$\  $$$| $$  \ $$        | $$  \ $$| $$
-	| $$ \  $$|  $$$$$$/        | $$  | $$| $$
+	| $$ \  $$|  $$$$$$/        | $$  | $$| $$f
 	|__/  \__/ \______/         |__/  |__/|__/
 
 						Judicial Group Type
@@ -599,8 +599,8 @@ CMD:warrantarrest(playerid, params[])
 				SetPlayerVirtualWorld(suspect, 0);
 				PlayerInfo[suspect][pVW] = 0;
 				new rand = random(sizeof(WarrantJail));
-				SetPlayerFacingAngle(suspect, 0);
-				SetPlayerPos(suspect, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2]);
+				SetPlayerFacingAngle(suspect, 180);
+				SetPlayerPos(suspect, 1496.7419,-1546.4309,1127.0251);
 				if(rand != 0) courtjail[suspect] = 2;
 				else courtjail[suspect] = 1;
 				SetCameraBehindPlayer(suspect);

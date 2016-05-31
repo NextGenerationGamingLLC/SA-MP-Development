@@ -2565,7 +2565,7 @@ ReleasePlayerFromPrison(playerid)
 		}
 	}
 
-	SetPlayerHealth(playerid, 100);
+	SetHealth(playerid, 100);
 	PlayerInfo[playerid][pJailTime] = 0;
 	PlayerInfo[playerid][pIsolated] = 0;
 	PlayerInfo[playerid][pPrisonCredits] = 0;
