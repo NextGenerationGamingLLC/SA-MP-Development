@@ -254,7 +254,7 @@ stock Vehicle_Exit(playerid) {
 	    new Float:X, Float:Y, Float:Z;
 	    GetVehiclePos(InsidePlane[playerid], X, Y, Z);
 	    
-		if(!IsAPlane(PlayerInfo[playerid][pVW]))
+		if(!IsAPlane(PlayerInfo[playerid][pVW]) || !GetPVarInt(playerid, "air_Mode"))
 		{
 			SetPlayerPos(playerid, X-1.00, Y+3.00, Z);
 			Player_StreamPrep(playerid, X-1.00, Y+3.00,Z, FREEZE_TIME);

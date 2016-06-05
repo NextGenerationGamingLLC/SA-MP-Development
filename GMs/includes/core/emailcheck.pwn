@@ -26,10 +26,12 @@ public OnInvalidEmailCheck(playerid, response_code, data[])
 			ShowPlayerDialogEx(playerid, EMAIL_VALIDATION, DIALOG_STYLE_INPUT, "E-mail Registration - {FF0000}Error", "Please enter a valid e-mail address to associate with your account.", "Submit", "");
 		if(result == 1) // Valid from login check
 			if(!GetPVarInt(playerid, "EmailConfirmed"))
-				ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Pending Email Confirmation",
-				"Our records show that you have not confirmed your email address.\n\
-				Daily reminders will be sent to the email registered with your account until it is confirmed.\n\
-				Please make an effort to confirm it as it will be used for important changes and notifications in regards to your account.", "Okay", "");
+			{
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Pending Email Confirmation");
+				SendClientMessageEx(playerid, -1, "Our records show that you have not confirmed your email address.");
+				SendClientMessageEx(playerid, -1, "Daily reminders will be sent to the email registered with your account until it is confirmed.");
+				SendClientMessageEx(playerid, -1, "Please make an effort to confirm it as it will be used for important changes and notifications in regards to your account.");
+			}
 		if(result == 2) // Valid from dialog
 		{
 			szMiscArray[0] = 0;

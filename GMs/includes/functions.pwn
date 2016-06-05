@@ -1401,6 +1401,14 @@ stock HideNoticeGUIFrame(playerid)
 	}
 }
 
+stock BadFloat(Float:x)
+{
+	if(x >= 10.0 || x <= -10.0)
+	    return true;
+
+	return false;
+}
+
 stock SendBugMessage(member, string[])
 {
     if(!(0 <= member < MAX_GROUPS))

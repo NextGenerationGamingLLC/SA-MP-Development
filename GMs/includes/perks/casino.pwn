@@ -138,7 +138,7 @@ CMD:slots(playerid, params[])
 {
 	new amount, rand[3], randsymbol[3], winPrize, areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
-	for(new i; i < sizeof(CASINOPoint); ++i) {
+	for(new i = 0; i < sizeof(CASINOPoint); ++i) {
 	if(areaid[0] == CASINOPoint[i]) {
 		SetPVarInt(playerid, "INCASINOAREA", 1);
 		}
@@ -229,37 +229,37 @@ CalculateCasinoWinning(amount, rand0, rand1, rand2)
 		{
 			case 1:
 			{
-				calc = amount / 100 * 42;
+				calc = amount / 100 * 62;
 				prize = amount + calc;
 			}
 			case 2:
 			{
-				calc = amount / 100 * 112;
+				calc = amount / 100 * 132;
 				prize = amount + calc;
 			}
 			case 3:
 			{
-				calc = amount / 100 * 61;
+				calc = amount / 100 * 81;
 				prize = amount + calc;
 			}
 			case 4:
 			{
-				calc = amount / 100 * 76;
+				calc = amount / 100 * 96;
 				prize = amount + calc;
 			}
 			case 5:
 			{
-				calc = amount / 100 * 92;
+				calc = amount / 100 * 112;
 				prize = amount + calc;
 			}
 			case 6:
 			{
-				calc = amount / 100 * 248;
+				calc = amount / 100 * 268;
 				prize = amount + calc;
 			}
 			case 7:
 			{
-				calc = amount / 100 * 677;
+				calc = amount / 100 * 697;
 				prize = amount + calc;
 			}
 		}
@@ -270,37 +270,37 @@ CalculateCasinoWinning(amount, rand0, rand1, rand2)
 		{
 			case 1:
 			{
-				calc = amount / 100 * 42;
+				calc = amount / 100 * 62;
 				prize = amount + calc;
 			}
 			case 2:
 			{
-				calc = amount / 100 * 112;
+				calc = amount / 100 * 132;
 				prize = amount + calc;
 			}
 			case 3:
 			{
-				calc = amount / 100 * 61;
+				calc = amount / 100 * 81;
 				prize = amount + calc;
 			}
 			case 4:
 			{
-				calc = amount / 100 * 76;
+				calc = amount / 100 * 96;
 				prize = amount + calc;
 			}
 			case 5:
 			{
-				calc = amount / 100 * 92;
+				calc = amount / 100 * 112;
 				prize = amount + calc;
 			}
 			case 6:
 			{
-				calc = amount / 100 * 248;
+				calc = amount / 100 * 268;
 				prize = amount + calc;
 			}
 			case 7:
 			{
-				calc = amount / 100 * 677;
+				calc = amount / 100 * 14190;
 				prize = amount + calc;
 			}
 		}
@@ -311,32 +311,32 @@ CalculateCasinoWinning(amount, rand0, rand1, rand2)
 		{
 			case 1:
 			{
-				calc = amount / 100 * 92;
+				calc = amount / 100 * 115;
 				prize = amount + calc;
 			}
 			case 2:
 			{
-				calc = amount / 100 * 262;
+				calc = amount / 100 * 462;
 				prize = amount + calc;
 			}
 			case 3:
 			{
-				calc = amount / 100 * 146;
+				calc = amount / 100 * 246;
 				prize = amount + calc;
 			}
 			case 4:
 			{
-				calc = amount / 100 * 222;
+				calc = amount / 100 * 422;
 				prize = amount + calc;
 			}
 			case 5:
 			{
-				calc = amount / 100 * 338;
+				calc = amount / 100 * 538;
 				prize = amount + calc;
 			}
 			case 6:
 			{
-				calc = amount / 100 * 763;
+				calc = amount / 100 * 863;
 				prize = amount + calc;
 			}
 			case 7:

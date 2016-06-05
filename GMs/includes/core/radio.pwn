@@ -441,6 +441,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid))
 					{
 						PlayAudioStreamForPlayerEx(i, inputtext);
+						Log("logs/radiourl.log", inputtext);
 					}
 				}
 				format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", inputtext);

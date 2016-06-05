@@ -791,7 +791,11 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
 
 	szMiscArray[0] = 0;
-
+	if( hittype == BULLET_HIT_TYPE_PLAYER && (BadFloat(fX) || BadFloat(fY) || BadFloat(fZ)) )
+	{
+		Kick(playerid); // CRASHER DETECTED
+	    return 0;
+	}
 	if(weaponid == WEAPON_SILENCED && pTazer{playerid} == 1) {
 		new iShots = GetPVarInt(playerid, "TazerShots");
 

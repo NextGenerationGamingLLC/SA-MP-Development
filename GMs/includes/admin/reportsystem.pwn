@@ -512,7 +512,7 @@ CMD:report(playerid, params[])
 
 CMD:cancelreport(playerid, params[])
 {
-	for(new i = 0; i < MAX_REPORTS; i++)
+	for(new i = 999; i > 0; i--)
 	{
 		if(Reports[i][ReportFrom] == playerid)
 		{

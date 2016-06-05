@@ -267,6 +267,10 @@ CMD:emslist(playerid, params[]) {
 					}
 				}
 			}
+			else if(strlen(szMiscArray) <= 1) 
+			{
+				format(szMiscArray, sizeof(szMiscArray), "There are currently no active EMS calls.");
+			}
 		}
 		ShowPlayerDialog(playerid, DIALOG_MEDIC_LIST, DIALOG_STYLE_LIST, "Medic | Dispatch List", szMiscArray, "Enroute", "Cancel");
 	}

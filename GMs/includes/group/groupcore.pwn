@@ -6182,8 +6182,12 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 
 		format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn a %s from the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
 		GroupLog(iGroupID-1, szMiscArray);
-
-		format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a %s from the locker.", Weapon_ReturnName(iWeaponID));
+		if(iWeaponID != 22){
+			format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a %s from the locker.", Weapon_ReturnName(iWeaponID));
+		}
+		else {
+			format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a Colt from the locker.");
+		}
 		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	}
 	else {

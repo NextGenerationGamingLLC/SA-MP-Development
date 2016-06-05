@@ -1200,7 +1200,7 @@ public AttemptPurify(playerid)
 	        	format(szMessage, sizeof(szMessage), "* %s has successfully purified %d milligrams of heroin.", GetPlayerNameEx(playerid), 30);
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
-				PlayerInfo[playerid][pDrugs][4] += 30;
+				PlayerInfo[playerid][pDrugs][3] += 30;
 	        	PlayerInfo[playerid][pRawOpium] -= 30;
             	KillTimer(GetPVarInt(playerid, "AttemptPurify"));
 	        	Purification[0] = 0;
@@ -1215,7 +1215,7 @@ public AttemptPurify(playerid)
 	        	format(szMessage, sizeof(szMessage), "* %s has successfully purified %d milligrams of heroin.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pRawOpium]);
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
-				PlayerInfo[playerid][pHeroin] += PlayerInfo[playerid][pRawOpium];
+				PlayerInfo[playerid][pDrugs][3] += PlayerInfo[playerid][pRawOpium];
 	        	PlayerInfo[playerid][pRawOpium] = 0;
             	KillTimer(GetPVarInt(playerid, "AttemptPurify"));
 	        	Purification[0] = 0;

@@ -1865,7 +1865,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid)) totalwealth += HouseInfo[PlayerInfo[playerid][pPhousekey3]][hSafeMoney];
 
 					new fine = 10 * totalwealth / 100;
-					if(GetPlayerCash(playerid) < fine || fine < 0)
+					if(GetPlayerCash(playerid) < fine || totalwealth < 0)
 					{
 						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has declined the Newbie Unmute (Insufficient Funds).", GetPlayerNameEx(playerid));
 						ABroadCast(COLOR_YELLOW, string, 2);
@@ -3611,7 +3611,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			if(!IsPlayerInRangeOfPoint(playerid, 7.0, 2555.747314, 1404.106079, 7699.584472)|| !IsPlayerInRangeOfPoint(playerid, 7.0, 1832.0533, 1380.7281, 1464.3822) || !IsPlayerInRangeOfPoint(playerid, 7.0, 772.4844, 1715.7213, 1938.0391) || !IsPlayerInRangeOfPoint(playerid, 7.0, 1378.0017, 1747.4668, 927.3564)) SendClientMessageEx(playerid, COLOR_GRAD1, "You're not at a VIP Locker.");
+			if(!IsPlayerInRangeOfPoint(playerid, 7.0, 2555.747314, 1404.106079, 7699.584472) && !IsPlayerInRangeOfPoint(playerid, 7.0, 1832.0533, 1380.7281, 1464.3822) && !IsPlayerInRangeOfPoint(playerid, 7.0, 772.4844, 1715.7213, 1938.0391) && !IsPlayerInRangeOfPoint(playerid, 7.0, 1378.0017, 1747.4668, 927.3564)) SendClientMessageEx(playerid, COLOR_GRAD1, "You're not at a VIP Locker.");
 			if(listitem == 0)
 			{
 				new Float:health;

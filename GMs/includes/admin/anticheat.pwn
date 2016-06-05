@@ -120,7 +120,7 @@ public sobeitCheck(playerid)
 ptask Anti_Rapidfire[1000](i)
 {
 	new weaponid = GetPlayerWeapon(i);
-	if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10) || (weaponid == 34 && PlayerSniperShots[i] > 2))
+	if(((weaponid == 24 || weaponid == 25 || weaponid == 26) && PlayerShots[i] > 10) || ((weaponid == 34) && PlayerSniperShots[i] > 2))
 	{
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (%d): %d shots in 1 second -- Weapon ID: %d", GetPlayerNameEx(i), i, GetPVarInt(i, "pSQLID"), PlayerShots[i], weaponid);
 		Log("logs/rapid.log", szMiscArray);
