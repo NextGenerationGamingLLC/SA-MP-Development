@@ -158,7 +158,7 @@ CMD:houselistinghelp(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_GREY, "» /listingdate - Allows you to view the date your house listing will expire on.");
 	SendClientMessageEx(playerid, COLOR_GREY, "» /deletelisting - Allows you to delete a house listing you placed previously.");
 	SendClientMessageEx(playerid, COLOR_GREY, "» /houselistings - Allows you to view a list of active house listings.");
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "» {EE9A4D}SENIOR ADMIN{D8D8D8} /pendinglistings - Allows you to view a list of active house listings pending administrative approval.");
 		SendClientMessageEx(playerid, COLOR_GREY, "» {EE9A4D}SENIOR ADMIN{D8D8D8} /listingdetails [House ID] - Allows you view the details of a specified and pending house listing.");
@@ -172,7 +172,7 @@ CMD:houselistinghelp(playerid, params[])
 
 CMD:denylisting(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
 	new houseid, reason[64], string[128];
 	if(sscanf(params, "ds[64]", houseid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /denylisting [House ID] [Reason]");
 	if(houseid < 1 || houseid >= MAX_HOUSES)
@@ -205,7 +205,7 @@ CMD:denylisting(playerid, params[])
 
 CMD:approvelisting(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
 	new houseid, seller, string[128];
 	if(sscanf(params, "d", houseid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /approvelisting [House ID]");
 	if(houseid < 1 || houseid >= MAX_HOUSES)
@@ -278,7 +278,7 @@ CMD:approvelisting(playerid, params[])
 
 CMD:adeletelisting(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
 	new houseid, string[128];
 	if(sscanf(params, "d", houseid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /adeletelisting [House ID]");
 	if(houseid < 1 || houseid >= MAX_HOUSES)
@@ -300,7 +300,7 @@ CMD:adeletelisting(playerid, params[])
 
 CMD:listingdetails(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
 	new houseid;
 	if(sscanf(params, "d", houseid)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /listingdetails [House ID]");
 	szMiscArray[0] = 0;
@@ -318,7 +318,7 @@ CMD:listingdetails(playerid, params[])
 
 CMD:pendinglistings(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
 	new count, string[64];
 	SendClientMessageEx(playerid, COLOR_WHITE, "** HOUSE LISTINGS PENDING APPROVAL: **");
 	for(new i = 0; i < sizeof(HouseInfo); i ++)

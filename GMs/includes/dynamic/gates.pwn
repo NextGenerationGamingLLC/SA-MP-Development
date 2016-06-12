@@ -77,7 +77,7 @@ CMD:agate(playerid, params[])
 	for(new i = 0; i < sizeof(GateInfo); i++)
 	{
 		GetDynamicObjectPos(GateInfo[i][gGATE], X, Y, Z);
-		if(IsPlayerInRangeOfPoint(playerid, 15, X, Y, Z) && PlayerInfo[playerid][pAdmin] >= 4)
+		if(IsPlayerInRangeOfPoint(playerid, 15, X, Y, Z) && PlayerInfo[playerid][pAdmin] >= 2)
 		{
 			MoveGate(playerid, i);
 		}
@@ -98,7 +98,7 @@ CMD:citylockdown(playerid, params[])
 }*/
 CMD:gsave(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
         SendClientMessageEx(playerid, COLOR_YELLOW, "You have force saved the Gate database.");
         SaveGates();
@@ -156,7 +156,7 @@ CMD:movegate(playerid, params[])
 
 CMD:admingatepw(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[128], gateid, pass[24];
 		if(sscanf(params, "ds[24]", gateid, pass)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /admingatepw [gateid] [pass]");
@@ -284,7 +284,7 @@ CMD:lockgate(playerid, params[])
 
 CMD:gotogate(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[48], gatenum;
 		if(sscanf(params, "d", gatenum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotogate [gatenumber]");
@@ -313,7 +313,7 @@ CMD:gstatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gstatus [gateid]");
 		return 1;
 	}
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[128], timertxt, distancetxt;
 
@@ -350,7 +350,7 @@ CMD:gstatus(playerid, params[])
 
 CMD:gnear(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new option;
 		if(!sscanf(params, "d", option)) 
@@ -397,7 +397,7 @@ CMD:gnear(playerid, params[])
 
 CMD:gnext(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available gate...");
 		for(new x;x<MAX_GATES;x++)
@@ -421,7 +421,7 @@ CMD:gnext(playerid, params[])
 
 CMD:gedit(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new x_job[128], gateid, Float:ofloat, string[128];
 
@@ -746,7 +746,7 @@ CMD:gedit(playerid, params[])
 
 CMD:listgates(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new hid, string[128];
 	if(sscanf(params, "d", hid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /listgates [houseid]");
 	if(hid <= 0 || hid >= MAX_HOUSES)
@@ -769,7 +769,7 @@ CMD:listgates(playerid, params[])
 
 CMD:gmove(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	new gateid, giveplayerid, fee, minfee;
 	if(sscanf(params, "dudd", gateid, giveplayerid, fee, minfee))
 	{

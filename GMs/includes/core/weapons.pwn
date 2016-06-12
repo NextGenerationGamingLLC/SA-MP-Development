@@ -346,7 +346,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 	    }
 	}
 
-	if(PlayerInfo[playerid][pAdmin] < 4)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
 		if(HungerPlayerInfo[playerid][hgInEvent] != 0) return 1;
 		if(GetPVarInt(playerid, "EventToken") != 0) return 1;

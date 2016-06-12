@@ -109,7 +109,7 @@ CMD:placefirework(playerid, params[])
 	if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 	if(RocketExplosions[playerid] != -1) return SendClientMessageEx(playerid, COLOR_WHITE, "You are already using another firework!");
 	if (PlayerInfo[playerid][pVW] != 0 || PlayerInfo[playerid][pInt] != 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't launch fireworks indoors!");
-	if(PlayerInfo[playerid][pFirework] > 0 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pFirework] > 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new Float:x, Float:y, Float:z, Float:a;
 	    GetPlayerPos(playerid, x, y, z);
@@ -123,7 +123,7 @@ CMD:placefirework(playerid, params[])
 			if(IsPlayerInRangeOfPoint(playerid, 50.0, Pos[0], Pos[1], Pos[2]))
 				return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a firework down near the giftbox.");
 		}		
-	    if (PlayerInfo[playerid][pAdmin] < 4)
+	    if (PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	    {
 	    	PlayerInfo[playerid][pFirework]--;
 	    }
@@ -170,7 +170,7 @@ CMD:togfireworks(playerid, params[])
 
 CMD:fireworknear(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new Float: pos[3];
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing all fireworks within 50 meters of you...");

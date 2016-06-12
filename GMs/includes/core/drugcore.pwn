@@ -945,7 +945,7 @@ CMD:plantpot(playerid, params[])
 
 CMD:adestroyplant(playerid, params[]) 
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 
 		new
 			iTargetID;

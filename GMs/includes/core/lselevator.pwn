@@ -362,7 +362,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 CMD:floorpass(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4)
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;
@@ -384,7 +384,7 @@ CMD:floorpass(playerid, params[])
 
 CMD:floorpassr(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4)
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;
@@ -421,7 +421,7 @@ CMD:floorpassr(playerid, params[])
 
 CMD:floornamer(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4)
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;
@@ -456,7 +456,7 @@ CMD:floornamer(playerid, params[])
 
 CMD:floorname(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4)
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;

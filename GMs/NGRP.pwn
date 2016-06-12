@@ -15,20 +15,21 @@
 
 				Current Developers:
 								*** Director of SA:MP Development:
-									Rothschild
+									
 
 								**  Development Staff:
 									Dom
 									Miguel (s0nic)
 									Farva
-									Austin
 									Jingles
 									Winterfield
 				Past Developers:
 								*** Director of SA:MP Development:
 									Akatony
 									John
+									Rothschild
 									Brendan
+									Austin
 									BrianF
 									Scott
 									GhoulSlayer
@@ -76,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
  
-#define SERVER_GM_TEXT "NG:RP v3.0.319"
+#define SERVER_GM_TEXT "NG:RP v3.0.322"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -330,7 +331,6 @@
 #include "./includes/group/elections.pwn"
 
 // Winterfield WIP
-//#include "./includes/admin/punishments.pwn"
 //#include "./includes/dynamic/polls.pwn"
 
 main(){}

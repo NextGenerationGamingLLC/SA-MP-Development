@@ -203,7 +203,7 @@ CMD:clearallreports(playerid, params[])
 
 CMD:checkreportcount(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], adminname[MAX_PLAYER_NAME], tdate[11];
 		if(sscanf(params, "s[24]s[11]", adminname, tdate)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /checkreportcount [admin name] [date (YYYY-MM-DD)]");
@@ -729,7 +729,7 @@ CMD:ar(playerid, params[])
 		}
 		if(GetPVarInt(Reports[reportid][ReportFrom], "AccountRestrictionReport") == 1)
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot accept this report!");
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot accept this report!");
 			SetPVarInt(playerid, "PendingAction4", GetPVarInt(Reports[reportid][ReportFrom], "AccountRestID"));
 			DeletePVar(Reports[reportid][ReportFrom], "AccountRestrictionReport");
 			DeletePVar(Reports[reportid][ReportFrom], "AccountRestID");
@@ -996,7 +996,7 @@ CMD:dmr(playerid, params[])
 
 CMD:nao(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], reportid;
 		if(sscanf(params, "d", reportid)) return SendClientMessageEx(playerid, COLOR_WHITE,"USAGE: /nao [reportid]");

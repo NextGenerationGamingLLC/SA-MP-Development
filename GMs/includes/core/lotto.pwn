@@ -234,7 +234,7 @@ CMD:lottoinfo(playerid, params[])
 
 CMD:speclotto(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) {
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
 	    SendClientMessage(playerid, COLOR_GREY, "You don't have access to this command.");
 	}
 	else if(SpecLotto) {
@@ -262,7 +262,7 @@ CMD:speclotto(playerid, params[])
 
 CMD:cancelspeclotto(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) {
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
 	    SendClientMessage(playerid, COLOR_GREY, "You don't have access to this command.");
 	}
 	else if(!SpecLotto) {

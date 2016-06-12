@@ -185,7 +185,7 @@ public TeleportToShop(playerid)
 
 CMD:shopplate(playerid, params[])
 {
-    if(PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new iVehType, iVehIndex, iTargetOwner, carid, orderid, plate[32];
         if(sscanf(params, "dds[32]", carid, orderid, plate))
@@ -443,7 +443,7 @@ CMD:changeuserpassword(playerid, params[])
 
 CMD:orders(playerid, params[])
 {
-	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
  		new string[128];
         SendClientMessageEx(playerid, COLOR_GREEN, "____________________ SHOP ORDERS _____________________");
@@ -1546,7 +1546,7 @@ CMD:placesign(playerid, params[])
 
 CMD:editsign(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new h, option[10], desc[64];
 		if(sscanf(params, "ds[10]S()[64]", h, option, desc)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /editsign [houseid] [option]"), SendClientMessageEx(playerid, COLOR_GREY, "Available options: text, position");

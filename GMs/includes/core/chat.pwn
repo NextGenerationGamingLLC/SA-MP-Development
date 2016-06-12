@@ -798,7 +798,7 @@ CMD:ldo(playerid, params[])
 
 CMD:resetexamine(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return 1;
 	new target;
 	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /resetexamine [playerid]");
 	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Error: Player is not connected!");

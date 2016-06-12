@@ -699,7 +699,7 @@ CMD:newgvip(playerid, params[])
 
 CMD:renewgvip(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 	    new
 	        iOrderID,
@@ -962,7 +962,7 @@ CMD:vsuspend(playerid, params[])
 
 CMD:respawnvipcars(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		for(new i = 0; i < sizeof(VIPVehicles); i++)
 		{
@@ -1027,7 +1027,7 @@ CMD:vmute(playerid, params[])
 
 CMD:vto(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pVIPMod])
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pVIPMod])
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vto [player] [reason]");
@@ -1067,7 +1067,7 @@ CMD:vto(playerid, params[])
 
 CMD:vtoreset(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pVIPMod])
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pVIPMod])
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vtoreset [player] [reason]");
@@ -1164,7 +1164,7 @@ CMD:pvipjob(playerid, params[])
 
 CMD:ovmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	new query[256], tmpName[MAX_PLAYER_NAME];
 	if(sscanf(params, "s[24]", tmpName)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ovmute [player name]");
 	new giveplayerid = ReturnUser(tmpName);
@@ -1183,7 +1183,7 @@ CMD:ovmute(playerid, params[])
 
 CMD:ovunmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	new query[256], tmpName[MAX_PLAYER_NAME];
 	if(sscanf(params, "s[24]", tmpName)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ovunmute [player name]");
 	new giveplayerid = ReturnUser(tmpName);

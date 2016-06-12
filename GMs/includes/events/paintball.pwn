@@ -3019,7 +3019,7 @@ CMD:areloadpb(playerid, params[])
 
 CMD:unlockarenas(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4) {
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
         SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
         return 1;
     }
@@ -3037,7 +3037,7 @@ CMD:unlockarenas(playerid, params[])
 
 CMD:lockarenas(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4) {
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
         SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
         return 1;
     }
@@ -3620,7 +3620,7 @@ CMD:givepainttokens(playerid, params[])
 
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if(PlayerInfo[playerid][pAdmin] < 4)
+		if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 		{
 			SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 			return 1;

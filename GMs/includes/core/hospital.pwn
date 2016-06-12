@@ -423,7 +423,7 @@ ReturnDeliveryPoint(iDPID)
 
 CMD:setinsurance(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid, insurance;
 		if(sscanf(params, "ud", giveplayerid, insurance))

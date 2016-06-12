@@ -185,7 +185,7 @@ public Fire_HealthTimer(playerid) {
 
 CMD:fires(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
 	if(GetPVarInt(playerid, "FireStart") != 1)
 	{
 		SetPVarInt(playerid, "FireStart", 1);
@@ -202,7 +202,7 @@ CMD:fires(playerid, params[])
 
 CMD:destroyfire(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
 	new fire;
 	if(sscanf(params, "d", fire)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /destroyfire [fireid]");
 	if(!(0 <= fire <= MAX_STRUCTURE_FIRES)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Fire ID!");
@@ -212,7 +212,7 @@ CMD:destroyfire(playerid, params[])
 
 CMD:destroyfires(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 2 && PlayerInfo[playerid][pFactionModerator] < 2) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pGangModerator] < 2 && PlayerInfo[playerid][pFactionModerator] < 2) return 1;
 	for(new i; i < MAX_STRUCTURE_FIRES; i++)
 	{
 		DeleteStructureFire(i);
@@ -222,7 +222,7 @@ CMD:destroyfires(playerid, params[])
 
 CMD:gotofire(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
 	new fire,
 		Float:fPos[3];
 	if(sscanf(params, "d", fire)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotofire [fireid]");
@@ -235,7 +235,7 @@ CMD:gotofire(playerid, params[])
 
 CMD:setfstrength(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pGangModerator] < 1 && PlayerInfo[playerid][pFactionModerator] < 1) return 1;
 	new fire, strength;
 	if(sscanf(params, "dd", fire, strength)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setfstrength [fireid] [strength]");
 	if(!(0 <= fire <= MAX_STRUCTURE_FIRES)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Fire ID!");

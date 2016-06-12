@@ -1770,7 +1770,7 @@ CMD:leavetable(playerid, params[])
 
 CMD:placetable(playerid, params[])
 {
-	if(PlayerInfo[playerid][pTable] == 1 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pTable] == 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 	    if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while being in an arena!");
 		if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");

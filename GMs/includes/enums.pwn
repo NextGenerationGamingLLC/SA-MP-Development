@@ -1132,6 +1132,7 @@ enum pInfo
 	pLockPickTime,
 	pSEC,
 	pBM,
+	pASM,
 	pIsolated,
 	pWantedJailTime,
 	pWantedJailFine,

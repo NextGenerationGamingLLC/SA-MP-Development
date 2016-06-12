@@ -218,7 +218,7 @@ CMD:nonewbie(playerid, params[])
 
 CMD:checkrequestcount(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pPR] > 0)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pPR] > 0)
 	{
 		new string[128], adminname[MAX_PLAYER_NAME], tdate[11];
 		if(sscanf(params, "s[24]s[11]", adminname, tdate)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /checkrequestcount [advisor name] [date (YYYY-MM-DD)]");

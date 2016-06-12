@@ -649,7 +649,7 @@ CMD:zopenkit(playerid, params[])
 
 CMD:givez(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
 	new target, option[11], amount;
 	if(sscanf(params, "us[11]d", target, option, amount) || amount <= 0) return SendClientMessageEx(playerid, -1, "USAGE: /givez [player] [option] [amount]"), SendClientMessageEx(playerid, -1, "Available Options: jumpstart, fuelcan, scrapmetal, 50cal, inject, kit");
 	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected.");

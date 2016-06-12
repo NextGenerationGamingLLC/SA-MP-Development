@@ -86,7 +86,7 @@ GetDPRankName(playerid)
 CMD:dp(playerid, params[]) 
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-	if(PlayerInfo[playerid][pAdmin] < 4 && !PlayerInfo[playerid][pDedicatedPlayer]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Dedicated player.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && !PlayerInfo[playerid][pDedicatedPlayer]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not a Dedicated player.");
 	if(PlayerInfo[playerid][pDedicatedEnabled] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must enable Dedicated chat before using it. (/togdp)");
 	if(PlayerInfo[playerid][pDedicatedMuted] != 0 || PlayerInfo[playerid][pDedicatedWarn] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are currently muted from the Dedicated chat.");
 	if(GetPVarInt(playerid, "LastDPChat") > gettime()) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait 5 seconds between messages.");
@@ -100,7 +100,7 @@ CMD:dp(playerid, params[])
 
 CMD:togdp(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDedicatedPlayer] > 0 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pDedicatedPlayer] > 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		if(PlayerInfo[playerid][pDedicatedEnabled] == 0) 
 		{
@@ -178,7 +178,7 @@ CMD:dpplate(playerid, params[])
 CMD:dpwarn(playerid, params[])
 {
 	new giveplayerid, reason[24], string[164];
-	if(PlayerInfo[playerid][pDedicatedPlayer] >= 3 || PlayerInfo[playerid][pAdmin] >= 4) 
+	if(PlayerInfo[playerid][pDedicatedPlayer] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) 
 	{
 		if(!sscanf(params, "us[24]", giveplayerid, reason))
 		{
@@ -252,7 +252,7 @@ CMD:setdedicated(playerid, params[])
 
 CMD:osetdedicated(playerid, params[])
 {
-    if(PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
     {
         new string[128], pname[MAX_PLAYER_NAME], level;
 	    if(sscanf(params, "s[32]i", pname, level))
@@ -289,7 +289,7 @@ CMD:osetdedicated(playerid, params[])
 
 CMD:dpmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDedicatedPlayer] >= 3 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pDedicatedPlayer] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 	    new string[128], targetid, reason[64];
 	    if(sscanf(params, "us[64]", targetid, reason))
@@ -332,7 +332,7 @@ CMD:dpmute(playerid, params[])
 
 CMD:dpunmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDedicatedPlayer] >= 3 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pDedicatedPlayer] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 	    new string[128], targetid, reason[64];
 	    if(sscanf(params, "us[64]", targetid, reason))
@@ -375,7 +375,7 @@ CMD:dpunmute(playerid, params[])
 
 CMD:dedicatedplayers(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pDedicatedPlayer] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[1024];
 		foreach(new i : Player)

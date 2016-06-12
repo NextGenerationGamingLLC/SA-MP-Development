@@ -473,7 +473,7 @@ CMD:speedcam(playerid, params[])
 }
 
 CMD:gotospeedcam(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 	    new i;
 	    if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotospeedcam [Speedcam id]");

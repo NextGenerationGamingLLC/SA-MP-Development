@@ -225,7 +225,7 @@ CMD:near(playerid, params[])
 
 CMD:givegun(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 4) {
+    if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
         new playa, gun;
 
         if(sscanf(params, "udd", playa, gun)) {
@@ -270,7 +270,7 @@ CMD:givegun(playerid, params[])
 
 CMD:givedrug(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 4) 
+    if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) 
     {
         new id, drugstring[16], amount;
 
@@ -312,7 +312,7 @@ CMD:jetpack(playerid, params[])
         SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USEJETPACK);
         return 1;
     }
-	else if(PlayerInfo[playerid][pAdmin] >= 4 && !sscanf(params, "u", plo))
+	else if(PlayerInfo[playerid][pAdmin] >= 4 && !sscanf(params, "u", plo) || PlayerInfo[playerid][pASM] >= 1 && !sscanf(params, "u", plo))
 	{
 		if (IsPlayerConnected(plo))
 		{
@@ -339,7 +339,7 @@ CMD:sethp(playerid, params[])
 	if(sscanf(params, "ud", playa, health)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sethp [player] [health]");
 	if(PlayerInfo[playa][pJailTime] >= 1 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessage(playerid, COLOR_WHITE, "You can't set a OOC Prisoner Health!");
 	if((PlayerInfo[playa][pAdmin] >= PlayerInfo[playerid][pAdmin]) && playa != playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on the same/greater level admin than you!");
-	if(PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 		if(IsPlayerConnected(playa)) {
 			if(playa != INVALID_PLAYER_ID)
 			{
@@ -361,7 +361,7 @@ CMD:setmyhp(playerid, params[])
         SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmyhp [health]");
         return 1;
     }
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1) {
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1 || PlayerInfo[playerid][pASM] >= 1) {
         SetHealth(playerid, health);
         format(szMiscArray, sizeof(szMiscArray), "You have set your health to %d.", health);
         SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
@@ -380,7 +380,7 @@ CMD:setarmor(playerid, params[])
         SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setarmor [player] [armor]");
         return 1;
     }
-    if (PlayerInfo[playerid][pAdmin] >= 4)
+    if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
         if(IsPlayerConnected(playa))
 		{
@@ -407,7 +407,7 @@ CMD:setmyarmor(playerid, params[])
         SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmyarmor [amount]");
         return 1;
     }
-    if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1)
+    if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1 || PlayerInfo[playerid][pASM] >= 1)
 	{
         SetArmour(playerid, armor);
         format(szMiscArray, sizeof(szMiscArray), "You have set your armor to %d.", armor);
@@ -467,7 +467,7 @@ CMD:admins(playerid, params[])
 				format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 				format(thour, sizeof(thour), "%02d:00:00", hour);
 
-				if(PlayerInfo[playerid][pAdmin] >= 4)
+				if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 				{
 					if(PlayerInfo[i][pAdmin] == 2) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 					else if(PlayerInfo[i][pAdmin] == 3) format(szMiscArray, sizeof(szMiscArray), "%s{BFC0C2}: %s (RTH: %d | RT: %d)", GetStaffRank(i), GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
@@ -508,6 +508,7 @@ CMD:admins(playerid, params[])
 				if(PlayerInfo[i][pSecurity] >= 1) strcat(szMiscArray, " [Sec]");
 				if(PlayerInfo[i][pBM] == 1) strcat(szMiscArray, " [BM]");
 				if(PlayerInfo[i][pBM] == 2) strcat(szMiscArray, " [DOBM]");
+				if(PlayerInfo[i][pASM] == 1) strcat(szMiscArray, " [ASM]");
 				SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 			}
 		}
@@ -912,7 +913,7 @@ CMD:vehname(playerid, params[]) {
 }
 
 CMD:mstats(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] < 4) {
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You're not authorised to use this command.");
 		return 1;
 	}
@@ -1073,7 +1074,7 @@ CMD:clearall(playerid, params[])
 
 CMD:savechars(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 4) {
+    if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
         SaveEventPoints();
         mysql_SaveCrates();
         SendClientMessageEx(playerid, COLOR_YELLOW, "All Crates Saved successfully.");
@@ -1228,7 +1229,7 @@ CMD:lastshot(playerid, params[])
 
 CMD:healnear(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4) {
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 		new radius, count;
 		if(sscanf(params, "d", radius)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /healnear [radius]");
 		if(radius < 1 || radius > 100)
@@ -1251,7 +1252,7 @@ CMD:healnear(playerid, params[])
 
 CMD:armornear(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4) {
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 		new string[128], radius, count;
 		if(sscanf(params, "d", radius)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /armornear [radius]");
 		if(radius < 1 || radius > 100)
@@ -1275,7 +1276,7 @@ CMD:armornear(playerid, params[])
 CMD:fixveh(playerid, params[])
 {
     if(IsPlayerConnected(playerid)) {
-        if(PlayerInfo[playerid][pAdmin] < 4) {
+        if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
             SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
             return 1;
         }
@@ -1295,7 +1296,7 @@ CMD:fixveh(playerid, params[])
 CMD:fixvehall(playerid, params[])
 {
     if(IsPlayerConnected(playerid)) {
-        if(PlayerInfo[playerid][pAdmin] < 4) {
+        if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
             SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
             return 1;
         }
@@ -1311,7 +1312,7 @@ CMD:fixvehall(playerid, params[])
 
 CMD:destroycars(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4) {
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
         SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
         return 1;
     }
@@ -1448,7 +1449,7 @@ CMD:afk(playerid, params[]) {
 
 CMD:destroypvehicle(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid, vehicleid;
 		if(sscanf(params, "ud", giveplayerid, vehicleid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /destroypvehicle [player] [vehicleid]");
@@ -1476,7 +1477,7 @@ CMD:setsec(playerid, params[])
 	    if(sscanf(params, "us[8]", giveplayerid, task))
 		{
 			SendClientMessage(playerid, COLOR_GREY, "USAGE: /setsec [playerid] [secondary task]");
-			SendClientMessage(playerid, COLOR_GRAD6, "Secondary Tasks: FMod, GMod, SO, BA, ST, PR, HR, Sec, BM");
+			SendClientMessage(playerid, COLOR_GRAD6, "Secondary Tasks: FMod, GMod, SO, BA, ST, PR, HR, Sec, BM, ASM");
 			return 1;
 		}
 		if(giveplayerid != INVALID_PLAYER_ID)
@@ -1693,6 +1694,27 @@ CMD:setsec(playerid, params[])
 						DBLog(playerid, giveplayerid, "Admin", "removed from business moderator");
 					}
 				}
+				else if(strcmp(task, "asm", true) == 0)
+				{
+					if(PlayerInfo[giveplayerid][pASM] == 0)
+					{
+						PlayerInfo[giveplayerid][pASM] = 1;
+						SendClientMessage(playerid, COLOR_WHITE, "You have made them an Assistant Shift Manager");
+						SendClientMessage(giveplayerid, COLOR_WHITE, "You have been made an Assistant Shift Manager");
+						format(string, sizeof(string), "%s has given Assistant Shift Manager permissions to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "issued Assistant Shift Manager");
+					}
+					else
+					{
+						PlayerInfo[giveplayerid][pASM] = 0;
+						SendClientMessageEx(playerid, COLOR_GREY, "You have taken their Assistant Shift Manager");
+						SendClientMessage(giveplayerid, COLOR_GREY, "You have had your Assistant Shift Manager taken");
+						format(string, sizeof(string), "%s has taken Assistant Shift Manager permissions from %s", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+						Log("logs/admin.log", string);
+						DBLog(playerid, giveplayerid, "Admin", "removed from Assistant Shift Manager");
+					}
+				}
 			}
 			else SendClientMessage(playerid, COLOR_GRAD2, "They are not an admin!");
 		}
@@ -1704,7 +1726,7 @@ CMD:setsec(playerid, params[])
 
 CMD:removepvehicle(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) {
@@ -1963,7 +1985,7 @@ CMD:staff(playerid, params[]) {
 }
 
 CMD:cnn(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 		if(!isnull(params)) {
 
 			format(szMiscArray, sizeof(szMiscArray), "~b~%s: ~w~%s",GetPlayerNameEx(playerid), params);
@@ -1979,7 +2001,7 @@ CMD:cnn(playerid, params[]) {
 }
 
 CMD:veh(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 
 		new
 			iVehicle,
@@ -2130,7 +2152,7 @@ CMD:loadpvehicles(playerid, params[])
 }
 
 CMD:createpvehicle(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new iColors[2], iTargetID, iModelID;
 
@@ -2250,7 +2272,7 @@ CMD:osetrmutes(playerid, params[]) {
 }
 
 CMD:destroycar(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 		if(IsPlayerInAnyVehicle(playerid)) {
 			for(new i = 0; i < sizeof(CreatedCars); ++i) if(CreatedCars[i] == GetPlayerVehicleID(playerid)) {
 				DestroyVehicle(CreatedCars[i]);
@@ -2267,7 +2289,7 @@ CMD:destroycar(playerid, params[]) {
 
 CMD:setfightstyle(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid, fightstyle;
 		if(sscanf(params, "ud", giveplayerid, fightstyle))
@@ -2300,7 +2322,7 @@ CMD:setmyname(playerid, params[])
 	new string[128], query[128];
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /setmyname [newname]");
 
-	if (PlayerInfo[playerid][pUndercover] >= 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 4)
+	if (PlayerInfo[playerid][pUndercover] >= 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 4)
 	{
 		if(GetPVarInt(playerid, "TempName") == 0)
 		{
@@ -2340,7 +2362,7 @@ CMD:setname(playerid, params[])
 
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if (PlayerInfo[playerid][pAdmin] >= 4)
+		if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
 		    if(strlen(name) > MAX_PLAYER_NAME)
 			{
@@ -2377,7 +2399,7 @@ CMD:blowup(playerid, params[])
 	if((PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) && giveplayerid != playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on the same/greater level admin than you!");
 	if(IsPlayerConnected(giveplayerid))
 	{
-		if(PlayerInfo[playerid][pAdmin] >= 4)
+		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
 			if(IsPlayerConnected(giveplayerid))
 			{
@@ -2402,7 +2424,7 @@ CMD:blowup(playerid, params[])
 
 CMD:givenos(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givenos [player]");
@@ -2438,7 +2460,7 @@ CMD:givenos(playerid, params[])
 
 CMD:countdown(playerid, params[])
 {
-	if(IsARacer(playerid) && PlayerInfo[playerid][pTogReports] == 1 && PlayerInfo[playerid][pAdmin] >= 4) {
+	if(IsARacer(playerid) && PlayerInfo[playerid][pTogReports] == 1 && PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pTogReports] == 1 && PlayerInfo[playerid][pASM] >= 1) {
 	    if(CountDown == 0) {
         	SetTimerEx("Countdown", 100, false, "i", playerid); //Keep this at 100milliseconds
         } else {
@@ -2464,7 +2486,7 @@ CMD:countdown(playerid, params[])
 
 CMD:ipwhitelist(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], query[256], giveplayer[MAX_PLAYER_NAME], ip[16];
 		if(sscanf(params, "s[24]s[16]", giveplayer, ip))
@@ -2784,7 +2806,7 @@ CMD:sfine(playerid, params[])
 	new string[128], giveplayerid, amount, reason[64];
 	if(sscanf(params, "uds[64]", giveplayerid, amount, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sfine [player] [amount] [reason]");
 
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		if(strcmp(GetPlayerIpEx(playerid), PlayerInfo[playerid][pSecureIP], false, 16) != 0)
 		{
@@ -3152,7 +3174,7 @@ CMD:rcreset(playerid, params[]) {
 }
 
 CMD:rcabuse(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 
 		new
 			iTargetID;
@@ -3546,7 +3568,7 @@ CMD:jailaccount(playerid, params[])
 
 CMD:release(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /release [player] [reason]");
@@ -3591,7 +3613,7 @@ CMD:release(playerid, params[])
 
 CMD:sprison(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pUndercover] >= 1 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new giveplayerid, minutes, reason[64];
 		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sprison [player] [minutes] [reason]");
@@ -3629,7 +3651,7 @@ CMD:jail(playerid, params[])
 
 CMD:setstat(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 
 		new string[128], giveplayerid, statcode, amount;
@@ -3981,13 +4003,13 @@ CMD:setstat(playerid, params[])
 
 CMD:setmystat(playerid, params[])
 {
-	if(PlayerInfo[playerid][pUndercover] >= 1 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pUndercover] >= 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], statcode, amount;
 		if(sscanf(params, "dd", statcode, amount))
 		{
 
-			if(PlayerInfo[playerid][pAdmin] >= 4) {
+			if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmystat [statcode] [amount]");
 				SendClientMessageEx(playerid, COLOR_GRAD4, "|1 Level |2 ArmorUpgrade |3 UpgradePoints |4 Model |5 BankAccount |6 PhoneNumber |7 RespectPoints |8 House1 |9 House2 |10 House3");
 				SendClientMessageEx(playerid, COLOR_GRAD2, "|11 Not Used |12 Det |13 Lawyer |14 Fixer |17 Drug |18 Sex |19 Box |20 Arms |21 Materials |22 Cannabis |23 Crack");
@@ -4006,7 +4028,7 @@ CMD:setmystat(playerid, params[])
 
 		}
 
-		if((PlayerInfo[playerid][pUndercover] >= 1 && PlayerInfo[playerid][pAdmin] < 4) && statcode != 1 && statcode != 6 && statcode != 26 && statcode != 33
+		if((PlayerInfo[playerid][pUndercover] >= 1 && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) && statcode != 1 && statcode != 6 && statcode != 26 && statcode != 33
 				&& statcode != 34 && statcode != 37 && statcode != 52) return 1;
 
 		switch (statcode)
@@ -4749,7 +4771,7 @@ CMD:gotoco(playerid, params[])
 
 CMD:setweather(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 		return 1;
@@ -4767,7 +4789,7 @@ CMD:setweather(playerid, params[])
 
 CMD:setmoney(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid, money;
 		if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmoney [player] [money]");
@@ -4793,7 +4815,7 @@ CMD:setmoney(playerid, params[])
 
 CMD:givemoney(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid, money;
 		if(sscanf(params, "ud", giveplayerid, money)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givemoney [player] [money]");
@@ -5286,16 +5308,6 @@ CMD:ah(playerid, params[])
 		if(PlayerInfo[playerid][pSMod] > 0) SendClientMessageEx(playerid, COLOR_GRAD1, "*** {FFFF00}SENIOR SERVER MODERATOR{B4B5B7} --* /jail /kick /staff /togstaff /changename");
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "--* {FFFF00}SERVER MODERATOR{B4B5B7} --* /mjail /kick /staff /togstaff");
 	}
-	/*
-	if (PlayerInfo[playerid][pWatchdog] >= 1)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"--* WATCH DOG --* /startwatch /nextwatch /stopwatch /dmalert /wd /watchlist /refer");
-	}
-	if (PlayerInfo[playerid][pWatchdog] >= 2)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2,"--* SENIOR WATCH DOG --* /watchspec /kick /ban /prison /n(un)mute /ad(un)mute /warn /kills /goto (MHC/LV)");
-	}
-	*/
 	if (PlayerInfo[playerid][pWatchdog] >= 3)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2,"--* RP SPECIALIST --* /watchdogs /restrictaccount /unrestrictaccount /togwd /makewatchdog");
@@ -5387,6 +5399,19 @@ CMD:ah(playerid, params[])
 	if (PlayerInfo[playerid][pFactionModerator] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Faction Mod --* /switchgroup /groupcsfban /groupban /groupkick /leaders /dvrespawn"), SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Faction Mod --* /fires /destroyfire /destroyfires /gotofire /setfstrength");
 	if (PlayerInfo[playerid][pFactionModerator] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - DoFM --* /dvcreate /dvedit /dveditslot /dvplate");
 	if (PlayerInfo[playerid][pPR] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Public Relations --* /catokens /cmotd /makeadvisor /takeadvisor");
+	if (PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] >= 1) // If they're not a senior admin and they're ASM level is 1 or higher.
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /asellbiz /fixvehall /givenos /blowup /setname /savechars /dmstrikereset /cnn /respawnvipcars");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /veh /fixveh /sethp /setarmor /givegun /givemoney /setmoney /setstat /setfightstyle /switchgroup /switchfam");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /fcreate /fdelete /adivorce /destroycar /destroycars /eventhelp /contracts /sprison /banip /unbanip");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /groupban /deletehit /setinsurance /cmotd /givelicense /adestroyplant /tl(edit/text/status/next)");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /gotolabel /createpvehicle /destroypvehicle /vto /vtoreset /admingatepw /gotogate /dedit /fedit");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /hnext /dmpnext /g(status/near/next/edit) /(goto/goin)door /(goto/goin)house /(create/delete/goto)point");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /hedit /dd(edit/next/name/pass) /dmpedit /dmpnear /gotomapicon /gangwarn /gangunban /setcapping /banaccount");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /removepvehicle /rcabuse /createmailbox /adestroymailbox /b(edit/next/name) /adestroycrate /gotocrate /srelease");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /(create/edit/delete)gaspump /(goto/goin)biz /dvcreate /dvstatus /dvrespawn /dvedit /dveditslot /dvplate /checkvouchers");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine");
+	}
 
 	if (PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /advisors /pa /newbquestions /an /tn /spec");
 	if ( PlayerInfo[playerid][pHelper] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* General Player Advisor --* /paduty /showrequests /accepthelp /finishhelp /findnewb /staff /kick /mjail /rhmute /nmute");
@@ -5588,7 +5613,7 @@ CMD:givesprize(playerid, params[])
 
 CMD:srelease(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /srelease [player] [reason]");
@@ -5688,7 +5713,7 @@ CMD:fps(playerid, params[])
 
 CMD:akick(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	new giveplayerid, reason[64];
 	if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /akick [player] [reason]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
@@ -5756,7 +5781,7 @@ CMD:coordinators(playerid, params[])
 
 CMD:makesec(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pPR] < 1 && PlayerInfo[playerid][pSEC] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pPR] < 1 && PlayerInfo[playerid][pSEC] < 3 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new ivalue, iTargetID;
 	if(sscanf(params, "ui", iTargetID, ivalue)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makesec [player] [level]");
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
@@ -5881,7 +5906,7 @@ CMD:pausespec(playerid, params[])
 
 CMD:checkwdcount(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pWatchdog] >= 3)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pWatchdog] >= 3)
 	{
 		new string[128], adminname[MAX_PLAYER_NAME], tdate[11];
 		if(sscanf(params, "s[24]s[11]", adminname, tdate)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /checkwdcount [watchdog name] [date (YYYY-MM-DD)]");
@@ -5906,7 +5931,7 @@ CMD:checkwdcount(playerid, params[])
 
 CMD:dedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;
@@ -6155,7 +6180,7 @@ CMD:card(playerid, params[]) {
 
 CMD:giveeventtokens(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR])
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pPR])
 	{
 		new giveplayerid, amount;
 

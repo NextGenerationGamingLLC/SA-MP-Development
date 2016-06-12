@@ -159,7 +159,7 @@ stock RehashDynamicMapIcons()
 
 CMD:gotomapicon(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBM] < 2)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pBM] < 2)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
 		return 1;
@@ -181,7 +181,7 @@ CMD:gotomapicon(playerid, params[])
 
 CMD:dmpnear(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pBM] == 2)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pBM] == 2)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing all map icons within 30 meters of you");
 		new Float:X, Float:Y, Float:Z;
@@ -208,7 +208,7 @@ CMD:dmpnear(playerid, params[])
 
 CMD:dmpnext(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pBM] == 2)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pBM] == 2)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available map icon...");
 		for(new x=1;x<MAX_DMAPICONS;x++)
@@ -232,7 +232,7 @@ CMD:dmpnext(playerid, params[])
 
 CMD:dmpedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBM] < 2)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pBM] < 2)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;

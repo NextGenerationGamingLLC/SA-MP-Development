@@ -154,7 +154,7 @@ CMD:dmrmute(playerid, params[])
 			}
 			else
 			{
-			    if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a senior admin to unmute others from submitting DM reports");
+			    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a senior admin to unmute others from submitting DM reports");
 				PlayerInfo[giveplayerid][pDMRMuted] = 0;
 				format(string, sizeof(string), "AdmCmd: %s has been re-allowed to submit DM reports by %s",GetPlayerNameEx(giveplayerid),GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED,string,2);
@@ -280,7 +280,7 @@ CMD:watchlistremove(playerid, params[])
 
 CMD:restrictaccount(playerid, params[])
 {
-	if(PlayerInfo[playerid][pWatchdog] >= 3 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pWatchdog] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new giveplayerid, reason[64], string[128];
 		if(sscanf(params, "ds[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /restrictaccount [playerid] [reason]");
@@ -316,7 +316,7 @@ CMD:restrictaccount(playerid, params[])
 
 CMD:unrestrictaccount(playerid, params[])
 {
-	if(PlayerInfo[playerid][pWatchdog] >= 3 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pWatchdog] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new giveplayerid, string[128];
 		if(sscanf(params, "d", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /unrestrictaccount [playerid]");
@@ -451,7 +451,7 @@ CMD:refer(playerid, params[])
 
 CMD:wdwhitelist(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pWatchdog] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pWatchdog] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], query[256], giveplayer[MAX_PLAYER_NAME], ip[16];
 		if(sscanf(params, "s[24]s[16]", giveplayer, ip))

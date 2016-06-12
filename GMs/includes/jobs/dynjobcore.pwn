@@ -473,7 +473,7 @@ CMD:getjob(playerid, params[])
 
 CMD:jobpointhelp(playerid, params[]) 
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4) 
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) 
 	{
 		SendClientMessage(playerid, COLOR_GREEN, "|____________________| Job Point Commands |____________________|");
 	    SendClientMessage(playerid, COLOR_GRAD2, "* '/createjobpoint' - '/deletejobpoint' - '/gotojob' - '/jobpos' '/jobdeliver'");
@@ -486,7 +486,7 @@ CMD:jobpointhelp(playerid, params[])
 CMD:createjobpoint(playerid, params[]) 
 {
 	szMiscArray[0] = 0;
-	if(PlayerInfo[playerid][pAdmin] >= 4) 
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) 
 	{
 	    new
 			ijob_iType,
@@ -530,7 +530,7 @@ CMD:createjobpoint(playerid, params[])
 
 CMD:editjob(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4) 
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) 
 	{
 		new i;
 		if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /editjob [id]");
@@ -546,7 +546,7 @@ CMD:editjob(playerid, params[])
 CMD:deletejobpoint(playerid, params[]) 
 {
 	szMiscArray[0] = 0;
-	if(PlayerInfo[playerid][pAdmin] >= 4) 
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) 
 	{
 	    new iJobID;
 
@@ -685,10 +685,9 @@ public Job_OnCreateJobVehicle(i, iTypeID, iVehID, Float:x, Float:y, Float:z, Flo
 	return 1;
 }
 
-
 CMD:createjobveh(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessage(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	
 	new iTypeID,
 		iVehID,

@@ -83,12 +83,12 @@ CMD:vipmotd(playerid, params[])
 
 CMD:advisormotd(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pHelper] >= 4 || PlayerInfo[playerid][pPR] > 0)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pHelper] >= 4 || PlayerInfo[playerid][pPR] > 0)
     {
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /advisormotd [message]");
 		new string[128];
 		format(CAMOTD, sizeof(CAMOTD), "%s", params);
-		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR] > 0)
+		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pPR] > 0)
 		{
 			format(string, sizeof(string), "AdmCmd: %s has changed the Player Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
 			ABroadCast( COLOR_LIGHTRED, string, 4);

@@ -555,6 +555,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pLockPickTime]			= cache_get_field_content_int(row,  "LockPickTime", MainPipeline);
 					//cache_get_field_content(row,  "SEC", szResult, MainPipeline); PlayerInfo[extraid][pSEC] = strval(szResult);
 					PlayerInfo[extraid][pBM]					= cache_get_field_content_int(row,  "BM", MainPipeline);
+					PlayerInfo[extraid][pASM]					= cache_get_field_content_int(row,  "ASM", MainPipeline);
 					PlayerInfo[extraid][pIsolated]				= cache_get_field_content_int(row,  "Isolated", MainPipeline);
 					PlayerInfo[extraid][pWantedJailTime]		= cache_get_field_content_int(row,  "WantedJailTime", MainPipeline);
 					PlayerInfo[extraid][pWantedJailFine]		= cache_get_field_content_int(row,  "WantedJailFine", MainPipeline);
@@ -1806,7 +1807,7 @@ public OnRequestDeleteFlag(playerid, flagid)
 	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
 	cache_get_data(rows, fields, MainPipeline);
 	if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
-	if(cache_get_field_content_int(0, "type", MainPipeline) == 2 && PlayerInfo[playerid][pAdmin] < 4) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Only Senior Admins+ can remove administrative flags!", "Close", "");
+	if(cache_get_field_content_int(0, "type", MainPipeline) == 2 && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Only Senior Admins+ can remove administrative flags!", "Close", "");
 	cache_get_field_content(0, "flag", FlagText, MainPipeline, 64);
 	cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
 	cache_get_field_content(0, "time", FlagDate, MainPipeline, 24);
@@ -2442,6 +2443,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "LockPickTime", PlayerInfo[playerid][pLockPickTime]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "SEC", PlayerInfo[playerid][pSEC]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "BM", PlayerInfo[playerid][pBM]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "ASM", PlayerInfo[playerid][pASM]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Isolated", PlayerInfo[playerid][pIsolated]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WantedJailTime", PlayerInfo[playerid][pWantedJailTime]);

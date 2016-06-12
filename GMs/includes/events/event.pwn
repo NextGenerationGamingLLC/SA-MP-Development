@@ -384,7 +384,7 @@ CMD:quitevent(playerid, params[])
 
 CMD:eventreset(playerid, params[])
 {
-    if( PlayerInfo[ playerid ][ pAdmin ] >= 1337 || PlayerInfo[playerid][pShopTech] >= 3) {
+    if( PlayerInfo[ playerid ][ pAdmin ] >= 4 || PlayerInfo[playerid][pShopTech] >= 3) {
         new string[128];
         if( EventKernel[EventAdvisor] >= 1 ) {
             EventKernel[EventAdvisor] = 0;
@@ -563,7 +563,7 @@ CMD:approveevent(playerid, params[])
 
 CMD:eventhelp(playerid, params[])
 {
-	if (EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4)
+	if (EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 	    SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 		SendClientMessageEx(playerid, COLOR_GRAD4,"*** EVENT HELP *** type a command for more information");
@@ -577,7 +577,7 @@ CMD:seteventpos(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2)
 	{
-		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4)
+		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
 			new string[128];
 
@@ -603,7 +603,7 @@ CMD:seteventtype(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2)
 	{
-		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4)
+		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
 			if(isnull(params))
 			{
@@ -646,7 +646,7 @@ CMD:editevent(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2)
 	{
-		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4)
+		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
 			new choice[32], opstring[64];
 			if(EventKernel[EventType] == 1)
@@ -1020,7 +1020,7 @@ CMD:seteventviponly(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4)
 	{
-		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4)
+		if(EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
 			if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /seteventviponly [0/1]");
 
@@ -1050,7 +1050,7 @@ CMD:seteventinfo(playerid, params[])
 {
 	if( PlayerInfo[ playerid ][ pAdmin ] >= 2 || PlayerInfo[playerid][pHelper] >= 3 || PlayerInfo[playerid][pDonateRank] >= 4 || PlayerInfo[playerid][pSEC] >= 2)
 	{
-		if( EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 )
+		if( EventKernel[EventCreator] == playerid || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /seteventtype /editevent /seteventviponly (once ready, type /startevent)");
 			return 1;
@@ -1062,7 +1062,7 @@ CMD:seteventinfo(playerid, params[])
 CMD:endevent(playerid, params[])
 {
 	new Float: health, Float:armor;
-	if(PlayerInfo[playerid][pAdmin] >= 4 || EventKernel[EventCreator] == playerid)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || EventKernel[EventCreator] == playerid)
 	{
 		if(EventKernel[EventStatus] != 0)
 		{
@@ -1194,7 +1194,7 @@ CMD:startevent(playerid, params[])
 
 		if( EventKernel[ EventStatus ] == 0)
 		{
-			if(PlayerInfo[playerid][pAdmin] >= 4)
+			if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 			{
 				if(EventKernel[ EventHealth ] == 0)
 				{
@@ -1394,7 +1394,7 @@ CMD:beginevent(playerid, params[])
 
 CMD:announceevent(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || EventKernel[EventCreator] == playerid)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || EventKernel[EventCreator] == playerid)
 	{
 		if( EventKernel[ EventStatus ] == 1)
 		{
@@ -1413,7 +1413,7 @@ CMD:announceevent(playerid, params[])
 
 CMD:lockevent(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || EventKernel[EventCreator] == playerid)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || EventKernel[EventCreator] == playerid)
 	{
 		if( EventKernel[ EventStatus ] == 2 )
 		{
@@ -1432,7 +1432,7 @@ CMD:lockevent(playerid, params[])
 
 CMD:event(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || EventKernel[EventCreator] == playerid)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || EventKernel[EventCreator] == playerid)
 	{
 		if(EventKernel[ EventStatus ] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "There are currently no active events.");
 		new string[128];

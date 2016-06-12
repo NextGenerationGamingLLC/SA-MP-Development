@@ -88,7 +88,7 @@ public PayNSpray(playerid, id, vehicleid)
 
 CMD:pnsedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;
@@ -206,7 +206,7 @@ CMD:pnsstatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pnsstatus [id]");
 		return 1;
 	}
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128];
 		format(string,sizeof(string),"|___________ Pay N' Spray Status (ID: %d) ___________|", id);
@@ -225,7 +225,7 @@ CMD:pnsstatus(playerid, params[])
 
 CMD:pnsnext(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available Pay N' Spray...");
 		for(new x = 0; x < MAX_PAYNSPRAYS; x++)
@@ -249,7 +249,7 @@ CMD:pnsnext(playerid, params[])
 
 CMD:gotopaynspray(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new id;
 		if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotopaynspray [id]");

@@ -310,7 +310,7 @@ CMD:destroycrate(playerid, params[]) {
 }
 
 CMD:adestroycrate(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] == 2)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 	    if(servernumber == 2)
 		{
@@ -347,7 +347,7 @@ CMD:adestroycrate(playerid, params[]) {
 }
 
 CMD:gotocrate(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] == 2)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 	    new i;
 	    if(sscanf(params, "d", i)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotocrate [crate id]");
@@ -917,7 +917,7 @@ CMD:cvrespawn(playerid, params[])
 {
 	new szString[128];
 
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
     {
 		for(new i; i < MAX_DYNAMIC_VEHICLES; i++)
 		{
@@ -941,7 +941,7 @@ CMD:cvrespawn(playerid, params[])
 CMD:cvlist(playerid, params[])
 {
 	szMiscArray[0] = 0;
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
     {
 		for(new i; i < MAX_VEHICLES; i++)
 		{
@@ -964,7 +964,7 @@ CMD:cratelimit(playerid, params[]) {
 	    return 1;
 	}
     //if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])
-    if(PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
     {
 		new string[128];
 		new moneys;

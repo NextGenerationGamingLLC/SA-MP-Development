@@ -292,7 +292,7 @@ CMD:gangtaghelp(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_GREEN, "______________________________");
 	SendClientMessage(playerid, COLOR_GRAD1, "Gang Tags | Commands");
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] > 0) SendClientMessage(playerid, COLOR_LIGHTRED, "[ADM] /createtagpoint | /edittagpoint | /deletetagpoint | /rehashgangtags");
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] > 0) SendClientMessage(playerid, COLOR_LIGHTRED, "[ADM] /createtagpoint | /edittagpoint | /deletetagpoint | /rehashgangtags");
 	SendClientMessage(playerid, COLOR_GRAD1, "/tag | /cleantag");
 	SendClientMessage(playerid, COLOR_GREEN, "______________________________");
 	return 1;
@@ -372,7 +372,7 @@ CMD:rehashgangtags(playerid)
 
 CMD:createtagpoint(playerid)
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] > 0)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] > 0)
 	{
 		if(Iter_Count(GangTags) == MAX_GANGTAGS) return SendClientMessage(playerid, COLOR_GRAD1, "You cannot create more gang tag points.");
 		GangTag_Create(playerid);
@@ -408,7 +408,7 @@ CMD:deletetagpoint(playerid, params[])
 
 CMD:erasetag(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pGangModerator] == 2)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pGangModerator] == 2)
     {
         new i;
         if(sscanf(params, "d", i)) return SendClientMessage(playerid, COLOR_GRAD1, "Usage: /erasetag [ID]");

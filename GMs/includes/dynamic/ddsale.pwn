@@ -89,7 +89,7 @@ CMD:doorsalehelp(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, "** DYNAMIC DOOR SALE COMMANDS **");
 	SendClientMessageEx(playerid, COLOR_GREY, "» /selldoors [Part Of Name/ ID] - Allows you to sell your dynamic doors to a specified player with a set price.");
 	SendClientMessageEx(playerid, COLOR_GREY, "» /cancel door - Cancels your dynamic door sale request (must be pending review from server administrator).");
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "» {EE9A4D}SENIOR ADMIN{D8D8D8} /doorrequests - View the list of current dynamic door requests pending review from administration.");
 		SendClientMessageEx(playerid, COLOR_GREY, "» {EE9A4D}SENIOR ADMIN{D8D8D8} /doorsaleinfo - View detailed information on a door sale request.");
@@ -122,7 +122,7 @@ CMD:selldoors(playerid, params[])
 
 CMD:doorrequests(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
 	new count, string[64];
 	SendClientMessageEx(playerid, COLOR_WHITE, "** DYNAMIC DOOR SALE REQUESTS PENDING APPROVAL: **");
 	foreach(new i : Player)
@@ -140,7 +140,7 @@ CMD:doorrequests(playerid, params[])
 
 CMD:doorsaleinfo(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
 	new target;
 	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /doorsaleinfo [Part Of Name/ ID]");
 	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "The specified player isn't connected.");
@@ -155,7 +155,7 @@ CMD:doorsaleinfo(playerid, params[])
 
 CMD:approvedoorsale(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
 	new target, fine, count[2], timex[3], string[128];
 	if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /approvedoorsale [Part Of Name/ ID]");
 	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "The specified player isn't connected.");
@@ -269,7 +269,7 @@ CMD:approvedoorsale(playerid, params[])
 
 CMD:denydoorsale(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are unauthorized to use this command.");
 	new target, reason[64], string[128];
 	if(sscanf(params, "us[64]", target, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "[USAGE]: /denydoorsale [Part Of Name/ ID] [Reason]");
 	if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "The specified player isn't connected.");

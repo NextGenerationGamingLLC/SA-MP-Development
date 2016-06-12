@@ -169,7 +169,7 @@ CMD:fc(playerid, params[]) {
 
 CMD:togfamed(playerid, params[])
 {
-	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		if(PlayerInfo[playerid][pToggledChats][8]) {
 
@@ -187,7 +187,7 @@ CMD:togfamed(playerid, params[])
 
 CMD:fmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pFamed] >= 4 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pFamed] >= 4 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 	    new string[128], targetid, reason[64];
 	    if(sscanf(params, "us[64]", targetid, reason))
@@ -222,7 +222,7 @@ CMD:fmute(playerid, params[])
 
 CMD:funmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pFamed] >= 4 || PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pFamed] >= 4 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 	    new string[128], targetid, reason[64];
 	    if(sscanf(params, "us[64]", targetid, reason))
@@ -257,7 +257,7 @@ CMD:funmute(playerid, params[])
 
 CMD:setfamed(playerid, params[])
 {
-    if(PlayerInfo[playerid][pFamed] >= 6 || PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pFamed] >= 6 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
     {
         new string[128], targetid, level;
 	    if(sscanf(params, "ui", targetid, level)) {
@@ -294,7 +294,7 @@ CMD:setfamed(playerid, params[])
 
 CMD:osetfamed(playerid, params[])
 {
-    if(PlayerInfo[playerid][pFamed] >= 6 || PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pFamed] >= 6 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
     {
         new string[128], pname[MAX_PLAYER_NAME], level;
 	    if(sscanf(params, "s[32]i", pname, level))
@@ -417,7 +417,7 @@ CMD:famedplate(playerid, params[])
 
 CMD:fmembers(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFamed] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFamed] >= 4)
 	{
 		new string[2048];
 		foreach(new i: Player) 

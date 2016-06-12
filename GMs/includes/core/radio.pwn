@@ -743,7 +743,7 @@ CMD:setstation(playerid, params[]) {
 
 CMD:audiostopurl(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4) {
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
     	if(IsValidDynamicArea(GetGVarInt("MusicArea")))
     	{
 	        new string[128];
@@ -772,7 +772,7 @@ CMD:audiostopurl(playerid, params[])
 
 CMD:audiourl(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4) {
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 
         new range;
         if(sscanf(params, "d", range)) {

@@ -380,7 +380,7 @@ CMD:rflhelp(playerid, params[])
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "TEAMOWNER: /rflinvite (20 Members Max.) /rflkick /rflchangename");
 	}
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "ADMIN: /toglapcount /rfltoggle /setlapcount /eventstats /seteventtype race /editevent checkpoints");
 	}

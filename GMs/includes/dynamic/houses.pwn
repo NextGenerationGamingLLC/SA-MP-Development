@@ -885,7 +885,7 @@ CMD:asellhouse(playerid, params[])
 
 CMD:goinhouse(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[48], housenum;
 		if(sscanf(params, "d", housenum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goinhouse [housenumber]");
@@ -909,7 +909,7 @@ CMD:goinhouse(playerid, params[])
 
 CMD:gotohouse(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[48], housenum;
 		if(sscanf(params, "d", housenum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotohouse [housenumber]");
@@ -934,7 +934,7 @@ CMD:gotohouse(playerid, params[])
 
 CMD:hnext(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available house...");
 		for(new x;x<MAX_HOUSES;x++)
@@ -958,7 +958,7 @@ CMD:hnext(playerid, params[])
 
 CMD:hname(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;
@@ -982,7 +982,7 @@ CMD:hname(playerid, params[])
 
 CMD:hedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 		return 1;
@@ -1518,7 +1518,7 @@ CMD:lockhouse(playerid, params[])
 
 CMD:hstatus(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new hid;
 	if(sscanf(params, "i", hid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hstatus [hid]");
 	new string[128];
@@ -1547,7 +1547,7 @@ CMD:hstatus(playerid, params[])
 
 CMD:hnear(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new option;
 		if(!sscanf(params, "d", option)) 
@@ -1596,7 +1596,7 @@ CMD:hnear(playerid, params[])
 
 CMD:hmove(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	new houseid, giveplayerid, fee, minfee, choice[16];
 	if(sscanf(params, "s[16]dudd", choice, houseid, giveplayerid, fee, minfee))
 	{

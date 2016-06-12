@@ -37,7 +37,7 @@
 
 CMD:impoundedit(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new string[128], choice[32], id, amount;
 		if(sscanf(params, "s[32]dD", choice, id, amount))
@@ -102,7 +102,7 @@ CMD:impoundstatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /impoundstatus [id]");
 		return 1;
 	}
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new string[128];
 		format(string,sizeof(string),"|___________ Impound Point Status (ID: %d) ___________|", id);
@@ -119,7 +119,7 @@ CMD:impoundstatus(playerid, params[])
 
 CMD:impoundnext(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] == 2)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available Impound Point...");
 		for(new x = 0; x < MAX_IMPOUNDPOINTS; x++)
@@ -143,7 +143,7 @@ CMD:impoundnext(playerid, params[])
 
 CMD:gotoimpoundpoint(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new id;
 		if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotoimpoundpoint [id]");

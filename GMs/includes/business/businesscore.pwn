@@ -778,7 +778,7 @@ CMD:businesshelp(playerid, params[])
 	        SendClientMessageEx(playerid, COLOR_GRAD3, "*** BUSINESS *** /offermenu");
 	    }
 	}
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pBM] > 0)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pBM] > 0)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD3, "*** BIZ ADMIN *** /bedit /bname (ST) /bnext (ST) /bnear (ST) /gotobiz (ST) /goinbiz (ST)");
 		SendClientMessageEx(playerid, COLOR_GRAD3, "*** BIZ ADMIN *** /deletegaspump /asellbiz /creategaspump /editgaspump");
@@ -1260,7 +1260,7 @@ CMD:editcarprice(playerid, params[])
 }
 
 CMD:deletecdveh(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pBM] == 2) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pBM] == 2) {
 
 		new
 		    iBusiness,
@@ -1301,7 +1301,7 @@ CMD:deletecdveh(playerid, params[]) {
 }
 
 CMD:createcdveh(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pBM] == 2) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pBM] == 2) {
 
 		new
 		    iBusiness,
@@ -1935,7 +1935,7 @@ CMD:bsafe(playerid, params[])
 // Business Admin Commands
 CMD:bedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBM] < 1)
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pBM] < 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command!");
 		return 1;
@@ -2170,7 +2170,7 @@ CMD:bedit(playerid, params[])
 
 CMD:bname(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
 	{
 		new name[40], businessid;
 
@@ -2203,7 +2203,7 @@ CMD:bname(playerid, params[])
 
 CMD:bnext(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available business...");
 		for(new i; i<MAX_BUSINESSES;i++)
@@ -2227,7 +2227,7 @@ CMD:bnext(playerid, params[])
 
 CMD:bnear(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing businesses within 30 meters of you");
 		for(new i;i<MAX_BUSINESSES;i++)
@@ -2249,7 +2249,7 @@ CMD:bnear(playerid, params[])
 
 CMD:gotobiz(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
 	{
 		new id;
 		if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotobiz [business id]");
@@ -2273,7 +2273,7 @@ CMD:gotobiz(playerid, params[])
 
 CMD:goinbiz(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pBM] >= 1)
 	{
 		new id;
 		if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goinbiz [businessid]");
@@ -2295,7 +2295,7 @@ CMD:goinbiz(playerid, params[])
 
 CMD:asellbiz(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBM] < 2) {
+	if (PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pBM] < 2) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use that command.");
 	}
 
@@ -2410,7 +2410,7 @@ CMD:buybiz(playerid, params[])
 CMD:creategaspump(playerid, params[])
 {
     new string[128], iBusinessID;
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pBM] >= 1) {
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pBM] >= 1) {
 
 		if(sscanf(params, "d", iBusinessID)) {
 			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /creategaspump [business id]");
@@ -2448,7 +2448,7 @@ CMD:creategaspump(playerid, params[])
 CMD:editgaspump(playerid, params[])
 {
     new iBusinessID, iPumpID, szLog[128], szName[9], Float: fValue;
-    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBM] < 1) {
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pBM] < 1) {
         return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
     }
 
@@ -2507,7 +2507,7 @@ CMD:editgaspump(playerid, params[])
 
 CMD:deletegaspump(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pBM] < 1) {
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pBM] < 1) {
         return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
     }
     new businessid, id, string[128];

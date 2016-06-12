@@ -99,7 +99,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		szMiscArray[0] = 0;
 		if(GetPVarInt(playerid, "gEdit") == 1)
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
 			new gateid = GetPVarInt(playerid, "EditingGateID");
 			GateInfo[gateid][gPosX] = x;
 			GateInfo[gateid][gPosY] = y;
@@ -116,7 +116,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		}
 		if(GetPVarInt(playerid, "gEdit") == 2)
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
 			new gateid = GetPVarInt(playerid, "EditingGateID");
 			GateInfo[gateid][gPosXM] = x;
 			GateInfo[gateid][gPosYM] = y;

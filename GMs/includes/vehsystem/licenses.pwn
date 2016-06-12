@@ -139,7 +139,7 @@ CMD:revokelicense(playerid, params[])
 
 CMD:givelicense(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid, type;
 		if(sscanf(params, "ud", giveplayerid, type))

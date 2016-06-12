@@ -638,7 +638,7 @@ CMD:cancelcall(playerid, params[])
 
 CMD:clearallcalls(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1) {
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1) {
         new string[128];
         ClearCalls();
         SendClientMessageEx(playerid,COLOR_GRAD1, "You have cleared all pending calls.");

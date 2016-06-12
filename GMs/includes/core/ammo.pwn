@@ -494,7 +494,7 @@ CMD:setammo(playerid, params[]) {
 		iAmmoType,
 		iAmount;
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this command!");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this command!");
 	if(sscanf(params, "uii", iTargetID, iAmmoType, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /setammo [playerid] [type (0 - 3)] [amount]");
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
 	if(iAmount < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The amount cannot be less than 1.");	

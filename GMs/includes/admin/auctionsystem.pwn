@@ -151,7 +151,7 @@ public EndAuction(auction)
 }
 
 CMD:editauctions(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 		new
 		    szDialog[700];
 

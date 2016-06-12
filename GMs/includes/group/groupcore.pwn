@@ -3027,7 +3027,7 @@ CMD:listbugs(playerid, params[])
 }
 
 CMD:online(playerid, params[]) {
-	if(PlayerInfo[playerid][pLeader] >= 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || IsACriminal(playerid))
+	if(PlayerInfo[playerid][pLeader] >= 0 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1 || IsACriminal(playerid))
 	{
 		if(PlayerInfo[playerid][pMember] == INVALID_GROUP_ID) return SendClientMessageEx(playerid, -1, "You are not a member of any group!");
 		szMiscArray[0] = 0;
@@ -3192,7 +3192,7 @@ CMD:gwithdraw(playerid, params[])
 {
 	new iGroupID;
 	new string[128], amount, reason[64];
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		if(sscanf(params, "dds[64]", iGroupID, amount, reason))
 		{
@@ -3487,7 +3487,7 @@ CMD:dvpark(playerid, params[])
 		{
 			return SendClientMessageEx(playerid, COLOR_GRAD1, " Invalid Dynamic Vehicle ID Provided!" );
 		}
-		if(PlayerInfo[playerid][pAdmin] >= 4 || (PlayerInfo[playerid][pLeader] == DynVehicleInfo[iDvSlotID][gv_igID]) && DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID) {
+		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || (PlayerInfo[playerid][pLeader] == DynVehicleInfo[iDvSlotID][gv_igID]) && DynVehicleInfo[iDvSlotID][gv_igID] != INVALID_GROUP_ID) {
 			GetVehiclePos(vehicleid, DynVehicleInfo[iDvSlotID][gv_fX], DynVehicleInfo[iDvSlotID][gv_fY], DynVehicleInfo[iDvSlotID][gv_fZ]);
 			GetVehicleZAngle(vehicleid, DynVehicleInfo[iDvSlotID][gv_fRotZ]);
 			DynVehicleInfo[iDvSlotID][gv_iVW] = GetPlayerVirtualWorld(playerid);
@@ -3545,7 +3545,7 @@ CMD:dvstatus(playerid, params[])
 		return 1;
 	}
 	iDvSlotID = DynVeh[vehicleid];
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2)
 	{
 	    if(iDvSlotID != -1)
 	    {
@@ -3570,7 +3570,7 @@ CMD:dvstatus(playerid, params[])
 
 CMD:dvcreate(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new
 				iVehicle,
@@ -3631,7 +3631,7 @@ CMD:dvrespawn(playerid, params[])
 	new szString[128],
 		iGroupID = PlayerInfo[playerid][pMember];
 
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
     {
 		if((0 <= iGroupID <= MAX_GROUPS))
 		{
@@ -3663,7 +3663,7 @@ CMD:dvrespawn(playerid, params[])
 
 CMD:dvedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new vehicleid, name[24], Float:value, slot;
 		if(sscanf(params, "is[24]F(0)D(0)", vehicleid, name, value, slot))
@@ -3684,7 +3684,7 @@ CMD:dvedit(playerid, params[])
 
 CMD:dveditslot(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new iDvSlotID, name[24], Float:value, slot;
 		if(sscanf(params, "is[24]F(0)D(0)", iDvSlotID, name, value, slot)) {
@@ -3703,7 +3703,7 @@ CMD:dveditslot(playerid, params[])
 
 CMD:dvtextobj(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new vehicleid, name[24], value[32], slot, string[128];
 		if(sscanf(params, "ids[8]s[32]", vehicleid, slot, name, value)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dvtextobj [vehicleid] [object slot] [text/font/color/bgcolor] [value]");
@@ -3757,7 +3757,7 @@ CMD:dvtextobj(playerid, params[])
 
 CMD:dvplate(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pGangModerator] >= 2)
 	{
 		new vehicleid, plate[32];
         if(sscanf(params, "ds[32]", vehicleid, plate))
@@ -4331,7 +4331,7 @@ CMD:destroy(playerid, params[])
 
 CMD:acades(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
 	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
@@ -4373,7 +4373,7 @@ CMD:cades(playerid, params[])
 
 CMD:aspikes(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
 	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
@@ -4411,7 +4411,7 @@ CMD:spikes(playerid, params[])
 
 CMD:aflares(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
 	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
@@ -4453,7 +4453,7 @@ CMD:flares(playerid, params[])
 
 CMD:acones(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
 	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
@@ -4495,7 +4495,7 @@ CMD:cones(playerid, params[])
 
 CMD:abarrels(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
 	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
@@ -4537,7 +4537,7 @@ CMD:barrels(playerid, params[])
 
 CMD:aladders(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
 	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
@@ -4579,7 +4579,7 @@ CMD:ladders(playerid, params[])
 
 CMD:asigns(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 
 	szMiscArray[0] = 0;
 	szMiscArray = "Group\tID\tLocation\tDeployer";
@@ -4749,7 +4749,7 @@ CMD:gov(playerid, params[])
 
 CMD:switchgroup(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] || PlayerInfo[playerid][pFactionModerator] >= 4) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] || PlayerInfo[playerid][pFactionModerator] >= 4) {
 		Group_ListGroups(playerid, DIALOG_SWITCHGROUP);
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized.");
@@ -4758,7 +4758,7 @@ CMD:switchgroup(playerid, params[])
 
 CMD:groupcsfban(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /groupcsfban [player]");
@@ -4847,7 +4847,7 @@ CMD:groupcsfunban(playerid, params[])
 
 CMD:groupban(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new giveplayerid, group , reason[64];
 		if(sscanf(params, "uds[64]", giveplayerid, group, reason))
@@ -4947,7 +4947,7 @@ CMD:showbadge(playerid, params[])
 
 CMD:groupkick(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /groupkick [player]");
@@ -5207,7 +5207,7 @@ CMD:togradio(playerid, params[])
 
 CMD:makeleader(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] >= 2)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2)
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) {
@@ -5470,7 +5470,7 @@ CMD:locker(playerid, params[]) {
 }
 
 CMD:editgroup(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2)
 	{
 		Group_ListGroups(playerid);
 	}

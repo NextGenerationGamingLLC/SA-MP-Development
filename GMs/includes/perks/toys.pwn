@@ -327,7 +327,7 @@ CMD:shopvest(playerid, params[])
 }
 
 CMD:listtoys(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1) {
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1) {
 
 		new giveplayerid, string[64];
 		szMiscArray[0] = 0;

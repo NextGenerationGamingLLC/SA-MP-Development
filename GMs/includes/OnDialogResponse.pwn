@@ -258,7 +258,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(response) {
 				new group = ListItemTrackId[playerid][listitem];
-				if (arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT && PlayerInfo[playerid][pAdmin] < 4)
+				if (arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 				{
 					SendClientMessage(playerid, COLOR_WHITE, "Only Senior Admins+ are allowed to use this feature.");
 					return 1;
@@ -334,7 +334,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case BIGEARS2: {
 			if(response) {
 				new group = ListItemTrackId[playerid][listitem];
-				if (arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT && PlayerInfo[playerid][pAdmin] < 4)
+				if (arrGroupData[group][g_iGroupType] == GROUP_TYPE_CONTRACT && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 				{
 					SendClientMessage(playerid, COLOR_WHITE, "Only Senior Admins+ are allowed to use this feature.");
 					return 1;
@@ -1702,7 +1702,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if((dialogid == AUDIO_URL) && response) // /audiourl
 	{
-		if(PlayerInfo[playerid][pAdmin] >= 4)
+		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 		{
 			new range = GetPVarInt(playerid, "aURLrange");
 			new Float:aX, Float:aY, Float:aZ;
@@ -2516,7 +2516,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		else SendClientMessageEx(playerid, COLOR_WHITE, "You can not spawn a non-existent vehicle.");
 	}
 	if(dialogid == ADMIN_VEHCHECK && response) {
-		if(PlayerInfo[playerid][pAdmin] < 4) { return SendClientMessage(playerid, COLOR_GRAD2, "You are not authorized");  }
+		if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) { return SendClientMessage(playerid, COLOR_GRAD2, "You are not authorized");  }
 		new giveplayerid = GetPVarInt(playerid, "vehcheck_giveplayerid");
 		if(!IsPlayerConnected(giveplayerid)) { return SendClientMessage(playerid, COLOR_GRAD2, "The person has disconnected"); }
 		new	iVehicleID = PlayerVehicleInfo[giveplayerid][listitem][pvId];
@@ -6297,7 +6297,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4)
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
 			{
 				return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to do that");
 			}
@@ -8212,7 +8212,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	else if (dialogid == DIALOG_SWITCHGROUP && response)
 	{
 
-		if (!(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)) return 1;
+		if (!(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)) return 1;
 
 		new
 			iGroupID = listitem;
@@ -11984,7 +11984,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					GetPlayerInterior(targetid), PlayerInfo[targetid][pVW], GetPlayerVirtualWorld(targetid), PlayerInfo[targetid][pJailTime], PlayerInfo[targetid][pBeingSentenced], PlayerInfo[targetid][pVIPM], PlayerInfo[targetid][pGVip], PlayerInfo[targetid][pRewardHours]);
 				}
 				if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[targetid][pAdmin] >= 2) format(adminstring, sizeof(adminstring), "Accepted Reports: %s\nTrashed Reports: %s\n", number_format(PlayerInfo[targetid][pAcceptReport]), number_format(PlayerInfo[targetid][pTrashReport]));
-				if((PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR] >= 1) && PlayerInfo[targetid][pHelper] >= 2) format(advisorstring, sizeof(advisorstring), "Hours on Duty: %s\nAccepted Help Requests: %s\n", number_format(PlayerInfo[targetid][pDutyHours]), number_format(PlayerInfo[targetid][pAcceptedHelp]));
+				if((PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pPR] >= 1 || PlayerInfo[playerid][pASM] >= 1) && PlayerInfo[targetid][pHelper] >= 2) format(advisorstring, sizeof(advisorstring), "Hours on Duty: %s\nAccepted Help Requests: %s\n", number_format(PlayerInfo[targetid][pDutyHours]), number_format(PlayerInfo[targetid][pAcceptedHelp]));
 
 				format(header, sizeof(header), "Showing Statistics of %s", GetPlayerNameEx(targetid));
 				format(resultline, sizeof(resultline),"{FFFFFF}Wanted Level: %d\n\

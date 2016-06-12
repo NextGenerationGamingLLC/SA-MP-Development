@@ -191,7 +191,7 @@ stock IsPlayerInRangeOfCharm(playerid)
 
 CMD:gotocharmpoint(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		SetPlayerPos(playerid, CharmPoints[ActiveCharmPoint][cpPos][0], CharmPoints[ActiveCharmPoint][cpPos][1], CharmPoints[ActiveCharmPoint][cpPos][2]);
 		SetPlayerVirtualWorld(playerid, CharmPoints[ActiveCharmPoint][cpVW]);
@@ -244,7 +244,7 @@ CharmTimer()
 
 CMD:claimtokeninfo(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return 1;
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return 1;
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "PointID: %d PickupID: %d 3DTextID: %d X: %f Y: %f Z: %f VW: %d Int: %d", ActiveCharmPoint, ActiveCharmPointPickup, _:ActiveCharmPoint3DText, CharmPoints[ActiveCharmPoint][cpPos][0], CharmPoints[ActiveCharmPoint][cpPos][1], CharmPoints[ActiveCharmPoint][cpPos][2], CharmPoints[ActiveCharmPoint][cpVW], CharmPoints[ActiveCharmPoint][cpInt]);
 	SendClientMessageEx(playerid, -1, szMiscArray);

@@ -68,7 +68,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					case 0: // Car Voucher
 					{
-						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 						{
 							SetPVarInt(playerid, "voucherdialog", 1);
 							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -80,7 +80,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(PlayerInfo[playeridd][pVehVoucher] < 1)
 						{
-							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 							{
 								SetPVarInt(playerid, "voucherdialog", 1);
 								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -96,7 +96,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 1: // SVIP Voucher
 					{
-						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 						{
 							SetPVarInt(playerid, "voucherdialog", 2);
 							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -108,7 +108,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(PlayerInfo[playeridd][pSVIPVoucher] < 1)
 						{
-							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 							{
 								SetPVarInt(playerid, "voucherdialog", 2);
 								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -124,7 +124,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 2: // GVIP Voucher
 					{
-						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1) 
 						{
 							SetPVarInt(playerid, "voucherdialog", 3);
 							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -136,7 +136,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(PlayerInfo[playeridd][pGVIPVoucher] < 1)
 						{
-							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 							{
 								SetPVarInt(playerid, "voucherdialog", 3);
 								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -211,7 +211,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 6: // Priority Advertisement Voucher
 					{
-						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 						{
 							SetPVarInt(playerid, "voucherdialog", 5);
 							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -222,7 +222,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(PlayerInfo[playeridd][pAdvertVoucher] < 1)
 						{
-							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 							{
 								SetPVarInt(playerid, "voucherdialog", 5);
 								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -238,7 +238,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 7: // 7 Days Silver VIP
 					{
-						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 						{
 							SetPVarInt(playerid, "voucherdialog", 6);
 							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -250,7 +250,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(PlayerInfo[playeridd][pSVIPExVoucher] < 1)
 						{
-							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 							{
 								SetPVarInt(playerid, "voucherdialog", 6);
 								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -266,7 +266,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 8: // 7 Days Gold VIP
 					{
-						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+						if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 						{
 							SetPVarInt(playerid, "voucherdialog", 7);
 							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -278,7 +278,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(PlayerInfo[playeridd][pGVIPExVoucher] < 1)
 						{
-							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
+							if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0 || PlayerInfo[playerid][pTogReports] == 0 && PlayerInfo[playerid][pASM] >= 1)
 							{
 								SetPVarInt(playerid, "voucherdialog", 7);
 								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -603,7 +603,7 @@ CMD:myvouchers(playerid, params[])
 CMD:checkvouchers(playerid, params[])
 {
 	new targetid;
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(sscanf(params, "u", targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /checkvouchers [player]");
 	if(!IsPlayerConnected(targetid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	
@@ -778,7 +778,7 @@ CMD:denyvoucher(playerid, params[])
 CMD:voucherhelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GRAD1, "** Player Commands: /myvouchers /denyvoucher /accept voucher");
-	if(PlayerInfo[playerid][pAdmin] >= 4)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "** Admin Commands: /checkvouchers");
 	}

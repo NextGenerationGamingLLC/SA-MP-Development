@@ -282,7 +282,7 @@ stock IsAtArrestPoint(playerid, type)
 
 CMD:arrestedit(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 4)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], choice[32], id, amount;
 		if(sscanf(params, "s[32]dD", choice, id, amount))
@@ -454,7 +454,7 @@ CMD:arreststatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /arreststatus [id]");
 		return 1;
 	}
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new string[128];
 		format(string,sizeof(string),"|___________ Arrest Point Status (ID: %d) ___________|", id);
@@ -475,7 +475,7 @@ CMD:arreststatus(playerid, params[])
 
 CMD:arrestnext(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available Arrest Point...");
 		for(new x = 0; x < MAX_ARRESTPOINTS; x++)
@@ -499,7 +499,7 @@ CMD:arrestnext(playerid, params[])
 
 CMD:gotoarrestpoint(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1)
 	{
 		new id;
 		if(sscanf(params, "d", id)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotoarrestpoint [id]");

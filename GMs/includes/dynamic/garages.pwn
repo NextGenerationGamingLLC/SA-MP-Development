@@ -142,7 +142,7 @@ CMD:garagepass(playerid, params[])
 
 CMD:garageedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new option[128], garageid, value, string[128];
 	if(sscanf(params, "s[128]iD(0)", option, garageid, value))
 	{
@@ -261,7 +261,7 @@ CMD:garageedit(playerid, params[])
 
 CMD:changeddtogarage(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	new doorid;
 	if(sscanf(params, "d", doorid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /changeddtogarage [doorid]");
 	if(doorid >= MAX_DDOORS) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid Door ID!");
@@ -306,7 +306,7 @@ CMD:changeddtogarage(playerid, params[])
 
 CMD:garageowner(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new playername[MAX_PLAYER_NAME], garageid, string[128];
 		if(sscanf(params, "ds[24]", garageid, playername)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /garageowner [garageid] [player name]");
@@ -334,7 +334,7 @@ CMD:garageowner(playerid, params[])
 
 CMD:agaragepass(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 
 	new string[128],
 		garageid,
@@ -351,7 +351,7 @@ CMD:agaragepass(playerid, params[])
 
 CMD:garagenext(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[128];
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available garage...");
@@ -375,7 +375,7 @@ CMD:garagenext(playerid, params[])
 
 CMD:goingarage(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[48], garage;
 		if(sscanf(params, "d", garage)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goingarage [garageid]");
@@ -397,7 +397,7 @@ CMD:goingarage(playerid, params[])
 
 CMD:gotogarage(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[48], garage;
 		if(sscanf(params, "d", garage)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotogarage [garageid]");
@@ -420,7 +420,7 @@ CMD:gotogarage(playerid, params[])
 
 CMD:garagestatus(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	new garageid;
 	if(sscanf(params, "i", garageid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /garagestatus [garageid]");
 	new string[128];
@@ -435,7 +435,7 @@ CMD:garagestatus(playerid, params[])
 
 CMD:garagenear(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 	new option, string[128];
 	if(!sscanf(params, "d", option))
 	{
@@ -484,7 +484,7 @@ CMD:garagenear(playerid, params[])
 CMD:garagehelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GRAD2, "*** GARAGE *** /garagepass /lockgarage /changegaragepass");
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "*** GARAGE - Admin *** /garageedit /garageowner /agaragepass /garagenext /gotogarage /goingarage /garagenear /garagestatus /changeddtogarage");
 	}

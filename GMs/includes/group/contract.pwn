@@ -318,7 +318,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 CMD:contracts(playerid, params[])
 {
-    if(IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 4)
+    if(IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
 	{
         SearchingHit(playerid);
     }
@@ -434,7 +434,7 @@ CMD:profile(playerid, params[])
 
 CMD:ranks(playerid, params[])
 {
-	if ((!IsAHitman(playerid)) && PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Member of the Hitman Agency!");
+	if ((!IsAHitman(playerid)) && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Member of the Hitman Agency!");
 	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Agency's Ranks __________________|");
 
 	new string[128];
@@ -729,7 +729,7 @@ CMD:givemehit(playerid, params[])
 
 CMD:deletehit(playerid, params[])
 {
-	if( PlayerInfo[playerid][pAdmin] >= 4 || (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT && PlayerInfo[playerid][pRank] >= 5) || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_CONTRACT )
+	if( PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT && PlayerInfo[playerid][pRank] >= 5) || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_CONTRACT )
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deletehit [player]");

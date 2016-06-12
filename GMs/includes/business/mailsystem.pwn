@@ -179,7 +179,7 @@ CMD:getmail(playerid, params[])
 
 CMD:createmailbox(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4) {
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
         return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
     }
 
@@ -214,7 +214,7 @@ CMD:createmailbox(playerid, params[])
 
 CMD:removemailbox(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4) {
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
         return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
     }
 	new id;
@@ -243,7 +243,7 @@ CMD:removemailbox(playerid, params[])
 
 CMD:gotomailbox(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4) {
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
         return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
     }
 	new id;
@@ -359,7 +359,7 @@ CMD:movemailbox(playerid, params[])
 
 CMD:adestroymailbox(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 4) {
+    if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) {
         return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
     }
     new houseid;

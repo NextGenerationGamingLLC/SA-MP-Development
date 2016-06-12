@@ -516,7 +516,7 @@ CMD:doorpass(playerid, params[])
 
 CMD:goindoor(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[48], doornum;
 		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goindoor [doornumber]");
@@ -540,7 +540,7 @@ CMD:goindoor(playerid, params[])
 
 CMD:gotodoor(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[48], doornum;
 		if(sscanf(params, "d", doornum)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gotodoor [doornumber]");
@@ -570,7 +570,7 @@ CMD:ddstatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ddstatus [doorid]");
 		return 1;
 	}
-	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[128];
 		format(string,sizeof(string),"|___________ Door Status (ID: %d) ___________|", doorid);
@@ -593,7 +593,7 @@ CMD:ddstatus(playerid, params[])
 
 CMD:ddnear(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new option;
 		if(!sscanf(params, "d", option)) 
@@ -648,7 +648,7 @@ CMD:ddnear(playerid, params[])
 
 CMD:ddnext(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "* Listing next available dynamic door...");
 		for(new x;x<MAX_DDOORS;x++)
@@ -671,7 +671,7 @@ CMD:ddnext(playerid, params[])
 }
 
 CMD:ddname(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new
 			szName[128],
@@ -704,7 +704,7 @@ CMD:ddname(playerid, params[]) {
 
 CMD:ddowner(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new playername[MAX_PLAYER_NAME], doorid, szName[128];
 		if(sscanf(params, "ds[24]", doorid, playername)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ddowner [door] [player name]");
@@ -741,7 +741,7 @@ CMD:ddowner(playerid, params[])
 
 CMD:ddpass(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pShopTech] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
 
 	new string[128],
 		doorid,
@@ -758,7 +758,7 @@ CMD:ddpass(playerid, params[])
 
 CMD:ddedit(playerid, params[])
 {
- 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pShopTech] >= 1)
+ 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[128], choice[32], doorid, amount;
 		if(sscanf(params, "s[32]dD", choice, doorid, amount))
@@ -1105,7 +1105,7 @@ CMD:ddedit(playerid, params[])
 
 CMD:ddmove(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	new doorid, giveplayerid, fee, minfee, choice[16];
 	if(sscanf(params, "s[16]dudd", choice, doorid, giveplayerid, fee, minfee))
 	{
