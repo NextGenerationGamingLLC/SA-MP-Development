@@ -52,7 +52,7 @@ CMD:rewards(playerid, params[]) {
 }
 
 CMD:goldgiftbox(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 1338) switch(iRewardBox) {
+	if(PlayerInfo[playerid][pAdmin] >= 1337) switch(iRewardBox) {
 	    case 0: {
 
 	        new
@@ -85,7 +85,7 @@ CMD:goldgiftbox(playerid, params[]) {
 }
 
 CMD:rewardplay(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 1338) switch(iRewardPlay) {
+	if(PlayerInfo[playerid][pAdmin] >= 1337) switch(iRewardPlay) {
 		case 0: {
 
 			new

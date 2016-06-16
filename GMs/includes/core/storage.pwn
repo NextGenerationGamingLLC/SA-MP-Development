@@ -1581,9 +1581,6 @@ stock ShowInventory(playerid,targetid)
 		EXP Hours: %s\n\
 		Event Tokens: %s\n\
 		Materials: %s\n\
-		Crack: %s\n\
-		Pot: %s\n\
-		Heroin: %s\n\
 		Crates: %s\n\
 		Paper: %s\n\
 		Rope: %s\n\
@@ -1606,9 +1603,6 @@ stock ShowInventory(playerid,targetid)
 		number_format(PlayerInfo[targetid][pDoubleEXP]),
 		number_format(PlayerInfo[targetid][pEventTokens]),
 		number_format(PlayerInfo[targetid][pMats]),
-		number_format(PlayerInfo[targetid][pDrugs][1]),
-		number_format(PlayerInfo[targetid][pDrugs][0]),
-		number_format(PlayerInfo[targetid][pDrugs][3]),
 		number_format(PlayerInfo[targetid][pCrates]),
 		number_format(PlayerInfo[targetid][pPaper]),
 		number_format(PlayerInfo[targetid][pRope]),

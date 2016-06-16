@@ -304,7 +304,7 @@ CMD:reply(playerid, params[])
 
 CMD:rmute(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3)
+	if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rmute [player]");

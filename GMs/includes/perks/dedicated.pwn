@@ -64,7 +64,6 @@ GetDPRankName(playerid)
 			case 3: rank = "General Admin";
 			case 4: rank = "Senior Admin";
 			case 1337: rank = "Head Admin";
-			case 1338: rank = "Lead Head Admin";
 			case 99999: rank = "Executive Admin";
 		}
 	}
@@ -396,7 +395,7 @@ CMD:dedicatedplayers(playerid, params[])
 
 CMD:dpdraw(playerid, params[]) 
 {
-    if(PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pAdmin] >= 1338) 
+    if(PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pAdmin] >= 1337) 
     {
 
 		new

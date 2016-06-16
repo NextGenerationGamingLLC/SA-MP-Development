@@ -183,7 +183,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 					case 5: // Gift Reset Voucher
 					{
-						if((PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pHR] >= 1) && PlayerInfo[playerid][pTogReports] == 0)
+						if((PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pHR] >= 1) && PlayerInfo[playerid][pTogReports] == 0)
 						{
 							SetPVarInt(playerid, "voucherdialog", 4);
 							return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");
@@ -195,7 +195,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						else if(PlayerInfo[playeridd][pGiftVoucher] < 1)
 						{
-							if((PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pHR] >= 1) && PlayerInfo[playerid][pTogReports] == 0)
+							if((PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pHR] >= 1) && PlayerInfo[playerid][pTogReports] == 0)
 							{
 								SetPVarInt(playerid, "voucherdialog", 4);
 								return ShowPlayerDialogEx(playerid, DIALOG_VOUCHERADMIN, DIALOG_STYLE_INPUT, "Voucher System", "Please enter how many would you like to give to this player.", "Enter", "Cancel");

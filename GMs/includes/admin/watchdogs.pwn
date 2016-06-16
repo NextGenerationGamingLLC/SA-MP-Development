@@ -404,7 +404,6 @@ CMD:wd(playerid, params[])
 			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMiscArray, sizeof(szMiscArray), "- General Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMiscArray, sizeof(szMiscArray), "- Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "- Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "- Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "- Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pWatchdog] == 1) format(szMiscArray, sizeof(szMiscArray), "** Watchdog %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pWatchdog] == 2) format(szMiscArray, sizeof(szMiscArray), "** Senior Watchdog %s: %s", GetPlayerNameEx(playerid), params);

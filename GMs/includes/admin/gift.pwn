@@ -3413,7 +3413,7 @@ CMD:gifts(playerid, params[])
 
 CMD:vipgifts(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 1338)
+    if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
      	if(VIPGifts == 0)
      	{
@@ -3497,7 +3497,7 @@ CMD:giftnear(playerid, params[])
 
 CMD:resetgiftall(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338)
+	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has reset everyone's gift timer.", GetPlayerNameEx(playerid));
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);

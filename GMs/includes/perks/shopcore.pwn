@@ -487,7 +487,7 @@ CMD:orders(playerid, params[])
 
 CMD:givemeorder(playerid, params[])
 {
-	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 1338)
+	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid))
@@ -535,7 +535,7 @@ CMD:givemeorder(playerid, params[])
 
 /*CMD:adjustoid(playerid, params[])
 {
-	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 1338)
+	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 	    new giveplayerid, orderid, string[128];
 		if(sscanf(params, "ui", giveplayerid, orderid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adjustoid [player] [new orderid]");
@@ -551,7 +551,7 @@ CMD:givemeorder(playerid, params[])
 
 CMD:processorder(playerid, params[])
 {
-	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 1338)
+	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid))
@@ -608,7 +608,7 @@ CMD:processorder(playerid, params[])
 
 CMD:denyorder(playerid, params[])
 {
-	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 1338)
+	if(PlayerInfo[playerid][pShopTech] > 0 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason))
@@ -1735,7 +1735,7 @@ CMD:cooldowns(playerid, params[])
 
 CMD:managecredits(playerid, params[]) 
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pShopTech] >= 3)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pShopTech] >= 3)
 		return ShowPlayerDialogEx(playerid, DIALOG_MANAGECREDITS, DIALOG_STYLE_LIST, "Manage Credits",  "Credits Selling\nFree Weekend\nNon-VIP Credit Selling", "Okay", "Cancel");
 	return 0;
 }

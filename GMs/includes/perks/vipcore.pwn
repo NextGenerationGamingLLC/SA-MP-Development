@@ -545,7 +545,7 @@ CMD:v(playerid, params[]) {
 
 CMD:searchvipm(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 	    new
 	        count,
@@ -639,7 +639,7 @@ CMD:sellvip(playerid, params[]) {
 
 CMD:newgvip(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 	    new
 	        iOrderID,
@@ -1225,7 +1225,6 @@ CMD:vipm(playerid, params[])
 	if(PlayerInfo[playerid][pVIPMod] == 1) format(szMessage, sizeof(szMessage), "* VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pVIPMod] == 2) format(szMessage, sizeof(szMessage), "* Senior VIP Moderator %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pShopTech] >= 3) format(szMessage, sizeof(szMessage), "* DoCR %s: %s", GetPlayerNameEx(playerid), params);
-	else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMessage, sizeof(szMessage), "* Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 	else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMessage, sizeof(szMessage), "* Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
 	else format(szMessage, sizeof(szMessage), "* Undefined Rank %s: %s", GetPlayerNameEx(playerid), params);
 	foreach(new i: Player)

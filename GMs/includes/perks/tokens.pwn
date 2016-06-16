@@ -48,7 +48,7 @@ CMD:tokenhelp(playerid, params[])
 }
 
 CMD:random(playerid, params[]) {
-    if(PlayerInfo[playerid][pAdmin] >= 1338) {
+    if(PlayerInfo[playerid][pAdmin] >= 1337) {
 
 		new
 			iHours,
@@ -87,7 +87,7 @@ CMD:random(playerid, params[]) {
 }
 
 CMD:vrandom(playerid, params[]) {
-    if(PlayerInfo[playerid][pAdmin] >= 1338) {
+    if(PlayerInfo[playerid][pAdmin] >= 1337) {
 
 		new
 			iHours,

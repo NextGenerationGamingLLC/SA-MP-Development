@@ -39,7 +39,6 @@
 #define 		ADMIN_GENERAL		3
 #define 		ADMIN_SENIOR 		4
 #define 		ADMIN_HEAD			1337
-#define 		ADMIN_LEAD			1338
 #define 		ADMIN_EXECUTIVE 	99999
 
 stock IsAdminLevel(playerid, level, warning = 1) {
@@ -88,7 +87,6 @@ stock GetAdminRankName(i)
 		case 3: format(szMiscArray, sizeof(szMiscArray), "General Administrator");
 		case 4: format(szMiscArray, sizeof(szMiscArray), "Senior Administrator");
 		case 1337: format(szMiscArray, sizeof(szMiscArray), "Head Administrator");
-		case 1338: format(szMiscArray, sizeof(szMiscArray), "Lead Head Administrator");
 		case 99999: format(szMiscArray, sizeof(szMiscArray), "Executive Administrator");
 		default: format(szMiscArray, sizeof(szMiscArray), "Undefined Administrator (%i)", i);
 	}
@@ -152,7 +150,6 @@ stock GetStaffRank(playerid)
 			case 3: szMiscArray = "{00FF00}General Administrator{FFFFFF}";
 			case 4: szMiscArray = "{F4A460}Senior Administrator{FFFFFF}";
 			case 1337: szMiscArray = "{FF0000}Head Administrator{FFFFFF}";
-			case 1338: szMiscArray = "{298EFF}Lead Head Administrator{FFFFFF}";
 			case 99999: szMiscArray = "{298EFF}Executive Administrator{FFFFFF}";
 			default: format(szMiscArray, sizeof(szMiscArray), "Undefined Administrator (%d)", PlayerInfo[playerid][pAdmin]);
 		}
@@ -1056,7 +1053,7 @@ CMD:bigears(playerid, params[])
 
 CMD:clearall(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 1338) {
+    if (PlayerInfo[playerid][pAdmin] >= 1337) {
         foreach(new i: Player)
         {
 			PlayerInfo[i][pWantedLevel] = 0;
@@ -1471,7 +1468,7 @@ CMD:destroypvehicle(playerid, params[])
 
 CMD:setsec(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pHR] >= 2 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pSecurity] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pHR] >= 2 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pSecurity] >= 2)
 	{
 	    new giveplayerid, task[8], string[128];
 	    if(sscanf(params, "us[8]", giveplayerid, task))
@@ -1760,7 +1757,7 @@ CMD:removepvehicle(playerid, params[])
 }
 
 CMD:makeadmin(playerid, params[])  {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3) {
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3) {
 
 		new
 			iAdminValue,
@@ -1797,7 +1794,6 @@ CMD:makeadmin(playerid, params[])  {
 					case 3: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a General Administrator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 					case 4: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Senior Administrator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 					case 1337: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Head Administrator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
-					case 1338: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s a Lead Head Administrator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 					case 99999: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s an Executive Administrator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 					default: format(szRank, sizeof(szRank), "AdmCmd: %s has made %s an undefined level administrator.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
 				}
@@ -1813,7 +1809,6 @@ CMD:makeadmin(playerid, params[])  {
 					case 3: format(szRank, sizeof(szRank), "You have been made a General Administrator by %s.", GetPlayerNameEx(playerid));
 					case 4: format(szRank, sizeof(szRank), "You have been made a Senior Administrator by %s.", GetPlayerNameEx(playerid));
 					case 1337: format(szRank, sizeof(szRank), "You have been made a Head Administrator by %s.", GetPlayerNameEx(playerid));
-					case 1338: format(szRank, sizeof(szRank), "You have been made a Lead Head Administrator by %s.", GetPlayerNameEx(playerid));
 					case 99999: format(szRank, sizeof(szRank), "You have been made an Executive Administrator by %s.", GetPlayerNameEx(playerid));
 					default: format(szRank, sizeof(szRank), "You have been made an undefined level administrator by %s.", GetPlayerNameEx(playerid));
 				}
@@ -1826,7 +1821,6 @@ CMD:makeadmin(playerid, params[])  {
 					case 3: format(szRank, sizeof(szRank), "You have made %s a General Administrator.", GetPlayerNameEx(iTargetID));
 					case 4: format(szRank, sizeof(szRank), "You have made %s a Senior Administrator.", GetPlayerNameEx(iTargetID));
 					case 1337: format(szRank, sizeof(szRank), "You have made %s a Head Administrator.", GetPlayerNameEx(iTargetID));
-					case 1338: format(szRank, sizeof(szRank), "You have made %s a Lead Head Administrator.", GetPlayerNameEx(iTargetID));
 					case 99999: format(szRank, sizeof(szRank), "You have made %s an Executive Administrator.", GetPlayerNameEx(iTargetID));
 					default: format(szRank, sizeof(szRank), "You have made %s an undefined level administrator.", GetPlayerNameEx(iTargetID));
 				}
@@ -1957,7 +1951,6 @@ CMD:staff(playerid, params[]) {
 			else if(PlayerInfo[playerid][pAdmin] == 3) format(szMiscArray, sizeof(szMiscArray), "** General Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMiscArray, sizeof(szMiscArray), "** Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "** Head Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pAdmin] == 1338) format(szMiscArray, sizeof(szMiscArray), "** Lead Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "** Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pHelper] == 2) format(szMiscArray, sizeof(szMiscArray), "** Player Advisor %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pHelper] == 3) format(szMiscArray, sizeof(szMiscArray), "** Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
@@ -2228,7 +2221,7 @@ CMD:unlockveh(playerid, params[])
 
 CMD:ounsuspend(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3)
 	{
 		new string[128], query[512], tmpName[24];
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /ounsuspend [player name]");
@@ -2246,7 +2239,7 @@ CMD:ounsuspend(playerid, params[])
 }
 
 CMD:osetrmutes(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3) {
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3) {
 
 		new
 			szPlayerName[MAX_PLAYER_NAME],
@@ -2668,7 +2661,7 @@ CMD:ipcheck(playerid, params[])
 		if(giveplayerid == INVALID_PLAYER_ID) return 1;
 		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 
-		if(PlayerInfo[giveplayerid][pAdmin] <= 1 || (PlayerInfo[giveplayerid][pAdmin] <= PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pAdmin] >= 1338))
+		if(PlayerInfo[giveplayerid][pAdmin] <= 1 || (PlayerInfo[giveplayerid][pAdmin] <= PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pAdmin] >= 1337))
 		{
 			new playerip[32];
 			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
@@ -3113,7 +3106,7 @@ CMD:spec(playerid, params[])
 		{
 			new string[128];
 			format(string, sizeof(string), "Admin %s is speccing %s", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(Spectate[giveplayerid]));
-			if(PlayerInfo[playerid][pAdmin] >= 1338 && SpecTime[giveplayerid])
+			if(PlayerInfo[playerid][pAdmin] >= 1337 && SpecTime[giveplayerid])
 			{
 				new seconds = gettime()-SpecTime[giveplayerid];
 				new minutes = seconds/60;
@@ -3442,7 +3435,7 @@ CMD:calculate(playerid, params[])
 
 CMD:suspend(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3 || PlayerInfo[playerid][pSecurity] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3 || PlayerInfo[playerid][pSecurity] >= 2)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /suspend [player]");
@@ -3484,7 +3477,7 @@ CMD:suspend(playerid, params[])
 
 CMD:osuspend(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3 || PlayerInfo[playerid][pSecurity] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3 || PlayerInfo[playerid][pSecurity] >= 2)
 	{
 		new string[128], query[512], tmpName[MAX_PLAYER_NAME];
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /osuspend [player name]");
@@ -5220,7 +5213,7 @@ CMD:unfreeze(playerid, params[])
 
 CMD:makemoderator(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3)
+	if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3)
 	{
 		new string[128], giveplayerid, level;
 		if(sscanf(params, "ui", giveplayerid, level)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makemoderator [player] [level 1-2]");
@@ -5351,12 +5344,9 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /permaban /setcolor /payday /clearallreports /eventreset /amotd /motd /vipmotd /givetoken /giftgvip");
 		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /vmute /vsuspend /gifts /rcreset /dvrespawnall /setarmorall /dynamicgift /asellhouse");
 		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /togfireworks /togshopnotices /spg /snonrp /smg /skos /undercover /makewatchdog /watchlistadd");
-		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /audiourl /audiostopurl /editgrouptoy /amanagerivals");
-	}
-	if (PlayerInfo[playerid][pAdmin] >= 1338)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {298EFF}LEAD HEAD ADMIN{E3E3E3} --* /setsec /suspend /osuspend /ounsuspend /osetrmutes /rmute /clearall /specreset");
-		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {298EFF}LEAD HEAD ADMIN{E3E3E3} --* /pausespec /random /vrandom /giftreset /searchvipm /vipgifts /buddyinvite /rewardplay");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /audiourl /audiostopurl /editgrouptoy /amanagerivals /setsec /suspend /osuspend /ounsuspend");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /osetrmutes /rmute /clearall /specreset /pausespec /random /vrandom /giftreset /searchvipm");
+		SendClientMessageEx(playerid, COLOR_GRAD5,"--* {FF0000}HEAD ADMIN{E3E3E3} --* /vipgifts /buddyinvite /rewardplay");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 99999)
 	{
@@ -5875,7 +5865,7 @@ CMD:sec(playerid, params[])
 
 CMD:specreset(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 1338)
+    if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
 		SendClientMessageEx(playerid, COLOR_GRAD2, "Resetting the special timer must be done through FTP, delete all the files in /stokens/ folder");
 	}
@@ -5884,7 +5874,7 @@ CMD:specreset(playerid, params[])
 
 CMD:pausespec(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 1338)
+    if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
     	if(SpecTimer == 1)
      	{

@@ -56,13 +56,8 @@ CMD:mydrugs(playerid, params[])
 {
 	new string[450];
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-	for(new i; i < sizeof(Drugs); ++i) 
-	{
-		if(i==4) format(string, sizeof(string),"%s: %dg", Drugs[i], PlayerInfo[playerid][pDrugs][i], Drugs[i + 1], PlayerInfo[playerid][pDrugs][i + 1]); // REMOVE THE IF STATEMENT IF AN ODD NUMBER OF DRUGS ARE ADDED, IF AN EVEN NUMBER ARE ADDED INCREASE THE 4
-		else format(string, sizeof(string),"%s: %dg {CCCCCC}| %s: %dg", Drugs[i], PlayerInfo[playerid][pDrugs][i], Drugs[i + 1], PlayerInfo[playerid][pDrugs][i + 1]);
-		SendClientMessageEx(playerid, COLOR_GRAD1, string);
-		i++;
-	}
+	for(new i; i < sizeof(Drugs); i++) format(string, sizeof(string),"%s | %s: %dg", string, Drugs[i], PlayerInfo[playerid][pDrugs][i]);
+	SendClientMessageEx(playerid, COLOR_GRAD1, string);
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	return 1;
 }
@@ -1215,7 +1210,7 @@ public AttemptPurify(playerid)
 	        	format(szMessage, sizeof(szMessage), "* %s has successfully purified %d milligrams of heroin.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pRawOpium]);
 				ProxDetector(25.0, playerid, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
-				PlayerInfo[playerid][pDrugs][3] += PlayerInfo[playerid][pRawOpium];
+				PlayerInfo[playerid][pDrugs][4] += PlayerInfo[playerid][pRawOpium];
 	        	PlayerInfo[playerid][pRawOpium] = 0;
             	KillTimer(GetPVarInt(playerid, "AttemptPurify"));
 	        	Purification[0] = 0;

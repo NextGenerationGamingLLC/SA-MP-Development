@@ -1720,7 +1720,7 @@ CMD:furniturehelp(playerid, params[]) {
 
 CMD:furniture(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
 
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
 		for(new x; x < sizeof(Furniture_TD); ++x) TextDrawHideForPlayer(playerid, Furniture_TD[x]);
@@ -1768,7 +1768,7 @@ CMD:setfurnitureslots(playerid, params[]) {
 
 CMD:unfurnishhouse(playerid, params[]) {
 	
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
 
 	new iHouseID = GetHouseID(playerid),
 		Float:fHouseZ,
@@ -1834,7 +1834,7 @@ CMD:unfurnishhouse(playerid, params[]) {
 
 CMD:furnishhouse(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
 
 	new iHouseID = GetHouseID(playerid),
 		Float:fHouseZ,
@@ -1905,7 +1905,7 @@ public OnEditFurniture() {
 
 CMD:furnitureresetpos(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
 
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
 
@@ -1925,7 +1925,7 @@ CMD:furnitureresetpos(playerid, params[]) {
 
 CMD:destroyfurniture(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_LEAD)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
 
 	new iHouseID = GetHouseID(playerid),
 		iSlotID;
@@ -1940,7 +1940,7 @@ CMD:destroyfurniture(playerid, params[]) {
 
 CMD:revokebuilders(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
 
 	new iHouseID;
 	if(sscanf(params, "d", iHouseID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /revokebuilder [house (1, 2, 3)]");
@@ -2003,7 +2003,7 @@ CMD:door(playerid, params[]) {
 		
 CMD:rehashcatalog(playerid, params[]) {
 
-	if(IsAdminLevel(playerid, ADMIN_LEAD, 1)) return 1;
+	if(IsAdminLevel(playerid, ADMIN_HEAD, 1)) return 1;
 	for(new i; i < MAX_CATALOG; ++i) {
 
 		arrFurnitureCatalog[i][fc_iModelID] = 0;

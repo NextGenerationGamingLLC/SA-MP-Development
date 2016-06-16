@@ -166,7 +166,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 #if defined event_chancegambler
 CMD:togchancegambler(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1338 || PlayerInfo[playerid][pPR] >= 2)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pPR] >= 2)
 	{
 		if(chancegambler == 0)
 		{
@@ -214,7 +214,7 @@ CMD:chances(playerid, params[])
 
 CMD:fifmenu(playerid, params[])
 {
-	if(PlayerInfo[playerid][pPR] >= 2 || PlayerInfo[playerid][pAdmin] >= 1338)
+	if(PlayerInfo[playerid][pPR] >= 2 || PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 		new FIFString[256];
 		if(FIFEnabled == 0)

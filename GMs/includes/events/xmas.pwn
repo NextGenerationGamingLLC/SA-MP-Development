@@ -107,7 +107,7 @@ CMD:carol(playerid, params[]) // Christmas Event
 
 CMD:xmas(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] >= 1338)
+    if(PlayerInfo[playerid][pAdmin] >= 1337)
    	{
     	if(XMASGifts == 0)
      	{

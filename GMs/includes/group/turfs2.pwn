@@ -388,7 +388,7 @@ CMD:turfhelp(playerid, params[]) {
 
 CMD:rehashturfs(playerid, params[]) {
 
-	if(!IsAdminLevel(playerid, ADMIN_LEAD)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_HEAD)) return 1;
 	TurfWars_Rehash();
 	SendClientMessageEx(playerid, COLOR_GRAD1, "You reloaded all turfs in the server.");
 	return 1;
