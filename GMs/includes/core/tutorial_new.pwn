@@ -595,12 +595,10 @@ Tutorial_Stage(playerid) {
 			szMiscArray = "_______________________________________________________________________________________________________________________________________________________\n\n\n";
 			strcat(szMiscArray, "We wish you a great time here at Next Generation Role Play. You will be taken to the character creation menu now.\n\n");
 			strcat(szMiscArray, "\t{F69521}Developers\n");
-			strcat(szMiscArray, "\t\t{F69521}Director of Development{FFFFFF}:\n\t\t\t\n\n");
+			strcat(szMiscArray, "\t\t{F69521}Director of Development{FFFFFF}:\n\t\t\tWinterfield\n\n");
 			strcat(szMiscArray, "\t\t{F69521}Developers{FFFFFF}:\n\
 				\t\t\tMiguel\n\
 				\t\t\tJingles\n\
-				\t\t\tDom\n\
-				\t\t\tWinterfield\n\
 				\t\t\tFarva\n\
 				\t\t\t{F69500}Past Developers{FFFFFF}:\n\
 				\t\t\tAkatony\tJohn\t\tBrendan\n\
@@ -608,7 +606,8 @@ Tutorial_Stage(playerid) {
 				\t\t\tZhao\t\tDonuts\t\tMo Cena\n\
 				\t\t\tCalgon\t\tNeo\t\tThomasJWhite\n\
 				\t\t\tBeren\t\tKareemtastic\tSew Sumi\n\
-				\t\t\tRazbit\t\tAlexR\t\tAustin\tRothschild\n");
+				\t\t\tRazbit\t\tAlexR\t\tAustin\n\
+				\t\t\tDom\t\tRothschild\n");
 			strcat(szMiscArray, "\n\n_______________________________________________________________________________________________________________________________________________________");
 			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Server Offenses", szMiscArray, szCount, "");
 		}

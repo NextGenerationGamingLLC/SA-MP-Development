@@ -8230,7 +8230,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 	else if (dialogid == DIALOG_MAKELEADER && response)
 	{
-		if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] >= 2)
+		if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 2)
 		{
 			new
 				iGroupID = listitem,

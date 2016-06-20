@@ -270,7 +270,7 @@ CMD:ban(playerid, params[]) {
 		szReason[64],
 		iLength;
 
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
 	if(sscanf(params, "uds[64]", iTargetID, iLength, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [playerid] [length in days] [reason]");
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
 	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");

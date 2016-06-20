@@ -98,14 +98,14 @@ CMD:fix(playerid, params[])
 						return 1;
 					}
 				}
-    			format(string, sizeof(string), "* %s has began repairing the vehicle.", GetPlayerNameEx(playerid));
-    			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     			if(level >= 400)
     			{
     				FixVehicle(playerid, closestcar);
     			} 
     			else 
     			{
+    				format(string, sizeof(string), "* %s has began repairing the vehicle.", GetPlayerNameEx(playerid));
+    				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					SetPVarInt(playerid, "FixVehicleTimer", SetTimerEx("FixVehicle", 15000, false, "ii", playerid, closestcar));
 					TogglePlayerControllable(playerid, 0);
 					ApplyAnimation(playerid, "MISC", "Plunger_01", 4.1, 1, 1, 1, 1, 1, 1);

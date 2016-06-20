@@ -492,8 +492,8 @@ CMD:admins(playerid, params[])
 				if(PlayerInfo[i][pShopTech] == 3) strcat(szMiscArray, " [DOCR]");
 				if(PlayerInfo[i][pUndercover] == 1) strcat(szMiscArray, " [UC]");
 				if(PlayerInfo[i][pUndercover] == 2) strcat(szMiscArray, " [DOSO]");
-				if(PlayerInfo[i][pFactionModerator] == 1) strcat(szMiscArray, " [DGA]");
-				if(PlayerInfo[i][pFactionModerator] == 2) strcat(szMiscArray, " [DGA]");
+				if(PlayerInfo[i][pFactionModerator] == 1) strcat(szMiscArray, " [FMOD]");
+				if(PlayerInfo[i][pFactionModerator] == 2) strcat(szMiscArray, " [DOFM]");
 				if(PlayerInfo[i][pGangModerator] == 1) strcat(szMiscArray, " [GMOD]");
 				if(PlayerInfo[i][pGangModerator] == 2) strcat(szMiscArray, " [DOGM]");
 				if(PlayerInfo[i][pTogReports]) strcat(szMiscArray, " [SPEC MODE]");
@@ -6162,7 +6162,7 @@ CMD:card(playerid, params[]) {
 		case 12: szTemp = "king";
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "%s has pulled the card %s of %s", GetPlayerNameEx(playerid), szTemp, szTemp2);
+	format(szMiscArray, sizeof(szMiscArray), "* %s has pulled the card %s of %s.", GetPlayerNameEx(playerid), szTemp, szTemp2);
 	ProxDetector(5.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE, 1);
 
 	return 1;

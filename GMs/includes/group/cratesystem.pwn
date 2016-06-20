@@ -919,18 +919,18 @@ CMD:cvrespawn(playerid, params[])
 
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] >= 1 || PlayerInfo[playerid][pGangModerator] >= 1)
     {
-		for(new i; i < MAX_DYNAMIC_VEHICLES; i++)
+		for(new i; i < MAX_VEHICLES; i++)
 		{
-			if(DynVehicleInfo[i][gv_iType] == 1)
+			if(DynVeh[i] != -1 && DynVehicleInfo[DynVeh[i]][gv_iType] == 1)
 			{
-				if(!IsVehicleOccupied(DynVehicleInfo[i][gv_iSpawnedID])) 
+				if(!IsVehicleOccupied(DynVeh[i])) 
 				{
-					DynVeh_Spawn(i);
+					DynVeh_Spawn(DynVeh[i]);
 				}
 			}
 		}
-
-		format(szString,sizeof(szString),"{AA3333}AdmWarning{FFFF00}: %s has respawn all dynamic crate vehicles.", GetPlayerNameEx(playerid));
+		
+		format(szString,sizeof(szString),"{AA3333}AdmWarning{FFFF00}: %s has respawned all dynamic crate vehicles.", GetPlayerNameEx(playerid));
 		ABroadCast(COLOR_YELLOW, szString, 2);
         format(szString, sizeof(szString), "%s has respawned all dynamic crate vehicles.", GetPlayerNameEx(playerid));
    		Log("logs/group.log", szString);
@@ -947,7 +947,7 @@ CMD:cvlist(playerid, params[])
 		{
 			if(DynVeh[i] != -1 && DynVehicleInfo[DynVeh[i]][gv_iType] == 1)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "ID: %d | Name: %s", i, VehicleName[DynVehicleInfo[i][gv_iModel]]);
+				format(szMiscArray, sizeof(szMiscArray), "ID: %d | Name: %s", i, VehicleName[DynVehicleInfo[DynVeh[i]][gv_iModel] - 400]);
 				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 			}
 		}

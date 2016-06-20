@@ -57,10 +57,10 @@ CMD:present(playerid, params[])
 			if(courtjail[giveplayerid] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "That person isn't in the courthouse jail!");
 			if(courtjail[giveplayerid] > 0)
 			{
-				SetPlayerPos(giveplayerid, 2224.3550,-1033.9563,1200.4340);
+				SetPlayerPos(giveplayerid, 1494.8669, -1552.0634, 1127.0251);
 		    	SetPlayerFacingAngle(giveplayerid, 176.9777);
-		    	SetPlayerVirtualWorld(giveplayerid, 0);
-		    	SetPlayerInterior(giveplayerid, 1);
+		    	SetPlayerVirtualWorld(giveplayerid, GetPlayerVirtualWorld(playerid));
+		    	SetPlayerInterior(giveplayerid, GetPlayerInterior(playerid));
 			}
 			courtjail[giveplayerid] = 0;
 		    SetCameraBehindPlayer(giveplayerid);
@@ -594,13 +594,13 @@ CMD:warrantarrest(playerid, params[])
 				ResetPlayerWeaponsEx(suspect);
 				format(string, sizeof(string), "<< Defendant %s has been delivered to the courtroom pending trial by %s >>", GetPlayerNameEx(suspect), GetPlayerNameEx(playerid));
 				SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
-				SetPlayerInterior(suspect, 1);
+				SetPlayerInterior(suspect, 5);
 				PlayerInfo[suspect][pInt] = 1;
 				SetPlayerVirtualWorld(suspect, 0);
 				PlayerInfo[suspect][pVW] = 0;
 				new rand = random(sizeof(WarrantJail));
 				SetPlayerFacingAngle(suspect, 180);
-				SetPlayerPos(suspect, 1496.7419,-1546.4309,1127.0251);
+				SetPlayerPos(suspect, WarrantJail[rand][0], WarrantJail[rand][1], WarrantJail[rand][2]);
 				if(rand != 0) courtjail[suspect] = 2;
 				else courtjail[suspect] = 1;
 				SetCameraBehindPlayer(suspect);

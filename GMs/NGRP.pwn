@@ -15,21 +15,20 @@
 
 				Current Developers:
 								*** Director of SA:MP Development:
-									
+								    Winterfield									
 
 								**  Development Staff:
-									Dom
 									Miguel (s0nic)
 									Farva
 									Jingles
-									Winterfield
 				Past Developers:
 								*** Director of SA:MP Development:
+									Dom
 									Akatony
 									John
 									Rothschild
 									Brendan
-									Austin
+									Austin (Theory)
 									BrianF
 									Scott
 									GhoulSlayer
@@ -48,7 +47,6 @@
 									Kareemtastic
 									Sew Sumi
 									Razbit
-									Farva
 
 				Credits to alternate sources (Y_Less for foreach, gf, etc)
  *
@@ -77,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
  
-#define SERVER_GM_TEXT "NG:RP v3.0.324"
+#define SERVER_GM_TEXT "NG:RP v3.0.325"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -327,7 +325,6 @@
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
 //#include "./includes/furniture.pwn"
-//#include "./includes/admin/poll.pwn"
 #include "./includes/group/elections.pwn"
 
 // Winterfield WIP

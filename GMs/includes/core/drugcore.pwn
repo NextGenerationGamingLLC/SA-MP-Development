@@ -650,32 +650,6 @@ IncreaseSmugglerLevel(playerid)
     return 1;
 }
 
-Drugs_ShowTrunkMenu(playerid, iVehID, iChoiceID) {
-
-	szMiscArray[0] = 0;
-	szMiscArray = "Drug\tOn you\tIn vehicle";
-	SetPVarInt(playerid, "PVehID", iVehID);
-	SetPVarInt(playerid, "PVDTransfer", iChoiceID);
-	for(new i; i < sizeof(Drugs); ++i) {
-
-		format(szMiscArray, sizeof(szMiscArray), "%s\n%s\t%d\t%d",
-			szMiscArray, Drugs[i],
-			PlayerInfo[playerid][pDrugs][i],
-			PlayerVehicleInfo[playerid][iVehID][pvDrugs][i]);
-	}
-	switch(iChoiceID) {
-
-		case 0: {
-			strcat(szMiscArray, "\nWithdraw All\t-\t-", sizeof(szMiscArray));
-		}
-		case 1: {
-			strcat(szMiscArray, "\nDeposit All\t-\t-", sizeof(szMiscArray));
-		}
-	}
-	ShowPlayerDialogEx(playerid, DIALOG_PVEHICLE_DRUGS, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle | Drug Transfer", szMiscArray, "Enter", "Cancel");
-	return 1;
-}
-
 Smuggle_VehicleLoad(playerid, iVehID)
 {
 	new iTotalAmount;

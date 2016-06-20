@@ -230,7 +230,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poType] = listitem;
 
-					format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's type to %s", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), listitem);
+					format(szMiscArray, sizeof(szMiscArray), "%s has edited point %d's type to %d.", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"), listitem);
 					Log("logs/editpoint.log", szMiscArray);
 
 					format(szMiscArray, sizeof szMiscArray, "Name: %s\nType: %s\nPosition\nMaterial Amount (%d)\nInactive (%d)\t%d\nReset", 

@@ -1054,12 +1054,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have sufficient clearance to do this");
 		}
 		case DIALOG_LISTGROUPS: if(response) {
-			if (PlayerInfo[playerid][pAdmin] < 1337 && !PlayerInfo[playerid][pFactionModerator]) return 1;
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pFactionModerator] < 2) return 1;
 			SetPVarInt(playerid, "Group_EditID", listitem);
 			return Group_DisplayDialog(playerid, listitem);
 		}
 		case DIALOG_EDITGROUP: {
-			if (PlayerInfo[playerid][pAdmin] < 1337 && !PlayerInfo[playerid][pFactionModerator]) return 1;
+			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1 && PlayerInfo[playerid][pFactionModerator] < 2) return 1;
 			new
 				iGroupID = GetPVarInt(playerid, "Group_EditID"),
 				szTitle[64 + GROUP_MAX_NAME_LEN];
@@ -5478,7 +5478,7 @@ CMD:editgroup(playerid, params[]) {
 }
 
 CMD:groupaddjurisdiction(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] >= 2) Group_ListGroups(playerid, DIALOG_GROUP_JURISDICTION_ADD);
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pFactionModerator] >= 2) Group_ListGroups(playerid, DIALOG_GROUP_JURISDICTION_ADD);
 	return 1;
 }
 
