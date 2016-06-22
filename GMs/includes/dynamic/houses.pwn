@@ -851,7 +851,7 @@ CMD:sellmyhouse(playerid, params[])
 
 CMD:asellhouse(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 1337)
+	if (PlayerInfo[playerid][pAdmin] >= 4)
 	{
 		new playername[MAX_PLAYER_NAME];
 		GetPlayerName(playerid, playername, sizeof(playername));

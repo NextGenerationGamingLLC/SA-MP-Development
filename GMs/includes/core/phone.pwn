@@ -547,9 +547,6 @@ CMD:sms(playerid, params[])
 					}
 					else
 					{
-						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d", text, PlayerInfo[playerid][pPnumber]);
-					}
-					if(PlayerInfo[giveplayerid][pAdmin] >= 2) {
 						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d (%s)", text, PlayerInfo[playerid][pPnumber], GetPlayerNameEx(playerid));
 					}
 

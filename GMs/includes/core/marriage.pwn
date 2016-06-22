@@ -119,7 +119,7 @@ CMD:divorce(playerid, params[])
 
 CMD:adivorce(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] > 3)
+	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /adivorce [player]");

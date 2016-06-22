@@ -129,7 +129,7 @@ CMD:repcheck(playerid, params[]) {
 
 CMD:myrivals(playerid, params[]) {
 
-	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a gang leader.");
+	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a gang.");
 	Rivalry_GetRivalList(playerid, PlayerInfo[playerid][pMember]);
 	return 1;
 }
@@ -156,7 +156,7 @@ CMD:grouptoy(playerid, params[]) {
 
 CMD:editgrouptoy(playerid, params[]) {
 
-	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pGangModerator] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not allowed to use this command.");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not allowed to use this command.");
 
 	new iGroupID,
 		iObjectID;

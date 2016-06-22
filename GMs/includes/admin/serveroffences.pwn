@@ -84,7 +84,7 @@ CMD:sdm(playerid, params[])
 	return 1;
 }
 
-CMD:kos(playerid, params[])
+/*CMD:kos(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
@@ -245,7 +245,7 @@ CMD:smg(playerid, params[])
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
 	return 1;
-}
+}*/
 
 CMD:rk(playerid, params[])
 {
@@ -301,7 +301,7 @@ CMD:srk(playerid, params[])
 	return 1;
 }
 
-CMD:nonrp(playerid, params[])
+/*CMD:nonrp(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 		new giveplayerid, string[128];
@@ -385,7 +385,7 @@ CMD:snonrp(playerid, params[])
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
 	return 1;
-}
+}*/
 
 CMD:reverse(playerid, params[])
 {

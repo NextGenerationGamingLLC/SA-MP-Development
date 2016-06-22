@@ -4895,7 +4895,7 @@ CMD:hshowbadge(playerid, params[])
 		new oldrank = PlayerInfo[playerid][pRank];
 		new olddivision = PlayerInfo[playerid][pDivision];
 		strcpy(oldbadge, PlayerInfo[playerid][pBadge], 9);
-		PlayerInfo[playerid][pMember] = faction;
+		PlayerInfo[playerid][pMember] = faction - 1;
 		PlayerInfo[playerid][pRank] = rank;
 		PlayerInfo[playerid][pDivision] = division;
 		strcpy(PlayerInfo[playerid][pBadge], badge, sizeof(badge));

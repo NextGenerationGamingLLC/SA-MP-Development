@@ -1077,6 +1077,10 @@ CMD:craft(playerid, params[])
 								SaveHouse(PlayerInfo[playerid][pPhousekey]);
 								PlayerInfo[playerid][pMats] -= price;
 								SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
+
+								szMiscArray[0] = 0;
+								format(szMiscArray, sizeof(szMiscArray), "%s(%d) has placed a closet for their house (House ID: %d) at X: %f | Y: %f | Z: %f", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPhousekey], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]);
+  								Log("logs/house.log", szMiscArray);
 							}
 							else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
 						}
@@ -1090,7 +1094,10 @@ CMD:craft(playerid, params[])
 								SaveHouse(PlayerInfo[playerid][pPhousekey2]);
 								PlayerInfo[playerid][pMats] -= price;
 								SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
-								printf("Check 5");
+
+								szMiscArray[0] = 0;
+								format(szMiscArray, sizeof(szMiscArray), "%s(%d) has placed a closet for their house (House ID: %d) at X: %f | Y: %f | Z: %f", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPhousekey2], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]);
+  								Log("logs/house.log", szMiscArray);
 							}
 							else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
 						}
@@ -1104,7 +1111,10 @@ CMD:craft(playerid, params[])
 								SaveHouse(PlayerInfo[playerid][pPhousekey3]);
 								PlayerInfo[playerid][pMats] -= price;
 								SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/closet(add/remove)");
-								printf("Check 5");
+
+								szMiscArray[0] = 0;
+								format(szMiscArray, sizeof(szMiscArray), "%s(%d) has placed a closet for their house (House ID: %d) at X: %f | Y: %f | Z: %f", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPhousekey3], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetX], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetY], HouseInfo[PlayerInfo[playerid][pPhousekey3]][hClosetZ]);
+  								Log("logs/house.log", szMiscArray);
 							}
 							else return SendClientMessageEx(playerid, COLOR_GREY, "You aren't inside of your house!");
 						}

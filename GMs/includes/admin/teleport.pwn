@@ -355,7 +355,13 @@ CMD:goto(playerid, params[])
 				LinkVehicleToInterior(tmpcar, vw);
 				fVehSpeed[playerid] = 0.0;
 			}
-			else SetPlayerPos(playerid, -1424.93, -664.59, 1059.86);
+			else 
+			{
+				SetPlayerPos(playerid, -1424.93, -664.59, 1059.86);
+				SetPlayerInterior(playerid, 4);
+				SetPlayerVirtualWorld(playerid, vw);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+			}
 		}
 		else if(strcmp(location,"stadium2",true) == 0)
 		{
@@ -367,7 +373,13 @@ CMD:goto(playerid, params[])
 				LinkVehicleToInterior(tmpcar, vw);
 				fVehSpeed[playerid] = 0.0;
 			}
-			else SetPlayerPos(playerid, -1395.96, -208.20, 1051.28);
+			else 
+			{
+				SetPlayerPos(playerid, -1395.96, -208.20, 1051.28);
+				SetPlayerInterior(playerid, 7);
+				SetPlayerVirtualWorld(playerid, vw);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+			}
 		}
 		else if(strcmp(location,"stadium3",true) == 0)
 		{
@@ -379,7 +391,13 @@ CMD:goto(playerid, params[])
 				LinkVehicleToInterior(tmpcar, vw);
 				fVehSpeed[playerid] = 0.0;
 			}
-			else SetPlayerPos(playerid, -1410.72, 1591.16, 1052.53);
+			else 
+			{
+				SetPlayerPos(playerid, -1410.72, 1591.16, 1052.53);
+				SetPlayerInterior(playerid, 14);
+				SetPlayerVirtualWorld(playerid, vw);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+			}
 		}
 		else if(strcmp(location,"stadium4",true) == 0)
 		{
@@ -391,7 +409,13 @@ CMD:goto(playerid, params[])
 				LinkVehicleToInterior(tmpcar, vw);
 				fVehSpeed[playerid] = 0.0;
     		}
-			else SetPlayerPos(playerid, -1394.20, 987.62, 1023.96);
+			else 
+			{
+				SetPlayerPos(playerid, -1394.20, 987.62, 1023.96);
+				SetPlayerInterior(playerid, 15);
+				SetPlayerVirtualWorld(playerid, vw);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+			}
 		}
 		else if(strcmp(location,"int1",true) == 0)
 		{
@@ -403,7 +427,13 @@ CMD:goto(playerid, params[])
 				LinkVehicleToInterior(tmpcar, vw);
 				fVehSpeed[playerid] = 0.0;
 			}
-			else SetPlayerPos(playerid, 1416.107000,0.268620,1000.926000);
+			else 
+			{
+				SetPlayerPos(playerid, 1416.107000,0.268620,1000.926000);
+				SetPlayerInterior(playerid, 1);
+				SetPlayerVirtualWorld(playerid, vw);
+				return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been teleported!");
+			}
 		}
 		else if(strcmp(location,"mark",true) == 0)
 		{
@@ -568,6 +598,14 @@ CMD:goto(playerid, params[])
 				fVehSpeed[playerid] = 0.0;
 			}
 			else SetPlayerPos(playerid, 1811.48, -1891.17, 12.3936);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /goto [location] [(optional) virtual world] [(optional) interior]");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,Famed,MHC,stadium1");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
+			return SendClientMessageEx(playerid, COLOR_GRAD4, "Locations 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop, fc, unity, (l)os(c)olinas");
 		}
 		SetPlayerVirtualWorld(playerid, vw);
 		SetPlayerInterior(playerid, int);

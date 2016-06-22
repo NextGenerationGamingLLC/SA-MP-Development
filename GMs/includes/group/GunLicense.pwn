@@ -19,6 +19,32 @@
 	return 1;
 }*/
 
+CMD:issuegl(playerid, params[]) return cmd_issuegunlicense(playerid, params);
+CMD:issuegunlicense(playerid, params[])
+{
+	if((0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_GOV)
+	{
+		new iTargetID;
+
+		szMiscArray[0] = 0;
+
+		if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /issuegunlicense [playerid]");
+
+		PlayerInfo[iTargetID][pGunLic] = gettime() + (86400*30);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s has renewed %s's gun license.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTargetID));
+
+		foreach(new i : Player)
+			if((0 <= PlayerInfo[i][pMember] < MAX_GROUPS) && arrGroupData[PlayerInfo[i][pMember]][g_iGroupType] == GROUP_TYPE_GOV)
+				SendClientMessageEx(i, COLOR_RED, szMiscArray);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (%s) has issued %s(%d) (%s) a gun license.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPlayerNameEx(iTargetID), GetPlayerSQLId(iTargetID),  GetPlayerIpEx(iTargetID));
+		Log("logs/licenses.log", szMiscArray);
+	}
+	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
+	return 1;
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	switch(dialogid) {

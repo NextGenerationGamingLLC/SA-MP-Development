@@ -75,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
  
-#define SERVER_GM_TEXT "NG:RP v3.0.325"
+#define SERVER_GM_TEXT "NG:RP v3.0.326"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -143,6 +143,7 @@
 
 //business includes
 #include "./includes/business/247items.pwn"
+#include "./includes/business/ammunation.pwn"
 #include "./includes/business/businesscore.pwn"
 #include "./includes/business/mailsystem.pwn"
 

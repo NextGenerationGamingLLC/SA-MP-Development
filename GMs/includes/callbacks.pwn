@@ -2002,6 +2002,9 @@ public OnPlayerDisconnect(playerid, reason)
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
 
+					format(string, sizeof(string), "%s has crashed while cuffed. (ID: %d | SQLID: %D | JT: %d | F: %d | IP: %s)", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pWantedJailTime], PlayerInfo[playerid][pWantedJailFine], PlayerInfo[playerid][pIP]);
+					Log("logs/login.log", string);
+
 					PlayerInfo[playerid][pBailPrice] = 15000000;
 					PlayerInfo[playerid][pWantedJailFine] = 0;
 					PlayerInfo[playerid][pWantedJailTime] = 0;
@@ -2085,14 +2088,17 @@ public OnPlayerDisconnect(playerid, reason)
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
 
+					new szMessage[80+MAX_PLAYER_NAME];
+					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being cuffed.", GetPlayerNameEx(playerid));
+					ABroadCast(COLOR_YELLOW, szMessage, 2);
+
+					format(string, sizeof(string), "%s has left (/q) while cuffed. (ID: %d | SQLID: %D | JT: %d | F: %d | IP: %s)", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pWantedJailTime], PlayerInfo[playerid][pWantedJailFine], PlayerInfo[playerid][pIP]);
+					Log("logs/login.log", string);
+
 					PlayerInfo[playerid][pBailPrice] = 15000000;
 					PlayerInfo[playerid][pWantedJailFine] = 0;
 					PlayerInfo[playerid][pWantedJailTime] = 0;
 					PlayerInfo[playerid][pWantedLevel] = 0;
-
-					new szMessage[80+MAX_PLAYER_NAME];
-					format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s has left (/q) the server while being cuffed.", GetPlayerNameEx(playerid));
-					ABroadCast(COLOR_YELLOW, szMessage, 2);
 				}
 				else if(GetPVarType(playerid, "IsTackled"))
 				{
@@ -2100,6 +2106,9 @@ public OnPlayerDisconnect(playerid, reason)
 					strcpy(PlayerInfo[playerid][pPrisonedBy], "System - LWT", 128);
 					if(PlayerInfo[playerid][pWantedJailTime] != 0) PlayerInfo[playerid][pJailTime] += PlayerInfo[playerid][pWantedJailTime]*60; else PlayerInfo[playerid][pJailTime] += 120*60;
 					if(PlayerInfo[playerid][pWantedJailFine] != 0) GivePlayerCash(playerid, -PlayerInfo[playerid][pWantedJailFine]);
+
+					format(string, sizeof(string), "%s has left (/q) while tackled. (ID: %d | SQLID: %D | JT: %d | F: %d | IP: %s)", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pWantedJailTime], PlayerInfo[playerid][pWantedJailFine], PlayerInfo[playerid][pIP]);
+					Log("logs/login.log", string);
 
 					PlayerInfo[playerid][pBailPrice] = 15000000;
 					PlayerInfo[playerid][pWantedJailFine] = 0;
@@ -4658,7 +4667,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
 				}
 			}
-			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] != 0 && PlayerInfo[playerid][pDivision] != DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID])
+			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] != 0 && PlayerInfo[playerid][pDivision] != DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] && PlayerInfo[playerid][pLeader] == 0)
 			{
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, slx, sly, slz+1.3);
