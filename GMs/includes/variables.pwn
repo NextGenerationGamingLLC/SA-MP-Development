@@ -514,6 +514,8 @@ new sidelift;
 new backhatch;
 */
 
+new TempNumber[MAX_PLAYERS];
+
 new Carrier[17];
 
 new CrateLoad;

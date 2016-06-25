@@ -305,6 +305,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pWRestricted]			= cache_get_field_content_int(row,  "WRestricted", MainPipeline);
 					PlayerInfo[extraid][pMats]					= cache_get_field_content_int(row,  "Materials", MainPipeline);
 					PlayerInfo[extraid][pCrates]				= cache_get_field_content_int(row,  "Crates", MainPipeline);
+					PlayerInfo[extraid][pStaffBanned] 			= cache_get_field_content_int(row,  "StaffBanned", MainPipeline);
 					// PlayerInfo[extraid][pPot]					= cache_get_field_content_int(row,  "Pot", MainPipeline);
 					// PlayerInfo[extraid][pCrack]					= cache_get_field_content_int(row,  "Crack", MainPipeline);
 					PlayerInfo[extraid][pNation]				= cache_get_field_content_int(row,  "Nation", MainPipeline);
@@ -5315,6 +5316,9 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			cache_get_field_content(iIndex, "DMVAccess", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iDMVAccess] = strval(szResult);
+
+			cache_get_field_content(iIndex, "TempNum", szResult, MainPipeline);
+			arrGroupData[iIndex][gTempNum] = strval(szResult);
 
 			cache_get_field_content(iIndex, "OOCChat", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iOOCChat] = strval(szResult);

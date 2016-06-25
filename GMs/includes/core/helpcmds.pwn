@@ -185,7 +185,7 @@ CMD:help(playerid, params[])
 			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "*** JUDICIAL SYSTEM *** (/r)adio /dept /warrant /warrantwd /judgefine /judgejail /judgeprison /probation /wants /subpoena");
 				SendClientMessageEx(playerid, COLOR_WHITE, "*** JUDICIAL SYSTEM *** /invite /uninvite /giverank /trial /adjourn /sentence /reward /checkjudgements /reversejudgement");
-				SendClientMessageEx(playerid, COLOR_WHITE, "*** JUDICIAL SYSTEM *** /present /freezebank /freezeassets /probation /gdonate /viewassets");
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** JUDICIAL SYSTEM *** /present /freezeassets /probation /gdonate /viewassets");
 			}
 			case 7:
 			{

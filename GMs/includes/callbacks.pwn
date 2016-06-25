@@ -2557,6 +2557,25 @@ public OnPlayerDisconnect(playerid, reason)
 
 public OnRconLoginAttempt(ip[], password[], success)
 {
+	if(success)
+	{
+		new pip[16];
+		szMiscArray[0] = 0;
+		foreach(new i : Player)
+		{
+			GetPlayerIp(i, pip, sizeof(pip));
+			if(!strcmp(ip, pip, true))
+			{
+				if(PlayerInfo[i][pAdmin] < 1337)
+				{
+					CreateBan(INVALID_PLAYER_ID, PlayerInfo[i][pId], i, PlayerInfo[i][pIP], "Successful RCON Login - Not Head Admin", 9999);
+
+					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s(%s) has successfully logged into RCON without being a Head Admin, and has been perma-banned.", GetPlayerNameEx(i), ip);
+					ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+				}
+			}
+		}
+	}
     if(!success)
     {
         new pip[16];
@@ -4667,8 +4686,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 					SendClientMessageEx(playerid, COLOR_GRAD2, string);
 				}
 			}
-			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] != 0 && PlayerInfo[playerid][pDivision] != DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] && PlayerInfo[playerid][pLeader] == 0)
+			else if(DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] != 0 && PlayerInfo[playerid][pDivision] != DynVehicleInfo[DynVeh[vehicleid]][gv_igDivID] && PlayerInfo[playerid][pMember] != PlayerInfo[playerid][pLeader])
 			{
+				if(PlayerInfo[playerid][pMember])
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, slx, sly, slz+1.3);
 				defer NOPCheck(playerid);

@@ -819,7 +819,7 @@ CMD:mjail(playerid, params[]) {
             if(PlayerInfo[iTargetID][pJailTime] > 0) {
 			    return SendClientMessageEx(playerid, COLOR_GREY, "You can't perform this action on someone in jail already.");
 			}
-			if(prisonPlayer(playerid, iTargetID, szReason, .time=20, .custom=1) == 0) return 1;
+			if(PrisonPlayer(playerid, iTargetID, szReason, .time=20, .custom=1) == 0) return 1;
 		}
 		else
 		{
@@ -3378,24 +3378,6 @@ CMD:rcabuse(playerid, params[]) {
 	return 1;
 }
 
-CMD:prison(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
-	{
-		new giveplayerid, minutes, reason[64];
-		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prison [player] [minutes] [reason]");
-
-		if(IsPlayerConnected(giveplayerid))
-		{
-			if((PlayerInfo[giveplayerid][pAdmin] && PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-			//if(strlen(reason) >= 25) return SendClientMessageEx(playerid, COLOR_WHITE, "Please provide a shorter reason. The maximum length for a prison reason is 25.");
-			if(prisonPlayer(playerid, giveplayerid, reason, minutes, .custom=1) == 0) return 1;
-		}
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
-	return 1;
-}
-
 CMD:calc(playerid, params[]) {
 	return cmd_calculate(playerid, params);
 }
@@ -3624,7 +3606,7 @@ CMD:sprison(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 			//if(strlen(reason) >= 25) return SendClientMessageEx(playerid, COLOR_WHITE, "Please provide a shorter reason. The maximum length for a prison reason is 25.");
-			if(prisonPlayer(playerid, giveplayerid, reason, minutes, .silent=1, .custom=1) == 0) return 1;
+			if(PrisonPlayer(playerid, giveplayerid, reason, minutes, .silent=1, .custom=1) == 0) return 1;
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 	}
@@ -3644,7 +3626,7 @@ CMD:jail(playerid, params[])
 		if(IsPlayerConnected(giveplayerid))
 		{
 			if((PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && (PlayerInfo[giveplayerid][pHelper] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= 2))) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-			if(prisonPlayer(playerid, giveplayerid, reason, .time=minutes, .custom=1) == 0) return 1;
+			if(PrisonPlayer(playerid, giveplayerid, reason, .time=minutes, .custom=1) == 0) return 1;
 		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
@@ -5332,7 +5314,7 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /noooc /nonewbie /fine /pfine /takeadminweapons /prisonaccount /entercar /getcar");
 		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /mole /setskin /countdown /release /forcedeath /rto(reset) /adviorce /metaldetector");
 		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /gotoco /leaders /wepreset /owarn /ofine /okills /respawncars /resetvw /aviewrivals");
-		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /reloadpvehicles /apark /aimpound /dmrmute /dmrlookup /dmtokens /dm /createmetaldetector /metdets");
+		SendClientMessageEx(playerid, COLOR_GRAD3,"--* {00FF00}GENERAL ADMIN{CBCCCE} --* /reloadpvehicles /apark /aimpound /dmrmute /dmrlookup /dmtokens /createmetaldetector /metdets");
 	}
 	if (PlayerInfo[playerid][pAdmin] >= 4)
 	{

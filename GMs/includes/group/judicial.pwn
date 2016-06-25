@@ -126,54 +126,20 @@ CMD:checkjudgements(playerid, params[])
 	return 1;
 }
 
-CMD:freezebank(playerid, params[])
-{
-  	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 4+ can do this.");
-	new giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freezebank [player]");
-	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-	new	string[128],
-		rank[GROUP_MAX_RANK_LEN],
-		division[GROUP_MAX_DIV_LEN],
-		employer[GROUP_MAX_NAME_LEN];
-	if(PlayerInfo[giveplayerid][pFreezeBank] == 0)
-    {
-        PlayerInfo[giveplayerid][pFreezeBank] = 1;
-       	GetPlayerGroupInfo(playerid, rank, division, employer);
-	   	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has froze %s bank account.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-    	ABroadCast(COLOR_YELLOW,string, 2);
-    	format(string, sizeof(string), "You have frozen %s's bank account.", GetPlayerNameEx(giveplayerid));
-   	 	SendClientMessageEx(playerid, COLOR_WHITE, string);
-   	 	format(string, sizeof(string), "Your bank account has been frozen by %s", GetPlayerNameEx(playerid));
-   	 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-    }
-    else
-    {
-		PlayerInfo[giveplayerid][pFreezeBank] = 0;
-		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has unfrozen %s bank account.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-		ABroadCast(COLOR_YELLOW,string, 2);
-		format(string, sizeof(string), "You have unfrozen %s's bank account.", GetPlayerNameEx(giveplayerid));
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
-   	 	format(string, sizeof(string), "Your bank account has been unfrozen by %s", GetPlayerNameEx(playerid));
-   	 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
-	}
-	return 1;
-}
-
 CMD:freezeassets(playerid, params[])
 {
   	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not part of the Judicial System!");
 	if(PlayerInfo[playerid][pRank] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 4+ can do this.");
 	new giveplayerid, houseorcar[8];
-	if(sscanf(params, "us[8]", giveplayerid, houseorcar)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freezeassets [player] [house/car]");
+	if(sscanf(params, "us[8]", giveplayerid, houseorcar)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freezeassets [player] [house/car/bank]");
 	if(giveplayerid == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't use this command on yourself!");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	new string[128],
 		rank[GROUP_MAX_RANK_LEN],
 		division[GROUP_MAX_DIV_LEN],
 		employer[GROUP_MAX_NAME_LEN];
+
+	szMiscArray[0] = 0;
     if(strcmp(houseorcar, "house", true) == 0)
 	{
 		if(PlayerInfo[giveplayerid][pFreezeHouse] == 0)
@@ -186,6 +152,8 @@ CMD:freezeassets(playerid, params[])
 	   	 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	   	 	format(string, sizeof(string), "Your house assets have been frozen by %s", GetPlayerNameEx(playerid));
 	   	 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+
+	   	 	format(szMiscArray, sizeof(szMiscArray), "%s %s has frozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    }
 	    else
 	    {
@@ -196,6 +164,8 @@ CMD:freezeassets(playerid, params[])
 	   	 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	   	 	format(string, sizeof(string), "Your house assets have been unfrozen by %s", GetPlayerNameEx(playerid));
 	   	 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+
+	   	 	format(szMiscArray, sizeof(szMiscArray), "%s %s has unfrozen %s house assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		}
 	}
 	else if(strcmp(houseorcar, "car", true) == 0)
@@ -210,6 +180,8 @@ CMD:freezeassets(playerid, params[])
 	   	 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	   	 	format(string, sizeof(string), "Your vehicle assets have been frozen by %s", GetPlayerNameEx(playerid));
 		 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+
+		 	format(szMiscArray, sizeof(szMiscArray), "%s %s has frozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    }
 	    else
 	    {
@@ -220,12 +192,44 @@ CMD:freezeassets(playerid, params[])
 		 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 		 	format(string, sizeof(string), "Your vehicle assets have been unfrozen by %s", GetPlayerNameEx(playerid));
 		 	SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+
+		 	format(szMiscArray, sizeof(szMiscArray), "%s %s has unfrozen %s vehicle assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 	    }
+	}
+	else if(strcmp(houseorcar, "bank", true) == 0)
+	{
+		if(PlayerInfo[giveplayerid][pFreezeBank] == 0)
+    	{
+        	PlayerInfo[giveplayerid][pFreezeBank] = 1;
+       		GetPlayerGroupInfo(playerid, rank, division, employer);
+	   		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has froze %s bank account.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+    		ABroadCast(COLOR_YELLOW,string, 2);
+    		format(string, sizeof(string), "You have frozen %s's bank account.", GetPlayerNameEx(giveplayerid));
+   	 		SendClientMessageEx(playerid, COLOR_WHITE, string);
+   	 		format(string, sizeof(string), "Your bank account has been frozen by %s", GetPlayerNameEx(playerid));
+   	 		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+
+   	 		format(szMiscArray, sizeof(szMiscArray), "%s %s has frozen %s bank assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+    	}
+    	else
+    	{
+			PlayerInfo[giveplayerid][pFreezeBank] = 0;
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s %s has unfrozen %s bank account.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			ABroadCast(COLOR_YELLOW,string, 2);
+			format(string, sizeof(string), "You have unfrozen %s's bank account.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+   	 		format(string, sizeof(string), "Your bank account has been unfrozen by %s", GetPlayerNameEx(playerid));
+   	 		SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
+
+   	 		format(szMiscArray, sizeof(szMiscArray), "%s %s has unfrozen %s bank assets.", rank, GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+		}
 	}
 	else
 	{
-	    return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freezeassets [player] [house/car]");
+	    return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freezeassets [player] [house/car/bank]");
 	}
+
+	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 	return 1;
 }
 

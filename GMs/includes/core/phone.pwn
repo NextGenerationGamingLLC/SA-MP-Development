@@ -206,6 +206,39 @@ CMD:number(playerid, params[]) {
 	return 1;
 }
 
+CMD:tempnum(playerid, params[]) {
+	return cmd_tempnumber(playerid, params);
+}
+
+CMD:tempnumber(playerid, params[]){
+	if (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][gTempNum]) {
+        new num;
+        if(TempNumber[playerid] == 1) {
+			SendClientMessageEx(playerid, COLOR_GREY, "Your temporary number has been disabled and your original number has been restored.");
+			TempNumber[playerid] = 0;
+			PlayerInfo[playerid][pPnumber] = GetPVarInt(playerid, "oldnum");
+			return 1;
+		}
+        if(sscanf(params, "i", num) && TempNumber[playerid] == 0)
+			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /tempnumber [number]");
+
+		if(strlen(params) > 10 || strlen(params) < 2) 
+			return SendClientMessage(playerid, COLOR_GREY, "The temporary phone number can only be between 2 and 10 digits long.");
+
+		if(PlayerInfo[playerid][pPnumber] == num)
+			return SendClientMessageEx(playerid,COLOR_GREY,"You cannot set your temporary number to your existing number");
+
+		else { 
+			new query[128];
+			SetPVarInt(playerid, "oldnum", PlayerInfo[playerid][pPnumber]);
+			SetPVarInt(playerid, "tempnum", num);
+			format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",num);
+			mysql_function_query(MainPipeline, query, true, "OnPhoneTempNumberCheck", "ii", playerid, 5);
+		}
+	} else SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this command.");
+	return 1;
+}
+
 /*
 CMD:ringtone(playerid, params[])
 {
@@ -547,7 +580,7 @@ CMD:sms(playerid, params[])
 					}
 					else
 					{
-						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d (%s)", text, PlayerInfo[playerid][pPnumber], GetPlayerNameEx(playerid));
+						format(szMiscArray, sizeof(szMiscArray), "SMS: %s, Sender: %d (( %s ))", text, PlayerInfo[playerid][pPnumber], GetPlayerNameEx(playerid));
 					}
 
 					if(i != playerid)
@@ -775,5 +808,43 @@ public OnFetchContact(iReceiverID) {
 	cache_get_field_content(0, "contactname", szName, MainPipeline);
 	format(szMiscArray, sizeof(szMiscArray), "[CONTACT]: %s", szName);
 	ChatTrafficProcess(iReceiverID, COLOR_GRAD1, szMiscArray, 7);
+	return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason) {
+	if(TempNumber[playerid] == 1) {
+		PlayerInfo[playerid][pPnumber] = GetPVarInt(playerid, "oldnum");
+		TempNumber[playerid] = 0;
+	}
+	return 1;
+}
+
+forward OnPhoneTempNumberCheck(index, extraid);
+public OnPhoneTempNumberCheck(index, extraid)
+{
+	if(IsPlayerConnected(index))
+	{
+		new string[128];
+		new rows, fields;
+		cache_get_data(rows, fields, MainPipeline);
+
+		switch(extraid)
+		{
+			case 5: {
+				if(rows) {
+					SendClientMessageEx(index, COLOR_WHITE, "That phone number has already been taken.");
+					DeletePVar(index, "oldnum");
+					DeletePVar(index, "newnum");
+					TempNumber[index] = 0;
+				}
+				else {
+					format(string, sizeof(string), "You have set your temporary number to %d, type /tempnum to disable it.", GetPVarInt(index, "tempnum"));
+					SendClientMessage(index, COLOR_WHITE, string);
+					PlayerInfo[index][pPnumber] = GetPVarInt(index, "tempnum");
+					TempNumber[index] = 1;
+				}
+			}
+		}
+	}
 	return 1;
 }

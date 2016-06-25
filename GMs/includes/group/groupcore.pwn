@@ -145,7 +145,7 @@ SaveGroup(iGroupID) {
 		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
 		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, `Ladders` = %i, \
 		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
-		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = '%d', `MedicAccess` = '%d', `DMVAccess` = '%d',",
+		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = '%d', `MedicAccess` = '%d', `DMVAccess` = '%d', ",
 		szMiscArray,
 		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
 		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels], arrGroupData[iGroupID][g_iLadders],
@@ -154,9 +154,9 @@ SaveGroup(iGroupID) {
 	);
 
 	format(szMiscArray, sizeof(szMiscArray), "%s\
-		`OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Ecstasy` = '%i', `Meth` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i', `GroupToyID` = '%i', `TurfTax` = '%i'",
+		`TempNum` = '%d', `OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Ecstasy` = '%i', `Meth` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i', `GroupToyID` = '%i', `TurfTax` = '%i'",
 		szMiscArray,
-		arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
+		arrGroupData[iGroupID][gTempNum], arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
 		arrGroupData[iGroupID][g_iEcstasy], arrGroupData[iGroupID][g_iMeth], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank],
 		arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2], arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4], arrGroupData[iGroupID][g_iTurfTokens], arrGroupData[iGroupID][g_iCrimeType],
 		arrGroupData[iGroupID][g_iGroupToyID], arrGroupData[iGroupID][g_iTurfTax]
@@ -275,7 +275,7 @@ stock IsATowman(playerid)
 
 stock IsARacer(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_RACE)) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iCrimeType] == GROUP_CRIMINAL_TYPE_RACE)) return 1;
 	return 0;
 }
 
@@ -531,8 +531,7 @@ Group_ReturnType(iGroupType) {
 		case 6: szResult = "Judicial";
 		case 7: szResult = "Transport";
 		case 8: szResult = "Towing";
-		case 9: szResult = "URL";
-		case 10: szResult = "Criminal";
+		case 9: szResult = "Criminal";
 	}
 	return szResult;
 }
@@ -624,6 +623,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		"%s\
 		{BBBBBB}Edit Medic Access:{FFFFFF} %s (Div %i)\n\
 		{BBBBBB}Edit DMV Release:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Edit Temporary Number:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Edit OOC Chat Access:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Edit OOC Chat Color: {%s}(edit)\n\
 		{BBBBBB}Edit Group Clothes\n\
@@ -633,6 +633,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		szDialog,
 		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_DIVISION) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess],
 		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDMVAccess],
+		(arrGroupData[iGroupID][gTempNum] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][gTempNum],
 		(arrGroupData[iGroupID][g_iOOCChat] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iOOCChat],
 		Group_NumToDialogHex(arrGroupData[iGroupID][g_hOOCColor]),
 		(arrGroupData[iGroupID][g_iTurfCapRank] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTurfCapRank],
@@ -660,8 +661,7 @@ ReturnCrimeGroupType(iType)
 	switch(iType)
 	{
 		case 0: szReturn = "None";
-		case 1: szReturn = "Firearm";
-		case 2: szReturn = "Drugs";
+		case 1: szReturn = "Racer";
 	}
 
 	return szReturn;
@@ -1294,14 +1294,26 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					strcat(szDialog, "\nRevoke from Group");
 
+					format(szTitle, sizeof szTitle, "Edit Group Temp Number Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TEMPNUMACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
+				case 35: {
+					new
+						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
 					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_OOCCHAT, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 35: {
+				case 36: {
 					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_OOCCOLOR, DIALOG_STYLE_INPUT, szTitle, "Enter a color in hexadecimal format (for example, BCA3FF). This color will be that of their OOC Chat.", "Confirm", "Cancel");
 				}
-				case 36: {
+				case 37: {
 					new
 						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
 
@@ -1312,7 +1324,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Clothes {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTCLOTHES, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
 				}
-				case 37: {
+				case 38: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1325,7 +1337,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TURFCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 38: {
+				case 39: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1337,9 +1349,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					format(szTitle, sizeof szTitle, "Edit Group Point Cap Rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_POINTCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 39: {
+				case 40: {
 					format(szTitle, sizeof szTitle, "Edit Group Crime Type {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_CRIMETYPE, DIALOG_STYLE_LIST, szTitle, "None\nFirearms Based\nDrug Based", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_CRIMETYPE, DIALOG_STYLE_LIST, szTitle, "None\nRacer", "Select", "Cancel");
 				}
 				default: {
 					format(szTitle, sizeof szTitle, "{FF0000}Disband Group{FFFFFF} {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
@@ -2214,6 +2226,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				default: {
 					arrGroupData[iGroupID][g_iDMVAccess] = listitem;
 					format(string, sizeof(string), "%s has set the minimum rank for DMV Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iDMVAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iDMVAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+			}
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_TEMPNUMACCESS: {
+
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][gTempNum] = INVALID_RANK;
+					format(string, sizeof(string), "%s has set the minimum rank for Temporary Number Access to %d (Disabled) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][gTempNum], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+				default: {
+					arrGroupData[iGroupID][gTempNum] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for Temporary Number Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][gTempNum], arrGroupRanks[iGroupID][arrGroupData[iGroupID][gTempNum]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 					Log("logs/editgroup.log", string);
 				}
 			}
@@ -4910,7 +4941,7 @@ CMD:hshowbadge(playerid, params[])
 
 CMD:showbadge(playerid, params[])
 {
-	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_RACE))
+	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_CRIMINAL_TYPE_RACE))
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /showbadge [player]");
@@ -5420,7 +5451,7 @@ CMD:locker(playerid, params[]) {
 							    format(szTitle, sizeof(szTitle), "%s - {AA3333}Locker Stock: %d", szTitle, arrGroupData[iGroupID][g_iLockerStock]);
 							}
 					    }
-					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL /*|| arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE*/)
+					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL /*|| arrGroupData[iGroupID][g_iGroupType] == GROUP_CRIMINAL_TYPE_RACE*/)
 					    {
 					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nDrugs\nMaterials (%i)\nVault ($%s)",
 					    		arrGroupData[iGroupID][g_iMaterials],
@@ -5428,7 +5459,7 @@ CMD:locker(playerid, params[]) {
 					    	);
 					    	return ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 					    }
-					    /* if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE)
+					    /* if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_CRIMINAL_TYPE_RACE)
 					    {
 					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nCannabis (%i)\nCrack (%i)\nHeroin (%i)\nSyringes (%i)\nOpium (%i)\nMaterials (%i)\nVault ($%s)\nAmmo",
 					    		arrGroupData[iGroupID][g_iPot],
@@ -5446,7 +5477,7 @@ CMD:locker(playerid, params[]) {
 						{
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
 						}
-						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_RACE) {
+						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_CRIMINAL_TYPE_RACE) {
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
 						}
 						else
@@ -5952,7 +5983,7 @@ CMD:adjustwithdrawrank(playerid, params[])
 		Weapons(4)
 		Ammo(5)
 	*/
-	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_RACE) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[iGroupID][g_iGroupType] != GROUP_CRIMINAL_TYPE_RACE) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	if(PlayerInfo[playerid][pLeader] == iGroupID)
 	{
 		new iRank,
@@ -6051,7 +6082,7 @@ stock ShowPlayerCrimeDialog(playerid)
 
 CMD:lockerbalance(playerid, params[])
 {
-	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_RACE))
+	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_CRIMINAL_TYPE_RACE))
 	{
 		new weps, GroupID = PlayerInfo[playerid][pMember];
 		for(new s = 0; s != 50; s++)

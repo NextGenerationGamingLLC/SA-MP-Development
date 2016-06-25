@@ -106,7 +106,7 @@ native IsValidVehicle(vehicleid);
 #define			MAX_TURFS					(400)
 #define			MAX_ARENAS					(15)
 #define			MAX_MAILBOXES				(50)
-#define 		MAX_3DLABELS 				(500)
+#define 		MAX_3DLABELS 				(750)
 #define 		MAX_SPEEDCAMERAS			(50)
 #define 		MAX_PAYNSPRAYS				(25)
 #define 		MAX_ARRESTPOINTS			(30)
@@ -241,8 +241,11 @@ native IsValidVehicle(vehicleid);
 #define			GROUP_TYPE_JUDICIAL			6
 #define			GROUP_TYPE_TAXI				7
 #define			GROUP_TYPE_TOWING			8
-#define			GROUP_TYPE_RACE				9
-#define			GROUP_TYPE_CRIMINAL			10
+#define			GROUP_TYPE_CRIMINAL			9
+
+#define 		GROUP_CRIMINAL_TYPE_RACE    1
+
+
 
 //Query thread IDs for Dynamic Vehicles
 #define         GV_QUERY_LOAD               1
@@ -656,24 +659,25 @@ native IsValidVehicle(vehicleid);
 #define			DIALOG_GROUP_DOCACCESS				(3401)
 #define			DIALOG_GROUP_MEDICACCESS			(3402)
 #define			DIALOG_GROUP_DMVACCESS				(3403)
-#define 		DIALOG_GROUP_OOCCHAT				(3404)
-#define 		DIALOG_GROUP_OOCCOLOR				(3405)
-#define 		DIALOG_GROUP_LISTCLOTHES			(3406)
-#define 		DIALOG_GROUP_EDITCLOTHES			(3407)
-#define 		DIALOG_GROUP_TURFCAP				(3408)
-#define 		DIALOG_GROUP_POINTCAP				(3409)
-#define 		DIALOG_GROUP_WEAPONSAFE				(3410)
-#define 		DIALOG_GROUP_SACTIONTYPE			(3411)
-#define     	DIALOG_GROUP_SACTIONEXEC			(3412)
-#define 		DIALOG_GROUP_WEAPONSAFE_DEPOSIT		(3413)
-#define			DIALOG_GROUP_TURNOUT				(3414)
-#define 		DIALOG_GROUP_CRIMETYPE				(3415)
-#define 		DIALOG_GROUP_PLISTPAY 				(3420)
-#define 		DIALOG_GROUP_PEDITPAY 				(3421)
-#define 		DIALOG_GROUP_GOVLISTPAY 			(3422)
-#define 		DIALOG_GROUP_GOVEDITPAY 			(3423)
-#define 		DIALOG_WEAPONSAFE_WITHDRAW			(3424)
-#define 		DIALOG_WEAPONSAFE_WITHDRAW_T		(3425)
+#define			DIALOG_GROUP_TEMPNUMACCESS			(3404)
+#define 		DIALOG_GROUP_OOCCHAT				(3405)
+#define 		DIALOG_GROUP_OOCCOLOR				(3406)
+#define 		DIALOG_GROUP_LISTCLOTHES			(3407)
+#define 		DIALOG_GROUP_EDITCLOTHES			(3408)
+#define 		DIALOG_GROUP_TURFCAP				(3409)
+#define 		DIALOG_GROUP_POINTCAP				(3410)
+#define 		DIALOG_GROUP_WEAPONSAFE				(3411)
+#define 		DIALOG_GROUP_SACTIONTYPE			(3412)
+#define     	DIALOG_GROUP_SACTIONEXEC			(3413)
+#define 		DIALOG_GROUP_WEAPONSAFE_DEPOSIT		(3414)
+#define			DIALOG_GROUP_TURNOUT				(3415)
+#define 		DIALOG_GROUP_CRIMETYPE				(3416)
+#define 		DIALOG_GROUP_PLISTPAY 				(3421)
+#define 		DIALOG_GROUP_PEDITPAY 				(3422)
+#define 		DIALOG_GROUP_GOVLISTPAY 			(3423)
+#define 		DIALOG_GROUP_GOVEDITPAY 			(3424)
+#define 		DIALOG_WEAPONSAFE_WITHDRAW			(3425)
+#define 		DIALOG_WEAPONSAFE_WITHDRAW_T		(3426)
 
 
 #define         DIALOG_REPORTMENU           (3490)

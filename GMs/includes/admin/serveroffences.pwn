@@ -37,355 +37,22 @@
 
 #include <YSI\y_hooks>
 
-CMD:dm(playerid, params[])
-{
-    if(PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[playerid][pWatchdog] < 2) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-    new string[128], giveplayerid;
-	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dm [player]");
-	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
-	if(PlayerInfo[giveplayerid][pAdmin] > PlayerInfo[playerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-	if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-		new playerip[32];
-		ResetPlayerWeaponsEx(giveplayerid);
-		GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-		format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was kicked (/dm) by %s, reason: Deathmatching", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-		Log("logs/kick.log", string);
-		format(string, sizeof(string), "AdmCmd: %s was kicked by %s, reason: Deathmatching", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-		SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-		StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-		SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-		return 1;
-	}
-	if(prisonPlayer(playerid, giveplayerid, "Deathmatching") == 0) return 1;
-	return 1;
-}
-
-CMD:sdm(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] == 1) {
-	    new string[128], giveplayerid;
-		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sdm [player]");
-		if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid player specified.");
-		if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-			new playerip[32];
-			ResetPlayerWeaponsEx(giveplayerid);
-			GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-			format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was silent kicked (/sdm) by %s, reason: Deathmatching", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-			Log("logs/kick.log", string);
-			format(string, sizeof(string), "AdmCmd: %s was kicked by an admin, reason: Deathmatching", GetPlayerNameEx(giveplayerid));
-			SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-			StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-			SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-			return 1;
-		}
-		if(prisonPlayer(playerid, giveplayerid, "Deathmatching", .silent=1) == 0) return 1;
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-	return 1;
-}
-
-/*CMD:kos(playerid, params[])
+CMD:prison(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2)
 	{
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid)) {
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, 128, "AdmCmd: %s(%d) (IP:%s) was kicked (/kos) by %s, reason: Killing on Sight", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, 128, "AdmCmd: %s was kicked by %s, reason: Killing on Sight", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Killing On Sight") == 0) return 1;
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /kos [playerid]");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
-	return 1;
-}
+		new giveplayerid, minutes, reason[64];
+		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prison [player] [minutes] [reason]");
 
-CMD:skos(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] > 0) {
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid)) {
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was silent kicked (/dm) by %s, reason: Killing on Sight", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was kicked by an admin, reason: Killing on Sight", GetPlayerNameEx(giveplayerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Killing On Sight", .silent=1) == 0) return 1;
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /skos [playerid]");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
-	return 1;
-}
-
-CMD:pg(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid)) {
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was kicked (/pg) by %s, reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was kicked by %s, reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Powergaming") == 0) return 1;
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pg [playerid]");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
-	return 1;
-}
-
-CMD:spg(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] > 0) {
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid)) {
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was silent kicked (/spg) by %s, reason: Powergaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was kicked by an admin, reason: Powergaming", GetPlayerNameEx(giveplayerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Powergaming", .silent=1) == 0) return 1;
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /spg [playerid]");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
-	return 1;
-}
-
-CMD:mg(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid)) {
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was kicked (/mg) by %s, reason: Metagaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was kicked by %s, reason: Metagaming", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Metagaming") == 0) return 1;
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /mg [playerid]");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
-	return 1;
-}
-
-CMD:smg(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] > 0) {
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid)) {
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was silent kicked (/smg) by %s, reason: Metagaming", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was kicked by an admin, reason: Metagaming", GetPlayerNameEx(giveplayerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Metagaming", .silent=1) == 0) return 1;
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /smg [playerid]");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
-	return 1;
-}*/
-
-CMD:rk(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid)) {
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was kicked (/rk) by %s, reason: Revenge Killing", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was kicked by %s, reason: Revenge Killing", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Revenge Killing") == 0) return 1;
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /rk [playerid]");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
-	return 1;
-}
-
-CMD:srk(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] > 0) {
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid)) {
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was silent kicked (/srk) by %s, reason: Revenge Killing", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was kicked by an admin, reason: Revenge Killing", GetPlayerNameEx(giveplayerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Revenge Killing", .silent=1) == 0) return 1;
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /srk [playerid]");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
-	return 1;
-}
-
-/*CMD:nonrp(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid)) {
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0) {
-				format(string, sizeof(string), "Administrator %s has group-kicked (/nonrp) %s (%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
-				GroupLog(PlayerInfo[giveplayerid][pMember], string);
-				format(string, sizeof(string), "You have been faction-kicked as a result of your prison.");
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				PlayerInfo[giveplayerid][pDuty] = 0;
-				PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
-				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
-				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
-				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
-				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 9);
-				player_remove_vip_toys(giveplayerid);
-				pTazer{giveplayerid} = 0;
-			}
-
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was kicked (/nonrp) by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was kicked by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerNameEx(playerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Non-Roleplay Behaviour") == 0) return 1;
-		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /nonrp [playerid]");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
-	return 1;
-}
-
-CMD:snonrp(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pUndercover] > 0)
-	{
-		new giveplayerid, string[128];
-		if(!sscanf(params, "u", giveplayerid))
+		if(IsPlayerConnected(giveplayerid))
 		{
-			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That player is not connected.");
-			if(PlayerInfo[playerid][pAdmin] <= PlayerInfo[giveplayerid][pAdmin]) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't perform this action on an equal or higher level administrator.");
-			if(PlayerInfo[giveplayerid][pMember] >= 0 || PlayerInfo[giveplayerid][pLeader] >= 0) {
-				format(string, sizeof(string), "Administrator %s has group-kicked (/snonrp) %s (%d) from %s (%d)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName], PlayerInfo[giveplayerid][pMember]+1);
-				GroupLog(PlayerInfo[giveplayerid][pMember], string);
-				format(string, sizeof(string), "You have been faction-kicked as a result of your prison.");
-				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				PlayerInfo[giveplayerid][pDuty] = 0;
-				PlayerInfo[giveplayerid][pMember] = INVALID_GROUP_ID;
-				PlayerInfo[giveplayerid][pRank] = INVALID_RANK;
-				PlayerInfo[giveplayerid][pLeader] = INVALID_GROUP_ID;
-				PlayerInfo[giveplayerid][pDivision] = INVALID_DIVISION;
-				strcpy(PlayerInfo[giveplayerid][pBadge], "None", 9);
-				player_remove_vip_toys(giveplayerid);
-				pTazer{giveplayerid} = 0;
-			}
-
-			if(PlayerInfo[giveplayerid][pConnectHours] <= 2) {
-				new playerip[32];
-				ResetPlayerWeaponsEx(giveplayerid);
-				GetPlayerIp(giveplayerid, playerip, sizeof(playerip));
-				format(string, sizeof(string), "AdmCmd: %s(%d) (IP:%s) was silent kicked (/snonrp) by %s, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, GetPlayerNameEx(playerid));
-				Log("logs/kick.log", string);
-				format(string, sizeof(string), "AdmCmd: %s was kicked by an admin, reason: Non-RP Behaviour", GetPlayerNameEx(giveplayerid));
-				SendClientMessageToAllEx(COLOR_LIGHTRED, string);
-				StaffAccountCheck(giveplayerid, GetPlayerIpEx(giveplayerid));
-				SetTimerEx("KickEx", 1000, 0, "i", giveplayerid);
-				return 1;
-			}
-			if(prisonPlayer(playerid, giveplayerid, "Non-Roleplay Behaviour", .silent=1) == 0) return 1;
+			if((PlayerInfo[giveplayerid][pAdmin] && PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
+			if(PrisonPlayer(playerid, giveplayerid, reason, minutes, .custom=1) == 0) return 1;
 		}
-		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /snonrp [playerid]");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command!");
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	return 1;
-}*/
+}
 
 CMD:reverse(playerid, params[])
 {
@@ -446,7 +113,7 @@ CMD:dprison(playerid, params[])
 		if(!sscanf(params, "ud", giveplayerid, mintues)) {
 			if(PlayerInfo[giveplayerid][pAdmin] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= 2) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this on admins or watchdogs!");
 			if(mintues > 120) return SendClientMessageEx(playerid, COLOR_WHITE, "Time cannot be above 120 minutes.");
-			if(prisonPlayer(playerid, giveplayerid, "Violation of DGA Policies", .time=mintues, .custom=1) == 0) return 1;
+			if(PrisonPlayer(playerid, giveplayerid, "Violation of DGA Policies", .time=mintues, .custom=1) == 0) return 1;
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dprison [playerid] [time]");
 	}
@@ -454,7 +121,7 @@ CMD:dprison(playerid, params[])
 	return 1;
 }
 
-prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
+PrisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 {
 	new string[128], shortreason[5], jailtime, twarn, warn, fine, nonrp;
 	new rand = random(sizeof(OOCPrisonSpawns));
@@ -465,10 +132,7 @@ prisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	PlayerInfo[giveplayerid][pJailedInfo][2] = 0;
 	PlayerInfo[giveplayerid][pJailedInfo][3] = 0;
 	PlayerInfo[giveplayerid][pJailedInfo][4] = 0;
-/*	arrAmmoData[giveplayerid][awp_iAmmo][0] = 0;
-	arrAmmoData[giveplayerid][awp_iAmmo][1] = 0;
-	arrAmmoData[giveplayerid][awp_iAmmo][2] = 0;
-	arrAmmoData[giveplayerid][awp_iAmmo][3] = 0; */
+
 	for(new i = 0; i < 12; i++) PlayerInfo[giveplayerid][pJailedWeapons][i] = 0;
 
 	if(time > 0) jailtime = time;
