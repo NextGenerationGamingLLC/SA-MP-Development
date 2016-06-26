@@ -952,7 +952,7 @@ public PokerPulse(tableid)
 	}
 
 	if(PokerTable[tableid][pkrPlayers] < 2 && PokerTable[tableid][pkrActive] == 3) {
-		// Pseudo Code (Move Cannabis towards last player's chip count)
+		// Pseudo Code (Move Pot towards last player's chip count)
 
 		for(new i = 0; i < 6; i++) {
 			new playerid = PokerTable[tableid][pkrSlot][i];
@@ -1329,13 +1329,13 @@ public PokerPulse(tableid)
 				if(pid != -1) PlayerTextDrawSetString(pid, PlayerPokerUI[pid][4+tmp], tmpString);
 			}
 
-			// Cannabis
+			// Pot
 			if(PokerTable[tableid][pkrDelay] > 0 && PokerTable[tableid][pkrActive] == 3) {
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], "Texas Holdem Poker");
 			} else if(PokerTable[tableid][pkrActive] == 2) {
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], "Texas Holdem Poker");
 			} else if(PokerTable[tableid][pkrActive] == 3) {
-				format(tmpString, sizeof(tmpString), "Cannabis: $%d", PokerTable[tableid][pkrPot]);
+				format(tmpString, sizeof(tmpString), "Pot: $%d", PokerTable[tableid][pkrPot]);
 				if(playerid != -1) PlayerTextDrawSetString(playerid, PlayerPokerUI[playerid][37], tmpString);
 			} else if(PokerTable[tableid][pkrActive] == 4 && PokerTable[tableid][pkrDelay] < 19) {
 				if(PokerTable[tableid][pkrWinnerID] != -1) {

@@ -500,9 +500,11 @@ DDoor_Exit(playerid, i)
 	return 1;
 }
 
-House_Enter(playerid, i)
-{
+House_Enter(playerid, i) {
+
 	if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i || HouseInfo[i][hLock] == 0 || PlayerInfo[playerid][pRenting] == i) {
+
+		House_VistorCheck(playerid, i, 0);
 		SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
 		PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
 		PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
@@ -511,14 +513,17 @@ House_Enter(playerid, i)
 		SetPlayerFacingAngle(playerid,HouseInfo[i][hInteriorA]);
 		SetCameraBehindPlayer(playerid);
 		GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
+		if(HouseInfo[i][h_iLights] == 1) TextDrawShowForPlayer(playerid, g_tHouseLights);
 		if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
 	}
 	else GameTextForPlayer(playerid, "~r~Locked", 5000, 1);
 	return 1;
 }
 
-House_Exit(playerid, i)
-{
+House_Exit(playerid, i) {
+
+	if(GetPVarType(playerid, PVAR_FURNITURE)) cmd_furniture(playerid, "");
+	House_VistorCheck(playerid, i, 1);
 	SetPlayerInterior(playerid,0);
 	PlayerInfo[playerid][pInt] = 0;
 	SetPlayerPos(playerid,HouseInfo[i][hExteriorX],HouseInfo[i][hExteriorY],HouseInfo[i][hExteriorZ]);
@@ -528,6 +533,7 @@ House_Exit(playerid, i)
 	PlayerInfo[playerid][pVW] = HouseInfo[i][hExtVW];
 	PlayerInfo[playerid][pInt] = HouseInfo[i][hExtIW];
 	SetPlayerInterior(playerid, HouseInfo[i][hExtIW]);
+	TextDrawHideForPlayer(playerid, g_tHouseLights);
 	if(HouseInfo[i][hCustomExterior]) Player_StreamPrep(playerid, HouseInfo[i][hExteriorX],HouseInfo[i][hExteriorY],HouseInfo[i][hExteriorZ], FREEZE_TIME);
 	return 1;	
 }

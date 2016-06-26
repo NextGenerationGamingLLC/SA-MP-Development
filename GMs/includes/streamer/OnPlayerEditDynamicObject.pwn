@@ -9,14 +9,109 @@ public OnPlayerEditGate(playerid, objectid, response, Float:x, Float:y, Float:z,
     CallLocalFunction("OnPlayerEditDynamicObject", "iddffffff", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 }
 
-public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, Float:fY, Float:fZ, Float:fRotX, Float:fRotY, Float:fRotZ) {
+	return 0;
+}
+
+forward OnPlayerEditDObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
+public OnPlayerEditDObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) // Object Editor Fix by Winterfield. DO NOT REMOVE.
 {
+    printf("%i | %d | %d | %f | %f | %f | %f | %f | %f", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz); // debug
+    CallLocalFunction("OnPlayerEditDynamicObject", "iddffffff", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
+}
+
+public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) {
 	
-	switch(response) {
+	// Under OnPlayerEditObject
 
-		/*case EDIT_RESPONSE_CANCEL: {
+	/*
+	if(GetPVarInt(playerid, "_EditingSafeObjectID") == objectid)
+	{
+	    new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
+				str[128];
 
-			if(GetPVarType(playerid, PVAR_FURNITURE_EDITING)) {
+	    if(response == EDIT_RESPONSE_FINAL) {
+	        SafeData[iSafeID][g_fPos][0] = x;
+			SafeData[iSafeID][g_fPos][1] = y;
+			SafeData[iSafeID][g_fPos][2] = z;
+			SafeData[iSafeID][g_fPos][3] = rx;
+			SafeData[iSafeID][g_fPos][4] = ry;
+			SafeData[iSafeID][g_fPos][5] = rz;
+			processSafe(iSafeID);
+			saveSafe(iSafeID);
+
+			format(str, sizeof str, "You have edited the position of Safe ID %i.", iSafeID);
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, str);
+	        DeletePVar(playerid, "_EditingSafeObjectID");
+	    }
+	    else if(response == EDIT_RESPONSE_CANCEL) {
+
+	        format(str, sizeof str, "You have quit editing Safe ID %i.", iSafeID);
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, str);
+	        DeletePVar(playerid, "_EditingSafeID");
+	    }
+	}
+	*/
+
+	if(GetPVarType(playerid, "DeployingTapeID"))
+	{
+	    new tid = GetPVarInt(playerid, "DeployingTapeID"), valid = 0;
+	    if(response == EDIT_RESPONSE_FINAL || response == EDIT_RESPONSE_CANCEL)
+	    {
+	    	DeletePVar(playerid, "DeployingTapeID");
+	        new Float:offsetX, Float:offsetY, Float:offsetZ;
+	        
+			offsetX = x - Tapes[tid][sX];
+			offsetY = y - Tapes[tid][sY];
+			offsetZ = z - Tapes[tid][sZ];
+			
+			if(offsetX <= 10.0 && offsetX >= -10.0)
+			{
+                if(offsetY <= 10.0 && offsetY >= -10.0)
+				{
+                    if(offsetZ <= 10.0 && offsetZ >= -10.0)
+					{
+                        Tapes[tid][sX] = x;
+						Tapes[tid][sY] = y;
+						Tapes[tid][sZ] = z;
+
+						if(IsValidDynamicObject(Tapes[tid][sObjectID])) DestroyDynamicObject(Tapes[tid][sObjectID]);
+						Tapes[tid][sObjectID] = CreateDynamicObject(19834, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+						
+						/*
+						SetDynamicObjectPos(Tapes[tid][sObjectID], x, y, z);
+						SetDynamicObjectPos(Tapes[tid][sObjectID], rx, ry, rz);
+						*/
+
+						format(szMiscArray, sizeof(szMiscArray), "Tape ID: %d's position has been edited successfully.", tid);
+						SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
+						valid = 1;
+					}
+					else SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum Z Offset exceeded. Please try again.");
+				}
+				else SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum Y Offset exceeded. Please try again.");
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum X Offset exceeded. Please try again.");
+
+			
+			if(!valid)
+			{
+			    DestroyDynamicObject(Tapes[tid][sObjectID]);
+				Tapes[tid][sX] = 0;
+				Tapes[tid][sY] = 0;
+				Tapes[tid][sZ] = 0;
+				Tapes[tid][sObjectID] = INVALID_OBJECT_ID;
+				Tapes[tid][sDeployedBy] = INVALID_PLAYER_ID;
+				Tapes[tid][sDeployedByStatus] = 0;
+			}
+	    }
+	}
+	if(GetPVarType(playerid, PVAR_FURNITURE_EDITING)) {
+
+		switch(response) {
+
+			case EDIT_RESPONSE_CANCEL: {
+
 				new iModelID = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
 
 				GetDynamicObjectPos(objectid, x, y, z);
@@ -38,10 +133,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				TextDrawSetPreviewRot(Furniture_TD[4], 345.000000, 0.000000, 320.000000, 1.000000);
 				SelectTextDraw(playerid, 0xF6FBFCFF);
 			}
-		}
-		case EDIT_RESPONSE_FINAL: {
-
-			if(GetPVarType(playerid, PVAR_FURNITURE_EDITING)) {
+			case EDIT_RESPONSE_FINAL: {
 
 				new iModelID = GetDynamicObjectModel(objectid),
 					iSlotID = GetPVarInt(playerid, PVAR_FURNITURE_SLOT),
@@ -91,9 +183,10 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				// printf("%d, %d, %d, %f, %f, %f, %f, %f, %f", playerid, objectid, response, x, y, z, rx, ry, rz);
 				// SelectTextDraw(playerid, 0xF6FBFCFF);
 			}
-		}*/
+		}
 	}
 	
+	// Gates
 	if(response == EDIT_RESPONSE_FINAL)
 	{
 		szMiscArray[0] = 0;
@@ -170,6 +263,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		}
 		DeletePVar(playerid, PVAR_EMETDET);
 	}
+	// Parking Meters
 	if(EditingMeterID[playerid] != 0)
 	{
 		new string[128];
@@ -235,30 +329,30 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			}
 		}
 	}
-	if(response == EDIT_RESPONSE_FINAL)
-	{
-		new string[128];
-		/*if(GetPVarInt(playerid, "Edit") == 2)
+	if(GetPVarType(playerid, "editingsign")) {
+		if(response == EDIT_RESPONSE_FINAL)
 		{
-			if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
-			new gangtag = GetPVarInt(playerid, "gt_ID");
-			GangTags[gangtag][gt_PosX] = x;
-			GangTags[gangtag][gt_PosY] = y;
-			GangTags[gangtag][gt_PosZ] = z;
-			GangTags[gangtag][gt_PosRX] = rx;
-			GangTags[gangtag][gt_PosRY] = ry;
-			GangTags[gangtag][gt_PosRZ] = rz;
-			CreateGangTag(gangtag);
-			format(string, sizeof(string), "You have edited the position of gang tag %d!", gangtag);
-			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			format(string, sizeof(string), "%s has edited the position of gang tag %d.", GetPlayerNameEx(playerid), gangtag);
-			Log("Logs/GangTags.log", string);
-			DeletePVar(playerid, "gt_ID");
-			DeletePVar(playerid, "gt_Edit");
-			SaveGangTag(gangtag);
-		}*/
-		if(GetPVarType(playerid, "editingsign"))
-		{
+			new string[128];
+			/*if(GetPVarInt(playerid, "Edit") == 2)
+			{
+				if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pGangModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
+				new gangtag = GetPVarInt(playerid, "gt_ID");
+				GangTags[gangtag][gt_PosX] = x;
+				GangTags[gangtag][gt_PosY] = y;
+				GangTags[gangtag][gt_PosZ] = z;
+				GangTags[gangtag][gt_PosRX] = rx;
+				GangTags[gangtag][gt_PosRY] = ry;
+				GangTags[gangtag][gt_PosRZ] = rz;
+				CreateGangTag(gangtag);
+				format(string, sizeof(string), "You have edited the position of gang tag %d!", gangtag);
+				SendClientMessageEx(playerid, COLOR_WHITE, string);
+				format(string, sizeof(string), "%s has edited the position of gang tag %d.", GetPlayerNameEx(playerid), gangtag);
+				Log("Logs/GangTags.log", string);
+				DeletePVar(playerid, "gt_ID");
+				DeletePVar(playerid, "gt_Edit");
+				SaveGangTag(gangtag);
+			}*/
+			
 			new h = GetPVarInt(playerid, "house");
 			if(GetPointDistanceToPoint(HouseInfo[h][hExteriorX], HouseInfo[h][hExteriorY], HouseInfo[h][hExteriorZ], x, y, z) > 10)
 				return SendClientMessageEx(playerid, COLOR_GREY, "Keep the sign within the checkpoint radius!"), EditDynamicObject(playerid, GetPVarInt(playerid, "signID"));
@@ -292,20 +386,18 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "editingsign");
 			ClearCheckpoint(playerid);
 		}
-	}
-	if(response == EDIT_RESPONSE_CANCEL)
-	{
-		/*if(GetPVarInt(playerid, "gt_Edit") == 2)
+		if(response == EDIT_RESPONSE_CANCEL)
 		{
-			new gangid = GetPVarInt(playerid, "gt_ID");
-			SetDynamicObjectPos(GangTags[gangid][gt_Object], GangTags[gangid][gt_PosX], GangTags[gangid][gt_PosY], GangTags[gangid][gt_PosZ]);
-			SetDynamicObjectRot(GangTags[gangid][gt_Object], GangTags[gangid][gt_PosRX], GangTags[gangid][gt_PosRY], GangTags[gangid][gt_PosRZ]);
-			DeletePVar(playerid, "gt_Edit");
-			DeletePVar(playerid, "gt_ID");
-			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped editing this gang tag!");
-		}*/
-		if(GetPVarType(playerid, "editingsign"))
-		{
+			/*if(GetPVarInt(playerid, "gt_Edit") == 2)
+			{
+				new gangid = GetPVarInt(playerid, "gt_ID");
+				SetDynamicObjectPos(GangTags[gangid][gt_Object], GangTags[gangid][gt_PosX], GangTags[gangid][gt_PosY], GangTags[gangid][gt_PosZ]);
+				SetDynamicObjectRot(GangTags[gangid][gt_Object], GangTags[gangid][gt_PosRX], GangTags[gangid][gt_PosRY], GangTags[gangid][gt_PosRZ]);
+				DeletePVar(playerid, "gt_Edit");
+				DeletePVar(playerid, "gt_ID");
+				SendClientMessageEx(playerid, COLOR_GREY, "You have stopped editing this gang tag!");
+			}*/
+	
 			if(GetPVarInt(playerid, "editingsign") == 1 && IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
 			SendClientMessageEx(playerid, COLOR_GREY, "You have stopped yourself from placing down your House Sale Sign!");
 			DeletePVar(playerid, "signID");
@@ -314,5 +406,8 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			ClearCheckpoint(playerid);
 		}
 	}
+
+
+
 	return 1;
 }

@@ -370,6 +370,7 @@ new Text:PriorityReport[MAX_PLAYERS];
 new Text:TD_ServerError;
 new Text:TD_LoginScreen;
 new PlayerText:TD_ChatBox[11];
+new Text:g_tHouseLights;
 //new Text:PointTime;
 
 
@@ -879,6 +880,7 @@ new Barricades[MAX_GROUPS][MAX_BARRICADES][Barricade];
 new Barrels[MAX_GROUPS][MAX_BARRELS][Barrel];
 new Ladders[MAX_GROUPS][MAX_LADDERS][Ladder];
 new Signs[MAX_GROUPS][MAX_SIGNS][Sign];
+new Tapes[MAX_TAPES][Tape];
 new Auctions[MAX_AUCTIONS][Auction];
 new BusinessSales[MAX_BUSINESSSALES][BusinessSale];
 new Reports[MAX_REPORTS][reportinfo];
@@ -2748,7 +2750,7 @@ new const szFonts[][] = {
 };
 
 
-/*
+
 new szFurnitureCategories[][] = {
 	"Bathroom",
 	"Comfort",
@@ -2892,11 +2894,19 @@ new const szFurnitureTextures[][][] = {
 	{"SpeedLimitBlankSign", "19978", "samproadsigns", "SpeedLimitBlankSign"},
 	{"Radiation", "19978", "samproadsigns", "Radiation"}
 };
-*/
+
 // for(new i; i < sizeof(szFurnitureCategories); ++i) FurnitureList[i] = mS_INVALID_LISTID;
 
-//new Text:Furniture_TD[26];
+new Text:Furniture_TD[26];
 
+new iErrorID;
+
+/*
+Robbery System
+new ROB_MAX_PERCENTAGE = 30,
+	ROB_COLLECT_RATE = 5000,
+	ROB_MIN_MEMBERS = 1;
+*/
 
 /* IRC/Slack */
-new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], BotID[MAX_BOTS], BotGroupID;
+new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], IRC_CHANNEL_SERVERERRORS[32], IRC_CHANNEL_ADMWARNINGS[32], BotID[MAX_BOTS], BotGroupID;

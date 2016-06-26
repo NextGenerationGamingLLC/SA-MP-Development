@@ -215,6 +215,7 @@ native IsValidVehicle(vehicleid);
 #define 		MAX_BARRELS 				25
 #define 		MAX_LADDERS 				5
 #define 		MAX_SIGNS	 				10
+#define         MAX_TAPES                   40
 #define         MAX_AUCTIONS                10
 #define         MAX_BUSINESSSALES           100
 #define 		INVALID_GROUP_ID 			-1
@@ -1054,6 +1055,9 @@ native IsValidVehicle(vehicleid);
 #define 		GCRATE_TRANSFER_WITHDRAW	(6050)
 #define 		GCRATE_TRANSFER_DEPOSIT		(6051)
 
+#define 		MAX_SAFES 					1*MAX_GROUPS
+#define 		MAX_ROBBERS 				20
+
 #define 		DIALOG_SAFE_CREATE 				(6052)
 #define 		DIALOG_SAFE_CTYPEID 			(6053)
 #define 		DIALOG_SAFE_CTYPE 				(6054)
@@ -1194,16 +1198,17 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_EDITPOINT_POSITION 		(6173)
 #define 		DIALOG_EDITPOINT_MATERIALS		(6174)
 
-#define 		MAX_POLLS 			              (50)
-#define 		MAX_POLLS_CHOICES                  (5)
+#define 		MAX_POLLS 						(50)
+#define 		MAX_POLLS_CHOICES				(5)
 
-#define 		DIALOG_POLLS		           (6175)
-#define 		DIALOG_POLLS_VOTE	           (6176)
-#define 		DIALOG_POLLS_CHOICES	       (6177)
-#define 		DIALOG_EDITPOLLS		       (6178)
-#define 		DIALOG_EDITPOLLS2		       (6179)
-#define 		DIALOG_EDITPOLLS_NAME	       (6180)
-#define 		DIALOG_EDITPOLLS_CHOICES       (6181)
+#define 		DIALOG_POLLS 					(6175)
+#define 		DIALOG_POLLS_VOTE 				(6176)
+#define 		DIALOG_POLLS_CHOICES 			(6177)
+#define 		DIALOG_EDITPOLLS 				(6178)
+#define 		DIALOG_EDITPOLLS2				(6179)
+#define 		DIALOG_EDITPOLLS_NAME			(6180)
+#define 		DIALOG_EDITPOLLS_CHOICES		(6181)
+#define 		DIALOG_FURNITURE_BUYSELECT		(6182)
 
 /*#define 		DIALOG_INTERACT 				(6175)
 #define 		DIALOG_INTERACT_COP 			(6176)

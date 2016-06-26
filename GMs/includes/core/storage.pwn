@@ -2081,9 +2081,11 @@ CMD:trunktake(playerid, params[]) {
 					return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't take weapons from the trunk if it's closed! /car trunk to open it.");
 				}
 
-				if(!(1 <= iWeaponSlot <= PlayerVehicleInfo[playerid][d][pvWepUpgrade] + 1)) {
+
+				if(iWeaponSlot > PlayerVehicleInfo[playerid][d][pvWepUpgrade] || iWeaponSlot < 1) {
 					return SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot specified.");
 				}
+
 				else if(PlayerVehicleInfo[playerid][d][pvWeapons][iWeaponSlot - 1] != 0) {
 					new
 						szWeapon[16],

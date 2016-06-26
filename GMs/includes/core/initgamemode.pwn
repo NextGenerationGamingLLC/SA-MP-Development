@@ -23,10 +23,9 @@ InitiateGamemode()
 	LoadRelayForLifeTeams();
 	LoadGarages();
 	LoadCrimes();
-	LoadGCrates();
 
-	//loadSafes(); 
-		/*---[Shop Automation]---*/
+
+	/*---[Shop Automation]---*/
 	
  	g_mysql_LoadSales();
  	g_mysql_LoadPrices();
@@ -109,15 +108,15 @@ InitiateGamemode()
     print("[Dynamic Groups] Loading Dynamic Groups Vehicles...");
     LoadDynamicGroupVehicles();
 
+    LoadGCrates();
+	// loadSafes();
+
     Job_LoadJobs();
     GangTag_Load();
-    //DS_LoadDrugSystem();
-
-    //TurfWars_LoadData();
 
     // Bank_LoadBank();
-//    LoadFurniture();
-//    FurnitureListInit();
+	//LoadFurniture(); Not needed - furniture loads when the player enters the house.
+	FurnitureListInit();
     //Poll_LoadPolls();
 
 	print("\n-------------------------------------------");

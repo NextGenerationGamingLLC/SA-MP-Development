@@ -50,13 +50,16 @@ stock IsAdminLevel(playerid, level, warning = 1) {
 
 stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: IRC = true)
 {
-	foreach(new i: Player)
-	{
+	foreach(new i: Player) {
 		if(PlayerInfo[i][pAdmin] >= iLevel && (bUndercover || !PlayerInfo[i][pTogReports])) {
 			SendClientMessageEx(i, hColor, szMessage);
 		}
 	}
 	if(!IRC && iLevel <= 2) IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
+	if(strfind(szMessage, "AdmWarning", false) != -1) {
+		StripColorEmbedding(szMessage);
+		IRC_Say(BotID[0], IRC_CHANNEL_ADMWARNINGS, szMessage); // Route AdmWarnings to IRC.
+	}
 	return 1;
 }
 
@@ -4613,7 +4616,7 @@ CMD:gethere(playerid, params[])
 			    ShowPlayerDialogEx(playerid, PBFORCE, DIALOG_STYLE_MSGBOX, "Paintball", string, "Yes", "No");
 			    return 1;
 			}
-//			Furniture_ResetPVars(playerid);
+			Furniture_ResetPVars(playerid);
 			GetPlayerPos(playerid, plocx, plocy, plocz);
 			SetPlayerVirtualWorld(giveplayerid, PlayerInfo[playerid][pVW]);
 			Streamer_UpdateEx(giveplayerid, plocx, plocy, plocz);

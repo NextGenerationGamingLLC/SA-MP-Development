@@ -267,6 +267,13 @@ stock IsATaxiDriver(playerid)
 	return 0;
 }
 
+
+stock IsAnFTSDriver(playerid)
+{
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))	return 1;
+	return 0;
+}
+
 stock IsATowman(playerid)
 {
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TOWING)) return 1;
@@ -3067,7 +3074,7 @@ CMD:online(playerid, params[]) {
 		{
 			if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
 			else format(badge, sizeof(badge), "");
-			if(IsATaxiDriver(playerid) && IsATaxiDriver(i)) switch(TransportDuty[i]) {
+			if(IsAnFTSDriver(playerid) && IsAnFTSDriver(i)) switch(TransportDuty[i]) {
 				case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (on duty), %i calls accepted", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
 				default: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (off duty), %i calls accepted", szMiscArray, badge, GetPlayerNameEx(i), PlayerInfo[i][pCallsAccepted]);
 			}
@@ -3243,7 +3250,7 @@ CMD:gwithdraw(playerid, params[])
 		if(sscanf(params, "ds[64]", amount, reason))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gwithdraw [amount] [reason]");
-			format(string, sizeof(string), "* VAULT BALANCE: $%d.", arrGroupData[iGroupID][g_iBudget]);
+			format(string, sizeof(string), "* VAULT BALANCE: $%s.", number_format(arrGroupData[iGroupID][g_iBudget]));
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 			return 1;
 		}
@@ -3875,7 +3882,7 @@ CMD:deploy(playerid, params[])
 		if(sscanf(params, "s[12]D(0)", object, type))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deploy [object] [type (option for barricades/signs)]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign, Tape");
 			return 1;
 		}
 		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
@@ -4145,6 +4152,36 @@ CMD:deploy(playerid, params[])
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 		}
+		else if(strcmp(object, "tape", true) == 0) {
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTapes]) {
+			    if(!GetPVarType(playerid, "DeployingTapeID")) {
+					for(new i; i < sizeof(Tapes); i++) {
+						if(Tapes[i][sX] == 0 && Tapes[i][sY] == 0 && Tapes[i][sZ] == 0)	{
+
+							new Float: f_TempAngle;
+
+							GetPlayerPos(playerid, Tapes[i][sX], Tapes[i][sY], Tapes[i][sZ]);
+							GetPlayerFacingAngle(playerid, f_TempAngle);
+							Tapes[i][sObjectID] = CreateDynamicObject(19834, Tapes[i][sX], Tapes[i][sY], Tapes[i][sZ], 0.0, 0.0, f_TempAngle);
+							GetPlayer3DZone(playerid, Tapes[i][sDeployedAt], MAX_ZONE_NAME);
+							Tapes[i][sDeployedBy] = GetPlayerNameEx(playerid);
+							if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] != 1) Tapes[i][sDeployedByStatus] = 1;
+							else Tapes[i][sDeployedByStatus] = 0;
+							format(szMiscArray,sizeof(szMiscArray),"Tape ID: %d successfully created. You may edit its location using the controls on-screen.", i);
+							SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+							SendClientMessage(playerid, COLOR_WHITE, "Once done, you can save the tape position by clicking the disc. To cancel, press ESC.");
+							SetPlayerPos(playerid, Tapes[i][sX], Tapes[i][sY]-0.4, Tapes[i][sZ]); // Force streamer.
+							SetPVarInt(playerid, "DeployingTapeID", i);
+							EditDynamicObject(playerid, Tapes[i][sObjectID]);
+							return 1;
+						}
+					}
+					SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more tapes, limit is " #MAX_TAPES# ".");
+				}
+				else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are already editing a tape.");
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
 	return 1;
@@ -4158,7 +4195,7 @@ CMD:destroy(playerid, params[])
 		if(sscanf(params, "s[12]d", object, type))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /destroy [object] [ID]");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "Objects: Cade, Spikes, Flare, Cone, Barrel, Ladder, Sign, Tape");
 			return 1;
 		}
 		else if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be on foot to use this command.");
@@ -4349,6 +4386,29 @@ CMD:destroy(playerid, params[])
 					Signs[iGroup][type][sDeployedBy] = INVALID_PLAYER_ID;
 					Signs[iGroup][type][sDeployedByStatus] = 0;
 					format(string,sizeof(string),"Sign ID: %d successfully deleted.", type);
+					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					return 1;
+				}
+			}
+			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+		}
+		else if(strcmp(object, "tape", true) == 0)
+		{
+			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTapes])
+			{
+				if(!(0 <= type < sizeof(Tapes)) || (Tapes[type][sX] == 0 && Tapes[type][sY] == 0 && Tapes[type][sZ] == 0)) return SendClientMessageEx(playerid, COLOR_WHITE, "Invalid tape ID.");
+				else if(PlayerInfo[playerid][pAdmin] < 2 && Tapes[type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a tape that an Administrator deployed.");
+				else
+				{
+					new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
+					DestroyDynamicObject(Tapes[type][sObjectID]);
+					Tapes[type][sX] = 0;
+					Tapes[type][sY] = 0;
+					Tapes[type][sZ] = 0;
+					Tapes[type][sObjectID] = INVALID_OBJECT_ID;
+					Tapes[type][sDeployedBy] = INVALID_PLAYER_ID;
+					Tapes[type][sDeployedByStatus] = 0;
+					format(string,sizeof(string),"Tape ID: %d successfully deleted.", type);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					return 1;
 				}
@@ -4639,6 +4699,27 @@ CMD:signs(playerid, params[])
 			if(Signs[iGroup][i][sX] != 0 && Signs[iGroup][i][sY] != 0 && Signs[iGroup][i][sZ] != 0) // Checking for next available ID.
 			{
 				format(string, sizeof(string), "HQ: Sign ID: %d | Deployed location: %s | Deployed by: %s", i, Signs[iGroup][i][sDeployedAt], Signs[iGroup][i][sDeployedBy]);
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			}
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized.");
+	}
+	return 1;
+}
+
+CMD:tapes(playerid, params[]) {
+
+    if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iTapes] != -1 && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTapes])
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "Current deployed tapes:");
+		for(new i, string[56 + MAX_ZONE_NAME + MAX_PLAYER_NAME]; i < sizeof(Tapes); i++)
+		{
+			if(Tapes[i][sX] != 0 && Tapes[i][sY] != 0 && Tapes[i][sZ] != 0) // Checking for next available ID.
+			{
+				format(string, sizeof(string), "HQ: Tape #%d | Deployed location: %s | Deployed by: %s", i, Tapes[i][sDeployedAt], Tapes[i][sDeployedBy]);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
 		}

@@ -75,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
  
-#define SERVER_GM_TEXT "NG:RP v3.0.327"
+#define SERVER_GM_TEXT "NG:RP v3.0.328"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -140,7 +140,6 @@
 #include "./includes/admin/watch.pwn"
 #include "./includes/admin/newbie.pwn"
 #include "./includes/admin/ban.pwn"
-#include "./includes/admin/staffban.pwn"
 
 //business includes
 #include "./includes/business/247items.pwn"
@@ -326,7 +325,7 @@
 // Jingles WIP
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
-//#include "./includes/furniture.pwn"
+#include "./includes/furniture.pwn"
 #include "./includes/group/elections.pwn"
 
 // Winterfield WIP

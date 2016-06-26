@@ -34,13 +34,10 @@
 	* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 */
 
-
 #include <YSI\y_hooks>
-
-#define 		MAX_SAFES 						5*MAX_GROUPS
-#define 		MAX_ROBBERS 					20
 
 /*
 enum {
@@ -61,42 +58,6 @@ enum {
 	DIALOG_ROBBERY_SAFE
 };
 */
-
-enum eSafeData {
-	g_iDBID,
-	g_iType,
-	g_iTypeID,
-	g_iMoney,
-	g_iInitialMoney,
-	g_iVW,
-	g_iInt,
-	g_iModelID,
-	g_iObjectID,
-	g_iRobberyPickup,
-	g_iRobbed,
-	g_tRobbedTime,
-	Float:g_fPos[6],
-	g_szName[MAX_PLAYER_NAME],
-	g_iPin[5],
-	Text3D:g_iTextLabel
-}
-new SafeData[MAX_SAFES][eSafeData];
-
-
-enum eMoneyBagData {
-	g_iObjectID[2],
-	g_iPlayerID,
-	Float:g_fPos[3],
-	g_iMoney,
-	g_szPlayerName[MAX_PLAYER_NAME],
-	Text3D:g_iTextLabel
-}
-new MoneyBagData[MAX_ROBBERS][eMoneyBagData];
-
-new ROB_MAX_PERCENTAGE = 30,
-	ROB_COLLECT_RATE = 5000,
-	ROB_MIN_MEMBERS = 1;
-
 
 hook OnGameModeExit()
 {
@@ -155,7 +116,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 	}
 }
 
-
+/*
 hook OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
 {
 	if(GetPVarInt(playerid, "_RobberyBeacon"))
@@ -168,42 +129,10 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float: amount, weaponid, bodypart)
 	}
 	return 1;
 }
+*/
 
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
-hook OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
-{
-	if(GetPVarInt(playerid, "_EditingSafeObjectID") == objectid)
-	{
-	    new iSafeID = GetPVarInt(playerid, "_EditingSafeID"),
-				str[128];
-
-	    if(response == EDIT_RESPONSE_FINAL) {
-	        SafeData[iSafeID][g_fPos][0] = x;
-			SafeData[iSafeID][g_fPos][1] = y;
-			SafeData[iSafeID][g_fPos][2] = z;
-			SafeData[iSafeID][g_fPos][3] = rx;
-			SafeData[iSafeID][g_fPos][4] = ry;
-			SafeData[iSafeID][g_fPos][5] = rz;
-			processSafe(iSafeID);
-			saveSafe(iSafeID);
-
-			format(str, sizeof str, "You have edited the position of Safe ID %i.", iSafeID);
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, str);
-	        DeletePVar(playerid, "_EditingSafeObjectID");
-	    }
-	    else if(response == EDIT_RESPONSE_CANCEL) {
-
-	        format(str, sizeof str, "You have quit editing Safe ID %i.", iSafeID);
-			SendClientMessageEx(playerid, COLOR_LIGHTRED, str);
-	        DeletePVar(playerid, "_EditingSafeID");
-	    }
-	}
-	return 1;
-}
-
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
 	switch(dialogid)
 	{
 		case DIALOG_ROBBERY_SETUP:

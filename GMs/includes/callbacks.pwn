@@ -1622,6 +1622,10 @@ public OnPlayerDisconnect(playerid, reason)
 	// Why save on people who haven't logged in!
 	if(gPlayerLogged{playerid} == 1)
 	{
+		if(TempNumber[playerid] == 1) {
+			PlayerInfo[playerid][pPnumber] = GetPVarInt(playerid, "oldnum");
+			TempNumber[playerid] = 0;
+		}
 		if(GetPVarType(playerid, "signID") && IsValidDynamicObject(GetPVarInt(playerid, "signID"))) DestroyDynamicObject(GetPVarInt(playerid, "signID"));
 		g_mysql_RemoveDumpFile(GetPlayerSQLId(playerid));
 		if(HungerPlayerInfo[playerid][hgInEvent] == 1)
@@ -5549,7 +5553,8 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		}
 		SendClientMessageEx(playerid, COLOR_WHITE, "Unable to spawn more barricades, limit is " #MAX_BARRICADES# ".");
 		return 1;
-	}/*
+	}
+	/*
 	if(extraid == 1505) {
 
 		if(response) {
@@ -5560,7 +5565,8 @@ public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_
 		else {
 			FurnitureMenu(playerid, 0);
 		}
-	}*/
+	}
+	*/
 	if(extraid == DYNAMIC_FAMILY_CLOTHES)
 	{
 		if(response)

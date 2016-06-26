@@ -582,8 +582,22 @@ CreatePokerGUI(playerid)
 }
  
 forward LoadTextDraws();
-public LoadTextDraws()
-{
+public LoadTextDraws() {
+
+	//HouseLights
+	g_tHouseLights = TextDrawCreate(-1.000000, 0.000000, "`");
+	TextDrawBackgroundColor(g_tHouseLights, 255);
+	TextDrawFont(g_tHouseLights, 1);
+	TextDrawLetterSize(g_tHouseLights, 0.500000, 52.000000);
+	TextDrawColor(g_tHouseLights, -1);
+	TextDrawSetOutline(g_tHouseLights, 0);
+	TextDrawSetProportional(g_tHouseLights, 1);
+	TextDrawSetShadow(g_tHouseLights, 1);
+	TextDrawUseBox(g_tHouseLights, 1);
+	TextDrawBoxColor(g_tHouseLights, 150);
+	TextDrawTextSize(g_tHouseLights, 649.000000, 78.000000);
+	TextDrawSetSelectable(g_tHouseLights, 0);
+
     // Blindfold
 	BFText = TextDrawCreate(0.000000, -3.000000, " ");
 	TextDrawBackgroundColor(BFText, 255);

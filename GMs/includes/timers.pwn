@@ -2785,8 +2785,9 @@ ptask SaveAccountsUpdate[900000](i)
 
 // Timer Name: EMSUpdate()
 // TickRate: 5 secs.
-ptask EMSUpdate[5000](i)
-{
+ptask EMSUpdate[5000](i) {
+	
+	if(GetPlayerVirtualWorld(i) < 6000) TextDrawHideForPlayer(i, g_tHouseLights);
 	if(GetPVarType(i, "Injured"))
 	{
 		#if defined zombiemode

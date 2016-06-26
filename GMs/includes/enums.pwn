@@ -137,7 +137,8 @@ enum eGroupData {
 	//g_iIngredients[sizeof(szIngredients)],
 	g_iGroupToyID,
 	g_iRivals[MAX_GROUP_RIVALS],
-	g_iTurfTax
+	g_iTurfTax,
+	g_iTapes
 }
 
 enum PlantData
@@ -497,6 +498,17 @@ enum Sign
 	Float:sZ,
 	sObjectID,
 	sObject,
+	sDeployedBy[MAX_PLAYER_NAME],
+	sDeployedByStatus,
+	sDeployedAt[MAX_ZONE_NAME]
+}
+
+enum Tape
+{
+    Float:sX,
+	Float:sY,
+	Float:sZ,
+	sObjectID,
 	sDeployedBy[MAX_PLAYER_NAME],
 	sDeployedByStatus,
 	sDeployedAt[MAX_ZONE_NAME]
@@ -1322,6 +1334,7 @@ enum hInfo
 	ListingDescription[128],
 	LinkedGarage[2],
 	hAreaID[2],
+	h_iLights,
 	hFurniture[MAX_FURNITURE_SLOTS],
 };
 
@@ -1732,7 +1745,8 @@ enum FallIntoFun
 
 enum eGCrateData {
 	gcr_iObject = INVALID_OBJECT_ID,
-	Text3D:gcr_iLabel
+	Text3D:gcr_iLabel,
+	gcr_isLoaded,
 }
 new arrGCrateData[MAX_GANG_CRATES][eGCrateData];
 
@@ -1765,7 +1779,8 @@ enum e_JobData {
 	Text3D:job_iTextID[2],
 	job_iActorID[2],
 	job_iActorModel,
-	job_iMapMarker
+	job_iMapMarker,
+	job_iSpawned
 }
 new arrJobData[MAX_JOBPOINTS][e_JobData];
 
@@ -1951,3 +1966,36 @@ enum eUfo {
 	ufo_iObjectID[13],
 	ufo_iPlayerID
 }
+
+/*
+enum eSafeData {
+	g_iDBID,
+	g_iType,
+	g_iTypeID,
+	g_iMoney,
+	g_iInitialMoney,
+	g_iVW,
+	g_iInt,
+	g_iModelID,
+	g_iObjectID,
+	g_iRobberyPickup,
+	g_iRobbed,
+	g_tRobbedTime,
+	Float:g_fPos[6],
+	g_szName[MAX_PLAYER_NAME],
+	g_iPin[5],
+	Text3D:g_iTextLabel
+}
+new SafeData[MAX_SAFES][eSafeData];
+
+
+enum eMoneyBagData {
+	g_iObjectID[2],
+	g_iPlayerID,
+	Float:g_fPos[3],
+	g_iMoney,
+	g_szPlayerName[MAX_PLAYER_NAME],
+	Text3D:g_iTextLabel
+}
+new MoneyBagData[MAX_ROBBERS][eMoneyBagData];
+*/

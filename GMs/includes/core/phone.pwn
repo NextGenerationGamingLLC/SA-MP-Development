@@ -229,11 +229,11 @@ CMD:tempnumber(playerid, params[]){
 			return SendClientMessageEx(playerid,COLOR_GREY,"You cannot set your temporary number to your existing number");
 
 		else { 
-			new query[128];
+
 			SetPVarInt(playerid, "oldnum", PlayerInfo[playerid][pPnumber]);
 			SetPVarInt(playerid, "tempnum", num);
-			format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",num);
-			mysql_function_query(MainPipeline, query, true, "OnPhoneTempNumberCheck", "ii", playerid, 5);
+			format(szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",num);
+			mysql_function_query(MainPipeline, szMiscArray, true, "OnPhoneNumberCheck", "ii", playerid, 5);
 		}
 	} else SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this command.");
 	return 1;
@@ -808,43 +808,5 @@ public OnFetchContact(iReceiverID) {
 	cache_get_field_content(0, "contactname", szName, MainPipeline);
 	format(szMiscArray, sizeof(szMiscArray), "[CONTACT]: %s", szName);
 	ChatTrafficProcess(iReceiverID, COLOR_GRAD1, szMiscArray, 7);
-	return 1;
-}
-
-hook OnPlayerDisconnect(playerid, reason) {
-	if(TempNumber[playerid] == 1) {
-		PlayerInfo[playerid][pPnumber] = GetPVarInt(playerid, "oldnum");
-		TempNumber[playerid] = 0;
-	}
-	return 1;
-}
-
-forward OnPhoneTempNumberCheck(index, extraid);
-public OnPhoneTempNumberCheck(index, extraid)
-{
-	if(IsPlayerConnected(index))
-	{
-		new string[128];
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
-
-		switch(extraid)
-		{
-			case 5: {
-				if(rows) {
-					SendClientMessageEx(index, COLOR_WHITE, "That phone number has already been taken.");
-					DeletePVar(index, "oldnum");
-					DeletePVar(index, "newnum");
-					TempNumber[index] = 0;
-				}
-				else {
-					format(string, sizeof(string), "You have set your temporary number to %d, type /tempnum to disable it.", GetPVarInt(index, "tempnum"));
-					SendClientMessage(index, COLOR_WHITE, string);
-					PlayerInfo[index][pPnumber] = GetPVarInt(index, "tempnum");
-					TempNumber[index] = 1;
-				}
-			}
-		}
-	}
 	return 1;
 }

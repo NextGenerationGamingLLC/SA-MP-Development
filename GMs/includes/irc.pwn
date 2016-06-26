@@ -49,6 +49,8 @@ stock g_irc_Init()
 		if(ini_GetValue(fileString, "BOT_REALNAME", IRC_BOT_REALNAME, sizeof(IRC_BOT_REALNAME))) continue;
 		if(ini_GetValue(fileString, "CHANNEL_ADMIN", IRC_CHANNEL_ADMIN, sizeof(IRC_CHANNEL_ADMIN))) continue;
 		if(ini_GetValue(fileString, "CHANNEL_HEADADMIN", IRC_CHANNEL_HEADADMIN, sizeof(IRC_CHANNEL_HEADADMIN))) continue;
+		if(ini_GetValue(fileString, "CHANNEL_ADMWARNINGS", IRC_CHANNEL_ADMWARNINGS, sizeof(IRC_CHANNEL_ADMWARNINGS))) continue;
+		if(ini_GetValue(fileString, "CHANNEL_SERVERERRORS", IRC_CHANNEL_SERVERERRORS, sizeof(IRC_CHANNEL_SERVERERRORS))) continue;
 	}
 	fclose(fileHandle);
 	print("[IRC] Starting Slack integration services...");
@@ -82,6 +84,8 @@ public IRC_OnConnect(botid, ip[], port)
 	ABroadCast(COLOR_GREEN, "Slack integration has started!", 99999);
 	IRC_JoinChannel(botid, IRC_CHANNEL_ADMIN);
 	IRC_JoinChannel(botid, IRC_CHANNEL_HEADADMIN);
+	IRC_JoinChannel(botid, IRC_CHANNEL_SERVERERRORS);
+	IRC_JoinChannel(botid, IRC_CHANNEL_ADMWARNINGS);
 	IRC_AddToGroup(BotGroupID, botid);
 	if(botid == BotID[0]) IRC_SetChannelTopic(botid, IRC_CHANNEL_ADMIN, AdminMOTD);
 	return 1;

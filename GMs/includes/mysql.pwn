@@ -1275,17 +1275,23 @@ public OnQueryFinish(resultid, extraid, handleid)
 	return 1;
 }
 
-public OnQueryError(errorid, error[], callback[], query[], connectionHandle)
-{
+public OnQueryError(errorid, error[], callback[], query[], connectionHandle) {
+
 	printf("[MySQL] Query Error - (ErrorID: %d) (Handle: %d)",  errorid, connectionHandle);
 	print("[MySQL] Check mysql_log.txt to review the query that threw the error.");
 	SQL_Log(query, error);
 
-	if(errorid == 2013 || errorid == 2014 || errorid == 2006 || errorid == 2027 || errorid == 2055)
-	{
+	if(errorid == 2013 || errorid == 2014 || errorid == 2006 || errorid == 2027 || errorid == 2055)	{
 		print("[MySQL] Connection Error Detected in Threaded Query");
 		//mysql_query(query, resultid, extraid, MainPipeline);
+
+		format(szMiscArray, sizeof(szMiscArray), "MYSQL [%d]: %d, %s, in callback: %s.", iErrorID, errorid, error, callback);
 	}
+	else format(szMiscArray, sizeof(szMiscArray), "MYSQL (THREADED) [%d]: %d, %s, in callback: %s.", iErrorID, errorid, error, callback);
+	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "     Query: %s", query);
+	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szMiscArray);
+	iErrorID++;
 }
 
 //--------------------------------[ CUSTOM STOCK FUNCTIONS ]---------------------------
@@ -2405,9 +2411,6 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "PrisonCellChisel", GetPVarInt(playerid, "pPrisonCellChisel"));
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishingSkill", PlayerInfo[playerid][pFishingSkill]);
-
-
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishingSkill", PlayerInfo[playerid][pFishingSkill]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishWeight", PlayerInfo[playerid][pFishWeight]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GarbageSkill", PlayerInfo[playerid][pGarbageSkill]);
@@ -2701,6 +2704,18 @@ public OnPhoneNumberCheck(index, extraid)
 					}
 				}
 			}
+			case 5: {
+                if(rows) {
+                    SendClientMessageEx(index, COLOR_WHITE, "That phone number has already been taken.");
+                    DeletePVar(index, "oldnum");
+                    DeletePVar(index, "newnum");
+                }
+                else {
+                    format(string, sizeof(string), "You have set your temporary number to %d, type /tempnum to disable it.", GetPVarInt(index, "tempnum"));
+                    SendClientMessage(index, COLOR_WHITE, string);
+                    PlayerInfo[index][pPnumber] = GetPVarInt(index, "tempnum");
+                }
+            }
 		}
 	}
 	return 1;

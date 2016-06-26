@@ -928,3 +928,42 @@ CMD:viewassets(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 	return true;
 }
+
+CMD:alimony(playerid, params[]) {
+	
+	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+	
+	new charged, recieved, amount;
+  	if(sscanf(params, "iii", charged, amount, recieved)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /alimony [charging id] [percentage] [reciever id]");
+  	if(charged == playerid || recieved == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on yourself!");
+  	
+  	new totalwealth = PlayerInfo[charged][pAccount] + GetPlayerCash(charged),
+  		fine = amount * totalwealth / 100;
+
+  	if(totalwealth < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is in debt - contact an administrator.");  	
+  	
+  	if(IsPlayerConnected(charged) || IsPlayerConnected(recieved)) {
+
+		if(amount < 5) return SendClientMessageEx(playerid, COLOR_GRAD2, "Minimum percentage must be atleast 5");
+		if(amount > 25)	return SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum percentage must not exceed 25");
+		if(!(300000 < fine < 2500000)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Fine must be between $300,000 and $2,500,000!");
+
+		GivePlayerCashEx(charged, TYPE_ONHAND, -fine);
+		format(szMiscArray, sizeof(szMiscArray), "You have been charged $%d for alimony to %s by Judge %s.", fine, GetPlayerNameEx(recieved), GetPlayerNameEx(playerid));
+		SendClientMessageEx(charged, COLOR_WHITE, szMiscArray);
+
+		GivePlayerCashEx(recieved, TYPE_ONHAND, fine);
+		format(szMiscArray, sizeof(szMiscArray), "You have been given $%d from %s as alimony.", fine, GetPlayerNameEx(recieved));
+		SendClientMessageEx(recieved, COLOR_WHITE, szMiscArray);
+
+		foreach(new i: Player) {
+			if(PlayerInfo[i][pAdmin] >= 3) {
+			    format(szMiscArray, sizeof(szMiscArray), "Judicial: %s has charged %s $%d for alimony to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(charged), fine, GetPlayerNameEx(recieved));
+			    SendClientMessage(i, COLOR_LIGHTRED, szMiscArray);
+			}
+		}
+	}
+	else return SendClientMessageEx(playerid, COLOR_GREY, "That player is not online!");
+	return 1;
+}

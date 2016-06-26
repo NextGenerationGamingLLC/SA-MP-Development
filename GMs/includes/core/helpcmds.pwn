@@ -139,7 +139,7 @@ CMD:help(playerid, params[])
                 SendClientMessageEx(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "*** %s ***  /spikes /revokelicense /vcheck /vmdc /vticket /tow /untow /impound /gdonate /togradio /togdept", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "*** %s ***  /flares /cones /wants /docarrest /siren /destroyplant /radargun /searchcar /vradar", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+				format(string, sizeof(string), "*** %s ***  /flares /cones /wants /docarrest /siren /destroyplant /radargun /searchcar /vradar /copdestroy (furniture)", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iBugAccess]) format(string, sizeof(string), "%s /bug /listbugs /clearbugs /hfind",string);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iCrateIsland] != INVALID_RANK) {
@@ -201,7 +201,7 @@ CMD:help(playerid, params[])
 			}
 			case 10:
 			{
-				SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /locker /gate /clothes /repfam /repcheck /myrivals /grouptoy /turfhelp /drughelp /pointhelp");
+				SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /locker /gate /clothes /repfam /repcheck /myrivals /grouptoy /drughelp");
 			}
 		}
 		if (0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
