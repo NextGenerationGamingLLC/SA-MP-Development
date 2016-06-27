@@ -299,8 +299,8 @@ public OnCountLockerGuns(iGroupID, iWeaponID) {
 	return iRows;
 }*/
 
-forward OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount);
-public OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount) {
+forward OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount, itemid, iCrateID);
+public OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount, itemid, iCrateID) {
 
 
 	szMiscArray[0] = 0;
@@ -313,7 +313,12 @@ public OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount) {
 	cache_get_data(iRows, iFields, MainPipeline);
 	valstr(tempWep, iWeaponID);
 	iCount = cache_get_field_content_int(0, tempWep, MainPipeline);
-	if(iCount < iAmount) SetPVarInt(iPlayerID, "GC_CHECK", 1);
+	if(iCount < iAmount) SendClientMessage(iPlayerID, COLOR_GRAD1, "You are trying to transfer more than there is!");
+	else {
+		
+		format(szMiscArray, sizeof(szMiscArray), "SELECT `%s` FROM `gCrates` WHERE `iCrateID` = '%d'", GetGCItemSQLFldName(itemid), iCrateID+1);
+		mysql_function_query(MainPipeline, szMiscArray, true, "OnTransferItemToCrate", "iiii", iPlayerID, itemid, iAmount, iCrateID);
+	}
 	return 1;
 }
 
@@ -527,13 +532,8 @@ TransferItemToCrate(playerid, itemid, iAmount, iCrateID) {
 			if(iLoad +1 > MAX_CRATE_GUNS) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot store anymore guns in this crate.");
 
 			SetGVarInt("GCrateLoad", iLoad+1, iCrateID);
-			
 			format(szMiscArray, sizeof(szMiscArray), "SELECT `%d` FROM `gWeaponsNew` WHERE `Group_ID` = '%d'", iWeaponID, iGroupID+1);
-			mysql_function_query(MainPipeline, szMiscArray, true, "OnPlayerCountLockerGuns", "iiii", playerid, iGroupID, iWeaponID, iAmount);
-			if(GetPVarType(playerid, "GC_CHECK")) return DeletePVar(playerid, "GC_CHECK"), SendClientMessage(playerid, COLOR_GRAD1, "You are trying to transfer more than there is!");
-			else {
-
-			}
+			mysql_function_query(MainPipeline, szMiscArray, true, "OnPlayerCountLockerGuns", "iiiiii", playerid, iGroupID, iWeaponID, iAmount, itemid, iCrateID);
 		}
 		case 13: { // Pot
 			if(0 < arrGroupData[iGroupID][g_iDrugs][0] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
@@ -552,9 +552,11 @@ TransferItemToCrate(playerid, itemid, iAmount, iCrateID) {
 		}
 	}
 
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `%s` FROM `gCrates` WHERE `iCrateID` = '%d'", GetGCItemSQLFldName(itemid), iCrateID+1);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnTransferItemToCrate", "iiii", playerid, itemid, iAmount, iCrateID);
-	
+	if(itemid > 12) {
+
+		format(szMiscArray, sizeof(szMiscArray), "SELECT `%s` FROM `gCrates` WHERE `iCrateID` = '%d'", GetGCItemSQLFldName(itemid), iCrateID+1);
+		mysql_function_query(MainPipeline, szMiscArray, true, "OnTransferItemToCrate", "iiii", playerid, itemid, iAmount, iCrateID);
+	}
 	return 1;
 }
 
