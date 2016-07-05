@@ -178,14 +178,14 @@ CMD:getcrate(playerid, params[])
 					case 0 .. 199: return SendClientMessage(playerid, COLOR_GRAD1, "You need to be a level four drug smuggler to run here!");
 					case 200 .. 399:
 					{
-						ShowPlayerDialog(playerid, DIALOG_DRUG_RUN, DIALOG_STYLE_TABLIST_HEADERS, "Purchase Drug Packages",
+						ShowPlayerDialogEx(playerid, DIALOG_DRUG_RUN, DIALOG_STYLE_TABLIST_HEADERS, "Purchase Drug Packages",
 						"Drug\tAmount\tPrice\n\
 						Meth\t10\t$25,000\n",
 						"Select", "Close");
 					}
 					default:
 					{
-						ShowPlayerDialog(playerid, DIALOG_DRUG_RUN, DIALOG_STYLE_TABLIST_HEADERS, "Purchase Drug Packages",
+						ShowPlayerDialogEx(playerid, DIALOG_DRUG_RUN, DIALOG_STYLE_TABLIST_HEADERS, "Purchase Drug Packages",
 						"Drug\tAmount\tPrice\n\
 						Meth\t10\t$25,000\n\
 						Ecstasy\t10\t$50,000\n",

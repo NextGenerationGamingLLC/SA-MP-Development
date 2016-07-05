@@ -74,7 +74,7 @@ ShowInteractionMenu(playerid, menu)
 			if(IsAMedic(playerid)) format(szMiscArray, sizeof(szMiscArray), "%s\nMedic", szMiscArray);
 			if(IsAGuard(playerid)) format(szMiscArray, sizeof(szMiscArray), "%s\nGuard", szMiscArray);
 
-			ShowPlayerDialog(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu", szMiscArray, "Select", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu", szMiscArray, "Select", "Cancel");
 		}
 		case 1: // Give / Sell
 		{
@@ -93,8 +93,8 @@ ShowInteractionMenu(playerid, menu)
 				PlayerInfo[playerid][pFirework]
 				PlayerInfo[playerid][pPaintTokens]);
 
-			if(GetPVarInt(playerid, "pGiving")) ShowPlayerDialog(playerid, DIALOG_INTERACT_GIVEITEM, DIALOG_STYLE_TABLIST_HEADERS, "Interaction Menu - Give", szMiscArray);
-			else if(GetPVarInt(playerid, "pSelling")) ShowPlayerDialog(playerid, DIALOG_INTERACT_GIVEITEM, DIALOG_STYLE_TABLIST_HEADERS, "Interaction Menu - Sell", szMiscArray);
+			if(GetPVarInt(playerid, "pGiving")) ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GIVEITEM, DIALOG_STYLE_TABLIST_HEADERS, "Interaction Menu - Give", szMiscArray);
+			else if(GetPVarInt(playerid, "pSelling")) ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GIVEITEM, DIALOG_STYLE_TABLIST_HEADERS, "Interaction Menu - Sell", szMiscArray);
 		}
 	}
 }
@@ -112,7 +112,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			szMiscArray[0] = 0;
 			switch(listitem)
 			{
-				case 0: ShowPlayerDialog(playerid, DIALOG_INTERACT_PAY, DIALOG_STYLE_INPUT, "Interaction Menu - Pay", "How much would you like to transfer?"); // Pay
+				case 0: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_PAY, DIALOG_STYLE_INPUT, "Interaction Menu - Pay", "How much would you like to transfer?"); // Pay
 				case 1: // Give
 				{
 					SetPVarInt(playerid, "pGiving", 1);
@@ -139,17 +139,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			if(listitem == 5 && IsACop(playerid))
 			{
 				format(szMiscArray, sizeof(szMiscArray), "(Un)cuff\nJailcuff\nDrag\nDetain\nTicket\nConfiscate", szMiscArray);
-				ShowPlayerDialog(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
 			}
 			if(listitem == 5 && IsAMedic(playerid))
 			{
 				format(szMiscArray, sizeof(szMiscArray), "%s\nLoad Patient\nTriage\nHeal\nMove Patient", szMiscArray);
-				ShowPlayerDialog(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
 			}
 			if(listitem == 5 && IsAGuard(playerid))
 			{
 				format(szMiscArray, sizeof(szMiscArray), "%s\n(Un)cuff\nJailcuff\nDrag\nDetain\nConfiscate\nExtend Sentence\nReduce Sentence\nIsolation", szMiscArray);
-				ShowPlayerDialog(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
 			}
 		}
 		case DIALOG_INTERACT_COP

@@ -864,13 +864,18 @@ CMD:asellhouse(playerid, params[])
 		if(sscanf(params, "d", house)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /asellhouse [houseid]");
 
 		HouseInfo[house][hLock] = 1;
+		foreach(new p : Player) {
+			if(HouseInfo[house][hOwnerID] == PlayerInfo[p][pId]) Homes[p]--;
+			if(PlayerInfo[p][pPhousekey] == house) PlayerInfo[p][pPhousekey] = INVALID_HOUSE_ID;
+			else if(PlayerInfo[p][pPhousekey2] == house) PlayerInfo[p][pPhousekey2] = INVALID_HOUSE_ID;
+			else if(PlayerInfo[p][pPhousekey3] == house) PlayerInfo[playerid][pPhousekey3] = INVALID_HOUSE_ID;
+		}
 		new ip[32];
 		GetPlayerIp(playerid,ip,sizeof(ip));
 		format(string,sizeof(string),"Administrator %s (IP: %s) has admin-sold house ID %d (was owned by %s(%d)).", GetPlayerNameEx(playerid), ip, house, HouseInfo[house][hOwnerName], HouseInfo[house][hOwnerID]);
 		Log("logs/house.log", string);
 		ClearHouse(house);
 		format( HouseInfo[house][hOwnerName], 128, "Nobody" );
-		foreach(new p : Player) if(HouseInfo[house][hOwnerID] == PlayerInfo[p][pId]) Homes[p]--;
 		HouseInfo[house][hOwnerID] = -1;
 		HouseInfo[house][hGLUpgrade] = 1;
 		PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
@@ -1817,5 +1822,34 @@ public DeleteHouse(houseid, adminid)
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "%s has deleted house id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), houseid);
 	Log("logs/hedit.log", szMiscArray);
+	return 1;
+}
+
+
+CMD:housefix(playerid, params[]) {
+
+	new Float:fPos[3];
+	GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+	for(new houseid; houseid < MAX_HOUSES; ++houseid) {
+
+		GetXYInFrontOfPlayer(playerid, fPos[0], fPos[1], houseid+1);
+		HouseInfo[houseid][hExteriorX] = fPos[0];
+		HouseInfo[houseid][hExteriorY] = fPos[1];
+		HouseInfo[houseid][hExteriorZ] = fPos[2];
+		HouseInfo[houseid][hExteriorR] = 0.0;
+		HouseInfo[houseid][hExteriorA] = 0.0;
+		HouseInfo[houseid][hInteriorX] = fPos[0];
+		HouseInfo[houseid][hInteriorY] = fPos[1]+1;
+		HouseInfo[houseid][hInteriorZ] = fPos[2];
+		HouseInfo[houseid][hInteriorR] = 0.0;
+		HouseInfo[houseid][hInteriorA] = 0.0;
+		HouseInfo[houseid][hIntIW] = GetPlayerInterior(playerid);
+		HouseInfo[houseid][hIntVW] = GetPlayerVirtualWorld(playerid);
+		HouseInfo[houseid][hExtIW] = GetPlayerInterior(playerid);
+		HouseInfo[houseid][hExtVW] = GetPlayerVirtualWorld(playerid);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You're streakinnnnn houses!" );
+		SaveHouse(houseid);
+		ReloadHousePickup(houseid);
+	}
 	return 1;
 }

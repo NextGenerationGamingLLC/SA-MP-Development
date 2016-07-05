@@ -1,26 +1,12 @@
 /* Anti-Cheat v2.0
-	[###] Jingles
+
+	Slice (weapon-config.inc data from weapons.dat)
+	Jingles (modified and added custom checks)
 */
 
 // add autocbug
 
 #include <YSI\y_hooks>
-// #define AC_DEBUG
-#define 			HACKTIMER_INTERVAL 			5000
-
-#define 			BODY_PART_UNKNOWN 			0
-#define 			WEAPON_UNARMED 				0
-#define 			WEAPON_VEHICLE_M4 			19
-#define 			WEAPON_VEHICLE_MINIGUN 		20
-#define 			WEAPON_PISTOLWHIP 			48
-#define 			WEAPON_HELIBLADES 			50
-#define 			WEAPON_EXPLOSION 			51
-#define 			WEAPON_CARPARK 				52
-#define 			WEAPON_UNKNOWN 				55
-
-#define 			AC_MAX_CONT_SHOTS			10
-#define 			AC_MAX_REJECTED_HITS 		15
-#define 			AC_MAX_DAMAGE_RANGES 		5
 
 
 
@@ -31,59 +17,19 @@ enum E_SHOT_INFO {
 	acl_HitId,
 	acl_Hits,
 	Float:acl_fPos[3],
+	Float:acl_fTargetPos[3],
 	Float:acl_fOrigin[3],
 	Float:acl_fHitPos[3],
 	Float:acl_fDistance,
 	bool:acl_Valid,
 }
 
-enum e_WeaponDataAC {
-
-	ac_iBulletsFired[46],
-	ac_iBulletsHit[46],
-	ac_iFakeMiss[46]
-
-}
-new arrWeaponDataAC[MAX_PLAYERS][e_WeaponDataAC];
-
-enum e_WeaponData {
-	ac_DamageRangeSteps,
-	Float:ac_WeaponDamage,
-	Float:ac_DamageRangeRanges[AC_MAX_DAMAGE_RANGES],
-	Float:ac_DamageRangeValues[AC_MAX_DAMAGE_RANGES]
-}
-new arrWeaponData[55][e_WeaponData];
-
-
-// Given in AC_OnRejectedHit
-enum E_REJECTED_HIT {
-
-	acr_iReason,
-	acr_iTime,
-	acr_iWeaponID,
-	acr_szName[MAX_PLAYER_NAME],
-	acr_iDamagedID,
-	acr_iInfo[3]
-}
-new arrRejectedHitData[MAX_PLAYERS][AC_MAX_REJECTED_HITS][E_REJECTED_HIT];
-
-
-new ac_iPlayerKeySpam[MAX_PLAYERS],
-	ac_iVehicleDriverID[MAX_PLAYERS],
-	ac_iLastVehicleID[MAX_PLAYERS],
-
-	ac_TotalShots[MAX_PLAYERS],
-	ac_HitsIssued[MAX_PLAYERS],
-	bool:ac_ACToggle[AC_MAX],
-	bool:ac_IsDead[MAX_PLAYERS],
-	bool:ac_BeingResynced[MAX_PLAYERS];
-	
 static ac_LagCompMode;
 static ac_LastUpdate[MAX_PLAYERS] = {-1, ...};
 static ac_RejectedHitsIdx[MAX_PLAYERS];
 static ac_iCBugFreeze[MAX_PLAYERS];
 static ac_MaxShootRateSamples = 5;
-static ac_MaxHitRateSamples = 5;
+//static ac_MaxHitRateSamples = 5;
 static arrLastBulletData[MAX_PLAYERS][E_SHOT_INFO];
 static ac_LastBulletIdx[MAX_PLAYERS];
 static ac_LastBulletTicks[MAX_PLAYERS][10];
@@ -96,9 +42,9 @@ static Float:ac_PlayerMaxHealth[MAX_PLAYERS] = {100.0, ...};
 //static Float:ac_PlayerMaxArmour[MAX_PLAYERS] = {100.0, ...};
 //static ac_LastSentHealth[MAX_PLAYERS];
 //static ac_LastSentArmour[MAX_PLAYERS];
-static bool:ac_DamageArmourToggle[2] = {false, ...};
-static Float:ac_DamageDoneHealth[MAX_PLAYERS];
-static Float:ac_DamageDoneArmour[MAX_PLAYERS];
+//static bool:ac_DamageArmourToggle[2] = {false, ...};
+//static Float:ac_DamageDoneHealth[MAX_PLAYERS];
+//static Float:ac_DamageDoneArmour[MAX_PLAYERS];
 
 // The fastest possible gap between weapon shots in milliseconds
 static ac_MaxWeaponShootRate[] = {
@@ -209,6 +155,7 @@ static ac_MaxWeaponContShots[] = {
 };
 
 // Whether the damage is applied directly to health (1) or is distributed between health and armour (0), and whether this rule applies only to the torso (1) or not (0)
+/*
 static ac_DamageArmour[][2] = {
 	{0, 0}, // 0 - Fist
 	{0, 0}, // 1 - Brass knuckles
@@ -266,6 +213,7 @@ static ac_DamageArmour[][2] = {
 	{0, 0}, // 53 - Drowning
 	{0, 0}  // 54 - Splat
 };
+*/
 
 // Weapons allowed in OnPlayerGiveDamage
 static const ac_ValidDamageGiven[] = {
@@ -379,10 +327,11 @@ static const ac_ValidDamageTaken[] = {
 };
 
 
-#assert DAMAGE_TYPE_MULTIPLIER == 0
-#assert DAMAGE_TYPE_STATIC == 1
+//#assert DAMAGE_TYPE_MULTIPLIER == 0
+//#assert DAMAGE_TYPE_STATIC == 1
 
 // Whether the damage is multiplied by the given/taken value (0) or always the same value (1)
+/*
 static ac_DamageType[] = {
 	0, // 0 - Fist
 	0, // 1 - Brass knuckles
@@ -440,7 +389,7 @@ static ac_DamageType[] = {
 	0, // 53 - Drowning
 	0  // 54 - Splat
 };
-
+*/
 
 // The default weapon range (from weapon.dat)
 // Note that due to various bugs, these can be exceeded, but
@@ -488,7 +437,7 @@ static Float:ac_WeaponRange[] = {
 	75.0  // 38 - Minigun
 };
 
-
+/*
 enum {
 	AC_NO_ERROR,
 	AC_NO_ISSUER,
@@ -496,13 +445,16 @@ enum {
 	AC_INVALID_DAMAGE,
 	AC_INVALID_DISTANCE
 }
+*/
 
+/*
 enum {
 	DAMAGE_TYPE_MULTIPLIER,
 	DAMAGE_TYPE_STATIC,
 	DAMAGE_TYPE_RANGE_MULTIPLIER,
 	DAMAGE_TYPE_RANGE
 }
+*/
 
 enum {
 	HIT_NO_DAMAGEDID,
@@ -582,6 +534,61 @@ stock const g_WeaponName[57][59] = {
 	{"Collision"        }, {"Splat"         }, {"Unknown"             }
 };
 
+// #define AC_DEBUG
+#define 			HACKTIMER_INTERVAL 			5000
+
+#define 			BODY_PART_UNKNOWN 			0
+#define 			WEAPON_UNARMED 				0
+#define 			WEAPON_VEHICLE_M4 			19
+#define 			WEAPON_VEHICLE_MINIGUN 		20
+#define 			WEAPON_PISTOLWHIP 			48
+#define 			WEAPON_HELIBLADES 			50
+#define 			WEAPON_EXPLOSION 			51
+#define 			WEAPON_CARPARK 				52
+#define 			WEAPON_UNKNOWN 				55
+
+#define 			AC_MAX_REJECTED_HITS 		15
+#define 			AC_MAX_DAMAGE_RANGES 		5
+
+enum e_WeaponDataAC {
+
+	ac_iBulletsFired[46],
+	ac_iBulletsHit[46],
+	ac_iFakeMiss[46]
+}
+new arrWeaponDataAC[MAX_PLAYERS][e_WeaponDataAC];
+
+enum e_WeaponData {
+	ac_DamageRangeSteps,
+	Float:ac_WeaponDamage,
+	Float:ac_DamageRangeRanges[AC_MAX_DAMAGE_RANGES],
+	Float:ac_DamageRangeValues[AC_MAX_DAMAGE_RANGES]
+}
+new arrWeaponData[55][e_WeaponData];
+
+// Given in AC_OnRejectedHit
+enum E_REJECTED_HIT {
+
+	acr_iReason,
+	acr_iTime,
+	acr_iWeaponID,
+	acr_szName[MAX_PLAYER_NAME],
+	acr_iDamagedID,
+	acr_iInfo[3]
+}
+new arrRejectedHitData[MAX_PLAYERS][AC_MAX_REJECTED_HITS][E_REJECTED_HIT];
+
+
+new ac_iPlayerKeySpam[MAX_PLAYERS],
+	ac_iVehicleDriverID[MAX_PLAYERS],
+	ac_iLastVehicleID[MAX_PLAYERS],
+
+	ac_TotalShots[MAX_PLAYERS],
+	ac_HitsIssued[MAX_PLAYERS],
+	bool:ac_ACToggle[AC_MAX],
+	bool:ac_IsDead[MAX_PLAYERS],
+	bool:ac_BeingResynced[MAX_PLAYERS],
+	iShotVariance = 5;
 
 hook OnGameModeInit() {
 	
@@ -589,12 +596,80 @@ hook OnGameModeInit() {
 	/* Default On: */
 	ac_ACToggle[AC_CARSURFING] = true;
 	ac_ACToggle[AC_NINJAJACK] = true;
+	ac_ACToggle[AC_NAMETAGS] = true;
 
 	AC_InitWeaponData();
 	ac_LagCompMode = GetServerVarAsInt("lagcompmode");
 }
 
+
+CMD:rehashpareas(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+	if(!ac_ACToggle[AC_NAMETAGS]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This feature isn't enabled in /system.");
+
+	new iRange;
+	if(sscanf(params, "d", iRange)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /resetpareas [range]");
+	if(!(0 < iRange < 70)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid range (between 0 and 70).");
+
+	new szData[2];
+	szData[0] = 15005; // to make sure we can recognize this as a player area type.
+	foreach(new i : Player) {
+
+		foreach(new x : Player) if(!IsPlayerInDynamicArea(x, arrAntiCheat[i][ac_iPlayerAreaID])) ShowPlayerNameTagForPlayer(x, i, false);
+
+		szData[1] = i;
+		DestroyDynamicArea(arrAntiCheat[i][ac_iPlayerAreaID]);
+		arrAntiCheat[i][ac_iPlayerAreaID] = CreateDynamicSphere(0.0, 0.0, 0.0, iRange);
+		AttachDynamicAreaToPlayer(arrAntiCheat[i][ac_iPlayerAreaID], i, 0.0, 0.0, 0.0);
+		Streamer_SetArrayData(STREAMER_TYPE_AREA, arrAntiCheat[i][ac_iPlayerAreaID], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+	}
+	format(szMiscArray, sizeof(szMiscArray), "You set the player areas to %d meters.", iRange);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	return 1;
+}
+
+CMD:setnametagdistance(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+
+	new iRange;
+	if(sscanf(params, "d", iRange)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setnametagdistance [range]");
+	if(!(0 < iRange < 70)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid range (between 0 and 70).");
+
+	/*
+	foreach(new i : Player) {
+		DestroyDynamic3DTextLabel(PlayerLabel[i]);
+		PlayerLabel[i] = CreateDynamic3DTextLabel(GetHealthArmorForLabel(i), 0xFFFFFFFF, 0.0, 0.0, 0.15, 30, i, .testlos = 1);
+	}
+	*/
+	format(szMiscArray, sizeof(szMiscArray), "You set the nametag distance to %d meters.", iRange);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	return 1;	
+}
+
+
 hook OnPlayerConnect(playerid) {
+
+	//CreatePlayerLabel(playerid);
+
+	new szData[2];
+	szData[0] = 15005; // to make sure we can recognize this as a player area type.
+	szData[1] = playerid;
+
+	arrAntiCheat[playerid][ac_iPlayerAreaID] = CreateDynamicSphere(0.0, 0.0, 0.0, 25.0);
+	AttachDynamicAreaToPlayer(arrAntiCheat[playerid][ac_iPlayerAreaID], playerid, 0.0, 0.0, 0.0);
+	Streamer_SetArrayData(STREAMER_TYPE_AREA, arrAntiCheat[playerid][ac_iPlayerAreaID], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+
+	if(ac_ACToggle[AC_NAMETAGS]) {
+		foreach(new i : Player) {
+			if(!IsPlayerInDynamicArea(playerid, arrAntiCheat[i][ac_iPlayerAreaID])) {
+				ShowPlayerNameTagForPlayer(i, playerid, false); // So people don't see the playerid when they shouldn't
+				ShowPlayerNameTagForPlayer(playerid, i, false); // So the player doesn't see the others when they shouldn't
+			}
+		}
+	}
+
 
 	new iTick = GetTickCount();
 	arrAntiCheat[playerid][ac_iCommandCount] = 0;
@@ -619,6 +694,7 @@ hook OnPlayerConnect(playerid) {
 	ac_IsDead[playerid] = false;
 	// ac_PreviousHitI[playerid] = 0;
 	ac_iCBugFreeze[playerid] = 0;
+	arrAntiCheat[playerid][ac_fAimAccuracy] = 0;
 
 	/*
 	for (new i = 0; i < sizeof(s_PreviousHits[]); i++) {
@@ -633,6 +709,9 @@ hook OnPlayerConnect(playerid) {
 	arrLastBulletData[playerid][acl_fPos][0] = 0;
 	arrLastBulletData[playerid][acl_fPos][1] = 0;
 	arrLastBulletData[playerid][acl_fPos][2] = 0;
+	arrLastBulletData[playerid][acl_fTargetPos][0] = 0;
+	arrLastBulletData[playerid][acl_fTargetPos][1] = 0;
+	arrLastBulletData[playerid][acl_fTargetPos][2] = 0;
 	arrLastBulletData[playerid][acl_fOrigin][0] = 0;
 	arrLastBulletData[playerid][acl_fOrigin][1] = 0;
 	arrLastBulletData[playerid][acl_fOrigin][2] = 0;
@@ -650,6 +729,31 @@ hook OnPlayerConnect(playerid) {
 
 	for (new i; i < sizeof(arrRejectedHitData[]); i++) {
 		arrRejectedHitData[playerid][i][acr_iTime] = 0;
+	}
+}
+
+hook OnPlayerDisconnect(playerid, reason) {
+
+	if(IsValidDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID])) DestroyDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID]);
+	//if(IsValidDynamic3DTextLabel(PlayerLabel[playerid])) DestroyDynamic3DTextLabel(PlayerLabel[playerid]);
+}
+
+
+hook OnPlayerEnterDynamicArea(playerid, areaid) {
+
+	if(ac_ACToggle[AC_NAMETAGS]) {
+		new szData[2];
+		Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+		if(szData[0] == 15005) ShowPlayerNameTagForPlayer(playerid, szData[1], 1);
+	}
+}
+
+hook OnPlayerLeaveDynamicArea(playerid, areaid) {
+
+	if(ac_ACToggle[AC_NAMETAGS]) {
+		new szData[2];
+		Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+		if(szData[0] == 15005) ShowPlayerNameTagForPlayer(playerid, szData[1], 0);
 	}
 }
 
@@ -743,6 +847,7 @@ hook OnPlayerRequestClass(playerid, classid) {
 	if(ac_IsDead[playerid]) ac_IsDead[playerid] = false;
 }
 */
+
 hook OnPlayerDeath(playerid, killerid, reason) {
 
 	ac_IsDead[playerid] = true;
@@ -772,10 +877,26 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(ac_ACToggle[listitem]) {
 					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned off the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
 					ac_ACToggle[listitem] = false;
+
+					switch(listitem) {
+						case AC_NAMETAGS: {
+							foreach(new i : Player) {
+								foreach(new x : Player) ShowPlayerNameTagForPlayer(i, x, true);
+							}
+						}
+					}
 				}
 				else {
 					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned on the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
 					ac_ACToggle[listitem] = true;
+
+					switch(listitem) {
+						case AC_NAMETAGS: {
+							foreach(new i : Player) {
+								foreach(new x : Player) if(!IsPlayerInDynamicArea(i, arrAntiCheat[x][ac_iPlayerAreaID])) ShowPlayerNameTagForPlayer(i, x, false);
+							}
+						}
+					}
 				}
 				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 			}
@@ -791,8 +912,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
 
 	szMiscArray[0] = 0;
-	if( hittype == BULLET_HIT_TYPE_PLAYER && (BadFloat(fX) || BadFloat(fY) || BadFloat(fZ)) )
-	{
+	if(hittype == BULLET_HIT_TYPE_PLAYER && (BadFloat(fX) || BadFloat(fY) || BadFloat(fZ)))	{
 		Kick(playerid); // CRASHER DETECTED
 	    return 0;
 	}
@@ -831,15 +951,14 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	{
 		++PlayerSniperShots[playerid];	
 	}
-	if(GetPVarInt(playerid, "FireStart") == 1)
-	{
+	if(GetPVarInt(playerid, "FireStart") == 1) {
 		if(fX != 0 && fY != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE)
 		{
 			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
 		}
 	}
 	
-	/*
+	
 	#if defined AC_DEBUG
 	if(hittype == BULLET_HIT_TYPE_PLAYER) {
 		AC_SendDebugMessage(playerid, "OnPlayerWeaponShot(%s shot %s with %s at %f, %f, %f) ", GetPlayerNameEx(playerid),  GetPlayerNameEx(hitid), AC_GetWeaponName(weaponid), fX, fY, fZ);
@@ -851,7 +970,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		AC_SendDebugMessage(playerid, "OnPlayerWeaponShot(%s shot with %s at %f, %f, %f)", GetPlayerNameEx(playerid), AC_GetWeaponName(weaponid), fX, fY, fZ);
 	}
 	#endif
-	*/
+	
 
 	arrLastBulletData[playerid][acl_Valid] = false;
 	arrLastBulletData[playerid][acl_Hits] = false;
@@ -864,7 +983,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 	// Desync
 	new damagedid = INVALID_PLAYER_ID;
-	if (hittype == BULLET_HIT_TYPE_PLAYER && hitid != INVALID_PLAYER_ID) {
+	if(hittype == BULLET_HIT_TYPE_PLAYER && hitid != INVALID_PLAYER_ID) {
 		
 		if(!IsPlayerConnected(hitid)) {
 			AC_AddRejectedHit(playerid, hitid, HIT_DISCONNECTED, weaponid, hittype);
@@ -893,14 +1012,14 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		return 0;
 	}
 
-	new Float:fOriginX, Float:fOriginY, Float:fOriginZ, Float:fHitPosX, Float:fHitPosY, Float:fHitPosZ;
-	new Float:x, Float:y, Float:z;
+	new Float:fOriginX, Float:fOriginY, Float:fOriginZ, Float:fHitPosX, Float:fHitPosY, Float:fHitPosZ,
+		Float:x, Float:y, Float:z;
 
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerLastShotVectors(playerid, fOriginX, fOriginY, fOriginZ, fHitPosX, fHitPosY, fHitPosZ);
 
-	new Float:fDistance = VectorSize(fOriginX - fHitPosX, fOriginY - fHitPosY, fOriginZ - fHitPosZ);
-	new Float:origin_dist = VectorSize(fOriginX - x, fOriginY - y, fOriginZ - z);
+	new Float:fDistance = VectorSize(fOriginX - fHitPosX, fOriginY - fHitPosY, fOriginZ - fHitPosZ),
+		Float:origin_dist = VectorSize(fOriginX - x, fOriginY - y, fOriginZ - z);
 
 	if(origin_dist > 15.0) {
 		
@@ -925,8 +1044,8 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				return 0;
 			}
 
-			new Float:fHitDist = GetPlayerDistanceFromPoint(hitid, fHitPosX, fHitPosY, fHitPosZ);
-			new iVehCheck = IsPlayerInAnyVehicle(hitid);
+			new Float:fHitDist = GetPlayerDistanceFromPoint(hitid, fHitPosX, fHitPosY, fHitPosZ),
+				iVehCheck = IsPlayerInAnyVehicle(hitid);
 
 			if ((!iVehCheck && fHitDist > 20.0) || fHitDist > 50.0) {
 				AC_AddRejectedHit(playerid, damagedid, HIT_TOO_FAR_FROM_SHOT, weaponid, _:fHitDist);
@@ -973,6 +1092,11 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	arrLastBulletData[playerid][acl_fPos][0] = fX;
 	arrLastBulletData[playerid][acl_fPos][1] = fY;
 	arrLastBulletData[playerid][acl_fPos][2] = fZ;
+	if(hitid != INVALID_PLAYER_ID) {
+		arrLastBulletData[playerid][acl_fTargetPos][0] = fHitPosX;
+		arrLastBulletData[playerid][acl_fTargetPos][1] = fHitPosY;
+		arrLastBulletData[playerid][acl_fTargetPos][2] = fHitPosZ;
+	}
 	arrLastBulletData[playerid][acl_fOrigin][0] = fOriginX;
 	arrLastBulletData[playerid][acl_fOrigin][1] = fOriginY;
 	arrLastBulletData[playerid][acl_fOrigin][2] = fOriginZ;
@@ -981,6 +1105,8 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	arrLastBulletData[playerid][acl_fHitPos][2] = fHitPosZ;
 	arrLastBulletData[playerid][acl_fDistance] = fDistance;
 	arrLastBulletData[playerid][acl_Hits] = 0;
+
+	AC_Probability(playerid, hitid);
 
 
 	/*if(IsValidDynamicObject(iObject)) DestroyDynamicObject(iObject);
@@ -1016,16 +1142,43 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	}
 	*/
 
+	/*
+		AimBot check 2 and:
+		Pro Aim Check by Weston
+		Reference: http://forum.sa-mp.com/showpost.php?p=3038425
+	*/
+	if(hittype == BULLET_HIT_TYPE_PLAYER) {
+
+		if(GetPlayerSpeed(hitid) > 0) {
+			arrAntiCheat[playerid][ac_iShots][1]++;
+			if(arrAntiCheat[playerid][ac_iShots][1] > ac_MaxWeaponContShots[weaponid] + 15) AC_Process(playerid, AC_AIMBOT, weaponid);
+		}
+		if(ac_ACToggle[3]) {
+
+			if(ProAimCheck(playerid, hitid)) {
+
+				format(szMiscArray, sizeof(szMiscArray), "%s: %d flags", GetPlayerNameEx(playerid), arrAntiCheat[playerid][ac_iFlags][3]);
+				SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
+				arrAntiCheat[playerid][ac_iFlags][3]++;
+				format(szMiscArray, sizeof(szMiscArray), "%s: now it's %d flags", GetPlayerNameEx(playerid), arrAntiCheat[playerid][ac_iFlags][3]);
+				SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
+				if(arrAntiCheat[playerid][ac_iFlags][3] > 3) AC_Flag(playerid, AC_PROAIM, weaponid, arrAntiCheat[playerid][ac_iFlags][3]);
+			}
+		}
+	}
+	else arrAntiCheat[playerid][ac_iShots][1] = 0;
+	
+
 	// AimBot Player Scheme
 	arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid]++;
 	if(hittype == BULLET_HIT_TYPE_PLAYER && ac_MaxWeaponContShots[weaponid] && !IsPlayerPaused(hitid)) {
 
-    	new Float:fSpeed = GetPlayerSpeed(hitid);
+    	new fSpeed = GetPlayerSpeed(hitid);
 
 	    if(fSpeed > 5) { // subject to discussion
     	
 			arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid]++;
-			if(!(++arrAntiCheat[playerid][ac_iShots] % ac_MaxWeaponContShots[weaponid])) AC_Process(playerid, AC_AIMBOT, weaponid);
+			if(!(++arrAntiCheat[playerid][ac_iShots][0] % ac_MaxWeaponContShots[weaponid])) AC_Process(playerid, AC_AIMBOT, weaponid);
 
 			new iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] - arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] - arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid],
 				Float:fRatio;
@@ -1036,7 +1189,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	    }
 	    else arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid]++;
 	}
-	else arrAntiCheat[playerid][ac_iShots] = 0; // reset it when missed :)
+	else arrAntiCheat[playerid][ac_iShots][0] = 0; // reset it when missed :)
 	SetTimerEx("Health", 100, false, "");
 
 
@@ -1060,7 +1213,39 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	return 1;
 }
 
+ProAimCheck(playerid, hitid) {
+
+	new 
+		Float: fOrigin[3],
+		Float: fHit[3];
+
+	GetPlayerLastShotVectors(playerid, fOrigin[0], fOrigin[1], fOrigin[2], fHit[0], fHit[1], fHit[2]);
+
+	new Float:fPlayerHitPos[3];
+	GetPlayerPos(hitid, fPlayerHitPos[0], fPlayerHitPos[1], fPlayerHitPos[2]);
+
+	new Float: fDistance = GetPlayerDistanceFromPoint(hitid, fHit[0], fHit[1], fHit[2]);
+
+	if(fDistance >= iShotVariance && fDistance <= 300.0) return 1;
+	return 0;
+}
+
+
 ptask HackCheck_Micro[1000](playerid) {
+	
+	/*
+	if(IsPlayerPaused(playerid)) {
+		UpdateDynamic3DTextLabelText(PlayerLabel[playerid], 0xDDDDDDFF, GetHealthArmorForLabel(playerid));
+		SetPVarInt(playerid, "pPaused", 1);
+	}
+	else {
+
+		if(GetPVarType(playerid, "pPaused")) {
+			UpdateDynamic3DTextLabelText(PlayerLabel[playerid], 0xDDDDDDFF, GetHealthArmorForLabel(playerid));
+			DeletePVar(playerid, "pPaused");
+		}
+	}
+	*/
 
 	if(PlayerInfo[playerid][pAdmin] < 2)
 	{
@@ -1092,9 +1277,9 @@ ptask HackCheck[HACKTIMER_INTERVAL](playerid) {
 
 AC_SpeedHacks(playerid) {
 
-	new Float:fSpeed = GetPlayerSpeed(playerid),
+	new iSpeed = GetPlayerSpeed(playerid),
 		Float:fVel[3];
-	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && !IsPlayerInRangeOfVehicle(playerid, GetClosestCar(playerid), 5.0) && GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK && fSpeed > 45) {
+	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerSurfingVehicleID(playerid) == INVALID_VEHICLE_ID && GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK && iSpeed > 45) {
 		GetPlayerVelocity(playerid, fVel[0], fVel[1], fVel[2]);
 		if(fVel[2] == 0) AC_Process(playerid, AC_SPEEDHACKS);
 	}
@@ -1111,6 +1296,8 @@ AC_InfiniteStamina(playerid) {
 }
 
 AC_AirBreaking(i) {
+
+	if(GetPlayerSurfingVehicleID(i) != INVALID_VEHICLE_ID) return 0;
 
 	new Float:fPos[3],
 		iDistance;
@@ -1135,7 +1322,7 @@ AC_AirBreaking(i) {
 	SendClientMessage(i, 0xFFFFFFFF, szMiscArray);
 	#endif
 
-	new iSpeed = floatround(GetPlayerSpeed(i));
+	new iSpeed = GetPlayerSpeed(i);
 	if(IsPlayerInAnyVehicle(i)) {
 		
 		#if defined AC_DEBUG
@@ -1173,18 +1360,17 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 	}
 
 	// Ignore unreliable and invalid damage
-	if (!(0 <= weaponid <= sizeof(ac_ValidDamageGiven)) || !ac_ValidDamageGiven[weaponid]) {
+	if(!(0 <= weaponid <= sizeof(ac_ValidDamageGiven)) || !ac_ValidDamageGiven[weaponid]) {
 		// Fire is synced as taken damage (because it's not reliable as given), so no need to show a rejected hit.
 		// Vehicle damage is also synced as taken, so no need to show that either.
-		if (weaponid != WEAPON_FLAMETHROWER && weaponid != WEAPON_VEHICLE) {
+		if(weaponid != WEAPON_FLAMETHROWER && weaponid != WEAPON_VEHICLE) {
 			AC_AddRejectedHit(playerid, damagedid, HIT_INVALID_WEAPON, weaponid);
 		}
 		return 0;
 	}
 
-	if ((!IsPlayerStreamedIn(playerid, damagedid) && !IsPlayerPaused(damagedid)) || !IsPlayerStreamedIn(damagedid, playerid)) {
+	if((!IsPlayerStreamedIn(playerid, damagedid) && !IsPlayerPaused(damagedid)) || !IsPlayerStreamedIn(damagedid, playerid)) {
 		AC_AddRejectedHit(playerid, damagedid, HIT_UNSTREAMED, weaponid, damagedid);
-
 		return 0;
 	}
 
@@ -1196,7 +1382,7 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 		return 0;
 	}
 
-
+	/*
 	new Float:fBullets, iErrorCode;
 	if((iErrorCode = ProcessDamage(damagedid, playerid, amount, weaponid, bodypart, fBullets))) {
 		if(iErrorCode == AC_INVALID_DAMAGE) {
@@ -1210,6 +1396,7 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 		}
 		return 0;
 	}
+	*/
 
 	new iTick = GetTickCount();
 	if(iTick == 0) iTick = 1;
@@ -1246,8 +1433,6 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 		new Float:fPos[3];
 		GetPlayerPos(damagedid, fPos[0], fPos[1], fPos[2]);
 		new Float:fDistance = GetPlayerDistanceFromPoint(playerid, fPos[0], fPos[1], fPos[2]);
-
-
 		/*
 		format(szMiscArray, sizeof(szMiscArray), "Wep ID: %d, Player Range: %f, Weapon Range: %f", weaponid, fDistance, ac_WeaponRange[weaponid]);
 		SendClientMessageToAll(0xFFFFFFFF, szMiscArray);
@@ -1259,25 +1444,12 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 		}
 	}
 
+	/*
 	new iMultipleWeps,
 		iAvgRate = AverageHitRate(playerid, ac_MaxHitRateSamples, iMultipleWeps);
+	*/
 
-	// Hit issue flood?
-	// Could be either a cheat or just lag
-	if (iAvgRate != -1) {
-		if (iMultipleWeps) {
-			if(iAvgRate < 100) {
-				// AC_AddRejectedHit(playerid, damagedid, HIT_RATE_TOO_FAST_MULTIPLE, weaponid, iAvgRate, ac_MaxHitRateSamples);
-				return 0;
-			}
-		}
-		else if(ac_MaxWeaponShootRate[weaponid] - iAvgRate > 40) { // was 20
-			// AC_AddRejectedHit(playerid, damagedid, HIT_RATE_TOO_FAST, weaponid, iAvgRate, ac_MaxHitRateSamples, ac_MaxWeaponShootRate[weaponid]);
-			return 0;
-		}
-	}
-
-	if (IsBulletWeapon(weaponid) && _:amount != _:2.6400001049041748046875 && !(IsPlayerInAnyVehicle(playerid) && GetPlayerVehicleSeat(playerid) == 0)) {
+	if(IsBulletWeapon(weaponid) && _:amount != _:2.6400001049041748046875 && !(IsPlayerInAnyVehicle(playerid) && GetPlayerVehicleSeat(playerid) == 0)) {
 		
 		new valid = true;
 		// not gooood
@@ -1305,26 +1477,20 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 		}
 
 		arrLastBulletData[playerid][acl_Hits] += 1;
-
-		if (!valid) {
-			return 0;
-		}
+		if(!valid) return 0;
 	}
-
-	AC_InflictDamage(damagedid, amount, playerid, weaponid, bodypart);
-
-	// Don't send OnPlayerGiveDamage to the rest of the script, since it should not be used
 	return 0;
 }
 
 // Is called after OnPlayerWeaponShot
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart) {
 
+	//if(issuerid == INVALID_PLAYER_ID) UpdateDynamic3DTextLabelText(PlayerLabel[playerid], 0xFFFFFFFF, GetHealthArmorForLabel(playerid));
 	if(ac_IsDead[playerid]) return 0;
 	
 	if(!IsHighRateWeapon(weaponid)) {
 		#if defined AC_DEBUG
-		// AC_SendDebugMessage(playerid, "OnPlayerTakeDamage(%d took %f from %d by %d on bodypart %d)", playerid, amount, issuerid, weaponid, bodypart);
+		AC_SendDebugMessage(playerid, "OnPlayerTakeDamage(%d took %f from %d by %d on bodypart %d)", playerid, amount, issuerid, weaponid, bodypart);
 		#endif
 	}
 
@@ -1355,41 +1521,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart) {
 		}
 		else return 0;
 	}
-	/*
-	new Float:fBullets = 0.0, iErrorCode;
-	if((iErrorCode = ProcessDamage(playerid, issuerid, amount, weaponid, bodypart, fBullets))) {
-		if(iErrorCode == AC_INVALID_DAMAGE) {
-			AC_AddRejectedHit(issuerid, playerid, HIT_INVALID_DAMAGE, weaponid, _:amount);
-		}
-
-		if (iErrorCode != AC_INVALID_DISTANCE) {
-			#if defined OnInvalidWeaponDamage
-				OnInvalidWeaponDamage(issuerid, playerid, amount, weaponid, bodypart, iErrorCode, false);
-			#endif
-		}
-		return 0;
-	}
-
-
-	Doesn't get called if issuerid is out of range.
-	if(IsBulletWeapon(weaponid)) {
-
-		new Float:fPos[3];
-		GetPlayerPos(issuerid, fPos[0], fPos[1], fPos[2]);
-		new Float:fDistance = GetPlayerDistanceFromPoint(playerid, fPos[0], fPos[1], fPos[2]);
-
-
-		format(szMiscArray, sizeof(szMiscArray), "Wep ID: %d, Player Range: %f, Weapon Range: %f", weaponid, fDistance, ac_WeaponRange[weaponid]);
-		SendClientMessageToAll(0xFFFFFFFF, szMiscArray);
-		if (fDistance > ac_WeaponRange[weaponid] + 2.0) {
-			AC_AddRejectedHit(issuerid, playerid, HIT_OUT_OF_RANGE, weaponid, _:fDistance, _:ac_WeaponRange[weaponid]);
-			AC_Warning(issuerid, AC_DISTANCE);
-			return 0;
-		}
-	}
-	*/
-
-	AC_InflictDamage(playerid, amount, issuerid, weaponid, bodypart); // Server Sided Health
+	//AC_InflictDamage(playerid, amount, issuerid, weaponid, bodypart); // Server Sided Health
 	return 1;
 }
 
@@ -1508,6 +1640,7 @@ public OnRejectedHit(playerid, arrRejectedHit[E_REJECTED_HIT]) {
 	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 }
 
+/*
 static ProcessDamage(&playerid, &issuerid, &Float:amount, &weaponid, &bodypart, &Float:bullets) {
 
 	if(amount < 0.0) return AC_INVALID_DAMAGE;
@@ -1708,7 +1841,7 @@ static ProcessDamage(&playerid, &issuerid, &Float:amount, &weaponid, &bodypart, 
 	}
 
 	switch(weaponid) {
-		// The spas shotguns shoot 8 bullets, each inflicting 4.95 damage
+		// The spas shotguns shoots 8 bullets, each inflicting 4.95 damage
 		case WEAPON_SHOTGSPA: {
 			bullets = amount / 4.950000286102294921875;
 
@@ -1736,7 +1869,9 @@ static ProcessDamage(&playerid, &issuerid, &Float:amount, &weaponid, &bodypart, 
 		// Divide the damage amount by the number of bullets
 		amount /= bullets;
 	}
+	*/
 
+	/*
 	// Check chainsaw damage
 	if(weaponid == WEAPON_CHAINSAW) {
 		switch (amount) {
@@ -1817,7 +1952,7 @@ static ProcessDamage(&playerid, &issuerid, &Float:amount, &weaponid, &bodypart, 
 	}
 	return AC_NO_ERROR;
 }
-
+*/
 stock AverageShootRate(playerid, shots, &multiple_weapons = 0) {
 
 	if(playerid == INVALID_PLAYER_ID || ac_TotalShots[playerid] < shots) return -1;
@@ -1853,6 +1988,7 @@ stock AverageShootRate(playerid, shots, &multiple_weapons = 0) {
 	return total / (shots - 1);
 }
 
+
 stock AverageHitRate(playerid, hits, &multiple_weapons = 0) {
 
 	if(playerid == INVALID_PLAYER_ID || ac_HitsIssued[playerid] < hits) return -1;
@@ -1885,6 +2021,7 @@ stock AverageHitRate(playerid, hits, &multiple_weapons = 0) {
 	return total / (hits - 1);
 }
 
+/*
 stock SetWeaponDamage(weaponid, damage_type, Float:amount, Float:...) {
 
 	if(!(0 <= weaponid <= sizeof(ac_WeaponDamage))) return 0;
@@ -1920,11 +2057,15 @@ stock SetWeaponDamage(weaponid, damage_type, Float:amount, Float:...) {
 
 	return 0;
 }
+*/
 
+/*
 static AC_InflictDamage(playerid, Float:amount, issuerid = INVALID_PLAYER_ID, weaponid = WEAPON_UNKNOWN, bodypart = BODY_PART_UNKNOWN, bool:ignore_armour = false) {
 
 	if(!IsPlayerSpawned(playerid) || amount < 0.0 || !IsPlayerSpawned(issuerid)) return;
 	if (!(0 <= weaponid <= WEAPON_UNKNOWN)) weaponid = WEAPON_UNKNOWN;
+	
+	
 	#if defined AC_DEBUG
 
 		new Float:fDistance = 0.0;
@@ -1935,11 +2076,12 @@ static AC_InflictDamage(playerid, Float:amount, issuerid = INVALID_PLAYER_ID, we
 			// AC_SendDebugMessageAll("InflictDamage(%s, %.4f, %d, %s, %s) Distance = %f", GetPlayerNameEx(playerid), amount, GetPlayerNameEx(issuerid), AC_GetWeaponName(weaponid), bodypart, fDistance);
 		}
 	#endif
+	
 
 	if(!ignore_armour && weaponid != WEAPON_COLLISION && weaponid != WEAPON_DROWN && weaponid != WEAPON_CARPARK && (!ac_DamageArmourToggle[0] ||
 		(ac_DamageArmour[weaponid][0] && (!ac_DamageArmourToggle[1] || ((ac_DamageArmour[weaponid][1] && bodypart == 3) || (!ac_DamageArmour[weaponid][1])))))) {
 		
-		if (amount <= 0.0) amount = PlayerHealth[playerid] + PlayerArmor[playerid];
+		if(amount <= 0.0) amount = PlayerHealth[playerid] + PlayerArmor[playerid];
 		// PlayerArmor[playerid] -= amount;
 	}
 	else {
@@ -1963,8 +2105,7 @@ static AC_InflictDamage(playerid, Float:amount, issuerid = INVALID_PLAYER_ID, we
 		ac_DamageDoneHealth[playerid] += PlayerHealth[playerid];
 		// PlayerHealth[playerid] = 0.0;
 	}
-
-	/*
+	
 	OnPlayerDamageDone(playerid, amount, issuerid, weaponid, bodypart);
 
 	if(PlayerHealth[playerid] <= 0.0005) {
@@ -2060,10 +2201,11 @@ static AC_InflictDamage(playerid, Float:amount, issuerid = INVALID_PLAYER_ID, we
 			else s_DelayedDeathTimer[playerid] = SetTimerEx(#WC_DelayedDeath, 1200, false, "iii", playerid, issuerid, weaponid);
 		#endif
 	}
-	*/
 }
+*/
 
 stock IsPlayerPaused(playerid) {
+
 	return (GetTickCount() - ac_LastUpdate[playerid] > 2000);
 }
 
@@ -2085,17 +2227,16 @@ stock Float:AngleBetweenPoints(Float:x1, Float:y1, Float:x2, Float:y2) {
 	return -(90.0 - atan2(y1 - y2, x1 - x2));
 }
 
-forward Float:GetPlayerSpeed(i);
-stock Float:GetPlayerSpeed(i) {
+forward GetPlayerSpeed(i);
+stock GetPlayerSpeed(i) {
 
 	new Float:fVel[3],
-		Float:fSpeed;
+		iSpeed;
 
 	if(IsPlayerInAnyVehicle(i)) GetVehicleVelocity(GetPlayerVehicleID(i), fVel[0], fVel[1], fVel[2]);
 	else GetPlayerVelocity(i, fVel[0], fVel[1], fVel[2]);
-	fSpeed = floatsqroot(((fVel[0]*fVel[0])+(fVel[1]*fVel[1]))+(fVel[2]*fVel[2])) * 136.666667;
-	floatround(fSpeed, floatround_round);
-	return fSpeed;
+	iSpeed = floatround(floatsqroot(((fVel[0]*fVel[0])+(fVel[1]*fVel[1]))+(fVel[2]*fVel[2])) * 136.666667, floatround_round);
+	return iSpeed;
 }
 
 stock GetDriverID(iVehID) {
@@ -2113,12 +2254,14 @@ stock AC_GetACName(i) {
 	switch(i) {
 		case AC_AIMBOT: szName = "Aimbot";
 		case AC_CBUG: szName = "(Auto) C-Bug";
+		case AC_PROAIM: szName = "Pro-Aim";
 		case AC_RANGEHACKS: szName = "Weapon Range Hacks (e.g. ProAim)";
 		case AC_SPEEDHACKS: szName = "Speed Hacks (B2-B5)";
 		case AC_VEHICLEHACKS: szName = "Vehicle Hacks";
 		case AC_CMDSPAM: szName = "Command Spamming";
 		case AC_CARSURFING: szName = "Car Surfing";
 		case AC_NINJAJACK: szName = "Ninja Jacking";
+		case AC_NAMETAGS: szName = "Name Tags";
 		case AC_AIRBREAKING: szName = "Airbreaking";
 		case AC_INFINITESTAMINA: szName = "Infinite Stamina";
 		case AC_HEALTHARMORHACKS: szName = "Health/Armor Hacks";
@@ -2132,7 +2275,6 @@ stock AC_FinePlayer(playerid, fineid) {
 
 	switch(fineid) {
 		case AC_NINJAJACK: GivePlayerCash(playerid, -2000);
-		case AC_DIALOGSPOOFING: GivePlayerCash(playerid, -2000);
 	}
 }
 
@@ -2154,6 +2296,17 @@ timer AC_RevivePlayer[5000](playerid) {
 AC_Flag(playerid, processid, iExtraID = INVALID_PLAYER_ID, Float:fInfo = 0.0) {
 
 	switch(processid) {
+		
+		case AC_PROAIM: {
+
+			new iInfo = floatround(fInfo);
+			if(iInfo > 6) AC_Process(playerid, AC_PROAIM, iExtraID);
+			else {
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}AimBot - I flagged %s for using pro-aim (%dx) with their %s.", GetPlayerNameEx(playerid), iInfo, AC_GetWeaponName(iExtraID));
+				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+			}
+		}
+
 		case AC_AIMBOT: {
 			if(fInfo > 20) AC_Process(playerid, AC_AIMBOT, iExtraID);
 			else {
@@ -2168,11 +2321,12 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 
 	if(PlayerInfo[playerid][pAdmin] > 1) return 1;
 	if(!ac_ACToggle[processid]) return 1;
-	arrAntiCheat[playerid][ac_iFlags][processid]++;
 	if(GetPVarType(playerid, "ACCooldown") && GetPVarInt(playerid, "ACCooldown") == processid) return 1;
 	SetPVarInt(playerid, "ACCooldown", processid);
+	arrAntiCheat[playerid][ac_iFlags][processid]++;
 	// if(processid == AC_SPEEDHACKS && arrAntiCheat[playerid][ac_iFlags][processid] != 1 && !(arrAntiCheat[playerid][ac_iFlags][processid] % 20)) return 1;
 	if(arrAntiCheat[playerid][ac_iFlags][processid] == 1 || arrAntiCheat[playerid][ac_iFlags][processid] % 5) { // prevent spamming
+		
 		new szString[128],
 			szQuery[512];
 
@@ -2273,16 +2427,21 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s was kicked for (plausibly!) health/armor hacking. Refrain from taking more action until fully tested.", GetPlayerNameEx(playerid));
 			}
-			/*
-			case AC_DIALOGSPOOFING: {
-				if(!ac_ACToggle[DIALOGSPOOFING]) return 1;
-				AC_FinePlayer(playerid, processid);
-				SetTimerEx("KickEx", 1000, 0, "i", iExtraID);
-				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s was kicked for (plausibly!) dialog spoofing. Refrain from taking more action until fully tested.", GetPlayerNameEx(playerid));
-				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
-				szMiscArray = "[SYSTEM]: You were kicked for plausibly dialog spoofing.";
+			case AC_PROAIM: {
+
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using Pro-Aim", GetPlayerNameEx(playerid));
+
+				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `weaponid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
+					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], -1, -1, -1);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
-			*/
+			
+			case AC_DIALOGSPOOFING: {
+				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s is spoofing dialogs (dialog ID: %d).", GetPlayerNameEx(playerid), iExtraID);
+				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+				szMiscArray = "[SYSTEM]: Please don't spoof dialogs. Admins were warned.";
+			}
+		
 		}
 		// format(szMiscArray, sizeof(szMiscArray), "%s %s (ID: %d)", szMiscArray, GetPlayerNameExt(playerid), playerid);
 		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
@@ -2368,31 +2527,144 @@ stock IsMeleeWeapon(weaponid) {
 	return (WEAPON_UNARMED <= weaponid <= WEAPON_KATANA) || (WEAPON_DILDO <= weaponid <= WEAPON_CANE) || weaponid == WEAPON_PISTOLWHIP;
 }
 
+
+
+/* Custom Anti-Aimbot by Jingles
+1) Cheating (C), with C ∈ [true,false],
+2) Player Moving (M p ) with M p ∈ [true, f alse],
+3) Target moving (Mt) with Mt ∈ [true,false],
+4) Changing aiming direction (deltaD), with deltaD ∈[true, f alse],
+5) Distance from aiming target (D), with D ∈ [0,1,2,3] in which larger the value implies further away is the distance and,
+6) Aiming accuracy (A) with A ∈ [0, 1, 2, 3] in which the lower the value implies higher is the aiming accuracy.
+
+Using these data, one can obtain the following prior proba- bility distributions by counting frequencies and then normalize the values:
+	1) P(Ct|Ct−1), and
+	2) P(At|At−1,Ct,Mtp,Mt,△Dt,Dt),
+
+Inferring the probability of cheating for any particular player follows the following steps.
+At the very first time slice where t = 0, we initialize P(C ̃ = true) to 0.5 (i.e., a player is 0 equally likely to be a cheater or an honest player).
+For each time slice t, the inference carries out in two stages: (See paper)
+*/
+
+
+AC_Probability(playerid, iTargetID) {
+
+	new Float:fDeltaAimingDirection,
+		Float:fPlayerAngle[2],
+		Float:fAimAccuracy[2]; //t and t=-1
+
+	new iSpeed[2], // 0 == player, 1 == target
+		bool:isPlayerMoving[2], // 0 == player, 1 == target
+		Float:fDistanceToTarget;
+
+	if(iTargetID != INVALID_PLAYER_ID) {
+
+		iSpeed[0] = GetPlayerSpeed(playerid);
+		iSpeed[1] = GetPlayerSpeed(iTargetID);
+		if(iSpeed[0] > 0) isPlayerMoving[0] = true; // Mp
+		if(iSpeed[1] > 0) isPlayerMoving[1] = true; // Mt
+
+		GetPlayerFacingAngle(playerid, fPlayerAngle[0]); //delta D
+		fDistanceToTarget = GetDistanceBetweenPlayers(playerid, iTargetID); //D
+	}
+
+	GetPlayerCameraPos(playerid, arrAntiCheat[playerid][ac_fCamPos][0], arrAntiCheat[playerid][ac_fCamPos][1], arrAntiCheat[playerid][ac_fCamPos][2]);
+	GetPlayerCameraFrontVector(playerid, arrAntiCheat[playerid][ac_fCamFVector][0], arrAntiCheat[playerid][ac_fCamFVector][1], arrAntiCheat[playerid][ac_fCamFVector][2]);
+	if(arrAntiCheat[playerid][ac_fCamFVector][3] != 0) {
+
+		fDeltaAimingDirection = fPlayerAngle[1]-fPlayerAngle[0];
+
+		if(arrLastBulletData[playerid][acl_fTargetPos][0] != 0) {
+			
+			// t
+			fAimAccuracy[0] = DistanceCameraTargetToLocation(
+					arrAntiCheat[playerid][ac_fCamPos][0], arrAntiCheat[playerid][ac_fCamPos][1], arrAntiCheat[playerid][ac_fCamPos][2],
+					arrLastBulletData[playerid][acl_fTargetPos][0], arrLastBulletData[playerid][acl_fTargetPos][1], arrLastBulletData[playerid][acl_fTargetPos][2],
+					arrAntiCheat[playerid][ac_fCamFVector][0], arrAntiCheat[playerid][ac_fCamFVector][1], arrAntiCheat[playerid][ac_fCamFVector][2]
+				);
+			// t-1
+			fAimAccuracy[1] = DistanceCameraTargetToLocation(
+					arrAntiCheat[playerid][ac_fCamPos][0], arrAntiCheat[playerid][ac_fCamPos][1], arrAntiCheat[playerid][ac_fCamPos][2],
+					arrLastBulletData[playerid][acl_fTargetPos][0], arrLastBulletData[playerid][acl_fTargetPos][1], arrLastBulletData[playerid][acl_fTargetPos][2],
+					arrAntiCheat[playerid][ac_fCamFVector][3], arrAntiCheat[playerid][ac_fCamFVector][4], arrAntiCheat[playerid][ac_fCamFVector][5]
+				);
+		}
+	}
+
+	format(szMiscArray, sizeof(szMiscArray), "%s aimed %0.1f units from the target. Before, they aimed: %0.1f from the target. Target distance: %0.1f", GetPlayerNameEx(playerid), fAimAccuracy[0], fAimAccuracy[1], fDistanceToTarget);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+
+	format(szMiscArray, sizeof(szMiscArray), "%s aimed %0.1f units off from before.", GetPlayerNameEx(playerid), fDeltaAimingDirection);
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+
+	
+	fPlayerAngle[1] = fPlayerAngle[0];
+	arrAntiCheat[playerid][ac_fCamFVector][3] = arrAntiCheat[playerid][ac_fCamFVector][0];
+	arrAntiCheat[playerid][ac_fCamFVector][4] = arrAntiCheat[playerid][ac_fCamFVector][1];
+	arrAntiCheat[playerid][ac_fCamFVector][5] = arrAntiCheat[playerid][ac_fCamFVector][2];
+
+	arrAntiCheat[playerid][ac_fAimAccuracy] += fAimAccuracy[0];
+	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `aimbot` (`pID`, `time`, `ratio`, `accuracy`, `aimingdirection`, `playerspeed`, `targetspeed`, `distance`) VALUES \
+		(%d, %d, %0.1f, %0.1f, %0.1f, %d, %d, %d)",
+		PlayerInfo[playerid][pId],
+		gettime(),
+		"0.0",
+		fAimAccuracy[0],
+		fDeltaAimingDirection,
+		iSpeed[0],
+		iSpeed[1],
+		fDistanceToTarget);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+}
+
+CMD:analytics(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+
+	new uPlayer;
+	if(sscanf(params, "u", uPlayer)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /analytics [playerid / part of name]");
+
+	if(!IsPlayerConnected(uPlayer)) return 1;
+
+	format(szMiscArray, sizeof(szMiscArray), "Player: %s\n\n\
+		Average Accuracy: %0.1f",
+		GetPlayerNameEx(uPlayer),
+		floatdiv(arrAntiCheat[uPlayer][ac_fAimAccuracy], ac_TotalShots[uPlayer]));
+
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Player Analytics", szMiscArray, "Okay", "");
+	return 1;
+}
+
+
 CMD:system(playerid, params[]) {
 
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
 	format(szMiscArray, sizeof(szMiscArray), "Detecting\tStatus\n\
 		Aimbot\t%s\n\
 		(Auto)-C-Bug\t%s\n\
-		Weapon Range Hacks (ProAim)\t%s\n\
+		Pro-Aim\t%s\n\
+		Weapon Range Hacks\t%s\n\
 		Speed Hacks (B2-B5)\t%s\n\
 		Vehicle Hacks\t%s\n\
 		Command Spamming\t%s\n\
 		Car Surfing\t%s\n\
 		Ninja Jacking\t%s\n\
+		Name Tags\t%s\n\
 		Airbreaking\t%s\n\
 		Infinite Stamina\t%s\n\
 		---------\t%s\n\
-		---------\t%s\n\
+		Dialog Spoofingt%s\n\
 		Rejected Hits\t%s",
 		(ac_ACToggle[AC_AIMBOT] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_CBUG] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_PROAIM] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_RANGEHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_SPEEDHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_VEHICLEHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_CMDSPAM] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_CARSURFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_NINJAJACK] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_NAMETAGS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_AIRBREAKING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_INFINITESTAMINA] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_HEALTHARMORHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
@@ -2446,7 +2718,7 @@ CMD:aimcheck(playerid, params[]) {
 		}
 	}
 	format(szTitle, sizeof(szTitle), "Aimbot Check | Weapon Data {FFFF00}(%s)", GetPlayerNameEx(uPlayer));
-	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "---------- [ ANTICHEAT ] ----------");
 	SendClientMessageEx(playerid, COLOR_GRAD1, "Jingles:");
 	SendClientMessageEx(playerid, COLOR_GRAD1, "");
@@ -2463,11 +2735,10 @@ CMD:acflags(playerid, params[]) {
 	new uPlayer,
 		szTitle[32 + MAX_PLAYER_NAME];
 
-	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /aimcheck [playerid/name]");
+	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /acflags [playerid/name]");
 	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
 
 	format(szMiscArray, sizeof(szMiscArray), "Name\tFlags");
-
 	for(new i; i < AC_MAX; ++i) {
 
 		switch(arrAntiCheat[playerid][ac_iFlags][i]) {
@@ -2478,7 +2749,7 @@ CMD:acflags(playerid, params[]) {
 		}
 	}
 	format(szTitle, sizeof(szTitle), "AC System Flags | {FFFF00}(%s)", GetPlayerNameEx(uPlayer));
-	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "---------- [ ANTICHEAT ] ----------");
 	SendClientMessageEx(playerid, COLOR_GRAD1, "Jingles:");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "");
@@ -2510,7 +2781,7 @@ CMD:rejects(playerid, params[]) {
 			arrRejectedHitData[uPlayer][idx][acr_iInfo][2]);
 	}
 	format(szTitle, sizeof(szTitle), "Rejected Shots | Weapon Data (%s)", GetPlayerNameEx(uPlayer));
-	ShowPlayerDialog(playerid, 32767, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
+	ShowPlayerDialogEx(playerid, 32767, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
 	return 1;
 }
 
@@ -2527,3 +2798,147 @@ CMD:resetaim(playerid, params[]) {
 	}
 	return 1;
 }
+
+CMD:listacflags(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] >= 2) {
+
+		SendClientMessageEx(playerid, COLOR_GREEN, "____________________ Current players flagged by the anti pro-aim system: ____________________");
+		foreach(new i: Player) {
+
+			if(arrAntiCheat[i][ac_iFlags][AC_PROAIM] > 0) {
+
+				format(szMiscArray, sizeof szMiscArray, "%s (ID: %d) - %d flags.", GetPlayerNameEx(i), i, PlayerInfo[i][pProAimFlags]);
+				SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+			}
+		}
+		if(PlayerInfo[playerid][pAdmin] >= 4) SendClientMessage(playerid, COLOR_GRAD2, "NOTE: If you are certain a player is not hacking, you may use /resetpaflags.");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	return 1;
+}
+
+CMD:setproaimvar(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+	if(sscanf(params, "d", iShotVariance)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setproaimvar [range]");
+
+	if(!(0 < strval(params) < 30)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Set it between 0 and 30.");
+	iShotVariance = strval(params);
+	format(szMiscArray, sizeof(szMiscArray), "You set the shot variance to: %d", iShotVariance);
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	return 1;
+}
+
+/*
+GetHealthArmorForLabel(playerid) {
+
+	// -----
+	new Float:fHealth,
+		Float:fArmour;
+
+	GetHealth(playerid, fHealth);
+	GetArmour(playerid, fArmour);
+
+	if(IsPlayerPaused(playerid)) {
+
+		if(!fArmour) format(szMiscArray, sizeof(szMiscArray), "%s (%d)\n(Tabbed)\n\n{FF0000}-[%s{FF0000}]-", GetPlayerNameEx(playerid), playerid, GetPValueForLabel(fHealth));
+		else format(szMiscArray, sizeof(szMiscArray), "%s (%d)\n(Tabbed)\n\n-[%s{FF0000}]-\n{FF0000}-[%s{FF0000}]-", GetPlayerNameEx(playerid), playerid, GetPValueForLabel(fArmour), GetPValueForLabel(fHealth));
+	}
+	else {
+
+		if(!fArmour) format(szMiscArray, sizeof(szMiscArray), "%s (%d)\n\n{FF0000}-[%s{FF0000}]-", GetPlayerNameEx(playerid), playerid, GetPValueForLabel(fHealth));
+		else format(szMiscArray, sizeof(szMiscArray), "%s (%d)\n\n-[%s]-\n{FF0000}-[%s{FF0000}]-", GetPlayerNameEx(playerid), playerid, GetPValueForLabel(fArmour), GetPValueForLabel(fHealth));
+
+	}
+	// ------
+
+	if(IsPlayerPaused(playerid)) {
+
+		format(szMiscArray, sizeof(szMiscArray), "%s (%d)\n(Tabbed)", GetPlayerNameEx(playerid), playerid);
+	}
+	else format(szMiscArray, sizeof(szMiscArray), "%s (%d)", GetPlayerNameEx(playerid), playerid);
+	return szMiscArray;	
+}
+*/
+
+stock GetPValueForLabel(Float:fData) {
+
+	new szString[128],
+		iData;
+
+	iData = floatround(fData);
+	switch(iData) {
+
+		case 0: strins(szString, "{000000}0", 0, sizeof(szString));
+		case 1 .. 5: strins(szString, ".{000000}.....................", 0, sizeof(szString));
+		case 6 .. 10: strins(szString, "..{000000}...................", 0, sizeof(szString));
+		case 11 .. 15: strins(szString, "...{000000}.................", 0, sizeof(szString));
+		case 16 .. 20: strins(szString, "....{000000}................", 0, sizeof(szString));
+		case 21 .. 25: strins(szString, ".....{000000}...............", 0, sizeof(szString));
+		case 26 .. 30: strins(szString, "......{000000}..............", 0, sizeof(szString));
+		case 31 .. 35: strins(szString, ".......{000000}.............", 0, sizeof(szString));
+		case 36 .. 40: strins(szString, "........{000000}............", 0, sizeof(szString));
+		case 41 .. 45: strins(szString, ".........{000000}...........", 0, sizeof(szString));
+		case 46 .. 50: strins(szString, "..........{000000}..........", 0, sizeof(szString));
+		case 51 .. 55: strins(szString, "...........{000000}.........", 0, sizeof(szString));
+		case 56 .. 60: strins(szString, "............{000000}........", 0, sizeof(szString));
+		case 61 .. 65: strins(szString, ".............{000000}.......", 0, sizeof(szString));
+		case 66 .. 70: strins(szString, "..............{000000}......", 0, sizeof(szString));
+		case 71 .. 75: strins(szString, "................{000000}....", 0, sizeof(szString));
+		case 76 .. 80: strins(szString, ".................{000000}...", 0, sizeof(szString));
+		case 81 .. 85: strins(szString, "..................{000000}..", 0, sizeof(szString));
+		case 90 .. 95: strins(szString, "...................{000000}.", 0, sizeof(szString));
+		case 96 .. 300: strins(szString, "....................", 0, sizeof(szString));
+
+		/*
+		case 0: strpack(szString, "{000000}0");
+		case 1 .. 5: strpack(szString, "¤                   ", sizeof(szString));
+		case 6 .. 10: strpack(szString, "¤¤                 ", sizeof(szString));
+		case 11 .. 15: strpack(szString, "¤¤¤               ", sizeof(szString));
+		case 16 .. 20: strpack(szString, "¤¤¤¤              ", sizeof(szString));
+		case 21 .. 25: strpack(szString, "¤¤¤¤¤             ", sizeof(szString));
+		case 26 .. 30: strpack(szString, "¤¤¤¤¤¤            ", sizeof(szString));
+		case 31 .. 35: strpack(szString, "¤¤¤¤¤¤¤           ", sizeof(szString));
+		case 36 .. 40: strpack(szString, "¤¤¤¤¤¤¤¤          ", sizeof(szString));
+		case 41 .. 45: strpack(szString, "¤¤¤¤¤¤¤¤¤         ", sizeof(szString));
+		case 46 .. 50: strpack(szString, "¤¤¤¤¤¤¤¤¤¤        ", sizeof(szString));
+		case 51 .. 55: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤       ", sizeof(szString));
+		case 56 .. 60: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤      ", sizeof(szString));
+		case 61 .. 65: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤     ", sizeof(szString));
+		case 66 .. 70: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤    ", sizeof(szString));
+		case 71 .. 75: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤   ", sizeof(szString));
+		case 76 .. 80: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤  ", sizeof(szString));
+		case 81 .. 85: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ ", sizeof(szString));
+		case 90 .. 95: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ ", sizeof(szString));
+		case 96 .. 100: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤", sizeof(szString));
+		*/
+		default: szString = "-------";
+	}
+
+	return szString;
+}
+
+/*
+CreatePlayerLabel(playerid) {
+
+	PlayerLabel[playerid] = CreateDynamic3DTextLabel(GetHealthArmorForLabel(playerid), 0xFFFFFFFF, 0.0, 0.0, 0.15, 30, playerid, .testlos = 1);
+}
+
+CMD:playerlabel(playerid, params[]) {
+	
+	if(IsValidDynamic3DTextLabel(PlayerLabel[playerid])) {
+
+		foreach(new i : Player) ShowPlayerNameTagForPlayer(i, playerid, true);
+		DestroyDynamic3DTextLabel(PlayerLabel[playerid]);
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You turned off your player label.");
+	}
+	else {
+
+		foreach(new i : Player) ShowPlayerNameTagForPlayer(i, playerid, false);
+		PlayerLabel[playerid] = CreateDynamic3DTextLabel(GetHealthArmorForLabel(playerid), 0xFFFFFFFF, 0.0, 0.0, 0.25, 30, playerid, .testlos = 1);
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You turned on your player label.");
+	}
+	return 1;	
+}
+*/

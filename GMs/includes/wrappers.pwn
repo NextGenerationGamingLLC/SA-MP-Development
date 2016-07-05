@@ -55,24 +55,27 @@ Internal_TogglePlayerSpectating(playerid, toggle) {
 	return TogglePlayerSpectating(playerid, toggle);
 }
 
+/*
+Internal_SetPlayerHealth(playerid, Float:health) {
 
-/*Internal_SetPlayerHealth(playerid, Float:health) {
-
-	PlayerInfo[playerid][pHealth] = health;
+	//PlayerInfo[playerid][pHealth] = health;
 	return SetPlayerHealth(playerid, health);
 }
 
 Internal_SetPlayerArmour(playerid, Float:armour) {
 
-	PlayerInfo[playerid][pArmor] = armour;
+	//PlayerInfo[playerid][pArmor] = armour;
 	return SetPlayerArmour(playerid, armour);
-}*/
+}
+*/
+
 
 ShowPlayerDialogEx(playerid, dialogid, style, caption[], info[], button1[], button2[]) {
 
-	iLastDialogID[playerid] = dialogid;
+	SetPVarInt(playerid, "SpfDialogID", dialogid);
 	return ShowPlayerDialog(playerid, dialogid, style, caption, info, button1, button2);
 }
+
 
 
 Internal_SetPlayerWeather(playerid, iWeatherID) {
@@ -109,6 +112,20 @@ Internal_SetPlayerInterior(playerid, iInt) {
 	PlayerInfo[playerid][pInt] = iInt;
 	return SetPlayerInterior(playerid, iInt);
 }
+
+/*
+Internal_SetPlayerName(playerid, szName[]) {
+
+	UpdateDynamic3DTextLabelText(PlayerLabel[playerid], 0xFFFFFFFF, GetHealthArmorForLabel(playerid));
+	return SetPlayerName(playerid, szName);
+}
+
+Internal_SetPlayerColor(playerid, color) {
+
+	UpdateDynamic3DTextLabelText(PlayerLabel[playerid], color + 255, GetHealthArmorForLabel(playerid));
+	return SetPlayerColor(playerid, color);
+}
+*/
 
 #if defined AREA_DEBUG
 Internal_CreateDynamicSphere(Float:x, Float:y, Float:z, Float:size, worldid = -1, interiorid = -1, playerid = -1) {
@@ -149,6 +166,9 @@ Internal_StreamerSetIntData(type, id, data, value) {
 
 #define SetPlayerVirtualWorld(%0) Internal_SetPlayerVirtualWorld(%0)
 #define SetPlayerInterior(%0) Internal_SetPlayerInterior(%0)
+//#define SetPlayerName(%0) Internal_SetPlayerName(%0)
+//#define SetPlayerColor(%0) Internal_SetPlayerColor(%0)
+
 #if defined AREA_DEBUG
 #define CreateDynamicSphere(%0) Internal_CreateDynamicSphere(%0)
 #define CreateDynamicCuboid(%0) Internal_CreateDynamicCuboid(%0)

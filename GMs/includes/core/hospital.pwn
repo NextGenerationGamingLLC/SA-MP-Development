@@ -335,9 +335,20 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		
 		PlayerInfo[playerid][pHospital] = 0;
 		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospital][0]);
-		Tax += HospitalSpawnInfo[iHospital][0];
-		format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
-		format(file, sizeof(file), "grouppay/5/%d-%d-%d.log", month, day, year);
+
+		switch(iHospital) {
+
+			case 3, 17: {
+				TRTax += HospitalSpawnInfo[iHospital][1]; // NE Hospitals
+				format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
+				format(file, sizeof(file), "grouppay/8/%d-%d-%d.log", month, day, year);
+			}
+			default: {
+				Tax += HospitalSpawnInfo[iHospital][1]; // SA Hospitals
+				format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
+				format(file, sizeof(file), "grouppay/5/%d-%d-%d.log", month, day, year);
+			}
+		}		
 		Log(file, string);
 		if(!GetPVarType(playerid, "HealthCareActive")) SetHealth(playerid, 50);
 		else SetHealth(playerid, 100), DeletePVar(playerid, "HealthCareActive");
@@ -493,7 +504,11 @@ CMD:buyinsurance(playerid, params[])
 		format(string, sizeof(string), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospitalVW][1]);
-		Tax += HospitalSpawnInfo[iHospitalVW][1];
+		switch(iHospitalVW) {
+
+			case 3, 17: TRTax += HospitalSpawnInfo[iHospitalVW][1]; // NE Hospitals
+			default: Tax += HospitalSpawnInfo[iHospitalVW][1]; // SA Hospitals
+		}
 		format(string, sizeof(string), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
 		format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
 		Log(file, string);
@@ -632,7 +647,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						format(szMiscArray, sizeof(szMiscArray), "Medical: You have purchased insurance at %s for $%d.", GetHospitalName(iHospitalVW), HospitalSpawnInfo[iHospitalVW][1]);
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 						GivePlayerCash(playerid, - HospitalSpawnInfo[iHospitalVW][1]);
-						Tax += HospitalSpawnInfo[iHospitalVW][1];
+						switch(iHospitalVW) {
+
+							case 3, 17: TRTax += HospitalSpawnInfo[iHospitalVW][1]; // NE Hospitals
+							default: Tax += HospitalSpawnInfo[iHospitalVW][1]; // SA Hospitals
+						}
 						format(szMiscArray, sizeof(szMiscArray), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
 						format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
 						Log(file, szMiscArray);

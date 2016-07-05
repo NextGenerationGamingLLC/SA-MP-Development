@@ -220,7 +220,7 @@ task TurfWarsUpdate[1000]()
 				ResetTurfWarsZone(1, i);
 	        }
 	    }
-	    SaveTurfWar(i);
+	    // SaveTurfWar(i);
 	}
 }
 
@@ -577,6 +577,7 @@ task ProductionUpdate[300000]()
 	// Dump Accounts to /accdump/ for Crash Recovery.
 	// g_mysql_DumpAccounts();
 
+	SaveTurfWars();
 	AdvisorMessage++;
 	foreach(new i: Player)
 	{
@@ -643,7 +644,7 @@ task MoneyUpdate[1000]()
 	new
 		iTempHour = CalculateWorldGameTime(hour, minuite),
 		iTempMinute = CalculateGameMinute(minuite, second);
-
+		
 	if(secondet != second)
 	{
 		if(iTempMinute < 10)format(szMiscArray, sizeof(szMiscArray), "%d:0%d", iTempHour, iTempMinute);
@@ -660,6 +661,7 @@ task MoneyUpdate[1000]()
 					if(EventKernel[EventType] == 3) {
 						if(IsValidDynamic3DTextLabel(RFLTeamN3D[i])) {
 							DestroyDynamic3DTextLabel(RFLTeamN3D[i]);
+							RFLTeamN3D[i] = Text3D:-1;
 						}
 						DisablePlayerCheckpoint(i);
 					}
@@ -1430,7 +1432,7 @@ foreach(new i: Player)
 			{
 				if(strfind(PlayerInfo[i][pPrisonReason], "[IC]", true) != -1)
 				{
-			    	ShowPlayerDialog(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
+			    	ShowPlayerDialogEx(i, DIALOG_STAYPRISON, DIALOG_STYLE_MSGBOX, "Notice", "Your initial prison time has ran out. However, you can choose to stay.\nWould you like to be released?", "Yes", "No");
 				}
 				else
 				{

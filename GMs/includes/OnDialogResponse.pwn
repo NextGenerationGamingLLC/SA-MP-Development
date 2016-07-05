@@ -32,8 +32,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	// Dialog Spoofing Fix:
+	/*
+	new iSpfCheckID = GetPVarInt(playerid, "SpfDialogID");
+    if(dialogid != iSpfCheckID) {
+
+    	AC_Process(playerid, AC_DIALOGSPOOFING, dialogid);
+    	SendClientMessageToAll(COLOR_LIGHTRED, "DIALOG SPOOF");
+    }
+    SetPVarInt(playerid, "SpfDialogID", -2);
+    */
+
 	if(dialogid == DIALOG_DISABLED) return ShowPlayerDialogEx(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
 	new sendername[MAX_PLAYER_NAME];
 	new string[256];
@@ -1526,14 +1537,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == CONFIRMSELLTOY)
 	{
-		if(response)
-		{
+		if(response) {
 			CompleteToyTrade(playerid);
 		}
 		else {
-			new szstring[128];
-			format(szstring, sizeof(szstring), "%s has declined the toy offer.", GetPlayerNameEx(playerid));
-			SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_GREY, szstring);
+
+			format(szMiscArray, sizeof(szMiscArray), "%s has declined the toy offer.", GetPlayerNameEx(playerid));
+			SendClientMessageEx(GetPVarInt(playerid, "ttSeller"), COLOR_GREY, szMiscArray);
 			SendClientMessageEx(playerid, COLOR_GREY, "You have declined the toy offer.");
 			DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttBuyer");
 			DeletePVar(GetPVarInt(playerid, "ttSeller"), "ttCost");
@@ -1547,10 +1557,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		//if(PlayerToyInfo[playerid][listitem][ptModelID] == 0)
 		if(listitem >= GetPlayerToySlots(playerid))
 		{
-			new szstring[128];
 			SetPVarInt(playerid, "MiscShop", 8);
-			format(szstring, sizeof(szstring), "Additional Toy Slot\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[28][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[28][sItemPrice]));
-			return ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Additional Toy Slot", szstring, "Purchase", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "Additional Toy Slot\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[28][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[28][sItemPrice]));
+			return ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Additional Toy Slot", szMiscArray, "Purchase", "Cancel");
 		}
 		else if(PlayerToyInfo[playerid][listitem][ptModelID] == 0 && listitem < GetPlayerToySlots(playerid))
 		{
@@ -3209,8 +3218,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						GetPlayerName(playerid, playername, sizeof(playername));
 						format( String, sizeof( String ), "You have requested a namechange from %s to %s please wait until a General Admin approves it.", playername, inputtext);
 						SendClientMessageEx( playerid, COLOR_YELLOW, String );
-		  //			format( String, sizeof( String ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) requested a name change to %s for free (non-RP name) - /approvename %d (accept), or /denyname %d (deny).", playername, playerid, inputtext, playerid, playerid);
-			//			ABroadCast( COLOR_YELLOW, String, 3 );
+						// format( String, sizeof( String ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) requested a name change to %s for free (non-RP name) - /approvename %d (accept), or /denyname %d (deny).", playername, playerid, inputtext, playerid, playerid);
+						// ABroadCast( COLOR_YELLOW, String, 3 );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
 						return 1;
 					}
@@ -6303,7 +6312,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			new giveplayerid = GetPVarInt(playerid, "listtoys_giveplayerid");
 			SetPVarInt(playerid, "listitem_toyslot", listitem);
-			format(string, sizeof(string), "Are you sure you want to delete %s's toy (Model ID: %d) from slot %d?", GetPlayerNameEx(giveplayerid), PlayerToyInfo[giveplayerid][listitem][ptModelID], listitem);
+			format(string, sizeof(string), "Are you sure you want to delete %s's toy (Model ID: %d) from slot %d?", GetPlayerNameEx(giveplayerid), PlayerToyInfo[giveplayerid][listitem][ptModelID], listitem+1);
 			ShowPlayerDialogEx(playerid, LISTTOYS_DELETETOYCONFIRM, DIALOG_STYLE_MSGBOX, "Delete Toy - Are you sure?", string, "Yes", "No");
 		}
 	}
@@ -6332,7 +6341,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					break;
 				}
 			}
-			format(stringg, sizeof(stringg), "You have deleted %s's object %d in slot %d", GetPlayerNameEx(giveplayerid), object, slot);
+			format(stringg, sizeof(stringg), "You have deleted %s's object %d in slot %d", GetPlayerNameEx(giveplayerid), object, slot+1);
 			ShowPlayerDialogEx(playerid, SHOPOBJECT_SUCCESS, DIALOG_STYLE_MSGBOX, "Delete Toy - Success", stringg, "OK", "");
 			format(stringg, sizeof(stringg), "Admin %s has deleted your toy (obj model: %d) from slot %d.", GetPlayerNameEx(playerid), object, slot);
 			SendClientMessageEx(giveplayerid, COLOR_WHITE, stringg);
@@ -8940,7 +8949,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			PokerTable[GetPVarInt(playerid, "pkrTableID")-1][pkrActivePlayers]++;
 			SetPVarInt(playerid, "pkrChips", GetPVarInt(playerid, "pkrChips")+strval(inputtext));
 			//SetPVarInt(playerid, "cgChips", GetPVarInt(playerid, "cgChips")-strval(inputtext));
-			GivePlayerCash(playerid, -strval(inputtext));
+
+			GivePlayerCashEx(playerid, TYPE_ONHAND, -strval(inputtext));
 
 			format(string, sizeof(string), "%s(%d) (IP:%s) has bought in with the amount of $%s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "pkrChips")), GetPVarInt(playerid, "pkrTableID")-1);
 			Log("logs/poker.log", string);

@@ -177,7 +177,7 @@ stock ShowEditMenu(playerid)
 	new toys = 99999;
 	for(new i; i < 10; i++)
 	{
-		if(PlayerHoldingObject[playerid][i] == iIndex)
+		if(PlayerHoldingObject[playerid][i] == iIndex + 1)
 		{
 			toys = i;
 			if(IsPlayerAttachedObjectSlotUsed(playerid, toys))

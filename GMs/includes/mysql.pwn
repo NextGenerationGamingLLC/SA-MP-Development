@@ -614,6 +614,14 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pDrugs][3] 	  = cache_get_field_content_int(row, "Ecstasy", MainPipeline);
 					PlayerInfo[extraid][pDrugs][4] 	  = cache_get_field_content_int(row, "Heroin", MainPipeline);
 
+					cache_get_field_content(row, "PollKeyA", PlayerInfo[extraid][pPollKey1], MainPipeline, 128);
+					cache_get_field_content(row, "PollKeyB", PlayerInfo[extraid][pPollKey2], MainPipeline, 128);
+					cache_get_field_content(row, "PollKeyC", PlayerInfo[extraid][pPollKey3], MainPipeline, 128);
+
+					if(isnull(PlayerInfo[extraid][pPollKey1])) format(PlayerInfo[extraid][pPollKey1], 12, "Invalid Key");
+					if(isnull(PlayerInfo[extraid][pPollKey2])) format(PlayerInfo[extraid][pPollKey2], 12, "Invalid Key");
+					if(isnull(PlayerInfo[extraid][pPollKey3])) format(PlayerInfo[extraid][pPollKey3], 12, "Invalid Key");
+
 					/*for(new i = 0; i < MAX_POLLS; i++)
 					{
 						format(szField, sizeof(szField), "HasVoted%d", i);
@@ -1610,7 +1618,7 @@ stock mysql_SaveCrates()
 		format(query, sizeof(query), "%s `InVehicle` = '%d',", query, CrateInfo[i][InVehicle]);
 		format(query, sizeof(query), "%s `Int` = '%d',", query, CrateInfo[i][crInt]);
 		format(query, sizeof(query), "%s `VW` = '%d',", query, CrateInfo[i][crVW]);
-		format(query, sizeof(query), "%s `PlacedBy` = '%s'", query, CrateInfo[i][crPlacedBy]);
+		format(query, sizeof(query), "%s `PlacedBy` = '%s'", query, g_mysql_ReturnEscaped(CrateInfo[i][crPlacedBy], MainPipeline));
 		format(query, sizeof(query), "%s WHERE id = %d", query, i);
 
 		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -2568,6 +2576,10 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pLastPoll", PlayerInfo[playerid][pLastPoll]);
 
+	SavePlayerString(query, GetPlayerSQLId(playerid), "PollKeyA", PlayerInfo[playerid][pPollKey1]);
+    SavePlayerString(query, GetPlayerSQLId(playerid), "PollKeyB", PlayerInfo[playerid][pPollKey2]);
+    SavePlayerString(query, GetPlayerSQLId(playerid), "PollKeyC", PlayerInfo[playerid][pPollKey3]);
+
 	//for(new d; d < sizeof(Drugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), GetDrugName(d), PlayerInfo[playerid][pDrugs][d]);
 	//for(new d; d < sizeof(szIngredients); ++d) if(d != 9) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
 
@@ -2714,6 +2726,7 @@ public OnPhoneNumberCheck(index, extraid)
                     format(string, sizeof(string), "You have set your temporary number to %d, type /tempnum to disable it.", GetPVarInt(index, "tempnum"));
                     SendClientMessage(index, COLOR_WHITE, string);
                     PlayerInfo[index][pPnumber] = GetPVarInt(index, "tempnum");
+                    TempNumber[index] = 1;
                 }
             }
 		}
@@ -2914,10 +2927,10 @@ public MDCQueryFinish(playerid, suspectid)
 
 	for(new i; i < rows; i++)
 	{
-	    cache_get_field_content(i, "issuer", MDCInfo[i][mdcIssuer], MainPipeline, MAX_PLAYER_NAME);
-	    cache_get_field_content(i, "crime", MDCInfo[i][mdcCrime], MainPipeline, 64);
-	    cache_get_field_content(i, "active", MDCInfo[i][mdcActive], MainPipeline, 2);
-	    if(strval(MDCInfo[i][mdcActive]) == 1)
+		cache_get_field_content(i, "issuer", MDCInfo[i][mdcIssuer], MainPipeline, MAX_PLAYER_NAME);
+		cache_get_field_content(i, "crime", MDCInfo[i][mdcCrime], MainPipeline, 64);
+	    MDCInfo[i][mdcActive] = cache_get_field_content_int(i, "active", MainPipeline);
+	    if(MDCInfo[i][mdcActive] == 1)
 	    {
 	        format(resultline, sizeof(resultline),"%s{FF6347}Crime: {FF7D7D}%s \t{FF6347}Charged by:{BFC0C2} %s\n",resultline, MDCInfo[i][mdcCrime], MDCInfo[i][mdcIssuer]);
 		} else {
@@ -5284,6 +5297,9 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			cache_get_field_content(iIndex, "Ladders", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iLadders] = strval(szResult);
+
+			cache_get_field_content(iIndex, "Tapes", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iTapes] = strval(szResult);
 
 			cache_get_field_content(iIndex, "DutyColour", szResult, MainPipeline);
 			arrGroupData[iIndex][g_hDutyColour] = strval(szResult);

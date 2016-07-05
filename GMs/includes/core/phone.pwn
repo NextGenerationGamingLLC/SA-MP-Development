@@ -228,7 +228,7 @@ CMD:tempnumber(playerid, params[]){
 		if(PlayerInfo[playerid][pPnumber] == num)
 			return SendClientMessageEx(playerid,COLOR_GREY,"You cannot set your temporary number to your existing number");
 
-		else { 
+		else {
 
 			SetPVarInt(playerid, "oldnum", PlayerInfo[playerid][pPnumber]);
 			SetPVarInt(playerid, "tempnum", num);
@@ -470,11 +470,13 @@ CMD:call(playerid, params[])
 
 							format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller: Pay Phone (%d)]", arrPayPhoneData[GetPVarInt(playerid, "PayPhone")][pp_iNumber]);
 							TogglePlayerControllable(playerid, false);
+							SendClientMessageEx(i, COLOR_YELLOW, string);
 						}
-						else format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %d]", PlayerInfo[playerid][pPnumber]);
-
-						FetchContact(i, PlayerInfo[playerid][pPnumber]);
-						SendClientMessageEx(i, COLOR_YELLOW, string);
+						else {
+							format(string, sizeof(string), "Your mobile is ringing - type /p to answer it. [Caller ID: %d]", PlayerInfo[playerid][pPnumber]);
+							SendClientMessageEx(i, COLOR_YELLOW, string);
+							FetchContact(i, PlayerInfo[playerid][pPnumber]);
+						}
 						RingTone[i] = 10;
 						format(string, sizeof(string), "* %s's phone begins to ring.", GetPlayerNameEx(i));
 						SendClientMessageEx(playerid, COLOR_WHITE, "HINT: You now use T to talk on your cellphone, type /hangup to hang up.");

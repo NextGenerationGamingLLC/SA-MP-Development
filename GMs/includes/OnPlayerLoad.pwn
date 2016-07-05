@@ -839,15 +839,6 @@ public OnPlayerLoad(playerid)
 			SendClientMessageEx(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256 + 255, string);
 		}
 	}
-	if(strfind(PlayerInfo[playerid][pPrisonReason], "[IC]", true) != -1)
-	{
-		
-		for(new i = 0; i < 3; i++)
-		{
-			format(string, sizeof(string), "MOTD: %s", prisonerMOTD[i]);
-			SendClientMessageEx(playerid, COLOR_ORANGE, string);
-		}
-	}
 	CountFlags(playerid);
 	if(PlayerInfo[playerid][pFlagged] > 5)
 	{

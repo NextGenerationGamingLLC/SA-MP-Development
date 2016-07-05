@@ -376,11 +376,12 @@ public OnPlayerUpdate(playerid)
     }
 
     new drunknew = GetPlayerDrunkLevel(playerid);
-    if (drunknew < 100) { // go back up, keep cycling.
+    if(drunknew < 100) { // go back up, keep cycling.
         SetPlayerDrunkLevel(playerid, 2000);
-    } else {
+    }
+    else {
 
-        if (pDrunkLevelLast[playerid] != drunknew) {
+        if(pDrunkLevelLast[playerid] != drunknew) {
 
             new wfps = pDrunkLevelLast[playerid] - drunknew;
 
@@ -1484,6 +1485,7 @@ public OnPlayerConnect(playerid)
 	aLastShotBone[playerid] = 0;
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+		RFLTeamN3D[playerid] = Text3D:-1;
 	}
 	SpecTime[playerid] = 0;
 	PlayerShots[playerid] = 0;
@@ -2539,6 +2541,7 @@ public OnPlayerDisconnect(playerid, reason)
 		}
 		if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 			DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+			RFLTeamN3D[playerid] = Text3D:-1;
 		}
 		pSpeed[playerid] = 0.0;
 		SetPVarInt(playerid, "PlayerOwnASurf", 0);
@@ -3022,6 +3025,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			PlayerInfo[playerid][pHydration] = 100;
 			if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 				DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+				RFLTeamN3D[playerid] = Text3D:-1;
 			}
 			SetHealth(playerid, 0);
 			return 1;

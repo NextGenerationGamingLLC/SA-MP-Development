@@ -587,10 +587,12 @@ public OnPlayerDeath(playerid, killerid, reason)
 		ProxDetector(30.0, iCaller, szMessage, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		CellTime[iCaller] = 0;
 		Mobile[iCaller] = INVALID_PLAYER_ID;
+		RemovePlayerAttachedObject(Mobile[playerid], 8);
 	}
 	Mobile[playerid] = INVALID_PLAYER_ID;
 	CellTime[playerid] = 0;
 	RingTone[playerid] = 0;
+	RemovePlayerAttachedObject(playerid, 8);
 
 	if(GetPVarType(playerid, "SpecOff"))
 	{
@@ -813,6 +815,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	SetPlayerColor(playerid,TEAM_HIT_COLOR);
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+		RFLTeamN3D[playerid] = Text3D:-1;
 	}
 	if(PlayerTied[playerid]) {
 		DeletePVar(playerid, "IsFrozen");

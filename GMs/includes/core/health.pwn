@@ -42,6 +42,7 @@ forward SetHealth(playerid, Float:hp);
 public SetHealth(playerid, Float:hp)
 {
 	PlayerHealth[playerid] = hp;
+	//UpdateDynamic3DTextLabelText(PlayerLabel[playerid], 0xFFFFFFFF, GetHealthArmorForLabel(playerid));
 	return SetPlayerHealth(playerid, hp);
 }
 
@@ -56,6 +57,7 @@ forward SetArmour(playerid, Float:hp);
 public SetArmour(playerid, Float:hp)
 {
 	PlayerArmor[playerid] = hp;
+	//UpdateDynamic3DTextLabelText(PlayerLabel[playerid], 0xFFFFFFFF, GetHealthArmorForLabel(playerid));
 	return SetPlayerArmour(playerid, hp);
 }
 

@@ -14,9 +14,9 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
 }
 
 forward OnPlayerEditDObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
-public OnPlayerEditDObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) // Object Editor Fix by Winterfield. DO NOT REMOVE.
+public OnPlayerEditDObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) // Object Editor Fix.
 {
-    printf("%i | %d | %d | %f | %f | %f | %f | %f | %f", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz); // debug
+    //printf("%i | %d | %d | %f | %f | %f | %f | %f | %f", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz); // debug
     CallLocalFunction("OnPlayerEditDynamicObject", "iddffffff", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 }
 
@@ -129,8 +129,10 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 				DeletePVar(playerid, PVAR_FURNITURE_EDITING);
 				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
-				TextDrawSetPreviewModel(Furniture_TD[4], PlayerInfo[playerid][pModel]);
-				TextDrawSetPreviewRot(Furniture_TD[4], 345.000000, 0.000000, 320.000000, 1.000000);
+				PlayerTextDrawSetPreviewModel(playerid, Furniture_PTD[playerid][0], PlayerInfo[playerid][pModel]);
+				PlayerTextDrawSetPreviewRot(playerid, Furniture_PTD[playerid][0], 345.000000, 0.000000, 320.000000, 1.000000);
+				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][0]);
+				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][0]);
 				SelectTextDraw(playerid, 0xF6FBFCFF);
 			}
 			case EDIT_RESPONSE_FINAL: {
@@ -139,15 +141,26 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 					iSlotID = GetPVarInt(playerid, PVAR_FURNITURE_SLOT),
 					iHouseID = GetHouseID(playerid);
 
+				#define MAX_OBJECT_TEXTSLOTS 15
+				new iTmpModel[MAX_OBJECT_TEXTSLOTS],
+					szTXDName[MAX_OBJECT_TEXTSLOTS][32],
+					szTextureName[MAX_OBJECT_TEXTSLOTS][32],
+					iColor;
 
-				TextDrawSetPreviewModel(Furniture_TD[4], PlayerInfo[playerid][pModel]);
-				TextDrawSetPreviewRot(Furniture_TD[4], 345.000000, 0.000000, 320.000000, 1.000000);
-				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: You have successfully placed the %s.", GetFurnitureName(iModelID));
-				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-				szMiscArray[0] = 0;
+				for(new iIndex; iIndex < MAX_OBJECT_TEXTSLOTS; ++iIndex) {
+
+					GetDynamicObjectMaterial(HouseInfo[iHouseID][hFurniture][iSlotID], iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], iColor, 32, 32);
+					if(isnull(szTXDName[iIndex])) break;
+				}
 
 				if(IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID]);
 				HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, x, y, z, rx, ry, rz, HouseInfo[iHouseID][hIntVW]);
+
+				for(new iIndex; iIndex < MAX_OBJECT_TEXTSLOTS; ++iIndex) {
+
+					SetDynamicObjectMaterial(HouseInfo[iHouseID][hFurniture][iSlotID], iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], 0);
+					if(isnull(szTXDName[iIndex])) break;
+				}
 
 				if(IsADoor(iModelID)) {
 
@@ -163,16 +176,19 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 					Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
 				}
 
-				GetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][iSlotID], x, y, z);
-				GetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][iSlotID], rx, ry, rz);
-
 				format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' \
 					WHERE `houseid` = '%d' AND `slotid` = '%d'", x, y, z, rx, ry, rz, iHouseID, iSlotID);
 				mysql_function_query(MainPipeline, szMiscArray, false, "OnEditFurniture", "");
 
-
-
 				foreach(new i : Player) Streamer_Update(i);
+
+				PlayerTextDrawSetPreviewModel(playerid, Furniture_PTD[playerid][0], PlayerInfo[playerid][pModel]);
+				PlayerTextDrawSetPreviewRot(playerid, Furniture_PTD[playerid][0], 345.000000, 0.000000, 320.000000, 1.000000);
+				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][0]);
+				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][0]);
+				
+				format(szMiscArray, sizeof(szMiscArray), "[Furniture]: You have successfully placed the %s.", GetFurnitureName(iModelID));
+				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 
 				DeletePVar(playerid, "furnfirst");
 				DeletePVar(playerid, "PX");

@@ -977,6 +977,7 @@ CMD:finishhelp(playerid, params[])
 		}
 		DeletePVar(playerid, "pPreGodHealth");
 		DeletePVar(playerid, "pPreGodArmor");
+		if(GetPVarType(playerid, "BusinessesID")) DeletePVar(playerid, "BusinessesID");
 		if(GetPVarInt(playerid, "AdvisorLastInt") > 0 || GetPVarInt(playerid, "AdvisorLastVW") > 0) Player_StreamPrep(playerid, GetPVarFloat(playerid, "AdvisorLastx"), GetPVarFloat(playerid, "AdvisorLasty"), GetPVarFloat(playerid, "AdvisorLastz"), FREEZE_TIME);
 		HelpingNewbie[playerid] = INVALID_PLAYER_ID;
 		return 1;

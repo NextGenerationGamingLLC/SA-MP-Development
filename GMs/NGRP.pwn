@@ -75,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
  
-#define SERVER_GM_TEXT "NG:RP v3.0.328"
+#define SERVER_GM_TEXT "NG:RP v3.0.331"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -93,6 +93,8 @@
 #include <gvar>
 #include <irc>
 #include <geo_ip>
+//#include <profiler>
+
 
 #if defined SOCKET_ENABLED
 #include <socket>
@@ -325,11 +327,16 @@
 // Jingles WIP
 #include "./includes/core/minigame.pwn"
 #include "./includes/anticheat2.pwn"
+#include "./includes/furnituretextures.pwn"
 #include "./includes/furniture.pwn"
 #include "./includes/group/elections.pwn"
+#include "./includes/events/naturaldisaster.pwn"
 
 // Winterfield WIP
 //#include "./includes/dynamic/polls.pwn"
+
+// Westen WIP
+#include "./includes/dynamic/dynpolls2.pwn"
 
 main(){}
 

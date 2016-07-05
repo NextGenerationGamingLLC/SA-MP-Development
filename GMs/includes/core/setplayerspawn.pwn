@@ -227,6 +227,12 @@ SetPlayerSpawn(playerid)
 			{
 				if(!GetPVarType(playerid, "Injured")) {
 
+					for(new i = 0; i < 3; i++) {
+						
+						format(szMiscArray, sizeof(szMiscArray), "MOTD: %s", prisonerMOTD[i]);
+						SendClientMessageEx(playerid, COLOR_ORANGE, szMiscArray);
+					}
+
 					PhoneOnline[playerid] = 1;
 					SetPlayerInterior(playerid, 1);
 					PlayerInfo[playerid][pInt] = 1;

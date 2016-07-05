@@ -2081,8 +2081,8 @@ CMD:trunktake(playerid, params[]) {
 					return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't take weapons from the trunk if it's closed! /car trunk to open it.");
 				}
 
-
-				if(iWeaponSlot > PlayerVehicleInfo[playerid][d][pvWepUpgrade] || iWeaponSlot < 1) {
+				new maxslots = PlayerVehicleInfo[playerid][d][pvWepUpgrade]+1;
+				if(iWeaponSlot > maxslots || iWeaponSlot < 1) {
 					return SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot specified.");
 				}
 
@@ -2982,7 +2982,7 @@ CMD:drop(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any pot to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any crack to throw away!");
 		}
 	}
 	else if(strcmp(choice,"meth",true) == 0)
@@ -3000,7 +3000,7 @@ CMD:drop(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any pot to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any meth to throw away!");
 		}
 	}
 	else if(strcmp(choice,"ecstasy",true) == 0)
@@ -3018,7 +3018,7 @@ CMD:drop(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any pot to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any ecstasy to throw away!");
 		}
 	}
 	else if(strcmp(choice,"heroin",true) == 0)
@@ -3036,7 +3036,7 @@ CMD:drop(playerid, params[])
 		}
 		else
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any pot to throw away!");
+			SendClientMessageEx(playerid, COLOR_GREY, "You are not carrying any heroin to throw away!");
 		}
 	}
 

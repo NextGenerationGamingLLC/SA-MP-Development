@@ -272,7 +272,7 @@ CMD:emslist(playerid, params[]) {
 				format(szMiscArray, sizeof(szMiscArray), "There are currently no active EMS calls.");
 			}
 		}
-		ShowPlayerDialog(playerid, DIALOG_MEDIC_LIST, DIALOG_STYLE_LIST, "Medic | Dispatch List", szMiscArray, "Enroute", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_MEDIC_LIST, DIALOG_STYLE_LIST, "Medic | Dispatch List", szMiscArray, "Enroute", "Cancel");
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not a medic.");
 	return 1;
@@ -613,7 +613,7 @@ CMD:renderaid(playerid, params[])
 	if(target == playerid) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can not aid yourself!");
 	if(!GetPVarType(target, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "Player is not in a injured state.");
 	SetPVarInt(target, "renderaid", playerid);
-	format(szMiscArray, sizeof(szMiscArray), "* You have offered %s assistance.", GetPlayerNameEx(playerid));
+	format(szMiscArray, sizeof(szMiscArray), "* You have offered %s assistance.", GetPlayerNameEx(target));
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 	format(szMiscArray, sizeof(szMiscArray), "* %s wants to assist you, (type /accept renderaid) to accept.", GetPlayerNameEx(playerid));
 	SendClientMessageEx(target, COLOR_LIGHTBLUE, szMiscArray);

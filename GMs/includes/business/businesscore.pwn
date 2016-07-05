@@ -2143,7 +2143,7 @@ CMD:bedit(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "%s has deleted BusinessID %d.", GetPlayerNameEx(playerid), businessid);
 		Log("logs/bedit.log", string);
-		//TODO IMPROVE
+
 		for (new i; i < MAX_BUSINESS_GAS_PUMPS; i++) {
 			DestroyDynamicGasPump(businessid, i);
 		}

@@ -112,7 +112,9 @@ public OnDeleteGCrate(playerid, iCrateID)
 		DestroyDynamicObject(arrGCrateData[iCrateID][gcr_iObject]);
 	if(IsValidDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]))
 		DestroyDynamic3DTextLabel(arrGCrateData[iCrateID][gcr_iLabel]);
+
 	arrGCrateData[iCrateID][gcr_iObject] = INVALID_OBJECT_ID;
+	arrGCrateData[iCrateID][gcr_iLabel] = Text3D:-1;
 	arrGCrateData[iCrateID][gcr_isLoaded] = 0;
 	//format(szMiscArray, sizeof szMiscArray, "You have successfully destroyed gang crate ID %i.", iCrateID);
 	//SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);

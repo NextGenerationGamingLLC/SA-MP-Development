@@ -70,6 +70,7 @@ CMD:joinevent(playerid, params[]) {
             new string[128];
 			if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 				DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+				RFLTeamN3D[playerid] = Text3D:-1;
 			}
 			format(string, sizeof(string), "%s has joined the race event!", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW,COLOR_YELLOW);
@@ -316,6 +317,7 @@ CMD:quitevent(playerid, params[])
        		if(EventKernel[EventType] == 3) {
 					if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 						DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+						RFLTeamN3D[playerid] = Text3D:-1;
 					}
 					DisablePlayerCheckpoint(playerid);
             	    ResetPlayerWeapons( playerid );

@@ -287,7 +287,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                		}
                		*/
 
-               		ShowPlayerDialog(playerid, DIALOG_REGISTER_SKIN, DIALOG_STYLE_INPUT, "NG:RP Character Creation | Skin Model", "Please enter a skin ID for your character.", "Select", "<<");
+               		ShowPlayerDialogEx(playerid, DIALOG_REGISTER_SKIN, DIALOG_STYLE_INPUT, "NG:RP Character Creation | Skin Model", "Please enter a skin ID for your character.", "Select", "<<");
                	}
 				case 7: return Register_MainMenu(playerid);
 				case 8:

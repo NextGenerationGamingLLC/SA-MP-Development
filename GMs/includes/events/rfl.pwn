@@ -244,6 +244,7 @@ CMD:leaverflteam(playerid, params[])
 		PlayerInfo[playerid][pRFLTeamL] = -1;
 		if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
 			DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
+			RFLTeamN3D[playerid] = Text3D:-1;
 		}
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your team has been deleted due to you being the leader.");
 		foreach(new i: Player)
@@ -253,6 +254,7 @@ CMD:leaverflteam(playerid, params[])
 				PlayerInfo[i][pRFLTeamL] = -1;
 				if(IsValidDynamic3DTextLabel(RFLTeamN3D[i])) {
 					DestroyDynamic3DTextLabel(RFLTeamN3D[i]);
+					RFLTeamN3D[playerid] = Text3D:-1;
 				}
 				SendClientMessageEx(i, COLOR_LIGHTBLUE, "You have been removed from your team due to it being removed.");
 				OnPlayerStatsUpdate(i);

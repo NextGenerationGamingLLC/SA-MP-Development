@@ -50,6 +50,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has left the table with $%s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "pkrChips")), tableid);
 		Log("logs/poker.log", szMiscArray);
 
+		PokerTable[tableid][pkrPot] -= GetPVarInt(playerid, "pkrChips"); // Poker Table Money Exploit fix.
 		// De-occuply Slot
 		PokerTable[tableid][pkrPlayers] -= 1;
 		if(GetPVarInt(playerid, "pkrStatus")) PokerTable[tableid][pkrActivePlayers] -= 1;
@@ -1665,7 +1666,7 @@ LeavePokerTable(playerid) {
 
 	// Convert prkChips to cgChips
 	//SetPVarInt(playerid, "cgChips", GetPVarInt(playerid, "cgChips")+GetPVarInt(playerid, "pkrChips"));
-	GivePlayerCash(playerid, GetPVarInt(playerid, "pkrChips"));
+	GivePlayerCashEx(playerid, TYPE_ONHAND, -GetPVarInt(playerid, "pkrChips"));
 
 	new string[128];
 	format(string, sizeof(string), "%s(%d) (IP:%s) has left the table with $%s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "pkrChips")), tableid);

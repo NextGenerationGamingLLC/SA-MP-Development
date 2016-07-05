@@ -768,8 +768,10 @@ public OtherTimerEx(playerid, type)
 				DeletePVar(playerid, "pizzaTimer");
 				DisablePlayerCheckpoint(playerid);
 			}
-			else if (GetPVarInt(playerid, "pizzaTimer") > 0 && GetPVarInt(playerid, "Pizza") > 0)
-			{
+			else if(GetPVarInt(playerid, "pizzaTimer") > 0 && GetPVarInt(playerid, "Pizza") > 0) {
+
+				new houseid = GetPVarInt(playerid, "Pizza");
+				SetPlayerCheckpoint(playerid, HouseInfo[houseid][hExteriorX], HouseInfo[houseid][hExteriorY], HouseInfo[houseid][hExteriorZ], 5); // Temporary fix.
 				SetPVarInt(playerid, "pizzaTimer", GetPVarInt(playerid, "pizzaTimer")-1);
 				new string[128];
 				format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d seconds left", GetPVarInt(playerid, "pizzaTimer"));

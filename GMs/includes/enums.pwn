@@ -1100,7 +1100,6 @@ enum pInfo
 	pFMuted,
 	pDefendTime,
 	pPVIPVoucher,
-	HasVoted[MAX_POLLS],
 	pVehicleSlot,
 	pToySlot,
 	pRFLTeam,
@@ -1197,7 +1196,11 @@ enum pInfo
 	pFishingSkill,
 	pGarbageSkill,
 	pLastPoll,
-	pSmugSkill
+	pSmugSkill,
+	pProAimFlags,
+	pPollKey1[128],
+	pPollKey2[128],
+	pPollKey3[128]
 };
 
 enum pvInfo
@@ -1580,7 +1583,7 @@ enum mdcInfo
 {
 	mdcCrime[64],
 	mdcIssuer[24],
-	mdcActive[3],
+	mdcActive,
 }
 
 // Relay For Life
@@ -1942,11 +1945,15 @@ new eTurfWarsBits:arrTurfWarsBits[MAX_TURFS];*/
 enum e_AntiCheat {
 
 	ac_iVehID,
-	ac_iShots,
+	ac_iShots[2],
 	Float:ac_fPos[3],
-	Float:ac_fSpeed,
-	ac_iFlags[AC_MAX],
+	ac_fSpeed,
+	Float:ac_fCamPos[6],
+	Float:ac_fCamFVector[6],
+	Float:ac_fAimAccuracy,
+	ac_iFlags[15],
 	ac_iCommandCount,
+	ac_iPlayerAreaID
 }
 new arrAntiCheat[MAX_PLAYERS][e_AntiCheat];
 

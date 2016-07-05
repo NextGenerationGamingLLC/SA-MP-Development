@@ -100,7 +100,7 @@ CMD:fix(playerid, params[])
 				}
     			if(level >= 400)
     			{
-    				FixVehicle(playerid, closestcar);
+    				SetTimerEx("FixVehicle", 2000, false, "ii", playerid, closestcar); // Fixes the crash bug.
     			} 
     			else 
     			{

@@ -84,17 +84,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) return 1;
 
 			switch(listitem) {
-				case 0: ShowPlayerDialog(playerid, DIALOG_POLLS_QUESTION, DIALOG_STYLE_INPUT, "NGRP Polls | Edit Question", "Please formulate a question for this poll", "Enter", "Cancel");
+				case 0: ShowPlayerDialogEx(playerid, DIALOG_POLLS_QUESTION, DIALOG_STYLE_INPUT, "NGRP Polls | Edit Question", "Please formulate a question for this poll", "Enter", "Cancel");
 				case 1: {
 
 					szMiscArray[0] = 0;
 					for(new i; i < MAX_POLL_OPTIONS; ++i) {
 						format(szMiscArray, sizeof(szMiscArray), "%s\n%d. %s", szMiscArray, i+1, arrPollOption[i]);
 					}
-					ShowPlayerDialog(playerid, DIALOG_POLLS_OPTIONS, DIALOG_STYLE_LIST, "NGRP Polls | Edit Options", szMiscArray, "Edit", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_POLLS_OPTIONS, DIALOG_STYLE_LIST, "NGRP Polls | Edit Options", szMiscArray, "Edit", "Cancel");
 				}
-				case 2: ShowPlayerDialog(playerid, DIALOG_POLLS_TYPE, DIALOG_STYLE_LIST, "NG:RP | Polls", "All\nFactions\nGangs\nBusiness\nVIP", "Enter", "Cancel");
-				case 3: ShowPlayerDialog(playerid, DIALOG_POLLS_HOURS, DIALOG_STYLE_INPUT, "NG:RP | Polls", "Enter the minimum amount of playing hours to be able to cast a vote.", "Enter", "Cancel");
+				case 2: ShowPlayerDialogEx(playerid, DIALOG_POLLS_TYPE, DIALOG_STYLE_LIST, "NG:RP | Polls", "All\nFactions\nGangs\nBusiness\nVIP", "Enter", "Cancel");
+				case 3: ShowPlayerDialogEx(playerid, DIALOG_POLLS_HOURS, DIALOG_STYLE_INPUT, "NG:RP | Polls", "Enter the minimum amount of playing hours to be able to cast a vote.", "Enter", "Cancel");
 				case 4: {
 					if(!arrPolls[pol_bActive]) {
 						Poll_TogglePoll(playerid, true);
@@ -134,7 +134,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(!response) return 1;
 			SetPVarInt(playerid, "EditPoll", listitem);
-			ShowPlayerDialog(playerid, DIALOG_POLLS_OPTIONS2, DIALOG_STYLE_INPUT, "NGRP Polls | Edit", "Please enter an option", "Enter", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_POLLS_OPTIONS2, DIALOG_STYLE_INPUT, "NGRP Polls | Edit", "Please enter an option", "Enter", "Cancel");
 		}
 		case DIALOG_POLLS_OPTIONS2: {
 
@@ -301,7 +301,7 @@ public Poll_OnGetVotes(playerid) {
 		}
 	}
 	format(szMiscArray, sizeof(szMiscArray), "%s\nTotal Votes:\t%d", szMiscArray, iTotalCount);
-	ShowPlayerDialog(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "NG:RP | Poll Results", szMiscArray, "OK", "");
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, "NG:RP | Poll Results", szMiscArray, "OK", "");
 	return 1;
 }
 
@@ -360,7 +360,7 @@ CMD:poll(playerid, params[]) {
 				format(szMiscArray, sizeof(szMiscArray), "%s\n%d. %s", szMiscArray, i, arrPollOption[i]);
 			}
 		}
-		ShowPlayerDialog(playerid, DIALOG_POLLS_VOTE, DIALOG_STYLE_LIST, "NG:RP | Poll", szMiscArray, "Vote", "Cancel");
+		ShowPlayerDialogEx(playerid, DIALOG_POLLS_VOTE, DIALOG_STYLE_LIST, "NG:RP | Poll", szMiscArray, "Vote", "Cancel");
 	}
 	else Poll_GetVotes(playerid);
 	return 1;
@@ -392,6 +392,6 @@ CMD:editpoll(playerid, params[]) {
 		Start\n\
 		End", Poll_GetPollType(arrPolls[pol_iTypeID]), arrPolls[pol_iHours]);
 
-	ShowPlayerDialog(playerid, DIALOG_POLLS_EDIT, DIALOG_STYLE_LIST, "NG:RP Polls | Edit", szMiscArray, "Select", "Cancel");
+	ShowPlayerDialogEx(playerid, DIALOG_POLLS_EDIT, DIALOG_STYLE_LIST, "NG:RP Polls | Edit", szMiscArray, "Select", "Cancel");
 	return 1;
 }

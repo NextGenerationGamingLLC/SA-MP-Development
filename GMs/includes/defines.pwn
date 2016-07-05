@@ -643,19 +643,21 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_GROUP_FLARES			(3382)
 #define 		DIALOG_GROUP_BARRELS		(3383)
 #define 		DIALOG_GROUP_LADDERS		(3384)
-#define 		DIALOG_GROUP_CRATE			(3385)
-#define 		DIALOG_GROUP_LISTPAY		(3386)
-#define 		DIALOG_GROUP_EDITPAY		(3387)
-#define 		DIALOG_GROUP_LOCKERDELETECONF		(3388)
-#define 		DIALOG_GROUP_LOCKERACTION			(3389)
-#define 		DIALOG_GROUP_COSTTYPE				(3390)
-#define			DIALOG_GROUP_GARAGEPOS				(3391)
-#define 		DIALOG_GROUP_JURISDICTION_ADD		(3392)
-#define 		DIALOG_GROUP_JURISDICTION_ADD2		(3393)
-#define 		DIALOG_GROUP_JURISDICTION_LIST		(3394)
-#define 		DIALOG_GROUP_JURISDICTION_REMOVE	(3395)
-#define			DIALOG_GROUP_GARAGERANGE			(3396)
-#define			DIALOG_GROUP_TACKLEACCESS			(3397)
+#define 		DIALOG_GROUP_TAPES 			(3385)
+#define 		DIALOG_GROUP_CRATE			(3386)
+#define 		DIALOG_GROUP_LISTPAY		(3387)
+#define 		DIALOG_GROUP_EDITPAY		(3388)
+#define 		DIALOG_GROUP_LOCKERDELETECONF		(3389)
+#define 		DIALOG_GROUP_LOCKERACTION			(3390)
+#define 		DIALOG_GROUP_COSTTYPE				(3391)
+#define			DIALOG_GROUP_GARAGEPOS				(3392)
+#define 		DIALOG_GROUP_JURISDICTION_ADD		(3393)
+#define 		DIALOG_GROUP_JURISDICTION_ADD2		(3394)
+#define 		DIALOG_GROUP_JURISDICTION_LIST		(3395)
+#define 		DIALOG_GROUP_JURISDICTION_REMOVE	(3396)
+#define			DIALOG_GROUP_GARAGERANGE			(3397)
+#define			DIALOG_GROUP_TACKLEACCESS			(3398)
+
 #define			DIALOG_GROUP_WHEELCLAMPS			(3400)
 #define			DIALOG_GROUP_DOCACCESS				(3401)
 #define			DIALOG_GROUP_MEDICACCESS			(3402)
@@ -679,7 +681,6 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_GROUP_GOVEDITPAY 			(3424)
 #define 		DIALOG_WEAPONSAFE_WITHDRAW			(3425)
 #define 		DIALOG_WEAPONSAFE_WITHDRAW_T		(3426)
-
 
 #define         DIALOG_REPORTMENU           (3490)
 #define         DIALOG_REPORTMENU2          (3500)
@@ -1198,7 +1199,6 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_EDITPOINT_POSITION 		(6173)
 #define 		DIALOG_EDITPOINT_MATERIALS		(6174)
 
-#define 		MAX_POLLS 						(50)
 #define 		MAX_POLLS_CHOICES				(5)
 
 #define 		DIALOG_POLLS 					(6175)
@@ -1210,7 +1210,8 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_EDITPOLLS_CHOICES		(6181)
 #define 		DIALOG_FURNITURE_BUYSELECT		(6182)
 
-/*#define 		DIALOG_INTERACT 				(6175)
+/*
+-#define 		DIALOG_INTERACT 				(6175)
 #define 		DIALOG_INTERACT_COP 			(6176)
 #define 		DIALOG_INTERACT_MEDIC			(6177)
 #define 		DIALOG_INTERACT_GUARD			(6178)
@@ -1224,6 +1225,17 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_INTERACT_PAY				(6185)
 #define 		DIALOG_INTERACT_PAY				(6186)
 #define 		DIALOG_INTERACT_PAY				(6187)*/
+
+#define 		DIALOG_NATDIS_MAIN				7000
+#define 		DIALOG_NATDIS_EDITZONES			7001
+#define 		DIALOG_NATDIS_EDITZONE 			7002
+#define 		DIALOG_NATDIS_EARTHQUAKE		7003
+#define 		DIALOG_NATDIS_SANDSTORM			7004
+#define 		DIALOG_NATDIS_FLOOD				7005
+#define 		DIALOG_NATDIS_ALIENS			7006
+#define 		DIALOG_NATDIS_NUKE				7007
+#define 		DIALOG_NATDIS_EQFINAL			7008
+#define 		DIALOG_NATDIS_LOADMAPS			7009
 
 // GangTags
 #define 			GANGTAG_TIME				60000
@@ -1467,17 +1479,19 @@ native IsValidVehicle(vehicleid);
 #define 			AC_AIMBOT					0
 #define 			AC_CBUG 					1
 #define 			AC_RANGEHACKS 				2
-#define 			AC_SPEEDHACKS 				3
-#define 			AC_VEHICLEHACKS				4
-#define 			AC_CMDSPAM					5
-#define 			AC_CARSURFING				6
-#define 			AC_NINJAJACK 				7
-#define 			AC_AIRBREAKING 				8
-#define 			AC_INFINITESTAMINA			9
-#define 			AC_HEALTHARMORHACKS			10
-#define 			AC_DIALOGSPOOFING			11
-#define 			AC_REJECTHITS				12
-#define 			AC_MAX						13
+#define 			AC_PROAIM					3
+#define 			AC_SPEEDHACKS 				4
+#define 			AC_VEHICLEHACKS				5
+#define 			AC_CMDSPAM					6
+#define 			AC_CARSURFING				7
+#define 			AC_NINJAJACK 				8
+#define 			AC_NAMETAGS 				9
+#define 			AC_AIRBREAKING 				10
+#define 			AC_INFINITESTAMINA			11
+#define 			AC_HEALTHARMORHACKS			12
+#define 			AC_DIALOGSPOOFING			13
+#define 			AC_REJECTHITS				14
+#define 			AC_MAX						15
         			
 /* PVARS */
 #define 			PVAR_DRUGS_MIXSLOT				"DRM_S"

@@ -43,6 +43,140 @@ stock JudgeOnlineCheck()
 	return 0;
 }
 
+/*
+
+	 /$$   /$$  /$$$$$$          /$$$$$$$  /$$$$$$$
+	| $$$ | $$ /$$__  $$        | $$__  $$| $$__  $$
+	| $$$$| $$| $$  \__/        | $$  \ $$| $$  \ $$
+	| $$ $$ $$| $$ /$$$$ /$$$$$$| $$$$$$$/| $$$$$$$/
+	| $$  $$$$| $$|_  $$|______/| $$__  $$| $$____/
+	| $$\  $$$| $$  \ $$        | $$  \ $$| $$
+	| $$ \  $$|  $$$$$$/        | $$  | $$| $$
+	|__/  \__/ \______/         |__/  |__/|__/
+
+					Offline Warranting
+
+				Next Generation Gaming, LLC
+	(created by Next Generation Gaming Development Team)
+
+	* Copyright (c) 2016, Next Generation Gaming, LLC
+*/
+
+// Created by Bohemoth
+
+#include <YSI\y_hooks>
+
+forward OfflineWarranting(index);
+public OfflineWarranting(index)
+{
+	new string[128], name[24], reason[64];
+	GetPVarString(index, "OfflineWarrant", name, 24);
+	GetPVarString(index, "WarrantRes", reason, 64);
+
+	if(mysql_affected_rows(MainPipeline)) {
+		format(string, sizeof(string), "You have successfully warranted %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, string);
+
+		format(string, sizeof(string), "You are hereby commanded to apprehend and present to the court %s to answer the charges of:", name);
+		SendGroupMessage(1, DEPTRADIO, string);
+		format(string, sizeof(string), "%s", reason);
+		SendGroupMessage(1, DEPTRADIO, string);
+
+		//format(string, sizeof(string), "%s offline warranted %s for %s", GetPlayerNameEx(index), name, reason);
+		//Log("logs/warrant.log", string);
+	}
+	else {
+		format(string, sizeof(string), "There was an issue with warranting %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, string);
+	}
+
+	DeletePVar(index, "OfflineWarrant");
+	DeletePVar(index, "WarrantRes");
+	return 1;
+}
+
+forward OfflineWarrantWD(index);
+public OfflineWarrantWD(index)
+{
+	new string[128], name[24];
+	GetPVarString(index, "OfflineWarrant", name, 24);
+
+	if(mysql_affected_rows(MainPipeline)) {
+		format(string, sizeof(string), "You have successfully recalled the warrant on %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, string);
+
+		//format(string, sizeof(string), "%s recalled the warrant on %s's account", GetPlayerNameEx(index), name);
+		//Log("logs/warrant.log", string);
+	}
+	else {
+		format(string, sizeof(string), "There was an issue with recalling the warrant on %s's account.", name);
+		SendClientMessageEx(index, COLOR_WHITE, string);
+	}
+
+	DeletePVar(index, "OfflineWarrant");
+	return 1;
+}
+
+
+CMD:owarrant(playerid, params[]) {
+	if(!IsAJudge(playerid)) {
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		return 1;
+	}
+	if(PlayerInfo[playerid][pRank] < 3) {
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		return 1;
+	}
+
+	new string[128], name[MAX_PLAYER_NAME], reason[64];
+	if(sscanf(params, "s[24]s[64]", name, reason)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /owarrant [player name] [crime]");
+
+	if(!IsPlayerConnected(ReturnUser(name))) {
+		new query[512];
+
+		SetPVarString(playerid, "OfflineWarrant", name);
+		SetPVarString(playerid, "WarrantRes", reason);
+
+		format(string, sizeof(string), "Attempting to warrant %s's account for %s...", name, reason);
+		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+
+		format(query,sizeof(query),"UPDATE `accounts` SET `Warrants` = '%s' WHERE `Warrants` = '' AND `Username` = '%s'", reason, name);
+		mysql_function_query(MainPipeline, query, false, "OfflineWarranting", "i", playerid);
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot offline warrant online players!");
+	return 1;
+}
+
+CMD:owarrantwd(playerid, params[])
+{
+    if(!IsAJudge(playerid))
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+  		return 1;
+ 	}
+	if(PlayerInfo[playerid][pMember] < 3)
+	{
+  		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  		return 1;
+  	}
+
+  	new string[128], name[MAX_PLAYER_NAME];
+	if(sscanf(params, "s[24]s[64]", name)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /owarrantwd [player name]");
+
+	if(!IsPlayerConnected(ReturnUser(name))) {
+		new query[512];
+
+		SetPVarString(playerid, "OfflineWarrant", name);
+
+		format(string, sizeof(string), "Attempting to recall the warrant on %s's account...", name);
+		SendClientMessageEx(playerid, COLOR_YELLOW, string);
+
+		format(query,sizeof(query),"UPDATE `accounts` SET `Warrants` = '' WHERE `Warrants` != '' AND `Username` = '%s'", name);
+		mysql_function_query(MainPipeline, query, false, "OfflineWarrantWD", "i", playerid);
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot offline warrant online players!");
+	return 1;
+}
 
 CMD:present(playerid, params[])
 {
@@ -930,40 +1064,51 @@ CMD:viewassets(playerid, params[])
 }
 
 CMD:alimony(playerid, params[]) {
-	
-	if(!IsAJudge(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
-	if(PlayerInfo[playerid][pRank] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
-	
-	new charged, recieved, amount;
+
+	if(!IsAJudge(playerid)) 
+  		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
+	if(PlayerInfo[playerid][pRank] < 3) 
+  		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
+  	new charged, recieved, amount, string[128];
   	if(sscanf(params, "iii", charged, amount, recieved)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /alimony [charging id] [percentage] [reciever id]");
   	if(charged == playerid || recieved == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on yourself!");
   	
   	new totalwealth = PlayerInfo[charged][pAccount] + GetPlayerCash(charged),
   		fine = amount * totalwealth / 100;
-
   	if(totalwealth < 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is in debt - contact an administrator.");  	
-  	
-  	if(IsPlayerConnected(charged) || IsPlayerConnected(recieved)) {
-
-		if(amount < 5) return SendClientMessageEx(playerid, COLOR_GRAD2, "Minimum percentage must be atleast 5");
-		if(amount > 25)	return SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum percentage must not exceed 25");
-		if(!(300000 < fine < 2500000)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Fine must be between $300,000 and $2,500,000!");
+  	if(IsPlayerConnected(charged) || IsPlayerConnected(recieved))
+	{
+		if(amount < 5)
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Minimum percentage must be atleast 5");
+		if(amount > 25)
+			return SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum percentage must not exceed 25");
+		if(fine < 300000) {
+			format(string, sizeof(string), "The charge was $%d however as it falls below the minimum amount, %s was only charged $300,000", fine, GetPlayerNameEx(charged));
+			SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			fine = 300000;			
+		}
+		if(fine > 2500000) {
+			format(string, sizeof(string), "The charge was $%d however as it exceeds the maximum amount, %s was only charged $2,500,000", fine, GetPlayerNameEx(charged));
+			SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			fine = 2500000;
+		}
 
 		GivePlayerCashEx(charged, TYPE_ONHAND, -fine);
-		format(szMiscArray, sizeof(szMiscArray), "You have been charged $%d for alimony to %s by Judge %s.", fine, GetPlayerNameEx(recieved), GetPlayerNameEx(playerid));
-		SendClientMessageEx(charged, COLOR_WHITE, szMiscArray);
+		format(string, sizeof(string), "You have been charged $%d for alimony to %s by Judge %s.", fine, GetPlayerNameEx(recieved), GetPlayerNameEx(playerid));
+		SendClientMessageEx(charged, COLOR_WHITE, string);
 
 		GivePlayerCashEx(recieved, TYPE_ONHAND, fine);
-		format(szMiscArray, sizeof(szMiscArray), "You have been given $%d from %s as alimony.", fine, GetPlayerNameEx(recieved));
-		SendClientMessageEx(recieved, COLOR_WHITE, szMiscArray);
+		format(string, sizeof(string), "You have been given $%d from %s as alimony.", fine, GetPlayerNameEx(recieved));
+		SendClientMessageEx(recieved, COLOR_WHITE, string);
 
 		foreach(new i: Player) {
 			if(PlayerInfo[i][pAdmin] >= 3) {
-			    format(szMiscArray, sizeof(szMiscArray), "Judicial: %s has charged %s $%d for alimony to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(charged), fine, GetPlayerNameEx(recieved));
-			    SendClientMessage(i, COLOR_LIGHTRED, szMiscArray);
+			    format(string, sizeof(string), "Judicial: %s has charged %s $%d for alimony to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(charged), fine, GetPlayerNameEx(recieved));
+			    SendClientMessage(i, COLOR_LIGHTRED, string);
 			}
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GREY, "That player is not online!");
 	return 1;
 }
+

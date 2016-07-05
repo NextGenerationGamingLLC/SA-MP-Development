@@ -2723,7 +2723,7 @@ new PlayerText:phone_PTextDraw[MAX_PLAYERS][24];
 
 
 /* AC */
-new iLastDialogID[MAX_PLAYERS];
+//new iLastDialogID[MAX_PLAYERS];
 
 /* Areas */
 new iVehEnterAreaID[MAX_VEHICLES];
@@ -2768,7 +2768,7 @@ new szFurnitureCategories[][] = {
 	"VIP"
 };
 // new FurnitureList[sizeof(szFurnitureCategories)];
-
+/*
 new const szFurnitureTextures[][][] = {
 	{"Beach sand", "19537", "beach_sfs", "ws_drysand"},
 	{"Desert sand", "16209", "des_cen", "des_dirt1"},
@@ -2894,10 +2894,12 @@ new const szFurnitureTextures[][][] = {
 	{"SpeedLimitBlankSign", "19978", "samproadsigns", "SpeedLimitBlankSign"},
 	{"Radiation", "19978", "samproadsigns", "Radiation"}
 };
+*/
 
 // for(new i; i < sizeof(szFurnitureCategories); ++i) FurnitureList[i] = mS_INVALID_LISTID;
 
-new Text:Furniture_TD[26];
+new Text:Furniture_TD[28],
+	PlayerText:Furniture_PTD[MAX_PLAYERS][2];
 
 new iErrorID;
 
@@ -2907,6 +2909,8 @@ new ROB_MAX_PERCENTAGE = 30,
 	ROB_COLLECT_RATE = 5000,
 	ROB_MIN_MEMBERS = 1;
 */
+
+//new Text3D:PlayerLabel[MAX_PLAYERS];
 
 /* IRC/Slack */
 new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], IRC_CHANNEL_SERVERERRORS[32], IRC_CHANNEL_ADMWARNINGS[32], BotID[MAX_BOTS], BotGroupID;

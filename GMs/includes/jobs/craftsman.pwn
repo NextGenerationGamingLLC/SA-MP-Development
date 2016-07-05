@@ -53,14 +53,15 @@ CMD:getmats(playerid, params[])
 
 	new playername[MAX_PLAYER_NAME];
 	GetPlayerName(playerid, playername, sizeof(playername));
-	for (new i=0; i<MAX_POINTS; i++)
-	{
-		if (IsPlayerInRangeOfPoint(playerid, 3.0, DynPoints[i][poPos][0], DynPoints[i][poPos][1], DynPoints[i][poPos][2]) && DynPoints[i][poType] == 0)
+	for(new i = 0; i < MAX_POINTS; i++)	{
+
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, DynPoints[i][poPos][0], DynPoints[i][poPos][1], DynPoints[i][poPos][2]) && DynPoints[i][poType] == 0)
 		{
 			szMiscArray[0] = 0;
-			if(DynPoints[i][poType] == 0) 
+			if(DynPoints[i][poType] == 0)
 			{
-				if(DynPoints[i][poPos2][0] == 0.0000) return SendClientMessageEx(playerid, COLOR_WHITE, "Sorry, this point is still being set up!");
+				if(DynPoints[i][poPos2][0] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Sorry, this point is still being set up!");
+				
 				new vip;
 				switch(PlayerInfo[playerid][pDonateRank])
 				{
@@ -100,7 +101,7 @@ CMD:getmats(playerid, params[])
 		}
 	}
 
-	if (IsPlayerInRangeOfPoint(playerid, 10.0, 2102.71, -103.97, 2.28)) // Boatrun - Never becoming dynamic. -Winterfield
+	if(IsPlayerInRangeOfPoint(playerid, 10.0, 2102.71, -103.97, 2.28)) // Boatrun - Never becoming dynamic. -Winterfield
 	{
 		new vehicle = GetPlayerVehicleID(playerid);
 		if(IsABoat(vehicle))
@@ -175,7 +176,8 @@ CMD:getmats(playerid, params[])
 			arrGroupData[i][g_iBudget] +=125;
 		}
 	}
-	SetPlayerCheckpoint(playerid, Points[mypoint][Pointx], Points[mypoint][Pointy], Points[mypoint][Pointz], 5);
+	if(mypoint != -1) SetPlayerCheckpoint(playerid, Points[mypoint][Pointx], Points[mypoint][Pointy], Points[mypoint][Pointz], 5);
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a point.");
 	return 1;
 }
 

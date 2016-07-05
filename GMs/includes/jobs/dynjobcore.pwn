@@ -127,7 +127,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	                DeletePVar(playerid, PVAR_JOB_OBTAINING);
 	                return 1;
 	            }
-	            if(PlayerInfo[playerid][pDonateRank] >= 3) {
+	            if(PlayerInfo[playerid][pDonateRank] >= 3 || PlayerInfo[playerid][pFamed] > 0) {
 
 				    SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Congratulations with your new Job, type /help to see your new command.");
 	                SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have taken this as a third job.");

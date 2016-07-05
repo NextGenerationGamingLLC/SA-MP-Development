@@ -41,8 +41,11 @@
 
 hook OnPlayerDisconnect(playerid) {
 
-	if(IsValidDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "RepFam_TL"))) {
-		DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "RepFam_TL"));
+	if(GetPVarType(playerid, "RepFam_TL")) {
+
+		if(IsValidDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "RepFam_TL"))) {
+			DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "RepFam_TL"));
+		}
 	}
 	DeletePVar(playerid, "RepFam_TL");
 	DeletePVar(playerid, "RepFam");

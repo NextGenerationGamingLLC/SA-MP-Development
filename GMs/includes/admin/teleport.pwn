@@ -813,17 +813,17 @@ CMD:sendto(playerid, params[])
 		}
 		else if(strcmp(location, "doc", true) == 0)
 		{
-			if (GetPlayerState(giveplayerid) == 2)
+			if(GetPlayerState(giveplayerid) == 2)
 			{
 				new tmpcar = GetPlayerVehicleID(giveplayerid);
-				SetVehiclePos(tmpcar, -1528.5812,489.6914,7.1797);
+				SetVehiclePos(tmpcar, 77.85, 1923.75, 17.94);
 				LinkVehicleToInterior(tmpcar, 0);
 				SetVehicleVirtualWorld(tmpcar, 0);
 				fVehSpeed[giveplayerid] = 0.0;
 			}
 			else
 			{
-				SetPlayerPos(giveplayerid,-1528.5812,489.6914,7.1797);
+				SetPlayerPos(giveplayerid, 77.85, 1923.75, 17.64);
 			}
 			format(string, sizeof(string), " You have sent %s to DoC.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
