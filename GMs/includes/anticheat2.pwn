@@ -1106,7 +1106,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	arrLastBulletData[playerid][acl_fDistance] = fDistance;
 	arrLastBulletData[playerid][acl_Hits] = 0;
 
-	AC_Probability(playerid, hitid);
+	//AC_Probability(playerid, hitid);
 
 
 	/*if(IsValidDynamicObject(iObject)) DestroyDynamicObject(iObject);
@@ -2547,7 +2547,7 @@ For each time slice t, the inference carries out in two stages: (See paper)
 */
 
 
-AC_Probability(playerid, iTargetID) {
+stock AC_Probability(playerid, iTargetID) {
 
 	new Float:fDeltaAimingDirection,
 		Float:fPlayerAngle[2],
