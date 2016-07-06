@@ -622,6 +622,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 					if(isnull(PlayerInfo[extraid][pPollKey2])) format(PlayerInfo[extraid][pPollKey2], 12, "Invalid Key");
 					if(isnull(PlayerInfo[extraid][pPollKey3])) format(PlayerInfo[extraid][pPollKey3], 12, "Invalid Key");
 
+					PlayerInfo[extraid][pFurnitureSlots] = cache_get_field_content_int(row, "FurnitureSlots", MainPipeline);
+
 					/*for(new i = 0; i < MAX_POLLS; i++)
 					{
 						format(szField, sizeof(szField), "HasVoted%d", i);
@@ -2570,15 +2572,13 @@ stock g_mysql_SaveAccount(playerid)
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pVIPMod", PlayerInfo[playerid][pVIPMod]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pEventTokens", PlayerInfo[playerid][pEventTokens]);
-
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPGunsCount", PlayerInfo[playerid][pVIPGuncount]);
-
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pBailPrice", PlayerInfo[playerid][pBailPrice]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "pLastPoll", PlayerInfo[playerid][pLastPoll]);
-
 	SavePlayerString(query, GetPlayerSQLId(playerid), "PollKeyA", PlayerInfo[playerid][pPollKey1]);
     SavePlayerString(query, GetPlayerSQLId(playerid), "PollKeyB", PlayerInfo[playerid][pPollKey2]);
     SavePlayerString(query, GetPlayerSQLId(playerid), "PollKeyC", PlayerInfo[playerid][pPollKey3]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FurnitureSlots", PlayerInfo[playerid][pFurnitureSlots]);
 
 	//for(new d; d < sizeof(Drugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), GetDrugName(d), PlayerInfo[playerid][pDrugs][d]);
 	//for(new d; d < sizeof(szIngredients); ++d) if(d != 9) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	

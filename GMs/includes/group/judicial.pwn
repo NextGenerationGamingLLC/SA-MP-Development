@@ -362,8 +362,7 @@ CMD:freezeassets(playerid, params[])
 	{
 	    return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /freezeassets [player] [house/car/bank]");
 	}
-
-	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
+	GroupLogEx(PlayerInfo[playerid][pMember], szMiscArray, 1);
 	return 1;
 }
 
@@ -667,7 +666,7 @@ CMD:warrant(playerid, params[])
 		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
 		format(string, sizeof(string), "%s has warranted %s to answer for his charges against the Sovereign Republic.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
-		GroupLog(PlayerInfo[playerid][pMember], string);
+		GroupLogEx(PlayerInfo[playerid][pMember], string, 0);
 		return 1;
 	}
 	return 1;
@@ -698,7 +697,7 @@ CMD:warrantwd(playerid, params[])
   		SendClientMessageEx(playerid, COLOR_GRAD2, string);
 		format(string, sizeof(string), "%s has withdrawn the warrant on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		SendGroupMessage(GROUP_TYPE_JUDICIAL, DEPTRADIO, string);
-		GroupLog(PlayerInfo[playerid][pMember], string);
+		GroupLogEx(PlayerInfo[playerid][pMember], string, 0);
 		return 1;
 	}
 	return 1;
@@ -1069,7 +1068,7 @@ CMD:alimony(playerid, params[]) {
   		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of the Judicial System!");
 	if(PlayerInfo[playerid][pRank] < 3) 
   		return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command - only rank 3+ can do this.");
-  	new charged, recieved, amount, string[128];
+  	new charged, recieved, amount;
   	if(sscanf(params, "iii", charged, amount, recieved)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /alimony [charging id] [percentage] [reciever id]");
   	if(charged == playerid || recieved == playerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command on yourself!");
   	
@@ -1083,28 +1082,28 @@ CMD:alimony(playerid, params[]) {
 		if(amount > 25)
 			return SendClientMessageEx(playerid, COLOR_GRAD2, "Maximum percentage must not exceed 25");
 		if(fine < 300000) {
-			format(string, sizeof(string), "The charge was $%d however as it falls below the minimum amount, %s was only charged $300,000", fine, GetPlayerNameEx(charged));
-			SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			format(szMiscArray, sizeof(szMiscArray), "The charge was $%d however as it falls below the minimum amount, %s was only charged $300,000", fine, GetPlayerNameEx(charged));
+			SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 			fine = 300000;			
 		}
 		if(fine > 2500000) {
-			format(string, sizeof(string), "The charge was $%d however as it exceeds the maximum amount, %s was only charged $2,500,000", fine, GetPlayerNameEx(charged));
-			SendClientMessageEx(playerid, COLOR_GRAD2, string);
+			format(szMiscArray, sizeof(szMiscArray), "The charge was $%d however as it exceeds the maximum amount, %s was only charged $2,500,000", fine, GetPlayerNameEx(charged));
+			SendClientMessageEx(playerid, COLOR_GRAD2, szMiscArray);
 			fine = 2500000;
 		}
 
 		GivePlayerCashEx(charged, TYPE_ONHAND, -fine);
-		format(string, sizeof(string), "You have been charged $%d for alimony to %s by Judge %s.", fine, GetPlayerNameEx(recieved), GetPlayerNameEx(playerid));
-		SendClientMessageEx(charged, COLOR_WHITE, string);
+		format(szMiscArray, sizeof(szMiscArray), "You have been charged $%d for alimony to %s by Judge %s.", fine, GetPlayerNameEx(recieved), GetPlayerNameEx(playerid));
+		SendClientMessageEx(charged, COLOR_WHITE, szMiscArray);
 
 		GivePlayerCashEx(recieved, TYPE_ONHAND, fine);
-		format(string, sizeof(string), "You have been given $%d from %s as alimony.", fine, GetPlayerNameEx(recieved));
-		SendClientMessageEx(recieved, COLOR_WHITE, string);
+		format(szMiscArray, sizeof(szMiscArray), "You have been given $%d from %s as alimony.", fine, GetPlayerNameEx(recieved));
+		SendClientMessageEx(recieved, COLOR_WHITE, szMiscArray);
 
 		foreach(new i: Player) {
 			if(PlayerInfo[i][pAdmin] >= 3) {
-			    format(string, sizeof(string), "Judicial: %s has charged %s $%d for alimony to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(charged), fine, GetPlayerNameEx(recieved));
-			    SendClientMessage(i, COLOR_LIGHTRED, string);
+			    format(szMiscArray, sizeof(szMiscArray), "Judicial: %s has charged %s $%d for alimony to %s", GetPlayerNameEx(playerid), GetPlayerNameEx(charged), fine, GetPlayerNameEx(recieved));
+			    SendClientMessage(i, COLOR_LIGHTRED, szMiscArray);
 			}
 		}
 	}

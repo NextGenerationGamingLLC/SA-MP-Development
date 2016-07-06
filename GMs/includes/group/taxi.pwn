@@ -109,43 +109,56 @@ CMD:eba(playerid, params[]) {
 	return cmd_emergencybutton(playerid, params);
 }
 
-CMD:emergencybutton(playerid, params[]) {
-	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == GROUP_TYPE_TAXI) {
-		new
-	    	string[128],
-			Location[MAX_ZONE_NAME];
 
-        if( PlayerCuffed[ playerid ] >= 1 || PlayerInfo[ playerid ][ pJailTime ] > 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerTied[playerid] > 0 ) {
-			return SendClientMessageEx( playerid, COLOR_WHITE, "You can't do this right now." );
+
+CMD:emergencybutton(playerid, params[]) {
+
+	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == 7 || arrGroupData[PlayerInfo[playerid][pLeader]][g_iGroupType] == 7 || IsAReporter(playerid)) {
+		
+		new
+			szLocation[MAX_ZONE_NAME];
+				
+        if(PlayerCuffed[playerid] >= 1 || PlayerInfo[playerid][pJailTime] > 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerTied[playerid] > 0 ) {
+			return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now.");
 		}
-		if( GetPVarInt(playerid, "UsedTaxiEBA") == 1)
-		{
-			foreach(new i: Player)
-			{
-				if(IsACop(i)) {
-					format(string, sizeof(string), "HQ: The taxi co. distress signal from %s has been cancelled",GetPlayerNameEx(playerid));
-					SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
-				}
-			}	
-			SendTaxiMessage(TEAM_AZTECAS_COLOR, string);
+
+		if(GetPVarType(playerid, "UsedEBA")) {
+
+			if(!IsAReporter(playerid)) {
+				format(szMiscArray, sizeof(szMiscArray), "HQ: The SA News distress signal from %s has been cancelled", GetPlayerNameEx(playerid));
+				SendGroupMessage(GROUP_TYPE_NEWS, TEAM_BLUE_COLOR, szMiscArray);
+			}
+			else {
+				format(szMiscArray, sizeof(szMiscArray), "HQ: The taxi co. distress signal from %s has been cancelled", GetPlayerNameEx(playerid));
+				SendTaxiMessage(TEAM_AZTECAS_COLOR, szMiscArray);
+			}
+			foreach(new i: Player) {
+
+				if(IsACop(i)) SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
+			}
+			
 			SendClientMessage(playerid, COLOR_WHITE, "You have cancelled the emergency button.");
-			DeletePVar(playerid, "UsedTaxiEBA");
+			DeletePVar(playerid, "UsedEBA");
 			return 1;
 		}
 
-		GetPlayer2DZone(playerid, Location, MAX_ZONE_NAME);
-		foreach(new i: Player)
-		{
-			if(IsACop(i)) {
-				SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: Taxi Company Office");
-				format(string, sizeof(string), "HQ: A distress signal is forwarded from the Taxi Company Office for %s at %s",GetPlayerNameEx(playerid), Location);
-				SendClientMessageEx(i, TEAM_BLUE_COLOR, string);
+		GetPlayer2DZone(playerid, szLocation, MAX_ZONE_NAME);
+	    foreach(new i: Player) {
+
+	    	if(IsACop(i)) {
+				if(!IsAReporter(playerid)) SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: Taxi Company Office");
+				else SendClientMessageEx(i, TEAM_BLUE_COLOR, "HQ: All Units APB: Reporter: SA News");
+
+				if(!IsAReporter(playerid)) format(szMiscArray, sizeof(szMiscArray), "HQ: A distress signal is forwarded from the Taxi Company Office for %s at %s",GetPlayerNameEx(playerid), szLocation);
+				else format(szMiscArray, sizeof szMiscArray, "HQ: A distress signal is forwarded from SA News for %s at %s", GetPlayerNameEx(playerid), szLocation);
+
+				SendClientMessageEx(i, TEAM_BLUE_COLOR, szMiscArray);
 			}
-		}	
-		format(string, sizeof(string), "* An alarm engages in %s's taxi at %s. A message is dispatched to the Companies office.", GetPlayerNameEx(playerid), Location);
-		SendTaxiMessage(TEAM_AZTECAS_COLOR, string);
-		SendClientMessage(playerid, COLOR_WHITE, "You have pressed the emergency button, police have been informed.");
-		SetPVarInt(playerid, "UsedTaxiEBA", 1);
+		}
+		format(szMiscArray, sizeof(szMiscArray), "* An alarm engages in %s's vehicle at %s. A message is dispatched to the company's office.", GetPlayerNameEx(playerid), szLocation);
+		SendTaxiMessage(TEAM_AZTECAS_COLOR, szMiscArray);
+		SendClientMessage(playerid, COLOR_WHITE, "You have pressed the emergency button. The police have been informed.");
+		SetPVarInt(playerid, "UsedEBA", 1);
 	}
 	return 1;
 }

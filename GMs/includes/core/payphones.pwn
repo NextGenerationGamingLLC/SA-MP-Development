@@ -267,7 +267,7 @@ PayPhone_Save(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
 	format(szMiscArray, sizeof szMiscArray, "UPDATE `payphones` SET\
 		`number` = %d, \
 		`vw` = %i, \
-	    `interior` = %i, \
+	    `int` = %i, \
 	    `posx` = %f, \
 	    `posy` = %f, \
 	    `posz` = %f, \

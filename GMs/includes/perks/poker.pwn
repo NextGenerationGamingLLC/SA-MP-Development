@@ -45,7 +45,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 
 		// Convert prkChips to cgChips
 		//SetPVarInt(playerid, "cgChips", GetPVarInt(playerid, "cgChips")+GetPVarInt(playerid, "pkrChips"));
-		GivePlayerCash(playerid, GetPVarInt(playerid, "pkrChips"));
+		GivePlayerCashEx(playerid, TYPE_ONHAND, GetPVarInt(playerid, "pkrChips"));
 
 		format(szMiscArray, sizeof(szMiscArray), "%s(%d) (IP:%s) has left the table with $%s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "pkrChips")), tableid);
 		Log("logs/poker.log", szMiscArray);
@@ -58,6 +58,17 @@ hook OnPlayerDisconnect(playerid, reason) {
 
 		// Check & Stop the Game Loop if No Players at the Table
 		if(PokerTable[tableid][pkrPlayers] == 0) {
+
+			for(new i = 0, pid; i < 6; i++) {
+				
+				pid = PokerTable[tableid][pkrSlot][i];
+				if(pid != INVALID_PLAYER_ID) {
+					
+					SetPVarInt(pid, "pkrChips", GetPVarInt(pid, "pkrChips")+PokerTable[tableid][pkrPot]); // Last one gets all.
+					LeavePokerTable(pid);
+				}
+			}
+
 			KillTimer(PokerTable[tableid][pkrPulseTimer]);
 
 			new tmpString[64];
@@ -1666,7 +1677,8 @@ LeavePokerTable(playerid) {
 
 	// Convert prkChips to cgChips
 	//SetPVarInt(playerid, "cgChips", GetPVarInt(playerid, "cgChips")+GetPVarInt(playerid, "pkrChips"));
-	GivePlayerCashEx(playerid, TYPE_ONHAND, -GetPVarInt(playerid, "pkrChips"));
+	GivePlayerCashEx(playerid, TYPE_ONHAND, GetPVarInt(playerid, "pkrChips"));
+	PokerTable[tableid][pkrPot] -= GetPVarInt(playerid, "pkrChips");
 
 	new string[128];
 	format(string, sizeof(string), "%s(%d) (IP:%s) has left the table with $%s (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(GetPVarInt(playerid, "pkrChips")), tableid);

@@ -664,6 +664,19 @@ stock GroupLog(groupid, string[])
 	return Log(file, string);
 }
 
+stock GroupLogEx(groupid, string[], type = 0) {
+
+	new month, day, year, file[32];
+	getdate(year, month, day);
+	switch(type) {
+
+		case 0: format(file, sizeof(file), "grouplogs/%d/warrents/%d-%02d-%02d.log", groupid, year, month, day);
+		default: format(file, sizeof(file), "grouplogs/%d/assests/%d-%02d-%02d.log", groupid, year, month, day);
+	}
+	
+    return Log(file, string);
+}
+
 ReturnCrimeGroupType(iType)
 {
 	new szReturn[10];
@@ -3179,7 +3192,7 @@ CMD:medbadge(playerid, params[]) {
 				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1) { 
 					SetPlayerColor(playerid, 0xFF828200);
 				}
-				else SetPlayerColor(playerid, 0x993CF300);
+				else SetPlayerColor(playerid, 0x9569BF00);
 				Medics += 1;
 			}
 		}

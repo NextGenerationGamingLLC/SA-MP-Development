@@ -624,8 +624,8 @@ CMD:rehashpareas(playerid, params[]) {
 		AttachDynamicAreaToPlayer(arrAntiCheat[i][ac_iPlayerAreaID], i, 0.0, 0.0, 0.0);
 		Streamer_SetArrayData(STREAMER_TYPE_AREA, arrAntiCheat[i][ac_iPlayerAreaID], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
 	}
-	format(szMiscArray, sizeof(szMiscArray), "You set the player areas to %d meters.", iRange);
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "%s set the player nametag distance to %d meters.", GetPlayerNameEx(playerid), iRange);
+	ABroadCast(COLOR_YELLOW, szMiscArray, 2 );
 	return 1;
 }
 

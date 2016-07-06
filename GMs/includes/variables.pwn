@@ -2898,8 +2898,8 @@ new const szFurnitureTextures[][][] = {
 
 // for(new i; i < sizeof(szFurnitureCategories); ++i) FurnitureList[i] = mS_INVALID_LISTID;
 
-new Text:Furniture_TD[28],
-	PlayerText:Furniture_PTD[MAX_PLAYERS][2];
+new Text:Furniture_TD[29],
+	PlayerText:Furniture_PTD[MAX_PLAYERS][4];
 
 new iErrorID;
 

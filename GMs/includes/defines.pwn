@@ -129,7 +129,7 @@ native IsValidVehicle(vehicleid);
 #define 		INVALID_CALL_ID 			-1
 #define 		WEAPON_HACKER_WARNINGS  	4
 #define 		NOOB_SKIN 					299
-#define 		MAX_ITEMS 					(41)
+#define 		MAX_ITEMS 					(44)
 #define			MAX_MICROITEMS				(20)
 #define 		RocketHeight 				50
 #define 		TYPE_COUNTDOWN 				2000
@@ -863,7 +863,7 @@ native IsValidVehicle(vehicleid);
 #define         DIALOG_HOUSESHOP7           (4838)
 #define         DIALOG_HOUSESHOP8           (4839)
 
-#define         DIALOG_ENTERPIN             (4840)
+#define         DIALOG_ENTERPIN             (4844)
 #define         DIALOG_CREATEPIN            (4845)
 #define         DIALOG_CREATEPIN2           (4850)
 

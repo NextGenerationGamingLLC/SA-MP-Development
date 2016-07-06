@@ -9111,9 +9111,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				Medium Backpack (Credits: %s)\n\
 				Large Backpack (Credits: %s)\n\
 				Deluxe Car Alarm (Credits: %s)\n\
-				Name Changes (Credits: %s)",
+				Name Changes (Credits: %s)\n\
+				Furniture Pack - Bronze (Credits: %s)\n\
+				Furniture Pack - Silver (Credits: %s)\n\
+				Furniture Pack - Gold (Credits: %s)",
 				szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
-				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]));
+				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]),
+				number_format(ShopItems[41][sItemPrice]), number_format(ShopItems[42][sItemPrice]), number_format(ShopItems[43][sItemPrice]));
 				ShowPlayerDialogEx(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 			}
 			if(listitem == 1)
@@ -9179,6 +9183,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 38: item = "Large Backpack";
 				case 39: item = "Deluxe Car Alarm";
 				case 40: item = "Name Changes";
+				case 41: item = "Furniture Slots Pack - Bronze";
+				case 42: item = "Furniture Slots Pack - Silver";
+				case 43: item = "Furniture Slots Pack - Gold";
 			}
 			format(string, sizeof(string), "You are currently editing the price of %s. The current credit cost is %d.", item, ShopItems[listitem][sItemPrice]);
 			ShowPlayerDialogEx(playerid, DIALOG_EDITSHOP2, DIALOG_STYLE_INPUT, "Editing Price", string, "Change", "Back");
@@ -9235,6 +9242,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 38: item = "Large Backpack";
 				case 39: item = "Deluxe Car Alarm";
 				case 40: item = "Name Changes";
+				case 41: item = "Furniture Slots Pack - Bronze";
+				case 42: item = "Furniture Slots Pack - Silver";
+				case 43: item = "Furniture Slots Pack - Gold";
 			}
 
 			if(isnull(inputtext) || Prices <= 0) {
@@ -9303,9 +9313,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		Medium Backpack (Credits: %s)\n\
 		Large Backpack (Credits: %s)\n\
 		Deluxe Car Alarm (Credits: %s)\n\
-		Name Changes (Credits: %s)",
+		Name Changes (Credits: %s)\n\
+		Furniture Pack - Bronze (Credits: %s)\n\
+		Furniture Pack - Silver (Credits: %s)\n\
+		Furniture Pack - Gold (Credits: %s)",
 		szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
-		number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]));
+		number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]),
+		number_format(ShopItems[41][sItemPrice]), number_format(ShopItems[42][sItemPrice]), number_format(ShopItems[43][sItemPrice]));
 		ShowPlayerDialogEx(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
 	}
 	if(dialogid == DIALOG_EDITSHOP3)
@@ -9356,6 +9370,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 38: item = "Large Backpack";
 				case 39: item = "Deluxe Car Alarm";
 				case 40: item = "Name Changes";
+				case 41: item = "Furniture Slots Pack - Bronze";
+				case 42: item = "Furniture Slots Pack - Silver";
+				case 43: item = "Furniture Slots Pack - Gold";
 			}
 			if(GetPVarInt(playerid, "EditingPriceValue") == 0)
 				SetPVarInt(playerid, "EditingPriceValue", 999999);
@@ -10032,6 +10049,87 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowPlayerDialogEx(playerid, DIALOG_CDLOCKMENU, DIALOG_STYLE_INPUT, "24-7;"," Select a vehicle you wish to install this on:", "Select", "Cancel");
 			}
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?");
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 19) // Furniture Bronze
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[41][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+
+			if(PlayerInfo[playerid][pFurnitureSlots] >= MAX_FURNITURE_SLOTS) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot buy anymore furniture slots.");
+			PlayerInfo[playerid][pFurnitureSlots] += 25;
+			if(PlayerInfo[playerid][pFurnitureSlots] > MAX_FURNITURE_SLOTS) {
+				PlayerInfo[playerid][pFurnitureSlots] = MAX_FURNITURE_SLOTS;
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Your furniture slots have been maximized.");
+			}
+			format(szMiscArray, sizeof(szMiscArray), "You have purchased a Furniture Pack - Bronze for %s credits.", number_format(ShopItems[41][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GREY, "Use /furniturehelp to see the list of commands.");
+
+			format(szMiscArray, sizeof(szMiscArray), "[Furniture Pack - Bronze] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[41][sItemPrice]));
+			Log("logs/credits.log", szMiscArray), print(szMiscArray);
+
+			GivePlayerCredits(playerid, -ShopItems[41][sItemPrice], 1);
+			printf("Price43: %d", ShopItems[41][sItemPrice]);
+
+			AmountSold[41]++;
+			AmountMade[41] += ShopItems[41][sItemPrice];
+
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `sales` SET `TotalSold41` = '%d', `AmountMade41` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[41], AmountMade[41]);
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 20) // Furniture Bronze
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[42][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			
+			if(PlayerInfo[playerid][pFurnitureSlots] >= MAX_FURNITURE_SLOTS) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot buy anymore furniture slots.");
+			PlayerInfo[playerid][pFurnitureSlots] += 40;
+			if(PlayerInfo[playerid][pFurnitureSlots] > MAX_FURNITURE_SLOTS) {
+				PlayerInfo[playerid][pFurnitureSlots] = MAX_FURNITURE_SLOTS;
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Your furniture slots have been maximized.");
+			}
+			format(szMiscArray, sizeof(szMiscArray), "You have purchased a Furniture Pack - Silver for %s credits.", number_format(ShopItems[42][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GREY, "Use /furniturehelp to see the list of commands.");
+
+			format(szMiscArray, sizeof(szMiscArray), "[Furniture Pack - Silver] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[42][sItemPrice]));
+			Log("logs/credits.log", szMiscArray), print(szMiscArray);
+
+			GivePlayerCredits(playerid, -ShopItems[42][sItemPrice], 1);
+			printf("Price43: %d", ShopItems[42][sItemPrice]);
+
+			AmountSold[42]++;
+			AmountMade[42] += ShopItems[42][sItemPrice];
+
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `sales` SET `TotalSold42` = '%d', `AmountMade42` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[42], AmountMade[42]);
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		}
+		else if(GetPVarInt(playerid, "MiscShop") == 21) // Furniture Gold
+		{
+			if(PlayerInfo[playerid][pCredits] < ShopItems[43][sItemPrice])
+				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+			
+			if(PlayerInfo[playerid][pFurnitureSlots] >= MAX_FURNITURE_SLOTS) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot buy anymore furniture slots.");
+			PlayerInfo[playerid][pFurnitureSlots] += 50;
+			if(PlayerInfo[playerid][pFurnitureSlots] > MAX_FURNITURE_SLOTS) {
+				PlayerInfo[playerid][pFurnitureSlots] = MAX_FURNITURE_SLOTS;
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Your furniture slots have been maximized.");
+			}
+			format(szMiscArray, sizeof(szMiscArray), "You have purchased a Furniture Pack - Gold for %s credits.", number_format(ShopItems[43][sItemPrice]));
+			SendClientMessageEx(playerid, COLOR_CYAN, szMiscArray);
+			SendClientMessageEx(playerid, COLOR_GREY, "Use /furniturehelp to see the list of commands.");
+
+			format(szMiscArray, sizeof(szMiscArray), "[Furniture Pack] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[43][sItemPrice]));
+			Log("logs/credits.log", szMiscArray), print(szMiscArray);
+
+			GivePlayerCredits(playerid, -ShopItems[43][sItemPrice], 1);
+			printf("Price43: %d", ShopItems[43][sItemPrice]);
+
+			AmountSold[43]++;
+			AmountMade[43] += ShopItems[43][sItemPrice];
+
+			format(szMiscArray, sizeof(szMiscArray), "UPDATE `sales` SET `TotalSold43` = '%d', `AmountMade43` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[43], AmountMade[43]);
+			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 	    DeletePVar(playerid, "MiscShop");
 	}
@@ -12711,8 +12809,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			if(listitem == 3)
 			{
-				format(stringg, sizeof(stringg), "%s (Credits: {FFD700}%s{FFFFFF})\nHouse Move (Credits: {FFD700}%s{FFFFFF})\nHouse Interior Change (Credits: {FFD700}%s{FFFFFF})", mItemName[6], number_format(MicroItems[6]), number_format(ShopItems[16][sItemPrice]), number_format(ShopItems[15][sItemPrice]));
-				ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - House", stringg, "Select", "Exit");
+				format(szMiscArray, sizeof(szMiscArray), "%s (Credits: {FFD700}%s{FFFFFF})\nHouse Move (Credits: {FFD700}%s{FFFFFF})\nHouse Interior Change (Credits: {FFD700}%s{FFFFFF})",
+					mItemName[6], number_format(MicroItems[6]), number_format(ShopItems[16][sItemPrice]), number_format(ShopItems[15][sItemPrice]));
+
+				format(szMiscArray, sizeof(szMiscArray), "%s\nFurniture Slots - Bronze Pack (25 slots) (Credits: {FFD700}%s{FFFFFF})\nFurniture Slots - Silver Pack (40 slots) (Credits: {FFD700}%s{FFFFFF})\n\
+					Furniture Slots - Gold Pack (50 slots) (Credits: {FFD700}%s{FFFFFF})", szMiscArray, number_format(ShopItems[41][sItemPrice]), number_format(ShopItems[42][sItemPrice]), number_format(ShopItems[43][sItemPrice]));
+				
+				ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - House", szMiscArray, "Select", "Exit");
 			}
 			if(listitem == 4)
 			{
@@ -12769,6 +12872,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(listitem == 0) item = 6;
 					if(listitem == 1) item = 101;//House Move
 					if(listitem == 2) item = 102;//House Interior Change
+					if(listitem == 3) item = 108;//Furniture Bronze Pack
+					if(listitem == 4) item = 109;//Furniture Silver Pack
+					if(listitem == 5) item = 110;//Furniture Gold Pack
 				}
 				case 4://Vehicle
 				{
@@ -12843,6 +12949,24 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				SetPVarInt(playerid, "MiscShop", 8);
 				format(string, sizeof(string), "Additional Toy Slot\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[28][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[28][sItemPrice]));
+				return ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 108)//Furniture Bronze
+			{
+				SetPVarInt(playerid, "MiscShop", 19);
+				format(string, sizeof(string), "Furniture Pack - Bronze (25 slots)\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[41][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[41][sItemPrice]));
+				return ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 109)//Furniture Silver
+			{
+				SetPVarInt(playerid, "MiscShop", 20);
+				format(string, sizeof(string), "Furniture Pack - Silver (40 slots)\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[42][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[42][sItemPrice]));
+				return ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
+			}
+			if(item == 110)//Furniture Gold
+			{
+				SetPVarInt(playerid, "MiscShop", 21);
+				format(string, sizeof(string), "Furniture Pack - Bronze (50 slots)\nYour Credits: %s\nCost: {FFD700}%s{A9C4E4}\nCredits Left: %s", number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[43][sItemPrice]), number_format(PlayerInfo[playerid][pCredits]-ShopItems[43][sItemPrice]));
 				return ShowPlayerDialogEx(playerid, DIALOG_MISCSHOP2, DIALOG_STYLE_MSGBOX, "Micro Shop", string, "Purchase", "Cancel");
 			}
 			SetPVarInt(playerid, "m_Item", item);

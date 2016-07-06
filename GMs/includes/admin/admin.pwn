@@ -1760,6 +1760,7 @@ CMD:removepvehicle(playerid, params[])
 }
 
 CMD:makeadmin(playerid, params[])  {
+	
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3) {
 
 		new

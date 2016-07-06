@@ -1185,7 +1185,7 @@ enum pInfo
 	pChatbox[MAX_CHATSETS], // see AccountSettings.pwn for coressponding chat IDs.
 	Float:pGroupToy[9],
 	pGroupToyBone,
-	pFurnitureSlots[MAX_FURNITURE_SLOTS],
+	pFurnitureSlots,
 	pHouseBuilder,
 	pPrisonCredits,
 	pPrisonMaterials,

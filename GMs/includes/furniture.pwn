@@ -209,58 +209,65 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response) {
 
 				new i = ListItemTrackId[playerid][listitem];
+				SetPVarInt(playerid, "frncat", i);
 				if(PlayerInfo[playerid][pDonateRank] < arrFurnitureCatalog[i][fc_iVIP] && PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your VIP level is not high enough to buy this piece of furniture.");
 				PreviewFurniture(playerid, arrFurnitureCatalog[i][fc_iModelID], true);
 				SetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL, arrFurnitureCatalog[i][fc_iModelID]);
 				format(szMiscArray, sizeof(szMiscArray), "Would you like to buy this %s for $%s and %s materials?", GetFurnitureName(arrFurnitureCatalog[i][fc_iModelID]), number_format(GetFurniturePrice(arrFurnitureCatalog[i][fc_iModelID])), number_format(GetFurniturePrice(arrFurnitureCatalog[i][fc_iModelID]) / 10));
 				ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_BUYCONFIRM, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm Purchase", szMiscArray, "Buy", "Cancel");
 			}
-			else FurnitureMenu(playerid, 0);
+			else FurnitureMenu(playerid, 1);
 		}
 		case DIALOG_FURNITURE_BUYCONFIRM: {
 
 			PreviewFurniture(playerid, -1, false);
-			if(!response) return FurnitureMenu(playerid, 0);
+			if(!response) {
 
-			new iModelID = GetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL),
-				iHouseID = GetHouseID(playerid),
-				iSlotID = -1;
-
-			iSlotID = GetNextFurnitureSlotID(playerid, iHouseID);
-
-			if(!CheckSlotValidity(playerid, iSlotID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture slots left.");
-			if(iSlotID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture slots left.");
-			
-			new iPrice = GetFurniturePrice(iModelID);
-			if(GetPlayerMoney(playerid) < iPrice) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough money to buy this.");
-			if(PlayerInfo[playerid][pMats] < floatround((iPrice / 10))) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough materials to make this.");
-
-			new Float:fPos[3],
-				iVW = GetPlayerVirtualWorld(playerid);
-
-			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-			defer FurnitureControl(playerid, fPos[0], fPos[1], fPos[2]);
-			GetXYInFrontOfPlayer(playerid, fPos[0], fPos[1], 1.5);
-			HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], 0.0, 0.0, 0.0, iVW);
-			if(IsADoor(iModelID)) {
-
-				new iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0, HouseInfo[iHouseID][hIntVW]),
-					szData[3];
-
-				szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
-				szData[2] = 0;
-				Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
-				Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
+				FurnitureMenu(playerid, 1);
+				DeletePVar(playerid, PVAR_FURNITURE_BUYMODEL);
 			}
-			GivePlayerCash(playerid, -iPrice);
-			PlayerInfo[playerid][pMats] -= (iPrice / 10);
-			
-			SetPVarInt(playerid, PVAR_FURNITURE_SLOT, iSlotID);
-			SetPVarInt(playerid, PVAR_FURNITURE_EDITING, HouseInfo[iHouseID][hFurniture][iSlotID]);
-			TogglePlayerControllable(playerid, false);
-			CreateFurniture(playerid, iHouseID, iSlotID, iModelID, fPos[0], fPos[1], fPos[2], 0.0, 0.0, 0.0);
-			EditDynamicObject(playerid, HouseInfo[iHouseID][hFurniture][iSlotID]);
-			FurnitureEditObject(playerid);
+			else {
+
+				new iModelID = GetPVarInt(playerid, PVAR_FURNITURE_BUYMODEL),
+					iHouseID = GetHouseID(playerid),
+					iSlotID = -1;
+
+				iSlotID = GetNextFurnitureSlotID(playerid, iHouseID);
+
+				if(!CheckSlotValidity(playerid, iSlotID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture slots left.");
+				if(iSlotID == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture slots left.");
+				
+				new iPrice = GetFurniturePrice(iModelID);
+				if(GetPlayerMoney(playerid) < iPrice) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough money to buy this.");
+				if(PlayerInfo[playerid][pMats] < floatround((iPrice / 10))) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have enough materials to make this.");
+
+				new Float:fPos[3],
+					iVW = GetPlayerVirtualWorld(playerid);
+
+				GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+				defer FurnitureControl(playerid, fPos[0], fPos[1], fPos[2]);
+				GetXYInFrontOfPlayer(playerid, fPos[0], fPos[1], 1.5);
+				HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], 0.0, 0.0, 0.0, iVW);
+				if(IsADoor(iModelID)) {
+
+					new iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0, HouseInfo[iHouseID][hIntVW]),
+						szData[3];
+
+					szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
+					szData[2] = 0;
+					Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
+					Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
+				}
+				GivePlayerCash(playerid, -iPrice);
+				PlayerInfo[playerid][pMats] -= (iPrice / 10);
+				
+				SetPVarInt(playerid, PVAR_FURNITURE_SLOT, iSlotID);
+				SetPVarInt(playerid, PVAR_FURNITURE_EDITING, HouseInfo[iHouseID][hFurniture][iSlotID]);
+				TogglePlayerControllable(playerid, false);
+				CreateFurniture(playerid, iHouseID, iSlotID, iModelID, fPos[0], fPos[1], fPos[2], 0.0, 0.0, 0.0);
+				EditDynamicObject(playerid, HouseInfo[iHouseID][hFurniture][iSlotID]);
+				FurnitureEditObject(playerid);
+			}
 		}
 		case DIALOG_FURNITURE_EDIT: {
 
@@ -296,42 +303,26 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			
 			if(!response) return FurnitureMenu(playerid, 0), DeletePVar(playerid, "SellFurniture");
 
-			if(GetPVarType(playerid, "SellFurniture")) {
+			new iHouseID = GetHouseID(playerid),
+				iSlotID = GetPVarInt(playerid, PVAR_FURNITURE_SLOT),
+				iModelID = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_MODEL_ID);
 
-				new iHouseID = GetHouseID(playerid),
-					iSlotID = GetPVarInt(playerid, PVAR_FURNITURE_SLOT),
-					iModelID = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_MODEL_ID);
-
-				DeletePVar(playerid, "SellFurniture");
-				SellFurniture(playerid, iHouseID, iSlotID, GetFurniturePrice(iModelID));
-				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
-			}
-			else {
-				new iHouseID = GetHouseID(playerid);
-				if(IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][listitem])) {
-					SetPVarInt(playerid, "SellFurniture", 1);
-					SetPVarInt(playerid, PVAR_FURNITURE_SLOT, listitem);
-					format(szMiscArray, sizeof(szMiscArray), "Are you sure you want to sell the %s for $%s?", 
-						GetFurnitureName(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][listitem])), number_format(GetFurniturePrice(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][listitem]))));
-					ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_SELL, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm", szMiscArray, "Sell", "Cancel");
-				}
-				else SendClientMessage(playerid, COLOR_GRAD1, "There's no furniture in that slot.");
-			}
+			DeletePVar(playerid, "SellFurniture");
+			SellFurniture(playerid, iHouseID, iSlotID, GetFurniturePrice(iModelID));
+			DeletePVar(playerid, PVAR_FURNITURE_SLOT);
+			return 1;
 		}
 		case DIALOG_FURNITURE_PAINT: {
 
 			if(!response) return 1;
 
-			switch(listitem) {
-
-				case 1: SetPVarInt(playerid, "color", 1);
-			}
 			//return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Slot", "Slot 1\nSlot 2\nSlot 3\nSlot 4\nSlot 5\n{EE0000}Remove All", "Select", "Cancel");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "** Use ~k~~GROUP_CONTROL_BWD~ and ~k~~CONVERSATION_NO~ to browse. Press ~k~~CONVERSATION_YES~ to choose. Press ~k~~PED_LOOKBEHIND~ to cancel.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "** Use ~k~~GROUP_CONTROL_BWD~ and ~k~~CONVERSATION_NO~ to browse. Press ~k~~CONVERSATION_YES~ to choose.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "** Press ~k~~PED_LOOKBEHIND~ to cancel. Press ~k~~PED_DUCK~ to remove all textures.");
 			PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_SELECT;
 			textm_SelectedTile[playerid] = 0;
 
-			#define MAX_OBJECT_TEXTSLOTS 15
+			#define MAX_OBJECT_TEXTSLOTS 5
 			new iTmpModel[MAX_OBJECT_TEXTSLOTS],
 				szTXDName[MAX_OBJECT_TEXTSLOTS][32],
 				szTextureName[MAX_OBJECT_TEXTSLOTS][32],
@@ -344,11 +335,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				GetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], iColor, 32, 32);
 				SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], 0xFF999999);
+				/*
 				if(isnull(szTXDName[iIndex])) {
 					SetPVarInt(playerid, "maxtextslots", iIndex);
 					break;
 				}
+				*/
 			}
+			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], "Slot: 1");
+			PlayerTextDrawShow(playerid, Furniture_PTD[playerid][2]);
+			format(szMiscArray, sizeof(szMiscArray), "Name: %s", szTextureName[0]);
+			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][3], szMiscArray);
+			PlayerTextDrawShow(playerid, Furniture_PTD[playerid][3]);
 			return 1;			
 
 		}
@@ -363,6 +361,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					case 0: SetPVarInt(playerid, "studio", 1);
 					case 1: SetPVarInt(playerid, "textsearch", 1);
+					case 2: {
+
+						SetPVarInt(playerid, "color", 1);
+						format(szMiscArray, sizeof(szMiscArray), "%s", MakeColorMenu());
+						return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Select Color", szMiscArray, "Select", "Cancel"); 
+					}
 				}
 				SetPVarInt(playerid, "processtext", 1);
 				return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_INPUT, "Furniture Menu | Search Texture", "Please insert a keyword for your texture. Leave it empty if you want to browse all.", "Select", "Cancel");
@@ -480,7 +484,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				switch(GetPVarType(playerid, "color")) {
 
 					case 0: ProcessFurnitureTexture(iHouseID, iSlotID, iObjectID, iTextSlot, ListItemTextureTrackId[playerid][listitem], 0, 1);
-					case 1: ProcessFurnitureTexture(iHouseID, iSlotID, iObjectID, iTextSlot, 0, strval(inputtext), 1);
+					case 1: ProcessFurnitureTexture(iHouseID, iSlotID, iObjectID, iTextSlot, 0, GetFurnitureColorCode(listitem), 1);
 				}
 
 				DeletePVar(playerid, PVAR_FURNITURE_EDITING);
@@ -566,7 +570,7 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
 
 		CancelEdit(playerid);
-		
+
 		new iHouseID = GetHouseID(playerid),
 			i,
 			iCount;
@@ -574,7 +578,17 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 		for(i = 0; i < MAX_FURNITURE_SLOTS; ++i) if(HouseInfo[iHouseID][hFurniture][i] == objectid) iCount++;
 		if(iCount == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This object is not a piece of furniture.");
 		for(i = 0; i < MAX_FURNITURE_SLOTS; ++i) if(HouseInfo[iHouseID][hFurniture][i] == objectid) break;
-		if(GetPVarType(playerid, "paint")) {
+
+		if(GetPVarType(playerid, "SellFurniture")) { 
+
+			SetPVarInt(playerid, PVAR_FURNITURE_SLOT, i);
+			format(szMiscArray, sizeof(szMiscArray), "Are you sure you want to sell the %s for $%s?", 
+				GetFurnitureName(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i])), number_format(GetFurniturePrice(GetDynamicObjectModel(HouseInfo[iHouseID][hFurniture][i]))));
+			
+			ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_SELL, DIALOG_STYLE_MSGBOX, "Furniture Menu | Confirm", szMiscArray, "Sell", "Cancel");
+			return 1;
+		}
+		else if(GetPVarType(playerid, "paint")) {
 
 			DeletePVar(playerid, "paint");
 
@@ -591,11 +605,12 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 			//ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Texture Slot", "Slot 1\nSlot 2\nSlot 3\nSlot 4\nSlot 5\n{EE0000}Remove All", "Select", "Cancel");
 
 			// New texture browser on the object:
-			SendClientMessageEx(playerid, COLOR_GRAD1, "** Use ~k~~GROUP_CONTROL_BWD~ and ~k~~CONVERSATION_NO~ to browse. Press ~k~~CONVERSATION_YES~ to choose. Press ~k~~PED_LOOKBEHIND~ to cancel.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "** Use ~k~~GROUP_CONTROL_BWD~ and ~k~~CONVERSATION_NO~ to browse. Press ~k~~CONVERSATION_YES~ to choose.");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "** Press ~k~~PED_LOOKBEHIND~ to cancel. Press ~k~~PED_DUCK~ to remove all textures.");
 			PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_SELECT;
 			textm_SelectedTile[playerid] = 0;
 
-			#define MAX_OBJECT_TEXTSLOTS 15
+			#define MAX_OBJECT_TEXTSLOTS 5
 			new iTmpModel[MAX_OBJECT_TEXTSLOTS],
 				szTXDName[MAX_OBJECT_TEXTSLOTS][32],
 				szTextureName[MAX_OBJECT_TEXTSLOTS][32],
@@ -610,11 +625,20 @@ public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y
 
 				GetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], iColor, 32, 32);
 				SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], 0xFF999999);
+				/*
 				if(isnull(szTXDName[iIndex])) {
 					SetPVarInt(playerid, "maxtextslots", iIndex);
+					format(szMiscArray, sizeof(szMiscArray), "Text slots: %d", iIndex);
+					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 					break;
 				}
+				*/
 			}
+			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], "Slot: 1");
+			PlayerTextDrawShow(playerid, Furniture_PTD[playerid][2]);
+			format(szMiscArray, sizeof(szMiscArray), "Name: %s", szTextureName[0]);
+			PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][3], szMiscArray);
+			PlayerTextDrawShow(playerid, Furniture_PTD[playerid][3]);
 		}
 		else {
 
@@ -709,14 +733,14 @@ GetMaxFurnitureSlots(playerid) {
 	new iMaxSlots;
 
 	switch(PlayerInfo[playerid][pDonateRank]) {
-		case 0: iMaxSlots = 30; // Regular
-		case 1: iMaxSlots = 40; // Bronze VIPs
-		case 2: iMaxSlots = 45; // Silver VIPs
+		case 1: iMaxSlots = 35; // Bronze VIPs
+		case 2: iMaxSlots = 40; // Silver VIPs
 		case 3: iMaxSlots = 50; // Gold VIPs
-		default: iMaxSlots = 75; // Platinum VIPs
+		case 4: iMaxSlots = 75; // Platinum VIPs
+		default: iMaxSlots = 30; // Regular
 	}
-	if(PlayerInfo[playerid][pFurnitureSlots] > iMaxSlots) iMaxSlots = PlayerInfo[playerid][pFurnitureSlots];
-	if(IsAdminLevel(playerid, ADMIN_HEAD)) iMaxSlots = MAX_FURNITURE_SLOTS;
+	iMaxSlots += PlayerInfo[playerid][pFurnitureSlots];
+	if(IsAdminLevel(playerid, ADMIN_SENIOR, 0)) iMaxSlots = MAX_FURNITURE_SLOTS;
 	return iMaxSlots;
 }
 
@@ -725,13 +749,14 @@ CheckSlotValidity(playerid, iSlotID) {
 	new iMaxSlots;
 
 	switch(PlayerInfo[playerid][pDonateRank]) {
-		case 0: iMaxSlots = 30; // Regular
 		case 1: iMaxSlots = 35; // Bronze VIPs
 		case 2: iMaxSlots = 40; // Silver VIPs
 		case 3: iMaxSlots = 50; // Gold VIPs
 		case 4: iMaxSlots = 75; // Platinum VIPs
+		default: iMaxSlots = 30; // Regular
 	}
-	if(PlayerInfo[playerid][pFurnitureSlots] > iMaxSlots) iMaxSlots = PlayerInfo[playerid][pFurnitureSlots];
+	iMaxSlots += PlayerInfo[playerid][pFurnitureSlots];
+	if(IsAdminLevel(playerid, ADMIN_SENIOR, 0)) iMaxSlots = MAX_FURNITURE_SLOTS;
 	if(iSlotID >= iMaxSlots) return 0;
 	return 1;
 }
@@ -867,7 +892,7 @@ HousePermissionCheck(playerid, iHouseID) {
 	if(PlayerInfo[playerid][pPhousekey2] == iHouseID) return 1;
 	if(PlayerInfo[playerid][pPhousekey3] == iHouseID) return 1;
 	if(PlayerInfo[playerid][pHouseBuilder] == iHouseID) return 1;
-	if(IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	if(IsAdminLevel(playerid, ADMIN_SENIOR, 0)) return 1;
 	return 0;
 }
 
@@ -896,7 +921,27 @@ FurnitureMenu(playerid, menu = 0) {
 				PlayerTextDrawSetPreviewRot(playerid, Furniture_PTD[playerid][0], 345.000000, 0.000000, 320.000000, 1.000000);
 				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][0]);
 				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][0]);
-				for(new i; i < sizeof(Furniture_TD) - 9; ++i) TextDrawShowForPlayer(playerid, Furniture_TD[i]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[0]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[1]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[2]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[3]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[4]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[5]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[6]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[7]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[8]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[9]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[10]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[11]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[12]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[13]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[14]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[15]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[16]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[17]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[18]);
+				TextDrawShowForPlayer(playerid, Furniture_TD[28]);
+
 			}
 			else {
 				TextDrawHideForPlayer(playerid, Furniture_TD[23]);
@@ -931,16 +976,19 @@ FurnitureMenu(playerid, menu = 0) {
 		}
 		case 3: { // Sell furniture.
 
-			szMiscArray[0] = 0;
+			SetPVarInt(playerid, "SellFurniture", 1);
+			SelectObject(playerid);
+			return 1;
+			
+			/*
 			new iMaxSlots = GetMaxFurnitureSlots(playerid);
 			for(new i; i < iMaxSlots; ++i) {
 
 				if(IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][i])) format(szMiscArray, sizeof(szMiscArray), "%s[%d] %s\n", szMiscArray, i, GetFurnitureName(Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_MODEL_ID)));
 				else format(szMiscArray, sizeof(szMiscArray), "%s[%d] %s\n", szMiscArray, i, "None");
 			}
-			if(isnull(szMiscArray)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have any furniture.");
 			return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_SELL, DIALOG_STYLE_LIST, "Furniture Menu | Sell", szMiscArray, "Select", "Cancel");
-
+			*/
 		}
 		case 4: { // New Build Mode.
 
@@ -1133,13 +1181,11 @@ House_VistorCheck(playerid, iHouseID, choice) {
 
 			case 0: { // Enter House
 				
-				print("Spawned the furniture");
 				format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
 				mysql_function_query(MainPipeline, szMiscArray, true, "OnLoadFurniture", ""); // load the furniture
 			}
 			case 1: {
 				for(new i; i < MAX_FURNITURE_SLOTS; ++i) DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]); // Exit House
-				print("Despawned the furniture.");
 			}
 		}
 	}
@@ -1186,22 +1232,32 @@ IsADoor(iModelID) {
 	return 0;
 }
 
-ProcessFurnitureTexture(iHouseID, iSlotID, iObjectID, textid, input, color = 0, sql = 0) {
+ProcessFurnitureTexture(iHouseID, iSlotID, iObjectID, materialindex, input, color = 0, sql = 0) {
 
 	if(sql) {
 
 		if(color == 0) {
 
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `text%d` = '%d' \
-				WHERE `houseid` = '%d' AND `slotid` = '%d'", textid, input, iHouseID, iSlotID);
+				WHERE `houseid` = '%d' AND `slotid` = '%d'", materialindex, input, iHouseID, iSlotID);
 		}
 		else {
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `col%d` = '%d' \
-				WHERE `houseid` = '%d' AND `slotid` = '%d'", textid, color, iHouseID, iSlotID);
+				WHERE `houseid` = '%d' AND `slotid` = '%d'", materialindex, color, iHouseID, iSlotID);
 		}
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
-	if(input != -1) SetDynamicObjectMaterial(iObjectID, textid, arrTextures[input][text_TModel], arrTextures[input][text_TXDName], arrTextures[input][text_TextureName], color);
+	if(input > 0) SetDynamicObjectMaterial(iObjectID, materialindex, arrTextures[input][text_TModel], arrTextures[input][text_TXDName], arrTextures[input][text_TextureName], color);
+	else if(input == 0) { // Coloring objects.
+		
+		new iTmpModel,
+			szTXDName[32],
+			szTextureName[32],
+			iTmpColor;
+
+		GetDynamicObjectMaterial(iObjectID, materialindex, iTmpModel, szTXDName, szTextureName, iTmpColor, 32, 32);
+		SetDynamicObjectMaterial(iObjectID, materialindex, iTmpModel, szTXDName, szTextureName, color);
+	}
 	return 1;
 }
 
@@ -1400,52 +1456,71 @@ OnPlayerKeyStateChange3DMenu(playerid, newkeys, oldkeys) {
 
 		if(PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] == PREVIEW_STATE_SELECT) {
 			
-			#define MAX_OBJECT_TEXTSLOTS 15
-			
+			#define MAX_OBJECT_TEXTSLOTS 5
 			new
-				iMaxTextSlots,
 				iTmpModel[MAX_OBJECT_TEXTSLOTS],
 				szTXDName[MAX_OBJECT_TEXTSLOTS][32],
 				szTextureName[MAX_OBJECT_TEXTSLOTS][32],
 				iColor,
 				iObjectID = GetPVarInt(playerid, PVAR_FURNITURE_EDITING);
-
+			
 			if(newkeys == KEY_NO) { // Next
 
-				if(GetPVarType(playerid, "maxtextslots")) iMaxTextSlots = GetPVarInt(playerid, "maxtextslots");
-				else iMaxTextSlots = MAX_OBJECT_TEXTSLOTS;
-				
-				if(textm_SelectedTile[playerid] >= iMaxTextSlots) textm_SelectedTile[playerid] = -1; // So we start at 0.
+				if(textm_SelectedTile[playerid] == MAX_OBJECT_TEXTSLOTS) textm_SelectedTile[playerid] = -1; // So we start at 0.
 				textm_SelectedTile[playerid]++;
-
 				GetDynamicObjectMaterial(iObjectID, textm_SelectedTile[playerid], iTmpModel[textm_SelectedTile[playerid]], szTXDName[textm_SelectedTile[playerid]], szTextureName[textm_SelectedTile[playerid]], iColor, 32, 32);
-				SetDynamicObjectMaterial(iObjectID, textm_SelectedTile[playerid], iTmpModel[textm_SelectedTile[playerid]], szTXDName[textm_SelectedTile[playerid]], szTextureName[textm_SelectedTile[playerid]], 0xFFFFFFFF);
-				for(new iIndex = 0; iIndex < iMaxTextSlots; ++iIndex) {
+				
+				if(isnull(szTXDName[textm_SelectedTile[playerid]])) {
+					SetDynamicObjectMaterial(iObjectID, textm_SelectedTile[playerid], -1, "none", "none", 0xFFFFFFFF);
+				}
+				else SetDynamicObjectMaterial(iObjectID, textm_SelectedTile[playerid], iTmpModel[textm_SelectedTile[playerid]], szTXDName[textm_SelectedTile[playerid]], szTextureName[textm_SelectedTile[playerid]], 0xFFFFFFFF);
+				
+				for(new iIndex = 0; iIndex < MAX_OBJECT_TEXTSLOTS; ++iIndex) {
 
 					if(iIndex != textm_SelectedTile[playerid]) {
+
 						GetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], iColor, 32, 32);
-						SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], 0xFF999999);
+						if(isnull(szTXDName[iIndex])) {
+							SetDynamicObjectMaterial(iObjectID, iIndex, -1, "none", "none", 0xFF999999);
+						}
+						else SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], 0xFF999999);						
 					}
 				}
+				format(szMiscArray, sizeof(szMiscArray), "Slot: %d", textm_SelectedTile[playerid]+1);
+				PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], szMiscArray);
+				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][2]);
+				format(szMiscArray, sizeof(szMiscArray), "Name: %s", szTextureName[textm_SelectedTile[playerid]]);
+				PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][3], szMiscArray);
+				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][3]);
 				return 1;
 			}
 			if(newkeys == KEY_CTRL_BACK) { // Previous
 
-				if(GetPVarType(playerid, "maxtextslots")) iMaxTextSlots = GetPVarInt(playerid, "maxtextslots");
-				else iMaxTextSlots = MAX_OBJECT_TEXTSLOTS;
-				
-				if(textm_SelectedTile[playerid] < 0) textm_SelectedTile[playerid] = iMaxTextSlots;
+				if(textm_SelectedTile[playerid] == 0) textm_SelectedTile[playerid] = MAX_OBJECT_TEXTSLOTS;
 				textm_SelectedTile[playerid]--;
 
 				GetDynamicObjectMaterial(iObjectID, textm_SelectedTile[playerid], iTmpModel[textm_SelectedTile[playerid]], szTXDName[textm_SelectedTile[playerid]], szTextureName[textm_SelectedTile[playerid]], iColor, 32, 32);
-				SetDynamicObjectMaterial(iObjectID, textm_SelectedTile[playerid], iTmpModel[textm_SelectedTile[playerid]], szTXDName[textm_SelectedTile[playerid]], szTextureName[textm_SelectedTile[playerid]], 0xFFFFFFFF);
-				for(new iIndex = 0; iIndex < iMaxTextSlots; ++iIndex) {
+				if(isnull(szTXDName[textm_SelectedTile[playerid]])) {
+					SetDynamicObjectMaterial(iObjectID, textm_SelectedTile[playerid], -1, "none", "none", 0xFFFFFFFF);
+				}
+				else SetDynamicObjectMaterial(iObjectID, textm_SelectedTile[playerid], iTmpModel[textm_SelectedTile[playerid]], szTXDName[textm_SelectedTile[playerid]], szTextureName[textm_SelectedTile[playerid]], 0xFFFFFFFF);
+
+				for(new iIndex = 0; iIndex < MAX_OBJECT_TEXTSLOTS; ++iIndex) {
 
 					if(iIndex != textm_SelectedTile[playerid]) {
 						GetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], iColor, 32, 32);
-						SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], 0xFF999999);
+						if(isnull(szTXDName[iIndex])) {
+							SetDynamicObjectMaterial(iObjectID, iIndex, -1, "none", "none", 0xFF999999);
+						}
+						else SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], 0xFF999999);						
 					}
 				}
+				format(szMiscArray, sizeof(szMiscArray), "Slot: %d", textm_SelectedTile[playerid]+1);
+				PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][2], szMiscArray);
+				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][2]);
+				format(szMiscArray, sizeof(szMiscArray), "Name: %s", szTextureName[textm_SelectedTile[playerid]]);
+				PlayerTextDrawSetString(playerid, Furniture_PTD[playerid][3], szMiscArray);
+				PlayerTextDrawShow(playerid, Furniture_PTD[playerid][3]);
 				return 1;
 			}
 			if(newkeys == KEY_YES) { // Accept
@@ -1453,24 +1528,41 @@ OnPlayerKeyStateChange3DMenu(playerid, newkeys, oldkeys) {
 				SetPVarInt(playerid, "textslot", textm_SelectedTile[playerid]);
 				textm_SelectedTile[playerid] = 0;
 				PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_NONE;
-				switch(GetPVarType(playerid, "color")) {
+				DeletePVar(playerid, "maxtextslots");
+				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][2]);
+				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][3]);
+				for(new iIndex = 0; iIndex < MAX_OBJECT_TEXTSLOTS; ++iIndex) {
 
-					case 0: {
-
-						SetPVarInt(playerid, "studorfind", 1);
-						return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Texturing", "Texture Studio\nSearch Texture", "Select", "Cancel");
+					GetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], iColor, 32, 32);
+					if(isnull(szTXDName[iIndex])) {
+						SetDynamicObjectMaterial(iObjectID, iIndex, -1, "none", "none", iColor);
 					}
-					case 1: return ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_INPUT, "Furniture Menu | Color Lab", "Please enter a HEX color code.", "Select", "Cancel");
+					else SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], iColor);	
 				}
+	
+				SetPVarInt(playerid, "studorfind", 1);
+				ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_PAINT2, DIALOG_STYLE_LIST, "Furniture Menu | Texturing", "Texture Studio\nSearch Texture\nColor Studio", "Select", "Cancel");
 				return 1;
 			}
 			if(newkeys == KEY_LOOK_BEHIND) { // Cancel
 
 				textm_SelectedTile[playerid] = 0;
 				PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_NONE;
+				DeletePVar(playerid, "maxtextslots");
 				DeletePVar(playerid, PVAR_FURNITURE_SLOT);
 				DeletePVar(playerid, PVAR_FURNITURE_EDITING);
 				SendClientMessageEx(playerid, COLOR_GRAD1, "** You stopped texturizing the object.");
+				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][2]);
+				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][3]);
+
+				for(new iIndex = 0; iIndex < MAX_OBJECT_TEXTSLOTS; ++iIndex) {
+
+					GetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], iColor, 32, 32);
+					if(isnull(szTXDName[iIndex])) {
+						SetDynamicObjectMaterial(iObjectID, iIndex, -1, "none", "none", iColor);
+					}
+					else SetDynamicObjectMaterial(iObjectID, iIndex, iTmpModel[iIndex], szTXDName[iIndex], szTextureName[iIndex], iColor);
+				}
 				return 1;
 			}
 			if(newkeys == KEY_CROUCH) { // Delete textures.
@@ -1478,6 +1570,8 @@ OnPlayerKeyStateChange3DMenu(playerid, newkeys, oldkeys) {
 				textm_SelectedTile[playerid] = 0;
 				PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_NONE;
 				ReloadFurniture(playerid);
+				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][2]);
+				PlayerTextDrawHide(playerid, Furniture_PTD[playerid][3]);
 				return 1;
 			}
 			return 1;
@@ -1761,7 +1855,7 @@ FurniturePlayerTDInit(playerid) {
 	PlayerTextDrawSetProportional(playerid, Furniture_PTD[playerid][0], 1);
 	PlayerTextDrawSetShadow(playerid, Furniture_PTD[playerid][0], 2);
 	PlayerTextDrawUseBox(playerid, Furniture_PTD[playerid][0], 1);
-	PlayerTextDrawBoxColor(playerid, Furniture_PTD[playerid][0], 0);
+	PlayerTextDrawBoxColor(playerid, Furniture_PTD[playerid][0], 0x00000000);
 	PlayerTextDrawTextSize(playerid, Furniture_PTD[playerid][0], 80.000000, 74.000000);
 	PlayerTextDrawSetPreviewModel(playerid, Furniture_PTD[playerid][0], 93);
 	PlayerTextDrawSetPreviewRot(playerid, Furniture_PTD[playerid][0], 345.000000, 0.000000, 320.000000, 1.000000);
@@ -1775,11 +1869,34 @@ FurniturePlayerTDInit(playerid) {
 	PlayerTextDrawSetProportional(playerid, Furniture_PTD[playerid][1], 1);
 	PlayerTextDrawSetShadow(playerid, Furniture_PTD[playerid][1], 0);
 	PlayerTextDrawUseBox(playerid, Furniture_PTD[playerid][1], 1);
-	PlayerTextDrawBoxColor(playerid, Furniture_PTD[playerid][1], 255);
+	PlayerTextDrawBoxColor(playerid, Furniture_PTD[playerid][1], 0x00000000);
 	PlayerTextDrawTextSize(playerid, Furniture_PTD[playerid][1], 109.000000, 97.000000);
 	PlayerTextDrawSetPreviewModel(playerid, Furniture_PTD[playerid][1], 0);
 	PlayerTextDrawSetPreviewRot(playerid,  Furniture_PTD[playerid][1], -16.000000, 0.000000, -55.000000, 1.000000);
 	PlayerTextDrawSetSelectable(playerid, Furniture_PTD[playerid][1], 0);
+
+	Furniture_PTD[playerid][2] = CreatePlayerTextDraw(playerid,627.000000, 287.000000, "Slot: 1");
+	PlayerTextDrawAlignment(playerid, Furniture_PTD[playerid][2], 3);
+	PlayerTextDrawBackgroundColor(playerid, Furniture_PTD[playerid][2], 255);
+	PlayerTextDrawFont(playerid, Furniture_PTD[playerid][2], 2);
+	PlayerTextDrawLetterSize(playerid, Furniture_PTD[playerid][2], 0.230000, 1.000000);
+	PlayerTextDrawColor(playerid, Furniture_PTD[playerid][2], -1);
+	PlayerTextDrawSetOutline(playerid, Furniture_PTD[playerid][2], 0);
+	PlayerTextDrawSetProportional(playerid, Furniture_PTD[playerid][2], 1);
+	PlayerTextDrawSetShadow(playerid, Furniture_PTD[playerid][2], 1);
+	PlayerTextDrawSetSelectable(playerid, Furniture_PTD[playerid][2], 0);
+
+	Furniture_PTD[playerid][3] = CreatePlayerTextDraw(playerid, 628.000000, 299.000000, "Name:");
+	PlayerTextDrawAlignment(playerid, Furniture_PTD[playerid][3], 3);
+	PlayerTextDrawBackgroundColor(playerid, Furniture_PTD[playerid][3], 255);
+	PlayerTextDrawFont(playerid, Furniture_PTD[playerid][3], 2);
+	PlayerTextDrawLetterSize(playerid, Furniture_PTD[playerid][3], 0.230000, 1.000000);
+	PlayerTextDrawColor(playerid, Furniture_PTD[playerid][3], -1);
+	PlayerTextDrawSetOutline(playerid, Furniture_PTD[playerid][3], 0);
+	PlayerTextDrawSetProportional(playerid, Furniture_PTD[playerid][3], 1);
+	PlayerTextDrawSetShadow(playerid, Furniture_PTD[playerid][3], 1);
+	PlayerTextDrawSetSelectable(playerid, Furniture_PTD[playerid][3], 0);
+
 }
 
 FurnitureTDInit() {
@@ -2118,7 +2235,7 @@ FurnitureTDInit() {
 	TextDrawSetShadow(Furniture_TD[23], 1);
 	TextDrawSetSelectable(Furniture_TD[23], 1);
 
-	Furniture_TD[24] = TextDrawCreate(448.000000, 437.000000, "Use the CROUCH and SPRINT key to move the object to your position");
+	Furniture_TD[24] = TextDrawCreate(448.000000, 437.000000, "Use the CROUCH & SPRINT key to move the object to you.");
 	TextDrawAlignment(Furniture_TD[24], 2);
 	TextDrawBackgroundColor(Furniture_TD[24], 255);
 	TextDrawFont(Furniture_TD[24], 2);
@@ -2166,15 +2283,337 @@ FurnitureTDInit() {
 	TextDrawBoxColor(Furniture_TD[27], 255);
 	TextDrawTextSize(Furniture_TD[27], 66.000000, 32.000000);
 	TextDrawSetSelectable(Furniture_TD[27], 0);
+
+	Furniture_TD[28] = TextDrawCreate(544.000000, 439.000000, "Furniture System - by Jingles");
+	TextDrawBackgroundColor(Furniture_TD[28], 255);
+	TextDrawFont(Furniture_TD[28], 2);
+	TextDrawLetterSize(Furniture_TD[28], 0.139999, 0.899999);
+	TextDrawColor(Furniture_TD[28], -156);
+	TextDrawSetOutline(Furniture_TD[28], 0);
+	TextDrawSetProportional(Furniture_TD[28], 1);
+	TextDrawSetShadow(Furniture_TD[28], 0);
+	TextDrawSetSelectable(Furniture_TD[28], 0);
+}
+
+MakeColorMenu() {
+
+	szMiscArray[0] = 0;
+	strcat(szMiscArray, "{F0F8FF}AliceBlue\n\
+		{FAEBD7}AntiqueWhite\n\
+		{00FFFF}Aqua\n\
+		{7FFFD4}Aquamarine\n\
+		{F0FFFF}Azure\n\
+		{F5F5DC}Beige\n\
+		{FFE4C4}Bisque\n\
+		{000000}Black\n\
+		{FFEBCD}BlanchedAlmond\n\
+		{0000FF}Blue\n\
+		{8A2BE2}BlueViolet\n\
+		{A52A2A}Brown\n\
+		{DEB887}BurlyWood\n\
+		{5F9EA0}CadetBlue\n\
+		{7FFF00}Chartreuse\n\
+		{D2691E}Chocolate\n\
+		{FF7F50}Coral\n\
+		{6495ED}CornflowerBlue\n\
+		{FFF8DC}Cornsilk\n\
+		{DC143C}Crimson\n\
+		{00FFFF}Cyan\n\
+		{00008B}DarkBlue\n\
+		{008B8B}DarkCyan\n");
+
+	strcat(szMiscArray, "{B8860B}DarkGoldenRod\n\
+		{A9A9A9}DarkGray\n\
+		{A9A9A9}DarkGrey\n\
+		{006400}DarkGreen\n\
+		{BDB76B}DarkKhaki\n\
+		{8B008B}DarkMagenta\n\
+		{556B2F}DarkOliveGreen\n\
+		{FF8C00}DarkOrange\n\
+		{9932CC}DarkOrchid\n\
+		{8B0000}DarkRed\n\
+		{E9967A}DarkSalmon\n\
+		{8FBC8F}DarkSeaGreen\n\
+		{483D8B}DarkSlateBlue\n\
+		{2F4F4F}DarkSlateGray\n\
+		{2F4F4F}DarkSlateGrey\n\
+		{00CED1}DarkTurquoise\n\
+		{9400D3}DarkViolet\n\
+		{FF1493}DeepPink\n\
+		{00BFFF}DeepSkyBlue\n\
+		{696969}DimGray\n");
+
+	strcat(szMiscArray, "{696969}DimGrey\n\
+		{1E90FF}DodgerBlue\n\
+		{B22222}FireBrick\n\
+		{FFFAF0}FloralWhite\n\
+		{228B22}ForestGreen\n\
+		{FF00FF}Fuchsia\n\
+		{DCDCDC}Gainsboro\n\
+		{F8F8FF}GhostWhite\n\
+		{FFD700}Gold\n\
+		{DAA520}GoldenRod\n\
+		{808080}Gray\n\
+		{808080}Grey\n\
+		{008000}Green\n\
+		{ADFF2F}GreenYellow\n\
+		{F0FFF0}HoneyDew\n\
+		{FF69B4}HotPink\n\
+		{CD5C5C}IndianRed\n\
+		{4B0082}Indigo\n");
+
+	strcat(szMiscArray, "{FFFFF0}Ivory\n\
+		{F0E68C}Khaki\n\
+		{E6E6FA}Lavender\n\
+		{FFF0F5}LavenderBlush\n\
+		{7CFC00}LawnGreen\n\
+		{FFFACD}LemonChiffon\n\
+		{ADD8E6}LightBlue\n\
+		{F08080}LightCoral\n\
+		{E0FFFF}LightCyan\n\
+		{FAFAD2}LightGoldenRodYellow\n\
+		{D3D3D3}LightGray\n\
+		{D3D3D3}LightGrey\n\
+		{90EE90}LightGreen\n\
+		{FFB6C1}LightPink\n\
+		{FFA07A}LightSalmon\n\
+		{20B2AA}LightSeaGreen\n");
+		
+	strcat(szMiscArray, "\
+		{87CEFA}LightSkyBlue\n\
+		{778899}LightSlateGray\n\
+		{778899}LightSlateGrey\n\
+		{B0C4DE}LightSteelBlue\n\
+		{FFFFE0}LightYellow\n\
+		{00FF00}Lime\n\
+		{32CD32}LimeGreen\n\
+		{FAF0E6}Linen\n\
+		{7B68EE}MediumSlateBlue\n\
+		{00FA9A}MediumSpringGreen\n\
+		{48D1CC}MediumTurquoise\n\
+		{C71585}MediumVioletRed\n\
+		{191970}MidnightBlue\n\
+		{F5FFFA}MintCream\n\
+		{FFE4E1}MistyRose\n\
+		{FFE4B5}Moccasin\n\
+		{FFDEAD}NavajoWhite\n\
+		{000080}Navy\n\
+		{FDF5E6}OldLace\n", 0);
+
+	strcat(szMiscArray, "{808000}Olive\n\
+		{6B8E23}OliveDrab\n\
+		{FFA500}Orange\n\
+		{FF4500}OrangeRed\n\
+		{DA70D6}Orchid\n\
+		{EEE8AA}PaleGoldenRod\n\
+		{98FB98}PaleGreen\n\
+		{AFEEEE}PaleTurquoise\n\
+		{DB7093}PaleVioletRed\n\
+		{FFEFD5}PapayaWhip\n\
+		{FFDAB9}PeachPuff\n\
+		{CD853F}Peru\n\
+		{FFC0CB}Pink\n\
+		{DDA0DD}Plum\n\
+		{B0E0E6}PowderBlue\n\
+		{800080}Purple\n\
+		{663399}RebeccaPurple\n\
+		{FF0000}Red\n");
+
+	strcat(szMiscArray, "{BC8F8F}RosyBrown\n\
+		{4169E1}RoyalBlue\n\
+		{8B4513}SaddleBrown\n\
+		{FA8072}Salmon\n\
+		{F4A460}SandyBrown\n\
+		{2E8B57}SeaGreen\n\
+		{FFF5EE}SeaShell\n\
+		{A0522D}Sienna\n\
+		{C0C0C0}Silver\n\
+		{87CEEB}SkyBlue\n\
+		{6A5ACD}SlateBlue\n\
+		{708090}SlateGray\n\
+		{708090}SlateGrey\n\
+		{FFFAFA}Snow\n\
+		{00FF7F}SpringGreen\n\
+		{4682B4}SteelBlue\n\
+		{D2B48C}Tan\n\
+		{008080}Teal\n\
+		{D8BFD8}Thistle\n");
+
+	strcat(szMiscArray, "{FF6347}Tomato\n\
+		{40E0D0}Turquoise\n\
+		{EE82EE}Violet\n\
+		{F5DEB3}Wheat\n\
+		{FFFFFF}White\n\
+		{F5F5F5}WhiteSmoke\n\
+		{FFFF00}Yellow\n\
+		{9ACD32}YellowGreen");
+	return szMiscArray;
+}
+
+GetFurnitureColorCode(id) {
+
+	new iColorCode;
+	switch(id) {
+
+		case 0: iColorCode = 0xFFF0F8FF;
+		case 1: iColorCode = 0xFFFAEBD7;
+		case 2: iColorCode = 0xFF00FFFF;
+		case 3: iColorCode = 0xFF7FFFD4;
+		case 4: iColorCode = 0xFFF0FFFF;
+		case 5: iColorCode = 0xFFF5F5DC;
+		case 6: iColorCode = 0xFFFFE4C4;
+		case 7: iColorCode = 0xFF000000;
+		case 8: iColorCode = 0xFFFFEBCD;
+		case 9: iColorCode = 0xFF0000FF;
+		case 10: iColorCode = 0xFF8A2BE2;
+		case 11: iColorCode = 0xFFA52A2A;
+		case 12: iColorCode = 0xFFDEB887;
+		case 13: iColorCode = 0xFF5F9EA0;
+		case 14: iColorCode = 0xFF7FFF00;
+		case 15: iColorCode = 0xFFD2691E;
+		case 16: iColorCode = 0xFFFF7F50;
+		case 17: iColorCode = 0xFF6495ED;
+		case 18: iColorCode = 0xFFFFF8DC;
+		case 19: iColorCode = 0xFFDC143C;
+		case 20: iColorCode = 0xFF00FFFF;
+		case 21: iColorCode = 0xFF00008B;
+		case 22: iColorCode = 0xFF008B8B;
+		case 23: iColorCode = 0xFFB8860B;
+		case 24: iColorCode = 0xFFA9A9A9;
+		case 25: iColorCode = 0xFFA9A9A9;
+		case 26: iColorCode = 0xFF006400;
+		case 27: iColorCode = 0xFFBDB76B;
+		case 28: iColorCode = 0xFF8B008B;
+		case 29: iColorCode = 0xFF556B2F;
+		case 30: iColorCode = 0xFFFF8C00;
+		case 31: iColorCode = 0xFF9932CC;
+		case 32: iColorCode = 0xFF8B0000;
+		case 33: iColorCode = 0xFFE9967A;
+		case 34: iColorCode = 0xFF8FBC8F;
+		case 35: iColorCode = 0xFF483D8B;
+		case 36: iColorCode = 0xFF2F4F4F;
+		case 37: iColorCode = 0xFF2F4F4F;
+		case 38: iColorCode = 0xFF00CED1;
+		case 39: iColorCode = 0xFF9400D3;
+		case 40: iColorCode = 0xFFFF1493;
+		case 41: iColorCode = 0xFF00BFFF;
+		case 42: iColorCode = 0xFF696969;
+		case 43: iColorCode = 0xFF696969;
+		case 44: iColorCode = 0xFF1E90FF;
+		case 45: iColorCode = 0xFFB22222;
+		case 46: iColorCode = 0xFFFFFAF0;
+		case 47: iColorCode = 0xFF228B22;
+		case 48: iColorCode = 0xFFFF00FF;
+		case 49: iColorCode = 0xFFDCDCDC;
+		case 50: iColorCode = 0xFFF8F8FF;
+		case 51: iColorCode = 0xFFFFD700;
+		case 52: iColorCode = 0xFFDAA520;
+		case 53: iColorCode = 0xFF808080;
+		case 54: iColorCode = 0xFF808080;
+		case 55: iColorCode = 0xFF008000;
+		case 56: iColorCode = 0xFFADFF2F;
+		case 57: iColorCode = 0xFFF0FFF0;
+		case 58: iColorCode = 0xFFFF69B4;
+		case 59: iColorCode = 0xFFCD5C5C;
+		case 60: iColorCode = 0xFF4B0082;
+		case 61: iColorCode = 0xFFFFFFF0;
+		case 62: iColorCode = 0xFFF0E68C;
+		case 63: iColorCode = 0xFFE6E6FA;
+		case 64: iColorCode = 0xFFFFF0F5;
+		case 65: iColorCode = 0xFF7CFC00;
+		case 66: iColorCode = 0xFFFFFACD;
+		case 67: iColorCode = 0xFFADD8E6;
+		case 68: iColorCode = 0xFFF08080;
+		case 69: iColorCode = 0xFFE0FFFF;
+		case 70: iColorCode = 0xFFFAFAD2;
+		case 71: iColorCode = 0xFFD3D3D3;
+		case 72: iColorCode = 0xFFD3D3D3;
+		case 73: iColorCode = 0xFF90EE90;
+		case 74: iColorCode = 0xFFFFB6C1;
+		case 75: iColorCode = 0xFFFFA07A;
+		case 76: iColorCode = 0xFF20B2AA;
+		case 77: iColorCode = 0xFF87CEFA;
+		case 78: iColorCode = 0xFF778899;
+		case 79: iColorCode = 0xFF778899;
+		case 80: iColorCode = 0xFFB0C4DE;
+		case 81: iColorCode = 0xFFFFFFE0;
+		case 82: iColorCode = 0xFF00FF00;
+		case 83: iColorCode = 0xFF32CD32;
+		case 84: iColorCode = 0xFFFAF0E6;
+		case 85: iColorCode = 0xFFFF00FF;
+		case 86: iColorCode = 0xFF800000;
+		case 87: iColorCode = 0xFF66CDAA;	
+		case 88: iColorCode = 0xFF0000CD;
+		case 89: iColorCode = 0xFFBA55D3;
+		case 90: iColorCode = 0xFF9370DB;
+		case 91: iColorCode = 0xFF3CB371;
+		case 92: iColorCode = 0xFF7B68EE;	
+		case 93: iColorCode = 0xFF00FA9A;	
+		case 94: iColorCode = 0xFF48D1CC;	
+		case 95: iColorCode = 0xFFC71585;	
+		case 96: iColorCode = 0xFF191970;
+		case 97: iColorCode = 0xFFF5FFFA;
+		case 98: iColorCode = 0xFFFFE4E1;
+		case 99: iColorCode = 0xFFFFE4B5;
+		case 100: iColorCode = 0xFFFFDEAD;
+		case 101: iColorCode = 0xFF000080;
+		case 102: iColorCode = 0xFFFDF5E6;
+		case 103: iColorCode = 0xFF808000;
+		case 104: iColorCode = 0xFF6B8E23;
+		case 105: iColorCode = 0xFFFFA500;
+		case 106: iColorCode = 0xFFFF4500;
+		case 107: iColorCode = 0xFFDA70D6;
+		case 108: iColorCode = 0xFFEEE8AA;
+		case 109: iColorCode = 0xFF98FB98;
+		case 110: iColorCode = 0xFFAFEEEE;
+		case 111: iColorCode = 0xFFDB7093;
+		case 112: iColorCode = 0xFFFFEFD5;
+		case 113: iColorCode = 0xFFFFDAB9;
+		case 114: iColorCode = 0xFFCD853F;
+		case 115: iColorCode = 0xFFFFC0CB;
+		case 116: iColorCode = 0xFFDDA0DD;
+		case 117: iColorCode = 0xFFB0E0E6;
+		case 118: iColorCode = 0xFF800080;
+		case 119: iColorCode = 0xFF663399;
+		case 120: iColorCode = 0xFFFF0000;
+		case 121: iColorCode = 0xFFBC8F8F;
+		case 122: iColorCode = 0xFF4169E1;
+		case 123: iColorCode = 0xFF8B4513;
+		case 124: iColorCode = 0xFFFA8072;
+		case 125: iColorCode = 0xFFF4A460;
+		case 126: iColorCode = 0xFF2E8B57;
+		case 127: iColorCode = 0xFFFFF5EE;
+		case 128: iColorCode = 0xFFA0522D;
+		case 129: iColorCode = 0xFFC0C0C0;
+		case 130: iColorCode = 0xFF87CEEB;
+		case 131: iColorCode = 0xFF6A5ACD;
+		case 132: iColorCode = 0xFF708090;
+		case 133: iColorCode = 0xFF708090;
+		case 134: iColorCode = 0xFFFFFAFA;
+		case 135: iColorCode = 0xFF00FF7F;
+		case 136: iColorCode = 0xFF4682B4;
+		case 137: iColorCode = 0xFFD2B48C;
+		case 138: iColorCode = 0xFF008080;
+		case 139: iColorCode = 0xFFD8BFD8;
+		case 140: iColorCode = 0xFFFF6347;
+		case 141: iColorCode = 0xFF40E0D0;
+		case 142: iColorCode = 0xFFEE82EE;
+		case 143: iColorCode = 0xFFF5DEB3;
+		case 144: iColorCode = 0xFFFFFFFF;
+		case 145: iColorCode = 0xFFF5F5F5;
+		case 146: iColorCode = 0xFFFFFF00;
+		default: iColorCode = 0xFF9ACD32;
+	}
+	return iColorCode;
 }
 
 CMD:furniturehelp(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/furniture | /furnitureresetpos | /permitbuilder | /revokebuilders | {FF2222}Press ~k~~PED_LOOKBEHIND~ (twice) to toggle the mouse cursor.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/furniture | /myslots | /furnitureresetpos | /permitbuilder | /revokebuilders | {FF2222}Press ~k~~PED_LOOKBEHIND~ (twice) to toggle the mouse cursor.");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/unfurnishhouse (remove default GTA:SA furniture) | /furnishhouse (add default GTA:SA furniture)");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}Blue House = Buy Furniture | Hammer = Build Mode (wrench = position, bucket = painting). | !-icon = Panic Button.");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}Dollar Icon = Sell Furniture | Green House = List of your furniture. | Red Puppets = Assign Build Permissions to Player.");
-	if(IsAdminLevel(playerid, ADMIN_GENERAL)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {FFFF00}/destroyfuniture | /rehashcatalog");
+	if(IsAdminLevel(playerid, ADMIN_GENERAL, 0)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {FFFF00}/destroyfuniture | /rehashcatalog");
 	return 1;
 }
 
@@ -2195,13 +2634,52 @@ CMD:furnituresystem(playerid, params[]) {
 	return 1;
 }
 
+CMD:myslots(playerid, params[]) {
+
+	format(szMiscArray, sizeof(szMiscArray), "** You have %d furniture slots you can use.", GetMaxFurnitureSlots(playerid));
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	return 1;
+}
+
 CMD:furniture(playerid, params[]) {
 
 	if(!FurnitureSystem) return 1;
 
 	if(GetPVarType(playerid, PVAR_FURNITURE)) {
-		for(new x; x < sizeof(Furniture_TD); ++x) TextDrawHideForPlayer(playerid, Furniture_TD[x]);
+			
+		TextDrawHideForPlayer(playerid, Furniture_TD[0]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[1]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[2]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[3]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[4]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[5]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[6]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[7]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[8]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[9]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[10]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[11]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[12]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[13]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[14]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[15]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[16]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[17]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[18]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[19]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[20]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[21]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[22]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[23]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[24]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[25]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[26]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[27]);
+		TextDrawHideForPlayer(playerid, Furniture_TD[28]);
 		PlayerTextDrawHide(playerid, Furniture_PTD[playerid][0]);
+		PlayerTextDrawHide(playerid, Furniture_PTD[playerid][1]);
+		PlayerTextDrawHide(playerid, Furniture_PTD[playerid][2]);
+		PlayerTextDrawHide(playerid, Furniture_PTD[playerid][3]);
 		CancelSelectTextDraw(playerid);
 		DeletePVar(playerid, PVAR_FURNITURE);
 		DeletePVar(playerid, PVAR_INHOUSE);
@@ -2225,13 +2703,15 @@ CMD:setfurnitureslots(playerid, params[]) {
 
 	if(!FurnitureSystem) return 1;
 
-	if(IsAdminLevel(playerid, ADMIN_HEAD)) {
+	if(IsAdminLevel(playerid, ADMIN_HEAD, 0)) {
 
 		new uPlayer,
 			iAmount;
 
 		if(sscanf(params, "ud", uPlayer, iAmount)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setfurnitureslots [playerid] [slots]");
-
+		if(!IsPlayerConnected(uPlayer)) return SendClientMessageEx(playerid, COLOR_GRAD1, "This player is not online.");
+		if(!(0 < iAmount < MAX_FURNITURE_SLOTS)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid amount.");
+		
 		PlayerInfo[uPlayer][pFurnitureSlots] = iAmount;
 
 		format(szMiscArray, sizeof(szMiscArray), "Administrator %s set your furniture slots to %d.", GetPlayerNameEx(playerid), iAmount);
@@ -2240,8 +2720,11 @@ CMD:setfurnitureslots(playerid, params[]) {
 		format(szMiscArray, sizeof(szMiscArray), "You set %s's furniture slots to %d.", GetPlayerNameEx(uPlayer), iAmount);
 		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s set %s's furniture slots to %d.", GetPlayerNameExt(playerid), GetPlayerNameExt(uPlayer), iAmount);
-		Log("logs/furnitureslots.log", szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "Administrator %s set %s's furniture slots to %d.", GetPlayerNameEx(playerid), GetPlayerNameEx(uPlayer), iAmount);
+		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+
+		format(szMiscArray, sizeof(szMiscArray), "%s set %s's (%d) furniture slots to %d.", GetPlayerNameExt(playerid), GetPlayerNameExt(uPlayer), PlayerInfo[uPlayer][pId], iAmount);
+		Log("logs/furniture.log", szMiscArray);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
 	return 1;
@@ -2380,7 +2863,8 @@ CMD:furnishhouse(playerid, params[]) {
 	foreach(new p : Player) {
 
 		if(PlayerInfo[p][pVW] == PlayerInfo[playerid][pVW] && ProxDetectorS(50, playerid, p)) {
-			SendClientMessageEx(p, COLOR_GRAD1, "You will be moved to the furnished version of the house.");
+
+			SendClientMessageEx(p, COLOR_GRAD1, "You will be moved to the unfurnished version of the house.");
 			defer Furniture_HousePosition(p, iHouseID);
 		}
 	}
@@ -2421,7 +2905,7 @@ CMD:destroyfurniture(playerid, params[]) {
 	new iHouseID = GetHouseID(playerid),
 		iSlotID;
 
-	if(!IsAdminLevel(playerid, ADMIN_GENERAL)) return 1;
+	if(!IsAdminLevel(playerid, ADMIN_GENERAL, 1)) return 1;
 	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house");
 	if(sscanf(params, "d", iSlotID)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /destroyfurniture [slot].");
 	if(!IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You specified an invalid slot.");

@@ -267,6 +267,9 @@ CMD:apply(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /apply [SA|NE]");
 		return 1;
 	}
+	if(PlayerInfo[playerid][pFreezeBank] || PlayerInfo[playerid][pFreezeHouse] || PlayerInfo[playerid][pFreezeCar]) {
+		return SendClientMessageEx(playerid, COLOR_GRAD1, "The current nation you're in has frozen your assets. Therefore, you cannot apply.");
+	}
 
 	if(strcmp(choice, "sa", true) == 0)
 	{

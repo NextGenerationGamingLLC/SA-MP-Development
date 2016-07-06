@@ -5,7 +5,7 @@
 forward OnPlayerEditGate(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 public OnPlayerEditGate(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz) // Gate Editor Fix by Winterfield. DO NOT REMOVE.
 {
-    printf("%i | %d | %d | %f | %f | %f | %f | %f | %f", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz); // debug
+    //printf("%i | %d | %d | %f | %f | %f | %f | %f | %f", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz); // debug
     CallLocalFunction("OnPlayerEditDynamicObject", "iddffffff", playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 }
 
@@ -141,7 +141,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 					iSlotID = GetPVarInt(playerid, PVAR_FURNITURE_SLOT),
 					iHouseID = GetHouseID(playerid);
 
-				#define MAX_OBJECT_TEXTSLOTS 15
+				#define MAX_OBJECT_TEXTSLOTS 5
 				new iTmpModel[MAX_OBJECT_TEXTSLOTS],
 					szTXDName[MAX_OBJECT_TEXTSLOTS][32],
 					szTextureName[MAX_OBJECT_TEXTSLOTS][32],
