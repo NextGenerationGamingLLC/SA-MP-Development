@@ -835,7 +835,7 @@ FurnitureListInit() {
 	*/
 
 	// Loading from MySQL database.
-	mysql_function_query(MainPipeline, "SELECT `type`, `modelid`, `name`, `price` FROM `furniturecatalog`", true, "OnLoadFurnitureList", "");
+	mysql_function_query(MainPipeline, "SELECT * FROM `furniturecatalog`", true, "OnLoadFurnitureList", "");
 }
 
 forward OnLoadFurnitureList();

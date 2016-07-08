@@ -5451,7 +5451,7 @@ public Group_QueryFinish(iType, iExtraID) {
 			{
 				if(arrGroupData[iIndex][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 				{
-					format(szResult, sizeof szResult, "%s Shipment Delivery Point\n{1FBDFF}/delivershipment", arrGroupData[iIndex][g_szGroupName]);
+					format(szResult, sizeof szResult, "%s Shipment Delivery Point\n{1FBDFF}/gdelivercrate", arrGroupData[iIndex][g_szGroupName]);
 				}
 				else
 				{

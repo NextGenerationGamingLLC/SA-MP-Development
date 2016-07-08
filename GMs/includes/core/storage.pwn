@@ -2139,9 +2139,9 @@ CMD:storegun(playerid, params[])
 				}
 
 				new maxslots = HouseInfo[i][hGLUpgrade];
-				if(slot > maxslots)
+				if(slot > maxslots || slot == 0)
 				{
-					SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot.");
+					SendClientMessageEx(playerid, COLOR_GREY, "That is not a valid slot. Slots are from 1-5.");
 					return 1;
 				}
 

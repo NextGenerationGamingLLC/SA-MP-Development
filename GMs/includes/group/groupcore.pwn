@@ -2071,7 +2071,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 				{
-					format(szText, sizeof(szText), "%s Shipment Delivery Point\n{1FBDFF}/delivershipment", arrGroupData[iGroupID][g_szGroupName]);
+					format(szText, sizeof(szText), "%s Shipment Delivery Point\n{1FBDFF}/gdelivercrate", arrGroupData[iGroupID][g_szGroupName]);
 				}
 				else
 				{
@@ -5057,7 +5057,7 @@ CMD:hshowbadge(playerid, params[])
 
 CMD:showbadge(playerid, params[])
 {
-	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_CRIMINAL_TYPE_RACE))
+	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[PlayerInfo[playerid][pMember]][g_iCrimeType] != GROUP_CRIMINAL_TYPE_RACE))
 	{
 		new string[128], giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /showbadge [player]");
@@ -5593,7 +5593,7 @@ CMD:locker(playerid, params[]) {
 						{
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
 						}
-						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_CRIMINAL_TYPE_RACE) {
+						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) {
 							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
 						}
 						else
@@ -6099,7 +6099,7 @@ CMD:adjustwithdrawrank(playerid, params[])
 		Weapons(4)
 		Ammo(5)
 	*/
-	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[iGroupID][g_iGroupType] != GROUP_CRIMINAL_TYPE_RACE) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[iGroupID][g_iCrimeType] != GROUP_CRIMINAL_TYPE_RACE) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	if(PlayerInfo[playerid][pLeader] == iGroupID)
 	{
 		new iRank,
@@ -6198,7 +6198,7 @@ stock ShowPlayerCrimeDialog(playerid)
 
 CMD:lockerbalance(playerid, params[])
 {
-	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_CRIMINAL_TYPE_RACE))
+	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[PlayerInfo[playerid][pMember]][g_iCrimeType] == GROUP_CRIMINAL_TYPE_RACE))
 	{
 		new weps, GroupID = PlayerInfo[playerid][pMember];
 		for(new s = 0; s != 50; s++)

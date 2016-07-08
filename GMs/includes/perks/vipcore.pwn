@@ -103,7 +103,7 @@ CMD:vipdate(playerid, params[]) {
 	{
 	    if(sscanf(params, "u", giveplayerid)) giveplayerid = playerid;
 	}
-	if(1 <= PlayerInfo[giveplayerid][pDonateRank] <= 3 && !PlayerInfo[giveplayerid][pBuddyInvited])
+	if(1 <= PlayerInfo[giveplayerid][pDonateRank] <= 4 && !PlayerInfo[giveplayerid][pBuddyInvited])
 	{
 	    new string[128];
 	    new drank[20];
@@ -112,6 +112,7 @@ CMD:vipdate(playerid, params[]) {
 			case 1: drank = "Bronze";
 			case 2: drank = "Silver";
 			case 3: drank = "Gold";
+			case 4: drank = "Platinum";
 		}
 	    new datestring[32];
 		datestring = date(PlayerInfo[giveplayerid][pVIPExpire], 4);

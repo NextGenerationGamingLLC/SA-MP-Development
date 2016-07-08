@@ -420,7 +420,7 @@ public OnPlayerLoad(playerid)
 	HideMainMenuGUI(playerid);
 	HideNoticeGUIFrame(playerid);
 	
-	if(PlayerInfo[playerid][pVIPExpire] > 0 && (1 <= PlayerInfo[playerid][pDonateRank] <= 3) && (PlayerInfo[playerid][pVIPExpire] < gettime()) && PlayerInfo[playerid][pAdmin] < 2)
+	if(PlayerInfo[playerid][pVIPExpire] > 0 && (1 <= PlayerInfo[playerid][pDonateRank] <= 4) && (PlayerInfo[playerid][pVIPExpire] < gettime()) && PlayerInfo[playerid][pAdmin] < 2)
 	{
 		format(string, sizeof(string), "%s(%d) (%s) VIP removed (VIP Expire: %d | Level: %d)", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPlayerIpEx(playerid), PlayerInfo[playerid][pVIPExpire], PlayerInfo[playerid][pDonateRank]);
 		Log("logs/vipremove.log", string);

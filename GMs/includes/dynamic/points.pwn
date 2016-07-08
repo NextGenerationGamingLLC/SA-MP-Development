@@ -109,7 +109,7 @@ CMD:pointtime(playerid, params[])
 	
 	if(DynPoints[point-1][poTimestamp2] > 0)
 	{
-		format(string, sizeof(string), "Time left until fully captured: %d minutes.", DynPoints[point-1][poTimestamp2]);
+		format(string, sizeof(string), "This point is currently being captured by: %s | Time left: %d.", arrGroupData[DynPoints[point-1][poCapperGroup]][g_szGroupName], DynPoints[point-1][poTimestamp2]);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "This point is not being captured at the moment.");

@@ -938,17 +938,20 @@ CMD:gdelivercrate(playerid, params[])
 	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT) {
 		new Float:fTemp[3];
 		GetPlayerPos(playerid, fTemp[0], fTemp[1], fTemp[2]);
-		if(IsPlayerInRangeOfPoint(playerid, 6.0, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2]))
+		for(new i; i < MAX_GROUPS; i++)
 		{
-			if(CrateVehicleLoad[iVehID][vForkLoaded])
+			if(IsPlayerInRangeOfPoint(playerid, 6.0, arrGroupData[i][g_fCratePos][0], arrGroupData[i][g_fCratePos][1], arrGroupData[i][g_fCratePos][2]) && arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 			{
-				CrateVehicleLoad[iVehID][vForkLoaded] = 0;
-				DeliverGCCrate(playerid, iGroupID, CrateVehicleLoad[iVehID][vCrateID][0]);
-				return 1;
+				if(CrateVehicleLoad[iVehID][vForkLoaded])
+				{
+					CrateVehicleLoad[iVehID][vForkLoaded] = 0;
+					DeliverGCCrate(playerid, iGroupID, CrateVehicleLoad[iVehID][vCrateID][0]);
+					break;
+				}
+				else SendClientMessageEx(playerid, COLOR_GRAD1, "Your vehicle does not have a crate stored.");
+				break;
 			}
-			else SendClientMessageEx(playerid, COLOR_GRAD1, "Your vehicle does not have a crate stored.");
 		}
-		else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near your group's crate delivery point.");
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a gang.");
 	return 1;
