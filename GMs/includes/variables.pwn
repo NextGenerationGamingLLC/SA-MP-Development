@@ -1255,7 +1255,7 @@ new dgVar[dgItems][4];
 new dgAmount, dgTimer = -1, dgTimerTime, dgGoldToken;
 new bool: IsDynamicGiftBoxEnabled = false;
 
-new arrStructureFires[MAX_STRUCTURE_FIRES][eStructureFires];
+new arrFires[MAX_STRUCTURE_FIRES][eStructureFires];
 new iServerFires = 0;
 
 new Float:JoinCameraPosition[8][3] = {

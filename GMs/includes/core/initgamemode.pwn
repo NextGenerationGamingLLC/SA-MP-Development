@@ -115,8 +115,6 @@ InitiateGamemode()
     Job_LoadJobs();
     GangTag_Load();
 
-    LoadNatDisZones();
-
     // Bank_LoadBank();
 	//LoadFurniture(); Not needed - furniture loads when the player enters the house.
 	FurnitureListInit();

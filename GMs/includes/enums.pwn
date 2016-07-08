@@ -1726,12 +1726,14 @@ enum garInfo
 	gar_AreaID_int,
 };
 
+
 enum eStructureFires {
-	Float:fFirePos[3],
-	iFireObj,
-	iFireArea,
-	Text3D:szFireLabel,
-	iFireStrength
+	Float:fire_fPos[3],
+	fire_iObjectID,
+	fire_iAreaID,
+	Text3D:fire_iTextID,
+	fire_iHealth,
+	fire_iTypeID
 }
 
 enum eHospitalBedData {

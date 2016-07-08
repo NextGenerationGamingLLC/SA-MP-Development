@@ -1236,7 +1236,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_NATDIS_NUKE				7007
 #define 		DIALOG_NATDIS_EQFINAL			7008
 #define 		DIALOG_NATDIS_LOADMAPS			7009
-
+#define 		DIALOG_FIRES 					7010
 // GangTags
 #define 			GANGTAG_TIME				60000
 

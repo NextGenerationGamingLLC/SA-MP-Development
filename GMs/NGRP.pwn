@@ -75,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
  
-#define SERVER_GM_TEXT "NG:RP v3.0.331"
+#define SERVER_GM_TEXT "NG:RP v3.0.334"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -330,7 +330,7 @@
 #include "./includes/furnituretextures.pwn"
 #include "./includes/furniture.pwn"
 #include "./includes/group/elections.pwn"
-#include "./includes/events/naturaldisaster.pwn"
+// #include "./includes/events/naturaldisaster.pwn"
 
 // Winterfield WIP
 //#include "./includes/dynamic/polls.pwn"
