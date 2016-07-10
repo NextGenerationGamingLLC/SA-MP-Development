@@ -69,14 +69,11 @@ Internal_SetPlayerArmour(playerid, Float:armour) {
 }
 */
 
-
 ShowPlayerDialogEx(playerid, dialogid, style, caption[], info[], button1[], button2[]) {
 
 	SetPVarInt(playerid, "SpfDialogID", dialogid);
 	return ShowPlayerDialog(playerid, dialogid, style, caption, info, button1, button2);
 }
-
-
 
 Internal_SetPlayerWeather(playerid, iWeatherID) {
 

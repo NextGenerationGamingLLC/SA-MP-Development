@@ -696,11 +696,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 		if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) {
 			
-			new areaid[1];
-			GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
-			// new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
+			new areaid[2];
+			GetPlayerDynamicAreas(playerid, areaid);
+			// new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[1], E_STREAMER_EXTRA_ID);
 			for(new i; i < MAX_GROUP_LOCKERS; ++i) {
-				if(areaid[0] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) cmd_locker(playerid, "");
+				if(areaid[1] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) cmd_locker(playerid, "");
 			}
 		}
 	}

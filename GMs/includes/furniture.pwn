@@ -2960,7 +2960,7 @@ CMD:door(playerid, params[]) {
 	
 	if(IsPlayerInAnyDynamicArea(playerid)) {
 
-		new areaid[3],
+		new areaid[4],
 			iObjectID,
 			iState,
 			Float:fPos[6],

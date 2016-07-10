@@ -2653,7 +2653,7 @@ CMD:system(playerid, params[]) {
 		Airbreaking\t%s\n\
 		Infinite Stamina\t%s\n\
 		---------\t%s\n\
-		Dialog Spoofingt%s\n\
+		Dialog Spoofing\t%s\n\
 		Rejected Hits\t%s",
 		(ac_ACToggle[AC_AIMBOT] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_CBUG] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
