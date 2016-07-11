@@ -137,13 +137,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	return 1;
 }
 
-CMD:bugreport(playerid, params[])
-{
+CMD:bugreport(playerid, params[]) {
+
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarInt(playerid, "pDoingPJob") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]) {
+		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
+	}
+	else if(GetPVarType(playerid, "FixVehicleTimer")) {
+		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are fixing a vehicle!");
+	}
 	if(gettime() - PlayerInfo[playerid][pBugReportTimeout] < 3600) 
 		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "You can only submit a bug report once every hour!\nAlternatively, you can visit http://devcp.ng-gaming.net and post a bug report there.", "Close", "");
-	new query[128];
-	format(query, sizeof(query), "SELECT * from `devcpBans` where `user` = %d AND `bugs` = 1", GetPlayerSQLId(playerid));
-	return mysql_function_query(MainPipeline, query, true, "CheckBugReportBans", "ii", playerid, 1);
+
+	format(szMiscArray, sizeof(szMiscArray), "SELECT * from `devcpBans` where `user` = %d AND `bugs` = 1", GetPlayerSQLId(playerid));
+	return mysql_function_query(MainPipeline, szMiscArray, true, "CheckBugReportBans", "ii", playerid, 1);
 }
 
 CMD:changes(playerid, params[])

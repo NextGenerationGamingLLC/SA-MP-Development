@@ -75,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.335"
+#define SERVER_GM_TEXT "NG:RP v3.0.336"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -193,7 +193,6 @@
 #include "./includes/core/emailcheck.pwn"
 #include "./includes/core/AccountSettings.pwn"
 #include "./includes/core/tutorial_new.pwn"
-
 #include "./includes/core/deluxegps.pwn"
 
 // #tryinclude "./includes/core/inactive.pwn"
@@ -295,7 +294,6 @@
 #include "./includes/jobs/armsdealer.pwn"
 #include "./includes/core/drugcore.pwn"
 
-
 //perk system includes
 #include "./includes/perks/boombox.pwn"
 #include "./includes/perks/backpack.pwn"
@@ -312,7 +310,6 @@
 #include "./includes/core/phone_new.pwn"
 #include "./includes/core/payphones.pwn"
 #include "./includes/group/rivalry.pwn"
-
 
 // WIP
 #include "./includes/core/ATMs.pwn"
@@ -331,9 +328,6 @@
 #include "./includes/furniture.pwn"
 #include "./includes/group/elections.pwn"
 // #include "./includes/events/naturaldisaster.pwn"
-
-// Winterfield WIP
-//#include "./includes/dynamic/polls.pwn"
 
 // Westen WIP
 #include "./includes/dynamic/dynpolls2.pwn"

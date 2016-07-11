@@ -197,13 +197,10 @@ CMD:help(playerid, params[])
 			}
 			case 9:
 			{
-			    SendClientMessageEx(playerid, COLOR_WHITE, "*** URL *** /countdown");
-			}
-			case 10:
-			{
 				SendClientMessageEx(playerid, COLOR_WHITE, "*** FAMILY *** (/f)amily /locker /gate /clothes /repfam /repcheck /myrivals /grouptoy /drughelp");
 			}
 		}
+		if(arrGroupData[iGroupID][g_iCrimeType] == GROUP_CRIMINAL_TYPE_RACE) SendClientMessageEx(playerid, COLOR_WHITE, "*** URL *** /countdown");
 		if (0 <= PlayerInfo[playerid][pLeader] < MAX_GROUPS)
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "*** GROUP LEADER *** /invite /uninvite /ouninvite /setdiv /giverank /online /setbadge /setdivname /dvadjust");

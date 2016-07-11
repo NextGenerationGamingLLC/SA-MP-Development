@@ -369,6 +369,7 @@ CMD:destroyfires(playerid, params[]) {
 
 		DeleteStructureFire(i);
 	}
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You removed all the server's fires.");
 	return 1;
 }
 

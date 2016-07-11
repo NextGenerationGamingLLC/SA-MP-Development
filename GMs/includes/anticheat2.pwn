@@ -643,6 +643,19 @@ CMD:setnametagdistance(playerid, params[]) {
 		PlayerLabel[i] = CreateDynamic3DTextLabel(GetHealthArmorForLabel(i), 0xFFFFFFFF, 0.0, 0.0, 0.15, 30, i, .testlos = 1);
 	}
 	*/
+
+	new szData[2];
+	szData[0] = 15005; // to make sure we can recognize this as a player area type.
+
+	foreach(new i : Player) {
+
+		szData[1] = i;
+		DestroyDynamicArea(arrAntiCheat[i][ac_iPlayerAreaID]);
+		arrAntiCheat[i][ac_iPlayerAreaID] = CreateDynamicSphere(0.0, 0.0, 0.0, iRange);
+		AttachDynamicAreaToPlayer(arrAntiCheat[i][ac_iPlayerAreaID], i, 0.0, 0.0, 0.0);
+		Streamer_SetArrayData(STREAMER_TYPE_AREA, arrAntiCheat[i][ac_iPlayerAreaID], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
+	}
+
 	format(szMiscArray, sizeof(szMiscArray), "You set the nametag distance to %d meters.", iRange);
 	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 	return 1;	

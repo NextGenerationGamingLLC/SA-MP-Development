@@ -916,9 +916,52 @@ CMD:vote(playerid, params[])
 	return 1;
 }
 
-CMD:pollhelp(playerid, params[])
-{
+CMD:pollhelp(playerid, params[]) {
+
     if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pPR] > 0) SendClientMessageEx(playerid, COLOR_GRAD2, "/createpoll, /deletepoll, /editpoll, /viewpollresults, /vote.");
     else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
+    return 1;
+}
+
+CMD:polls(playerid, params[]) {
+
+    if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pPR] > 0) {
+
+        SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
+
+        new iPollCount = 0;
+        for(new i = 0; i < MAX_POLLS; i++) {
+
+            if(PollInfo[i][poll_iID] != -1) {
+            	
+                iPollCount++;
+                format(szMiscArray, sizeof(szMiscArray), "Poll ID: %d | Title / Topic: %s | No. of Options: %d | Placed By: %s (Unique Key: %s)", i, PollInfo[i][poll_szTitle], PollInfo[i][poll_iOptions], PollInfo[i][poll_szPlacedBy], PollInfo[i][poll_szUniqueKey]);
+                SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
+            }
+        }
+        if(iPollCount == 0) SendClientMessage(playerid, COLOR_GREY, "There are currently no active polls.");
+        else SendClientMessage(playerid, COLOR_GREY, "To go to a poll, use /gotopoll [poll id]");
+
+		SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
+    }
+    else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
+    return 1;
+}
+
+CMD:gotopoll(playerid, params[]) {
+
+    if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pPR] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
+
+    new iPollID;
+    if(sscanf(params, "d", iPollID)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /gotopoll [poll id]");
+
+    if(PollInfo[iPollID][poll_iID] == -1) return SendClientMessage(playerid, COLOR_GRAD2, "This poll does not exist.");
+
+    SetPlayerPos(playerid, PollInfo[iPollID][poll_fLocation][0], PollInfo[iPollID][poll_fLocation][1], PollInfo[iPollID][poll_fLocation][2]);
+    SetPlayerInterior(playerid, PollInfo[iPollID][poll_iInterior]);
+    SetPlayerVirtualWorld(playerid, PollInfo[iPollID][poll_iVirtualWorld]);
+
+    format(szMiscArray, sizeof szMiscArray, "You have teleported to poll ID %d successfully.", iPollID);
+    SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
     return 1;
 }

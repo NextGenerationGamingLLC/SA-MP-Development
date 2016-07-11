@@ -2624,12 +2624,12 @@ CMD:furnituresystem(playerid, params[]) {
 	if(FurnitureSystem) {
 		FurnitureSystem = 0;
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) disabled the Furniture System", GetPlayerNameEx(playerid), playerid);
-		SendClientMessageToAll(0xFFFFFFAA, szMiscArray);
+		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 	} 
 	else {
 		FurnitureSystem = 1;
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) enabled the Furniture System", GetPlayerNameEx(playerid), playerid);
-		SendClientMessageToAll(0xFFFFFFAA, szMiscArray);
+		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 	}
 	return 1;
 }
