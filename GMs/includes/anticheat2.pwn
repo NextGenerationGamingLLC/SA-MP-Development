@@ -1170,11 +1170,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 			if(ProAimCheck(playerid, hitid)) {
 
-				format(szMiscArray, sizeof(szMiscArray), "%s: %d flags", GetPlayerNameEx(playerid), arrAntiCheat[playerid][ac_iFlags][3]);
-				SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
 				arrAntiCheat[playerid][ac_iFlags][3]++;
-				format(szMiscArray, sizeof(szMiscArray), "%s: now it's %d flags", GetPlayerNameEx(playerid), arrAntiCheat[playerid][ac_iFlags][3]);
-				SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
 				if(arrAntiCheat[playerid][ac_iFlags][3] > 3) AC_Flag(playerid, AC_PROAIM, weaponid, arrAntiCheat[playerid][ac_iFlags][3]);
 			}
 		}
