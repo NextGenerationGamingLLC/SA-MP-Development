@@ -2266,7 +2266,7 @@ stock AC_GetACName(i) {
 		case AC_AIMBOT: szName = "Aimbot";
 		case AC_CBUG: szName = "(Auto) C-Bug";
 		case AC_PROAIM: szName = "Pro-Aim";
-		case AC_RANGEHACKS: szName = "Weapon Range Hacks (e.g. ProAim)";
+		case AC_RANGEHACKS: szName = "Weapon Range Hacks";
 		case AC_SPEEDHACKS: szName = "Speed Hacks (B2-B5)";
 		case AC_VEHICLEHACKS: szName = "Vehicle Hacks";
 		case AC_CMDSPAM: szName = "Command Spamming";

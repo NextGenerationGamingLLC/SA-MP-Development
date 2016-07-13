@@ -388,7 +388,10 @@ CMD:call(playerid, params[])
 	if(GetPVarType(playerid, "PayPhone")) {
 
 		new i = GetPVarInt(playerid, "PayPhone");
-		if(arrPayPhoneData[i][pp_iNumber] == phonenumb) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot call the pay phone you're calling from.");
+		if(arrPayPhoneData[i][pp_iNumber] == phonenumb) {
+			DeletePVar(playerid, "PayPhone");
+			return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot call the pay phone you're calling from.");
+		}
 	}
 	for(new i; i < MAX_PAYPHONES; ++i) {
 

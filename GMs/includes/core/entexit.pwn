@@ -79,7 +79,6 @@ stock EntExit_GetID_New(playerid) {
 //Old method
 EntExit_GetID(playerid) {
 
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Old method");
 	for(new i; i < MAX_DDOORS; ++i) {
 
 		if(IsPlayerInRangeOfPoint(playerid, 2.0, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) &&
