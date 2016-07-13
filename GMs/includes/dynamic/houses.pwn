@@ -509,8 +509,8 @@ stock ReloadHousePickup(houseid)
 	format(szMiscArray, sizeof(szMiscArray), "ID %d | VW: %d", houseid, HouseInfo[houseid][hIntVW]);
 	HouseInfo[houseid][hTextID_int] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GRAD1, HouseInfo[houseid][hInteriorX], HouseInfo[houseid][hInteriorY], HouseInfo[houseid][hInteriorZ], 5.0, .worldid = HouseInfo[houseid][hIntVW], .interiorid = HouseInfo[houseid][hIntIW]);
 	
-	// Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][0], E_STREAMER_EXTRA_ID, houseid);
-	// Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][1], E_STREAMER_EXTRA_ID, houseid);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][0], E_STREAMER_EXTRA_ID, houseid);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[houseid][hAreaID][1], E_STREAMER_EXTRA_ID, houseid);
 	return 1;
 }
 

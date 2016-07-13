@@ -9,7 +9,7 @@ CMD:goto(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,Famed,MHC,stadium1");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
 			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
-			SendClientMessageEx(playerid, COLOR_GRAD4, "Locations 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop, fc, unity, (l)os(c)olinas");
+			SendClientMessageEx(playerid, COLOR_GRAD4, "Locations 4: garagesm,garagemed,garagelg,garagexlg,glenpark,palomino,nggshop, fc, unity, (l)os(c)olinas, SFDocks");
 			return 1;
 		}
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
@@ -64,6 +64,18 @@ CMD:goto(playerid, params[])
 				fVehSpeed[playerid] = 0.0;
 			}
 			else SetPlayerPos(playerid, 2957.967041, -1459.404541, 10.809198);
+		}
+		else if(strcmp(location,"sfdocks", true) == 0)
+		{
+			if(GetPlayerState(playerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(playerid);
+				SetVehiclePos(tmpcar, -1576.40, 79.49, 3.95);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[playerid] = 0.0;
+			}
+			else SetPlayerPos(playerid, -1576.40, 79.49, 3.55);
 		}
 		else if(strcmp(location,"ls",true) == 0)
 		{
@@ -329,12 +341,12 @@ CMD:goto(playerid, params[])
 			if (GetPlayerState(playerid) == 2)
 			{
 				new tmpcar = GetPlayerVehicleID(playerid);
-				SetVehiclePos(tmpcar, -1528.5812,489.6914,7.1797);
+				SetVehiclePos(tmpcar, 1435.95, -2695.33, 13.90);
 				LinkVehicleToInterior(tmpcar, int);
 				LinkVehicleToInterior(tmpcar, vw);
 				fVehSpeed[playerid] = 0.0;
 			}
-			else SetPlayerPos(playerid, -1528.5812,489.6914,7.1797);
+			else SetPlayerPos(playerid, 1435.95, -2695.33, 13.59);
 		}
 		else if(strcmp(location,"oocprison",true) == 0)
 		{
@@ -632,7 +644,7 @@ CMD:sendto(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Locations 1: LS,SF,LV,RC,ElQue,Bayside,LSVIP,SFVIP,LVVIP,MHC,Famed,stadium1");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Locations 2: stadium2,stadium3,stadium4,int1,mark,mark2,sfairport,dillimore,cave,doc,bank,mall,allsaints");
 			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 3: countygen,cracklab,gym,rodeo,flint,idlewood,fbi,island,demorgan,doc,icprison,oocprison");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 4: glenpark, palomino, nggshop, fc, unity, LC (loscolinas)");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 4: glenpark, palomino, nggshop, fc, unity, LC (loscolinas), SFDocks");
 			return 1;
 		}
 		if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin])
@@ -745,6 +757,28 @@ CMD:sendto(playerid, params[])
 			SetPlayerVirtualWorld(giveplayerid, 0);
 			PlayerInfo[giveplayerid][pVW] = 0;
 		}
+		else if(strcmp(location,"sfdocks", true) == 0)
+		{
+			if(GetPlayerState(giveplayerid) == 2)
+			{
+				new tmpcar = GetPlayerVehicleID(giveplayerid);
+				SetVehiclePos(tmpcar, -1576.40, 79.49, 3.95);
+				LinkVehicleToInterior(tmpcar, 0);
+				SetVehicleVirtualWorld(tmpcar, 0);
+				fVehSpeed[giveplayerid] = 0.0;
+			}
+			else
+			{
+				SetPlayerPos(giveplayerid, -1576.40, 79.49, 3.55);
+			}
+			format(string, sizeof(string), " You have sent %s to the SF Docks.", GetPlayerNameEx(giveplayerid));
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			SendClientMessageEx(giveplayerid, COLOR_GRAD1, "   You have been teleported!");
+			SetPlayerInterior(giveplayerid,0);
+			PlayerInfo[giveplayerid][pInt] = 0;
+			SetPlayerVirtualWorld(giveplayerid, 0);
+			PlayerInfo[giveplayerid][pVW] = 0;
+		}
 		else if(strcmp(location,"ls",true) == 0)
 		{
 			if (GetPlayerState(giveplayerid) == 2)
@@ -816,14 +850,14 @@ CMD:sendto(playerid, params[])
 			if(GetPlayerState(giveplayerid) == 2)
 			{
 				new tmpcar = GetPlayerVehicleID(giveplayerid);
-				SetVehiclePos(tmpcar, 77.85, 1923.75, 17.94);
+				SetVehiclePos(tmpcar, 1435.95, -2695.33, 13.90);
 				LinkVehicleToInterior(tmpcar, 0);
 				SetVehicleVirtualWorld(tmpcar, 0);
 				fVehSpeed[giveplayerid] = 0.0;
 			}
 			else
 			{
-				SetPlayerPos(giveplayerid, 77.85, 1923.75, 17.64);
+				SetPlayerPos(giveplayerid, 1435.95, -2695.33, 13.59);
 			}
 			format(string, sizeof(string), " You have sent %s to DoC.", GetPlayerNameEx(giveplayerid));
 			SendClientMessageEx(playerid, COLOR_WHITE, string);

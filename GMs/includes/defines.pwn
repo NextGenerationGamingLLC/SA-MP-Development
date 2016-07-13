@@ -1478,8 +1478,8 @@ native IsValidVehicle(vehicleid);
         			
 #define 			AC_AIMBOT					0
 #define 			AC_CBUG 					1
-#define 			AC_RANGEHACKS 				2
-#define 			AC_PROAIM					3
+#define 			AC_PROAIM					2
+#define 			AC_RANGEHACKS 				3
 #define 			AC_SPEEDHACKS 				4
 #define 			AC_VEHICLEHACKS				5
 #define 			AC_CMDSPAM					6

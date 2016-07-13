@@ -1949,13 +1949,19 @@ enum e_AntiCheat {
 	ac_iVehID,
 	ac_iShots[2],
 	Float:ac_fPos[3],
-	ac_fSpeed,
+	ac_iSpeed,
 	Float:ac_fCamPos[6],
 	Float:ac_fCamFVector[6],
-	Float:ac_fAimAccuracy,
+	Float:ac_fPlayerAngle[2],
+	ac_iLastTargetID,
+	ac_fAimAccuracy,
 	ac_iFlags[15],
 	ac_iCommandCount,
-	ac_iPlayerAreaID
+	ac_iPlayerAreaID,
+	Float:ac_fProbability,
+	ac_iCheatingIndex[2],
+	ac_iIsCheating,
+	ac_inTrainingMode
 }
 new arrAntiCheat[MAX_PLAYERS][e_AntiCheat];
 

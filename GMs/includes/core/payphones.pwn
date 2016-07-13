@@ -40,19 +40,21 @@
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid))
-	{
+	if(newkeys & KEY_YES) {
+
 		new areaid[2];
 		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
 		// new a = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[1], E_STREAMER_EXTRA_ID);
 
-		for(new a; a < MAX_PAYPHONES; ++a) {
+		if(areaid[1] != INVALID_STREAMER_ID) {
+			for(new a; a < MAX_PAYPHONES; ++a) {
 
-			if(areaid[1] == arrPayPhoneData[a][pp_iAreaID]) {
+				if(areaid[1] == arrPayPhoneData[a][pp_iAreaID]) {
 
-				if(IsPlayerInAnyVehicle(playerid)) return 1;
-				SetPVarInt(playerid, "AtPayPhone", a);
-				break;
+					if(IsPlayerInAnyVehicle(playerid)) return 1;
+					SetPVarInt(playerid, "AtPayPhone", a);
+					break;
+				}
 			}
 		}
 		if(GetPVarType(playerid, "AtPayPhone")) {
@@ -206,10 +208,10 @@ public OnLoadPayPhones() {
 }
 
 forward OnCreatePayPhone(playerid, i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT); 
-public OnCreatePayPhone(playerid, i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT)
-{
+public OnCreatePayPhone(playerid, i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
 
-	if(mysql_errno(MainPipeline)) return SendClientMessageEx(playerid, COLOR_GRAD1, "(( Something went wrong. Please contact tech. ))");
+
+	if(mysql_errno(MainPipeline)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please contact the development team.");
 	   
 	ProcessPayPhone(i, X, Y, Z, RZ, iVW, iINT);
 
@@ -224,6 +226,7 @@ public OnCreatePayPhone(playerid, i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, i
 forward OnDeletePayPhone(playerid, i);
 public OnDeletePayPhone(playerid, i) {
 
+	if(mysql_errno(MainPipeline)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please contact the development team.");
 	DestroyDynamicObject(arrPayPhoneData[i][pp_iObjectID]);
 	DestroyDynamic3DTextLabel(arrPayPhoneData[i][pp_iTextID]);
 	DestroyDynamicArea(arrPayPhoneData[i][pp_iAreaID]);
@@ -231,7 +234,7 @@ public OnDeletePayPhone(playerid, i) {
 	format(szMiscArray, sizeof szMiscArray, "You have deleted pay phone ID %i.", i);
 	SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
 	
-	format(szMiscArray, sizeof szMiscArray, "%s has deleted pay phone ID %i.", GetPlayerNameEx(playerid), i);
+	format(szMiscArray, sizeof szMiscArray, "%s (%d) has deleted pay phone ID %i.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], i);
 	Log("logs/payphones.log", szMiscArray);
 	return 1;
 }
@@ -252,12 +255,14 @@ PayPhone_UpdateTextLabel(i, choice) {
 
 ProcessPayPhone(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
 
-	arrPayPhoneData[i][pp_iCallerID] = INVALID_PLAYER_ID;
-	arrPayPhoneData[i][pp_iObjectID] = CreateDynamicObject(1216, X, Y, Z - 0.3, 0.0, 0.0, RZ + 180.0, .worldid = iVW, .interiorid = iINT);
-	format(szMiscArray, sizeof(szMiscArray), "Pay Phone {DDDDDD}(ID: %d)\n{FFFF00} Number: %d\n\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to dial.", i, arrPayPhoneData[i][pp_iNumber]);
-	arrPayPhoneData[i][pp_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, X, Y, Z + 1.0, 5.0, .worldid = iVW, .interiorid = iINT);
-	arrPayPhoneData[i][pp_iAreaID] = CreateDynamicSphere(X, Y, Z, 3.0, iVW, iINT);
-	// Streamer_SetIntData(STREAMER_TYPE_AREA, arrPayPhoneData[i][pp_iAreaID], E_STREAMER_EXTRA_ID, i);
+	if(X != 0 && Y != 0) {
+		
+		arrPayPhoneData[i][pp_iCallerID] = INVALID_PLAYER_ID;
+		arrPayPhoneData[i][pp_iObjectID] = CreateDynamicObject(1216, X, Y, Z - 0.3, 0.0, 0.0, RZ + 180.0, .worldid = iVW, .interiorid = iINT);
+		format(szMiscArray, sizeof(szMiscArray), "Pay Phone {DDDDDD}(ID: %d)\n{FFFF00} Number: %d\n\n{DDDDDD}Press ~k~~CONVERSATION_YES~ to dial.", i, arrPayPhoneData[i][pp_iNumber]);
+		arrPayPhoneData[i][pp_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, X, Y, Z + 1.0, 5.0, .worldid = iVW, .interiorid = iINT);
+		arrPayPhoneData[i][pp_iAreaID] = CreateDynamicSphere(X, Y, Z, 3.0, iVW, iINT);
+	}
 }
 
 PayPhone_Save(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
@@ -308,8 +313,8 @@ CMD:phones(playerid, params[]) {
 	return 1;
 }
 
-CMD:createphone(playerid, params[])
-{
+CMD:createphone(playerid, params[]) {
+	
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
 	    
 	for(new i = 0; i < MAX_PAYPHONES; ++i) {
@@ -335,20 +340,21 @@ CMD:createphone(playerid, params[])
 				if(arrPayPhoneData[i][pp_iNumber] == arrPayPhoneData[x][pp_iNumber]) {
 					
 					DestroyDynamicObject(arrPayPhoneData[i][pp_iObjectID]);
+					arrPayPhoneData[i][pp_iNumber] = -1;
 					return SendClientMessageEx(playerid, COLOR_GRAD1, "Please try again. The system generated an already existing number.");
 				}
 			}
-			
+
 			DestroyDynamicObject(arrPayPhoneData[i][pp_iObjectID]);
-      		format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `payphones` (`id`, `number`, `posx`, `posy`, `posz`, `rotz`, `vw`, `int`) VALUES (%d, %d, %f, %f, %f, %f, %d, %d)",
-	    		i,
+      		format(szMiscArray, sizeof(szMiscArray), "UPDATE `payphones` SET `number` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', `rotz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'",
 	    		arrPayPhoneData[i][pp_iNumber],
 	    		fPos[0],
 	    		fPos[1],
 	    		fPos[2],
 	    		fPos[3],
 	    		iVW,
-	    		iINT);
+	    		iINT,
+	    		i+1);
 
 			return mysql_function_query(MainPipeline, szMiscArray, true, "OnCreatePayPhone", "iiffffii", playerid, i, fPos[0], fPos[1], fPos[2], fPos[3], iVW, iINT);
 		}
@@ -370,7 +376,7 @@ CMD:destroyphone(playerid, params[]) {
 	if(!IsValidDynamicArea(arrPayPhoneData[i][pp_iAreaID]))
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "The specified pay phone ID has not been used.");
 	    
-	format(szMiscArray, sizeof szMiscArray, "DELETE FROM `payphones` WHERE `id` = %i", i);
+	format(szMiscArray, sizeof szMiscArray, "UPDATE `payphones` SET `number` = '-1', `posx` = '0', `posy` = '0', `posz` = '0', `vw` = '0', `int` = '0' WHERE `id` = %i", i+1);
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnDeletePayPhone", "ii", playerid, i);
 	return 1;
 }

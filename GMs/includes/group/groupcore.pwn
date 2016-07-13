@@ -699,8 +699,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 			new areaid[2];
 			GetPlayerDynamicAreas(playerid, areaid);
 			// new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[1], E_STREAMER_EXTRA_ID);
-			for(new i; i < MAX_GROUP_LOCKERS; ++i) {
-				if(areaid[1] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) cmd_locker(playerid, "");
+			
+			if(areaid[1] != INVALID_STREAMER_ID) {
+				for(new i; i < MAX_GROUP_LOCKERS; ++i) {
+					if(areaid[1] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) cmd_locker(playerid, "");
+				}
 			}
 		}
 	}

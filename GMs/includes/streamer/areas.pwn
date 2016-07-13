@@ -1,5 +1,12 @@
 #include <YSI\y_hooks>
 
+#define 	STREAMER_AREATYPE_DOOR 			(500)
+#define 	STREAMER_AREATYPE_HOUSE 		(501)
+#define 	STREAMER_AREATYPE_BUSINESS		(502)
+#define 	STREAMER_AREATYPE_GARAGE		(503)
+#define 	STREAMER_AREATYPE_PLAYERAREA	(504)
+
+
 new ParachuteArea;
 
 hook OnGameModeInit() {

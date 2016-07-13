@@ -75,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.336"
+#define SERVER_GM_TEXT "NG:RP v3.0.338"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -95,7 +95,6 @@
 #include <geo_ip>
 //#include <profiler>
 
-
 #if defined SOCKET_ENABLED
 #include <socket>
 #endif
@@ -113,6 +112,10 @@
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
 #include "./includes/irc.pwn"
+
+#if defined AREA_DEBUG
+#include "./includes/areadebug.pwn"
+#endif
 
 //streamer includes
 #include "./includes/streamer/removebuildings.pwn"
@@ -327,7 +330,7 @@
 #include "./includes/furnituretextures.pwn"
 #include "./includes/furniture.pwn"
 #include "./includes/group/elections.pwn"
-// #include "./includes/events/naturaldisaster.pwn"
+//#include "./includes/events/naturaldisaster.pwn"
 
 // Westen WIP
 #include "./includes/dynamic/dynpolls2.pwn"

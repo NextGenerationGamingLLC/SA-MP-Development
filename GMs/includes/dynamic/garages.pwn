@@ -579,13 +579,14 @@ stock CreateGarage(garageid)
 	format(string, sizeof(string), "Garage | Owner: %s\nID: %d", StripUnderscore(GarageInfo[garageid][gar_OwnerName]), garageid);
 	GarageInfo[garageid][gar_TextID] = CreateDynamic3DTextLabel(string, COLOR_YELLOW, GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ]+1,10.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, GarageInfo[garageid][gar_ExteriorVW], GarageInfo[garageid][gar_ExteriorInt], -1);
 
-	DestroyDynamicArea(GarageInfo[garageid][gar_AreaID]);
+	if(IsValidDynamicArea(GarageInfo[garageid][gar_AreaID])) DestroyDynamicArea(GarageInfo[garageid][gar_AreaID]);
 	GarageInfo[garageid][gar_AreaID] = CreateDynamicSphere(GarageInfo[garageid][gar_ExteriorX], GarageInfo[garageid][gar_ExteriorY], GarageInfo[garageid][gar_ExteriorZ], 3, .worldid = GarageInfo[garageid][gar_ExteriorVW], .interiorid = GarageInfo[garageid][gar_ExteriorInt]);
-	// Streamer_SetIntData(STREAMER_TYPE_AREA, GarageInfo[garageid][gar_AreaID], E_STREAMER_EXTRA_ID, garageid);
 
-	DestroyDynamicArea(GarageInfo[garageid][gar_AreaID_int]);
+	if(IsValidDynamicArea(GarageInfo[garageid][gar_AreaID_int])) DestroyDynamicArea(GarageInfo[garageid][gar_AreaID_int]);
 	GarageInfo[garageid][gar_AreaID_int] = CreateDynamicSphere(GarageInfo[garageid][gar_InteriorX], GarageInfo[garageid][gar_InteriorY], GarageInfo[garageid][gar_InteriorZ], 3, .worldid = GarageInfo[garageid][gar_InteriorVW]);
-	// Streamer_SetIntData(STREAMER_TYPE_AREA, GarageInfo[garageid][gar_AreaID_int], E_STREAMER_EXTRA_ID, garageid);
+
+	Streamer_SetIntData(STREAMER_TYPE_AREA, GarageInfo[garageid][gar_AreaID], E_STREAMER_EXTRA_ID, garageid);
+	Streamer_SetIntData(STREAMER_TYPE_AREA, GarageInfo[garageid][gar_AreaID_int], E_STREAMER_EXTRA_ID, garageid);
 
 	format(szMiscArray, sizeof(szMiscArray), "[Garage] Created Garage: %d | Exterior Area ID: %d | Interior Area ID: %d", garageid, GarageInfo[garageid][gar_AreaID], GarageInfo[garageid][gar_AreaID_int]);
 	Log("debug/door_garage.log", szMiscArray);

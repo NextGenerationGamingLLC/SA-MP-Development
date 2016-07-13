@@ -593,10 +593,9 @@ new ac_iPlayerKeySpam[MAX_PLAYERS],
 hook OnGameModeInit() {
 	
 	for(new i = 1; i < sizeof(ac_ACToggle); ++i) ac_ACToggle[i] = false;
+	
 	/* Default On: */
-	ac_ACToggle[AC_CARSURFING] = true;
 	ac_ACToggle[AC_NINJAJACK] = true;
-	ac_ACToggle[AC_NAMETAGS] = true;
 
 	AC_InitWeaponData();
 	ac_LagCompMode = GetServerVarAsInt("lagcompmode");
@@ -613,7 +612,7 @@ CMD:rehashpareas(playerid, params[]) {
 	if(!(0 < iRange < 70)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid range (between 0 and 70).");
 
 	new szData[2];
-	szData[0] = 15005; // to make sure we can recognize this as a player area type.
+	szData[0] = STREAMER_AREATYPE_PLAYERAREA; // to make sure we can recognize this as a player area type.
 	foreach(new i : Player) {
 
 		foreach(new x : Player) if(!IsPlayerInDynamicArea(x, arrAntiCheat[i][ac_iPlayerAreaID])) ShowPlayerNameTagForPlayer(x, i, false);
@@ -645,7 +644,7 @@ CMD:setnametagdistance(playerid, params[]) {
 	*/
 
 	new szData[2];
-	szData[0] = 15005; // to make sure we can recognize this as a player area type.
+	szData[0] = STREAMER_AREATYPE_PLAYERAREA; // to make sure we can recognize this as a player area type.
 
 	foreach(new i : Player) {
 
@@ -667,7 +666,7 @@ hook OnPlayerConnect(playerid) {
 	//CreatePlayerLabel(playerid);
 
 	new szData[2];
-	szData[0] = 15005; // to make sure we can recognize this as a player area type.
+	szData[0] = STREAMER_AREATYPE_PLAYERAREA; // to make sure we can recognize this as a player area type.
 	szData[1] = playerid;
 
 	arrAntiCheat[playerid][ac_iPlayerAreaID] = CreateDynamicSphere(0.0, 0.0, 0.0, 25.0);
@@ -690,7 +689,7 @@ hook OnPlayerConnect(playerid) {
 	arrAntiCheat[playerid][ac_fPos][0] = 0;
 	arrAntiCheat[playerid][ac_fPos][1] = 0;
 	arrAntiCheat[playerid][ac_fPos][2] = 0;
-	arrAntiCheat[playerid][ac_fSpeed] = 0;
+	arrAntiCheat[playerid][ac_iSpeed] = 0;
 	for(new i; i < AC_MAX; ++i) arrAntiCheat[playerid][ac_iFlags][i] = 0;
 	Bit_Off(arrPAntiCheat[playerid], ac_bitValidPlayerPos);
 	Bit_Off(arrPAntiCheat[playerid], ac_bitValidSpectating);
@@ -757,7 +756,7 @@ hook OnPlayerEnterDynamicArea(playerid, areaid) {
 	if(ac_ACToggle[AC_NAMETAGS]) {
 		new szData[2];
 		Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, szData, sizeof(szData));
-		if(szData[0] == 15005) ShowPlayerNameTagForPlayer(playerid, szData[1], 1);
+		if(szData[0] == STREAMER_AREATYPE_PLAYERAREA) ShowPlayerNameTagForPlayer(playerid, szData[1], 1);
 	}
 }
 
@@ -766,7 +765,7 @@ hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 	if(ac_ACToggle[AC_NAMETAGS]) {
 		new szData[2];
 		Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, szData, sizeof(szData));
-		if(szData[0] == 15005) ShowPlayerNameTagForPlayer(playerid, szData[1], 0);
+		if(szData[0] == STREAMER_AREATYPE_PLAYERAREA) ShowPlayerNameTagForPlayer(playerid, szData[1], 0);
 	}
 }
 
@@ -911,6 +910,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						}
 					}
 				}
+				Log("logs/ACSystem.log", szMiscArray);
 				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 			}
 			// else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot turn these on yet.");
@@ -1119,8 +1119,10 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	arrLastBulletData[playerid][acl_fDistance] = fDistance;
 	arrLastBulletData[playerid][acl_Hits] = 0;
 
-	//AC_Probability(playerid, hitid);
-
+	/*
+	AC_BayesianNetwork(playerid, hitid);
+	AC_Probability(playerid, hitid);
+	*/
 
 	/*if(IsValidDynamicObject(iObject)) DestroyDynamicObject(iObject);
 	iObject = CreateDynamicObject(1238, fHitPosX, fHitPosY, fHitPosZ, 0.0, 0.0, 0.0);
@@ -1273,7 +1275,7 @@ ptask HackCheck[HACKTIMER_INTERVAL](playerid) {
 	DeletePVar(playerid, "ACCooldown");
 	arrAntiCheat[playerid][ac_iCommandCount] = 0;
 	ac_iPlayerKeySpam[playerid] = 0;
-	arrAntiCheat[playerid][ac_fSpeed] = GetPlayerSpeed(playerid);
+	arrAntiCheat[playerid][ac_iSpeed] = GetPlayerSpeed(playerid);
 	if(PlayerInfo[playerid][pAdmin] < 2)
 	{
 		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
@@ -1296,7 +1298,7 @@ AC_SpeedHacks(playerid) {
 
 AC_InfiniteStamina(playerid) {
 
-	if(arrAntiCheat[playerid][ac_fSpeed] > 24) arrAntiCheat[playerid][ac_iFlags][AC_INFINITESTAMINA]++;
+	if(arrAntiCheat[playerid][ac_iSpeed] > 24) arrAntiCheat[playerid][ac_iFlags][AC_INFINITESTAMINA]++;
 	else arrAntiCheat[playerid][ac_iFlags][AC_INFINITESTAMINA] = 0;
 
 	// Subject to discussion (HACKTIMER_INTERVAL * NUMBER = 5 seconds * 8 = 40 seconds running faster than 24).
@@ -2556,11 +2558,134 @@ For each time slice t, the inference carries out in two stages: (See paper)
 */
 
 
+stock AC_BayesianNetwork(playerid, iTargetID) {
+
+	if(!arrAntiCheat[playerid][ac_inTrainingMode]) return 1;
+	
+	new bool:iWasHit,
+		iSpeed[2],
+		bool:isPlayerMoving[2],
+		Float:fDistanceToTarget,
+		Float:fAimAccuracy[2],
+		Float:fDeltaAimAccuracy,
+		Float:fDeltaAimingDirection;
+
+	if(iTargetID == INVALID_PLAYER_ID) {
+		iTargetID = arrAntiCheat[playerid][ac_iLastTargetID];
+		iWasHit = false;
+	}
+	else {
+		arrAntiCheat[playerid][ac_iLastTargetID] = iTargetID;
+		iWasHit = true;
+	}
+
+	iSpeed[0] = GetPlayerSpeed(playerid);
+	iSpeed[1] = GetPlayerSpeed(iTargetID);
+	if(iSpeed[0] > 0) isPlayerMoving[0] = true; // Mp
+	if(iSpeed[1] > 0) isPlayerMoving[1] = true; // Mt
+
+	GetPlayerFacingAngle(playerid, arrAntiCheat[playerid][ac_fPlayerAngle][0]); //delta D
+	fDistanceToTarget = GetDistanceBetweenPlayers(playerid, iTargetID); //D
+
+
+	GetPlayerCameraPos(playerid, arrAntiCheat[playerid][ac_fCamPos][0], arrAntiCheat[playerid][ac_fCamPos][1], arrAntiCheat[playerid][ac_fCamPos][2]);
+	GetPlayerCameraFrontVector(playerid, arrAntiCheat[playerid][ac_fCamFVector][0], arrAntiCheat[playerid][ac_fCamFVector][1], arrAntiCheat[playerid][ac_fCamFVector][2]);
+
+	if(arrAntiCheat[playerid][ac_fCamFVector][3] != 0) {
+
+		fDeltaAimingDirection = arrAntiCheat[playerid][ac_fPlayerAngle][1]-arrAntiCheat[playerid][ac_fPlayerAngle][0];
+
+		if(arrLastBulletData[playerid][acl_fTargetPos][0] != 0) {
+			
+			// t
+			fAimAccuracy[0] = DistanceCameraTargetToLocation(
+					arrAntiCheat[playerid][ac_fCamPos][0], arrAntiCheat[playerid][ac_fCamPos][1], arrAntiCheat[playerid][ac_fCamPos][2],
+					arrLastBulletData[playerid][acl_fTargetPos][0], arrLastBulletData[playerid][acl_fTargetPos][1], arrLastBulletData[playerid][acl_fTargetPos][2],
+					arrAntiCheat[playerid][ac_fCamFVector][0], arrAntiCheat[playerid][ac_fCamFVector][1], arrAntiCheat[playerid][ac_fCamFVector][2]
+				);
+			// t-1
+			fAimAccuracy[1] = DistanceCameraTargetToLocation(
+					arrAntiCheat[playerid][ac_fCamPos][0], arrAntiCheat[playerid][ac_fCamPos][1], arrAntiCheat[playerid][ac_fCamPos][2],
+					arrLastBulletData[playerid][acl_fTargetPos][0], arrLastBulletData[playerid][acl_fTargetPos][1], arrLastBulletData[playerid][acl_fTargetPos][2],
+					arrAntiCheat[playerid][ac_fCamFVector][3], arrAntiCheat[playerid][ac_fCamFVector][4], arrAntiCheat[playerid][ac_fCamFVector][5]
+				);
+		}
+	}
+
+	// Normalize:
+	/*
+	switch(fDeltaAimingDirection) {
+
+		case 0 .. 19: fDeltaAimingDirection = 0;
+		case 20 .. 45: fDeltaAimingDirection = 1;
+		case 46 .. 75: fDeltaAimingDirection = 2;
+		default: fDeltaAimingDirection = 3;
+	}
+	*/
+
+	/*
+	switch(fDistanceToTarget) {
+
+		case 0 .. 4: fDistanceToTarget = 0;
+		case 5 .. 9: fDistanceToTarget = 1;
+		case 10 .. 14: fDistanceToTarget = 2;
+		default: fDistanceToTarget = 3;
+	}
+	*/
+
+	/*
+	switch(fAimAccuracy[0]) {
+
+		case 0 .. 2: fAimAccuracy[0] = 0;
+		case 3 .. 5: fAimAccuracy[0] = 1;
+		case 6 .. 10: fAimAccuracy[0] = 2;
+		default: fAimAccuracy[0] = 3;
+	}
+	switch(fAimAccuracy[1]) {
+
+		case 0 .. 2: fAimAccuracy[1] = 0;
+		case 3 .. 5: fAimAccuracy[1] = 1;
+		case 6 .. 10: fAimAccuracy[1] = 2;
+		default: fAimAccuracy[1] = 3;
+	}
+	*/
+
+	fDeltaAimAccuracy = fAimAccuracy[1] - fAimAccuracy[0];
+	arrAntiCheat[playerid][ac_fCamFVector][3] = arrAntiCheat[playerid][ac_fCamFVector][0];
+	arrAntiCheat[playerid][ac_fCamFVector][4] = arrAntiCheat[playerid][ac_fCamFVector][1];
+	arrAntiCheat[playerid][ac_fCamFVector][5] = arrAntiCheat[playerid][ac_fCamFVector][2];
+	arrAntiCheat[playerid][ac_fPlayerAngle][1] = arrAntiCheat[playerid][ac_fPlayerAngle][0];
+
+	
+	format(szMiscArray, sizeof(szMiscArray), "IC: %d, TH: %d, MP: %d, MT: %d, DTT: %0.1f, DAimDir: %0.1f, AimAcc: %0.1f, AimAcc(t-1): %0.1f, DAimAcc: %0.1f", 
+		arrAntiCheat[playerid][ac_iIsCheating], iWasHit, isPlayerMoving[0], isPlayerMoving[1], fDistanceToTarget, fDeltaAimingDirection, fAimAccuracy[0], fAimAccuracy[1], fDeltaAimAccuracy);
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+
+
+	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `aimbot` (`pID`, `Username`, `time`, `ischeating`, `truehit`, `accuracy`, `aimingdirection`, `playerspeed`, `targetspeed`, `distance`, `deltaaim`) VALUES \
+		(%d, '%s', %d, %d, %d, %0.1f, %0.1f, %d, %d, %0.1f, %0.1f)",
+		PlayerInfo[playerid][pId],
+		GetPlayerNameExt(playerid),
+		gettime(),
+		arrAntiCheat[playerid][ac_iIsCheating],
+		iWasHit,
+		fAimAccuracy[0],
+		fDeltaAimingDirection,
+		iSpeed[0],
+		iSpeed[1],
+		fDistanceToTarget,
+		fDeltaAimAccuracy);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	return 1;
+}
+
 stock AC_Probability(playerid, iTargetID) {
 
 	new Float:fDeltaAimingDirection,
-		Float:fPlayerAngle[2],
-		Float:fAimAccuracy[2]; //t and t=-1
+		Float:fPlayerAngle[2], //t and t=-1
+		Float:fAimAccuracy[2], //t and t=-1
+		Float:fDeltaCrossHair,
+		Float:fDeltaAimAccuracy;
 
 	new iSpeed[2], // 0 == player, 1 == target
 		bool:isPlayerMoving[2], // 0 == player, 1 == target
@@ -2606,24 +2731,87 @@ stock AC_Probability(playerid, iTargetID) {
 	format(szMiscArray, sizeof(szMiscArray), "%s aimed %0.1f units off from before.", GetPlayerNameEx(playerid), fDeltaAimingDirection);
 	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 
-	
+
+	if(fDeltaCrossHair < 2.0) fDeltaCrossHair = 0;
+	else fDeltaCrossHair = 1;
+
+	switch(fDeltaAimingDirection) {
+
+		case 0 .. 19: fDeltaAimingDirection = 0;
+		case 20 .. 45: fDeltaAimingDirection = 1;
+		case 46 .. 75: fDeltaAimingDirection = 2;
+		default: fDeltaAimingDirection = 3;
+	}
+
+	switch(fDistanceToTarget) {
+
+		case 0 .. 4: fDistanceToTarget = 0;
+		case 5 .. 9: fDistanceToTarget = 1;
+		case 10 .. 14: fDistanceToTarget = 2;
+		default: fDistanceToTarget = 3;
+	}
+
+	switch(fAimAccuracy[0]) {
+
+		case 0 .. 2: fAimAccuracy[0] = 0;
+		case 3 .. 5: fAimAccuracy[0] = 1;
+		case 6 .. 10: fAimAccuracy[0] = 2;
+		default: fAimAccuracy[0] = 3;
+	}
+	switch(fAimAccuracy[1]) {
+
+		case 0 .. 2: fAimAccuracy[1] = 0;
+		case 3 .. 5: fAimAccuracy[1] = 1;
+		case 6 .. 10: fAimAccuracy[1] = 2;
+		default: fAimAccuracy[1] = 3;
+	}
+
 	fPlayerAngle[1] = fPlayerAngle[0];
 	arrAntiCheat[playerid][ac_fCamFVector][3] = arrAntiCheat[playerid][ac_fCamFVector][0];
 	arrAntiCheat[playerid][ac_fCamFVector][4] = arrAntiCheat[playerid][ac_fCamFVector][1];
 	arrAntiCheat[playerid][ac_fCamFVector][5] = arrAntiCheat[playerid][ac_fCamFVector][2];
 
-	arrAntiCheat[playerid][ac_fAimAccuracy] += fAimAccuracy[0];
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `aimbot` (`pID`, `time`, `ratio`, `accuracy`, `aimingdirection`, `playerspeed`, `targetspeed`, `distance`) VALUES \
-		(%d, %d, %0.1f, %0.1f, %0.1f, %d, %d, %d)",
+	fDeltaAimAccuracy = fAimAccuracy[1] - fAimAccuracy[0];
+	
+	/*
+	// The Equation:
+	// Computation of our variables:
+	// P(At|At−1,Ct,Mtp,Mt,Pt,Dt,△Dt,△At)
+	arrAntiCheat[playerid][ac_fAimAccuracy] = isPlayerMoving[0] + isPlayerMoving[1] + fDeltaCrossHair + fDistanceToTarget + fDeltaAimingDirection + fAimAccuracy[0] + fDeltaAimAccuracy;
+	// 1:
+	arrAntiCheat[playerid][ac_fProbability] = arrAntiCheat[playerid][ac_fAimAccuracy] * arrAntiCheat[playerid][ac_iCheatingIndex][1] + arrAntiCheat[playerid][ac_fAimAccuracy] * (1.0 - arrAntiCheat[playerid][ac_iCheatingIndex][1]);
+
+	// 2:
+	new Float:T,
+		Float:F;
+
+	T = arrAntiCheat[playerid][ac_fAimAccuracy] * arrAntiCheat[playerid][ac_fProbability]; // etc.
+	F = arrAntiCheat[playerid][ac_fAimAccuracy] * (arrAntiCheat[playerid][ac_fAimAccuracy] - arrAntiCheat[playerid][ac_fProbability]);
+
+	arrAntiCheat[playerid][ac_iCheatingIndex][0] = T / (T + F); // on t=0;
+
+
+	format(szMiscArray, sizeof(szMiscArray), "Prob: %0.1f, CI(t): %d, CI(t-1): %d, MP: %d, MT: %d, DCH: %d, DTT: %d, DAimDir: %d, AimAcc: %d, DAimAcc: %d", 
+		arrAntiCheat[playerid][ac_fProbability], arrAntiCheat[playerid][ac_iCheatingIndex][0], arrAntiCheat[playerid][ac_iCheatingIndex][1],
+		isPlayerMoving[0], isPlayerMoving[1], fDeltaCrossHair, fDistanceToTarget, fDeltaAimingDirection, fAimAccuracy[0], fDeltaAimAccuracy);
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+
+	arrAntiCheat[playerid][ac_iCheatingIndex][1] = arrAntiCheat[playerid][ac_iCheatingIndex][0]; // t-1 = t;
+	*/
+
+	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `aimbot` (`pID`, `time`, `ratio`, `accuracy`, `aimingdirection`, `playerspeed`, `targetspeed`, `distance`, `deltaaim`) VALUES \
+		(%d, %d, %0.1f, %0.1f, %0.1f, %d, %d, %d, %d)",
 		PlayerInfo[playerid][pId],
 		gettime(),
-		"0.0",
+		arrAntiCheat[playerid][ac_iCheatingIndex][0],
 		fAimAccuracy[0],
 		fDeltaAimingDirection,
 		iSpeed[0],
 		iSpeed[1],
-		fDistanceToTarget);
+		fDistanceToTarget,
+		fDeltaAimAccuracy);
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	return 1;
 }
 
 CMD:analytics(playerid, params[]) {
@@ -2750,11 +2938,11 @@ CMD:acflags(playerid, params[]) {
 	format(szMiscArray, sizeof(szMiscArray), "Name\tFlags");
 	for(new i; i < AC_MAX; ++i) {
 
-		switch(arrAntiCheat[playerid][ac_iFlags][i]) {
+		switch(arrAntiCheat[uPlayer][ac_iFlags][i]) {
 
-			case 0: format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFFFF}%s\t%d", szMiscArray, AC_GetACName(i), arrAntiCheat[playerid][ac_iFlags][i]);
-			case 1 .. 9: format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFF00}%s\t{FFFF00}%d", szMiscArray, AC_GetACName(i), arrAntiCheat[playerid][ac_iFlags][i]);
-			default: format(szMiscArray, sizeof(szMiscArray), "%s\n{FF0000}%s\t{FF0000}%d", szMiscArray, AC_GetACName(i), arrAntiCheat[playerid][ac_iFlags][i]);	
+			case 0: format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFFFF}%s\t%d", szMiscArray, AC_GetACName(i), arrAntiCheat[uPlayer][ac_iFlags][i]);
+			case 1 .. 9: format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFF00}%s\t{FFFF00}%d", szMiscArray, AC_GetACName(i), arrAntiCheat[uPlayer][ac_iFlags][i]);
+			default: format(szMiscArray, sizeof(szMiscArray), "%s\n{FF0000}%s\t{FF0000}%d", szMiscArray, AC_GetACName(i), arrAntiCheat[uPlayer][ac_iFlags][i]);	
 		}
 	}
 	format(szTitle, sizeof(szTitle), "AC System Flags | {FFFF00}(%s)", GetPlayerNameEx(uPlayer));
@@ -2838,6 +3026,53 @@ CMD:setproaimvar(playerid, params[]) {
 	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 	return 1;
 }
+
+CMD:setcheating(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+
+	new uPlayer;
+	if(sscanf(params, "u", uPlayer)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setcheating [0/1]");
+
+	if(arrAntiCheat[uPlayer][ac_iIsCheating]) {
+
+		format(szMiscArray, sizeof(szMiscArray), "You set %s to a honest player.", GetPlayerNameEx(uPlayer));
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+		arrAntiCheat[uPlayer][ac_iIsCheating] = 0;
+	}
+	else {
+
+		format(szMiscArray, sizeof(szMiscArray), "You set %s to a cheating player.", GetPlayerNameEx(uPlayer));
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+		arrAntiCheat[uPlayer][ac_iIsCheating] = 1;
+
+	}
+	return 1;
+}
+
+CMD:settraining(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+
+	new uPlayer;
+	if(sscanf(params, "u", uPlayer)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /settraining [0/1]");
+
+	if(arrAntiCheat[uPlayer][ac_inTrainingMode]) {
+
+		format(szMiscArray, sizeof(szMiscArray), "You removed %s from the BN training.", GetPlayerNameEx(uPlayer));
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+		arrAntiCheat[uPlayer][ac_inTrainingMode] = 0;
+	}
+	else {
+
+		format(szMiscArray, sizeof(szMiscArray), "You added %s to the BN training.", GetPlayerNameEx(uPlayer));
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+		arrAntiCheat[uPlayer][ac_inTrainingMode] = 1;
+	}
+	return 1;
+}
+
+
 
 /*
 GetHealthArmorForLabel(playerid) {

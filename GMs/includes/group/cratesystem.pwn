@@ -810,7 +810,7 @@ CMD:loadforklift(playerid, params[]) {
 		            {
 		            	format(szMiscArray, sizeof(szMiscArray), "%s %s has created a weapon crate.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 		              	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
-		              	ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+		              	if(!IsAHitman(playerid)) ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 		              	foreach(new i : Player)
 		              	{
 		              		if(IsACop(i)) 

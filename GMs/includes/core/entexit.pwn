@@ -15,6 +15,7 @@
 
 #define 		ENTRANCE_SHORTCUT		KEY_NO
 
+new iNewEnterSystem;
 
 /*
 new g_iEntranceID[MAX_PLAYERS],
@@ -24,19 +25,61 @@ new g_iEntranceID[MAX_PLAYERS],
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & ENTRANCE_SHORTCUT) {
-	/*	new areaid[1];
-		GetPlayerDynamicAreas(playerid, areaid);
-		Process_Entrance(playerid, areaid[0]);
-		*/
-		EntExit_GetID(playerid);
+
+		if(iNewEnterSystem) EntExit_GetID_New(playerid);
+		else EntExit_GetID(playerid);
 	}
 	return 1;
 }
 
+// New Method:
+stock EntExit_GetID_New(playerid) {
+
+	new szAreaID[2];
+	GetPlayerDynamicAreas(playerid, szAreaID, sizeof(szAreaID));
+
+	if(szAreaID[1] != INVALID_STREAMER_ID) {
+
+		new iData = Streamer_GetIntData(STREAMER_TYPE_AREA, szAreaID[1], E_STREAMER_EXTRA_ID);
+
+		if(szAreaID[1] == DDoorsInfo[iData][ddAreaID]) return DDoor_Enter(playerid, iData);
+		else if(szAreaID[1] == DDoorsInfo[iData][ddAreaID_int]) return DDoor_Exit(playerid, iData);
+		else if(szAreaID[1] == HouseInfo[iData][hAreaID][0]) return House_Enter(playerid, iData);
+		else if(szAreaID[1] == HouseInfo[iData][hAreaID][1]) return House_Exit(playerid, iData);
+		else if(szAreaID[1] == Businesses[iData][bAreaID][0]) return Business_Enter(playerid, iData);
+		else if(szAreaID[1] == Businesses[iData][bAreaID][1]) return Business_Exit(playerid, iData);
+		else if(szAreaID[1] == GarageInfo[iData][gar_AreaID]) return Garage_Enter(playerid, iData);
+		else if(szAreaID[1] == GarageInfo[iData][gar_AreaID_int]) return Garage_Exit(playerid, iData);
+		else EntExit_GetID(playerid); // Old method
+		/*
+		switch(szData[0]) {
+
+			case STREAMER_AREATYPE_DOOR: {
+				if(szAreaID[1] == DDoorsInfo[szData[1]][ddAreaID]) DDoor_Enter(playerid, szData[1]);
+				if(szAreaID[1] == DDoorsInfo[szData[1]][ddAreaID_int]) DDoor_Exit(playerid, szData[1]);
+			}
+			case STREAMER_AREATYPE_HOUSE: {
+				if(szAreaID[1] == HouseInfo[szData[1]][hAreaID][0]) House_Enter(playerid, szData[1]);
+				if(szAreaID[1] == HouseInfo[szData[1]][hAreaID][1]) House_Exit(playerid, szData[1]);
+			}
+			case STREAMER_AREATYPE_BUSINESS: {
+				if(szAreaID[1] == Businesses[szData[1]][bAreaID][0]) Business_Enter(playerid, szData[1]);
+				if(szAreaID[1] == Businesses[szData[1]][bAreaID][1]) Business_Exit(playerid, szData[1]);
+			}
+			case STREAMER_AREATYPE_GARAGE: {
+				if(szAreaID[1] == GarageInfo[szData[1]][gar_AreaID]) Garage_Enter(playerid, szData[1]);
+				if(szAreaID[1] == GarageInfo[szData[1]][gar_AreaID_int]) Garage_Exit(playerid, szData[1]);
+			}
+		}
+		*/
+	}
+	return 1;
+}
 
 //Old method
 EntExit_GetID(playerid) {
 
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Old method");
 	for(new i; i < MAX_DDOORS; ++i) {
 
 		if(IsPlayerInRangeOfPoint(playerid, 2.0, DDoorsInfo[i][ddExteriorX], DDoorsInfo[i][ddExteriorY], DDoorsInfo[i][ddExteriorZ]) &&
@@ -92,24 +135,32 @@ EntExit_GetID(playerid) {
 	return 1;
 }
 
+CMD:entersystem(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+	if(iNewEnterSystem) {
+
+		iNewEnterSystem = 0;
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You turned off the new enter/exit system.");
+	}
+	else {
+		iNewEnterSystem = 1;
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You turned on the new enter/exit system.");
+	}
+	return 1;
+}
 
 CMD:enter(playerid) {
 
-	// SendClientMessage(playerid, COLOR_RED, "/enter is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
-/*	new areaid[1];
-	GetPlayerDynamicAreas(playerid, areaid);
-	Process_Entrance(playerid, areaid[0]);*/
-	EntExit_GetID(playerid);
+	if(iNewEnterSystem) EntExit_GetID_New(playerid);
+	else EntExit_GetID(playerid);
 	return 1;
 }
 
 CMD:exit(playerid) {
 
-	// SendClientMessage(playerid, COLOR_RED, "/exit is deprecated. Use ~k~~CONVERSATION_NO~ instead.");
-/*	new areaid[1];
-	GetPlayerDynamicAreas(playerid, areaid);
-	Process_Entrance(playerid, areaid[0]);*/
-	EntExit_GetID(playerid);
+	if(iNewEnterSystem) EntExit_GetID_New(playerid);
+	else EntExit_GetID(playerid);
 	return 1;
 }
 
