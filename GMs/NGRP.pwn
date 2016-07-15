@@ -75,7 +75,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.339"
+#define SERVER_GM_TEXT "NG:RP v3.0.340"
 //#define AREA_DEBUG
 
 #include <a_samp>
@@ -145,6 +145,7 @@
 #include "./includes/admin/watch.pwn"
 #include "./includes/admin/newbie.pwn"
 #include "./includes/admin/ban.pwn"
+#include "./includes/admin/staffban.pwn"
 
 //business includes
 #include "./includes/business/247items.pwn"
@@ -171,7 +172,7 @@
 #include "./includes/core/radio.pwn"
 #include "./includes/core/service.pwn"
 #include "./includes/core/storage.pwn"
-//#include "./includes/core/tutorial.pwn"
+#include "./includes/core/tutorial.pwn"
 #include "./includes/core/upgrades.pwn"
 #include "./includes/core/vactions.pwn"
 #include "./includes/core/weapons.pwn"
@@ -195,7 +196,7 @@
 #include "./includes/core/streamprep.pwn"
 #include "./includes/core/emailcheck.pwn"
 #include "./includes/core/AccountSettings.pwn"
-#include "./includes/core/tutorial_new.pwn"
+//#include "./includes/core/tutorial_new.pwn"
 #include "./includes/core/deluxegps.pwn"
 
 // #tryinclude "./includes/core/inactive.pwn"

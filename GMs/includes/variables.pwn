@@ -370,6 +370,7 @@ new Text:PriorityReport[MAX_PLAYERS];
 new Text:TD_ServerError;
 new Text:TD_LoginScreen;
 new PlayerText:TD_ChatBox[11];
+new Text:TD_RepFam;
 new Text:g_tHouseLights;
 //new Text:PointTime;
 

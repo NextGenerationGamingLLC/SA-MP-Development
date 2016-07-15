@@ -2899,12 +2899,13 @@ public OnPlayerSpawn(playerid)
 	IsSpawned[playerid] = 1;
 	SpawnKick[playerid] = 0;
 	SetPlayerArmedWeapon(playerid, 0); // making sure players spawn with their fists.
-	if(PlayerInfo[playerid][pTut] < 2)
+	if(PlayerInfo[playerid][pTut] != -1) 
 	{
-		SetPlayerPos(playerid, 1715.1201,-1903.1711, 1113.5665);
-		SetPlayerFacingAngle(playerid, 360.0);
-		return 1;
+		if(PlayerInfo[playerid][pTut] < 15) PlayerInfo[playerid][pTut] = 0;
+		AdvanceTutorial(playerid);
 	}
+
+	if(PlayerInfo[playerid][pTut] == -1 && PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) ShowPlayerDialogEx(playerid, DIALOG_NATION_CHECK, DIALOG_STYLE_LIST, "Please chose a nation.", "San Andreas\nNew Eire", "Select", "<<");
 	return 1;
 }
 
@@ -2939,10 +2940,10 @@ public OnPlayerLeaveCheckpoint(playerid)
 	    }
 	    return 1;
 	}
-	if(PlayerInfo[playerid][pTut] == 0)
+	if(PlayerInfo[playerid][pTut] != -1) 
 	{
-		Tutorial_Start(playerid);
-		return 1;
+		if(PlayerInfo[playerid][pTut] < 15) PlayerInfo[playerid][pTut] = 0;
+		AdvanceTutorial(playerid);
 	}
 	return 1;
 }

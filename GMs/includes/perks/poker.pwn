@@ -1783,7 +1783,8 @@ CMD:leavetable(playerid, params[])
 
 CMD:placetable(playerid, params[])
 {
-	if(PlayerInfo[playerid][pTable] == 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
+	//if(PlayerInfo[playerid][pTable] == 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 	    if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while being in an arena!");
 		if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
@@ -1824,7 +1825,7 @@ CMD:placetable(playerid, params[])
 	}
 	else
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a poker table! Buy from one shop.ng-gaming.net");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "This command has been disabled.");
 	}
 	return 1;
 }

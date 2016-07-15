@@ -1124,7 +1124,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_REGISTER_QUESTION2		(6107)
 #define 		DIALOG_REGISTER_QUESTION3		(6108)
 #define 		DIALOG_REGISTER_QUESTION4		(6109)
-#define 		DIALOG_TUTORIAL_CAR				(6110)
+#define 		DIALOG_REGISTER_CREATION		(6110)
 #define 		ARMS_MENU						(6111)
 
 #define         G_LOCKER_DRUGS				    (6112)
@@ -1237,6 +1237,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_NATDIS_EQFINAL			7008
 #define 		DIALOG_NATDIS_LOADMAPS			7009
 #define 		DIALOG_FIRES 					7010
+#define 		DIALOG_NATION_CHECK				7011
 // GangTags
 #define 			GANGTAG_TIME				60000
 
@@ -1471,7 +1472,7 @@ native IsValidVehicle(vehicleid);
 #define 	MAX_FURNITURE_SLOTS			(200)
 #define 	MAX_METALDETECTORS 			(40)
 #define 	MAX_UFOS					(10)
-#define 	MAX_CHATSETS 				(23)
+#define 	MAX_CHATSETS 				(24)
 
 
 /* ANTICHEAT */

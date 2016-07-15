@@ -57,31 +57,35 @@ timer RepFam_Cooldown[1000 * 120](playerid) { // 2 minutes
 }
 
 Rivalry_Toggle(playerid, bool:bState) {
-
-	PlayAnim(playerid, "goggles", "goggles_put_on", 4.0, 0, 0, 0, 0, 0, 1);
-	RemovePlayerAttachedObject(playerid, 8);
-	if(bState == true) {
-
-		SetPVarInt(playerid, "RepFam_TL", _:CreateDynamic3DTextLabel(
-			arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName],
-			COLOR_WHITE, // arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256 + 0xFF
-			0.0, 0.0, 0.0, 40,
-			.attachedplayer = playerid,
-			.testlos = 1,
-			.worldid = -1,
-			.interiorid = -1,
-			.streamdistance = 40));
-		SetPlayerAttachedObject(playerid, 8, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
-			PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],
-			PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4], PlayerInfo[playerid][pGroupToy][5], 
-			PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are now representing your gang. (/grouptoy to adjust).");
-	}
-	else {
-		DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "RepFam_TL"));
-		DeletePVar(playerid, "RepFam_TL");
-		SendClientMessageEx(playerid, COLOR_WHITE, "You are not representing your gang anymore.");
-	}
+ 
+    PlayAnim(playerid, "goggles", "goggles_put_on", 4.0, 0, 0, 0, 0, 0, 1);
+    RemovePlayerAttachedObject(playerid, 8);
+    if(bState == true) {
+ 
+        SetPVarInt(playerid, "RepFam_TL", _:CreateDynamic3DTextLabel(
+            arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName],
+            arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256 + 0xFF,
+            0.0, 0.0, 0.0, 40,
+            .attachedplayer = playerid,
+            .testlos = 1,
+            .worldid = -1,
+            .interiorid = -1,
+            .streamdistance = 40));
+        SetPlayerAttachedObject(playerid, 9, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
+            PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],
+            PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4], PlayerInfo[playerid][pGroupToy][5],
+            PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);
+        SendClientMessageEx(playerid, COLOR_WHITE, "You are now representing your gang (/grouptoy to adjust).");
+ 
+        if(PlayerInfo[playerid][pToggledChats][23] == 0) TextDrawShowForPlayer(playerid, TD_RepFam);
+    }
+    else {
+        DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "RepFam_TL"));
+        DeletePVar(playerid, "RepFam_TL");
+        SendClientMessageEx(playerid, COLOR_WHITE, "You are not representing your gang anymore.");
+ 
+        if(PlayerInfo[playerid][pToggledChats][23] == 0) TextDrawHideForPlayer(playerid, TD_RepFam);
+    }
 }
 
 CMD:aviewrivals(playerid, params[]) {
@@ -110,16 +114,16 @@ CMD:aviewrivals(playerid, params[]) {
 
 
 CMD:repfam(playerid, params[]) {
-
-	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
-	if(GetPVarType(playerid, "RepFam")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take your bandana off yet.");
-	if(GetPVarType(playerid, "RepFam_TL")) Rivalry_Toggle(playerid, false);
-	else {
-		SetPVarInt(playerid, "RepFam", 1);
-		Rivalry_Toggle(playerid, true);
-		defer RepFam_Cooldown(playerid);
-	}
-	return 1;
+ 
+    if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
+    if(GetPVarType(playerid, "RepFam")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take your bandana off yet.");
+    if(GetPVarType(playerid, "RepFam_TL")) Rivalry_Toggle(playerid, false);
+    else {
+        SetPVarInt(playerid, "RepFam", 1);
+        Rivalry_Toggle(playerid, true);
+        defer RepFam_Cooldown(playerid);
+    }
+    return 1;
 }
 
 CMD:repcheck(playerid, params[]) {
@@ -387,4 +391,15 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart) {
 		SetPVarInt(playerid, "RepFam", 1);
 		defer RepFam_Cooldown[1000 * 30](playerid);
 	}
+}
+
+hook OnPlayerConnect(playerid)
+{
+    TD_RepFam = TextDrawCreate(552, 226, "/repfam");
+    TextDrawFont(TD_RepFam, 2);
+    TextDrawLetterSize(TD_RepFam, 0.25, 2.8000000000000003);
+    TextDrawColor(TD_RepFam, 0xffffffFF);
+    TextDrawSetOutline(TD_RepFam, true);
+    TextDrawSetProportional(TD_RepFam, true);
+    TextDrawSetShadow(TD_RepFam, 1);
 }

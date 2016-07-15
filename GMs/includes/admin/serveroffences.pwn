@@ -60,7 +60,7 @@ CMD:reverse(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 2 || PlayerInfo[playerid][pWatchdog] >= 2) {
 		if(!sscanf(params, "us[24]", giveplayerid, reason)) {
 			if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player.");
-			if(GetPlayerSQLId(playerid) != PlayerInfo[giveplayerid][pJailedInfo][0] && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
+			if(GetPlayerSQLId(playerid) != PlayerInfo[giveplayerid][pJailedInfo][0] && PlayerInfo[playerid][pAdmin] < 3 && PlayerInfo[playerid][pASM] < 1)
 				return SendClientMessageEx(playerid, COLOR_WHITE, "You have not acted against this person, therefor you can not reverse any actions for them.");
 			if(PlayerInfo[giveplayerid][pJailTime] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this to someone not currently prisoned.");
 			if(PlayerInfo[playerid][pAdmin] == 1 || PlayerInfo[playerid][pHelper] >= 2 || (PlayerInfo[playerid][pWatchdog] >= 2 && PlayerInfo[playerid][pAdmin] < 3)) {

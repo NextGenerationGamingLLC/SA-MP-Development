@@ -264,7 +264,7 @@ stock ShowLoginDialogs(playerid, index)
 		case 1: 
 		{
 			// ShowPlayerDialogEx(playerid, REGISTERMONTH, DIALOG_STYLE_LIST, "{FF0000}Which month was your character born?", "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember", "Submit", "");
-			Tutorial_Start(playerid);
+			AdvanceTutorial(playerid);
 		}
 		case 4: ShowPlayerDialogEx(playerid, PMOTDNOTICE, DIALOG_STYLE_MSGBOX, "Notice", pMOTD, "Dismiss", "");
 		case 5:

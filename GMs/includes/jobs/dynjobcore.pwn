@@ -88,11 +88,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		case DIALOG_JOBS_ACCEPTJOB:
 		{
 			if(response) {
-
-				if(GetPVarType(playerid, "pTut")) {
-					SetPVarInt(playerid, "pTut", GetPVarInt(playerid, "pTut") + 1);
-					Tutorial_Objectives(playerid);
-				}
 				
 				new iJob = GetPVarInt(playerid, PVAR_JOB_OBTAINING);
 

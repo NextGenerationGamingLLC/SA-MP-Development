@@ -139,7 +139,7 @@ public DragPlayer(dragger, dragee)
 		floatsub(dY, 0.4);
 
 		SetPVarFloat(dragee, "DragX", dX);
-		SetPVarFloat(dragee, "DragY", dY-1);
+		SetPVarFloat(dragee, "DragY", dY-1.5);
 		SetPVarFloat(dragee, "DragZ", dZ);
 		SetPVarInt(dragee, "DragWorld", GetPlayerVirtualWorld(dragger));
 		SetPVarInt(dragee, "DragInt", GetPlayerInterior(dragger));

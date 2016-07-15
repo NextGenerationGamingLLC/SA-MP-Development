@@ -430,7 +430,7 @@ CMD:shoplaser(playerid, params[])
 
 CMD:giveobject(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1337)
+	if(PlayerInfo[playerid][pAdmin] >= 4)
 	{
 		new giveplayerid, object;
 		if(sscanf(params, "ud", giveplayerid, object)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /giveobject [player] [object]");

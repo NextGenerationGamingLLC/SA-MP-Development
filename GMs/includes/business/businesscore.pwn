@@ -74,11 +74,10 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
   	{
   		case ITEM_CELLPHONE:
 		{
-			if(GetPVarInt(playerid, "pTut") == 5)
+			if(PlayerInfo[playerid][pTut] == 17)
 			{
-				SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF}You have successfully bought a phone.");
-				SetPVarInt(playerid, "pTut", GetPVarInt(playerid, "pTut") + 1);
-				Tutorial_Objectives(playerid);
+				PlayerInfo[playerid][pTut]++;
+				AdvanceTutorial(playerid);
 			}
 			if(PlayerInfo[playerid][pPnumber] == 0)
 			{
@@ -521,8 +520,10 @@ stock RefreshBusinessPickup(i)
 		Businesses[i][bAreaID][1] = CreateDynamicSphere(Businesses[i][bIntPos][0], Businesses[i][bIntPos][1], Businesses[i][bIntPos][2], 2.5, .worldid = Businesses[i][bVW]);
 	}
 
+	/*
 	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][0], E_STREAMER_EXTRA_ID, i);
 	Streamer_SetIntData(STREAMER_TYPE_AREA, Businesses[i][bAreaID][1], E_STREAMER_EXTRA_ID, i);
+	*/
 
 	format(szMiscArray, sizeof(szMiscArray), "[Business] Created Business: %d | Exterior Area ID: %d | Interior Area ID: %d", i, Businesses[i][bAreaID][0], Businesses[i][bAreaID][1]);
 	Log("debug/door_business.log", szMiscArray);

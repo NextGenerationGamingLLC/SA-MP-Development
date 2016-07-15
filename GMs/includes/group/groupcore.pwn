@@ -68,6 +68,19 @@ Group_DisbandGroup(iGroupID) {
 	arrGroupData[iGroupID][g_hRadioColour] = 0xFFFFFF;
 	arrGroupData[iGroupID][g_iMemberCount] = 0;
 	arrGroupData[iGroupID][g_iGroupToyID] = 0;
+	arrGroupData[iGroupID][g_iMaterials] = 0;
+
+	arrGroupData[iGroupID][g_iDrugs][0] = 0;
+	arrGroupData[iGroupID][g_iDrugs][1] = 0;
+	arrGroupData[iGroupID][g_iDrugs][2] = 0;
+	arrGroupData[iGroupID][g_iDrugs][3] = 0;
+	arrGroupData[iGroupID][g_iDrugs][4] = 0;
+
+	szMiscArray[0] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `1` = '0'");
+	for(new x = 2; x < 47; x++) format(szMiscArray, sizeof(szMiscArray), "%s, `%d` = '0'", szMiscArray, x);
+	format(szMiscArray, sizeof(szMiscArray), "%s WHERE `Group_ID` = '%d'", szMiscArray, iGroupID + 1);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID);
 
 	
 	DestroyDynamic3DTextLabel(arrGroupData[iGroupID][g_tCrate3DLabel]);
@@ -98,6 +111,25 @@ Group_DisbandGroup(iGroupID) {
 		arrGroupData[iGroupID][g_iLockerCost][i++] = 0;
 	}
 	SaveGroup(iGroupID);
+
+	for(new x; x < MAX_DYNAMIC_VEHICLES; x++)
+	{
+		if(DynVehicleInfo[x][gv_igID] != INVALID_GROUP_ID && DynVehicleInfo[x][gv_igID] == iGroupID)
+		{
+			DynVehicleInfo[x][gv_iModel] = 0;
+			DynVehicleObjInfo[x][0][gv_iAttachedObjectModel] = INVALID_OBJECT_ID;
+			DynVehicleObjInfo[x][1][gv_iAttachedObjectModel] = INVALID_OBJECT_ID;
+			DynVehicleObjInfo[x][2][gv_iAttachedObjectModel] = INVALID_OBJECT_ID;
+			DynVehicleObjInfo[x][3][gv_iAttachedObjectModel] = INVALID_OBJECT_ID;
+			DynVehicleInfo[x][gv_igID] = INVALID_GROUP_ID;
+			DynVehicleInfo[x][gv_igDivID] = 0;
+			DynVehicleInfo[x][gv_fMaxHealth] = 1000;
+			DynVehicleInfo[x][gv_iUpkeep] = 0;
+			DynVehicleInfo[x][gv_iSiren] = 0;
+			DynVeh_Save(x);
+			DynVeh_Spawn(x);
+		}
+	}
 
 	foreach(new x: Player)
 	{
@@ -157,8 +189,8 @@ SaveGroup(iGroupID) {
 	format(szMiscArray, sizeof(szMiscArray), "%s\
 		`TempNum` = '%d', `OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Ecstasy` = '%i', `Meth` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i', `GroupToyID` = '%i', `TurfTax` = '%i'",
 		szMiscArray,
-		arrGroupData[iGroupID][gTempNum], arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iPot], arrGroupData[iGroupID][g_iCrack], arrGroupData[iGroupID][g_iHeroin], arrGroupData[iGroupID][g_iSyringes],
-		arrGroupData[iGroupID][g_iEcstasy], arrGroupData[iGroupID][g_iMeth], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank],
+		arrGroupData[iGroupID][gTempNum], arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iDrugs][0], arrGroupData[iGroupID][g_iDrugs][1], arrGroupData[iGroupID][g_iDrugs][4], arrGroupData[iGroupID][g_iSyringes],
+		arrGroupData[iGroupID][g_iDrugs][3], arrGroupData[iGroupID][g_iDrugs][2], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank],
 		arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2], arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4], arrGroupData[iGroupID][g_iTurfTokens], arrGroupData[iGroupID][g_iCrimeType],
 		arrGroupData[iGroupID][g_iGroupToyID], arrGroupData[iGroupID][g_iTurfTax]
 	);
@@ -2584,9 +2616,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
-
-									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", GetDrugName(iDrugID), arrGroupData[iGroupID][g_iDrugs][iDrugID], iGroupID + 1);
-									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+									SaveGroup(iGroupID);
 
 									cmd_locker(playerid, "");
 
@@ -2605,9 +2635,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 									DeletePVar(playerid, "GSafe_Action");
 									DeletePVar(playerid, "GSafe_Opt");
-
-									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", GetDrugName(iDrugID), arrGroupData[iGroupID][g_iDrugs][iDrugID], iGroupID + 1);
-									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+									SaveGroup(iGroupID);
 
 									cmd_locker(playerid, "");
 								}
@@ -5444,7 +5472,7 @@ CMD:hfind(playerid, params[])
 			}
 			if(PhoneOnline[iTargetID] == 0 && PlayerInfo[iTargetID][pPnumber] != 0 || (PlayerInfo[iTargetID][pBugged] == PlayerInfo[playerid][pMember] || (PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] != 1)))
 			{
-				SetPVarInt(playerid, "HfindCount", 30);
+				SetPVarInt(playerid, "HfindCount", 15);
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have started a trace, type /hfind again to stop this.");
 				SetTimerEx("HitmanTrace", 1000, false, "ii", playerid, iTargetID);
 			}
@@ -5459,6 +5487,7 @@ forward HitmanTrace(playerid, iTargetID);
 public HitmanTrace(playerid, iTargetID) {
 
 	new iTraceCount = GetPVarInt(playerid, "HfindCount");
+	if(PlayerInfo[iTargetID][pBugged] == PlayerInfo[playerid][pMember]) iTraceCount = 0;
 
 	if(CheckPointCheck(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot use this command as of this moment!");
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
@@ -5468,6 +5497,7 @@ public HitmanTrace(playerid, iTargetID) {
 	if (GetPVarInt(playerid, "_SwimmingActivity") >= 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "  You must stop swimming first! (/stopswimming)");
 	if((PhoneOnline[iTargetID] > 0 || PlayerInfo[iTargetID][pPnumber] == 0 ) && PlayerInfo[iTargetID][pBugged] != PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GREY, "The trace was interrupted.");
 	if(!GetPVarType(playerid, "HfindCount")) return SendClientMessageEx(playerid, COLOR_WHITE,  "An error occured!");
+
 
 	if(iTraceCount >= 1) {
 		SetPVarInt(playerid, "HfindCount", --iTraceCount);

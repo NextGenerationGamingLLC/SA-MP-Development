@@ -1777,6 +1777,8 @@ CMD:makeadmin(playerid, params[])  {
 			if(PlayerInfo[iTargetID][pAdmin] == iAdminValue) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this administrator level.");
 			else {
 
+				if(PlayerInfo[iTargetID][pStaffBanned] >= 1) return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
+
 				/*new
 					szMessage[47 + (MAX_PLAYER_NAME * 2)];*/
 
@@ -3556,7 +3558,7 @@ CMD:jailaccount(playerid, params[])
 
 CMD:release(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 3 || PlayerInfo[playerid][pASM] >= 1)
 	{
 		new string[128], giveplayerid, reason[64];
 		if(sscanf(params, "us[64]", giveplayerid, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /release [player] [reason]");
@@ -5220,6 +5222,7 @@ CMD:makemoderator(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to current admins!");
 				return 1;
 			}
+			if(PlayerInfo[giveplayerid][pStaffBanned] >= 1) return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
 			PlayerInfo[giveplayerid][pAdmin] = 1;
 			if(level == 1) {
 				PlayerInfo[giveplayerid][pSMod] = 0;

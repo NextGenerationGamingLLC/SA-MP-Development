@@ -791,7 +791,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 		{
 			if(IsPlayerConnected(extraid))
 			{
-				Tutorial_Start(extraid);
+				AdvanceTutorial(extraid);
 				g_mysql_AccountLoginCheck(extraid);
 				format(szMiscArray, sizeof(szMiscArray), "WARNING: %s (ID: %d) has registered from %s", GetPlayerNameEx(extraid), extraid, GetPlayerCountry(extraid));
 				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
@@ -5229,6 +5229,7 @@ public Group_QueryFinish(iType, iExtraID) {
 				arrGroupLockers[iGroup][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iGroup][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
 
 				arrGroupLockers[iGroup][iLocker][g_iLockerAreaID] = CreateDynamicSphere(arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 3.0, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
+				printf("%d", arrGroupLockers[iGroup][iLocker][g_iLockerAreaID]);
 				// Streamer_SetIntData(STREAMER_TYPE_AREA, arrGroupLockers[iGroup][iLocker][g_iLockerAreaID], E_STREAMER_EXTRA_ID, iLocker);
 			}
 			iIndex++;
@@ -5443,7 +5444,7 @@ public Group_QueryFinish(iType, iExtraID) {
 			i = 0;
 
 			// Jingles' Drug System:
-			//for(i = 0; i < sizeof(Drugs); ++i) arrGroupData[iIndex][g_iDrugs][i] = cache_get_field_content_int(iIndex, GetDrugName(i), MainPipeline);
+			for(i = 0; i < sizeof(Drugs); ++i) arrGroupData[iIndex][g_iDrugs][i] = cache_get_field_content_int(iIndex, GetDrugName(i), MainPipeline);
 			//for(i = 0; i < sizeof(szIngredients); ++i) arrGroupData[iIndex][g_iIngredients][i] = cache_get_field_content_int(iIndex, DS_Ingredients_GetSQLName(i), MainPipeline);
 			i = 0;
 
@@ -5748,11 +5749,9 @@ public ReferralSecurity(playerid)
 			SetPlayerVirtualWorld(playerid, 0);
 			ClearChatbox(playerid);
 
-			format(szMiscArray, sizeof(szMiscArray), "Nobody");
-			TogglePlayerSpectating(playerid, false);
-			SetHealth(playerid, 100.0);
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information! Enjoy your time and trip to San Andreas!");
-			SetTimerEx("Register_FinishSetup2", 250, false, "i", playerid);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information!");
+			PlayerInfo[playerid][pTut]++;
+			AdvanceTutorial(playerid);
 		}
 	}
 	return 1;

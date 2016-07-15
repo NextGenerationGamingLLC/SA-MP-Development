@@ -2360,9 +2360,19 @@ CMD:cancel(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Cannabis, Crack, Weapon, Craft, Repair, Lawyer, Bodyguard, Live, Refill, Car, Boxing");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Taxi, Bus, Medic, Mechanic, Ticket, Witness, Marriage, Drink, House, Shipment, Help, Firstaid, Garbage");
 		SendClientMessageEx(playerid, COLOR_GREY, "Available names: FoodOffer, RenderAid, DrugRun");
+		if(PlayerInfo[playerid][pTut] != -1) SendClientMessageEx(playerid, COLOR_GREY, "Special: objectives");
 		if(IsAHitman(playerid)) { SendClientMessageEx(playerid, COLOR_GREY, "Special: contract"); }
 		SendClientMessageEx(playerid, COLOR_WHITE, "|____________________________________________|");
 		return 1;
+	}
+
+	if(strcmp(choice, "objectives", true) == 0 && PlayerInfo[playerid][pTut] >= 15)
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have canceled the objectives tutorial. Welcome to Next Generation Gaming!");
+		SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
+		PlayerInfo[playerid][pTut] = -1;
+		DisablePlayerCheckpoint(playerid);
 	}
 
 	if(strcmp(choice, "door", true) == 0)

@@ -27,10 +27,7 @@ public OnInvalidEmailCheck(playerid, response_code, data[])
 		if(result == 1) // Valid from login check
 			if(!GetPVarInt(playerid, "EmailConfirmed"))
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Pending Email Confirmation");
-				SendClientMessageEx(playerid, -1, "Our records show that you have not confirmed your email address.");
-				SendClientMessageEx(playerid, -1, "Daily reminders will be sent to the email registered with your account until it is confirmed.");
-				SendClientMessageEx(playerid, -1, "Please make an effort to confirm it as it will be used for important changes and notifications in regards to your account.");
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Your email has not yet been confirmed. Please take steps to confirm it or go to cp.ng-gaming.net to change your email.");
 			}
 		if(result == 2) // Valid from dialog
 		{

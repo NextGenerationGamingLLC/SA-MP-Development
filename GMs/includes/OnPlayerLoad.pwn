@@ -724,22 +724,10 @@ public OnPlayerLoad(playerid)
 	format(string, sizeof(string), "%s (ID: %d | SQL ID: %d | Level: %d | IP: %s) has logged in.", GetPlayerNameExt(playerid), playerid, GetPlayerSQLId(playerid), PlayerInfo[playerid][pLevel], ip);
 	Log("logs/login.log", string);
 
-	if(PlayerInfo[playerid][pTut] < 2)
+	if(PlayerInfo[playerid][pTut] != -1) 
 	{
-		SetSpawnInfo(playerid, 0, PlayerInfo[playerid][pModel], 1000.0, 1000.0, 1000.0, 1.0, -1, -1, -1, -1, -1, -1);
-		switch(PlayerInfo[playerid][pTut])
-		{
-			case 0:
-			{
-				Tutorial_Start(playerid);
-				return 1;
-			}
-			case 1:
-			{
-				Register_PlaneStart(playerid);
-				return 1;
-			}
-		}
+		if(PlayerInfo[playerid][pTut] < 15) PlayerInfo[playerid][pTut] = 0;
+		AdvanceTutorial(playerid);
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
@@ -1102,5 +1090,7 @@ public OnPlayerLoad(playerid)
 	//if(PlayerInfo[playerid][pChatbox][19] == 0) PlayerTextDrawShow(playerid, TD_ChatBox[0]);
 
 	if(PlayerInfo[playerid][pToggledChats][7]) PhoneOnline[playerid] = 1;
+
+	if(PlayerInfo[playerid][pTut] == -1 && PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_NATION, DIALOG_STYLE_LIST, "You currently do not have a nation. Please chose one.", "San Andreas\nNew Eire", "Select", "<<");
 	return 1;
 }

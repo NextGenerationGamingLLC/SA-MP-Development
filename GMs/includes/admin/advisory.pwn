@@ -567,6 +567,8 @@ CMD:makeadvisor(playerid, params[])
 
 			if(PlayerInfo[giveplayerid][pHelper] < level && PlayerInfo[giveplayerid][pHelper] >= PlayerInfo[playerid][pHelper] > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot set someone's rank when they're the same as you!"); 
 
+			if(PlayerInfo[giveplayerid][pStaffBanned] >= 1) return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
+
 			PlayerInfo[giveplayerid][pHelper] = level;
 			switch(level)
 			{

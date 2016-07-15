@@ -265,6 +265,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			DeletePVar(playerid, "ConfirmReport");
 		}
 
+		case DIALOG_NATION_CHECK:
+		{
+			if(response) {
+				PlayerInfo[playerid][pNation] = listitem;
+				switch(listitem) {
+					case 0: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of San Andreas.");
+					case 1: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of New Eire.");
+				}
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_GRAD1, "You did not provide a response, picking a random nation for you...");
+				new rand = random(2);
+				PlayerInfo[playerid][pNation] = rand;
+				switch(rand) {
+					case 0: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of San Andreas.");
+					case 1: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of New Eire.");
+				}
+			}
+		}
+
 		case BIGEARS3:
 		{
 			if(response) {
@@ -8362,13 +8383,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				cost = Businesses[d][bPrice][v] / 100 * 15;
 				Businesses[d][bSafeBalance] += TaxSale( cost );
 			}
-			if(GetPVarInt(playerid, "pTut") == 4)
+			if(PlayerInfo[playerid][pTut] == 15)
 			{
-				//SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF}You have successfully bought a car.");
-				//SendClientMessage(playerid, COLOR_YELLOW, "[Tutorial Objective] - {FFFFFF}Press Y to start the engine and 2 to toggle other options.");
 				PlayerInfo[playerid][pCarLic] = gettime() + (86400); // temp 1 day license
-				SetPVarInt(playerid, "pTut", GetPVarInt(playerid, "pTut") + 1);
-				Tutorial_Objectives(playerid);
+				PlayerInfo[playerid][pTut]++;
+				AdvanceTutorial(playerid);
 			}
 			Businesses[d][bInventory]--;
 			Businesses[d][bTotalSales]++;
@@ -11942,6 +11961,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(PlayerInfo[playerid][pRimMod] == 0)
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have any rim modification kits.");
+
+			if(IsRestrictedVehicle(GetVehicleModel(GetPlayerVehicleID(playerid)))) return SendClientMessageEx(playerid, COLOR_GREY, "This vehicle cannot have rims applied to it");
 
 			if(InvalidModCheck(GetVehicleModel(GetPlayerVehicleID(playerid)), 1025))
 			{

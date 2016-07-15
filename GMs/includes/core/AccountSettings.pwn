@@ -265,63 +265,73 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 }
 
 CMD:tog(playerid, params[]) {
-
-	if(isnull(params)) {
-
-		SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /tog [option]");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: newbie | ooc | whisper | pr | phone | famed | vip | dept | gooc | radio | bug");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | advisor | points");
-		return 1;
-	}
-
-	new iChatID = -1, chatname[50];
-	mysql_escape_string(params, chatname);
-
-	if(strcmp(params, "newbie", true) == 0) iChatID = 0;
-	else if(strcmp(params, "ooc", true) == 0) iChatID = 2;
-	else if(strcmp(params, "whisper", true) == 0) iChatID = 3;
-	else if(strcmp(params, "pr", true) == 0) iChatID = 5;
-	else if(strcmp(params, "phone", true) == 0) iChatID = 7;
-	else if(strcmp(params, "famed", true) == 0) iChatID = 8;
-	else if(strcmp(params, "vip", true) == 0) iChatID = 9;
-	else if(strcmp(params, "dept", true) == 0) iChatID = 10;
-	else if(strcmp(params, "gooc", true) == 0) iChatID = 11;
-	else if(strcmp(params, "radio", true) == 0) iChatID = 12;
-	else if(strcmp(params, "bug", true) == 0) iChatID = 13;
-	else if(strcmp(params, "biz", true) == 0) iChatID = 14;
-	else if(strcmp(params, "staff", true) == 0) iChatID = 15;
-	else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
-	else if(strcmp(params, "news", true) == 0) iChatID = 1;
-	else if(strcmp(params, "chatbox", true) == 0) iChatID = 4; 
-	else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
-	else if(strcmp(params, "points", true) == 0) iChatID = 22;
-
-	if(!(0 <= iChatID < MAX_CHATSETS)) return 1; // preventing OOB issues.
-
-	if(PlayerInfo[playerid][pToggledChats][iChatID] == 0) {
-
-		PlayerInfo[playerid][pToggledChats][iChatID] = 1;
-		switch(iChatID) {
-
-			case 7: PhoneOnline[playerid] = 1;
-			case 15: advisorchat[playerid] = 0;
-			case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
-		}
-		format(szMiscArray, sizeof(szMiscArray), "You have toggled %s off.", chatname);
-		SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-	}
-	else {
-
-		PlayerInfo[playerid][pToggledChats][iChatID] = 0;
-		switch(iChatID) {
-			case 7: PhoneOnline[playerid] = 0;
-			case 15: advisorchat[playerid] = 1;
-			case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
-		}
-		format(szMiscArray, sizeof(szMiscArray), "You have toggled %s on.", chatname);
-		SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-	}
-
-
-	return 1;
+ 
+    if(isnull(params)) {
+ 
+        SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /tog [option]");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: newbie | ooc | whisper | pr | phone | famed | vip | dept | gooc | radio | bug");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "OPTIONS: biz | staff | advisor | news | chatbox | advisor | points | rf");
+        return 1;
+    }
+ 
+    new iChatID = -1, chatname[50];
+    mysql_escape_string(params, chatname);
+ 
+    if(strcmp(params, "newbie", true) == 0) iChatID = 0;
+    else if(strcmp(params, "ooc", true) == 0) iChatID = 2;
+    else if(strcmp(params, "whisper", true) == 0) iChatID = 3;
+    else if(strcmp(params, "pr", true) == 0) iChatID = 5;
+    else if(strcmp(params, "phone", true) == 0) iChatID = 7;
+    else if(strcmp(params, "famed", true) == 0) iChatID = 8;
+    else if(strcmp(params, "vip", true) == 0) iChatID = 9;
+    else if(strcmp(params, "dept", true) == 0) iChatID = 10;
+    else if(strcmp(params, "gooc", true) == 0) iChatID = 11;
+    else if(strcmp(params, "radio", true) == 0) iChatID = 12;
+    else if(strcmp(params, "bug", true) == 0) iChatID = 13;
+    else if(strcmp(params, "biz", true) == 0) iChatID = 14;
+    else if(strcmp(params, "staff", true) == 0) iChatID = 15;
+    else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
+    else if(strcmp(params, "news", true) == 0) iChatID = 1;
+    else if(strcmp(params, "chatbox", true) == 0) iChatID = 4;
+    else if(strcmp(params, "advisor", true) == 0) iChatID = 16;
+    else if(strcmp(params, "points", true) == 0) iChatID = 22;
+    else if(strcmp(params, "rf", true) == 0) iChatID = 23;
+ 
+    if(!(0 <= iChatID < MAX_CHATSETS)) return 1; // preventing OOB issues.
+ 
+    if(PlayerInfo[playerid][pToggledChats][iChatID] == 0) {
+ 
+        PlayerInfo[playerid][pToggledChats][iChatID] = 1;
+        switch(iChatID) {
+ 
+            case 7: PhoneOnline[playerid] = 1;
+            case 15: advisorchat[playerid] = 0;
+            case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawHide(playerid, TD_ChatBox[i]);
+            case 23: TextDrawHideForPlayer(playerid, TD_RepFam);
+           
+        }
+        format(szMiscArray, sizeof(szMiscArray), "You have toggled %s off.", chatname);
+        SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+    }
+    else {
+ 
+        PlayerInfo[playerid][pToggledChats][iChatID] = 0;
+        switch(iChatID) {
+            case 7: PhoneOnline[playerid] = 0;
+            case 15: advisorchat[playerid] = 1;
+            case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
+            case 23:
+            {
+                TextDrawShowForPlayer(playerid, TD_RepFam);
+ 
+                // Add checks here.
+                if(GetPVarInt(playerid, "RepFam_TL")) TextDrawShowForPlayer(playerid, TD_RepFam);
+            }
+        }
+        format(szMiscArray, sizeof(szMiscArray), "You have toggled %s on.", chatname);
+        SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+    }
+ 
+ 
+    return 1;
 }
