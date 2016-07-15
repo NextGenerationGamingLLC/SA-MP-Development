@@ -637,8 +637,9 @@ public CameraShaker(playerid)
 }
 
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 		case DIALOG_NATDIS_MAIN:
@@ -767,8 +768,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			return NatDis_LoadMapping(playerid, GetPVarInt(playerid, "_EditingNasType"), listitem);
 		}
 	}
-	return 1;
-
+	return 0;
 }
 
 NatDis_LoadMaps(playerid) {

@@ -655,8 +655,9 @@ public StartJailBoxing(iArenaID)
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 		case DIALOG_DOC_CP:
@@ -987,7 +988,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
         }
 	}
-	return 1;
+	return 0;
 }
 
 CMD:bail(playerid, params[])

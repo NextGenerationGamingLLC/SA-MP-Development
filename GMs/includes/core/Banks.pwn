@@ -85,6 +85,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 
 		case BANK: {
@@ -268,7 +269,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			return ShowBankMenu(playerid);
 		}
 	}
-	return 1;
+	return 0;
 }
 
 ShowBankMenu(playerid, menu = 0) {

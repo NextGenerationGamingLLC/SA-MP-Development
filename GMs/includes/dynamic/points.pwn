@@ -126,8 +126,9 @@ CMD:editpoints(playerid, params[])
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 		case DIALOG_LISTPOINTS:
@@ -295,7 +296,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			SavePoint(GetPVarInt(playerid, "pEditingPoint"));
 		}
 	}
-	return 1;
+	return 0;
 }	
 
 ListPoints(playerid) {

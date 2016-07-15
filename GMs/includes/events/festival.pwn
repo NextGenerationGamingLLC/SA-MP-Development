@@ -69,8 +69,9 @@ CMD:giveticket(playerid, params[])
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	if(dialogid == DIALOG_BALLOON)
 	{
 		if(!response) return 1;
@@ -82,7 +83,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		Log("logs/credits.log", string), print(string);
 		SendClientMessageEx(playerid, COLOR_CYAN, "You have purchased a Balloon Ride ticket for 5 credits.");
 	}
-	return 1;
+	return 0;
 }
 
 CMD:corndog(playerid, params[])

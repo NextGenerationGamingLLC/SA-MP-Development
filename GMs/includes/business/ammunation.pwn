@@ -13,8 +13,9 @@ CMD:buygun(playerid, params[])
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	szMiscArray[0] = 0;
 	switch(dialogid)
 	{
@@ -96,5 +97,5 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 	}
-	return 1;
+	return 0;
 }

@@ -253,8 +253,9 @@ hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 	if(areaid == GetGVarInt("MusicArea")) StopAudioStreamForPlayerEx(playerid);
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	szMiscArray[0] = 0;
 	if(dialogid == SETSTATION)
 	{
@@ -730,7 +731,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response) ShowSetStation(playerid);
 	}
-	return 1;
+	return 0;
 }
 
 CMD:setstation(playerid, params[]) {

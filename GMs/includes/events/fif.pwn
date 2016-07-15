@@ -37,8 +37,9 @@
 
 #include <YSI\y_hooks>
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 		case DIALOG_FIFMENU:
@@ -160,7 +161,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			Misc_Save();
 		}
 	}
-	return 1;
+	return 0;
 }
 
 #if defined event_chancegambler

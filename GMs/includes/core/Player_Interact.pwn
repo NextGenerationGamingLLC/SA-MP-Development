@@ -359,6 +359,7 @@ Item_Getname(itemid) {
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 		case INTERACT_MAIN: {
 
@@ -607,8 +608,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Interact_ProcessPrescription(playerid);
 		}
 	}
-
-	return 1;
+	return 0;
 }
 
 Interact_GivePlayerValidWeapon(playerid, giveplayerid, weaponid, saleprice = 0) {

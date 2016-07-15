@@ -235,6 +235,8 @@ hook OnPlayerEnterCheckpoint(playerid){
 	return 1;
 }
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 		case DIALOG_DSVEH_CAUTION:
@@ -350,5 +352,5 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		
 		
 	}
-	return 1;
+	return 0;
 }

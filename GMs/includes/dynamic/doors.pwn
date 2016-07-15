@@ -36,8 +36,9 @@
 */
 
 #include <YSI\y_hooks>
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	if(dialogid == DOORLOCK)
 	{
 		if(response)
@@ -62,7 +63,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else SendClientMessageEx(playerid, COLOR_WHITE, "Password declined.");
 		}
 	}
-	return 1;
+	return 0;
 }
 
 stock CreateDynamicDoor(doorid)

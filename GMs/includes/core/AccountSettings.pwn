@@ -145,6 +145,7 @@ ShowAccountSettings(playerid, menu = 0) {
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 
 		case ACCOUNT_SETTINGS: {
@@ -260,8 +261,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 	}
-
-	return 1;
+	return 0;
 }
 
 CMD:tog(playerid, params[]) {
@@ -331,7 +331,5 @@ CMD:tog(playerid, params[]) {
         format(szMiscArray, sizeof(szMiscArray), "You have toggled %s on.", chatname);
         SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
     }
- 
- 
     return 1;
 }

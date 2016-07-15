@@ -80,6 +80,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 
 		case ATM: {
@@ -275,7 +276,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			return ShowATMMenu(playerid);
 		}
 	}
-	return 1;
+	return 0;
 }
 
 

@@ -381,8 +381,9 @@ PrisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	new string[128];
 	if(dialogid == DIALOG_REVERSE) {
 		new rPlayerID = GetPVarInt(playerid, "ReverseFromID");
@@ -420,4 +421,5 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		DeletePVar(rPlayerID, "ReverseReason");
 		DeletePVar(rPlayerID, "ReverseID");
 	}
+	return 0;
 }

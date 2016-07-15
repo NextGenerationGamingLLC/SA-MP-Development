@@ -155,9 +155,9 @@ ListInteriors(playerid, iType)
 	return ShowPlayerDialogEx(playerid, DIALOG_LIST_INTERIORS2, DIALOG_STYLE_LIST, "Interior List", szMiscArray, "Goto", "Cancel");
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	if(dialogid == DIALOG_LIST_INTERIORS && response)
 	{
 		ListInteriors(playerid, listitem);
@@ -173,7 +173,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	    SetPlayerInterior(playerid, floatround(InteriorsList[id][3]));
 	    SetPlayerPos(playerid, InteriorsList[id][0], InteriorsList[id][1], InteriorsList[id][2]);
 	}
-	return 1;
+	return 0;
 }
 
 CMD:interiors(playerid, params[])

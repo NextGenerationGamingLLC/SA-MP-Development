@@ -585,7 +585,6 @@ new ac_iPlayerKeySpam[MAX_PLAYERS],
 
 	ac_TotalShots[MAX_PLAYERS],
 	ac_HitsIssued[MAX_PLAYERS],
-	bool:ac_ACToggle[AC_MAX],
 	bool:ac_IsDead[MAX_PLAYERS],
 	bool:ac_BeingResynced[MAX_PLAYERS],
 	iShotVariance = 5;
@@ -596,6 +595,7 @@ hook OnGameModeInit() {
 	
 	/* Default On: */
 	ac_ACToggle[AC_NINJAJACK] = true;
+	ac_ACToggle[AC_DIALOGSPOOFING] = true;
 
 	AC_InitWeaponData();
 	ac_LagCompMode = GetServerVarAsInt("lagcompmode");
@@ -880,6 +880,7 @@ hook OnPlayerDeath(playerid, killerid, reason) {
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 
 		case DIALOG_AC_MAIN: {
@@ -916,7 +917,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			// else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot turn these on yet.");
 		}
 	}
-	return 1;
+	return 0;
 }
 
 
@@ -2330,7 +2331,7 @@ AC_Flag(playerid, processid, iExtraID = INVALID_PLAYER_ID, Float:fInfo = 0.0) {
 
 AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 
-	if(PlayerInfo[playerid][pAdmin] > 1) return 1;
+	if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] == 0) return 1;
 	if(!ac_ACToggle[processid]) return 1;
 	if(GetPVarType(playerid, "ACCooldown") && GetPVarInt(playerid, "ACCooldown") == processid) return 1;
 	SetPVarInt(playerid, "ACCooldown", processid);
@@ -2450,7 +2451,8 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 			case AC_DIALOGSPOOFING: {
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s is spoofing dialogs (dialog ID: %d).", GetPlayerNameEx(playerid), iExtraID);
 				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
-				szMiscArray = "[SYSTEM]: Please don't spoof dialogs. Admins were warned.";
+				Log("logs/anticheat.log", szMiscArray);
+				return 1;
 			}
 		
 		}
@@ -2947,11 +2949,22 @@ CMD:acflags(playerid, params[]) {
 	}
 	format(szTitle, sizeof(szTitle), "AC System Flags | {FFFF00}(%s)", GetPlayerNameEx(uPlayer));
 	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "---------- [ ANTICHEAT ] ----------");
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Jingles:");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "");
-	SendClientMessageEx(playerid, COLOR_GRAD1, "These stats are still in beta.");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "------------------------------ ");
+	return 1;
+}
+
+CMD:resetacflags(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	
+	new uPlayer;
+
+	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /resetacflags [playerid/name]");
+	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
+	for(new i; i < AC_MAX; ++i) arrAntiCheat[uPlayer][ac_iFlags][i] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "You removed %s's anticheat flags.", GetPlayerNameEx(uPlayer));
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "Administrator %s removed your anticheat flags.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
 	return 1;
 }
 

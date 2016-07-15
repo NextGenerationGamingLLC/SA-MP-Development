@@ -291,8 +291,9 @@ public PollDeleted(pollid)
 	PollInfo[pollid][poll_iID] = -1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 			/* 		
@@ -622,7 +623,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid date. Polls may only run for up to 99 days.");
 		}
 	}
-	return 1;
+	return 0;
 }
 /*
 	-- COMMANDS --

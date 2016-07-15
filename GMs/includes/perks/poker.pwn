@@ -1783,9 +1783,8 @@ CMD:leavetable(playerid, params[])
 
 CMD:placetable(playerid, params[])
 {
-	//if(PlayerInfo[playerid][pTable] == 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
-	if(PlayerInfo[playerid][pAdmin] >= 1337)
-	{
+	if(PlayerInfo[playerid][pTable] == 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
+
 	    if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this while being in an arena!");
 		if(GetPVarInt(playerid, "WatchingTV")) return SendClientMessageEx(playerid, COLOR_GREY, "You can not do this while watching TV!");
 		if(GetPVarInt(playerid, "Injured") == 1 || PlayerInfo[playerid][pHospital] > 0 || IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
@@ -1823,9 +1822,8 @@ CMD:placetable(playerid, params[])
 			}
 		}
 	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "This command has been disabled.");
+	else {
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a poker table.");
 	}
 	return 1;
 }

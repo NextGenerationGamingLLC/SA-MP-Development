@@ -2724,7 +2724,8 @@ new PlayerText:phone_PTextDraw[MAX_PLAYERS][24];
 
 
 /* AC */
-//new iLastDialogID[MAX_PLAYERS];
+new iLastDialogID[MAX_PLAYERS],
+	bool:ac_ACToggle[AC_MAX];
 
 /* Areas */
 new iVehEnterAreaID[MAX_VEHICLES];
@@ -2768,136 +2769,6 @@ new szFurnitureCategories[][] = {
 	"Walls",
 	"VIP"
 };
-// new FurnitureList[sizeof(szFurnitureCategories)];
-/*
-new const szFurnitureTextures[][][] = {
-	{"Beach sand", "19537", "beach_sfs", "ws_drysand"},
-	{"Desert sand", "16209", "des_cen", "des_dirt1"},
-	{"Grass", "19550", "beach_sfs", "Grass_128HV"},
-	{"Snow", "3915", "libertyhi3", "mp_snow"},
-
-	//Tags
-	{"Grove Tag", "18659", "spraytags", "grove"},
-	{"Kilo Tag", "18659", "spraytags", "kilotray"},
-	{"Rifa Tag", "18659", "spraytags", "rifa"},
-	{"Seville Tag", "18659", "spraytags", "seville"},
-	{"Temple Tag", "18659", "spraytags", "temple"},
-	{"Aztecas Tag", "18659", "spraytags", "aztecas"},
-	{"Frontyard Tag", "18659", "spraytags", "frontyard"},
-	{"Rollin Tag", "18659", "spraytags", "rollin"},
-
-	// Floors
-	{"Chique wooden floor", "13007", "sw_bankint", "woodfloor1"},
-	{"Wooden floor board", "5134", "wasteland_las2", "floorboard256128"},
-	{"Wooden screen", "8871", "vgsecnstrctfence", "ws_woodenscreen1"},
-	{"Rich Mahogany", "1219", "woodpanels", "planks01"},
-	{"Blue Wood", "18265", "w_town3cs_t", "sw_barnwoodblu"},
-	{"Barn wood", "12911", "sw_farm1", "sw_barnwood3"},
-	{"Bank wood", "13007", "sw_bankint", "woodfloor1"},
-	{"Wood pirate", "5775", "sunset01_lawn", "sw_woodflloor"},
-	{"Metal floor", "954", "vgsespras", "sf_spray_floor2"},
-	{"Spray floor", "11315", "sprayshp_sfse", "sf_spray_floor1"},
-	{"Orange floor tiles", "10368", "cathedral_sfs", "ws_floortiles4"},
-	{"Kitchen floor", "16150", "ufo_bar", "dinerfloor01_128"},
-	{"Bathroom floor", "5772", "stationtunnel", "mp_apt1_bathfloor1"},
-	{"Forest floor", "17092", "cuntwlandcarparks", "forestfloor256"},
-	{"Forest floor 2", "13686", "cunte1_lahills", "forestfloorgrass"},
-	{"Hay floor", "12911", "sw_farm1", "forestfloorbranch256"},
-
-	// Concrete
-	{"Concrete", "8459", "vgsland2", "Heliconcrete"},
-	{"Conrete manky", "4005", "lanblokd", "concretemanky"},
-	{"Metal panel", "5417", "idlewood6_tr", "metpat64"},
-
-	// Walls
-	{"Cracked wall", "18202", "w_towncs_t", "wall256hi"},
-	{"Blue wall", "10789", "xenon_sfse", "corugwall2"},
-	{"Red wall", "494", "vgslowbuild1", "corugwallnew6_128"},
-	{"Old wall", "18200", "w_town2cs_t", "newall3_16c128"},
-	{"Chapel wall", "8675", "wddngchpl02", "vgschapelwall02_128"},
-	{"Grey stone wall", "6056", "venice_law", "stonewall_la"},
-	{"Chique brick wall", "9495", "vict_sfw", "newall10_seamless"},
-	{"Wooden fence", "12924", "sw_block06", "ws_neatwoodfence"},
-	{"Chique white door", "8412", "wddngchpl", "vegdoor1_int"},
-	{"Blast door", "3267", "milbase", "a51_blastdoor"},
-	{"Yellow stripes", "5174", "warehus_las2", "ws_carparkwall2"},
-	{"Garage door", "5709", "melrose17_lawn", "LoadingDoorClean"},
-
-	// Garage Doors
-	{"Private parking", "399", "vgs_shops", "vgsclubwall02_128"},
-	{"Sheriff's Garage", "18202", "w_towncs_t", "mp_pinesheriff"},
-	//Nature
-	{"Water", "3947", "rczero_track", "waterclear256"},
-	{"Water 2", "6038", "lawwhitebuilds", "waterclear256"},
-
-	// Signs
-	{"Wedding sign", "8412", "wddngchpl", "wddngchapelsign01_256"},
-	{"Open 7 days till midnight", "8676", "wddngchplsign2", "wddngchapelsign06_128"},
-	{"PAWN shop", "8401", "vgshpground", "carparksign03_128"},
-	{"Motel sign", "8526", "vgbndsign", "vegasmotelsign01_128"},
-	{"Sex shop sign", "8842", "vgse24hr", "sexsign1_256"},
-	{"Pizza sign", "12924", "sw_block06", "pizzasign_LAe"},
-	{"Subway sign", "5768", "sunrise05_lawn", "hollysign02_LAw"},
-	{"Hippie Lady sign", "5731", "melrose15_lawn", "melrsign03_LA"},
-	{"Snack shop sign", "5729", "melrose19_lawn", "downtsign2_LA"},
-	{"Airport sign", "10838", "airwelcomesign_sfse", "ws_airwelcome1"},
-	{"Bahamas sign", "5631", "apartmentalpha", "aptsign01_LA"},
-	{"A51 Research sign", "16646", "a51_alpha", "a51_sign1"},
-
-	{"ArrowNoLeftSign", "19978", "samproadsigns", "ArrowNoLeftSign"},
-	{"ArrowNoRightSign", "19978", "samproadsigns", "ArrowNoRightSign"},
-	{"ArrowNoStraightSign", "19978", "samproadsigns", "ArrowNoStraightSign"},
-	{"Alumox64b", "19978", "samproadsigns", "Alumox64b"},
-	{"banding9_64HV", "19978", "samproadsigns", "banding9_64HV"},
-	{"ChevronLeftSign", "19978", "samproadsigns", "ChevronLeftSign"},
-	{"ChevronRightSign", "19978", "samproadsigns", "ChevronRightSign"},
-	{"ChevronLeftSign2", "19978", "samproadsigns", "ChevronLeftSign2"},
-	{"ChevronRightSign2", "19978", "samproadsigns", "ChevronRightSign2"},
-	{"BlueArrowLeft", "19978", "samproadsigns", "BlueArrowLeft"},
-	{"BlueArrowRight", "19978", "samproadsigns", "BlueArrowRight"},
-	{"BlueArrowStraight", "19978", "samproadsigns", "BlueArrowStraight"},
-	{"LeftTurnSign", "19978", "samproadsigns", "LeftTurnSign"},
-	{"RightTurnSign", "19978", "samproadsigns", "RightTurnSign"},
-	{"LeftCurveSign", "19978", "samproadsigns", "LeftCurveSign"},
-	{"RightCurveSign", "19978", "samproadsigns", "RightCurveSign"},
-	{"CrossIntersSign", "19978", "samproadsigns", "CrossIntersSign"},
-	{"TIntersectionSign", "19978", "samproadsigns", "TIntersectionSign"},
-	{"TrafficLightsSign", "19978", "samproadsigns", "TrafficLightsSign"},
-	{"StopSignAhead", "19978", "samproadsigns", "StopSignAhead"},
-	{"StopSign", "19978", "samproadsigns", "StopSign"},
-	{"DoNotEnterSign", "19978", "samproadsigns", "DoNotEnterSign"},
-	{"NoParkingSignL", "19978", "samproadsigns", "NoParkingSignL"},
-	{"NoParkingSignR", "19978", "samproadsigns", "NoParkingSignR"},
-	{"OneWaySignL", "19978", "samproadsigns", "OneWaySignL"},
-	{"OneWaySignR", "19978", "samproadsigns", "OneWaySignR"},
-	{"RoadClosedSign", "19978", "samproadsigns", "RoadClosedSign"},
-	{"RoadWorkZoneSign", "19978", "samproadsigns", "RoadWorkZoneSign"},
-	{"RoadWorkZoneSign2", "19978", "samproadsigns", "RoadWorkZoneSign2"},
-	{"WorkZoneSign", "19978", "samproadsigns", "WorkZoneSign"},
-	{"YieldSign", "19978", "samproadsigns", "YieldSign"},
-	{"WarningSign", "19978", "samproadsigns", "WarningSign"},
-	{"TowAwayZoneSign", "19978", "samproadsigns", "TowAwayZoneSign"},
-	{"TrafficCamera", "19978", "samproadsigns", "TrafficCamera"},
-	{"GreenBackgroundSign", "19978", "samproadsigns", "GreenBackgroundSign"},
-	{"MaterialText1", "19978", "samproadsigns", "MaterialText1"},
-	{"StreetSign", "19978", "samproadsigns", "StreetSign"},
-	{"SpeedLimit5Sign", "19978", "samproadsigns", "SpeedLimit5Sign"},
-	{"SpeedLimit10Sign", "19978", "samproadsigns", "SpeedLimit10Sign"},
-	{"SpeedLimit15Sign", "19978", "samproadsigns", "SpeedLimit15Sign"},
-	{"SpeedLimit20Sign", "19978", "samproadsigns", "SpeedLimit20Sign"},
-	{"SpeedLimit25Sign", "19978", "samproadsigns", "SpeedLimit25Sign"},
-	{"SpeedLimit30Sign", "19978", "samproadsigns", "SpeedLimit30Sign"},
-	{"SpeedLimit35Sign", "19978", "samproadsigns", "SpeedLimit35Sign"},
-	{"SpeedLimit40Sign", "19978", "samproadsigns", "SpeedLimit40Sign"},
-	{"SpeedLimit45Sign", "19978", "samproadsigns", "SpeedLimit45Sign"},
-	{"SpeedLimit50Sign", "19978", "samproadsigns", "SpeedLimit50Sign"},
-	{"SpeedLimit55Sign", "19978", "samproadsigns", "SpeedLimit55Sign"},
-	{"SpeedLimitBlankSign", "19978", "samproadsigns", "SpeedLimitBlankSign"},
-	{"Radiation", "19978", "samproadsigns", "Radiation"}
-};
-*/
-
-// for(new i; i < sizeof(szFurnitureCategories); ++i) FurnitureList[i] = mS_INVALID_LISTID;
 
 new Text:Furniture_TD[29],
 	PlayerText:Furniture_PTD[MAX_PLAYERS][4];

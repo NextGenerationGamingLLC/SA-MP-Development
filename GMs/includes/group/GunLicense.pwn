@@ -47,6 +47,7 @@ CMD:issuegunlicense(playerid, params[])
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 
 		case APPLY_GUN_LIC: {
@@ -60,8 +61,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			
 		}
 	}
-
-	return 1;
+	return 0;
 }
 
 SubmitGunLicApp(iPlayerID) {

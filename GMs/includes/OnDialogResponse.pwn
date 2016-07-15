@@ -32,19 +32,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// This is the first hooked OnDialogResponse. It's used to check dialog spoofing.
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(ac_ACToggle[AC_DIALOGSPOOFING]) {
+	    if(dialogid != iLastDialogID[playerid]) {
+	    	
+	    	AC_Process(playerid, AC_DIALOGSPOOFING, dialogid);
+	    	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM] Please delete your dialog CLEO.");
+	    	SetTimerEx("KickEx", 1000, 0, "i", playerid);
+	    	return 1; // Disable everything else.
+	    }
+	}
+    iLastDialogID[playerid] = -1;
+    return 0;
+}
+
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
-	// Dialog Spoofing Fix:
-	/*
-	new iSpfCheckID = GetPVarInt(playerid, "SpfDialogID");
-    if(dialogid != iSpfCheckID) {
-
-    	AC_Process(playerid, AC_DIALOGSPOOFING, dialogid);
-    	SendClientMessageToAll(COLOR_LIGHTRED, "DIALOG SPOOF");
-    }
-    SetPVarInt(playerid, "SpfDialogID", -2);
-    */
-
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	if(dialogid == DIALOG_DISABLED) return ShowPlayerDialogEx(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
 	new sendername[MAX_PLAYER_NAME];
 	new string[256];
@@ -9077,8 +9083,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(listitem == 0)
 			{
-				new szDialog[1400];
-				format(szDialog, sizeof(szDialog),
+				format(szMiscArray, sizeof(szMiscArray),
 				"Gold VIP (Credits: %s)\n\
 				Gold VIP Renewal (Credits: %s)\n\
 				Silver VIP (Credits: %s)\n\
@@ -9089,7 +9094,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				Boombox (Credits: %s)", number_format(ShopItems[0][sItemPrice]), number_format(ShopItems[1][sItemPrice]), number_format(ShopItems[2][sItemPrice]), number_format(ShopItems[3][sItemPrice]), number_format(ShopItems[4][sItemPrice]),
 				 number_format(ShopItems[5][sItemPrice]), number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]));
 
-				format(szDialog, sizeof(szDialog), "%s\n\
+				format(szMiscArray, sizeof(szMiscArray), "%s\n\
 				Paintball Tokens (Credits %s)\n\
 				EXP Token (Credits: %s)\n\
 				Fireworks x5 (Credits: %s)\n\
@@ -9099,27 +9104,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				House (Credits: %s)\n\
 				House Interior Change (Credits: %s)\n\
 				House Move (Credits: %s)\n\
-				(Micro) Reset Gift Timer (Credits: %s)",szDialog, number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), number_format(ShopItems[10][sItemPrice]),
+				(Micro) Reset Gift Timer (Credits: %s)",szMiscArray, number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), number_format(ShopItems[10][sItemPrice]),
 				number_format(ShopItems[11][sItemPrice]), number_format(ShopItems[12][sItemPrice]), number_format(ShopItems[13][sItemPrice]), number_format(ShopItems[14][sItemPrice]),
 				 number_format(ShopItems[15][sItemPrice]), number_format(ShopItems[16][sItemPrice]), number_format(ShopItems[17][sItemPrice]));
-				format(szDialog, sizeof(szDialog),
+				format(szMiscArray, sizeof(szMiscArray),
 				"%s\n(Micro) Advanced Healthcare (Credits: %s)\n\
 				(Micro) Super Advanced Healthcare (Credits: %s)\n\
 				(Micro) Rent a Car (Credits: %s)\n\
 				Platinum VIP (Credits: %s)\n\
 				Custom License Plate (Credits: %s)\n\
-				Additional Vehicle Slot (Credits: %s)",szDialog, number_format(ShopItems[18][sItemPrice]), number_format(ShopItems[19][sItemPrice]), number_format(ShopItems[20][sItemPrice]),
+				Additional Vehicle Slot (Credits: %s)", szMiscArray, number_format(ShopItems[18][sItemPrice]), number_format(ShopItems[19][sItemPrice]), number_format(ShopItems[20][sItemPrice]),
 				 number_format(ShopItems[21][sItemPrice]), number_format(ShopItems[22][sItemPrice]), number_format(ShopItems[23][sItemPrice]));
-				format(szDialog, sizeof(szDialog),
+				format(szMiscArray, sizeof(szMiscArray),
 				"%s\nGarage - Small (Credits: %s)\n\
 				Garage - Medium (Credits: %s)\n\
 				Garage - Large (Credits: %s)\n\
 				Garage - Extra Large (Credits: %s)\n\
 				Additional Toy Slot (Credits: %s)\n\
 				Hunger Voucher (Credits: %s)\n\
-				Spawn at Gold VIP+ room (Credits: %s)", szDialog, number_format(ShopItems[24][sItemPrice]), number_format(ShopItems[25][sItemPrice]), number_format(ShopItems[26][sItemPrice]),
+				Spawn at Gold VIP+ room (Credits: %s)", szMiscArray, number_format(ShopItems[24][sItemPrice]), number_format(ShopItems[25][sItemPrice]), number_format(ShopItems[26][sItemPrice]),
 				number_format(ShopItems[27][sItemPrice]), number_format(ShopItems[28][sItemPrice]), number_format(ShopItems[29][sItemPrice]), number_format(ShopItems[30][sItemPrice]));
-				format(szDialog, sizeof(szDialog),
+				format(szMiscArray, sizeof(szMiscArray),
 				"%s\n\
 				Restricted Last Name (NEW) (Credits: %s)\n\
 				Restricted Last Name (CHANGE) (Credits: %s)\n\
@@ -9134,10 +9139,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				Furniture Pack - Bronze (Credits: %s)\n\
 				Furniture Pack - Silver (Credits: %s)\n\
 				Furniture Pack - Gold (Credits: %s)",
-				szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
+				szMiscArray, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
 				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]),
 				number_format(ShopItems[41][sItemPrice]), number_format(ShopItems[42][sItemPrice]), number_format(ShopItems[43][sItemPrice]));
-				ShowPlayerDialogEx(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
+				ShowPlayerDialogEx(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szMiscArray, "Edit", "Exit");
 			}
 			if(listitem == 1)
 			{
@@ -9145,12 +9150,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			if(listitem == 2)
 			{
-				new szDialog[1024];
 				for(new i; i < MAX_MICROITEMS; i++)
 				{
-					format(szDialog, sizeof(szDialog), "%s\n%s (Credits: %s)", szDialog, mItemName[i], number_format(MicroItems[i]));
+					format(szMiscArray, sizeof(szMiscArray), "%s\n%s (Credits: %s)", szMiscArray, mItemName[i], number_format(MicroItems[i]));
 				}
-				ShowPlayerDialogEx(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_LIST, "Edit Micro Shop Prices", szDialog, "Edit", "Exit");
+				ShowPlayerDialogEx(playerid, DIALOG_EDITMICROSHOP, DIALOG_STYLE_LIST, "Edit Micro Shop Prices", szMiscArray, "Edit", "Exit");
 			}
 		}
 	}
@@ -9279,8 +9283,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return 1;
 			}
 		}
-		new szDialog[1300];
-		format(szDialog, sizeof(szDialog),
+		format(szMiscArray, sizeof(szMiscArray),
 		"Gold VIP (Credits: %s)\n\
 		Gold VIP Renewal (Credits: %s)\n\
 		Silver VIP (Credits: %s)\n\
@@ -9291,7 +9294,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		Boombox (Credits: %s)", number_format(ShopItems[0][sItemPrice]), number_format(ShopItems[1][sItemPrice]), number_format(ShopItems[2][sItemPrice]), number_format(ShopItems[3][sItemPrice]), number_format(ShopItems[4][sItemPrice]),
 		 number_format(ShopItems[5][sItemPrice]), number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]));
 
-		format(szDialog, sizeof(szDialog), "%s\n\
+		format(szMiscArray, sizeof(szMiscArray), "%s\n\
 		Paintball Tokens (Credits %s)\n\
 		EXP Token (Credits: %s)\n\
 		Fireworks x5 (Credits: %s)\n\
@@ -9301,27 +9304,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		House (Credits: %s)\n\
 		House Interior Change (Credits: %s)\n\
 		House Move (Credits: %s)\n\
-		(Micro) Reset Gift Timer (Credits: %s)",szDialog, number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), number_format(ShopItems[10][sItemPrice]),
+		(Micro) Reset Gift Timer (Credits: %s)", szMiscArray, number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), number_format(ShopItems[10][sItemPrice]),
 		number_format(ShopItems[11][sItemPrice]), number_format(ShopItems[12][sItemPrice]), number_format(ShopItems[13][sItemPrice]), number_format(ShopItems[14][sItemPrice]), number_format(ShopItems[15][sItemPrice]),
 		number_format(ShopItems[16][sItemPrice]), number_format(ShopItems[17][sItemPrice]));
-		format(szDialog, sizeof(szDialog),
+		format(szMiscArray, sizeof(szMiscArray),
 		"%s\n(Micro) Advanced Healthcare (Credits: %s)\n\
 		(Micro) Super Advanced Healthcare (Credits: %s)\n\
 		(Micro) Rent a Car (Credits: %s)\n\
 		Platinum VIP (Credits: %s)\n\
 		Custom License Plate (Credits: %s)\n\
-		Additional Vehicle Slot (Credits: %s)",szDialog, number_format(ShopItems[18][sItemPrice]), number_format(ShopItems[19][sItemPrice]), number_format(ShopItems[20][sItemPrice]), number_format(ShopItems[21][sItemPrice]),
+		Additional Vehicle Slot (Credits: %s)", szMiscArray, number_format(ShopItems[18][sItemPrice]), number_format(ShopItems[19][sItemPrice]), number_format(ShopItems[20][sItemPrice]), number_format(ShopItems[21][sItemPrice]),
 		 number_format(ShopItems[22][sItemPrice]), number_format(ShopItems[23][sItemPrice]));
-		format(szDialog, sizeof(szDialog),
+		format(szMiscArray, sizeof(szMiscArray),
 		"%s\nGarage - Small (Credits: %s)\n\
 		Garage - Medium (Credits: %s)\n\
 		Garage - Large (Credits: %s)\n\
 		Garage - Extra Large (Credits: %s)\n\
 		Additional Toy Slot (Credits: %s)\n\
 		Hunger Voucher (Credits: %s)\n\
-		Spawn at Gold VIP+ room (Credits: %s)", szDialog, number_format(ShopItems[24][sItemPrice]), number_format(ShopItems[25][sItemPrice]), number_format(ShopItems[26][sItemPrice]),
+		Spawn at Gold VIP+ room (Credits: %s)", szMiscArray, number_format(ShopItems[24][sItemPrice]), number_format(ShopItems[25][sItemPrice]), number_format(ShopItems[26][sItemPrice]),
 		number_format(ShopItems[27][sItemPrice]), number_format(ShopItems[28][sItemPrice]), number_format(ShopItems[29][sItemPrice]), number_format(ShopItems[30][sItemPrice]));
-		format(szDialog, sizeof(szDialog),
+		format(szMiscArray, sizeof(szMiscArray),
 		"%s\n\
 		Restricted Last Name (NEW) (Credits: %s)\n\
 		Restricted Last Name (CHANGE) (Credits: %s)\n\
@@ -9336,10 +9339,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		Furniture Pack - Bronze (Credits: %s)\n\
 		Furniture Pack - Silver (Credits: %s)\n\
 		Furniture Pack - Gold (Credits: %s)",
-		szDialog, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
+		szMiscArray, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
 		number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]),
 		number_format(ShopItems[41][sItemPrice]), number_format(ShopItems[42][sItemPrice]), number_format(ShopItems[43][sItemPrice]));
-		ShowPlayerDialogEx(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szDialog, "Edit", "Exit");
+		ShowPlayerDialogEx(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szMiscArray, "Edit", "Exit");
 	}
 	if(dialogid == DIALOG_EDITSHOP3)
 	{
@@ -13458,5 +13461,5 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	if(dialogid == DIALOG_MEDIC_LIST) {
 		if(response) Medic_GetPatient(playerid, ListItemTrackId[playerid][listitem]);
 	}
-	return 1;
+	return 0;
 }

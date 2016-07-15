@@ -15,8 +15,9 @@ enum e_JobVehData {
 new arrJobVehData[MAX_JOB_VEHICLES][e_JobVehData];
 
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 		case DIALOG_JOBS_EDITTYPE:
@@ -161,7 +162,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 
 	}
-	return 1;
+	return 0;
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate) {

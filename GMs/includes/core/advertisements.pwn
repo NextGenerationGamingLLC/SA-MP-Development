@@ -69,8 +69,9 @@ stock ShowAdMuteFine(playerid)
 }
 
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 		case DIALOG_ADCATEGORY:
@@ -364,7 +365,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 	}
-	return 1;
+	return 0;
 }
 
 CMD:ads(playerid, params[]) {

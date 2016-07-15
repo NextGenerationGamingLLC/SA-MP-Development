@@ -83,6 +83,7 @@ hook OnGameModeInit() {
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 
 		case DIALOG_FIRES: {
@@ -91,6 +92,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				arrFires[ListItemTrackId[playerid][listitem]][fire_fPos][1], arrFires[ListItemTrackId[playerid][listitem]][fire_fPos][2]);
 		}
 	}
+	return 0;
 }
 
 stock CreateTypeFire(iTypeID) {
@@ -417,6 +419,6 @@ CMD:viewfires(playerid, params[]) {
 		}
 	}
 	if(!x) SendClientMessageEx(playerid, COLOR_GRAD1, "There are no fires.");
-	else ShowPlayerDialog(playerid, DIALOG_FIRES, DIALOG_STYLE_LIST, "Fires", szMiscArray, "Teleport", "Cancel");
+	else ShowPlayerDialogEx(playerid, DIALOG_FIRES, DIALOG_STYLE_LIST, "Fires", szMiscArray, "Teleport", "Cancel");
 	return 1;
 }

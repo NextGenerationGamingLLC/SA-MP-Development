@@ -173,8 +173,9 @@ stock GetJobLevel(playerid, job)
 	return jlevel;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid)
 	{
 		case JOBHELPMENU:
@@ -386,7 +387,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 		}
 	}
-	return 1;
+	return 0;
 }
 
 CMD:join(playerid, params[])

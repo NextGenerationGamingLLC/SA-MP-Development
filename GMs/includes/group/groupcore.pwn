@@ -741,8 +741,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	}
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	new sendername[MAX_PLAYER_NAME];
 	new string[128];
 	szMiscArray[0] = 0;
@@ -2829,7 +2830,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 		// END DYNAMIC GROUP CODE
 	}
-	return 1;
+	return 0;
 }
 
 hook OnVehicleSpawn(vehicleid)

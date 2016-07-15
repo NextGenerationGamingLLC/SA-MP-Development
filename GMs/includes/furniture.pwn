@@ -32,7 +32,7 @@ enum eFurnitureCatalog {
 }
 new arrFurnitureCatalog[MAX_CATALOG][eFurnitureCatalog];
 
-new FurnitureSystem = 0,
+new FurnitureSystem = 1,
 	textm_Selected3DTextureMenu[MAX_PLAYERS] = { -1, ...},
 	textm_SelectedTile[MAX_PLAYERS];
 
@@ -169,6 +169,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 		
 		case DIALOG_FURNITURE: {
@@ -542,7 +543,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 	}
-	return 1;
+	return 0;
 }
 
 public OnPlayerSelectDynamicObject(playerid, objectid, modelid, Float:x, Float:y, Float:z) {
@@ -2625,7 +2626,7 @@ CMD:furnituresystem(playerid, params[]) {
 		FurnitureSystem = 0;
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) disabled the Furniture System", GetPlayerNameEx(playerid), playerid);
 		ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-	} 
+	}
 	else {
 		FurnitureSystem = 1;
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) enabled the Furniture System", GetPlayerNameEx(playerid), playerid);

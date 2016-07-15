@@ -194,6 +194,7 @@ CMD:amanagerivals(playerid, params[]) {
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 
 		case DIALOG_GROUP_RIVALS: {
@@ -359,7 +360,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);
 		}
 	}
-	return 1;
+	return 0;
 }
 
 Rivalry_GetRivalList(playerid, iGroupID) {

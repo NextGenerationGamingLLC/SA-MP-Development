@@ -48,8 +48,9 @@ PayGroupMember(i, month, day, year)
 	}
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 		case DIALOG_GROUP_PLISTPAY: {
 
@@ -115,7 +116,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			return GovEditGroupBudget(playerid);
 		}
 	}
-	return 1;
+	return 0;
 }
 
 

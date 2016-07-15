@@ -39,6 +39,7 @@
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	switch(dialogid) {
 
 		case DIALOG_CALLS_MENU: {
@@ -85,7 +86,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			DeletePVar(playerid, "CALL_CHOICE");
 		}
 	}
-	return 1;
+	return 0;
 }
 
 stock SendCallToQueue(callfrom, description[], area[], mainzone[], type, vehicleid = INVALID_VEHICLE_ID)
