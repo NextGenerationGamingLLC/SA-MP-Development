@@ -39,6 +39,7 @@ new FurnitureSystem = 1,
 enum TextMenuParams {
 
 	Float:textm_fRot,
+	bool:textm_bExists,
 	textm_iTiles,
 	textm_iObjectID[MAX_TILES],
 	Float:textm_OrigPosX[MAX_TILES],
@@ -126,44 +127,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 		}
 		return 1;
 	}
-	/*
-	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid)) {
-
-		new areaid[3],
-			iObjectID,
-			iState,
-			Float:fPos[6],
-			szData[3];
-
-		GetPlayerDynamicAreas(playerid, areaid);
-		for(new i; i < sizeof(areaid); ++i) {
-
-			Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
-			iObjectID = szData[1];
-			iState = szData[2];
-
-			if(IsValidDynamicObject(iObjectID)) {
-				if(IsDynamicObjectMoving(iObjectID)) return 1;
-				GetDynamicObjectPos(iObjectID, fPos[0], fPos[1], fPos[2]);
-				GetDynamicObjectRot(iObjectID, fPos[3], fPos[4], fPos[5]);
-				if(IsPlayerInRangeOfPoint(playerid, 3.0, fPos[0], fPos[1], fPos[2])) {
-					switch(iState) {
-						case 0: {
-							szData[2] = 1;
-							MoveDynamicObject(iObjectID, fPos[0] + 0.01, fPos[1], fPos[2], 0.03, fPos[3], fPos[4], fPos[5] + 90.0);
-							Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
-						}
-						case 1: {
-							szData[2] = 0;
-							MoveDynamicObject(iObjectID, fPos[0] - 0.01, fPos[1], fPos[2], 0.03, fPos[3], fPos[4], fPos[5] - 90.0);
-							Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid[i], E_STREAMER_EXTRA_ID, szData, sizeof(szData));
-						}
-					}
-				}
-			}
-		}
-	}
-	*/
 	return 1;
 }
 
@@ -1204,6 +1167,7 @@ ProcessFurniture(type, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z, F
 	switch(type) {
 
 		case 0: {
+			
 			HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, X, Y, Z, RX, RY, RZ, HouseInfo[iHouseID][hIntVW]);
 			ProcessFurnitureTexture(iHouseID, iSlotID, HouseInfo[iHouseID][hFurniture][iSlotID], 0, text0, col0, 0);
 			ProcessFurnitureTexture(iHouseID, iSlotID, HouseInfo[iHouseID][hFurniture][iSlotID], 1, text1, col1, 0);
@@ -1317,9 +1281,9 @@ Show3DTextureMenuHelp(playerid) {
 Create3DTextureMenu(playerid, Float:X, Float:Y, Float:Z, Float:R, tiles) {
 
 	if(!(0 < tiles <= MAX_TILES)) return -1;
-	for(new i = 0; i < MAX_PLAYERS; i++) {
+	foreach(new i : Player) {
 		
-	    if(IsValidDynamicObject(TextureMenuInfo[i][textm_iObjectID][i])) continue;
+	    if(TextureMenuInfo[i][textm_bExists]) continue;
 
      	new Float:NextX,
      		Float:NextY,
@@ -1340,6 +1304,7 @@ Create3DTextureMenu(playerid, Float:X, Float:Y, Float:Z, Float:R, tiles) {
    			TextureMenuInfo[i][textm_iObjectID][b] = CreateDynamicObject(2661, X + NextX * idx, Y + NextY * idx, Z + 1.65 - 0.55 * (b - binc), 0, 0, R, .playerid = playerid);
       		GetDynamicObjectPos(TextureMenuInfo[i][textm_iObjectID][b], TextureMenuInfo[i][textm_OrigPosX][b], TextureMenuInfo[i][textm_OrigPosY][b], TextureMenuInfo[i][textm_OrigPosZ][b]);
 		}
+		TextureMenuInfo[i][textm_bExists] = true;
 		TextureMenuInfo[i][textm_iPlayerID] = playerid;
 		Streamer_Update(playerid);
 		return i;
@@ -1349,9 +1314,9 @@ Create3DTextureMenu(playerid, Float:X, Float:Y, Float:Z, Float:R, tiles) {
 
 Set3DTextureMenuTile(i, tile, index, model, txd[], texture[], selectcolor, unselectcolor) {
 
-	if(!IsValidDynamicObject(TextureMenuInfo[i][textm_iObjectID][0])) return 0;
+	if(!TextureMenuInfo[i][textm_bExists]) return 0;
 	if(!(0 < tile <= TextureMenuInfo[i][textm_iTiles])) return 0;
-	if(TextureMenuInfo[i][textm_iObjectID][tile] == INVALID_OBJECT_ID) return 0;
+	if(!IsValidDynamicObject(TextureMenuInfo[i][textm_iObjectID][tile])) return 0;
 	TextureMenuInfo[i][textm_iSelectColor][tile] = selectcolor;
 	TextureMenuInfo[i][textm_iUnselectColor][tile] = unselectcolor;
 	if(textm_SelectedTile[TextureMenuInfo[i][textm_iPlayerID]] == tile) SetDynamicObjectMaterial(TextureMenuInfo[i][textm_iObjectID][tile], index, model, txd, texture, selectcolor);
@@ -1361,7 +1326,7 @@ Set3DTextureMenuTile(i, tile, index, model, txd[], texture[], selectcolor, unsel
 
 Select3DTextureMenu(playerid, i) {
 
-	if(!IsValidDynamicObject(TextureMenuInfo[i][textm_iObjectID][0])) return -1;
+	if(!TextureMenuInfo[i][textm_bExists]) return -1;
 	if(TextureMenuInfo[i][textm_iPlayerID] != playerid) return -1;
 	if(textm_Selected3DTextureMenu[playerid] != -1) CancelSelect3DTextureMenu(playerid);
 
@@ -1403,13 +1368,14 @@ CancelSelect3DTextureMenu(playerid) {
 
 Destroy3DTextureMenu(i) {
 
-    if(!IsValidDynamicObject(TextureMenuInfo[i][textm_iObjectID][0])) return -1;
+    if(!TextureMenuInfo[i][textm_bExists]) return -1;
     if(textm_Selected3DTextureMenu[TextureMenuInfo[i][textm_iPlayerID]] == i) CancelSelect3DTextureMenu(TextureMenuInfo[i][textm_iPlayerID]);
     
     for(new idx = 0; idx < TextureMenuInfo[i][textm_iTiles]; idx++) {
 		DestroyDynamicObject(TextureMenuInfo[i][textm_iObjectID][idx]);
 		TextureMenuInfo[i][textm_iObjectID][idx] = INVALID_OBJECT_ID;
 	}
+	TextureMenuInfo[i][textm_bExists] = false;
  	TextureMenuInfo[i][textm_iTiles] = 0;
  	TextureMenuInfo[i][textm_AddX] = 0.0;
  	TextureMenuInfo[i][textm_AddY] = 0.0;
@@ -1674,7 +1640,7 @@ OnPlayerKeyStateChangeMenu(playerid,newkeys,oldkeys) {
 			PlayerTextureMenuInfo[playerid][ptextm_CurrTextureIndex] += 16;
 
 			// Too high of entries set default
-			if(PlayerTextureMenuInfo[playerid][ptextm_CurrTextureIndex] >= sizeof(arrTextures) - 1) PlayerTextureMenuInfo[playerid][ptextm_CurrTextureIndex] = 1;
+			if(PlayerTextureMenuInfo[playerid][ptextm_CurrTextureIndex] >= sizeof(arrTextures)-1) PlayerTextureMenuInfo[playerid][ptextm_CurrTextureIndex] = 1;
 			else if(sizeof(arrTextures) - 1 - PlayerTextureMenuInfo[playerid][ptextm_CurrTextureIndex] - 16 < 0) PlayerTextureMenuInfo[playerid][ptextm_CurrTextureIndex] = sizeof(arrTextures) - 16 - 1;
 
 			// Update the textures

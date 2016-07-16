@@ -2339,8 +2339,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 	// if(processid == AC_SPEEDHACKS && arrAntiCheat[playerid][ac_iFlags][processid] != 1 && !(arrAntiCheat[playerid][ac_iFlags][processid] % 20)) return 1;
 	if(arrAntiCheat[playerid][ac_iFlags][processid] == 1 || arrAntiCheat[playerid][ac_iFlags][processid] % 5) { // prevent spamming
 		
-		new szString[128],
-			szQuery[512];
+		new	szQuery[512];
 
 		szMiscArray[0] = 0;
 		switch(processid) {
@@ -2348,20 +2347,21 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 			case AC_AIMBOT: {
 
 				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using Aimbot", GetPlayerNameEx(playerid));
-
+				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 				new iTotalMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID],
 					iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] - arrWeaponDataAC[playerid][ac_iFakeMiss][iExtraID];
 
 				iRelevantMiss++; // Can't divide by 0;
 				new Float:fRatio = arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] / iRelevantMiss;
 
-				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `weaponid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
+				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
 					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
 				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				return 1;
 
 			}
 			case AC_CBUG: {
-				// format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is C-Bugging", GetPlayerNameEx(playerid));
+
 				PlayerPlaySound(playerid, 1055, 0.0, 0.0, 0.0);
 				if(arrLastBulletData[playerid][acl_Valid] && floatabs(arrLastBulletData[playerid][acl_fHitPos][0]) > 1.0 && floatabs(arrLastBulletData[playerid][acl_fPos][1]) > 1.0) {
 					SetPlayerFacingAngle(playerid, AngleBetweenPoints(
@@ -2378,14 +2378,14 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 				ClearAnimations(playerid, 1);
 				ApplyAnimation(playerid, "PED", "IDLE_stance", 4.1, 0, 0, 0, 0, 0, 1);
 				defer AC_ResetAnim(playerid);
-				// FreezeSyncData(playerid, true);
 				GivePlayerWeapon(playerid, w, 0);
-
-				szMiscArray = "[SYSTEM]: Please do not C-Bug / CS.";
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Please do not C-Bug / CS.");
 				return 1;
 			}
-			case AC_RANGEHACKS: {
+			case AC_PROAIM: {
+
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using Pro-Aim.", GetPlayerNameEx(playerid));
+				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 
 				new iTotalMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID],
 					iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] - arrWeaponDataAC[playerid][ac_iFakeMiss][iExtraID];
@@ -2393,10 +2393,26 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 				iRelevantMiss++; // Can't divide by 0;
 				new Float:fRatio = arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] / iRelevantMiss;
 
-				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using range-hacks (ProAim)", GetPlayerNameEx(playerid));
-				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `weaponid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
+				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
 					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
 				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				return 1;
+			}
+			case AC_RANGEHACKS: {
+
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using range-hacks.", GetPlayerNameEx(playerid));
+				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+
+				new iTotalMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID],
+					iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] - arrWeaponDataAC[playerid][ac_iFakeMiss][iExtraID];
+
+				iRelevantMiss++; // Can't divide by 0;
+				new Float:fRatio = arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] / iRelevantMiss;
+
+				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
+					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				return 1;
 			}
 			case AC_SPEEDHACKS: format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using speed hacks (B2, B5)", GetPlayerNameEx(playerid));
 			case AC_VEHICLEHACKS: format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using vehicle hacks.", GetPlayerNameEx(playerid));
@@ -2414,51 +2430,33 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 				GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
 				SetPlayerPos(playerid, fPos[0] + 1.0, fPos[1] + 1.0, fPos[2]);
 				PlayAnimEx(playerid, "PED", "BIKE_fallR", 4.1, 0, 1, 1, 1, 0, 1);
-				szMiscArray = "[SYSTEM]: Please do not car surf.";
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Please do not car surf.");
 				return 1;
 			}
 			case AC_NINJAJACK: {
 
 				defer AC_RevivePlayer(playerid);
-				/*
-				AC_FinePlayer(iExtraID, processid);
-				SetTimerEx("KickEx", 1000, 0, "i", iExtraID);
-				*/
-				szMiscArray = "[SYSTEM]: You will be revived from the ninja-jacking in a few seconds.";
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
-				szString = "[SYSTEM]: You were caught plausibly ninja-jacking. Admins were warned.";
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You will be revived from the ninja-jacking in a few seconds.");
+				SendClientMessageEx(iExtraID, COLOR_LIGHTRED, "[SYSTEM]: You were caught plausibly ninja-jacking. Admins were warned.");
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s has plausibly ninja-jacked %s.", GetPlayerNameEx(iExtraID), GetPlayerNameEx(playerid));
 			}
 			case AC_AIRBREAKING: format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is AirBreaking.", GetPlayerNameEx(playerid));
 			case AC_HEALTHARMORHACKS: {
 				
-				// AC_FinePlayer(playerid, processid);
-				// SetTimerEx("KickEx", 1000, 0, "i", iExtraID);
-				szMiscArray = "[SYSTEM]: You were kicked for plausibly health/armor hacking.";
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for plausibly health/armor hacking.");
+				SetTimerEx("KickEx", 1000, 0, "i", iExtraID);
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s was kicked for (plausibly!) health/armor hacking. Refrain from taking more action until fully tested.", GetPlayerNameEx(playerid));
-			}
-			case AC_PROAIM: {
-
-				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using Pro-Aim", GetPlayerNameEx(playerid));
-
-				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `weaponid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
-					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], -1, -1, -1);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			}
-			
+			}			
 			case AC_DIALOGSPOOFING: {
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s is spoofing dialogs (dialog ID: %d).", GetPlayerNameEx(playerid), iExtraID);
-				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 				Log("logs/anticheat.log", szMiscArray);
-				return 1;
 			}
 		
 		}
-		// format(szMiscArray, sizeof(szMiscArray), "%s %s (ID: %d)", szMiscArray, GetPlayerNameExt(playerid), playerid);
 		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
-		if(iExtraID != INVALID_PLAYER_ID) SendClientMessageEx(iExtraID, COLOR_LIGHTRED, szString);
+		format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
+			PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, -1, -1, -1, -1, 0.0);
+		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
 	return 1;
 }

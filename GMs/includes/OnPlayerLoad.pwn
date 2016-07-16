@@ -726,7 +726,7 @@ public OnPlayerLoad(playerid)
 
 	if(PlayerInfo[playerid][pTut] != -1) 
 	{
-		if(PlayerInfo[playerid][pTut] < 15) PlayerInfo[playerid][pTut] = 0;
+		if(PlayerInfo[playerid][pTut] < 14) PlayerInfo[playerid][pTut] = 0;
 		AdvanceTutorial(playerid);
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 2)

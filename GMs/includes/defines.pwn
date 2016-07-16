@@ -398,6 +398,9 @@ native IsValidVehicle(vehicleid);
 #define 		SPAWNATHOME_CHOICE			(691)
 #define 		D_TRUCKDELIVER_WEPCHOICE	(692)
 
+#define 		DIALOG_FS_ELEVATOR1			(876)
+#define 		DIALOG_FS_ELEVATOR2			(877)
+
 #define         RESTAURANTMENU              (930)
 #define         RESTAURANTMENU2             (931)
 #define			STOREMENU					(940)
@@ -1238,6 +1241,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_NATDIS_LOADMAPS			7009
 #define 		DIALOG_FIRES 					7010
 #define 		DIALOG_NATION_CHECK				7011
+
 // GangTags
 #define 			GANGTAG_TIME				60000
 

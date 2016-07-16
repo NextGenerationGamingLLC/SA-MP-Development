@@ -219,8 +219,8 @@ CharacterCreation(playerid)
 				PlayerInfo[playerid][pModel]);
 			return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_CREATION, DIALOG_STYLE_TABLIST, "NG:RP | Character Creation", szMiscArray, "Select", "");
 		}
-		case 14:
-		{
+		case 14: {
+
 			DestroyActor(GetPVarInt(playerid, "pActor"));
 			TogglePlayerSpectating(playerid, false);
 			SetPlayerPos(playerid, 1715.0687, -1899.5597, 13.5665);
@@ -780,7 +780,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 			    format(szMiscArray, sizeof(szMiscArray), "Nobody");
 				strmid(PlayerInfo[playerid][pReferredBy], szMiscArray, 0, strlen(szMiscArray), MAX_PLAYER_NAME);
-				PlayerInfo[playerid][pTut]++;
+				PlayerInfo[playerid][pTut] = 14;
 				AdvanceTutorial(playerid);
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information!");
 			}

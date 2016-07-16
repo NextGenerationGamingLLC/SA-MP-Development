@@ -36,12 +36,14 @@
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	if(ac_ACToggle[AC_DIALOGSPOOFING]) {
-	    if(dialogid != iLastDialogID[playerid]) {
+		if(dialogid != iLastDialogID[playerid]) {
 	    	
-	    	AC_Process(playerid, AC_DIALOGSPOOFING, dialogid);
-	    	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM] Please delete your dialog CLEO.");
-	    	SetTimerEx("KickEx", 1000, 0, "i", playerid);
-	    	return 1; // Disable everything else.
+	    	if(dialogid == DIALOG_FS_ELEVATOR1 || dialogid == DIALOG_FS_ELEVATOR2) { }// For dialogs called from filterscripts.
+	    	else {
+		    	AC_Process(playerid, AC_DIALOGSPOOFING, dialogid);
+		    	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM] Please delete your dialog CLEO.");
+		    	SetTimerEx("KickEx", 1000, 0, "i", playerid);
+		    }
 	    }
 	}
     iLastDialogID[playerid] = -1;
@@ -198,6 +200,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
 			}
 			else {
+				PlayerInfo[playerid][pTut]++;
+				AdvanceTutorial(playerid);
 				format(string, sizeof(string), "Nobody");
 				strmid(PlayerInfo[playerid][pReferredBy], string, 0, strlen(string), MAX_PLAYER_NAME);
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Thanks for filling in all the information, now you can proceed to the tutorial!");

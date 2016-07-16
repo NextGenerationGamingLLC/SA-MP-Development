@@ -145,7 +145,7 @@ CMD:gmotd(playerid, params[])
 		    strmid(gMOTD[iGroupID][iSlot-1], string, 0, strlen(string), 128);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the group MOTD.");
 			SaveGroup(iGroupID);
-			format(string,sizeof(string),"%s (%d) has changed MOTD for %s to: %s in slot %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), gMOTD[iSlot], string, iSlot);
+			format(string,sizeof(string),"%s (%d) has changed MOTD for %s to: %s in slot %i", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), gMOTD[iGroupID][iSlot-1], string, iSlot);
 			GroupLog(iGroupID, string);
 		} else SendClientMessageEx(playerid, COLOR_GREY, "Invalid slot specified.");
 	} else SendClientMessageEx(playerid, COLOR_GREY, "Only group leaders may use this command.");

@@ -5750,7 +5750,7 @@ public ReferralSecurity(playerid)
 			ClearChatbox(playerid);
 
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Thanks for filling in all the information!");
-			PlayerInfo[playerid][pTut]++;
+			PlayerInfo[playerid][pTut] = 14;
 			AdvanceTutorial(playerid);
 		}
 	}
