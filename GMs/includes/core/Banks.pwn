@@ -152,6 +152,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(szMiscArray, sizeof(szMiscArray), "  You have withdrawn $%s from your account. ", number_format(iAmount));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 
+				if(PlayerInfo[playerid][pTut] == 16)
+				{
+					PlayerInfo[playerid][pTut]++;
+					AdvanceTutorial(playerid);
+				}
+
 				OnPlayerStatsUpdate(playerid);
 
 				DeletePVar(playerid, "BankWithdraw");

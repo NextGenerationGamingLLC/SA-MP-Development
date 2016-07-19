@@ -320,13 +320,7 @@ CMD:tog(playerid, params[]) {
             case 7: PhoneOnline[playerid] = 0;
             case 15: advisorchat[playerid] = 1;
             case 19: for(new i; i < sizeof(TD_ChatBox); ++i) PlayerTextDrawShow(playerid, TD_ChatBox[i]);
-            case 23:
-            {
-                TextDrawShowForPlayer(playerid, TD_RepFam);
- 
-                // Add checks here.
-                if(GetPVarInt(playerid, "RepFam_TL")) TextDrawShowForPlayer(playerid, TD_RepFam);
-            }
+            case 23: if(GetPVarInt(playerid, "RepFam_TL")) TextDrawShowForPlayer(playerid, TD_RepFam);
         }
         format(szMiscArray, sizeof(szMiscArray), "You have toggled %s on.", chatname);
         SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);

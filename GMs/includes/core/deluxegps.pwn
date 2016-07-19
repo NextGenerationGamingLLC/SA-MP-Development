@@ -258,6 +258,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 			DeletePVar(playerid,"gpsName");
 			DisablePlayerCheckpoint(playerid);
+			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}
 		case CHECKPOINT_BUSINESS:
 		{
@@ -265,6 +266,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", Businesses[id][bName]);
 			SendClientMessageEx(playerid,COLOR_WHITE, szMiscArray);
 			DisablePlayerCheckpoint(playerid);
+			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}
 		case CHECKPOINT_JOB:
 		{
@@ -272,13 +274,16 @@ hook OnPlayerEnterCheckpoint(playerid)
 			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", GetJobName(arrJobData[id][job_iType]));
 			SendClientMessageEx(playerid,COLOR_WHITE, szMiscArray);
 			DisablePlayerCheckpoint(playerid);
+			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}
+
 		case CHECKPOINT_HOUSE:
 		{
 			new id = GetPVarInt(playerid,"gpsHouse");
 			format(szMiscArray, sizeof(szMiscArray), "You have arrived at house #{33CCFF}%i{FFFFFF}.", id);
 			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 			DisablePlayerCheckpoint(playerid);
+			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}
 		case CHECKPOINT_DOOR:
 		{
@@ -286,6 +291,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 			format(szMiscArray, sizeof(szMiscArray), "You have arrived at door #%i ({33CCFF}%s{FFFFFF}).", id,DDoorsInfo[id][ddDescription]);
 			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 			DisablePlayerCheckpoint(playerid);
+			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 		}
 		/*
 		case CHECKPOINT_FAVORITES:

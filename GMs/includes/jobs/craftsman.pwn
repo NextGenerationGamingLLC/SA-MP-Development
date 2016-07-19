@@ -1064,7 +1064,7 @@ CMD:craft(playerid, params[])
 						}
 						else
 						{
-							SendClientMessageEx(playerid, COLOR_GREY, "You can't hold anymore syringes.");
+							return SendClientMessageEx(playerid, COLOR_GREY, "You can't hold anymore syringes.");
 						}
 					}
 				case 17:

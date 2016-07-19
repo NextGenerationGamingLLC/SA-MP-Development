@@ -5254,6 +5254,9 @@ public Group_QueryFinish(iType, iExtraID) {
 			cache_get_field_content(iIndex, "Bug", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iBugAccess] = strval(szResult);
 
+			cache_get_field_content(iIndex, "Find", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iFindAccess] = strval(szResult);
+
 			cache_get_field_content(iIndex, "RadioColour", szResult, MainPipeline);
 			arrGroupData[iIndex][g_hRadioColour] = strval(szResult);
 
@@ -6611,8 +6614,8 @@ public GetShiftInfo(playerid, szMessage[])
 
 	if(playerid == INVALID_PLAYER_ID)
 	{
-		if(needs - signedup > 0) format(string, sizeof(string), "%s The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
-		else format(string, sizeof(string), "%s The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", szMessage, shift, signedup, needs);
+		if(needs - signedup > 0) format(string, sizeof(string), "The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
+		else format(string, sizeof(string), "The current shift is %s. We have {00FF00}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
 		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pAdmin] >= 2) SendClientMessageEx(i, COLOR_WHITE, string);

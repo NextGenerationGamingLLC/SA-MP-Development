@@ -64,7 +64,7 @@ CheckPointCheck(iTargetID)  {
 	if(GetPVarType(iTargetID, "hFind") > 0 || GetPVarType(iTargetID, "TrackCar") > 0 || GetPVarType(iTargetID, "DV_TrackCar") > 0 || GetPVarType(iTargetID, "Packages") > 0 || TaxiAccepted[iTargetID] != INVALID_PLAYER_ID || EMSAccepted[iTargetID] != INVALID_PLAYER_ID || BusAccepted[iTargetID] != INVALID_PLAYER_ID || gPlayerCheckpointStatus[iTargetID] != CHECKPOINT_NONE || MedicAccepted[iTargetID] != INVALID_PLAYER_ID || MechanicCallTime[iTargetID] >= 1) {
 		return 1;
 	}
-	if(GetPVarType(iTargetID, "TrackVehicleBurglary") > 0 || GetPVarType(iTargetID, "DeliveringVehicleTime") > 0 || GetPVarType(iTargetID, "pDTest") > 0 || GetPVarType(iTargetID, "pGarbageRun") > 0 || GetPVarType(iTargetID, "pSellingFish") > 0 || GetPVarType(iTargetID, "pDrugRun") || PlayerInfo[iTargetID][pTut] > 0) 
+	if(GetPVarType(iTargetID, "TrackVehicleBurglary") > 0 || GetPVarType(iTargetID, "DeliveringVehicleTime") > 0 || GetPVarType(iTargetID, "pDTest") > 0 || GetPVarType(iTargetID, "pGarbageRun") > 0 || GetPVarType(iTargetID, "pSellingFish") > 0 || GetPVarType(iTargetID, "pDrugRun") || PlayerInfo[iTargetID][pTut] >= 0) 
 		return 1;
 	return 0;
 }
@@ -1506,14 +1506,7 @@ stock IsValidSkin(skinid)
 
 	switch (skinid)
 	{
-	    case
-		0, 105, 106, 107, 102, 103, 69, 123,
-		104, 114, 115, 116, 174, 175, 100, 247, 173,
-		248, 117, 118, 147, 163, 21, 24, 143, 71,
-		156, 176, 177, 108, 109, 110, 165, 166,
-		265, 266, 267, 269, 270, 271, 274, 276,
-		277, 278, 279, 280, 281, 282, 283, 284,
-		285, 286, 287, 288, 294, 296, 297: return 0;
+	    case 71, 265, 266, 267, 269, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288: return 0;
 	}
 
 	return 1;

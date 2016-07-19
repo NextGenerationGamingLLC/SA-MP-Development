@@ -4902,8 +4902,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
 			DisplayReports(playerid, giveplayerid);
-			format(string, sizeof(string), "** DISPATCH: %s has run a check for arrest reports on %s **", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-			SendGroupMessage(GROUP_TYPE_LEA, COLOR_DBLUE, string);
+			format(string, sizeof(string), "* %s has run a check for arrest reports on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			foreach(new i: Player)
+			{
+				if(PlayerInfo[playerid][pToggledChats][12] == 0)
+				{
+					if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iRadioAccess]) {
+						ChatTrafficProcess(i, arrGroupData[PlayerInfo[i][pMember]][g_hRadioColour] * 256 + 255, string, 12);
+					}
+				}
+			}
+			//SendGroupMessage(GROUP_TYPE_LEA, COLOR_DBLUE, string);
 			return 1;
 		}
 		else
@@ -5282,8 +5291,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
 			DisplayCrimes(playerid, giveplayerid);
-			format(string, sizeof(string), "** DISPATCH: %s has run a check for warrants on %s **", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-			SendGroupMessage(GROUP_TYPE_LEA, COLOR_DBLUE, string);
+			format(string, sizeof(string), "* %s has run a check for warrants on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			foreach(new i: Player)
+			{
+				if(PlayerInfo[playerid][pToggledChats][12] == 0)
+				{
+					if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iRadioAccess]) {
+						ChatTrafficProcess(i, arrGroupData[PlayerInfo[i][pMember]][g_hRadioColour] * 256 + 255, string, 12);
+					}
+				}
+			}
+			//SendGroupMessage(GROUP_TYPE_LEA, COLOR_DBLUE, string);
 			return 1;
 		}
 		else
@@ -5319,8 +5337,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(string, sizeof(string), "-Weapon License: %s.\n", PlayerInfo[giveplayerid][pGunLic] ? ("Passed"):("Not Passed"));
 				strcat(LicenseString, string, sizeof(LicenseString));
 				ShowPlayerDialogEx(playerid, MDC_END_ID, DIALOG_STYLE_LIST, "MDC - Logged in | Criminal History", LicenseString, "OK", "Cancel");
-				format(string, sizeof(string), "** DISPATCH: %s has ran a license check on %s **", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
-				SendGroupMessage(GROUP_TYPE_LEA, COLOR_DBLUE, string);
+				format(string, sizeof(string), "* %s has ran a license check on %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				foreach(new i: Player)
+				{
+					if(PlayerInfo[playerid][pToggledChats][12] == 0)
+					{
+						if(PlayerInfo[i][pMember] == PlayerInfo[playerid][pMember] && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[i][pMember]][g_iRadioAccess]) {
+							ChatTrafficProcess(i, arrGroupData[PlayerInfo[i][pMember]][g_hRadioColour] * 256 + 255, string, 12);
+						}
+					}
+				}
 				return 1;
 			}
 			else return ShowPlayerDialogEx(playerid, MDC_LICENSES, DIALOG_STYLE_INPUT, "MDC - Logged in | Error!", "ERROR: Invalid Name or ID No.\nEnter the Person's Name or ID No.", "Enter", "Cancel");
@@ -5993,7 +6019,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		if(dialogid == MDC_MAIN)
 		{
-			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now logged off the MDC.");
 			ConnectedToPC[playerid] = 0;
 		}
 		else

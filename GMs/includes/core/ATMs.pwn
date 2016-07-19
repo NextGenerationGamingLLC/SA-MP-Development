@@ -5,7 +5,7 @@
 #define ATM_TRANSFER_TO		10002
 #define ATM_TRANSFER_AMT	10003
 
-new ATMPoint[40]; 
+new ATMPoint[42]; 
 
 LoadATMPoints() {
 	
@@ -49,6 +49,8 @@ LoadATMPoints() {
 	ATMPoint[37] = CreateDynamicSphere(985.53719, 2056.1026, 1085.5, 3.0);
 	ATMPoint[38] = CreateDynamicSphere(1014.48039, 2023.90137, 1085.5, 3.0);
 	ATMPoint[39] = CreateDynamicSphere(1014.1004, 2061.80117, 1085.5, 3.0);
+	ATMPoint[40] = CreateDynamicSphere(527.5063, 1417.8333, 11000.0996, 3.0);
+	ATMPoint[41] = CreateDynamicSphere(1538.3831, -2785.1677, 15.3602, 3.0);
 
 	// for(new i = 0; i < 37; i++) Streamer_SetIntData(STREAMER_TYPE_AREA, ATMPoint[i], E_STREAMER_EXTRA_ID, i);
 
@@ -87,7 +89,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			
 			if(!response) {
 				TogglePlayerControllable(playerid, 1);
-				return SendClientMessageEx(playerid, COLOR_YELLOW, "   You have logged out of the ATM");
+				return 1;
 			}
 
 			TogglePlayerControllable(playerid, 0);

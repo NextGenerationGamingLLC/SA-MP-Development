@@ -1212,6 +1212,20 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_EDITPOLLS_NAME			(6180)
 #define 		DIALOG_EDITPOLLS_CHOICES		(6181)
 #define 		DIALOG_FURNITURE_BUYSELECT		(6182)
+        			
+#define 		DIALOG_EDIT_POLL				(6183)
+#define 		DIALOG_EDIT_TITLE				(6184)
+#define 		DIALOG_EDIT_NOOPTIONS			(6185)
+#define 		DIALOG_EDIT_SHOWOPTIONS			(6186)
+#define 		DIALOG_EDIT_OPTION				(6187)
+#define 		DIALOG_EDIT_SHOWTYPES			(6188)
+#define 		DIALOG_EDIT_EXPIRATIONDATE		(6189)
+#define 		DIALOG_EDIT_TYPERANK			(6190)
+#define 		DIALOG_EDIT_TYPEID				(6191)
+
+#define 		DIALOG_VOTE						(6192)
+
+#define 		DIALOG_GROUP_FINDACC			(6193)
 
 /*
 -#define 		DIALOG_INTERACT 				(6175)

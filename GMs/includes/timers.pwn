@@ -187,7 +187,7 @@ task ServerHeartbeat[1000]() {
 			{
 				if(Reports[z][ReportPriority] == 1 || Reports[z][ReportPriority] == 2)
 				{
-					ABroadCast(COLOR_LIGHTRED,"A priority report is pending.", 2, true);
+					ABroadCast(COLOR_LIGHTRED,"A priority report is pending.", 2);
 					break;
 				}
 			}
@@ -565,7 +565,11 @@ task SyncTime[60000]()
 			    foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_LIGHTBLUE, "Your family has recieved drugs for owning a drug turf.");
 			}
 		}
-		//SaveFamilies();
+
+		new reports;
+		for(new i=0;i<MAX_REPORTS;i++) { if(Reports[i][BeingUsed] == 1) reports++; }
+		foreach(new i: Player) { if(reports >= 5 && PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0) cmd_reports(i, ""); }
+
 		//CallRemoteFunction("ActivateRandomQuestion", "");//Olympics
 	}
 }

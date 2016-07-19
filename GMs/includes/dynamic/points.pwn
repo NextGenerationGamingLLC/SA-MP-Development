@@ -319,6 +319,8 @@ ListPoints(playerid) {
 forward ProgressTimer(id);
 public ProgressTimer(id)
 {
+	if(GetPlayerPing(DynPoints[id][poBeingCaptured]) > 500) return SendClientMessageEx(DynPoints[id][poBeingCaptured], COLOR_WHITE, "You can not capture with 500+ ping!");
+
 	szMiscArray[0] = 0;
 	if(DynPoints[id][poBeingCaptured] != INVALID_PLAYER_ID && DynPoints[id][poCapturable] >= 1)
 	{

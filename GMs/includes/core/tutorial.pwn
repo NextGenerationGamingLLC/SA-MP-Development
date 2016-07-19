@@ -908,7 +908,7 @@ CMD:forcetutorial(playerid, params[])
 					SendClientMessage(id, COLOR_WHITE, szMiscArray);
 				}
 				case 13: return SendClientMessage(playerid, COLOR_WHITE, "This player is currently in the character creation menu, please wait.");
-				default:
+				case 14 .. 18:
 				{
 					PlayerInfo[id][pTut] = -1;
 					AdvanceTutorial(id);
@@ -918,6 +918,7 @@ CMD:forcetutorial(playerid, params[])
 					format(szMiscArray, 128, "Administrator %s has forced you out of the tutorial.", GetPlayerNameEx(playerid));
 					SendClientMessage(id, COLOR_WHITE, szMiscArray);
 				}
+				default: return SendClientMessage(playerid, COLOR_WHITE, "This player is not in the tutorial.");
 			}
 		}
 		else return SendClientMessage(playerid, COLOR_WHITE, "This player is not connected!");

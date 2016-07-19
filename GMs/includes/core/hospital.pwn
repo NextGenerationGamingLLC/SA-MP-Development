@@ -120,7 +120,7 @@ DeliverPlayerToHospital(playerid, iHospital)
 	}
 	else if(PlayerInfo[playerid][pWantedLevel] >= 1) // if player wanted
 	{
-		arrHospitalBedData[iHospital][iCountDown][index] = 140;
+		arrHospitalBedData[iHospital][iCountDown][index] = 60;
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You are wanted and thus the authorities have been informed.");
 		format(string, sizeof(string), " %s Hospital has reported %s as a wanted person.", GetHospitalName(iHospital), GetPlayerNameEx(playerid));
 		if(PlayerInfo[playerid][pSHealth] > 0) {SetArmour(playerid, PlayerInfo[playerid][pSHealth]);}

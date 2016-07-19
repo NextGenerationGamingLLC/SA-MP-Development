@@ -84,6 +84,7 @@ enum eGroupData {
 	g_iLockerCost[MAX_GROUP_WEAPONS],
 	g_iAllegiance,
 	g_iBugAccess,
+	g_iFindAccess,
 	g_iRadioAccess,
 	g_iDeptRadioAccess,
 	g_iIntRadioAccess,
