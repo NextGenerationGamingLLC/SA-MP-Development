@@ -95,8 +95,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 hook OnPlayerConnect(playerid) {
 
-	for(new i; i < 20; ++i) PlayerInfo[playerid][pToggledChats][i] = 0;
-	for(new i; i < 20; ++i) PlayerInfo[playerid][pChatbox][i] = 0;
+	for(new i; i < MAX_CHATSETS; ++i) PlayerInfo[playerid][pToggledChats][i] = 0;
+	for(new i; i < MAX_CHATSETS; ++i) PlayerInfo[playerid][pChatbox][i] = 0;
 	DeletePVar(playerid, "actionplayer");
 	DeletePVar(playerid, "actionstring");
 	return 1;

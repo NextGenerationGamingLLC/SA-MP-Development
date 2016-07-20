@@ -71,7 +71,7 @@ Rivalry_Toggle(playerid, bool:bState) {
             .worldid = -1,
             .interiorid = -1,
             .streamdistance = 40));
-        SetPlayerAttachedObject(playerid, 9, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
+        SetPlayerAttachedObject(playerid, 8, arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID], PlayerInfo[playerid][pGroupToyBone],
             PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1], PlayerInfo[playerid][pGroupToy][2],
             PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4], PlayerInfo[playerid][pGroupToy][5],
             PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);
@@ -396,7 +396,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart) {
 
 hook OnPlayerConnect(playerid)
 {
-    TD_RepFam = TextDrawCreate(552, 226, "/repfam");
+    TD_RepFam = TextDrawCreate(581.5, 414, "/repfam");
     TextDrawFont(TD_RepFam, 2);
     TextDrawLetterSize(TD_RepFam, 0.25, 2.8000000000000003);
     TextDrawColor(TD_RepFam, 0xffffffFF);

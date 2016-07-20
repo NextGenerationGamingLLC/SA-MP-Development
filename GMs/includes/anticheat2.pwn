@@ -2613,44 +2613,43 @@ stock AC_BayesianNetwork(playerid, iTargetID) {
 	}
 
 	// Normalize:
-	/*
+	if(fDeltaAimingDirection < 0) fDeltaAimingDirection = fDeltaAimingDirection * -1; // Always positive.
 	switch(fDeltaAimingDirection) {
 
-		case 0 .. 19: fDeltaAimingDirection = 0;
-		case 20 .. 45: fDeltaAimingDirection = 1;
-		case 46 .. 75: fDeltaAimingDirection = 2;
+		case 0 .. 10: fDeltaAimingDirection = 0;
+		case 11 .. 40: fDeltaAimingDirection = 1;
+		case 41 .. 100: fDeltaAimingDirection = 2;
 		default: fDeltaAimingDirection = 3;
 	}
-	*/
 
-	/*
 	switch(fDistanceToTarget) {
 
-		case 0 .. 4: fDistanceToTarget = 0;
-		case 5 .. 9: fDistanceToTarget = 1;
-		case 10 .. 14: fDistanceToTarget = 2;
+		case 0 .. 5: fDistanceToTarget = 0;
+		case 6 .. 10: fDistanceToTarget = 1;
+		case 11 .. 20: fDistanceToTarget = 2;
 		default: fDistanceToTarget = 3;
 	}
-	*/
-
-	/*
-	switch(fAimAccuracy[0]) {
-
-		case 0 .. 2: fAimAccuracy[0] = 0;
-		case 3 .. 5: fAimAccuracy[0] = 1;
-		case 6 .. 10: fAimAccuracy[0] = 2;
-		default: fAimAccuracy[0] = 3;
-	}
-	switch(fAimAccuracy[1]) {
-
-		case 0 .. 2: fAimAccuracy[1] = 0;
-		case 3 .. 5: fAimAccuracy[1] = 1;
-		case 6 .. 10: fAimAccuracy[1] = 2;
-		default: fAimAccuracy[1] = 3;
-	}
-	*/
-
 	fDeltaAimAccuracy = fAimAccuracy[1] - fAimAccuracy[0];
+
+	if(fAimAccuracy[0] <= 1.5) fAimAccuracy[0] = 0;
+	if(1.5 < fAimAccuracy[0] <= 6) fAimAccuracy[0] = 1;
+	if(6 < fAimAccuracy[0] <= 10) fAimAccuracy[0] = 2;
+	if(fAimAccuracy[0] > 10) fAimAccuracy[0] = 3;
+
+	if(fAimAccuracy[1] <= 1.5) fAimAccuracy[1] = 0;
+	if(1.5 < fAimAccuracy[1] <= 6) fAimAccuracy[1] = 1;
+	if(6 < fAimAccuracy[1] <= 10) fAimAccuracy[1] = 2;
+	if(fAimAccuracy[1] > 10) fAimAccuracy[1] = 3;
+	
+	switch(fDeltaAimAccuracy) {
+
+		case 0 .. 4: fDeltaAimAccuracy = 0;
+		case 5 .. 7: fDeltaAimAccuracy = 1;
+		case 8 .. 13: fDeltaAimAccuracy = 2;
+		default: fDeltaAimAccuracy = 3;
+	}
+
+	
 	arrAntiCheat[playerid][ac_fCamFVector][3] = arrAntiCheat[playerid][ac_fCamFVector][0];
 	arrAntiCheat[playerid][ac_fCamFVector][4] = arrAntiCheat[playerid][ac_fCamFVector][1];
 	arrAntiCheat[playerid][ac_fCamFVector][5] = arrAntiCheat[playerid][ac_fCamFVector][2];
@@ -2750,28 +2749,23 @@ stock AC_Probability(playerid, iTargetID) {
 		case 10 .. 14: fDistanceToTarget = 2;
 		default: fDistanceToTarget = 3;
 	}
+	fDeltaAimAccuracy = fAimAccuracy[1] - fAimAccuracy[0];
 
-	switch(fAimAccuracy[0]) {
+	if(fAimAccuracy[0] <= 1.5) fAimAccuracy[0] = 0;
+	if(1.5 < fAimAccuracy[0] <= 6) fAimAccuracy[0] = 1;
+	if(6 < fAimAccuracy[0] <= 10) fAimAccuracy[0] = 2;
+	if(fAimAccuracy[0] > 10) fAimAccuracy[0] = 3;
 
-		case 0 .. 2: fAimAccuracy[0] = 0;
-		case 3 .. 5: fAimAccuracy[0] = 1;
-		case 6 .. 10: fAimAccuracy[0] = 2;
-		default: fAimAccuracy[0] = 3;
-	}
-	switch(fAimAccuracy[1]) {
+	if(fAimAccuracy[1] <= 1.5) fAimAccuracy[1] = 0;
+	if(1.5 < fAimAccuracy[1] <= 6) fAimAccuracy[1] = 1;
+	if(6 < fAimAccuracy[1] <= 10) fAimAccuracy[1] = 2;
+	if(fAimAccuracy[1] > 10) fAimAccuracy[1] = 3;
 
-		case 0 .. 2: fAimAccuracy[1] = 0;
-		case 3 .. 5: fAimAccuracy[1] = 1;
-		case 6 .. 10: fAimAccuracy[1] = 2;
-		default: fAimAccuracy[1] = 3;
-	}
 
 	fPlayerAngle[1] = fPlayerAngle[0];
 	arrAntiCheat[playerid][ac_fCamFVector][3] = arrAntiCheat[playerid][ac_fCamFVector][0];
 	arrAntiCheat[playerid][ac_fCamFVector][4] = arrAntiCheat[playerid][ac_fCamFVector][1];
 	arrAntiCheat[playerid][ac_fCamFVector][5] = arrAntiCheat[playerid][ac_fCamFVector][2];
-
-	fDeltaAimAccuracy = fAimAccuracy[1] - fAimAccuracy[0];
 	
 	/*
 	// The Equation:
@@ -3083,7 +3077,68 @@ CMD:settraining(playerid, params[]) {
 	return 1;
 }
 
+/*
+CMD:acresults(playerid, params[]) {
 
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+	mysql_function_query(MainPipeline, "SELECT * FROM `aimbot` WHERE `accuracy` = '3'", true, "OnACQueryResult", "i", 3);
+	return 1;
+}
+
+
+new iACCountTracker[6],
+	iFrequency,
+	ACTrackCount;
+
+forward OnACQueryResult(i);
+public OnACQueryResult(i) {
+
+	new iRows;
+	iRows = cache_get_row_count(MainPipeline);
+
+	for(iACCountTracker[0] = 0; iACCountTracker[0] < 2; iACCountTracker[0]++) { // ischeaitng
+		for(iACCountTracker[1] = 0; iACCountTracker[1] < 4; iACCountTracker[1]++) { // aimingdirection
+			for(iACCountTracker[2] = 0; iACCountTracker[2] < 2; iACCountTracker[2]++) { //playerspeed
+				for(iACCountTracker[3] = 0; iACCountTracker[3] < 2; iACCountTracker[3]++) { //targetspeed
+					for(iACCountTracker[4] = 0; iACCountTracker[4] < 4; iACCountTracker[4]++) { // distance
+						for(iACCountTracker[5] = 0; iACCountTracker[5] < 4; iACCountTracker[5]++) ACSQLQuery(i, iRows); // deltaaim
+					}
+				}
+			}
+		}
+	}
+	i = i - 1;
+	if(i < 0) return SendClientMessageToAll(-1, "done");
+	else {
+		format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `aimbot` WHERE `accuracy` = '%d'", i);
+		mysql_function_query(MainPipeline, szMiscArray, true, "OnACQueryResult", "i", i);
+	}
+	return 1;
+}
+
+forward OnACQueryResult2(i, iRows);
+public OnACQueryResult2(i, iRows) {
+
+	iFrequency = cache_get_row_count(MainPipeline);
+	printf("%d ::: %0.1f, %d, %d, %d, %d, %d, %d, %d", ACTrackCount, floatdiv(iFrequency, iRows) * 100, i, iACCountTracker[0], iACCountTracker[1], iACCountTracker[2], iACCountTracker[3], iACCountTracker[4], iACCountTracker[5]);
+	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `aimbayesian` (`probability`, `ischeating`, `accuracy`, `aimingdirection`, `playerspeed`, `targetspeed`, `distance`, `deltaaim`) VALUES \
+		(%0.1f, %d, %d, %d, %d, %d, %d, %d)",
+
+		floatdiv(iFrequency, iRows) * 100, iACCountTracker[0], i, iACCountTracker[1], iACCountTracker[2], iACCountTracker[3], iACCountTracker[4], iACCountTracker[5]);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	ACTrackCount++;
+}
+
+
+stock ACSQLQuery(i, iRows) {
+
+	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `aimbot` WHERE `accuracy` = '%d' AND `ischeating` = '%d' \
+			AND `aimingdirection` = '%d' AND `playerspeed` = '%d' AND `targetspeed` = '%d' AND `distance` = '%d' AND `deltaaim` = '%d'",
+			i, iACCountTracker[0], iACCountTracker[1], iACCountTracker[2], iACCountTracker[3], iACCountTracker[4], iACCountTracker[5]);
+
+	mysql_function_query(MainPipeline, szMiscArray, true, "OnACQueryResult2", "ii", i, iRows);
+}
+*/
 
 /*
 GetHealthArmorForLabel(playerid) {

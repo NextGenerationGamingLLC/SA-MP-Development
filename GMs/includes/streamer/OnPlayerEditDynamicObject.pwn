@@ -153,7 +153,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 					if(isnull(szTXDName[iIndex])) break;
 				}
 
-				if(IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID]);
+				if(IsValidFurniture(iHouseID, iSlotID, 1)) DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID]);
 				HouseInfo[iHouseID][hFurniture][iSlotID] = CreateDynamicObject(iModelID, x, y, z, rx, ry, rz, HouseInfo[iHouseID][hIntVW]);
 
 				for(new iIndex; iIndex < MAX_OBJECT_TEXTSLOTS; ++iIndex) {
@@ -169,12 +169,13 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 
 					DestroyDynamicArea(iLocalDoorArea);
 
-					iLocalDoorArea = CreateDynamicSphere(x, y, z, 1.0, HouseInfo[iHouseID][hIntVW]),
+					iLocalDoorArea = CreateDynamicSphere(x, y, z, 1.0, HouseInfo[iHouseID][hIntVW]);
+					szData[0] = iHouseID;
 					szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
 					szData[2] = 0;
 					Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
-					Streamer_SetIntData(STREAMER_TYPE_OBJECT, szData[1], E_STREAMER_EXTRA_ID, iLocalDoorArea);
 				}
+				Streamer_SetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_EXTRA_ID, iHouseID);
 
 				format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' \
 					WHERE `houseid` = '%d' AND `slotid` = '%d'", x, y, z, rx, ry, rz, iHouseID, iSlotID);
