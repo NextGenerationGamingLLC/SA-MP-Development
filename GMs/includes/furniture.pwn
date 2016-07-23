@@ -1227,7 +1227,7 @@ ReloadFurniture(playerid) {
 	if(IsADoor(iModelID)) {
 
 		new szData[3];
-		DestroyDynamicArea(iLocalDoorArea);
+		if(IsValidDynamicArea(iLocalDoorArea)) DestroyDynamicArea(iLocalDoorArea);
 		iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0, HouseInfo[iHouseID][hIntVW]),
 
 		szData[1] = HouseInfo[iHouseID][hFurniture][iSlotID];
@@ -2177,7 +2177,7 @@ CMD:unfurnishhouse(playerid, params[]) {
 
 				new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
 					szData[3];
-				DestroyDynamicArea(iLocalDoorArea);
+				if(IsValidDynamicArea(iLocalDoorArea)) DestroyDynamicArea(iLocalDoorArea);
 
 				iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0, HouseInfo[iHouseID][hIntVW]);
 				szData[0] = iHouseID;
@@ -2248,7 +2248,7 @@ CMD:furnishhouse(playerid, params[]) {
 				new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][i], E_STREAMER_EXTRA_ID),
 					szData[3];
 
-				DestroyDynamicArea(iLocalDoorArea);
+				if(IsValidDynamicArea(iLocalDoorArea)) DestroyDynamicArea(iLocalDoorArea);
 
 				iLocalDoorArea = CreateDynamicSphere(fPos[0], fPos[1], fPos[2], 5.0, HouseInfo[iHouseID][hIntVW]);
 				szData[0] = iHouseID;

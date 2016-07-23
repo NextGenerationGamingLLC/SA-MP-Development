@@ -262,7 +262,7 @@ public TurfWars_OnLoadData() {
 TurfWars_Rehash() {
 
 	for(new i; i < sizeof(gSAZones); ++i) {
-		DestroyDynamicArea(arrTurfWars[i][tw_iAreaID]);
+		if(IsValidDynamicArea(arrTurfWars[i][tw_iAreaID])) DestroyDynamicArea(arrTurfWars[i][tw_iAreaID]);
 		GangZoneDestroy(arrTurfWars[i][tw_iGZoneID]);
 	}
 	TurfWars_LoadData();

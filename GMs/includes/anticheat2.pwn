@@ -684,13 +684,39 @@ hook OnPlayerConnect(playerid) {
 
 
 	new iTick = GetTickCount();
-	arrAntiCheat[playerid][ac_iCommandCount] = 0;
-	arrAntiCheat[playerid][ac_iVehID] = -1;
+	
+	arrAntiCheat[playerid][ac_iVehID] = INVALID_VEHICLE_ID;
+	arrAntiCheat[playerid][ac_iShots][0] = 0;
+	arrAntiCheat[playerid][ac_iShots][1] = 0;
 	arrAntiCheat[playerid][ac_fPos][0] = 0;
 	arrAntiCheat[playerid][ac_fPos][1] = 0;
 	arrAntiCheat[playerid][ac_fPos][2] = 0;
-	arrAntiCheat[playerid][ac_iSpeed] = 0;
+	arrAntiCheat[playerid][ac_fCamPos][0] = 0;
+	arrAntiCheat[playerid][ac_fCamPos][1] = 0;
+	arrAntiCheat[playerid][ac_fCamPos][2] = 0;
+	arrAntiCheat[playerid][ac_fCamPos][3] = 0;
+	arrAntiCheat[playerid][ac_fCamPos][4] = 0;
+	arrAntiCheat[playerid][ac_fCamPos][5] = 0;
+	arrAntiCheat[playerid][ac_fCamFVector][0] = 0;
+	arrAntiCheat[playerid][ac_fCamFVector][1] = 0;
+	arrAntiCheat[playerid][ac_fCamFVector][2] = 0;
+	arrAntiCheat[playerid][ac_fCamFVector][3] = 0;
+	arrAntiCheat[playerid][ac_fCamFVector][4] = 0;
+	arrAntiCheat[playerid][ac_fCamFVector][5] = 0;
+	arrAntiCheat[playerid][ac_fPlayerAngle][0] = 0;
+	arrAntiCheat[playerid][ac_fPlayerAngle][1] = 0;
+	arrAntiCheat[playerid][ac_iLastTargetID] = INVALID_PLAYER_ID;
+	arrAntiCheat[playerid][ac_fAimAccuracy] = 0;
 	for(new i; i < AC_MAX; ++i) arrAntiCheat[playerid][ac_iFlags][i] = 0;
+	arrAntiCheat[playerid][ac_iCommandCount] = 0;
+	if(IsValidDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID])) DestroyDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID]);
+	arrAntiCheat[playerid][ac_fProbability] = 0;
+	arrAntiCheat[playerid][ac_iCheatingIndex][0] = 0;
+	arrAntiCheat[playerid][ac_iCheatingIndex][1] = 0;
+	arrAntiCheat[playerid][ac_iIsCheating] = false;
+	arrAntiCheat[playerid][ac_inTrainingMode] = false;
+
+
 	Bit_Off(arrPAntiCheat[playerid], ac_bitValidPlayerPos);
 	Bit_Off(arrPAntiCheat[playerid], ac_bitValidSpectating);
 
@@ -706,7 +732,6 @@ hook OnPlayerConnect(playerid) {
 	ac_IsDead[playerid] = false;
 	// ac_PreviousHitI[playerid] = 0;
 	ac_iCBugFreeze[playerid] = 0;
-	arrAntiCheat[playerid][ac_fAimAccuracy] = 0;
 
 	/*
 	for (new i = 0; i < sizeof(s_PreviousHits[]); i++) {
@@ -1046,7 +1071,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 	// Bullet range check.
 	if(hittype != BULLET_HIT_TYPE_NONE) {
-		if(fDistance > ac_WeaponRange[weaponid]) {
+		if(fDistance > ac_WeaponRange[weaponid] + 10.0) {
 			if(hittype == BULLET_HIT_TYPE_PLAYER) {
 				AC_AddRejectedHit(playerid, damagedid, HIT_OUT_OF_RANGE, weaponid, _:fDistance, _:ac_WeaponRange[weaponid]);
 			}
@@ -1165,41 +1190,45 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	*/
 	if(hittype == BULLET_HIT_TYPE_PLAYER) {
 
-		if(GetPlayerSpeed(hitid) > 0) {
-			arrAntiCheat[playerid][ac_iShots][1]++;
-			if(arrAntiCheat[playerid][ac_iShots][1] > ac_MaxWeaponContShots[weaponid] + 15) AC_Process(playerid, AC_AIMBOT, weaponid);
-		}
-		if(ac_ACToggle[3]) {
+		if(!playerTabbed[hitid]) {
+			if(GetPlayerSpeed(hitid) > 0) {
+				arrAntiCheat[playerid][ac_iShots][1]++;
+				if(arrAntiCheat[playerid][ac_iShots][1] > ac_MaxWeaponContShots[weaponid] + 15) AC_Process(playerid, AC_AIMBOT, weaponid);
+			}
+			if(ac_ACToggle[3]) {
 
-			if(ProAimCheck(playerid, hitid)) {
+				if(ProAimCheck(playerid, hitid)) {
 
-				arrAntiCheat[playerid][ac_iFlags][3]++;
-				if(arrAntiCheat[playerid][ac_iFlags][3] > 3) AC_Flag(playerid, AC_PROAIM, weaponid, arrAntiCheat[playerid][ac_iFlags][3]);
+					arrAntiCheat[playerid][ac_iFlags][3]++;
+					if(arrAntiCheat[playerid][ac_iFlags][3] > 3) AC_Flag(playerid, AC_PROAIM, weaponid, arrAntiCheat[playerid][ac_iFlags][3]);
+				}
 			}
 		}
-	}
-	else arrAntiCheat[playerid][ac_iShots][1] = 0;
-	
+		else arrAntiCheat[playerid][ac_iShots][1] = 0;
+	}	
 
 	// AimBot Player Scheme
 	arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid]++;
 	if(hittype == BULLET_HIT_TYPE_PLAYER && ac_MaxWeaponContShots[weaponid] && !IsPlayerPaused(hitid)) {
 
-    	new fSpeed = GetPlayerSpeed(hitid);
+		if(!playerTabbed[hitid]) {
 
-	    if(fSpeed > 5) { // subject to discussion
-    	
-			arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid]++;
-			if(!(++arrAntiCheat[playerid][ac_iShots][0] % ac_MaxWeaponContShots[weaponid])) AC_Process(playerid, AC_AIMBOT, weaponid);
+	    	new fSpeed = GetPlayerSpeed(hitid);
 
-			new iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] - arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] - arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid],
-				Float:fRatio;
+		    if(fSpeed > 5) { // subject to discussion
+	    	
+				arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid]++;
+				if(!(++arrAntiCheat[playerid][ac_iShots][0] % ac_MaxWeaponContShots[weaponid])) AC_Process(playerid, AC_AIMBOT, weaponid);
 
-			iRelevantMiss++; // Can't divide by 0.
-			fRatio = arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] / iRelevantMiss;
-			if(arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] > 50 && fRatio > 3) AC_Flag(playerid, AC_AIMBOT, weaponid, fRatio);
-	    }
-	    else arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid]++;
+				new iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] - arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] - arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid],
+					Float:fRatio;
+
+				iRelevantMiss++; // Can't divide by 0.
+				fRatio = arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] / iRelevantMiss;
+				if(arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] > 50 && fRatio > 3) AC_Flag(playerid, AC_AIMBOT, weaponid, fRatio);
+			}
+			else arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid]++;
+		}
 	}
 	else arrAntiCheat[playerid][ac_iShots][0] = 0; // reset it when missed :)
 	SetTimerEx("Health", 100, false, "");

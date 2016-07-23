@@ -2558,6 +2558,7 @@ public OnPlayerDisconnect(playerid, reason)
 	DeletePVar(playerid, "fLvl");
 	DeletePVar(playerid, "gLvl");
 	DeletePVar(playerid, "Autoban");
+	DeletePVar(playerid, "ticketreason");
 	gPlayerLogged{playerid} = 0;
 	return 1;
 }

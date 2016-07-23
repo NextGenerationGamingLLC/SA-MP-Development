@@ -167,7 +167,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 					new iLocalDoorArea = Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_EXTRA_ID),
 						szData[3];
 
-					DestroyDynamicArea(iLocalDoorArea);
+					if(IsValidDynamicArea(iLocalDoorArea)) DestroyDynamicArea(iLocalDoorArea);
 
 					iLocalDoorArea = CreateDynamicSphere(x, y, z, 1.0, HouseInfo[iHouseID][hIntVW]);
 					szData[0] = iHouseID;

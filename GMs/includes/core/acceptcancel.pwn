@@ -1002,14 +1002,16 @@ CMD:accept(playerid, params[])
                             new money = floatround(TicketMoney[playerid] / 3), iGroupID = PlayerInfo[TicketOffer[playerid]][pMember];
                             Tax += money;
                             arrGroupData[iGroupID][g_iBudget] += money;
+                            GetPVarString(playerid, "ticketreason", szMiscArray, sizeof(szMiscArray));
                             new str[128], file[32];
-			                format(str, sizeof(str), "%s has paid %s's ticket of $%d and $%d has been sent to %s's budget fund.",GetPlayerNameEx(playerid), GetPlayerNameEx(TicketOffer[playerid]), TicketMoney[playerid], money, arrGroupData[iGroupID][g_szGroupName]);
+			                format(str, sizeof(str), "%s has paid %s's ticket of $%d [Reason: %s] and $%d has been sent to %s's budget fund.", GetPlayerNameEx(playerid), GetPlayerNameEx(TicketOffer[playerid]), TicketMoney[playerid], szMiscArray, money, arrGroupData[iGroupID][g_szGroupName]);
 			                new month, day, year;
 							getdate(year,month,day);
 							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
 							Log(file, str);
                             TicketOffer[playerid] = INVALID_PLAYER_ID;
                             TicketMoney[playerid] = 0;
+                            DeletePVar(playerid, "ticketreason");
                             if(GetPlayerCash(playerid) < 1) GivePlayerCash(playerid, 0);
                             return 1;
                         }

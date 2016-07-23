@@ -861,11 +861,17 @@ public Phone_OnGetContacts(iPlayerID)
 	return 1;
 }
 
-
 forward Phone_OnAddContactFinish(iPlayerID);
 public Phone_OnAddContactFinish(iPlayerID)
 {
 	if(mysql_errno()) return Phone_Contacts(iPlayerID), SendClientMessage(iPlayerID, COLOR_GRAD1, "Something went wrong. Please try again later.");
+	szMiscArray[0] = 0;
+	GetPVarString(iPlayerID, "tmpstr", szMiscArray, sizeof(szMiscArray));
+	if(strlen(szMiscArray) > 16) {
+		DeletePVar(iPlayerID, "tmpstr");
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		return SendClientMessage(iPlayerID, COLOR_YELLOW, "[PHONE] {DDDDDD} The name was too long. Please try again.");
+	}
 	SendClientMessage(iPlayerID, COLOR_YELLOW, "[PHONE] {DDDDDD} You have successfully added a new contact.");
 	Phone_Contacts(iPlayerID);
 	return 1;

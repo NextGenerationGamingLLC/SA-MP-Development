@@ -2135,6 +2135,7 @@ CMD:ticket(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* Type /accept ticket, to accept it.");
 					TicketOffer[giveplayerid] = playerid;
 					TicketMoney[giveplayerid] = moneys;
+					SetPVarString(playerid, "ticketreason", reason);
 					return 1;
 				}
 				else

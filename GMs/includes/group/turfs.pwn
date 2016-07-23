@@ -161,7 +161,7 @@ DestroyTurfWarsZone(zone)
 	}
 
 	if(TurfWars[zone][twAreaId] != -1) {
-	    DestroyDynamicArea(TurfWars[zone][twAreaId]);
+	    if(IsValidDynamicArea(TurfWars[zone][twAreaId])) DestroyDynamicArea(TurfWars[zone][twAreaId]);
 	}
 
 	TurfWars[zone][twMinX] = 0;

@@ -1659,6 +1659,7 @@ stock StripUnderscore(string[]) // Doesn't remove underscore from original strin
 	return newstring;
 }
 
+
 stock GetPlayerIpEx(playerid)
 {
     new ip[16];
