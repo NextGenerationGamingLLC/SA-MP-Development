@@ -4911,7 +4911,7 @@ CMD:bug(playerid, params[])
         if(sscanf(params, "u", iTargetID)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bug [player]");
 		}
-        else if(PlayerInfo[iTargetID][pAdmin] >= 2) {
+        else if(PlayerInfo[iTargetID][pAdmin] >= 2 && PlayerInfo[iTargetID][pTogReports] == 0) {
 			SendClientMessageEx(playerid, COLOR_GREY, "You cannot place bugs on admins.");
 		}
 		else if(GetPVarInt(iTargetID, "AdvisorDuty") == 1 && (GetPVarType(iTargetID, "HelpingSomeone") || GetPVarType(iTargetID, "pGodMode"))) {

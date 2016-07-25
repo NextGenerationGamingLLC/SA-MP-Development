@@ -106,7 +106,7 @@ CMD:bf(playerid, params[])
 }
 */
 
-CMD:tie(playerid, params[])
+/*CMD:tie(playerid, params[])
 {
 	if(PlayerInfo[playerid][pRope] > 0)
 	{
@@ -224,6 +224,75 @@ CMD:untie(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 		return 1;
 	}
+	return 1;
+}*/
+
+CMD:tie(playerid, params[])
+{
+	if(PlayerInfo[playerid][pRope] > 0)
+	{
+		new id;
+		if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "SYNTAX: /tie [playerid]");
+
+		if(IsPlayerConnected(id))
+		{
+			if(PlayerTied[id] > 0) return SendClientMessageEx(playerid, -1, "That player is already tied.");
+			if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
+			if(PlayerCuffed[id] != 0 || PlayerInfo[id][pJailTime] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this to them right now.");
+
+			if(ProxDetectorS(8.0, playerid, id))
+			{
+				szMiscArray[0] = 0;
+
+				if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot tie yourself!");
+				if(GetPVarInt(id, "Injured") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot tie someone in a injured state.");
+				if(GetPlayerSpecialAction(id) != SPECIAL_ACTION_HANDSUP) return SendClientMessage(playerid, -1, "This player is not restrained.");
+
+				format(szMiscArray, sizeof(szMiscArray), "* %s has used some rope to tie %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+				SetPlayerSpecialAction(id,SPECIAL_ACTION_CUFFED);
+
+				PlayerTied[id] = 1;
+				PlayerInfo[playerid][pRope]--;
+			}
+			else return SendClientMessageEx(playerid, -1, "That person isn't near you.");
+		}
+		else return SendClientMessageEx(playerid, -1, "That player is not connected.");
+	}
+	else SendClientMessageEx(playerid, -1, "You do not have any rope!");
+	return 1;
+}
+
+CMD:untie(playerid, params[])
+{
+	if(PlayerInfo[playerid][pRope] > 0)
+	{
+		new id;
+		if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "SYNTAX: /untie [playerid]");
+
+		if(IsPlayerConnected(id))
+		{
+			if(PlayerTied[id] == 0) return SendClientMessageEx(playerid, -1, "That player isn't tied.");
+			if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
+
+			if(ProxDetectorS(8.0, playerid, id))
+			{
+				szMiscArray[0] = 0;
+
+				if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot untie yourself!");
+
+				format(szMiscArray, sizeof(szMiscArray), "* %s has untied %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+				SetPlayerSpecialAction(id,SPECIAL_ACTION_NONE);
+				PlayerTied[id] = 0;
+			}
+			else return SendClientMessageEx(playerid, -1, "That person isn't near you.");
+		}
+		else return SendClientMessageEx(playerid, -1, "That player is not connected.");
+	}
+	else SendClientMessageEx(playerid, -1, "You do not have any rope!");
 	return 1;
 }
 

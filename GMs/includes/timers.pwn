@@ -229,6 +229,14 @@ task TurfWarsUpdate[1000]()
 task SyncTime[60000]()
 {
 	PlantTimer();
+
+	new reports, priority;
+	for(new i=0;i<MAX_REPORTS;i++) { if(Reports[i][BeingUsed] == 1) reports++; if(Reports[i][ReportPriority] <= 2 && Reports[i][BeingUsed] == 1) priority++; }
+	if(reports >= 5)
+	{
+		format(szMiscArray, 80, "There are currently %d reports pending. (%d priority)", reports, priority);
+	 	ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+	}
 	
 	for(new i = 0; i < MAX_ITEMS; i++) // Moved from 1000 to 60000 check - Jingles
 	{
@@ -529,8 +537,8 @@ task SyncTime[60000]()
 						case 9: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SNIPER, 5);
 						case 10: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_M4, 5);
 						case 11: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SHOTGSPA, 5);
-						case 12: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SAWEDOFF, 5);
-						case 13: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SPRAYCAN, 1);
+						case 12: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SPRAYCAN, 1);
+						default: break;
 					}
 				}
 				//arrGroupData[DynPoints[x][poCapperGroupOwned]][g_iMaterials] += DynPoints[x][poMaterials];
@@ -565,11 +573,6 @@ task SyncTime[60000]()
 			    foreach(new x: Player) if(PlayerInfo[x][pMember] == TurfWars[i][twOwnerId]) SendClientMessageEx(x, COLOR_LIGHTBLUE, "Your family has recieved drugs for owning a drug turf.");
 			}
 		}
-
-		new reports;
-		for(new i=0;i<MAX_REPORTS;i++) { if(Reports[i][BeingUsed] == 1) reports++; }
-		foreach(new i: Player) { if(reports >= 5 && PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0) cmd_reports(i, ""); }
-
 		//CallRemoteFunction("ActivateRandomQuestion", "");//Olympics
 	}
 }

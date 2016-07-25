@@ -121,7 +121,7 @@ stock SendReportToQue(reportfrom, report[], reportlevel, reportpriority)
      	SetPVarInt(reportfrom, "HasReport", 1);
 
      	format(string, sizeof(string), "%s | SQLID: %i | RID: %i | Report: %s | Pr: %i", GetPlayerNameEx(reportfrom), GetPlayerSQLId(reportfrom), newid, report, reportpriority);
-     	Log("logs/report.log", szMiscArray);
+     	Log("logs/report.log", string);
 
         if(reportlevel == 2)
 		{

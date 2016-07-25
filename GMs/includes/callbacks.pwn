@@ -4379,7 +4379,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 		if(ConnectedToPC[playerid] == 1337)//mdc
 	    {
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now logged off the MDC.");
 	        ConnectedToPC[playerid] = 0;
 		}
         if(TransportDuty[playerid] > 0)

@@ -106,7 +106,7 @@ native IsValidVehicle(vehicleid);
 #define			MAX_TURFS					(400)
 #define			MAX_ARENAS					(15)
 #define			MAX_MAILBOXES				(50)
-#define 		MAX_3DLABELS 				(750)
+#define 		MAX_3DLABELS 				(500)
 #define 		MAX_SPEEDCAMERAS			(50)
 #define 		MAX_PAYNSPRAYS				(25)
 #define 		MAX_ARRESTPOINTS			(30)
