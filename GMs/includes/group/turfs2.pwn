@@ -1327,10 +1327,10 @@ TurfWars_LoadGUI() {
 
 TurfWars_GetTurfID(playerid) {
 
-	new areaid[2];
+	new areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid);
-	new iTurfID = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[1], E_STREAMER_EXTRA_ID);
-	if(0 <= iTurfID < MAX_TURFS && areaid[1] == arrTurfWars[iTurfID][tw_iAreaID]) {
+	new iTurfID = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
+	if(0 <= iTurfID < MAX_TURFS && areaid[0] == arrTurfWars[iTurfID][tw_iAreaID]) {
 		return iTurfID;
 	}
 	iTurfID = GetPlayer2DTurf(playerid);

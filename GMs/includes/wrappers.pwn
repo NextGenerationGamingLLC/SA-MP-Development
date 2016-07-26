@@ -46,13 +46,13 @@ Internal_TogglePlayerSpectating(playerid, toggle) {
 	Bit_On(arrPAntiCheat[playerid], ac_bitValidSpectating);
 	return TogglePlayerSpectating(playerid, toggle);
 }
-
+/*
 Internal_ShowPlayerNameTag(playerid, showplayerid, show) {
 
 	if(PlayerInfo[playerid][pAdmin] > 0 || PlayerInfo[showplayerid][pAdmin] > 0) show = 1;
 	return ShowPlayerNameTagForPlayer(playerid, showplayerid, show);
 }
-
+*/
 /*
 Internal_SetPlayerHealth(playerid, Float:health) {
 
@@ -156,7 +156,7 @@ Internal_StreamerSetIntData(type, id, data, value) {
 #define DestroyVehicle(%0) Internal_DestroyVehicle(%0)
 #define SetPlayerPos(%0) Internal_SetPlayerPos(%0)
 #define TogglePlayerSpectating(%0) Internal_TogglePlayerSpectating(%0)
-#define ShowPlayerNameTagForPlayer(%0) Internal_ShowPlayerNameTag(%0)
+//#define ShowPlayerNameTagForPlayer(%0) Internal_ShowPlayerNameTag(%0)
 
 //#define SetPlayerHealth(%0) Internal_SetPlayerHealth(%0)
 //#define SetPlayerArmour(%0) Internal_SetPlayerArmour(%0)

@@ -11,12 +11,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 			szAreas[0], szAreas[1], szAreas[2], szAreas[3], szAreas[4], szAreas[5], szAreas[6], szAreas[7], szAreas[8], szAreas[9]);
 		SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 
-		if(szAreas[1] != INVALID_STREAMER_ID) {
+		if(szAreas[0] != INVALID_STREAMER_ID) {
 			for(new i; i < MAX_GROUP_LOCKERS; ++i) {
 				
-				if(szAreas[1] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) {
+				if(szAreas[0] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) {
 					cmd_locker(playerid, "");
-					format(szMiscArray, sizeof(szMiscArray), "AreaID: %d, Locker Area ID: %d", szAreas[1], arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]);
+					format(szMiscArray, sizeof(szMiscArray), "AreaID: %d, Locker Area ID: %d", szAreas[0], arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]);
 					SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
 				}
 			}

@@ -42,14 +42,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if(newkeys & KEY_YES) {
 
-		new areaid[2];
+		new areaid[1];
 		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
 		// new a = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[1], E_STREAMER_EXTRA_ID);
 
-		if(areaid[1] != INVALID_STREAMER_ID) {
+		if(areaid[0] != INVALID_STREAMER_ID) {
 			for(new a; a < MAX_PAYPHONES; ++a) {
 
-				if(areaid[1] == arrPayPhoneData[a][pp_iAreaID]) {
+				if(areaid[0] == arrPayPhoneData[a][pp_iAreaID]) {
 
 					if(IsPlayerInAnyVehicle(playerid)) return 1;
 					SetPVarInt(playerid, "AtPayPhone", a);

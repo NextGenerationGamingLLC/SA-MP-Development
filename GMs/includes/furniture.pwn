@@ -504,6 +504,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 			}
 		}
+		case DIALOG_FURNITURE_DESCONFIRM: {
+
+			if(response) {
+				
+				new iHouseID = GetHouseID(playerid);
+				if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house.");
+				for(new i; i < MAX_FURNITURE_SLOTS; ++i) DestroyFurniture(iHouseID, i);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You successfully destroyed all the house's furniture.");
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "You cancelled destroying all the house's furniture.");
+		}
 	}
 	return 0;
 }
@@ -803,7 +814,7 @@ IsValidFurniture(iHouseID, iSlotID, check) {
 
 	switch(check) {
 		case 0: if(IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return 1;
-		default: if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_EXTRA_ID) == iHouseID) return 1;	
+		default: if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_EXTRA_ID) == iHouseID && IsValidDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID])) return 1;	
 	}
 	return 0;
 }
@@ -1243,9 +1254,11 @@ ReloadFurniture(playerid) {
 
 DestroyFurniture(iHouseID, iSlotID) {
 
-	if(IsValidFurniture(iHouseID, iSlotID, 1)) DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID]);
-	format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `furniture` WHERE `houseid` = '%d' AND `slotid` = '%d'", iHouseID, iSlotID);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	if(IsValidFurniture(iHouseID, iSlotID, 1)) {
+		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID]);
+		format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `furniture` WHERE `houseid` = '%d' AND `slotid` = '%d'", iHouseID, iSlotID);
+		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	}
 }
 
 FurniturePlayerTDInit(playerid) {
@@ -2013,11 +2026,11 @@ GetFurnitureColorCode(id) {
 
 CMD:furniturehelp(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/furniture | /myslots | /furnitureresetpos | /permitbuilder | /revokebuilders | {FF2222}Press ~k~~PED_LOOKBEHIND~ (twice) to toggle the mouse cursor.");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/furniture | /myslots | /furnitureresetpos | /permitbuilder | /revokebuilders | /destroyallfurniture | {FF2222}Press ~k~~PED_LOOKBEHIND~ (twice) to toggle the mouse cursor.");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}/unfurnishhouse (remove default GTA:SA furniture) | /furnishhouse (add default GTA:SA furniture)");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}Blue House = Buy Furniture | Hammer = Build Mode (wrench = position, bucket = painting). | !-icon = Panic Button.");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {CCCCCC}Dollar Icon = Sell Furniture | Green House = List of your furniture. | Red Puppets = Assign Build Permissions to Player.");
-	if(IsAdminLevel(playerid, ADMIN_GENERAL, 0)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {FFFF00}/destroyfuniture | /rehashcatalog");
+	if(IsAdminLevel(playerid, ADMIN_GENERAL, 0)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Furniture] {FFFF00}/destroyfuniture | /destroyallfurniture | /rehashcatalog");
 	return 1;
 }
 
@@ -2131,6 +2144,17 @@ CMD:setfurnitureslots(playerid, params[]) {
 		Log("logs/furniture.log", szMiscArray);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You do not have the authority to use this command.");
+	return 1;
+}
+
+CMD:destroyallfurniture(playerid, params[]) {
+
+	if(!FurnitureSystem) return 1;
+	
+	new iHouseID = GetHouseID(playerid);
+	if(iHouseID == INVALID_HOUSE_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a house.");
+	if(HouseInfo[iHouseID][hOwnerID] != GetPlayerSQLId(playerid) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "Only the house owner can do this.");
+	ShowPlayerDialogEx(playerid, DIALOG_FURNITURE_DESCONFIRM, DIALOG_STYLE_MSGBOX, "Destroy Furniture", "{FFFFFF}Are you sure you want to {FF0000}permantenly destroy {FFFFFF}this house's furniture?", "Yes", "No");
 	return 1;
 }
 

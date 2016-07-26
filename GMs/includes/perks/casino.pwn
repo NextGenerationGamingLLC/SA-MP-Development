@@ -136,10 +136,10 @@ CMD:canceldice(playerid, params[])
 
 CMD:slots(playerid, params[])
 {
-	new amount, rand[3], randsymbol[3], winPrize, areaid[2];
+	new amount, rand[3], randsymbol[3], winPrize, areaid[1];
 	GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid
 	for(new i; i < sizeof(CASINOPoint); ++i) {
-	if(areaid[1] == CASINOPoint[i]) {
+	if(areaid[0] == CASINOPoint[i]) {
 		SetPVarInt(playerid, "INCASINOAREA", 1);
 		}
 	}

@@ -1958,7 +1958,7 @@ enum e_AntiCheat {
 	ac_fAimAccuracy,
 	ac_iFlags[15],
 	ac_iCommandCount,
-	ac_iPlayerAreaID,
+	//ac_iPlayerAreaID,
 	Float:ac_fProbability,
 	ac_iCheatingIndex[2],
 	ac_iIsCheating,

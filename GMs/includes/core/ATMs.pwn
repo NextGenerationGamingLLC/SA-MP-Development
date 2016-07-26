@@ -63,12 +63,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid))
 	{
-		new areaid[2];
+		new areaid[1];
 		GetPlayerDynamicAreas(playerid, areaid); //Assign nearest areaid.
 		// new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
 		for(new i; i < sizeof(ATMPoint); ++i) {
 
-			if(areaid[1] == ATMPoint[i]) {
+			if(areaid[0] == ATMPoint[i]) {
 				
 				format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s approaches the ATM, typing in their PIN.", GetPlayerNameEx(playerid));
 				//ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

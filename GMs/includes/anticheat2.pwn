@@ -601,7 +601,7 @@ hook OnGameModeInit() {
 	ac_LagCompMode = GetServerVarAsInt("lagcompmode");
 }
 
-
+/*
 CMD:rehashpareas(playerid, params[]) {
 
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
@@ -627,7 +627,9 @@ CMD:rehashpareas(playerid, params[]) {
 	ABroadCast(COLOR_YELLOW, szMiscArray, 2 );
 	return 1;
 }
+*/
 
+/*
 CMD:setnametagdistance(playerid, params[]) {
 
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
@@ -635,13 +637,6 @@ CMD:setnametagdistance(playerid, params[]) {
 	new iRange;
 	if(sscanf(params, "d", iRange)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setnametagdistance [range]");
 	if(!(0 < iRange < 70)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid range (between 0 and 70).");
-
-	/*
-	foreach(new i : Player) {
-		DestroyDynamic3DTextLabel(PlayerLabel[i]);
-		PlayerLabel[i] = CreateDynamic3DTextLabel(GetHealthArmorForLabel(i), 0xFFFFFFFF, 0.0, 0.0, 0.15, 30, i, .testlos = 1);
-	}
-	*/
 
 	new szData[2];
 	szData[0] = STREAMER_AREATYPE_PLAYERAREA; // to make sure we can recognize this as a player area type.
@@ -659,12 +654,14 @@ CMD:setnametagdistance(playerid, params[]) {
 	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 	return 1;	
 }
+*/
 
 
 hook OnPlayerConnect(playerid) {
 
 	//CreatePlayerLabel(playerid);
 
+	/*
 	new szData[2];
 	szData[0] = STREAMER_AREATYPE_PLAYERAREA; // to make sure we can recognize this as a player area type.
 	szData[1] = playerid;
@@ -681,6 +678,7 @@ hook OnPlayerConnect(playerid) {
 			}
 		}
 	}
+	*/
 
 
 	new iTick = GetTickCount();
@@ -709,7 +707,7 @@ hook OnPlayerConnect(playerid) {
 	arrAntiCheat[playerid][ac_fAimAccuracy] = 0;
 	for(new i; i < AC_MAX; ++i) arrAntiCheat[playerid][ac_iFlags][i] = 0;
 	arrAntiCheat[playerid][ac_iCommandCount] = 0;
-	if(IsValidDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID])) DestroyDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID]);
+	//if(IsValidDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID])) DestroyDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID]);
 	arrAntiCheat[playerid][ac_fProbability] = 0;
 	arrAntiCheat[playerid][ac_iCheatingIndex][0] = 0;
 	arrAntiCheat[playerid][ac_iCheatingIndex][1] = 0;
@@ -769,13 +767,15 @@ hook OnPlayerConnect(playerid) {
 	}
 }
 
+/*
 hook OnPlayerDisconnect(playerid, reason) {
 
 	if(IsValidDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID])) DestroyDynamicArea(arrAntiCheat[playerid][ac_iPlayerAreaID]);
 	//if(IsValidDynamic3DTextLabel(PlayerLabel[playerid])) DestroyDynamic3DTextLabel(PlayerLabel[playerid]);
 }
+*/
 
-
+/*
 hook OnPlayerEnterDynamicArea(playerid, areaid) {
 
 	if(ac_ACToggle[AC_NAMETAGS]) {
@@ -793,6 +793,7 @@ hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 		if(szData[0] == STREAMER_AREATYPE_PLAYERAREA) ShowPlayerNameTagForPlayer(playerid, szData[1], 0);
 	}
 }
+*/
 
 hook OnPlayerUpdate(playerid) {
 
@@ -916,18 +917,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned off the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
 					ac_ACToggle[listitem] = false;
 
+					/*
 					switch(listitem) {
+						
+						
 						case AC_NAMETAGS: {
 							foreach(new i : Player) {
 								foreach(new x : Player) ShowPlayerNameTagForPlayer(i, x, true);
 							}
 						}
 					}
+					*/
 				}
 				else {
 					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned on the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
 					ac_ACToggle[listitem] = true;
 
+					/*
 					switch(listitem) {
 						case AC_NAMETAGS: {
 							foreach(new i : Player) {
@@ -935,6 +941,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							}
 						}
 					}
+					*/
 				}
 				Log("logs/ACSystem.log", szMiscArray);
 				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
@@ -2302,7 +2309,7 @@ stock AC_GetACName(i) {
 		case AC_CMDSPAM: szName = "Command Spamming";
 		case AC_CARSURFING: szName = "Car Surfing";
 		case AC_NINJAJACK: szName = "Ninja Jacking";
-		case AC_NAMETAGS: szName = "Name Tags";
+		//case AC_NAMETAGS: szName = "Name Tags";
 		case AC_AIRBREAKING: szName = "Airbreaking";
 		case AC_INFINITESTAMINA: szName = "Infinite Stamina";
 		case AC_HEALTHARMORHACKS: szName = "Health/Armor Hacks";
@@ -2869,7 +2876,6 @@ CMD:system(playerid, params[]) {
 		Command Spamming\t%s\n\
 		Car Surfing\t%s\n\
 		Ninja Jacking\t%s\n\
-		Name Tags\t%s\n\
 		Airbreaking\t%s\n\
 		Infinite Stamina\t%s\n\
 		---------\t%s\n\
@@ -2884,7 +2890,7 @@ CMD:system(playerid, params[]) {
 		(ac_ACToggle[AC_CMDSPAM] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_CARSURFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_NINJAJACK] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_NAMETAGS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		//(ac_ACToggle[AC_NAMETAGS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_AIRBREAKING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_INFINITESTAMINA] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
 		(ac_ACToggle[AC_HEALTHARMORHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),

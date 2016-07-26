@@ -1255,6 +1255,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_NATDIS_LOADMAPS			7009
 #define 		DIALOG_FIRES 					7010
 #define 		DIALOG_NATION_CHECK				7011
+#define 		DIALOG_FURNITURE_DESCONFIRM		7012
 
 // GangTags
 #define 			GANGTAG_TIME				60000
@@ -1504,13 +1505,13 @@ native IsValidVehicle(vehicleid);
 #define 			AC_CMDSPAM					6
 #define 			AC_CARSURFING				7
 #define 			AC_NINJAJACK 				8
-#define 			AC_NAMETAGS 				9
-#define 			AC_AIRBREAKING 				10
-#define 			AC_INFINITESTAMINA			11
-#define 			AC_HEALTHARMORHACKS			12
-#define 			AC_DIALOGSPOOFING			13
-#define 			AC_REJECTHITS				14
-#define 			AC_MAX						15
+//#define 			AC_NAMETAGS 				9
+#define 			AC_AIRBREAKING 				9
+#define 			AC_INFINITESTAMINA			10
+#define 			AC_HEALTHARMORHACKS			11
+#define 			AC_DIALOGSPOOFING			12
+#define 			AC_REJECTHITS				13
+#define 			AC_MAX						14
         			
 /* PVARS */
 #define 			PVAR_DRUGS_MIXSLOT				"DRM_S"
