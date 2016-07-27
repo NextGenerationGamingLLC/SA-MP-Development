@@ -65,7 +65,7 @@ Rivalry_Toggle(playerid, bool:bState) {
         SetPVarInt(playerid, "RepFam_TL", _:CreateDynamic3DTextLabel(
             arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName],
             arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256 + 0xFF,
-            0.0, 0.0, 0.0, 40,
+            0.0, 0.0, -0.3, 40,
             .attachedplayer = playerid,
             .testlos = 1,
             .worldid = -1,
@@ -77,14 +77,14 @@ Rivalry_Toggle(playerid, bool:bState) {
             PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7], PlayerInfo[playerid][pGroupToy][8]);
         SendClientMessageEx(playerid, COLOR_WHITE, "You are now representing your gang (/grouptoy to adjust).");
  
-        if(PlayerInfo[playerid][pToggledChats][23] == 0) TextDrawShowForPlayer(playerid, TD_RepFam);
+        //if(PlayerInfo[playerid][pToggledChats][23] == 0) TextDrawShowForPlayer(playerid, TD_RepFam);
     }
     else {
         DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, "RepFam_TL"));
         DeletePVar(playerid, "RepFam_TL");
         SendClientMessageEx(playerid, COLOR_WHITE, "You are not representing your gang anymore.");
  
-        if(PlayerInfo[playerid][pToggledChats][23] == 0) TextDrawHideForPlayer(playerid, TD_RepFam);
+        TextDrawHideForPlayer(playerid, TD_RepFam);
     }
 }
 

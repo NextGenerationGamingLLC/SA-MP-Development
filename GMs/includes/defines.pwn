@@ -306,6 +306,7 @@ native IsValidVehicle(vehicleid);
 #define 		ITEM_ELOCK                      	17
 #define 		ITEM_SCALARM                      	18
 #define 		ITEM_HELMET                      	19
+#define 		ITEM_RAG 							20
 #define 		FUEL_PUMP_RATE 						0.1 // Gallons per second
 #define 		BIZ_PENALTY 						0.2
 
@@ -666,18 +667,19 @@ native IsValidVehicle(vehicleid);
 #define			DIALOG_GROUP_MEDICACCESS			(3402)
 #define			DIALOG_GROUP_DMVACCESS				(3403)
 #define			DIALOG_GROUP_TEMPNUMACCESS			(3404)
-#define 		DIALOG_GROUP_OOCCHAT				(3405)
-#define 		DIALOG_GROUP_OOCCOLOR				(3406)
-#define 		DIALOG_GROUP_LISTCLOTHES			(3407)
-#define 		DIALOG_GROUP_EDITCLOTHES			(3408)
-#define 		DIALOG_GROUP_TURFCAP				(3409)
-#define 		DIALOG_GROUP_POINTCAP				(3410)
-#define 		DIALOG_GROUP_WEAPONSAFE				(3411)
-#define 		DIALOG_GROUP_SACTIONTYPE			(3412)
-#define     	DIALOG_GROUP_SACTIONEXEC			(3413)
-#define 		DIALOG_GROUP_WEAPONSAFE_DEPOSIT		(3414)
-#define			DIALOG_GROUP_TURNOUT				(3415)
-#define 		DIALOG_GROUP_CRIMETYPE				(3416)
+#define			DIALOG_GROUP_LEOARRESTACCESS		(3405)
+#define 		DIALOG_GROUP_OOCCHAT				(3406)
+#define 		DIALOG_GROUP_OOCCOLOR				(3407)
+#define 		DIALOG_GROUP_LISTCLOTHES			(3408)
+#define 		DIALOG_GROUP_EDITCLOTHES			(3409)
+#define 		DIALOG_GROUP_TURFCAP				(3410)
+#define 		DIALOG_GROUP_POINTCAP				(3411)
+#define 		DIALOG_GROUP_WEAPONSAFE				(3412)
+#define 		DIALOG_GROUP_SACTIONTYPE			(3413)
+#define     	DIALOG_GROUP_SACTIONEXEC			(3414)
+#define 		DIALOG_GROUP_WEAPONSAFE_DEPOSIT		(3415)
+#define			DIALOG_GROUP_TURNOUT				(3416)
+#define 		DIALOG_GROUP_CRIMETYPE				(3417)
 #define 		DIALOG_GROUP_PLISTPAY 				(3421)
 #define 		DIALOG_GROUP_PEDITPAY 				(3422)
 #define 		DIALOG_GROUP_GOVLISTPAY 			(3423)

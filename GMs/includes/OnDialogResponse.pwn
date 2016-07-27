@@ -37,9 +37,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	if(ac_ACToggle[AC_DIALOGSPOOFING]) {
 		if(dialogid != iLastDialogID[playerid]) {
-	    	
 	    	if(dialogid == DIALOG_FS_ELEVATOR1 || dialogid == DIALOG_FS_ELEVATOR2) { }// For dialogs called from filterscripts.
 	    	else {
+	    		if(PlayerInfo[playerid][pAdmin] == 99999) return 1;
 		    	AC_Process(playerid, AC_DIALOGSPOOFING, dialogid);
 		    	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM] Please delete your dialog CLEO.");
 		    	SetTimerEx("KickEx", 1000, 0, "i", playerid);
@@ -281,7 +281,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pNation] = listitem;
 				switch(listitem) {
 					case 0: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of San Andreas.");
-					case 1: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of New Eire.");
+					case 1: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of New Robada.");
 				}
 			}
 			else
@@ -291,7 +291,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				PlayerInfo[playerid][pNation] = rand;
 				switch(rand) {
 					case 0: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of San Andreas.");
-					case 1: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of New Eire.");
+					case 1: SendClientMessageEx(playerid, COLOR_GRAD1, "You are now a citizen of New Robada.");
 				}
 			}
 		}
@@ -9112,7 +9112,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(listitem == 0)
 			{
-				format(szMiscArray, sizeof(szMiscArray),
+				new shopstring[4500];
+				format(shopstring, sizeof(shopstring),
 				"Gold VIP (Credits: %s)\n\
 				Gold VIP Renewal (Credits: %s)\n\
 				Silver VIP (Credits: %s)\n\
@@ -9123,7 +9124,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				Boombox (Credits: %s)", number_format(ShopItems[0][sItemPrice]), number_format(ShopItems[1][sItemPrice]), number_format(ShopItems[2][sItemPrice]), number_format(ShopItems[3][sItemPrice]), number_format(ShopItems[4][sItemPrice]),
 				 number_format(ShopItems[5][sItemPrice]), number_format(ShopItems[6][sItemPrice]), number_format(ShopItems[7][sItemPrice]));
 
-				format(szMiscArray, sizeof(szMiscArray), "%s\n\
+				format(shopstring, sizeof(shopstring), "%s\n\
 				Paintball Tokens (Credits %s)\n\
 				EXP Token (Credits: %s)\n\
 				Fireworks x5 (Credits: %s)\n\
@@ -9133,27 +9134,27 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				House (Credits: %s)\n\
 				House Interior Change (Credits: %s)\n\
 				House Move (Credits: %s)\n\
-				(Micro) Reset Gift Timer (Credits: %s)",szMiscArray, number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), number_format(ShopItems[10][sItemPrice]),
+				(Micro) Reset Gift Timer (Credits: %s)",shopstring, number_format(ShopItems[8][sItemPrice]), number_format(ShopItems[9][sItemPrice]), number_format(ShopItems[10][sItemPrice]),
 				number_format(ShopItems[11][sItemPrice]), number_format(ShopItems[12][sItemPrice]), number_format(ShopItems[13][sItemPrice]), number_format(ShopItems[14][sItemPrice]),
 				 number_format(ShopItems[15][sItemPrice]), number_format(ShopItems[16][sItemPrice]), number_format(ShopItems[17][sItemPrice]));
-				format(szMiscArray, sizeof(szMiscArray),
+				format(shopstring, sizeof(shopstring),
 				"%s\n(Micro) Advanced Healthcare (Credits: %s)\n\
 				(Micro) Super Advanced Healthcare (Credits: %s)\n\
 				(Micro) Rent a Car (Credits: %s)\n\
 				Platinum VIP (Credits: %s)\n\
 				Custom License Plate (Credits: %s)\n\
-				Additional Vehicle Slot (Credits: %s)", szMiscArray, number_format(ShopItems[18][sItemPrice]), number_format(ShopItems[19][sItemPrice]), number_format(ShopItems[20][sItemPrice]),
+				Additional Vehicle Slot (Credits: %s)", shopstring, number_format(ShopItems[18][sItemPrice]), number_format(ShopItems[19][sItemPrice]), number_format(ShopItems[20][sItemPrice]),
 				 number_format(ShopItems[21][sItemPrice]), number_format(ShopItems[22][sItemPrice]), number_format(ShopItems[23][sItemPrice]));
-				format(szMiscArray, sizeof(szMiscArray),
+				format(shopstring, sizeof(shopstring),
 				"%s\nGarage - Small (Credits: %s)\n\
 				Garage - Medium (Credits: %s)\n\
 				Garage - Large (Credits: %s)\n\
 				Garage - Extra Large (Credits: %s)\n\
 				Additional Toy Slot (Credits: %s)\n\
 				Hunger Voucher (Credits: %s)\n\
-				Spawn at Gold VIP+ room (Credits: %s)", szMiscArray, number_format(ShopItems[24][sItemPrice]), number_format(ShopItems[25][sItemPrice]), number_format(ShopItems[26][sItemPrice]),
+				Spawn at Gold VIP+ room (Credits: %s)", shopstring, number_format(ShopItems[24][sItemPrice]), number_format(ShopItems[25][sItemPrice]), number_format(ShopItems[26][sItemPrice]),
 				number_format(ShopItems[27][sItemPrice]), number_format(ShopItems[28][sItemPrice]), number_format(ShopItems[29][sItemPrice]), number_format(ShopItems[30][sItemPrice]));
-				format(szMiscArray, sizeof(szMiscArray),
+				format(shopstring, sizeof(shopstring),
 				"%s\n\
 				Restricted Last Name (NEW) (Credits: %s)\n\
 				Restricted Last Name (CHANGE) (Credits: %s)\n\
@@ -9168,10 +9169,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				Furniture Pack - Bronze (Credits: %s)\n\
 				Furniture Pack - Silver (Credits: %s)\n\
 				Furniture Pack - Gold (Credits: %s)",
-				szMiscArray, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
+				shopstring, number_format(ShopItems[31][sItemPrice]), number_format(ShopItems[32][sItemPrice]), number_format(ShopItems[33][sItemPrice]), number_format(ShopItems[34][sItemPrice]),
 				number_format(ShopItems[35][sItemPrice]),number_format(ShopItems[36][sItemPrice]),number_format(ShopItems[37][sItemPrice]),number_format(ShopItems[38][sItemPrice]),number_format(ShopItems[39][sItemPrice]), number_format(ShopItems[40][sItemPrice]),
 				number_format(ShopItems[41][sItemPrice]), number_format(ShopItems[42][sItemPrice]), number_format(ShopItems[43][sItemPrice]));
-				ShowPlayerDialogEx(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", szMiscArray, "Edit", "Exit");
+				ShowPlayerDialogEx(playerid, DIALOG_EDITSHOP, DIALOG_STYLE_LIST, "Edit Shop Prices", shopstring, "Edit", "Exit");
 			}
 			if(listitem == 1)
 			{

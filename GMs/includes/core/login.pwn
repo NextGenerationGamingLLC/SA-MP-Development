@@ -292,7 +292,6 @@ public loginCamera(playerid)
 	{
 		case 1:
 		{
-			PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/inter_main.mp3");
 			//SetPVarInt(playerid, "o_iLoginObjectID", CreateDynamicObject(10757, -1037.50903, 453.60007, 34.86839,   0.00000, 0.00000, 315.27899, -1, -1, playerid, 500.0));
 			//MoveDynamicObject(GetPVarInt(playerid, "o_iLoginObjectID"), -1181.16455, 310.40958, 28.76766, 30.0);
 			InterpolateCameraPos(playerid, -1205.5737, 287.1576, 15.0854, -1084.4949, 408.7233, 19.8364, LOGINCAM_SPEED, LOGINCAM_CUT);

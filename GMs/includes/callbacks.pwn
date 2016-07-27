@@ -2906,7 +2906,7 @@ public OnPlayerSpawn(playerid)
 		AdvanceTutorial(playerid);
 	}
 
-	if(PlayerInfo[playerid][pTut] == -1 && PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) ShowPlayerDialogEx(playerid, DIALOG_NATION_CHECK, DIALOG_STYLE_LIST, "Please chose a nation.", "San Andreas\nNew Eire", "Select", "<<");
+	if(PlayerInfo[playerid][pTut] == -1 && PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) ShowPlayerDialogEx(playerid, DIALOG_NATION_CHECK, DIALOG_STYLE_LIST, "Please chose a nation.", "San Andreas\nNew Robada", "Select", "<<");
 	return 1;
 }
 
@@ -5285,7 +5285,7 @@ public OnPlayerText(playerid, text[])
 			    else if(PlayerInfo[Mobile[playerid]][pBugged] != INVALID_GROUP_ID){
 			    	format(string, sizeof(string), "{8D8DFF}(BUG ID %d) {CBCCCE}Unknown (cellphone): %s", Mobile[playerid], text);
 			    }
-				SendBugMessage(PlayerInfo[playerid][pBugged], string);
+				SendBugMessage(playerid, PlayerInfo[playerid][pBugged], string);
 			}
 			else if(Mobile[Mobile[playerid]] == playerid)
 			{
@@ -5308,7 +5308,7 @@ public OnPlayerText(playerid, text[])
 			    else if(PlayerInfo[Mobile[playerid]][pBugged] != INVALID_GROUP_ID){
 			    	format(string, sizeof(string), "{8D8DFF}(BUG ID %d) {CBCCCE}%s (cellphone): %s", Mobile[playerid], GetPlayerNameEx(playerid), text);
 			    }
-				SendBugMessage(PlayerInfo[playerid][pBugged], string);
+				SendBugMessage(playerid, PlayerInfo[playerid][pBugged], string);
 			}
 		}
 		else
@@ -5394,7 +5394,7 @@ public OnPlayerText(playerid, text[])
 				SendClientMessageEx(i, COLOR_FADE1, string);
 			}
 			else if(GetPlayerVirtualWorld(i) == GetPlayerVirtualWorld(playerid)) {
-				if(IsPlayerInRangeOfPoint(i, 20.0 * 0.6, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[i][pBugged] >= 0 && PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[i][pAdmin] < 2)
+				if(IsPlayerInRangeOfPoint(i, 20.0 * 0.6, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[i][pBugged] >= 0)
 				{
 					if(playerid == i)
 					{
@@ -5405,7 +5405,7 @@ public OnPlayerText(playerid, text[])
 						format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 						format(str, sizeof(str), "{8D8DFF}(BUG ID %d) {CBCCCE}%s", i,string);
 					}
-					SendBugMessage(PlayerInfo[i][pBugged], str);
+					if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2) SendBugMessage(i, PlayerInfo[i][pBugged], str);
 				}
 				if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[playerid][pAccountRestricted] == 1)
 				{

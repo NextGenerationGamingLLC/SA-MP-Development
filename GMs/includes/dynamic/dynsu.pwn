@@ -286,7 +286,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 1:
 				{
 					format(szMiscArray, sizeof(szMiscArray), "{80FF00}%s - {FF0000}EDIT NATION", arrCrimeData[iEditCrime][c_szName]);
-					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_NATION, DIALOG_STYLE_LIST, szMiscArray, "San Andreas\nNew Eire", "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_CRIMES_NATION, DIALOG_STYLE_LIST, szMiscArray, "San Andreas\nNew Robada", "Select", "Cancel");
 				}
 				case 2:
 				{
@@ -370,30 +370,24 @@ CMD:crimelist(playerid, params[])
 	return 1;
 }
 
-CMD:su(playerid, params[]) {
-	if(IsACop(playerid)) {
-		if(PlayerInfo[playerid][pJailTime] > 0) {
-			return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this in jail/prison.");
-		}
+CMD:su(playerid, params[]) 
+{
+	if(IsACop(playerid)) 
+	{
+		if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot use this in jail/prison.");
 
-		new
-			iTargetID;
+		new iTargetID;
 
-		if(sscanf(params, "u", iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/su)spect [player]");
+		if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/su)spect [player]");
+		if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+		if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place charges on yourself.");
+		if(IsACop(iTargetID)) 
+		{
+			if(arrGroupData[PlayerInfo[playerid][pMember]][gLEOArrest] == INVALID_RANK || arrGroupData[PlayerInfo[playerid][pMember]][gLEOArrest] > PlayerInfo[playerid][pRank]) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command on a law enforcement officer.");
 		}
-		else if(!IsPlayerConnected(iTargetID)) {
-			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-		}
-		else if(IsACop(iTargetID) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[iTargetID][pMember]][g_iAllegiance])) {
-			SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command on a law enforcement officer.");
-		}
-		else if(PlayerInfo[iTargetID][pWantedLevel] >= 6) {
-			SendClientMessageEx(playerid, COLOR_GRAD2, "Target is already most wanted.");
-		}
-		else {
-		    ShowCrimesDialog(playerid, iTargetID);
-		}
+		if(PlayerInfo[iTargetID][pWantedLevel] >= 6) return SendClientMessageEx(playerid, COLOR_GRAD2, "Target is already most wanted.");
+
+		ShowCrimesDialog(playerid, iTargetID);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a law enforcement officer.");
 	return 1;

@@ -1559,7 +1559,7 @@ stock ShowInventory(playerid,targetid)
 {
 	if(IsPlayerConnected(targetid))
 	{
-		new resultline[1024], header[64], pnumber[20];
+		new resultline[1024], header[64], pnumber[20], toolboxstring[30];
 		if(PlayerInfo[targetid][pPnumber] == 0) pnumber = "None"; else format(pnumber, sizeof(pnumber), "%d", PlayerInfo[targetid][pPnumber]);
 
 		new totalwealth;
@@ -1567,61 +1567,44 @@ stock ShowInventory(playerid,targetid)
 		if(PlayerInfo[targetid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[targetid][pPhousekey]][hOwnerID] == GetPlayerSQLId(targetid)) totalwealth += HouseInfo[PlayerInfo[targetid][pPhousekey]][hSafeMoney];
 		if(PlayerInfo[targetid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[targetid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(targetid)) totalwealth += HouseInfo[PlayerInfo[targetid][pPhousekey2]][hSafeMoney];
 		if(PlayerInfo[targetid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[targetid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(targetid)) totalwealth += HouseInfo[PlayerInfo[targetid][pPhousekey3]][hSafeMoney];
+
+		if(PlayerInfo[targetid][pToolBox] >= 1) format(toolboxstring, 50, "Tool Box: 1, (Usages: %s)", number_format(PlayerInfo[targetid][pToolBox]));
+		else format(toolboxstring, 50, "Tool Box: 0");
 		
 		SetPVarInt(playerid, "ShowInventory", targetid);
-		format(header, sizeof(header), "Showing Inventory of %s", GetPlayerNameEx(targetid));
-		format(resultline, sizeof(resultline),"Total Wealth: $%s\n\
+		format(header, sizeof(header), "%s's Inventory", GetPlayerNameEx(targetid));
+		format(resultline, sizeof(resultline),"{FFFFFF}Total Wealth: $%s\n\
 		Cash: $%s\n\
 		Bank: $%s\n\
 		Phone Number: %s\n\
 		Radio Frequency: %dkhz\n\
-		VIP Tokens: %s\n\
-		Paintball Tokens: %s\n\
-		EXP Tokens: %s\n\
-		EXP Hours: %s\n\
-		Event Tokens: %s\n\
 		Materials: %s\n\
-		Crates: %s\n\
-		Paper: %s\n\
 		Rope: %s\n\
+		Rags: %s\n\
+		Screwdrivers: %s\n\
+		Tires: %d\n\
+		Paper: %s\n\
 		Cigars: %s\n\
 		Sprunk Cans: %s\n\
 		Spraycans: %s\n\
-		Screwdrivers: %s\n\
-		SMSLog: %d\n\
-		Wristwatch: %d\n\
-		Surveillance: %d\n\
-		Tire: %d",
+		%s\n\
+		Crowbar: %d",
 		number_format(totalwealth),
 		number_format(GetPlayerCash(targetid)),
 		number_format(PlayerInfo[targetid][pAccount]),
 		pnumber,
 		PlayerInfo[targetid][pRadioFreq],
-		number_format(PlayerInfo[targetid][pTokens]),
-		number_format(PlayerInfo[targetid][pPaintTokens]),
-		number_format(PlayerInfo[targetid][pEXPToken]),
-		number_format(PlayerInfo[targetid][pDoubleEXP]),
-		number_format(PlayerInfo[targetid][pEventTokens]),
 		number_format(PlayerInfo[targetid][pMats]),
-		number_format(PlayerInfo[targetid][pCrates]),
-		number_format(PlayerInfo[targetid][pPaper]),
 		number_format(PlayerInfo[targetid][pRope]),
+		number_format(PlayerInfo[targetid][pRags]),
+		number_format(PlayerInfo[targetid][pScrewdriver]),
+		number_format(PlayerInfo[targetid][pTire]),
+		number_format(PlayerInfo[targetid][pPaper]),		
 		number_format(PlayerInfo[targetid][pCigar]),
 		number_format(PlayerInfo[targetid][pSprunk]),
 		number_format(PlayerInfo[targetid][pSpraycan]),
-		number_format(PlayerInfo[targetid][pScrewdriver]),
-		PlayerInfo[targetid][pSmslog],
-		PlayerInfo[targetid][pWristwatch],
-		PlayerInfo[targetid][pSurveillance],
-		PlayerInfo[targetid][pTire]);
-		format(resultline, sizeof(resultline),"%s\n\
-		Tool Box Usages: %d\n\
-		Crowbar: %d\n\
-		Gold Giftbox Tokens: %s",
-		resultline,
-		PlayerInfo[targetid][pToolBox],
-		PlayerInfo[targetid][pCrowBar],
-		number_format(PlayerInfo[targetid][pGoldBoxTokens]));
+		toolboxstring,
+		PlayerInfo[targetid][pCrowBar]);
 		ShowPlayerDialogEx(playerid, DISPLAY_INV, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
 	}
 	return 1;
@@ -1654,46 +1637,28 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					new resultline[1024], header[64];
 
-					format(header, sizeof(header), "Showing Inventory of %s", GetPlayerNameEx(targetid));
-					format(resultline, sizeof(resultline),"Lock: %d\n\
+					format(header, sizeof(header), "%s's Inventory", GetPlayerNameEx(targetid));
+					format(resultline, sizeof(resultline),"{FFFFFF}Locks: %d\n\
 					First Aid Kit: %d\n\
-					RC Cam: %d\n\
-					Receiver: %d\n\
+					Receivers: %d\n\
 					GPS: %d\n\
-					Bug Sweep: %d\n\
-					Firework: %d\n\
-					Boombox: %d\n\
-					Mailbox: %d\n\
-					Metal Detector: %d\n\
-					Energy Bars: %d\n\
-					House Sale Sign: %d\n\
-					Fuel Canisters: %d\n\
-					Jump Starts: %d\n\
-					Restricted Car Colors: %d\n\
-					Restricted Skins: %d\n\
+					Bug Sweeps: %d\n\
+					Fireworks: %d\n\
+					Boomboxes: %d\n\
+					Mailboxes: %d\n\
 					Rim Kits: %d\n\
-					1 month PVIP Voucher: %d\n\
 					Checks: %s\n\
 					Additional Vehicle Slots: %s\n\
 					Additional Toy Slots: %s",
 					PlayerInfo[targetid][pLock],
 					PlayerInfo[targetid][pFirstaid],
-					PlayerInfo[targetid][pRccam],
 					PlayerInfo[targetid][pReceiver],
 					PlayerInfo[targetid][pGPS],
 					PlayerInfo[targetid][pSweep],
 					PlayerInfo[targetid][pFirework],
 					PlayerInfo[targetid][pBoombox],
 					PlayerInfo[targetid][pMailbox],
-					PlayerInfo[targetid][pMetalDetector],
-					PlayerInfo[targetid][mInventory][4],
-					PlayerInfo[playerid][mInventory][6],
-					PlayerInfo[playerid][mInventory][7],
-					PlayerInfo[playerid][mInventory][8],
-					PlayerInfo[playerid][mInventory][9],
-					PlayerInfo[playerid][mInventory][13],
 					PlayerInfo[targetid][pRimMod],
-					PlayerInfo[targetid][pPVIPVoucher],
 					number_format(PlayerInfo[targetid][pChecks]),
 					number_format(PlayerInfo[targetid][pVehicleSlot]),
 					number_format(PlayerInfo[targetid][pToySlot]));
@@ -1747,6 +1712,26 @@ CMD:inv(playerid, params[]) {
 CMD:inventory(playerid, params[])
 {
 	if(gPlayerLogged{playerid} != 0) ShowInventory(playerid, playerid);
+	return 1;
+}
+
+CMD:mytokens(playerid, params[])
+{
+	szMiscArray[0] = 0;
+
+	SendClientMessage(playerid, COLOR_GREY, "------------------------------------------------------------------------------------------------");
+
+	format(szMiscArray, sizeof(szMiscArray), "VIP Tokens: %s, Paintball Tokens: %s, EXP Tokens: %s (Hours: %s), Event Tokens: %s, Gold Giftbox: %s",
+		number_format(PlayerInfo[playerid][pTokens]),
+		number_format(PlayerInfo[playerid][pPaintTokens]),
+		number_format(PlayerInfo[playerid][pEXPToken]),
+		number_format(PlayerInfo[playerid][pDoubleEXP]),
+		number_format(PlayerInfo[playerid][pEventTokens]),
+		number_format(PlayerInfo[playerid][pGoldBoxTokens]));
+
+	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
+
+	SendClientMessage(playerid, COLOR_GREY, "------------------------------------------------------------------------------------------------");
 	return 1;
 }
 
@@ -2669,8 +2654,8 @@ CMD:hdeposit(playerid, params[])
 						if(PlayerInfo[playerid][pDrugs][2] >= amount) PlayerInfo[playerid][pDrugs][2] -= amount;
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
 
-						HouseInfo[i][hHeroin] += amount;
-						format(string, sizeof(string), "You have deposited %d meth to your house's safe.", amount);
+						HouseInfo[i][hMeth] += amount;
+						format(string, sizeof(string), "You have deposited %d Meth to your house's safe.", amount);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						OnPlayerStatsUpdate(playerid);
 						SaveHouse(i);
@@ -2683,7 +2668,7 @@ CMD:hdeposit(playerid, params[])
 						if(PlayerInfo[playerid][pDrugs][3] >= amount) PlayerInfo[playerid][pDrugs][3] -= amount;
 						else return SendClientMessageEx(playerid, COLOR_WHITE, "You do not have enough to deposit!");
 
-						HouseInfo[i][hHeroin] += amount;
+						HouseInfo[i][hEcstasy] += amount;
 						format(string, sizeof(string), "You have deposited %d Ecstasy to your house's safe.", amount);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 						OnPlayerStatsUpdate(playerid);
@@ -2714,6 +2699,8 @@ CMD:hdeposit(playerid, params[])
 	else return SendClientMessageEx(playerid, COLOR_GREY, "You don't own a house.");
 	return 1;
 }
+
+/*
 CMD:workbench(playerid, params[]) {
         new szType[10], iChoice, iAmount, houseid;
         if(sscanf(params, "s[6]ii", szType, iChoice, iAmount)) {
@@ -2798,7 +2785,7 @@ CMD:workbench(playerid, params[]) {
         	SendClientMessageEx(playerid, COLOR_WHITE, "You're not in a house you own.");
     	}
 		return 1;
-}
+}*/
 
 CMD:hbalance(playerid, params[])
 {
@@ -2810,7 +2797,7 @@ CMD:hbalance(playerid, params[])
 			{
 				new string[128];
 				SendClientMessageEx(playerid, COLOR_GREEN, "|___________________________________ House Safe ___________________________________|");
-				format(string, sizeof(string), "Cash: $%s | Pot: %s | Crack: %s | Materials: %s | Heroin: %s", number_format(HouseInfo[i][hSafeMoney]), number_format(HouseInfo[i][hPot]), number_format(HouseInfo[i][hCrack]), number_format(HouseInfo[i][hMaterials]), number_format(HouseInfo[i][hHeroin]));
+				format(string, sizeof(string), "Cash: $%s | Pot: %s | Crack: %s | Materials: %s | Meth: %s | Ecstasy: %s | Heroin: %s", number_format(HouseInfo[i][hSafeMoney]), number_format(HouseInfo[i][hPot]), number_format(HouseInfo[i][hCrack]), number_format(HouseInfo[i][hMaterials]), number_format(HouseInfo[i][hMeth]), number_format(HouseInfo[i][hEcstasy]), number_format(HouseInfo[i][hHeroin]));
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
 				
 				SendClientMessageEx(playerid, COLOR_GREEN, "|__________________________________________________________________________________|");

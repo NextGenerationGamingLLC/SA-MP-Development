@@ -39,7 +39,7 @@ ini_GetValue(szParse[], szValueName[], szDest[], iDestLen) { // brian!!1
 	new
 		iPos = strfind(szParse, "=", false),
 		iLength = strlen(szParse);
-
+		
 	while(iLength-- && szParse[iLength] <= ' ') {
 		szParse[iLength] = 0;
 	}

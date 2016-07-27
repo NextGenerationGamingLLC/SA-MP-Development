@@ -1411,7 +1411,7 @@ stock BadFloat(Float:x)
 	return false;
 }
 
-stock SendBugMessage(member, string[])
+stock SendBugMessage(playerid, member, string[])
 {
     if(!(0 <= member < MAX_GROUPS))
         return 0;
@@ -1422,7 +1422,7 @@ stock SendBugMessage(member, string[])
 		iGroupID = PlayerInfo[i][pMember];
 		if(iGroupID == member && PlayerInfo[i][pRank] >= arrGroupData[iGroupID][g_iBugAccess] && gBug{i} == 1)	{
 
-			ChatTrafficProcess(i, COLOR_LIGHTGREEN, string, 13);
+			if(playerid != i) ChatTrafficProcess(i, COLOR_LIGHTGREEN, string, 13);
 				
 		}
 	}	

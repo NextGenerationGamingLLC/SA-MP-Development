@@ -426,7 +426,7 @@ CMD:b(playerid, params[])
 	format(string, sizeof(string), "%s: (( %s ))", GetPlayerNameEx(playerid), params);
 	
 	if(PlayerInfo[playerid][pIsolated] != 0) ProxDetector(5.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5);
-	else ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5, 1, 2);
+	else ProxDetector(20.0, playerid, string,COLOR_FADE1,COLOR_FADE2,COLOR_FADE3,COLOR_FADE4,COLOR_FADE5, 1, 2, 1);
 
 	foreach(new i: Player)
 	{

@@ -556,6 +556,8 @@ stock RehashHouse(houseid)
 	HouseInfo[houseid][hCrack] = 0;
 	HouseInfo[houseid][hMaterials] = 0;
 	HouseInfo[houseid][hHeroin] = 0;
+	HouseInfo[houseid][hEcstasy] = 0;
+	HouseInfo[houseid][hMeth] = 0;
 	HouseInfo[houseid][hWeapons][0] = 0;
 	HouseInfo[houseid][hWeapons][1] = 0;
 	HouseInfo[houseid][hWeapons][2] = 0;
@@ -1052,6 +1054,8 @@ CMD:hedit(playerid, params[])
 		HouseInfo[houseid][hCrack] = 0;
 		HouseInfo[houseid][hMaterials] = 0;
 		HouseInfo[houseid][hHeroin] = 0;
+		HouseInfo[houseid][hEcstasy] = 0;
+		HouseInfo[houseid][hMeth] = 0;
 		HouseInfo[houseid][hWeapons][0] = 0;
 		HouseInfo[houseid][hWeapons][1] = 0;
 		HouseInfo[houseid][hWeapons][2] = 0;
@@ -1539,7 +1543,7 @@ CMD:hstatus(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	format(string, sizeof(string), "Custom Int: %d | Custom Ext: %d | Exterior VW: %d | Exterior Int: %d | Interior VW: %d | Interior Int: %d", HouseInfo[hid][hCustomInterior], HouseInfo[hid][hCustomExterior], HouseInfo[hid][hExtVW], HouseInfo[hid][hExtIW], HouseInfo[hid][hIntVW], HouseInfo[hid][hIntIW]);
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Money: %d | Cannabis: %d | Crack: %d | Heroin: %d | Materials: %d", HouseInfo[hid][hSafeMoney], HouseInfo[hid][hPot], HouseInfo[hid][hCrack], HouseInfo[hid][hHeroin], HouseInfo[hid][hMaterials]);
+	format(string, sizeof(string), "Money: %d | Pot: %d | Crack: %d | Meth: %d | Ecstasy: %d | Heroin: %d | Materials: %d", HouseInfo[hid][hSafeMoney], HouseInfo[hid][hPot], HouseInfo[hid][hCrack], HouseInfo[hid][hMeth], HouseInfo[hid][hEcstasy], HouseInfo[hid][hHeroin], HouseInfo[hid][hMaterials]);
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
 	format(string, sizeof(string), "Weapons - %d | %d | %d | %d | %d | GLUpgrade: %d", HouseInfo[hid][hWeapons][0], HouseInfo[hid][hWeapons][1], HouseInfo[hid][hWeapons][2], HouseInfo[hid][hWeapons][3], HouseInfo[hid][hWeapons][4], HouseInfo[hid][hGLUpgrade]);
 	SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -1729,6 +1733,8 @@ stock ClearHouse(houseid) {
 	HouseInfo[houseid][hPot] = 0;
 	HouseInfo[houseid][hCrack] = 0;
 	HouseInfo[houseid][hMaterials] = 0;
+	HouseInfo[houseid][hEcstasy] = 0;
+	HouseInfo[houseid][hMeth] = 0;
 	HouseInfo[houseid][hHeroin] = 0;
 	for(new i = 0; i < 5; i++)
 	{

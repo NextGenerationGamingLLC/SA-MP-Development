@@ -1,4 +1,4 @@
-ProxDetector(Float: f_Radius, playerid, string[],col1,col2,col3,col4,col5, chat=0, chattype = -1)
+ProxDetector(Float: f_Radius, playerid, string[],col1,col2,col3,col4,col5, chat=0, chattype = -1, ooc = -1)
 {
 	if(GetPVarType(playerid, "WatchingTV")) return 1;
 
@@ -13,8 +13,9 @@ ProxDetector(Float: f_Radius, playerid, string[],col1,col2,col3,col4,col5, chat=
 			SendClientMessageEx(i, col1, string);
 		}
 		else if(GetPlayerVirtualWorld(i) == GetPlayerVirtualWorld(playerid)) {
-			if(chat && IsPlayerInRangeOfPoint(i, f_Radius * 0.6, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[i][pBugged] >= 0 && PlayerInfo[playerid][pAdmin] < 2 && PlayerInfo[i][pAdmin] < 2)
+			if(chat && ooc == -1 && IsPlayerInRangeOfPoint(i, f_Radius * 0.6, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[i][pBugged] >= 0)
 			{
+				printf("");
 				if(playerid == i)
 				{
 					format(str, sizeof(str), "{8D8DFF}(BUGGED) {CBCCCE}%s", string);
@@ -22,7 +23,7 @@ ProxDetector(Float: f_Radius, playerid, string[],col1,col2,col3,col4,col5, chat=
 				else {
 					format(str, sizeof(str), "{8D8DFF}(BUG ID %d) {CBCCCE}%s", i,string);
 				}
-				SendBugMessage(PlayerInfo[i][pBugged], str);
+				if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2) SendBugMessage(i, PlayerInfo[i][pBugged], str);
 			}
 
 			if(IsPlayerInRangeOfPoint(i, f_Radius / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {

@@ -227,12 +227,13 @@ CMD:untie(playerid, params[])
 	return 1;
 }*/
 
+
 CMD:tie(playerid, params[])
 {
 	if(PlayerInfo[playerid][pRope] > 0)
 	{
 		new id;
-		if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "SYNTAX: /tie [playerid]");
+		if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_WHITE, "SYNTAX: /tie [playerid]");
 
 		if(IsPlayerConnected(id))
 		{
@@ -251,6 +252,8 @@ CMD:tie(playerid, params[])
 				format(szMiscArray, sizeof(szMiscArray), "* %s has used some rope to tie %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
+				ClearAnimations(id);
+				SetPlayerSpecialAction(id,SPECIAL_ACTION_NONE);
 				SetPlayerSpecialAction(id,SPECIAL_ACTION_CUFFED);
 
 				PlayerTied[id] = 1;
@@ -266,33 +269,79 @@ CMD:tie(playerid, params[])
 
 CMD:untie(playerid, params[])
 {
-	if(PlayerInfo[playerid][pRope] > 0)
+	new id;
+	if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_WHITE, "SYNTAX: /untie [playerid]");
+
+	if(IsPlayerConnected(id))
+	{
+		if(PlayerTied[id] == 0) return SendClientMessageEx(playerid, -1, "That player isn't tied.");
+		if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
+
+		if(ProxDetectorS(8.0, playerid, id))
+		{
+			szMiscArray[0] = 0;
+
+			if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot untie yourself!");
+
+			format(szMiscArray, sizeof(szMiscArray), "* %s has untied %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+			SetPlayerSpecialAction(id,SPECIAL_ACTION_NONE);
+			PlayerTied[id] = 0;
+		}
+		else return SendClientMessageEx(playerid, -1, "That person isn't near you.");
+	}
+	else SendClientMessageEx(playerid, -1, "That player is not connected.");
+	return 1;
+}
+
+CMD:blindfold(playerid, params[])
+{
+	if(PlayerInfo[playerid][pRags] > 0)
 	{
 		new id;
-		if(sscanf(params, "u", id)) return SendClientMessageEx(playerid, COLOR_GREY, "SYNTAX: /untie [playerid]");
+		if(sscanf(params, "u", id)) return SendClientMessage(playerid, COLOR_WHITE, "SYNTAX: /blindfold [playerid]");
 
 		if(IsPlayerConnected(id))
 		{
-			if(PlayerTied[id] == 0) return SendClientMessageEx(playerid, -1, "That player isn't tied.");
+			if(PlayerTied[id] == 0) return SendClientMessageEx(playerid, -1, "The person you are trying to blindfold must be tied.");
 			if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
 
 			if(ProxDetectorS(8.0, playerid, id))
 			{
-				szMiscArray[0] = 0;
+				switch(GetPVarInt(id, "Blindfolded"))
+				{
+					case 0:
+					{
+						szMiscArray[0] = 0;
 
-				if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot untie yourself!");
+						if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot blindfold yourself!");
 
-				format(szMiscArray, sizeof(szMiscArray), "* %s has untied %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
-				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+						format(szMiscArray, sizeof(szMiscArray), "* %s has placed a rag around %s's head, blinding them.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
-				SetPlayerSpecialAction(id,SPECIAL_ACTION_NONE);
-				PlayerTied[id] = 0;
+						TextDrawShowForPlayer(id, BFText);
+				        SetPVarInt(id, "Blindfolded", 1);
+					}
+					default:
+					{
+						szMiscArray[0] = 0;
+
+						if(id == playerid) return SendClientMessageEx(playerid, -1, "You cannot unblindfold yourself!");
+
+						format(szMiscArray, sizeof(szMiscArray), "* %s has removed the rag around %s's head.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
+						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+
+						TextDrawHideForPlayer(id, BFText);
+				        DeletePVar(id, "Blindfolded");
+					}
+				}
 			}
 			else return SendClientMessageEx(playerid, -1, "That person isn't near you.");
 		}
 		else return SendClientMessageEx(playerid, -1, "That player is not connected.");
 	}
-	else SendClientMessageEx(playerid, -1, "You do not have any rope!");
+	else SendClientMessage(playerid, COLOR_WHITE, "You do not have any rags!");
 	return 1;
 }
 

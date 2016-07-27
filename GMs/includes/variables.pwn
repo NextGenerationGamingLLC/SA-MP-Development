@@ -165,7 +165,8 @@ new StoreItemCost[][StoreItemCostEnum] =
 	{25},
 	{80},
 	{28},
-	{3}
+	{3},
+	{1}
 };
 
 new const StoreItems[][] =
@@ -188,7 +189,8 @@ new const StoreItems[][] =
 	"Industrial Lock",
 	"Electrical Lock",
 	"Standard Car Alarm",
-	"Helmet"
+	"Helmet",
+	"Rags"
 };
 
 new PokerTable[MAX_POKERTABLES][pkrInfo];

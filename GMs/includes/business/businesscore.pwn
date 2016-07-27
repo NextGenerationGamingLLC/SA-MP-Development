@@ -115,13 +115,10 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 		}
   		case ITEM_ROPE:
 		{
-			if(PlayerInfo[playerid][pRope] < 8)
-			{
-				PlayerInfo[playerid][pRope] += 3;
-				SendClientMessageEx(playerid, COLOR_GRAD4, "3 Ropes purchased.");
-				SendClientMessageEx(playerid, COLOR_WHITE, "HINT: Type /tie while driving a car to tie someone.");
-			}
-			else return SendClientMessageEx(playerid, COLOR_GRAD4, "You can't hold any more of this item!");
+			printf("%d", Businesses[business][bItemPrices][ITEM_ROPE]);
+			PlayerInfo[playerid][pRope]++;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased a rope.");
+			SendClientMessageEx(playerid, COLOR_GREY, "HINT: Type /tie while someone has their hands up to bind them.");
 		}
   		case ITEM_CIGAR:
 		{
@@ -252,12 +249,19 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 			/* }
 			else return SendClientMessageEx(playerid, COLOR_WHITE, "You don't have any cars - where we can install this item?"); */
 		}
+		case ITEM_RAG:
+		{
+			PlayerInfo[playerid][pRags]++;
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased a rag.");
+			SendClientMessageEx(playerid, COLOR_GREY, "HINT: Type /blindfold while a person is tied to blindfold them.");
+		}
 		default:
 		{
 			printf("Error %d ITEM", item);
 		    return 0;
 		}
 	}
+	printf("%d", Businesses[business][bItemPrices][ITEM_RAG]);
 	Businesses[business][bInventory] -= StoreItemCost[item-1][ItemValue];
 	Businesses[business][bTotalSales]++;
 	Businesses[business][bSafeBalance] += TaxSale(price);
@@ -265,6 +269,7 @@ stock GivePlayerStoreItem(playerid, type, business, item, price)
 	if(PlayerInfo[playerid][pBusiness] != InBusiness(playerid)) Businesses[business][bLevelProgress]++;
 	SaveBusiness(business);
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+	printf("%d", Businesses[business][bItemPrices][ITEM_RAG]);
 	switch(type)
 	{
 		case 0:

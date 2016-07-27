@@ -24,7 +24,7 @@ stock ShowStats(playerid,targetid)
 		switch(PlayerInfo[targetid][pNation])
 		{
 			case 0: nation = "San Andreas";
-			case 1: nation = "New Eire";
+			case 1: nation = "New Robada";
 			case 2: nation = "None";
 		}
 		new insur[32];

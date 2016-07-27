@@ -354,6 +354,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pDice]					= cache_get_field_content_int(row,  "Dice", MainPipeline);
 					PlayerInfo[extraid][pSpraycan]				= cache_get_field_content_int(row,  "Spraycan", MainPipeline);
 					PlayerInfo[extraid][pRope]					= cache_get_field_content_int(row,  "Rope", MainPipeline);
+					PlayerInfo[extraid][pRags]					= cache_get_field_content_int(row,  "Rags", MainPipeline);
 					PlayerInfo[extraid][pCigar]					= cache_get_field_content_int(row,  "Cigars", MainPipeline);
 					PlayerInfo[extraid][pSprunk]				= cache_get_field_content_int(row,  "Sprunk", MainPipeline);
 					PlayerInfo[extraid][pBombs]					= cache_get_field_content_int(row,  "Bombs", MainPipeline);
@@ -543,11 +544,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 						format(szField, sizeof(szField), "BItem%d", i);
 						PlayerInfo[extraid][pBItems][i] = cache_get_field_content_int(row,  szField, MainPipeline);
 					}
-					/*for(new i = 0; i < sizeof(Drugs); i++) {
+					for(new i = 0; i < sizeof(Drugs); i++) {
 
 						format(szField, sizeof(szField), "BDrug%d", i);
 						PlayerInfo[extraid][pBDrugs][i] = cache_get_field_content_int(row,  szField, MainPipeline);
-					}*/
+					}
 					PlayerInfo[extraid][pDigCooldown] = cache_get_field_content_int(row,  "pDigCooldown", MainPipeline);
 					PlayerInfo[extraid][pToolBox]				= cache_get_field_content_int(row,  "ToolBox", MainPipeline);
 					PlayerInfo[extraid][pCrowBar]				= cache_get_field_content_int(row,  "CrowBar", MainPipeline);
@@ -2232,6 +2233,7 @@ stock g_mysql_SaveAccount(playerid)
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Dice", PlayerInfo[playerid][pDice]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Spraycan", PlayerInfo[playerid][pSpraycan]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Rope", PlayerInfo[playerid][pRope]);
+    SavePlayerInteger(query, GetPlayerSQLId(playerid), "Rags", PlayerInfo[playerid][pRags]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Cigars", PlayerInfo[playerid][pCigar]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Sprunk", PlayerInfo[playerid][pSprunk]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Bombs", PlayerInfo[playerid][pBombs]);
@@ -2436,11 +2438,11 @@ stock g_mysql_SaveAccount(playerid)
 		format(szForLoop, sizeof(szForLoop), "BItem%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBItems][x]);
 	}
-	/*for(new x = 0; x < sizeof(Drugs); x++) {
+	for(new x = 0; x < sizeof(Drugs); x++) {
 
 		format(szForLoop, sizeof(szForLoop), "BDrug%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBDrugs][x]);
-	}*/
+	}
 	for(new x = 0; x < 12; x++) {
 
 		format(szForLoop, sizeof(szForLoop), "Gun%d", x);
@@ -2613,7 +2615,7 @@ stock GetLatestKills(playerid, giveplayerid)
 stock GetSMSLog(playerid)
 {
 	new query[256];
-	format(query, sizeof(query), "SELECT `sendernumber`, `message`, `date` FROM `sms` WHERE `receiverid` = %d ORDER BY `date` DESC LIMIT 10", GetPlayerSQLId(playerid));
+	format(query, sizeof(query), "SELECT `sender`, `sendernumber`, `message`, `date` FROM `sms` WHERE `receiverid` = %d ORDER BY `date` DESC LIMIT 10", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, query, true, "OnGetSMSLog", "i", playerid);
 }
 
@@ -2919,7 +2921,7 @@ public MDCQueryFinish(playerid, suspectid)
 	switch(PlayerInfo[suspectid][pNation])
 	{
 		case 0: nation = "San Andreas";
-		case 1: nation = "New Eire";
+		case 1: nation = "New Robada";
 		default: nation = "None";
 	}
 
@@ -3239,14 +3241,14 @@ public NationAppFinish(playerid, queryid)
 							if(IsPlayerConnected(giveplayerid))
 							{
 								PlayerInfo[giveplayerid][pNation] = 1;
-								SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your application for New Eire citizenship has been approved!");
+								SendClientMessageEx(giveplayerid, COLOR_WHITE, "Your application for New Robada citizenship has been approved!");
 							}
 							else
 							{
 								format(query, sizeof(query), "UPDATE `accounts` SET `Nation` = 1 WHERE `id` = %d", UserID);
 								mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 							}
-							format(string, sizeof(string), "%s(%d) has approved %s's(%d) application for New Eire citizenship", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), sResult, UserID);
+							format(string, sizeof(string), "%s(%d) has approved %s's(%d) application for New Robada citizenship", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), sResult, UserID);
 						}
 					}
 					Log("logs/gov.log", string);
@@ -3277,7 +3279,7 @@ public NationAppFinish(playerid, queryid)
 						case 2:
 						{
 							if(IsPlayerConnected(giveplayerid)) SendClientMessageEx(giveplayerid, COLOR_GREY, "Your application for San Andreas citizenship has been denied.");
-							format(string, sizeof(string), "%s has denied %s's application for New Eire citizenship", GetPlayerNameEx(playerid), sResult);
+							format(string, sizeof(string), "%s has denied %s's application for New Robada citizenship", GetPlayerNameEx(playerid), sResult);
 						}
 					}
 					Log("logs/gov.log", string);
@@ -5120,7 +5122,7 @@ public OnPinCheck(index)
 forward OnGetSMSLog(playerid);
 public OnGetSMSLog(playerid)
 {
-    new string[128], message[256], sDate[20], rows, fields;
+    new string[128], message[256], sender[MAX_PLAYER_NAME], sDate[20], rows, fields;
 	cache_get_data(rows, fields, MainPipeline);
 	if(rows)
 	{
@@ -5128,11 +5130,11 @@ public OnGetSMSLog(playerid)
 		SendClientMessageEx(playerid, COLOR_YELLOW, "<< Last 10 SMS Received >>");
 		for(new i; i < rows; i++)
 		{
-			//cache_get_field_content(i, "sender", sender, MainPipeline, MAX_PLAYER_NAME);
+			cache_get_field_content(i, "sender", sender, MainPipeline, MAX_PLAYER_NAME);
 			cache_get_field_content(i, "sendernumber", string, MainPipeline); new sendernumber = strval(string);
 			cache_get_field_content(i, "message", message, MainPipeline, sizeof(message));
 			cache_get_field_content(i, "date", sDate, MainPipeline, sizeof(sDate));
-			if(sendernumber != 0) format(string, sizeof(string), "[%s] SMS: %s, Sender: %d", sDate, message, sendernumber);
+			if(sendernumber != 0) format(string, sizeof(string), "[%s] SMS: %s, Sender: %d (( %s ))", sDate, message, sendernumber, sender);
 			else format(string, sizeof(string), "[%s] SMS: %s, Sender: Unknown", sDate, message);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		}
@@ -5354,6 +5356,9 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			cache_get_field_content(iIndex, "TempNum", szResult, MainPipeline);
 			arrGroupData[iIndex][gTempNum] = strval(szResult);
+
+			cache_get_field_content(iIndex, "LEOArrest", szResult, MainPipeline);
+			arrGroupData[iIndex][gLEOArrest] = strval(szResult);
 
 			cache_get_field_content(iIndex, "OOCChat", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iOOCChat] = strval(szResult);

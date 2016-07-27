@@ -755,6 +755,7 @@ CMD:ar(playerid, params[])
 			
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
+			Log("logs/report.log", string);
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
 			ReportHourCount[playerid]++;
@@ -774,6 +775,7 @@ CMD:ar(playerid, params[])
 
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
+			Log("logs/report.log", string);
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
 			ReportHourCount[playerid]++;
@@ -795,6 +797,7 @@ CMD:ar(playerid, params[])
 
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
+			Log("logs/report.log", string);
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
 			ReportHourCount[playerid]++;
@@ -813,6 +816,7 @@ CMD:ar(playerid, params[])
 
 			format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 			ABroadCast(COLOR_ORANGE, string, 2);
+			Log("logs/report.log", string);
 			PlayerInfo[playerid][pAcceptReport]++;
 			ReportCount[playerid]++;
 			ReportHourCount[playerid]++;
@@ -825,6 +829,7 @@ CMD:ar(playerid, params[])
 		}
 		format(string, sizeof(string), "AdmCmd: %s has accepted the report from %s (ID: %i, RID: %i).", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
+		Log("logs/report.log", string);
 		AddReportToken(playerid); // Report Tokens
 		format(string, sizeof(string), "%s has accepted your report and is reviewing it, you can /reply to send messages to the admin reviewing your report.", GetPlayerNameEx(playerid));
 		SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);

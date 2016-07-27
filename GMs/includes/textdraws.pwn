@@ -599,17 +599,18 @@ public LoadTextDraws() {
 	TextDrawSetSelectable(g_tHouseLights, 0);
 
     // Blindfold
-	BFText = TextDrawCreate(0.000000, -3.000000, " ");
-	TextDrawBackgroundColor(BFText, 255);
-	TextDrawFont(BFText, 1);
-	TextDrawLetterSize(BFText, 50.000000, 50.000000);
-	TextDrawColor(BFText, 0x000000FF);
-	TextDrawSetOutline(BFText, 0);
-	TextDrawSetProportional(BFText, 1);
-	TextDrawSetShadow(BFText, 1);
-	TextDrawUseBox(BFText, 1);
-	TextDrawBoxColor(BFText, 0x000000FF);
-	TextDrawTextSize(BFText, 689.000000, -53.000000);
+	BFText = TextDrawCreate(-20.000000,2.000000,"|");
+    TextDrawUseBox(BFText,1);
+    TextDrawBoxColor(BFText,0x000000ff);
+    TextDrawTextSize(BFText,660.000000,22.000000);
+    TextDrawAlignment(BFText,0);
+    TextDrawBackgroundColor(BFText,0x000000ff);
+    TextDrawFont(BFText,3);
+    TextDrawLetterSize(BFText,1.000000,52.200000);
+    TextDrawColor(BFText,0x000000ff);
+    TextDrawSetOutline(BFText,1);
+    TextDrawSetProportional(BFText,1);
+    TextDrawSetShadow(BFText,1);
 
 	// WristWatch
 	WristWatch = TextDrawCreate(577.000000, 50.000000, " ");

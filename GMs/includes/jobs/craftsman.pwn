@@ -402,7 +402,7 @@ CMD:sweep(playerid, params[])
 				format(string, sizeof(string), "* A small spark is seen as the bug on %s shorts out.", GetPlayerNameEx(giveplayerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				format(string, sizeof(string), "(bug) %s: *static*", GetPlayerNameEx(giveplayerid));
-				SendBugMessage(PlayerInfo[giveplayerid][pBugged], string);
+				SendBugMessage(giveplayerid, PlayerInfo[giveplayerid][pBugged], string);
 				PlayerInfo[giveplayerid][pBugged] = INVALID_GROUP_ID;
 			}
 			else

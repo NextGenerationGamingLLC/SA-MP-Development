@@ -188,9 +188,9 @@ SaveGroup(iGroupID) {
 	);
 
 	format(szMiscArray, sizeof(szMiscArray), "%s\
-		`TempNum` = '%d', `OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Ecstasy` = '%i', `Meth` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i', `GroupToyID` = '%i', `TurfTax` = '%i'",
+		`TempNum` = '%d', `LEOArrest` = '%d', `OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Ecstasy` = '%i', `Meth` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i', `GroupToyID` = '%i', `TurfTax` = '%i'",
 		szMiscArray,
-		arrGroupData[iGroupID][gTempNum], arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iDrugs][0], arrGroupData[iGroupID][g_iDrugs][1], arrGroupData[iGroupID][g_iDrugs][4], arrGroupData[iGroupID][g_iSyringes],
+		arrGroupData[iGroupID][gTempNum], arrGroupData[iGroupID][gLEOArrest], arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iDrugs][0], arrGroupData[iGroupID][g_iDrugs][1], arrGroupData[iGroupID][g_iDrugs][4], arrGroupData[iGroupID][g_iSyringes],
 		arrGroupData[iGroupID][g_iDrugs][3], arrGroupData[iGroupID][g_iDrugs][2], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank],
 		arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2], arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4], arrGroupData[iGroupID][g_iTurfTokens], arrGroupData[iGroupID][g_iCrimeType],
 		arrGroupData[iGroupID][g_iGroupToyID], arrGroupData[iGroupID][g_iTurfTax]
@@ -553,7 +553,7 @@ Group_ReturnAllegiance(iAllegianceID) {
 
 	switch(iAllegianceID) {
 		case 1: szResult = "San Andreas";
-		case 2: szResult = "New Eire";
+		case 2: szResult = "New Robada";
 	}
 	return szResult;
 }
@@ -669,6 +669,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		{BBBBBB}Edit Medic Access:{FFFFFF} %s (Div %i)\n\
 		{BBBBBB}Edit DMV Release:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Edit Temporary Number:{FFFFFF} %s (rank %i)\n\
+		{BBBBBB}Edit LEO Arrest Access:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Edit OOC Chat Access:{FFFFFF} %s (rank %i)\n\
 		{BBBBBB}Edit OOC Chat Color: {%s}(edit)\n\
 		{BBBBBB}Edit Group Clothes\n\
@@ -679,6 +680,7 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 		(arrGroupData[iGroupID][g_iMedicAccess] != INVALID_DIVISION) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iMedicAccess],
 		(arrGroupData[iGroupID][g_iDMVAccess] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iDMVAccess],
 		(arrGroupData[iGroupID][gTempNum] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][gTempNum],
+		(arrGroupData[iGroupID][gLEOArrest] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][gLEOArrest],
 		(arrGroupData[iGroupID][g_iOOCChat] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iOOCChat],
 		Group_NumToDialogHex(arrGroupData[iGroupID][g_hOOCColor]),
 		(arrGroupData[iGroupID][g_iTurfCapRank] != INVALID_RANK) ? ("Yes") : ("No"), arrGroupData[iGroupID][g_iTurfCapRank],
@@ -1383,14 +1385,26 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					strcat(szDialog, "\nRevoke from Group");
 
+					format(szTitle, sizeof szTitle, "Edit Group LEO Arrest Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LEOARRESTACCESS, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+				}
+				case 38: {
+					new
+						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
+
+					for(new i = 0; i != MAX_GROUP_RANKS; ++i)
+						format(szDialog, sizeof szDialog, "%s\n(%i) %s", szDialog, i, ((arrGroupRanks[iGroupID][i][0]) ? (arrGroupRanks[iGroupID][i]) : ("{BBBBBB}(undefined){FFFFFF}")));
+
+					strcat(szDialog, "\nRevoke from Group");
+
 					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Access {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_OOCCHAT, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 38: {
+				case 39: {
 					format(szTitle, sizeof szTitle, "Edit Group OOC Chat Color {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_OOCCOLOR, DIALOG_STYLE_INPUT, szTitle, "Enter a color in hexadecimal format (for example, BCA3FF). This color will be that of their OOC Chat.", "Confirm", "Cancel");
 				}
-				case 39: {
+				case 40: {
 					new
 						szDialog[(GROUP_MAX_RANK_LEN + 8) * MAX_GROUP_RANKS];
 
@@ -1401,7 +1415,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(szTitle, sizeof szTitle, "Edit Group Clothes {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_LISTCLOTHES, DIALOG_STYLE_LIST, szTitle, szDialog, "Edit", "Cancel");
 				}
-				case 40: {
+				case 41: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1414,7 +1428,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_TURFCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 41: {
+				case 42: {
 					new
 						szDialog[((32 + 5) * MAX_GROUP_RANKS) + 24];
 
@@ -1426,7 +1440,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(szTitle, sizeof szTitle, "Edit Group Point Cap Rank {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_POINTCAP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
-				case 42: {
+				case 43: {
 					format(szTitle, sizeof szTitle, "Edit Group Crime Type {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
 					ShowPlayerDialogEx(playerid, DIALOG_GROUP_CRIMETYPE, DIALOG_STYLE_LIST, szTitle, "None\nRacer", "Select", "Cancel");
 				}
@@ -2352,6 +2366,25 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				default: {
 					arrGroupData[iGroupID][gTempNum] = listitem;
 					format(string, sizeof(string), "%s has set the minimum rank for Temporary Number Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][gTempNum], arrGroupRanks[iGroupID][arrGroupData[iGroupID][gTempNum]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+			}
+			return Group_DisplayDialog(playerid, iGroupID);
+		}
+		case DIALOG_GROUP_LEOARRESTACCESS: {
+
+			new
+				iGroupID = GetPVarInt(playerid, "Group_EditID");
+
+			if(response) switch(listitem) {
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][gLEOArrest] = INVALID_RANK;
+					format(string, sizeof(string), "%s has set the minimum rank for LEO Arrest Access to %d (Disabled) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][gLEOArrest], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+					Log("logs/editgroup.log", string);
+				}
+				default: {
+					arrGroupData[iGroupID][gLEOArrest] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for LEO Arrest Access to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][gLEOArrest], arrGroupRanks[iGroupID][arrGroupData[iGroupID][gLEOArrest]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 					Log("logs/editgroup.log", string);
 				}
 			}
@@ -3607,9 +3640,9 @@ CMD:dvadjust(playerid, params[])
 		if(rank > 9 || rank < 0) return SendClientMessageEx(playerid, COLOR_GREY, "Divisions can't go below 0 or above 9!");
 		DynVehicleInfo[iDvSlotID][gv_igDivID] = rank;
 		new string[128];
-		format(string, sizeof(string), "You have adjusted the division of this vehicle to %s (%d).", arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_igDivID]], rank);
+		format(string, sizeof(string), "You have adjusted the division of this vehicle to %s (%d).", arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][rank - 1], rank);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "%s has adjusted the division to %s (%d) on DV Slot %d.", GetPlayerNameEx(playerid), arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][DynVehicleInfo[iDvSlotID][gv_igDivID]], rank, iDvSlotID);
+		format(string, sizeof(string), "%s has adjusted the division to %s (%d) on DV Slot %d.", GetPlayerNameEx(playerid), arrGroupDivisions[DynVehicleInfo[iDvSlotID][gv_igID]][rank - 1], rank, iDvSlotID);
 		Log("logs/dv.log", string);
 	}
 	DynVeh_Save(iDvSlotID);
@@ -5142,7 +5175,7 @@ CMD:showbadge(playerid, params[])
 				SendClientMessageEx(giveplayerid, COLOR_WHITE, string);
 				switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance]) {
 					case 1: SendClientMessageEx(giveplayerid, COLOR_WHITE, "Under the Authority of the San Andreas Government.");
-					case 2: SendClientMessageEx(giveplayerid, COLOR_WHITE, "Under the Authority of the Nation of New Eire.");
+					case 2: SendClientMessageEx(giveplayerid, COLOR_WHITE, "Under the Authority of the Nation of New Robada.");
 				}
 				if(IsACop(playerid)) SendClientMessageEx(giveplayerid, COLOR_WHITE, "Official has the authority to arrest.");
 				else if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != 2) SendClientMessageEx(giveplayerid, COLOR_WHITE, "Official has the authority to assist in arrests.");
