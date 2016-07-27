@@ -3017,7 +3017,7 @@ CMD:bizradio(playerid, params[])
 
 	if (!IsValidBusinessID(iBusinessID)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not an employee of a business!");
 	else if(iBusinessID == INVALID_BUSINESS_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not an employee of a business!");
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /b(iz)r(radio) [biz chat]");
 
 	format(string, sizeof(string), "(radio) %s", params);

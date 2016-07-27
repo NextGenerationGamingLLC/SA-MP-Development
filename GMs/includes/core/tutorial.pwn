@@ -541,7 +541,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				case 13: CharacterCreation(playerid);
 				case 14:
 				{
-					if(!response) return SendClientMessageEx(playerid, -1, "Welcome to Next Generation Gaming! Remember to use /help if you need a refresher on commands or /newb(ie) to ask for help!");
+					if(!response) 
+					{
+						PlayerInfo[playerid][pTut] = -1;
+						DisablePlayerCheckpoint(playerid);
+						return SendClientMessageEx(playerid, -1, "Welcome to Next Generation Gaming! Remember to use /help if you need a refresher on commands or /newb(ie) to ask for help!");
+					}
 					else
 					{
 						PlayerInfo[playerid][pTut]++;
