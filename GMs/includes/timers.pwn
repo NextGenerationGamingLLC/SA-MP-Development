@@ -2549,7 +2549,7 @@ foreach(new i: Player)
 		// ServerHeartBeatTwo (merged by Jingles)
 		if(IsPlayerInAnyVehicle(i)) {
 			if(GetPlayerState(i) == PLAYER_STATE_DRIVER) SetPlayerArmedWeapon(i, 0);
-			else if(!IsADriveByWeapon(GetPlayerWeapon(i))) SetPlayerArmedWeapon(i, 0);
+			else if(!IsADriveByWeapon(GetPlayerWeapon(i)) && !IsADriveByWeapon(GetPVarInt(i, "LastWeapon"))) SetPlayerArmedWeapon(i,0);
 		}
 		if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_USEJETPACK && JetPack[i] == 0 && PlayerInfo[i][pAdmin] < 4)
 		{

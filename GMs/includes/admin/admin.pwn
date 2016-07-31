@@ -249,7 +249,7 @@ CMD:givegun(playerid, params[])
             if((PlayerInfo[playa][pConnectHours] < 2 || PlayerInfo[playa][pWRestricted] > 0) && gun != 46 && gun != 43) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is currently restricted from carrying weapons");
 			if(PlayerInfo[playa][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot do this to someone that has his account restricted!");
 		    if(playa != INVALID_PLAYER_ID && gun <= 20 || gun >= 22) {
-                PlayerInfo[playa][pAGuns][GetWeaponSlot(gun)] = gun;
+                PlayerInfo[playa][pGuns][GetWeaponSlot(gun)] = gun;
                 GivePlayerValidWeapon(playa, gun);
                 SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
             }
@@ -5914,56 +5914,6 @@ CMD:checkwdcount(playerid, params[])
 		}
     }
     return 1;
-}
-
-CMD:dedit(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1)
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
-		return 1;
-	}
-
-	new string[128], choice[32], amount;
-	if(sscanf(params, "s[32]d", choice, amount))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /dedit [name] [amount]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Cannabis, Crack");
-		return 1;
-	}
-
-	if(strcmp(choice,"Cannabis",true) == 0)
-	{
-		for(new h = 0; h < sizeof(Points); h++)
-		{
-			if(Points[h][Type] == 3)
-			{
-				Points[h][Stock] = amount;
-				format(string, sizeof(string), " CANNABIS/OPIUM AVAILABLE: %d/1000.", Points[h][Stock]);
-				UpdateDynamic3DTextLabelText(Points[h][TextLabel], COLOR_YELLOW, string);
-				SendClientMessageEx(playerid, COLOR_WHITE, " You have successfully changed the Drug House available Cannabis!");
-			}
-		}
-	}
-	else if(strcmp(choice,"crack",true) == 0)
-	{
-		for(new h = 0; h < sizeof(Points); h++)
-		{
-			if(Points[h][Type] == 4)
-			{
-				Points[h][Stock] = amount;
-				format(string, sizeof(string), " CRACK AVAILABLE: %d/500.", Points[h][Stock]);
-				UpdateDynamic3DTextLabelText(Points[h][TextLabel], COLOR_YELLOW, string);
-				SendClientMessageEx(playerid, COLOR_WHITE, " You have successfully changed the Crack Lab available crack!");
-			}
-		}
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "	Not a valid name.");
-		return 1;
-	}
-	return 1;
 }
 
 /*CMD:edit(playerid, params[])

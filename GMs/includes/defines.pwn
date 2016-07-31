@@ -1458,7 +1458,7 @@ native IsValidVehicle(vehicleid);
 #define		MAX_HOSPITALS				(18)
 #define		MAX_HOSPITALBEDS			(10)
 #define		MAX_DOCHOSPITALBEDS			(3)
-#define		MAX_DELIVERY_POINTS			(20)
+#define		MAX_DELIVERY_POINTS			(21)
 
 // hospital location definitions
 #define		HOSPITAL_ALLSAINTS			(0)

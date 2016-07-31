@@ -239,7 +239,7 @@ CMD:tie(playerid, params[])
 		{
 			if(PlayerTied[id] > 0) return SendClientMessageEx(playerid, -1, "That player is already tied.");
 			if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
-			if(PlayerCuffed[id] != 0 || PlayerInfo[id][pJailTime] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this to them right now.");
+			if(PlayerCuffed[id] != 0) return SendClientMessageEx(playerid, -1, "You cannot do this to them right now.");
 
 			if(ProxDetectorS(8.0, playerid, id))
 			{

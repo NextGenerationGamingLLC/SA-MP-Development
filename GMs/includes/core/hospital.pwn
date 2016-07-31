@@ -427,9 +427,25 @@ ReturnDeliveryPoint(iDPID)
 		case 17: iPoint = HOSPITAL_DOCJAIL;
 		case 18: iPoint = HOSPITAL_PALOMINO;
 		case 19: iPoint = HOSPITAL_PALOMINO; 
+		case 20: iPoint = HOSPITAL_LASVENTURAS;
 	}
 	
 	return iPoint;
+}
+
+ReturnDeliveryPointNation(point)
+{
+	// if you're going to add a new hospital delivery point, add the corresponding hospital ID to here if it is a New Robada hospital.
+	// 0 = San Andreas
+	// 1 = New Robada
+	
+	new nation;
+	switch(point)
+	{
+		case 13, 18 .. 20: nation = 1;
+		default: nation = 0;
+	}
+	return nation;
 }
 
 CMD:setinsurance(playerid, params[])

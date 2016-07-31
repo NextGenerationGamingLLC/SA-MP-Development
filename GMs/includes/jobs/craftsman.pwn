@@ -564,7 +564,7 @@ CMD:craft(playerid, params[])
 		//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          bag(6000)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15,000)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12,500) syringe(500)");
-		SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50,000)		toolbox(12,000)");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "closet(3,000)		toolbox(12,000)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(7,000)      flowers(25)");
 		SendClientMessageEx(playerid, COLOR_GRAD1, "knuckles(100)        baseballbat(100)");
 		SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
@@ -591,7 +591,7 @@ CMD:craft(playerid, params[])
 			//SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)          bag(6000)");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "parachute(50)		mailbox(15,000)");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "metaldetector(12,500) syringe(500)");
-			SendClientMessageEx(playerid, COLOR_GRAD1, "closet(50,000)		toolbox(12,000)");
+			SendClientMessageEx(playerid, COLOR_GRAD1, "closet(3,000)		toolbox(12,000)");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "crowbar(7,000)      flowers(25)");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "knuckles(100)        baseballbat(100)");
 			SendClientMessageEx(playerid, COLOR_GRAD2, "cane (100)           shovel(100)");
@@ -830,9 +830,9 @@ CMD:craft(playerid, params[])
 		}
 		else if(strcmp(choice,"closet",true) == 0)
 		{
-			if(PlayerInfo[playerid][pMats] >= 50000)
+			if(PlayerInfo[playerid][pMats] >= 3000)
 			{
-				price = 50000;
+				price = 3000;
 				weapon = 17;
 			}
 			else

@@ -4476,7 +4476,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			SetPVarFloat(playerid, "NGPassengerHP", health);
 			SetPVarFloat(playerid, "NGPassengerArmor", armour);
 		}*/
-        if(!IsADriveByWeapon(GetPlayerWeapon(playerid))) SetPlayerArmedWeapon(playerid,0);
+        if(!IsADriveByWeapon(GetPlayerWeapon(playerid)) && !IsADriveByWeapon(GetPVarInt(playerid, "LastWeapon"))) SetPlayerArmedWeapon(playerid,0);
         //if(PlayerInfo[playerid][pGuns][4] > 0)	SetPlayerArmedWeapon(playerid,PlayerInfo[playerid][pGuns][4]);
 		//else SetPlayerArmedWeapon(playerid,0);
 

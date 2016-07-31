@@ -558,7 +558,7 @@ CMD:deliverpt(playerid, params[])
                         }
                         GivePlayerCash(giveplayerid, -1000);
 						GivePlayerCash(playerid, 10000);
-                        Tax -= 9000;
+
 						//SendClientMessageEx(giveplayerid, TEAM_CYAN_COLOR, "Doc: Your medical bill comes in at $1000. Have a nice day!");
                         format(string,sizeof(string),"You received $10000 for successfully delivering the patient!");
                         SendClientMessageEx(playerid, TEAM_CYAN_COLOR, string);
@@ -569,7 +569,12 @@ CMD:deliverpt(playerid, params[])
 						new iHospitalDeliver = GetClosestDeliverPatientPoint(playerid);
 						new iHospital = ReturnDeliveryPoint(iHospitalDeliver);
 						
-						
+						switch(ReturnDeliveryPointNation(iHospitalDeliver))
+						{
+							case 0: Tax -= 9000;
+							case 1: TRTax -= 9000;
+						}
+                        						
 						DeliverPlayerToHospital(giveplayerid, iHospital);
                         PlayerInfo[playerid][pPatientsDelivered]++;
                         

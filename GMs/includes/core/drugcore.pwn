@@ -43,22 +43,22 @@ new dr_iPlayerTimeStamp[MAX_PLAYERS];
 
 CMD:drughelp(playerid, params[]) 
 {
-	SendClientMessageEx(playerid, COLOR_GREEN, "__________ [Drug System] __________");
-	SendClientMessageEx(playerid, COLOR_GRAD1, "/mydrugs | /usedrug | /dropdrug | /buypot | /buyopium | /makeheroin");
-	SendClientMessageEx(playerid, COLOR_GRAD1, "/plantpot | /plantopium /pickplant | /pickplant | /checkplant");
-	if(IsACop(playerid) || IsAMedic(playerid)) SendClientMessageEx(playerid, COLOR_LIGHTRED, "[MEDIC/LEA] | /destroyplant | /searchcar");
-	if(IsAdminLevel(playerid, ADMIN_JUNIOR, 0)) SendClientMessageEx(playerid, COLOR_YELLOW, "[Administrators] /adestroyplant");
-	SendClientMessageEx(playerid, COLOR_GREEN, "_______________________________________________________");
+	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
+	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpop, /plantopium, /pickplant, /checkplant /makeheroin");
+	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "POLICE: | /destroyplant | /searchcar");
+	if(IsAdminLevel(playerid, ADMIN_JUNIOR, 0)) SendClientMessageEx(playerid, COLOR_GREY, "ADMINISTRATOR: /adestroyplant");
+	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	return 1;
 }
 
 CMD:mydrugs(playerid, params[])
 {
 	new string[450];
-	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	for(new i; i < sizeof(Drugs); i++) format(string, sizeof(string),"%s | %s: %dg", string, Drugs[i], PlayerInfo[playerid][pDrugs][i]);
-	SendClientMessageEx(playerid, COLOR_GRAD1, string);
-	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+	format(string, sizeof(string),"%s | Pot Seeds: %d | Opium Seeds: %d | Syringes: %d |", string, PlayerInfo[playerid][pWSeeds], PlayerInfo[playerid][pOpiumSeeds], PlayerInfo[playerid][pSyringes]);
+	SendClientMessageEx(playerid, COLOR_GREY, string);
+	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	return 1;
 }
 

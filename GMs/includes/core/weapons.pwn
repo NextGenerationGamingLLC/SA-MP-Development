@@ -368,11 +368,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 
 	if(GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)
 	{
-		new gun,tmp;
-	 	GetPlayerWeaponData(playerid,4,gun,tmp);
-	  	#pragma unused tmp
-	   	if(gun)SetPlayerArmedWeapon(playerid,gun);
-	   	else SetPlayerArmedWeapon(playerid,0);
+	   	if(!IsADriveByWeapon(GetPlayerWeapon(playerid)) && !IsADriveByWeapon(GetPVarInt(playerid, "LastWeapon"))) SetPlayerArmedWeapon(playerid,0);
 	}
 	return 1;
 }
@@ -508,6 +504,49 @@ CMD:myguns(playerid, params[])
 	format(string, sizeof(string), "[%d/%d/%d %d:%d:%d] - [%d]", month, day, year, hour, minuite,second, encrypt);
 	SendClientMessageEx(playerid, COLOR_GREEN, string);
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+	return 1;
+}
+
+CMD:switchgun(playerid, params[])
+{
+	new weapon[16], id, weapons[13][2];
+	if(sscanf(params, "s[16]", weapon))
+	{
+		SendClientMessageEx(playerid, COLOR_WHITE, "SYNTAX: /switchgun [weapon]");
+		return SendClientMessageEx(playerid, COLOR_GREY, "Weapons: Fist, 9mm, Shotgun, Sawnoff, Spas12, UZI, MP5, M4, AK47, Tec9");
+	}
+	else
+	{
+		if(GetPVarInt(playerid, "Injured") || PlayerCuffed[playerid] > 0 || PlayerTied[playerid] > 0 || GetPVarInt(playerid, "IsInArena") || GetPVarInt(playerid, "EventToken") != 0 || PlayerInfo[playerid][pHospital] > 0) return SendClientMessageEx(playerid, -1, "You cannot do this right now!");
+
+		if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)
+		{
+			if(strcmp(weapon, "Fist", true) == 0) id = 0;
+			else if(strcmp(weapon, "9mm", true) == 0) id = 22;
+			else if(strcmp(weapon, "Shotgun", true) == 0) id = 25;
+			else if(strcmp(weapon, "Sawnoff", true) == 0) id = 26;
+			else if(strcmp(weapon, "Spas12", true) == 0) id = 27;
+			else if(strcmp(weapon, "Uzi", true) == 0) id = 28;
+			else if(strcmp(weapon, "Mp5", true) == 0) id = 29;
+			else if(strcmp(weapon, "M4", true) == 0) id = 30;
+			else if(strcmp(weapon, "AK47", true) == 0) id = 31;
+			else if(strcmp(weapon, "Tec9", true) == 0) id = 32;
+			else return SendClientMessageEx(playerid, COLOR_GREY, "Weapons: Fist, 9mm, Shotgun, Sawnoff, Spas12, UZI, MP5, M4, AK47, Tec9");
+
+			for (new i = 0; i <= 12; i++) 
+			{
+				GetPlayerWeaponData(playerid, i, weapons[i][0], weapons[i][1]);
+				if(PlayerInfo[playerid][pGuns][i] == id && weapons[i][0] == id)
+				{
+					SetPlayerArmedWeapon(playerid, id);
+					SetPVarInt(playerid, "LastWeapon", id);
+					return 1;
+				}
+			}
+			return SendClientMessageEx(playerid, -1, "You do not have that weapon.");
+		}
+		else SendClientMessageEx(playerid, -1, "You can only do this as a passenger.");
+	}
 	return 1;
 }
 

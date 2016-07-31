@@ -21,6 +21,8 @@
 									Miguel (s0nic)
 									Farva
 									Jingles
+									Westen
+									Behemoth
 				Past Developers:
 								*** Director of SA:MP Development:
 									Dom
@@ -75,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.349"
+#define SERVER_GM_TEXT "NG:RP v3.0.350"
 //#define AREA_DEBUG
 
 #include <a_samp>
