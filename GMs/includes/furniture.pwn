@@ -1122,29 +1122,41 @@ public OnRehashHouseFurniture(iHouseID) {
 // Check first/last visitor
 House_VistorCheck(playerid, iHouseID, choice) {
 
-	new iCount;
-	foreach(new p : Player) {
-		
-		if(PlayerInfo[p][pVW] == HouseInfo[iHouseID][hIntVW] && IsPlayerInRangeOfPoint(p, 40, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ])) {
-			if(p == playerid) continue;
-			iCount++;
-		}
-	}
-	if(!iCount) {
+	if(!HouseInfo[iHouseID][hFurnitureLoaded]) {
 
-		switch(choice) {
+		HouseInfo[iHouseID][hFurnitureLoaded] = 1;
+		format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
+		mysql_function_query(MainPipeline, szMiscArray, true, "OnLoadFurniture", "");
 
-			case 0: { // Enter House
-				
-				format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
-				mysql_function_query(MainPipeline, szMiscArray, true, "OnLoadFurniture", ""); // load the furniture
+		/*
+		new iCount;
+		foreach(new p : Player) {
+			
+			if(PlayerInfo[p][pVW] == HouseInfo[iHouseID][hIntVW] && IsPlayerInRangeOfPoint(p, 40, HouseInfo[iHouseID][hInteriorX], HouseInfo[iHouseID][hInteriorY], HouseInfo[iHouseID][hInteriorZ])) {
+				if(p == playerid) continue;
+				iCount++;
 			}
-			case 1: {
-				for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
-					if(IsValidFurniture(iHouseID, i, 1)) DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]); // Exit House
+		}
+		if(!iCount) {
+
+			switch(choice) {
+
+				case 0: { // Enter House
+					
+					HouseInfo[iHouseID][hFurnitureLoaded] = 1;
+					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
+					mysql_function_query(MainPipeline, szMiscArray, true, "OnLoadFurniture", ""); // load the furniture
+				}
+
+				
+				case 1: {
+					for(new i; i < MAX_FURNITURE_SLOTS; ++i) {
+						if(IsValidFurniture(iHouseID, i, 1)) DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][i]); // Exit House
+					}
 				}
 			}
 		}
+		*/
 	}
 }
 
@@ -2540,7 +2552,7 @@ Destroy3DTextureMenu(i) {
     if(textm_Selected3DTextureMenu[TextureMenuInfo[i][textm_iPlayerID]] == i) CancelSelect3DTextureMenu(TextureMenuInfo[i][textm_iPlayerID]);
     
     for(new idx = 0; idx < TextureMenuInfo[i][textm_iTiles]; idx++) {
-		DestroyDynamicObject(TextureMenuInfo[i][textm_iObjectID][idx]);
+		if(IsValidDynamicObject(TextureMenuInfo[i][textm_iObjectID][idx])) DestroyDynamicObject(TextureMenuInfo[i][textm_iObjectID][idx]);
 		TextureMenuInfo[i][textm_iObjectID][idx] = INVALID_OBJECT_ID;
 	}
 	TextureMenuInfo[i][textm_bExists] = false;

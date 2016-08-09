@@ -1342,6 +1342,7 @@ enum hInfo
 	hAreaID[2],
 	h_iLights,
 	hFurniture[MAX_FURNITURE_SLOTS],
+	hFurnitureLoaded
 };
 
 enum dmpInfo
