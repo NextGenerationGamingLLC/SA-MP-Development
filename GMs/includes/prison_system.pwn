@@ -2179,7 +2179,7 @@ CMD:celldeposit(playerid, params[])
     	new value, amount;
      	if(sscanf(params, "dd", value, amount))
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /prisoncelldeposit [value] [amount]");
+			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /celldeposit [value] [amount]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Drugs: (1) LSD - (2) Cannabis - (3) Meth - (4) Heroin - (5) Cocaine - (6) Crack - (7) Opium");
 			SendClientMessageEx(playerid, COLOR_GREY, "Drugs: (8) Ecstasy - (9) Speed - (10) Alcohol - (11) Demerol - (12) Morphine - (13) Haloperidol - (14) Aspirin");
 			return 1;
@@ -2669,7 +2669,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			PlayAnimEx(playerid,"BOMBER","BOM_Plant",4.0,0,0,0,0,0,0);
 
-			SendClientMessage(playerid, COLOR_WHITE, "You have chiseled a hole in your cell, type /prisoncelldeposit to deposit contraband.");
+			SendClientMessage(playerid, COLOR_WHITE, "You have chiseled a hole in your cell, type /celldeposit to deposit contraband.");
 	    }
     }
 	return 1;

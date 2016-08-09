@@ -60,7 +60,7 @@ CMD:help(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /pay /writecheck /charity /time /buy /(check)id /music /showlicenses /clothes /mywarrants");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /apply /skill /stopani /kill /buyclothes /droplicense /calculate /refuel /car /seatbelt /checkbelt, /defendtime");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /cancel /accept /eject /contract /service /families /joinevent /nextpaycheck, /nextgift, /pointtime");
-	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange /rld");
+	SendClientMessageEx(playerid, COLOR_WHITE,"*** GENERAL *** /speedo /speedopos /viewmotd /pickveh /cracktrunk /backpackhelp /nextnamechange");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** SHOP *** /shophelp /credits /sellcredits /microshop /activeitems /cooldowns");
 
 	switch(PlayerInfo[playerid][pJob])

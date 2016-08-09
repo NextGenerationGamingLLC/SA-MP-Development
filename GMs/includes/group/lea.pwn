@@ -1538,7 +1538,7 @@ CMD:take(playerid, params[])
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away %s's crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					PlayerInfo[giveplayerid][pDrugs][2] = 0;
+					PlayerInfo[giveplayerid][pDrugs][1] = 0;
 				}
 				else
 				{

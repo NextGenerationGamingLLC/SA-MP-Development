@@ -4134,12 +4134,12 @@ CMD:setmystat(playerid, params[])
 			}
 		case 22:
 			{
-				PlayerInfo[playerid][pDrugs][1] = amount;
+				PlayerInfo[playerid][pDrugs][0] = amount;
 				format(string, sizeof(string), "   %s's Cannabis has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 23:
 			{
-				PlayerInfo[playerid][pDrugs][2] = amount;
+				PlayerInfo[playerid][pDrugs][1] = amount;
 				format(string, sizeof(string), "   %s's Crack has been set to %d.", GetPlayerNameEx(playerid), amount);
 			}
 		case 24:

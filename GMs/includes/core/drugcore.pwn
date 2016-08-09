@@ -44,7 +44,7 @@ new dr_iPlayerTimeStamp[MAX_PLAYERS];
 CMD:drughelp(playerid, params[]) 
 {
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
-	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpop, /plantopium, /pickplant, /checkplant /makeheroin");
+	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpot, /plantopium, /pickplant, /checkplant /makeheroin");
 	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "POLICE: | /destroyplant | /searchcar");
 	if(IsAdminLevel(playerid, ADMIN_JUNIOR, 0)) SendClientMessageEx(playerid, COLOR_GREY, "ADMINISTRATOR: /adestroyplant");
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");

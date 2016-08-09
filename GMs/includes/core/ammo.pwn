@@ -596,7 +596,7 @@ CMD:editgsprices(playerid, params[]) {
 	g_mysql_SaveMOTD();
 	return 1;
 }
-
+/*
 CMD:ammohelp(playerid, params[]) {
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "*** AMMO *** /rld /myammo /buygun");
@@ -607,6 +607,7 @@ CMD:ammohelp(playerid, params[]) {
 
 	return 1;
 }
+*/
 
 /*CMD:oissuegl(playerid, params[]) return cmd_oissuegunlicense(playerid, params);
 CMD:oissuegunlicense(playerid, params[])

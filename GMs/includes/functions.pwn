@@ -2135,7 +2135,16 @@ stock SetPlayerToTeamColor(playerid)
 			SetPlayerColor(playerid,TEAM_TAXI_COLOR);
 		}
 	    else if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS && PlayerInfo[playerid][pDuty]) {
-			SetPlayerColor(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256);
+
+	    	if(GetPVarType(playerid, "MedBadge")) {
+
+	    		DeletePVar(playerid, "MedBadge");
+	    		if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1) { 
+					SetPlayerColor(playerid, 0xFF828200);
+				}
+				else SetPlayerColor(playerid, 0x9569BF00);
+	    	}
+			else SetPlayerColor(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256);
 		}
 		else if(GetPVarType(playerid, "HitmanBadgeColour") && IsAHitman(playerid))
 		{

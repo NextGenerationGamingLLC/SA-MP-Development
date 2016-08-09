@@ -1833,7 +1833,7 @@ CMD:accept(playerid, params[])
 							{
 								if(PlayerInfo[playerid][pSyringes] < 3) {
 									PlayerInfo[playerid][pSyringes]++;
-									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "/useheroin");
+									SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "/usedrug heroin");
 								}
 								else
 								{

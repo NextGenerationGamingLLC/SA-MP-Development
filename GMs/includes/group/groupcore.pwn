@@ -3276,6 +3276,7 @@ CMD:medbadge(playerid, params[]) {
 		if(PlayerInfo[playerid][pDuty]) {
 			PlayerInfo[playerid][pDuty] = 0;
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have hidden your medic badge, and will now be identified as being off-duty.");
+			SetPlayerToTeamColor(playerid);
 			if(IsAMedic(playerid) || IsFirstAid(playerid))
 			{
 				Medics -= 1;
@@ -3283,14 +3284,11 @@ CMD:medbadge(playerid, params[]) {
 		}
 		else {
 			PlayerInfo[playerid][pDuty] = 1;
-			//SetPlayerToTeamColor(playerid);
+			SetPVarInt(playerid, "MedBadge", 1);
+			SetPlayerToTeamColor(playerid);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have shown your medic badge, and will now be identified as being on-duty.");
-			if(IsAMedic(playerid) || IsFirstAid(playerid))
-			{
-				if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1) { 
-					SetPlayerColor(playerid, 0xFF828200);
-				}
-				else SetPlayerColor(playerid, 0x9569BF00);
+			if(IsAMedic(playerid) || IsFirstAid(playerid)) {
+
 				Medics += 1;
 			}
 		}
@@ -6429,7 +6427,7 @@ public OnWithdrawGroupWeapons(playerid, iGroupID, iWeaponID, iAmount) {
 
 		format(szMiscArray, sizeof(szMiscArray), "%s has withdrawn a %s from the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(iWeaponID));
 		GroupLog(iGroupID-1, szMiscArray);
-		if(iWeaponID != 22){
+		if(iWeaponID != 22 && iWeaponID != 19){
 			format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a %s from the locker.", Weapon_ReturnName(iWeaponID));
 		}
 		else {

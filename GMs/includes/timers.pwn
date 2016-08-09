@@ -180,6 +180,8 @@ timer CheckVehiclesLeftSpawned[5000](playerid)
 // TickRate: 1 secs.
 task ServerHeartbeat[1000]() {
 
+	arrGroupData[0][g_iDeptRadioAccess] = 0; // Temporary fix for LSPD's dept radio access.
+
     if(++AdminWarning == 15) {
 		for(new z = 0; z < MAX_REPORTS; z++)
 		{
@@ -651,7 +653,7 @@ task MoneyUpdate[1000]()
 	new
 		iTempHour = CalculateWorldGameTime(hour, minuite),
 		iTempMinute = CalculateGameMinute(minuite, second);
-		
+
 	if(secondet != second)
 	{
 		if(iTempMinute < 10)format(szMiscArray, sizeof(szMiscArray), "%d:0%d", iTempHour, iTempMinute);

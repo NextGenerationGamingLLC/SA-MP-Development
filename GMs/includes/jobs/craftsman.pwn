@@ -1060,7 +1060,7 @@ CMD:craft(playerid, params[])
 						{
 							PlayerInfo[playerid][pMats] -= price;
 							PlayerInfo[playerid][pSyringes]++;
-							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/useheroin");
+							SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "/usedrug heroin");
 						}
 						else
 						{
