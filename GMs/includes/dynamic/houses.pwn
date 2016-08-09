@@ -908,7 +908,7 @@ CMD:goinhouse(playerid, params[])
 			return SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 		}
 
-		House_VistorCheck(playerid, housenum, 0);
+		House_VistorCheck(housenum);
 		SetPlayerInterior(playerid,HouseInfo[housenum][hIntIW]);
 		SetPlayerPos(playerid, HouseInfo[housenum][hInteriorX], HouseInfo[housenum][hInteriorY], HouseInfo[housenum][hInteriorZ]);
 		GameTextForPlayer(playerid, "~w~Teleporting", 5000, 1);

@@ -1120,7 +1120,8 @@ public OnRehashHouseFurniture(iHouseID) {
 }
 
 // Check first/last visitor
-House_VistorCheck(playerid, iHouseID, choice) {
+// House_VistorCheck(playerid, iHouseID, choice) {
+House_VistorCheck(iHouseID) {
 
 	if(!HouseInfo[iHouseID][hFurnitureLoaded]) {
 

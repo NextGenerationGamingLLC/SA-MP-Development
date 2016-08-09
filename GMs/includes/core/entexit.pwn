@@ -554,7 +554,7 @@ House_Enter(playerid, i) {
 
 	if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i || HouseInfo[i][hLock] == 0 || PlayerInfo[playerid][pRenting] == i) {
 
-		House_VistorCheck(playerid, i, 0);
+		House_VistorCheck(i);
 		SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
 		PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
 		PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
@@ -573,7 +573,7 @@ House_Enter(playerid, i) {
 House_Exit(playerid, i) {
 
 	if(GetPVarType(playerid, PVAR_FURNITURE)) cmd_furniture(playerid, "");
-	House_VistorCheck(playerid, i, 1);
+	House_VistorCheck(i);
 	SetPlayerInterior(playerid,0);
 	PlayerInfo[playerid][pInt] = 0;
 	SetPlayerPos(playerid,HouseInfo[i][hExteriorX],HouseInfo[i][hExteriorY],HouseInfo[i][hExteriorZ]);

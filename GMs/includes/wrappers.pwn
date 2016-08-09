@@ -123,8 +123,7 @@ Internal_SetPlayerColor(playerid, color) {
 */
 
 #if defined TEXTLABEL_DEBUG
-
-Internal_DestroyDynamic3DTextLabel(id) {
+Int_DestDyn3DTxtLabel(Text3D:id) {
 
 	new szString[128],
 		iTrackID = Streamer_GetIntData(STREAMER_TYPE_3D_TEXT_LABEL, id, E_STREAMER_EXTRA_ID),
@@ -151,15 +150,15 @@ Internal_DestroyDynamic3DTextLabel(id) {
 		case 10: szString = "Businesses[iBusiness][GasPumpInfoTextID][iPump]";
 		default: szString = "Unknown";
 	}
-	format(szString, sizeof(szString), "Removed TextLabel: %d | Tracker: %s", id, szString);
+	format(szString, sizeof(szString), "Removed TextLabel: %d | Tracker: %s", _:id, szString);
 	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szString);
 
-	format(szString, sizeof(szString), "TL (%d) data: %0.2f, %0.2f, %0.2f, VW: %d, INT: %d", id, fPos[0], fPos[1], fPos[2], iData[0], iData[1]);
+	format(szString, sizeof(szString), "TL (%d) data: %0.2f, %0.2f, %0.2f, VW: %d, INT: %d", _:id, fPos[0], fPos[1], fPos[2], iData[0], iData[1]);
 	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szString);
 
 	if(!IsValidDynamic3DTextLabel(id)) {
 
-		format(szString, sizeof(szString), "Text Label %d (Tracker %s) deleted a non-created text label.", id, szString);
+		format(szString, sizeof(szString), "Text Label %d (Tracker %s) deleted a non-created text label.", _:id, szString);
 		IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szString);
 	}
 	return DestroyDynamic3DTextLabel(id);
@@ -211,7 +210,7 @@ Internal_StreamerSetIntData(type, id, data, value) {
 //#define SetPlayerColor(%0) Internal_SetPlayerColor(%0)
 
 #if defined TEXTLABEL_DEBUG
-#define DestroyDynamic3DTextLabel(%0) Internal_DestroyDynamic3DTextLabel(%0)
+#define DestroyDynamic3DTextLabel(%0) Int_DestDyn3DTxtLabel(%0)
 #endif
 
 #if defined AREA_DEBUG
