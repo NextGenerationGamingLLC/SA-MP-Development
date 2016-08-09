@@ -122,6 +122,50 @@ Internal_SetPlayerColor(playerid, color) {
 }
 */
 
+#if defined TEXTLABEL_DEBUG
+
+Internal_DestroyDynamic3DTextLabel(id) {
+
+	new szString[128],
+		iTrackID = Streamer_GetIntData(STREAMER_TYPE_3D_TEXT_LABEL, id, E_STREAMER_EXTRA_ID),
+		Float:fPos[3],
+		iData[2];
+
+	Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, id, E_STREAMER_X, fPos[0]);
+	Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, id, E_STREAMER_Y, fPos[1]);
+	Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, id, E_STREAMER_Z, fPos[2]);
+	iData[0] = Streamer_GetIntData(STREAMER_TYPE_3D_TEXT_LABEL, id, E_STREAMER_WORLD_ID);
+	iData[1] = Streamer_GetIntData(STREAMER_TYPE_3D_TEXT_LABEL, id, E_STREAMER_INTERIOR_ID);
+
+	switch(iTrackID) {
+		
+		case 1: szString = "Businesses[iBusiness][GasPumpSaleTextID][iPump]";
+		case 2: szString = "Businesses[i][bDoorText]";
+		case 3: szString = "Businesses[i][bStateText]";
+		case 4: szString = "Businesses[i][bSupplyText]";
+		case 5: szString = "RFLTeamN3D[playerid]";
+		case 6: szString = "Text3D:GetPVarInt(playerid, PVAR_TEMPTEXT)";
+		case 7: szString = "arrPayPhoneData[i][pp_iTextID]";
+		case 8: szString = "PollInfo[iPollID][poll_textLabel]";
+		case 9: szString = "DynPoints[id][poTextID]";
+		case 10: szString = "Businesses[iBusiness][GasPumpInfoTextID][iPump]";
+		default: szString = "Unknown";
+	}
+	format(szString, sizeof(szString), "Removed TextLabel: %d | Tracker: %s", id, szString);
+	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szString);
+
+	format(szString, sizeof(szString), "TL (%d) data: %0.2f, %0.2f, %0.2f, VW: %d, INT: %d", id, fPos[0], fPos[1], fPos[2], iData[0], iData[1]);
+	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szString);
+
+	if(!IsValidDynamic3DTextLabel(id)) {
+
+		format(szString, sizeof(szString), "Text Label %d (Tracker %s) deleted a non-created text label.", id, szString);
+		IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szString);
+	}
+	return DestroyDynamic3DTextLabel(id);
+}
+#endif
+
 #if defined AREA_DEBUG
 Internal_CreateDynamicSphere(Float:x, Float:y, Float:z, Float:size, worldid = -1, interiorid = -1, playerid = -1) {
 
@@ -165,6 +209,10 @@ Internal_StreamerSetIntData(type, id, data, value) {
 #define SetPlayerInterior(%0) Internal_SetPlayerInterior(%0)
 //#define SetPlayerName(%0) Internal_SetPlayerName(%0)
 //#define SetPlayerColor(%0) Internal_SetPlayerColor(%0)
+
+#if defined TEXTLABEL_DEBUG
+#define DestroyDynamic3DTextLabel(%0) Internal_DestroyDynamic3DTextLabel(%0)
+#endif
 
 #if defined AREA_DEBUG
 #define CreateDynamicSphere(%0) Internal_CreateDynamicSphere(%0)

@@ -708,6 +708,11 @@ Character_Actor(playerid, choice)
 		case 1:	{
 
 			DestroyActor(GetPVarInt(playerid, PVAR_TEMPACTOR));
+
+			#if defined TEXTLABEL_DEBUG
+			Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, Text3D:GetPVarInt(playerid, PVAR_TEMPTEXT), E_STREAMER_EXTRA_ID, 6);
+			#endif
+
 			DestroyDynamic3DTextLabel(Text3D:GetPVarInt(playerid, PVAR_TEMPTEXT));
 			DeletePVar(playerid, PVAR_TEMPACTOR);
 			DeletePVar(playerid, PVAR_TEMPTEXT);

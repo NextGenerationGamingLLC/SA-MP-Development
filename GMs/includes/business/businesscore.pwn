@@ -458,6 +458,11 @@ stock DestroyDynamicGasPump(iBusiness, iPump)
 	DestroyDynamicObject(Businesses[iBusiness][GasPumpObjectID][iPump]);
 	DestroyDynamic3DTextLabel(Businesses[iBusiness][GasPumpInfoTextID][iPump]);
 	DestroyDynamic3DTextLabel(Businesses[iBusiness][GasPumpSaleTextID][iPump]);
+
+	#if defined TEXTLABEL_DEBUG
+	Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, Businesses[iBusiness][GasPumpInfoTextID][iPump], E_STREAMER_EXTRA_ID, 10);
+	Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, Businesses[iBusiness][GasPumpSaleTextID][iPump], E_STREAMER_EXTRA_ID, 1);
+	#endif
 }
 
 stock CreateDynamicGasPump(iPlayerID = INVALID_PLAYER_ID, iBusiness, iPump)
@@ -485,6 +490,14 @@ stock RefreshBusinessPickup(i)
 	DestroyDynamic3DTextLabel(Businesses[i][bDoorText]);
   	DestroyDynamic3DTextLabel(Businesses[i][bStateText]);
   	DestroyDynamic3DTextLabel(Businesses[i][bSupplyText]);
+
+  	#if defined TEXTLABEL_DEBUG
+	Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, Businesses[i][bDoorText], E_STREAMER_EXTRA_ID, 2);
+	Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, Businesses[i][bStateText], E_STREAMER_EXTRA_ID, 3);
+	Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, Businesses[i][bSupplyText], E_STREAMER_EXTRA_ID, 4);
+	#endif
+
+
   	DestroyDynamicPickup(Businesses[i][bPickup]);
   	DestroyDynamicPickup(Businesses[i][bPickup_int]);
   	if(IsValidDynamicArea(Businesses[i][bAreaID][0])) DestroyDynamicArea(Businesses[i][bAreaID][0]);

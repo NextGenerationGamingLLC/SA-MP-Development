@@ -229,6 +229,11 @@ public OnDeletePayPhone(playerid, i) {
 
 	if(mysql_errno(MainPipeline)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please contact the development team.");
 	DestroyDynamicObject(arrPayPhoneData[i][pp_iObjectID]);
+
+	#if defined TEXTLABEL_DEBUG
+	Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, arrPayPhoneData[i][pp_iTextID], E_STREAMER_EXTRA_ID, 7);
+	#endif
+	
 	DestroyDynamic3DTextLabel(arrPayPhoneData[i][pp_iTextID]);
 	DestroyDynamicArea(arrPayPhoneData[i][pp_iAreaID]);
 	

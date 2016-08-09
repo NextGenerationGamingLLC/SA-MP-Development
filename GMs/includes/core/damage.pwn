@@ -814,6 +814,11 @@ public OnPlayerDeath(playerid, killerid, reason)
 	}
 	SetPlayerColor(playerid,TEAM_HIT_COLOR);
 	if(IsValidDynamic3DTextLabel(RFLTeamN3D[playerid])) {
+
+		#if defined TEXTLABEL_DEBUG
+		Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, RFLTeamN3D[playerid], E_STREAMER_EXTRA_ID, 5);
+		#endif
+
 		DestroyDynamic3DTextLabel(RFLTeamN3D[playerid]);
 		RFLTeamN3D[playerid] = Text3D:-1;
 	}

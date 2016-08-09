@@ -356,6 +356,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					PollInfo[iPollID][poll_iInterior] = iInterior;
 					PollInfo[iPollID][poll_iVirtualWorld] = iVW;
 
+					#if defined TEXTLABEL_DEBUG
+					Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, PollInfo[iPollID][poll_textLabel], E_STREAMER_EXTRA_ID, 8);
+					#endif
+
+
 					DestroyDynamic3DTextLabel(PollInfo[iPollID][poll_textLabel]);
 					DestroyDynamicPickup(PollInfo[iPollID][poll_iPickupID]);
 

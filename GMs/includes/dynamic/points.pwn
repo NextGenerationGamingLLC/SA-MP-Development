@@ -337,6 +337,11 @@ public ProgressTimer(id)
 	}
 	else
 	{
+
+		#if defined TEXTLABEL_DEBUG
+		Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, DynPoints[id][poTextID], E_STREAMER_EXTRA_ID, 9);
+		#endif
+
 	    DestroyDynamic3DTextLabel(DynPoints[id][poTextID]);
 
 	    format(szMiscArray, sizeof(szMiscArray), "%s has become available for capture! Stand here and to /capture it.", DynPoints[id][poName]);
@@ -348,6 +353,11 @@ public ProgressTimer(id)
 
 	if(DynPoints[id][poCaptureTime] <= 0)
 	{
+
+		#if defined TEXTLABEL_DEBUG
+		Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, DynPoints[id][poTextID], E_STREAMER_EXTRA_ID, 9);
+		#endif
+		
 		DestroyDynamic3DTextLabel(DynPoints[id][poTextID]);
 
 	    CaptureTimer(id);
