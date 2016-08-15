@@ -8,7 +8,25 @@
 
 #include <YSI\y_hooks>
 
+// From 3DTryg Funcs By AbyssMorgan (http://forum.sa-mp.com/showthread.php?t=591010)
+#define GetRotationFor2Point2D(%0,%1,%2,%3,%4)			(CompRotationFloat((atan2((%3)-(%1),(%2)-(%0))-90.0),(%4)))
+#define GetDistanceBetweenPoints3D(%1,%2,%3,%4,%5,%6)	VectorSize((%1)-(%4),(%2)-(%5),(%3)-(%6))
 
+stock Float:CompRotationFloat(Float:rotation,&Float:crotation=0.0){
+	crotation = rotation;
+	while(crotation < 0.0) crotation += 360.0;
+	while(crotation >= 360.0) crotation -= 360.0;
+	return crotation;
+}
+
+//new code version support 3D made by Abyss Morgan
+stock bool:GetRotationFor2Point3D(Float:x,Float:y,Float:z,Float:tx,Float:ty,Float:tz,&Float:rx,&Float:rz){
+	new Float:radius = GetDistanceBetweenPoints3D(x,y,z,tx,ty,tz);
+	if(radius <= 0.0) return false;
+	CompRotationFloat(-(acos((tz-z)/radius)-90.0),rx);
+	CompRotationFloat((atan2(ty-y,tx-x)-90.0),rz);
+	return true;`
+}
 
 enum E_SHOT_INFO {
 	acl_Tick,
@@ -24,12 +42,9 @@ enum E_SHOT_INFO {
 	bool:acl_Valid,
 }
 
-static ac_LagCompMode;
 static ac_LastUpdate[MAX_PLAYERS] = {-1, ...};
 static ac_RejectedHitsIdx[MAX_PLAYERS];
 static ac_iCBugFreeze[MAX_PLAYERS];
-static ac_MaxShootRateSamples = 5;
-//static ac_MaxHitRateSamples = 5;
 static arrLastBulletData[MAX_PLAYERS][E_SHOT_INFO];
 static ac_LastBulletIdx[MAX_PLAYERS];
 static ac_LastBulletTicks[MAX_PLAYERS][10];
@@ -39,66 +54,7 @@ static ac_LastHitTicks[MAX_PLAYERS][10];
 static ac_LastHitWeapons[MAX_PLAYERS][10];
 static ac_LastHitIdx[MAX_PLAYERS];
 static Float:ac_PlayerMaxHealth[MAX_PLAYERS] = {100.0, ...};
-//static Float:ac_PlayerMaxArmour[MAX_PLAYERS] = {100.0, ...};
-//static ac_LastSentHealth[MAX_PLAYERS];
-//static ac_LastSentArmour[MAX_PLAYERS];
-//static bool:ac_DamageArmourToggle[2] = {false, ...};
-//static Float:ac_DamageDoneHealth[MAX_PLAYERS];
-//static Float:ac_DamageDoneArmour[MAX_PLAYERS];
 
-// The fastest possible gap between weapon shots in milliseconds
-static ac_MaxWeaponShootRate[] = {
-
-	250, // 0 - Fist
-	250, // 1 - Brass knuckles
-	250, // 2 - Golf club
-	250, // 3 - Nitestick
-	250, // 4 - Knife
-	250, // 5 - Bat
-	250, // 6 - Shovel
-	250, // 7 - Pool cue
-	250, // 8 - Katana
-	30, // 9 - Chainsaw
-	250, // 10 - Dildo
-	250, // 11 - Dildo 2
-	250, // 12 - Vibrator
-	250, // 13 - Vibrator 2
-	250, // 14 - Flowers
-	250, // 15 - Cane
-	0, // 16 - Grenade
-	0, // 17 - Teargas
-	0, // 18 - Molotov
-	20, // 19 - Vehicle M4 (custom)
-	20, // 20 - Vehicle minigun (custom)
-	0, // 21
-	160, // 22 - Colt 45
-	120, // 23 - Silenced
-	120, // 24 - Deagle
-	800, // 25 - Shotgun
-	120, // 26 - Sawed-off
-	120, // 27 - Spas
-	50, // 28 - UZI
-	90, // 29 - MP5
-	90, // 30 - AK47
-	90, // 31 - M4
-	70, // 32 - Tec9
-	800, // 33 - Cuntgun
-	900, // 34 - Sniper
-	0, // 35 - Rocket launcher
-	0, // 36 - Heatseeker
-	0, // 37 - Flamethrower
-	20, // 38 - Minigun
-	0, // 39 - Satchel
-	0, // 40 - Detonator
-	10, // 41 - Spraycan
-	10, // 42 - Fire extinguisher
-	0, // 43 - Camera
-	0, // 44 - Night vision
-	0, // 45 - Infrared
-	0, // 46 - Parachute
-	0, // 47 - Fake pistol
-	400 // 48 - Pistol whip (custom)
-};
 
 // Max continuous shots.
 static ac_MaxWeaponContShots[] = {
@@ -154,243 +110,6 @@ static ac_MaxWeaponContShots[] = {
 	0 // 48 - Pistol whip (custom)
 };
 
-// Whether the damage is applied directly to health (1) or is distributed between health and armour (0), and whether this rule applies only to the torso (1) or not (0)
-/*
-static ac_DamageArmour[][2] = {
-	{0, 0}, // 0 - Fist
-	{0, 0}, // 1 - Brass knuckles
-	{0, 0}, // 2 - Golf club
-	{0, 0}, // 3 - Nitestick
-	{0, 0}, // 4 - Knife
-	{0, 0}, // 5 - Bat
-	{0, 0}, // 6 - Shovel
-	{0, 0}, // 7 - Pool cue
-	{0, 0}, // 8 - Katana
-	{0, 0}, // 9 - Chainsaw
-	{0, 0}, // 10 - Dildo
-	{0, 0}, // 11 - Dildo 2
-	{0, 0}, // 12 - Vibrator
-	{0, 0}, // 13 - Vibrator 2
-	{0, 0}, // 14 - Flowers
-	{0, 0}, // 15 - Cane
-	{0, 0}, // 16 - Grenade
-	{0, 0}, // 17 - Teargas
-	{0, 0}, // 18 - Molotov
-	{1, 1}, // 19 - Vehicle M4 (custom)
-	{1, 1}, // 20 - Vehicle minigun (custom)
-	{1, 0}, // 21
-	{1, 1}, // 22 - Colt 45
-	{1, 1}, // 23 - Silenced
-	{1, 1}, // 24 - Deagle
-	{1, 1}, // 25 - Shotgun
-	{1, 1}, // 26 - Sawed-off
-	{1, 1}, // 27 - Spas
-	{1, 1}, // 28 - UZI
-	{1, 1}, // 29 - MP5
-	{1, 1}, // 30 - AK47
-	{1, 1}, // 31 - M4
-	{1, 1}, // 32 - Tec9
-	{1, 1}, // 33 - Cuntgun
-	{1, 1}, // 34 - Sniper
-	{0, 0}, // 35 - Rocket launcher
-	{0, 0}, // 36 - Heatseeker
-	{0, 0}, // 37 - Flamethrower
-	{1, 1}, // 38 - Minigun
-	{0, 0}, // 39 - Satchel
-	{0, 0}, // 40 - Detonator
-	{0, 0}, // 41 - Spraycan
-	{0, 0}, // 42 - Fire extinguisher
-	{1, 0}, // 43 - Camera
-	{1, 0}, // 44 - Night vision
-	{1, 0}, // 45 - Infrared
-	{1, 0}, // 46 - Parachute
-	{1, 0}, // 47 - Fake pistol
-	{0, 0}, // 48 - Pistol whip (custom)
-	{0, 0}, // 49 - Vehicle
-	{0, 1}, // 50 - Helicopter blades
-	{0, 0}, // 51 - Explosion
-	{0, 0}, // 52 - Car park
-	{0, 0}, // 53 - Drowning
-	{0, 0}  // 54 - Splat
-};
-*/
-
-// Weapons allowed in OnPlayerGiveDamage
-static const ac_ValidDamageGiven[] = {
-	1, // 0 - Fist
-	1, // 1 - Brass knuckles
-	1, // 2 - Golf club
-	1, // 3 - Nitestick
-	1, // 4 - Knife
-	1, // 5 - Bat
-	1, // 6 - Shovel
-	1, // 7 - Pool cue
-	1, // 8 - Katana
-	1, // 9 - Chainsaw
-	1, // 10 - Dildo
-	1, // 11 - Dildo 2
-	1, // 12 - Vibrator
-	1, // 13 - Vibrator 2
-	1, // 14 - Flowers
-	1, // 15 - Cane
-	0, // 16 - Grenade
-	0, // 17 - Teargas
-	0, // 18 - Molotov
-	0, // 19 - Vehicle M4 (custom)
-	0, // 20 - Vehicle minigun
-	0, // 21
-	1, // 22 - Colt 45
-	1, // 23 - Silenced
-	1, // 24 - Deagle
-	1, // 25 - Shotgun
-	1, // 26 - Sawed-off
-	1, // 27 - Spas
-	1, // 28 - UZI
-	1, // 29 - MP5
-	1, // 30 - AK47
-	1, // 31 - M4
-	1, // 32 - Tec9
-	1, // 33 - Cuntgun
-	1, // 34 - Sniper
-	0, // 35 - Rocket launcher
-	0, // 36 - Heatseeker
-	0, // 37 - Flamethrower
-	1, // 38 - Minigun
-	0, // 39 - Satchel
-	0, // 40 - Detonator
-	1, // 41 - Spraycan
-	1, // 42 - Fire extinguisher
-	0, // 43 - Camera
-	0, // 44 - Night vision
-	0, // 45 - Infrared
-	1  // 46 - Parachute
-};
-
-// Weapons allowed in OnPlayerTakeDamage
-// 2 = valid in both OnPlayerGiveDamage and OnPlayerTakeDamage
-static const ac_ValidDamageTaken[] = {
-	1, // 0 - Fist
-	1, // 1 - Brass knuckles
-	1, // 2 - Golf club
-	1, // 3 - Nitestick
-	1, // 4 - Knife
-	1, // 5 - Bat
-	1, // 6 - Shovel
-	1, // 7 - Pool cue
-	1, // 8 - Katana
-	1, // 9 - Chainsaw
-	1, // 10 - Dildo
-	1, // 11 - Dildo 2
-	1, // 12 - Vibrator
-	1, // 13 - Vibrator 2
-	1, // 14 - Flowers
-	1, // 15 - Cane
-	0, // 16 - Grenade
-	0, // 17 - Teargas
-	0, // 18 - Molotov
-	0, // 19 - Vehicle M4 (custom)
-	0, // 20 - Vehicle minigun (custom)
-	0, // 21
-	1, // 22 - Colt 45
-	1, // 23 - Silenced
-	1, // 24 - Deagle
-	1, // 25 - Shotgun
-	1, // 26 - Sawed-off
-	1, // 27 - Spas
-	1, // 28 - UZI
-	1, // 29 - MP5
-	1, // 30 - AK47
-	1, // 31 - M4
-	1, // 32 - Tec9
-	1, // 33 - Cuntgun
-	1, // 34 - Sniper
-	0, // 35 - Rocket launcher
-	0, // 36 - Heatseeker
-	2, // 37 - Flamethrower
-	1, // 38 - Minigun
-	0, // 39 - Satchel
-	0, // 40 - Detonator
-	1, // 41 - Spraycan
-	1, // 42 - Fire extinguisher
-	0, // 43 - Camera
-	0, // 44 - Night vision
-	0, // 45 - Infrared
-	1, // 46 - Parachute
-	0, // 47 - Fake pistol
-	0, // 48 - Pistol whip (custom)
-	2, // 49 - Vehicle
-	2, // 50 - Helicopter blades
-	2, // 51 - Explosion
-	0, // 52 - Car park (custom)
-	2, // 53 - Drowning
-	2  // 54 - Splat
-};
-
-
-//#assert DAMAGE_TYPE_MULTIPLIER == 0
-//#assert DAMAGE_TYPE_STATIC == 1
-
-// Whether the damage is multiplied by the given/taken value (0) or always the same value (1)
-/*
-static ac_DamageType[] = {
-	0, // 0 - Fist
-	0, // 1 - Brass knuckles
-	0, // 2 - Golf club
-	0, // 3 - Nitestick
-	0, // 4 - Knife
-	0, // 5 - Bat
-	0, // 6 - Shovel
-	0, // 7 - Pool cue
-	0, // 8 - Katana
-	0, // 9 - Chainsaw
-	0, // 10 - Dildo
-	0, // 11 - Dildo 2
-	0, // 12 - Vibrator
-	0, // 13 - Vibrator 2
-	0, // 14 - Flowers
-	0, // 15 - Cane
-	0, // 16 - Grenade
-	1, // 17 - Teargas
-	0, // 18 - Molotov
-	1, // 19 - Vehicle M4 (custom)
-	1, // 20 - Vehicle minigun (custom)
-	0, // 21
-	1, // 22 - Colt 45
-	1, // 23 - Silenced
-	1, // 24 - Deagle
-	1, // 25 - Shotgun
-	1, // 26 - Sawed-off
-	1, // 27 - Spas
-	1, // 28 - UZI
-	1, // 29 - MP5
-	1, // 30 - AK47
-	1, // 31 - M4
-	1, // 32 - Tec9
-	1, // 33 - Cuntgun
-	1, // 34 - Sniper
-	0, // 35 - Rocket launcher
-	0, // 36 - Heatseeker
-	0, // 37 - Flamethrower
-	1, // 38 - Minigun
-	0, // 39 - Satchel
-	0, // 40 - Detonator
-	1, // 41 - Spraycan
-	1, // 42 - Fire extinguisher
-	0, // 43 - Camera
-	0, // 44 - Night vision
-	0, // 45 - Infrared
-	0, // 46 - Parachute
-	0, // 47 - Fake pistol
-	1, // 48 - Pistol whip (custom)
-	1, // 49 - Vehicle
-	1, // 50 - Helicopter blades
-	0, // 51 - Explosion
-	0, // 52 - Car park
-	0, // 53 - Drowning
-	0  // 54 - Splat
-};
-*/
-
 // The default weapon range (from weapon.dat)
 // Note that due to various bugs, these can be exceeded, but
 // this include blocks out-of-range values.
@@ -436,25 +155,6 @@ static Float:ac_WeaponRange[] = {
 	0.0, // 37 - Flamethrower
 	75.0  // 38 - Minigun
 };
-
-/*
-enum {
-	AC_NO_ERROR,
-	AC_NO_ISSUER,
-	AC_NO_DAMAGED,
-	AC_INVALID_DAMAGE,
-	AC_INVALID_DISTANCE
-}
-*/
-
-/*
-enum {
-	DAMAGE_TYPE_MULTIPLIER,
-	DAMAGE_TYPE_STATIC,
-	DAMAGE_TYPE_RANGE_MULTIPLIER,
-	DAMAGE_TYPE_RANGE
-}
-*/
 
 enum {
 	HIT_NO_DAMAGEDID,
@@ -534,6 +234,28 @@ stock const g_WeaponName[57][59] = {
 	{"Collision"        }, {"Splat"         }, {"Unknown"             }
 };
 
+stock const ac_ACNames[][] = {
+	"Aimbot",
+	"(Auto) C-Bug",
+	"Silent Aim",
+	"Pro-Aim",
+	"Range Hacks",
+	"Speed Hacks",
+	"Vehicle Hacks",
+	"Command Spamming",
+	"Car Surfing",
+	"Ninja Jacking",
+	"Ghost Hacks",
+	"Name Tags",
+	"Airbreaking",
+	"Infinite Stamina",
+	"Health/Armor Hacks",
+	"Dialog Spoofing",
+	"Rejected Hits (view-only)",
+	"Desync"
+};
+
+
 // #define AC_DEBUG
 #define 			HACKTIMER_INTERVAL 			5000
 
@@ -579,7 +301,13 @@ enum E_REJECTED_HIT {
 new arrRejectedHitData[MAX_PLAYERS][AC_MAX_REJECTED_HITS][E_REJECTED_HIT];
 
 
-new ac_iPlayerKeySpam[MAX_PLAYERS],
+new ac_iSilentAimWarnings[MAX_PLAYERS],
+	ac_iSilentAimWarnings2[MAX_PLAYERS],
+	ac_iSilentAimWarnings3[MAX_PLAYERS],
+	ac_iSilentAimTick[MAX_PLAYERS],
+	ac_iGhostHackWarnings[MAX_PLAYERS],
+
+	ac_iPlayerKeySpam[MAX_PLAYERS],
 	ac_iVehicleDriverID[MAX_PLAYERS],
 	ac_iLastVehicleID[MAX_PLAYERS],
 
@@ -588,6 +316,68 @@ new ac_iPlayerKeySpam[MAX_PLAYERS],
 	bool:ac_IsDead[MAX_PLAYERS],
 	bool:ac_BeingResynced[MAX_PLAYERS],
 	iShotVariance = 5;
+
+ptask HackCheck_Micro[1000](playerid) {
+	
+	if(PlayerInfo[playerid][pAdmin] < 2)
+	{
+		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
+			if(ac_ACToggle[AC_AIRBREAKING] && AC_AirBreaking(playerid)) AC_Process(playerid, AC_AIRBREAKING);
+
+			/* Reset arrPAntiCheat bits that were set in callback wrappers */
+			Bit_Off(arrPAntiCheat[playerid], ac_bitValidPlayerPos);
+			Bit_Off(arrPAntiCheat[playerid], ac_bitValidSpectating);
+		}
+	}
+}
+
+ptask HackCheck[HACKTIMER_INTERVAL](playerid) {
+
+	DeletePVar(playerid, "ACCooldown");
+	arrAntiCheat[playerid][ac_iCommandCount] = 0;
+	ac_iPlayerKeySpam[playerid] = 0;
+	arrAntiCheat[playerid][ac_iSpeed] = GetPlayerSpeed(playerid);
+
+	ac_iSilentAimWarnings[playerid] = 0;
+	ac_iSilentAimWarnings2[playerid] = 0;
+	ac_iSilentAimWarnings3[playerid] = 0;
+	ac_iGhostHackWarnings[playerid] = 0;
+
+	if(PlayerInfo[playerid][pAdmin] < 2)
+	{
+		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
+			if(ac_ACToggle[AC_CARSURFING] && AC_IsPlayerSurfing(playerid)) AC_Process(playerid, AC_CARSURFING, INVALID_PLAYER_ID);
+			if(ac_ACToggle[AC_HEALTHARMORHACKS] && AC_PlayerHealthArmor(playerid)) AC_Process(playerid, AC_HEALTHARMORHACKS, INVALID_PLAYER_ID);
+			if(ac_ACToggle[AC_INFINITESTAMINA] && AC_InfiniteStamina(playerid)) AC_Process(playerid, AC_INFINITESTAMINA);
+		}
+	}
+}
+
+timer AC_RevivePlayer[5000](playerid) {
+
+	format(szMiscArray, sizeof(szMiscArray), "SYSTEM: %s(%d) has been revived by [SYSTEM]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(playerid));
+	Log("logs/system.log", szMiscArray);
+	KillEMSQueue(playerid);
+	ClearAnimations(playerid);
+	SetHealth(playerid, 100);
+}
+
+
+timer AC_ResetPVars[2000](playerid, processid) {
+
+	switch(processid) {
+		case 0: {
+			ac_iLastVehicleID[playerid] = INVALID_VEHICLE_ID;
+		}
+		case 1: {
+			DeletePVar(playerid, "PCMute");
+		}
+	}
+}
+
+timer AC_ResetAnim[2000](playerid) {
+	ClearAnimations(playerid, 1);
+}
 
 hook OnGameModeInit() {
 	
@@ -598,7 +388,6 @@ hook OnGameModeInit() {
 	ac_ACToggle[AC_DIALOGSPOOFING] = true;
 
 	AC_InitWeaponData();
-	ac_LagCompMode = GetServerVarAsInt("lagcompmode");
 }
 
 /*
@@ -659,8 +448,6 @@ CMD:setnametagdistance(playerid, params[]) {
 
 hook OnPlayerConnect(playerid) {
 
-	//CreatePlayerLabel(playerid);
-
 	/*
 	new szData[2];
 	szData[0] = STREAMER_AREATYPE_PLAYERAREA; // to make sure we can recognize this as a player area type.
@@ -680,9 +467,7 @@ hook OnPlayerConnect(playerid) {
 	}
 	*/
 
-
 	new iTick = GetTickCount();
-	
 	arrAntiCheat[playerid][ac_iVehID] = INVALID_VEHICLE_ID;
 	arrAntiCheat[playerid][ac_iShots][0] = 0;
 	arrAntiCheat[playerid][ac_iShots][1] = 0;
@@ -720,7 +505,6 @@ hook OnPlayerConnect(playerid) {
 
 	ac_LastUpdate[playerid] = iTick;
 	ac_PlayerMaxHealth[playerid] = 100.0;
-	// ac_PlayerMaxArmour[playerid] = 100.0;
 	ac_LastExplosive[playerid] = 0;
 	ac_LastBulletIdx[playerid] = 0;
 	ac_LastHitIdx[playerid] = 0;
@@ -728,14 +512,7 @@ hook OnPlayerConnect(playerid) {
 	ac_TotalShots[playerid] = 0;
 	ac_HitsIssued[playerid] = 0;
 	ac_IsDead[playerid] = false;
-	// ac_PreviousHitI[playerid] = 0;
 	ac_iCBugFreeze[playerid] = 0;
-
-	/*
-	for (new i = 0; i < sizeof(s_PreviousHits[]); i++) {
-		ac_PreviousHits[playerid][i][e_Tick] = 0;
-	}
-	*/
 
 	arrLastBulletData[playerid][acl_Tick] = 0;
 	arrLastBulletData[playerid][acl_Weapon] = 0;
@@ -765,6 +542,12 @@ hook OnPlayerConnect(playerid) {
 	for (new i; i < sizeof(arrRejectedHitData[]); i++) {
 		arrRejectedHitData[playerid][i][acr_iTime] = 0;
 	}
+
+	ac_iSilentAimWarnings[playerid] = 0;
+	ac_iSilentAimWarnings2[playerid] = 0;
+	ac_iSilentAimWarnings3[playerid] = 0;
+	ac_iSilentAimTick[playerid] = 0;
+	ac_iGhostHackWarnings[playerid] = 0;
 }
 
 /*
@@ -795,25 +578,6 @@ hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 }
 */
 
-hook OnPlayerUpdate(playerid) {
-
-	if(ac_ACToggle[AC_SPEEDHACKS]) AC_SpeedHacks(playerid);
-    if(IsPlayerInAnyVehicle(playerid)){
-
-		if(GetPlayerVehicleID(playerid) != arrAntiCheat[playerid][ac_iVehID]) {
-
-			arrAntiCheat[playerid][ac_iVehID] = -1;
-			
-			new Float:fPos[3];
-			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-			SetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]+1); 
-			AC_Process(playerid, AC_VEHICLEHACKS);
-		} 
-	} 
-	ac_LastUpdate[playerid] = GetTickCount();
-	return 1;
-}
-
 /*
 hook OnPlayerCommandReceived(playerid, cmdtext[]) {
 
@@ -832,6 +596,25 @@ hook OnPlayerCommandReceived(playerid, cmdtext[]) {
 	return 1;
 }
 */
+
+hook OnPlayerUpdate(playerid) {
+
+	if(ac_ACToggle[AC_SPEEDHACKS]) AC_SpeedHacks(playerid);
+    if(IsPlayerInAnyVehicle(playerid)){
+
+		if(GetPlayerVehicleID(playerid) != arrAntiCheat[playerid][ac_iVehID]) {
+
+			arrAntiCheat[playerid][ac_iVehID] = -1;
+			
+			new Float:fPos[3];
+			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+			SetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]+1); 
+			AC_Process(playerid, AC_VEHICLEHACKS);
+		} 
+	} 
+	ac_LastUpdate[playerid] = GetTickCount();
+	return 1;
+}
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
@@ -855,7 +638,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 			if(arrLastBulletData[playerid][acl_Tick] && iDiff < 1200 && !ac_iCBugFreeze[playerid]) {
 
-				AC_Process(playerid, AC_CBUG); //GetPlayerWeapon(playerid));
+				AC_Process(playerid, AC_CBUG);
 				ac_iCBugFreeze[playerid] = GetTickCount();
 			}
 		}
@@ -879,12 +662,6 @@ hook OnPlayerSpawn(playerid) {
 	ac_LastUpdate[playerid] = GetTickCount();
 	if(ac_IsDead[playerid]) ac_IsDead[playerid] = false;
 }
-
-/*
-hook OnPlayerRequestClass(playerid, classid) {
-	if(ac_IsDead[playerid]) ac_IsDead[playerid] = false;
-}
-*/
 
 hook OnPlayerDeath(playerid, killerid, reason) {
 
@@ -914,39 +691,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response) {
 			
 				if(ac_ACToggle[listitem]) {
-					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned off the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
+					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned off the %s detection.", GetPlayerNameEx(playerid), ac_ACNames[listitem]);
 					ac_ACToggle[listitem] = false;
-
-					/*
-					switch(listitem) {
-						
-						
-						case AC_NAMETAGS: {
-							foreach(new i : Player) {
-								foreach(new x : Player) ShowPlayerNameTagForPlayer(i, x, true);
-							}
-						}
-					}
-					*/
 				}
 				else {
-					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned on the %s detection.", GetPlayerNameEx(playerid), AC_GetACName(listitem));
+					format(szMiscArray, sizeof(szMiscArray), "[SYSTEM] %s turned on the %s detection.", GetPlayerNameEx(playerid), ac_ACNames[listitem]);
 					ac_ACToggle[listitem] = true;
-
-					/*
-					switch(listitem) {
-						case AC_NAMETAGS: {
-							foreach(new i : Player) {
-								foreach(new x : Player) if(!IsPlayerInDynamicArea(i, arrAntiCheat[x][ac_iPlayerAreaID])) ShowPlayerNameTagForPlayer(i, x, false);
-							}
-						}
-					}
-					*/
 				}
 				Log("logs/ACSystem.log", szMiscArray);
 				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 			}
-			// else SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot turn these on yet.");
 		}
 	}
 	return 0;
@@ -955,9 +709,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
 
-	new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
-
 	szMiscArray[0] = 0;
+
+	if(IsPlayerPaused(playerid) && ac_iGhostHackWarnings[playerid] > 5) AC_Process(playerid, AC_GHOSTHACKS, weaponid);
+	if(!IsCorrectCameraMode(playerid)) AC_Process(playerid, AC_DESYNC, GetPlayerCameraMode(playerid));
+
+	new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
 	if(hittype == BULLET_HIT_TYPE_PLAYER && (BadFloat(fX) || BadFloat(fY) || BadFloat(fZ)))	{
 		Kick(playerid); // CRASHER DETECTED
 	    return 0;
@@ -985,21 +742,20 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid) return 1;
 	}
 
-	if(hittype == BULLET_HIT_TYPE_PLAYER)
-	{
+	if(hittype == BULLET_HIT_TYPE_PLAYER) {
+
 		if(!IsPlayerStreamedIn(playerid, hitid) || !IsPlayerStreamedIn(hitid, playerid)) return 0;
 	}
-	if(weaponid == 24 || weaponid == 25 || weaponid == 26/* || weaponid == 31*/)
-	{
+	if(weaponid == 24 || weaponid == 25 || weaponid == 26/* || weaponid == 31*/) {
 		++PlayerShots[playerid];
 	}
-	if(weaponid == 34)
-	{
+	if(weaponid == 34) {
+
 		++PlayerSniperShots[playerid];	
 	}
 	if(GetPVarInt(playerid, "FireStart") == 1) {
-		if(fX != 0 && fY != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE)
-		{
+		if(fX != 0 && fY != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE) {
+
 			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
 		}
 	}
@@ -1039,12 +795,10 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	}
 
 	// Invalid hit type
-	/*
 	if(hittype < 0 || hittype > 4) {
 		AC_AddRejectedHit(playerid, damagedid, HIT_INVALID_HITTYPE, weaponid, hittype);
 		return 0;
 	}
-	*/
 
 	// Hitting when player isn't spawned.
 	if(!IsPlayerSpawned(playerid)) {
@@ -1115,21 +869,6 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	ac_LastBulletWeapons[playerid][idx] = weaponid;
 	ac_TotalShots[playerid]++;
 
-	#if defined AC_DEBUG
-	if(ac_TotalShots[playerid] > 1) {
-		new prev_tick_idx = (idx - 1) % sizeof(ac_LastBulletTicks[]);
-
-		// JIT plugin fix
-		if (prev_tick_idx < 0) {
-			prev_tick_idx += sizeof(ac_LastBulletTicks[]);
-		}
-
-		new prev_tick = ac_LastBulletTicks[playerid][prev_tick_idx];
-
-		// AC_SendDebugMessage(playerid, "(shot) last: %d last 3: %d", iTick - prev_tick, AverageShootRate(playerid, 3));
-	}
-	#endif
-
 	/* LOG FUNCTIONS */
 	arrLastBulletData[playerid][acl_Tick] = GetTickCount();
 	arrLastBulletData[playerid][acl_Weapon] = weaponid;
@@ -1153,55 +892,20 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	arrLastBulletData[playerid][acl_Hits] = 0;
 
 	/*
-	AC_BayesianNetwork(playerid, hitid);
-	AC_Probability(playerid, hitid);
-	*/
-
-	/*if(IsValidDynamicObject(iObject)) DestroyDynamicObject(iObject);
-	iObject = CreateDynamicObject(1238, fHitPosX, fHitPosY, fHitPosZ, 0.0, 0.0, 0.0);
-	*/
-	// Bullet destination comparison
-	/*
-	new Float:fPlayerDistance;
-	foreach(new i : Player) {
-
-		fPlayerDistance = GetPlayerDistanceFromPoint(i, arrLastBulletData[playerid][acl_fHitPos][0], arrLastBulletData[playerid][acl_fHitPos][1], arrLastBulletData[playerid][acl_fHitPos][2]);
-		if(fPlayerDistance < 2.5)
-		{
-			new Float:fPos[3],
-				Float:fAngle[2];
-
-			GetPlayerFacingAngle(playerid, fAngle[0]);
-			fAngle[1] = AngleBetweenPoints(fPos[0], fPos[1], arrLastBulletData[playerid][acl_fHitPos][0], arrLastBulletData[playerid][acl_fHitPos][1]);
-			GetPlayerPos(i, fPos[0], fPos[1], fPos[2]);
-			format(szMiscArray, sizeof(szMiscArray), "%s is %.1f meters away from %s's last bullet.", GetPlayerNameEx(playerid), fPlayerDistance, GetPlayerNameEx(i));
-			SendClientMessageToAll(0xFFFFFFFF, szMiscArray);
-			format(szMiscArray, sizeof(szMiscArray), "Target: %.1f, %.1f, %.1f | Bullet: %.1f, %.1f, %.1f", fPos[0], fPos[1], fPos[2], arrLastBulletData[playerid][acl_fHitPos][0], arrLastBulletData[playerid][acl_fHitPos][1], arrLastBulletData[playerid][acl_fHitPos][2]);
-			SendClientMessageToAll(0xFFFFFFFF, szMiscArray);
-
-			format(szMiscArray, sizeof(szMiscArray), "Aim Angle: %.1f | My Angle: %.1f", fAngle[1], fAngle[0]);
-			SendClientMessageToAll(0xFFFFFFFF, szMiscArray);
-
-			SetPlayerFacingAngle(playerid, fAngle[1]);
-
-			// Real Miss
-			arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid]--;
-		}
-	}
-	*/
-
-	/*
 		AimBot check 2 and:
-		Pro Aim Check by Weston
+		Pro Aim Check by Pottus
 		Reference: http://forum.sa-mp.com/showpost.php?p=3038425
 	*/
 	if(hittype == BULLET_HIT_TYPE_PLAYER) {
 
 		if(!playerTabbed[hitid]) {
-			if(GetPlayerSpeed(hitid) > 0) {
+			/*
+			Too many false positives.
+			if(GetPlayerSpeed(hitid) > 3) {
 				arrAntiCheat[playerid][ac_iShots][1]++;
 				if(arrAntiCheat[playerid][ac_iShots][1] > ac_MaxWeaponContShots[weaponid] + 15) AC_Process(playerid, AC_AIMBOT, weaponid);
 			}
+			*/
 			if(ac_ACToggle[3]) {
 
 				if(ProAimCheck(playerid, hitid)) {
@@ -1225,7 +929,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		    if(fSpeed > 5) { // subject to discussion
 	    	
 				arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid]++;
-				if(!(++arrAntiCheat[playerid][ac_iShots][0] % ac_MaxWeaponContShots[weaponid])) AC_Process(playerid, AC_AIMBOT, weaponid);
+				//if(!(++arrAntiCheat[playerid][ac_iShots][0] % ac_MaxWeaponContShots[weaponid])) AC_Process(playerid, AC_AIMBOT, weaponid);
 
 				new iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][weaponid] - arrWeaponDataAC[playerid][ac_iBulletsHit][weaponid] - arrWeaponDataAC[playerid][ac_iFakeMiss][weaponid],
 					Float:fRatio;
@@ -1238,26 +942,6 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		}
 	}
 	else arrAntiCheat[playerid][ac_iShots][0] = 0; // reset it when missed :)
-	SetTimerEx("Health", 100, false, "");
-
-
-	new iMultipleWeps,
-		iAvgRate = AverageShootRate(playerid, ac_MaxShootRateSamples, iMultipleWeps);
-
-	// Bullet flood?
-	// Could be either a cheat or just lag
-	if(iAvgRate != -1) {
-		if(iMultipleWeps) {
-			if(iAvgRate < 100) {
-				// AC_AddRejectedHit(playerid, damagedid, SHOOTING_RATE_TOO_FAST_MULTIPLE, weaponid, iAvgRate, ac_MaxShootRateSamples);
-				return 0;
-			}
-		}
-		else if(ac_MaxWeaponShootRate[weaponid] - iAvgRate > 40) { // was 20
-			// AC_AddRejectedHit(playerid, damagedid, SHOOTING_RATE_TOO_FAST, weaponid, iAvgRate, ac_MaxShootRateSamples, ac_MaxWeaponShootRate[weaponid]);
-			return 0;
-		}
-	}
 	return 1;
 }
 
@@ -1272,62 +956,19 @@ ProAimCheck(playerid, hitid) {
 	new Float:fPlayerHitPos[3];
 	GetPlayerPos(hitid, fPlayerHitPos[0], fPlayerHitPos[1], fPlayerHitPos[2]);
 
-	new Float: fDistance = GetPlayerDistanceFromPoint(hitid, fHit[0], fHit[1], fHit[2]);
+	new Float:fDistance = GetPlayerDistanceFromPoint(hitid, fHit[0], fHit[1], fHit[2]);
 
 	if(fDistance >= iShotVariance && fDistance <= 300.0) return 1;
 	return 0;
-}
-
-
-ptask HackCheck_Micro[1000](playerid) {
-	
-	/*
-	if(IsPlayerPaused(playerid)) {
-		UpdateDynamic3DTextLabelText(PlayerLabel[playerid], 0xDDDDDDFF, GetHealthArmorForLabel(playerid));
-		SetPVarInt(playerid, "pPaused", 1);
-	}
-	else {
-
-		if(GetPVarType(playerid, "pPaused")) {
-			UpdateDynamic3DTextLabelText(PlayerLabel[playerid], 0xDDDDDDFF, GetHealthArmorForLabel(playerid));
-			DeletePVar(playerid, "pPaused");
-		}
-	}
-	*/
-
-	if(PlayerInfo[playerid][pAdmin] < 2)
-	{
-		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
-			if(ac_ACToggle[AC_AIRBREAKING] && AC_AirBreaking(playerid)) AC_Process(playerid, AC_AIRBREAKING);
-
-			/* Reset arrPAntiCheat bits that were set in callback wrappers */
-			Bit_Off(arrPAntiCheat[playerid], ac_bitValidPlayerPos);
-			Bit_Off(arrPAntiCheat[playerid], ac_bitValidSpectating);
-		}
-	}
-}
-
-ptask HackCheck[HACKTIMER_INTERVAL](playerid) {
-
-	DeletePVar(playerid, "ACCooldown");
-	arrAntiCheat[playerid][ac_iCommandCount] = 0;
-	ac_iPlayerKeySpam[playerid] = 0;
-	arrAntiCheat[playerid][ac_iSpeed] = GetPlayerSpeed(playerid);
-	if(PlayerInfo[playerid][pAdmin] < 2)
-	{
-		if(IsSpawned[playerid] && gPlayerLogged{playerid} && playerTabbed[playerid] < 1) {
-			if(ac_ACToggle[AC_CARSURFING] && AC_IsPlayerSurfing(playerid)) AC_Process(playerid, AC_CARSURFING, INVALID_PLAYER_ID);
-			if(ac_ACToggle[AC_HEALTHARMORHACKS] && AC_PlayerHealthArmor(playerid)) AC_Process(playerid, AC_HEALTHARMORHACKS, INVALID_PLAYER_ID);
-			if(ac_ACToggle[AC_INFINITESTAMINA] && AC_InfiniteStamina(playerid)) AC_Process(playerid, AC_INFINITESTAMINA);
-		}
-	}
 }
 
 AC_SpeedHacks(playerid) {
 
 	new iSpeed = GetPlayerSpeed(playerid),
 		Float:fVel[3];
+
 	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerSurfingVehicleID(playerid) == INVALID_VEHICLE_ID && GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK && iSpeed > 45) {
+		
 		GetPlayerVelocity(playerid, fVel[0], fVel[1], fVel[2]);
 		if(fVel[2] == 0) AC_Process(playerid, AC_SPEEDHACKS);
 	}
@@ -1390,32 +1031,7 @@ AC_AirBreaking(i) {
 	return 0;
 }
 
-
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
-
-	if(damagedid == INVALID_PLAYER_ID) {
-		#if defined OnInvalidWeaponDamage
-			OnInvalidWeaponDamage(playerid, damagedid, amount, weaponid, bodypart, AC_NO_DAMAGED, true);
-		#endif
-
-		AC_AddRejectedHit(playerid, damagedid, HIT_NO_DAMAGEDID, weaponid);
-
-		return 0;
-	}
-	if (ac_IsDead[damagedid]) {
-		AC_AddRejectedHit(playerid, damagedid, HIT_DYING_PLAYER, weaponid);
-		return 0;
-	}
-
-	// Ignore unreliable and invalid damage
-	if(!(0 <= weaponid <= sizeof(ac_ValidDamageGiven)) || !ac_ValidDamageGiven[weaponid]) {
-		// Fire is synced as taken damage (because it's not reliable as given), so no need to show a rejected hit.
-		// Vehicle damage is also synced as taken, so no need to show that either.
-		if(weaponid != WEAPON_FLAMETHROWER && weaponid != WEAPON_VEHICLE) {
-			AC_AddRejectedHit(playerid, damagedid, HIT_INVALID_WEAPON, weaponid);
-		}
-		return 0;
-	}
 
 	if((!IsPlayerStreamedIn(playerid, damagedid) && !IsPlayerPaused(damagedid)) || !IsPlayerStreamedIn(damagedid, playerid)) {
 		AC_AddRejectedHit(playerid, damagedid, HIT_UNSTREAMED, weaponid, damagedid);
@@ -1429,22 +1045,6 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 		}
 		return 0;
 	}
-
-	/*
-	new Float:fBullets, iErrorCode;
-	if((iErrorCode = ProcessDamage(damagedid, playerid, amount, weaponid, bodypart, fBullets))) {
-		if(iErrorCode == AC_INVALID_DAMAGE) {
-			AC_AddRejectedHit(playerid, damagedid, HIT_INVALID_DAMAGE, weaponid, _:amount);
-		}
-
-		if(iErrorCode != AC_INVALID_DISTANCE) {
-			#if defined OnInvalidWeaponDamage
-				OnInvalidWeaponDamage(playerid, damagedid, amount, weaponid, bodypart, iErrorCode, true);
-			#endif
-		}
-		return 0;
-	}
-	*/
 
 	new iTick = GetTickCount();
 	if(iTick == 0) iTick = 1;
@@ -1461,30 +1061,11 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 	ac_LastHitWeapons[playerid][idx] = weaponid;
 	ac_HitsIssued[playerid] += 1;
 
-	#if defined AC_DEBUG
-		if (ac_HitsIssued[playerid] > 1) {
-			new prev_tick_idx = (idx - 1) % sizeof(ac_LastHitTicks[]);
-
-			// JIT plugin fix
-			if (prev_tick_idx < 0) {
-				prev_tick_idx += sizeof(ac_LastHitTicks[]);
-			}
-
-			new prev_tick = ac_LastHitTicks[playerid][prev_tick_idx];
-
-			// AC_SendDebugMessage(playerid, "(hit) last: %d last 3: %d", iTick - prev_tick, AverageHitRate(playerid, 3));
-		}
-	#endif
-
 	if(IsBulletWeapon(weaponid) && !IsPlayerPaused(damagedid)) {
 
 		new Float:fPos[3];
 		GetPlayerPos(damagedid, fPos[0], fPos[1], fPos[2]);
 		new Float:fDistance = GetPlayerDistanceFromPoint(playerid, fPos[0], fPos[1], fPos[2]);
-		/*
-		format(szMiscArray, sizeof(szMiscArray), "Wep ID: %d, Player Range: %f, Weapon Range: %f", weaponid, fDistance, ac_WeaponRange[weaponid]);
-		SendClientMessageToAll(0xFFFFFFFF, szMiscArray);
-		*/
 		if(fDistance > ac_WeaponRange[weaponid] + 2.0) {
 			AC_AddRejectedHit(playerid, damagedid, HIT_OUT_OF_RANGE, weaponid, _:fDistance, _:ac_WeaponRange[weaponid]);
 			AC_Process(playerid, AC_RANGEHACKS, weaponid);
@@ -1492,40 +1073,99 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 		}
 	}
 
-	/*
-	new iMultipleWeps,
-		iAvgRate = AverageHitRate(playerid, ac_MaxHitRateSamples, iMultipleWeps);
-	*/
+	if(ac_ACToggle[AC_SILENTAIM]) {
+		// Anti Silent-Aim (Jingles)
+		if(GetTickCount() - ac_iSilentAimTick[playerid] > 50) {
 
-	if(IsBulletWeapon(weaponid) && _:amount != _:2.6400001049041748046875 && !(IsPlayerInAnyVehicle(playerid) && GetPlayerVehicleSeat(playerid) == 0)) {
-		
-		new valid = true;
-		// not gooood
-		if(!arrLastBulletData[playerid][acl_Valid]) {
-			// AC_AddRejectedHit(playerid, damagedid, HIT_LAST_SHOT_INVALID, weaponid);
-			valid = false;
-			// AC_SendDebugMessage(playerid, "!! - Last shot not valid");
-		}
-		else if (WEAPON_SHOTGUN <= weaponid <= WEAPON_SHOTGSPA) {
-			// Let's assume someone won't hit 3 players with 1 shotgun shot, and that one OnPlayerWeaponShot can be out of sync
-			if(arrLastBulletData[playerid][acl_Hits] >= 3) {
-				valid = false;
-				AC_AddRejectedHit(playerid, damagedid, HIT_MULTIPLE_PLAYERS_SHOTGUN, weaponid, arrLastBulletData[playerid][acl_Hits] + 1);
-			}
-		}
-		else if(arrLastBulletData[playerid][acl_Hits] > 0) {
-			// Sniper doesn't always send OnPlayerWeaponShot
-			if(arrLastBulletData[playerid][acl_Hits] > 4 && weaponid != WEAPON_SNIPER) {
-				valid = false;
-				AC_AddRejectedHit(playerid, damagedid, HIT_MULTIPLE_PLAYERS, weaponid, arrLastBulletData[playerid][acl_Hits] + 1);
-			}
-			else {
-				// AC_SendDebugMessage(playerid, "!!! - Hit %d players with 1 shot", arrLastBulletData[playerid][acl_Hits] + 1);
-			}
-		}
+			ac_iSilentAimTick[playerid] = GetTickCount();
+			if(GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK) {
 
-		arrLastBulletData[playerid][acl_Hits] += 1;
-		if(!valid) return 0;
+				if(!IsPlayerInAnyVehicle(damagedid)) {
+
+					if(20 < weaponid < 35) {
+
+						new szWeapon[32],
+							iCameraMode = GetPlayerCameraMode(playerid);
+
+						GetWeaponName(weaponid, szWeapon, 32);		
+					
+						// Pro Aim
+						new Float:fOriginX,
+							Float:fOriginY,
+							Float:fOriginZ,
+							Float:fHitPosX,
+							Float:fHitPosY,
+							Float:fHitPosZ,
+							Float:fDistance;
+
+					    GetPlayerLastShotVectors(playerid, fOriginX, fOriginY, fOriginZ, fHitPosX, fHitPosY, fHitPosZ);
+						fDistance = GetPlayerDistanceFromPoint(damagedid, fHitPosX, fHitPosY, fHitPosZ);
+
+						if(iCameraMode != 4 && iCameraMode != 55) {
+
+							if(GetPlayerTargetPlayer(playerid) != damagedid) {
+
+								ac_iSilentAimWarnings[playerid]++;
+								if(ac_iSilentAimWarnings[playerid] > 10) {
+
+									AC_Process(playerid, AC_SILENTAIM, weaponid, damagedid, 1);
+								}
+							}
+
+							if(fDistance <= 0.1) {
+
+								ac_iSilentAimWarnings2[playerid]++;
+								if(ac_iSilentAimWarnings2[playerid] > 4) {
+
+									AC_Process(playerid, AC_SILENTAIM, weaponid, damagedid, 2);
+								}
+							}
+							else ac_iSilentAimWarnings2[playerid] = 0;
+
+							if(weaponid != 28 && weaponid != 32) {
+							
+								new Float:fPos[3],
+									Float:fAngle[2];
+
+								if(fDistance < 100)
+								{
+
+									GetRotationFor2Point2D(fOriginX, fOriginY, fHitPosX, fHitPosY, fAngle[0]);
+									GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+									GetPlayerFacingAngle(playerid, fAngle[1]);
+									
+									new Float:fDifference;
+									fDifference = (360 - fAngle[1]) - (360 - fAngle[0]);
+									if(fDifference < 0) fDifference = fDifference * -1;
+
+									if(fDifference > 10) {
+
+										ac_iSilentAimWarnings3[playerid]++;
+										if(ac_iSilentAimWarnings3[playerid] > 3) {
+
+											AC_Process(playerid, AC_SILENTAIM, weaponid, damagedid, 3);
+										}
+									}							
+								}
+							}
+						}
+
+						// ProAim
+						/*
+						if(fDistance >= MAX_SHOT_VARIANCE && fDistance < 300.0) {
+
+							ac_iSilentAimWarnings[playerid]++;
+							if(ac_iSilentAimWarnings[playerid] > 5) {
+								
+								format(szMiscArray, sizeof(szMiscArray), "%s is using pro aim (%d).", GetPlayerNameExt(playerid), ac_iSilentAimWarnings[playerid]);
+								SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
+							}
+						}
+						*/
+					}
+				}
+			}
+		}
 	}
 	return 0;
 }
@@ -1533,22 +1173,12 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 // Is called after OnPlayerWeaponShot
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart) {
 
-	//if(issuerid == INVALID_PLAYER_ID) UpdateDynamic3DTextLabelText(PlayerLabel[playerid], 0xFFFFFFFF, GetHealthArmorForLabel(playerid));
-	if(ac_IsDead[playerid]) return 0;
-	
-	if(!IsHighRateWeapon(weaponid)) {
-		#if defined AC_DEBUG
-		AC_SendDebugMessage(playerid, "OnPlayerTakeDamage(%d took %f from %d by %d on bodypart %d)", playerid, amount, issuerid, weaponid, bodypart);
-		#endif
-	}
-
 	// Ignore unreliable and invalid damage
-	if(!(0 <= weaponid <= sizeof(ac_ValidDamageTaken)) || !ac_ValidDamageTaken[weaponid]) return 0;
 	if(playerid == INVALID_PLAYER_ID) return 0;
 
 	// Carjack damage
 	if(weaponid == 54 && _:amount == _:0.0) {
-		// SendClientMessageToAll(0xFFFFFFFF, "NINJA JACK DETECTED!?!?");
+		// SendClientMessageToAll(0xFFFFFFFF, "NJ?");
 		return 0;
 	}
 
@@ -1561,34 +1191,9 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart) {
 			return 0;
 		}
 	}
-
-	// If LagComp is on: only allow damage that's valid in both OnPlayerGiveDamage and OnPlayerTakeDamage.
-	if (ac_LagCompMode && ac_ValidDamageTaken[weaponid] != 2) {
-		if(issuerid != INVALID_PLAYER_ID && IsPlayerInAnyVehicle(issuerid) && GetPlayerVehicleSeat(issuerid) == 0 && (weaponid == WEAPON_M4 || weaponid == WEAPON_MINIGUN)) {
-			weaponid = weaponid == WEAPON_M4 ? WEAPON_VEHICLE_M4 : WEAPON_VEHICLE_MINIGUN;
-		}
-		else return 0;
-	}
 	//AC_InflictDamage(playerid, amount, issuerid, weaponid, bodypart); // Server Sided Health
 	return 1;
 }
-
-timer AC_ResetPVars[2000](playerid, processid) {
-
-	switch(processid) {
-		case 0: {
-			ac_iLastVehicleID[playerid] = INVALID_VEHICLE_ID;
-		}
-		case 1: {
-			DeletePVar(playerid, "PCMute");
-		}
-	}
-}
-
-timer AC_ResetAnim[2000](playerid) {
-	ClearAnimations(playerid, 1);
-}
-
 
 stock AC_InitWeaponData() {
 
@@ -1678,587 +1283,15 @@ stock AC_AddRejectedHit(playerid, damagedid, reason, weapon, inf0 = 0, inf1 = 0,
 		arrRejectedHitData[playerid][idx][acr_szName][0] = '#';
 		arrRejectedHitData[playerid][idx][acr_szName][1] = '\0';
 	}
-	if(ac_ACToggle[AC_REJECTHITS]) OnRejectedHit(playerid, arrRejectedHitData[playerid][idx]);
 }
-
-forward OnRejectedHit(playerid, arrRejectedHit[E_REJECTED_HIT]);
-public OnRejectedHit(playerid, arrRejectedHit[E_REJECTED_HIT]) {
-	
-	format(szMiscArray, sizeof(szMiscArray), "Rejected hit: %s -- (%s -> %s) %s", AC_GetWeaponName(arrRejectedHit[acr_iWeaponID]), arrRejectedHit[acr_szName], g_HitRejectReasons[arrRejectedHit[acr_iReason]]);
-	ABroadCast(COLOR_YELLOW, szMiscArray, 2);
-}
-
-/*
-static ProcessDamage(&playerid, &issuerid, &Float:amount, &weaponid, &bodypart, &Float:bullets) {
-
-	if(amount < 0.0) return AC_INVALID_DAMAGE;
-
-	// Adjust invalid amounts caused by an animation bug
-	switch(amount) {
-		case 3.63000011444091796875,
-		     5.940000057220458984375,
-		     5.610000133514404296875: {
-			amount = 2.6400001049041748046875;
-		}
-
-		case 3.30000019073486328125: {
-			if (weaponid != WEAPON_SHOTGUN && weaponid != WEAPON_SAWEDOFF) {
-				amount = 2.6400001049041748046875;
-			}
-		}
-
-		case 4.950000286102294921875: {
-			if(IsMeleeWeapon(weaponid)) {
-				amount = 2.6400001049041748046875;
-			}
-		}
-
-		case 6.270000457763671875,
-		     6.93000030517578125,
-		     7.2600002288818359375,
-		     7.9200000762939453125,
-		     8.5799999237060546875,
-		     9.24000072479248046875,
-		     11.88000011444091796875,
-		     11.22000026702880859375: {
-			amount = 2.6400001049041748046875;
-		}
-
-		case 9.90000057220458984375: {
-			switch (weaponid) {
-				case WEAPON_VEHICLE, WEAPON_VEHICLE_M4, WEAPON_AK47,
-				     WEAPON_M4, WEAPON_SHOTGUN, WEAPON_SAWEDOFF, WEAPON_SHOTGSPA: {}
-
-				default: {
-					amount = 6.6000003814697265625;
-				}
-			}
-		}
-	}
-
-	// Car parking and disable heli-blading.
-	if(weaponid == WEAPON_HELIBLADES) {
-		if(_:amount != _:330.0) weaponid = WEAPON_CARPARK;
-		else return AC_INVALID_DAMAGE;
-	}
-
-	// Finish processing drown/fire/carpark quickly, since they are sent at very high rates
-	if(IsHighRateWeapon(weaponid)) {
-		
-		// Apply reasonable bounds
-		if(weaponid == WEAPON_DROWN) {
-			if(amount > 10.0) amount = 10.0;
-		}
-		else if(amount > 1.0) amount = 1.0;
-
-		// Adjust the damage if the multiplier is not 1.0
-		if (_:arrWeaponData[weaponid][ac_WeaponDamage] != _:1.0) {
-			amount *= arrWeaponData[weaponid][ac_WeaponDamage];
-		}
-
-		// Make sure the distance and issuer is valid; carpark can be self-inflicted so it doesn't require an issuer
-		if(weaponid == WEAPON_SPRAYCAN || weaponid == WEAPON_FIREEXTINGUISHER || (weaponid == WEAPON_CARPARK && issuerid != INVALID_PLAYER_ID)) {
-			if(issuerid == INVALID_PLAYER_ID) {
-				return AC_NO_ISSUER;
-			}
-
-			new Float:fPos[3], Float:fDistance;
-			GetPlayerPos(issuerid, fPos[0], fPos[1], fPos[2]);
-			fDistance = GetPlayerDistanceFromPoint(playerid, fPos[0], fPos[1], fPos[2]);
-
-			if(fDistance > 15.0) {
-				AC_AddRejectedHit(issuerid, playerid, HIT_TOO_FAR_FROM_ORIGIN, weaponid, _:fDistance);
-				return AC_INVALID_DISTANCE;
-			}
-		}
-		return AC_NO_ERROR;
-	}
-
-	// Bullet or melee damage must have an issuerid, otherwise something has gone wrong (e.g. sniper bug)
-	if(issuerid == INVALID_PLAYER_ID && (IsBulletWeapon(weaponid) || IsMeleeWeapon(weaponid))) {
-		return AC_NO_ISSUER;
-	}
-
-	// Punching with a parachute
-	if(weaponid == WEAPON_PARACHUTE) {
-		weaponid = WEAPON_UNARMED;
-	}
-
-	// Collision damage should never be above 165
-	if(weaponid == WEAPON_COLLISION) {
-		if (amount > 165.0) {
-			amount = 1.0;
-		}
-		else amount /= 165.0;
-	}
-
-	if(weaponid == WEAPON_EXPLOSION) {
-		// Explosions do at most 82.5 damage. This will later be multipled by the damage value
-		amount /= 82.5;
-
-		// Figure out what caused the explosion
-		if (issuerid != INVALID_PLAYER_ID && ac_LastExplosive[issuerid]) {
-			weaponid = ac_LastExplosive[issuerid];
-		}
-	}
-
-	// Check for pistol whip
-	switch (weaponid) {
-		case WEAPON_COLT45 .. WEAPON_SNIPER,
-		     WEAPON_MINIGUN, WEAPON_SPRAYCAN, WEAPON_FIREEXTINGUISHER: {
-			// A pistol whip inflicts 2.64 damage
-			if (_:amount == _:2.6400001049041748046875) {
-				// Save the weapon in the bodypart argument (it's always BODY_PART_TORSO)
-				bodypart = weaponid;
-				weaponid = WEAPON_PISTOLWHIP;
-			}
-		}
-	}
-
-	new melee = IsMeleeWeapon(weaponid);
-
-	// Can't punch from a vehicle
-	if(melee && IsPlayerInAnyVehicle(issuerid)) return AC_INVALID_DAMAGE;
-	if(weaponid != WEAPON_PISTOLWHIP) {
-		switch (amount) {
-			case 1.32000005245208740234375,
-			     1.650000095367431640625,
-			     1.980000019073486328125,
-			     2.3100001811981201171875,
-			     2.6400001049041748046875,
-			     2.9700000286102294921875,
-			     3.96000003814697265625,
-			     4.28999996185302734375,
-			     4.62000036239624023437,
-			     5.280000209808349609375: {
-				// Damage is most likely from punching and switching weapon quickly
-				if (!melee) {
-					// AC_SendDebugMessage(issuerid, "weapon changed from %d to melee (punch & swap)", weaponid);
-					weaponid = WEAPON_UNARMED;
-					melee = true;
-				}
-			}
-
-			case 6.6000003814697265625: {
-				if (!melee) {
-					switch (weaponid) {
-						case WEAPON_UZI, WEAPON_TEC9, WEAPON_CHAINSAW,
-						     WEAPON_SHOTGUN, WEAPON_SAWEDOFF: {}
-
-						default: {
-							// AC_SendDebugMessage(issuerid, "weapon changed from %d to melee (punch & swap)", weaponid);
-							weaponid = WEAPON_UNARMED;
-							melee = true;
-						}
-					}
-				}
-			}
-
-			case 54.12000274658203125: {
-				if (!melee) {
-					// AC_SendDebugMessage(issuerid, "weapon changed from %d to melee (punch & swap)", weaponid);
-					melee = true;
-					weaponid = WEAPON_UNARMED;
-					amount = 1.32000005245208740234375;
-				}
-
-				// Be extra sure about this one
-				if (GetPlayerFightingStyle(issuerid) != FIGHT_STYLE_KNEEHEAD) {
-					return AC_INVALID_DAMAGE;
-				}
-			}
-
-			// Melee damage has been tampered with
-			default: {
-				if (melee) {
-					return AC_INVALID_DAMAGE;
-				}
-			}
-		}
-	}
-
-	if(melee) {
-		new Float:fPos[3], Float:fDistance;
-		GetPlayerPos(issuerid, fPos[0], fPos[1], fPos[2]);
-		fDistance = GetPlayerDistanceFromPoint(playerid, fPos[0], fPos[1], fPos[2]);
-
-		if(fDistance > 15.0) {
-			AC_AddRejectedHit(issuerid, playerid, HIT_TOO_FAR_FROM_ORIGIN, weaponid, _:fDistance);
-			return AC_INVALID_DISTANCE;
-		}
-	}
-
-	switch(weaponid) {
-		// The spas shotguns shoots 8 bullets, each inflicting 4.95 damage
-		case WEAPON_SHOTGSPA: {
-			bullets = amount / 4.950000286102294921875;
-
-			if (8.0 - bullets < -0.05) {
-				return AC_INVALID_DAMAGE;
-			}
-		}
-
-		// Shotguns and sawed-off shotguns shoot 15 bullets, each inflicting 3.3 damage
-		case WEAPON_SHOTGUN, WEAPON_SAWEDOFF: {
-			bullets = amount / 3.30000019073486328125;
-
-			if (15.0 - bullets < -0.05) {
-				return AC_INVALID_DAMAGE;
-			}
-		}
-	}
-
-	if(_:bullets) {
-
-		new Float:f = floatfract(bullets);
-		// The damage for each bullet has been tampered with
-		if(f > 0.01 && f < 0.99) return AC_INVALID_DAMAGE;
-
-		// Divide the damage amount by the number of bullets
-		amount /= bullets;
-	}
-	*/
-
-	/*
-	// Check chainsaw damage
-	if(weaponid == WEAPON_CHAINSAW) {
-		switch (amount) {
-			case 6.6000003814697265625,
-			     13.5300006866455078125,
-			     16.1700000762939453125,
-			     26.40000152587890625,
-			     27.060001373291015625: {}
-
-			default: return AC_INVALID_DAMAGE;
-		}
-	}
-
-	// Check deagle damage
-	if(weaponid == WEAPON_DEAGLE) {
-		switch (amount) {
-			case 46.200000762939453125,
-			     23.1000003814697265625: {}
-
-			default: return AC_INVALID_DAMAGE;
-		}
-	}
-
-	// Check gun damage
-	new Float:def_amount = 0.0;
-
-	switch (weaponid) {
-		case WEAPON_COLT45,
-		     WEAPON_MP5: def_amount = 8.25;
-		case WEAPON_SILENCED: def_amount = 13.200000762939453125;
-		case WEAPON_UZI,
-		     WEAPON_TEC9: def_amount = 6.6000003814697265625;
-		case WEAPON_AK47,
-		     WEAPON_M4,
-		     WEAPON_VEHICLE_M4: def_amount = 9.90000057220458984375;
-		case WEAPON_RIFLE: def_amount = 24.7500019073486328125;
-		case WEAPON_SNIPER: def_amount = 41.25;
-		case WEAPON_MINIGUN,
-		     WEAPON_VEHICLE_MINIGUN: def_amount = 46.200000762939453125;
-		case WEAPON_VEHICLE: def_amount = 9.90000057220458984375;
-	}
-
-	if (_:def_amount && _:def_amount != _:amount) {
-		return AC_INVALID_DAMAGE;
-	}
-
-	// Adjust the damage
-	switch (ac_DamageType[weaponid]) {
-		
-		case DAMAGE_TYPE_MULTIPLIER: {
-			if (_:arrWeaponData[weaponid][ac_WeaponDamage] != _:1.0) amount *= arrWeaponData[weaponid][ac_WeaponDamage];
-		}
-		case DAMAGE_TYPE_STATIC: {
-			if (_:bullets) amount = arrWeaponData[weaponid][ac_WeaponDamage] * bullets;
-			else amount = arrWeaponData[weaponid][ac_WeaponDamage];
-		}
-		case DAMAGE_TYPE_RANGE,
-		     DAMAGE_TYPE_RANGE_MULTIPLIER: {
-			
-			new Float:length = arrLastBulletData[issuerid][acl_fDistance];
-			for (new i = arrWeaponData[weaponid][ac_DamageRangeSteps] - 1; i >= 0; i--) {
-				if (i == 0 || length >= arrWeaponData[weaponid][ac_DamageRangeRanges][i]) {
-					if (ac_DamageType[weaponid] == DAMAGE_TYPE_RANGE_MULTIPLIER) {
-						if (_:arrWeaponData[weaponid][ac_DamageRangeValues][i] != _:1.0) {
-							amount *= arrWeaponData[weaponid][ac_DamageRangeValues][i];
-						}
-					} else {
-						if (_:bullets) {
-							amount = arrWeaponData[weaponid][ac_DamageRangeValues][i] * bullets;
-						} else {
-							amount = arrWeaponData[weaponid][ac_DamageRangeValues][i];
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
-	return AC_NO_ERROR;
-}
-*/
-stock AverageShootRate(playerid, shots, &multiple_weapons = 0) {
-
-	if(playerid == INVALID_PLAYER_ID || ac_TotalShots[playerid] < shots) return -1;
-
-	new total = 0, idx = ac_LastBulletIdx[playerid];
-	multiple_weapons = false;
-
-	for (new i = shots - 2; i >= 0; i--) {
-		
-		new prev_idx = (idx - i - 1) % sizeof(ac_LastBulletTicks[]);
-
-		// JIT plugin fix
-		if (prev_idx < 0) {
-			prev_idx += sizeof(ac_LastBulletTicks[]);
-		}
-
-		new prev = ac_LastBulletTicks[playerid][prev_idx],
-			prev_weap = ac_LastBulletWeapons[playerid][prev_idx],
-			this_idx = (idx - i) % sizeof(ac_LastBulletTicks[]);
-
-		// JIT plugin fix
-		if (this_idx < 0) {
-			this_idx += sizeof(ac_LastBulletTicks[]);
-		}
-
-		if (prev_weap != ac_LastBulletWeapons[playerid][this_idx]) {
-			multiple_weapons = true;
-		}
-
-		total += ac_LastBulletTicks[playerid][this_idx] - prev;
-	}
-
-	return total / (shots - 1);
-}
-
-
-stock AverageHitRate(playerid, hits, &multiple_weapons = 0) {
-
-	if(playerid == INVALID_PLAYER_ID || ac_HitsIssued[playerid] < hits) return -1;
-
-	new total = 0, idx = ac_LastHitIdx[playerid];
-	multiple_weapons = false;
-	for(new i = hits - 2; i >= 0; i--) {
-
-		new prev_idx = (idx - i - 1) % sizeof(ac_LastHitTicks[]);
-
-		// JIT plugin fix
-		if (prev_idx < 0) {
-			prev_idx += sizeof(ac_LastHitTicks[]);
-		}
-
-		new prev = ac_LastHitTicks[playerid][prev_idx],
-			prev_weap = ac_LastHitWeapons[playerid][prev_idx],
-			this_idx = (idx - i) % sizeof(ac_LastHitTicks[]);
-
-		// JIT plugin fix
-		if(this_idx < 0) {
-			this_idx += sizeof(ac_LastHitTicks[]);
-		}
-		if(prev_weap != ac_LastHitWeapons[playerid][this_idx]) {
-			multiple_weapons = true;
-		}
-		total += ac_LastHitTicks[playerid][this_idx] - prev;
-	}
-
-	return total / (hits - 1);
-}
-
-/*
-stock SetWeaponDamage(weaponid, damage_type, Float:amount, Float:...) {
-
-	if(!(0 <= weaponid <= sizeof(ac_WeaponDamage))) return 0;
-	
-	if(damage_type == DAMAGE_TYPE_RANGE || damage_type == DAMAGE_TYPE_RANGE_MULTIPLIER) {
-		
-		if (!IsBulletWeapon(weaponid)) return 0;
-
-		new args = numargs();
-		if(!(args & 0b1)) return 0;
-
-		new steps = (args - 1) / 2;
-
-		ac_DamageType[weaponid] = damage_type;
-		ac_DamageRangeSteps[weaponid] = steps;
-
-		for(new i = 0; i < steps; i++) {
-			if(i) {
-				ac_DamageRangeRanges[weaponid][i] = Float:getarg(1 + i*2);
-				ac_DamageRangeValues[weaponid][i] = Float:getarg(2 + i*2);
-			}
-			else ac_DamageRangeValues[weaponid][i] = amount;
-		}
-		return 1;
-	}
-
-	else if(damage_type == DAMAGE_TYPE_MULTIPLIER || damage_type == DAMAGE_TYPE_STATIC) {
-		ac_DamageType[weaponid] = damage_type;
-		ac_DamageRangeSteps[weaponid] = 0;
-		ac_WeaponDamage[weaponid] = amount;
-		return 1;
-	}
-
-	return 0;
-}
-*/
-
-/*
-static AC_InflictDamage(playerid, Float:amount, issuerid = INVALID_PLAYER_ID, weaponid = WEAPON_UNKNOWN, bodypart = BODY_PART_UNKNOWN, bool:ignore_armour = false) {
-
-	if(!IsPlayerSpawned(playerid) || amount < 0.0 || !IsPlayerSpawned(issuerid)) return;
-	if (!(0 <= weaponid <= WEAPON_UNKNOWN)) weaponid = WEAPON_UNKNOWN;
-	
-	
-	#if defined AC_DEBUG
-
-		new Float:fDistance = 0.0;
-		if(issuerid != INVALID_PLAYER_ID) {
-			if(IsBulletWeapon(weaponid)) fDistance = arrLastBulletData[issuerid][acl_fDistance];
-		}
-		if(!IsHighRateWeapon(weaponid)) {
-			// AC_SendDebugMessageAll("InflictDamage(%s, %.4f, %d, %s, %s) Distance = %f", GetPlayerNameEx(playerid), amount, GetPlayerNameEx(issuerid), AC_GetWeaponName(weaponid), bodypart, fDistance);
-		}
-	#endif
-	
-
-	if(!ignore_armour && weaponid != WEAPON_COLLISION && weaponid != WEAPON_DROWN && weaponid != WEAPON_CARPARK && (!ac_DamageArmourToggle[0] ||
-		(ac_DamageArmour[weaponid][0] && (!ac_DamageArmourToggle[1] || ((ac_DamageArmour[weaponid][1] && bodypart == 3) || (!ac_DamageArmour[weaponid][1])))))) {
-		
-		if(amount <= 0.0) amount = PlayerHealth[playerid] + PlayerArmor[playerid];
-		// PlayerArmor[playerid] -= amount;
-	}
-	else {
-		if(amount <= 0.0) amount = PlayerHealth[playerid];
-		// PlayerHealth[playerid] -= amount;
-	}
-
-	if(PlayerArmor[playerid] < 0.0) {
-		ac_DamageDoneArmour[playerid] = amount + PlayerArmor[playerid];
-		ac_DamageDoneHealth[playerid] = -PlayerArmor[playerid];
-		// PlayerHealth[playerid] += PlayerArmor[playerid];
-		// PlayerArmor[playerid] = 0.0;
-	}
-	else {
-		ac_DamageDoneArmour[playerid] = amount;
-		ac_DamageDoneHealth[playerid] = 0.0;
-	}
-
-	if(PlayerHealth[playerid] <= 0.0) {
-		amount += PlayerHealth[playerid];
-		ac_DamageDoneHealth[playerid] += PlayerHealth[playerid];
-		// PlayerHealth[playerid] = 0.0;
-	}
-	
-	OnPlayerDamageDone(playerid, amount, issuerid, weaponid, bodypart);
-
-	if(PlayerHealth[playerid] <= 0.0005) {
-		
-		new iVehID = GetPlayerVehicleID(playerid);
-		if(iVehID) {
-			
-			new iModelID = GetVehicleModel(vehicleid),
-				iSeatID = GetPlayerVehicleSeat(playerid);
-
-			TogglePlayerControllable(playerid, false);
-
-			switch(iModelID) {
-
-				case 509, 481, 510, 462, 448, 581, 522,
-				     461, 521, 523, 463, 586, 468, 471: {
-
-					new Float:fVel[3];
-					GetVehicleVelocity(vehicleid, fVel[0], fVel[1], fVel[2]);
-
-					if (fVel[0]*fVel[0] + fVel[1]*fVel[1] + fVel[2]*fVel[2] >= 0.4) {
-						PlayerDeath(playerid, "PED", "BIKE_fallR", 0);
-					} else {
-						PlayerDeath(playerid, "PED", "BIKE_fall_off", 0);
-					}
-				}
-
-				default: {
-					if(iSeatID & 1) PlayerDeath(playerid, "PED", "CAR_dead_LHS");
-					else PlayerDeath(playerid, "PED", "CAR_dead_RHS");
-				}
-			}
-		}
-		else if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK) {
-			PlayerDeath(playerid, "PED", "KO_skid_back", .freeze_sync = false);
-		}
-		else {
-			if(gettime() - s_LastVehicleEnterTime[playerid] < 10) {
-				TogglePlayerControllable(playerid, false);
-			}
-
-			new anim = GetPlayerAnimationIndex(playerid);
-
-			if(anim == 1250 || (1538 <= anim <= 1544) || weaponid == WEAPON_DROWN) {
-				
-				// In water
-				PlayerDeath(playerid, "PED", "Drown");
-			}
-			else if (1195 <= anim <= 1198) {
-				
-				// Jumping animation
-				PlayerDeath(playerid, "PED", "KO_skid_back");
-			}
-			else if (WEAPON_SHOTGUN <= weaponid <= WEAPON_SHOTGSPA) {
-
-				if(IsPlayerBehindPlayer(issuerid, playerid)) {
-					MakePlayerFacePlayer(playerid, issuerid, true);
-					PlayerDeath(playerid, "PED", "KO_shot_front");
-				}
-				else {
-					MakePlayerFacePlayer(playerid, issuerid);
-					PlayerDeath(playerid, "PED", "BIKE_fall_off");
-				}
-			}
-			else if (WEAPON_RIFLE <= weaponid <= WEAPON_SNIPER) {
-				if (bodypart == 9) {
-					PlayerDeath(playerid, "PED", "KO_shot_face");
-				} else if (IsPlayerBehindPlayer(issuerid, playerid)) {
-					PlayerDeath(playerid, "PED", "KO_shot_front");
-				} else {
-					PlayerDeath(playerid, "PED", "KO_shot_stom");
-				}
-			} else if (IsBulletWeapon(weaponid)) {
-				if (bodypart == 9) {
-					PlayerDeath(playerid, "PED", "KO_shot_face");
-				} else {
-					PlayerDeath(playerid, "PED", "KO_shot_front");
-				}
-			} else if (weaponid == WEAPON_PISTOLWHIP) {
-				PlayerDeath(playerid, "PED", "KO_spin_R");
-			} else if (IsMeleeWeapon(weaponid) || weaponid == WEAPON_CARPARK) {
-				PlayerDeath(playerid, "PED", "KO_skid_front");
-			} else if (weaponid == WEAPON_SPRAYCAN || weaponid == WEAPON_FIREEXTINGUISHER) {
-				PlayerDeath(playerid, "KNIFE", "KILL_Knife_Ped_Die");
-			} else {
-				PlayerDeath(playerid, "PED", "KO_skid_back");
-			}
-		}
-
-		#if defined WC_OnPlayerDeath
-			if (s_CbugAllowed) WC_OnPlayerDeath(playerid, issuerid, weaponid);
-			}
-			else s_DelayedDeathTimer[playerid] = SetTimerEx(#WC_DelayedDeath, 1200, false, "iii", playerid, issuerid, weaponid);
-		#endif
-	}
-}
-*/
 
 stock IsPlayerPaused(playerid) {
 
 	return (GetTickCount() - ac_LastUpdate[playerid] > 2000);
 }
 
-stock IsPlayerSpawned(playerid)
-{
+stock IsPlayerSpawned(playerid) {
+
 	if(ac_IsDead[playerid] || ac_BeingResynced[playerid]) {
 		return false;
 	}
@@ -2296,49 +1329,10 @@ stock GetDriverID(iVehID) {
 	return INVALID_PLAYER_ID;
 }
 
-stock AC_GetACName(i) {
-
-	new szName[64];
-	switch(i) {
-		case AC_AIMBOT: szName = "Aimbot";
-		case AC_CBUG: szName = "(Auto) C-Bug";
-		case AC_PROAIM: szName = "Pro-Aim";
-		case AC_RANGEHACKS: szName = "Weapon Range Hacks";
-		case AC_SPEEDHACKS: szName = "Speed Hacks (B2-B5)";
-		case AC_VEHICLEHACKS: szName = "Vehicle Hacks";
-		case AC_CMDSPAM: szName = "Command Spamming";
-		case AC_CARSURFING: szName = "Car Surfing";
-		case AC_NINJAJACK: szName = "Ninja Jacking";
-		//case AC_NAMETAGS: szName = "Name Tags";
-		case AC_AIRBREAKING: szName = "Airbreaking";
-		case AC_INFINITESTAMINA: szName = "Infinite Stamina";
-		case AC_HEALTHARMORHACKS: szName = "Health/Armor Hacks";
-		case AC_DIALOGSPOOFING: szName = "Dialog Spoofing";
-		case AC_REJECTHITS: szName = "Rejected Hits (view-only)";
-	}
-	return szName;
-}
-
-stock AC_FinePlayer(playerid, fineid) {
-
-	switch(fineid) {
-		case AC_NINJAJACK: GivePlayerCash(playerid, -2000);
-	}
-}
-
 stock AC_PutPlayerInVehicle(playerid,vehicle,seat){ 
 
 	arrAntiCheat[playerid][ac_iVehID] = vehicle;
 	PutPlayerInVehicle(playerid,vehicle,seat); 
-}
-
-timer AC_RevivePlayer[5000](playerid) {
-
-	format(szMiscArray, sizeof(szMiscArray), "SYSTEM: %s(%d) has been revived by [SYSTEM]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(playerid));
-	Log("logs/system.log", szMiscArray);
-	KillEMSQueue(playerid);
-	ClearAnimations(playerid);
-	SetHealth(playerid, 100);
 }
 
 AC_Flag(playerid, processid, iExtraID = INVALID_PLAYER_ID, Float:fInfo = 0.0) {
@@ -2349,12 +1343,11 @@ AC_Flag(playerid, processid, iExtraID = INVALID_PLAYER_ID, Float:fInfo = 0.0) {
 
 			new iInfo = floatround(fInfo);
 			if(iInfo > 6) AC_Process(playerid, AC_PROAIM, iExtraID);
-			else {
+			else { 
 				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}AimBot - I flagged %s for using pro-aim (%dx) with their %s.", GetPlayerNameEx(playerid), iInfo, AC_GetWeaponName(iExtraID));
 				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 			}
 		}
-
 		case AC_AIMBOT: {
 			if(fInfo > 20) AC_Process(playerid, AC_AIMBOT, iExtraID);
 			else {
@@ -2365,16 +1358,15 @@ AC_Flag(playerid, processid, iExtraID = INVALID_PLAYER_ID, Float:fInfo = 0.0) {
 	}
 }
 
-AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
+AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iExtraID3 = -1) {
 
 	if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pTogReports] == 0) return 1;
 	if(!ac_ACToggle[processid]) return 1;
+	arrAntiCheat[playerid][ac_iFlags][processid]++;
 	if(GetPVarType(playerid, "ACCooldown") && GetPVarInt(playerid, "ACCooldown") == processid) return 1;
 	SetPVarInt(playerid, "ACCooldown", processid);
-	arrAntiCheat[playerid][ac_iFlags][processid]++;
-	// if(processid == AC_SPEEDHACKS && arrAntiCheat[playerid][ac_iFlags][processid] != 1 && !(arrAntiCheat[playerid][ac_iFlags][processid] % 20)) return 1;
-	if(arrAntiCheat[playerid][ac_iFlags][processid] == 1 || arrAntiCheat[playerid][ac_iFlags][processid] % 5) { // prevent spamming
-		
+	//if(arrAntiCheat[playerid][ac_iFlags][processid] == 1 || arrAntiCheat[playerid][ac_iFlags][processid] % 5 == 0) { // prevent spamming
+	{
 		new	szQuery[512];
 
 		szMiscArray[0] = 0;
@@ -2384,6 +1376,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 
 				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using Aimbot", GetPlayerNameEx(playerid));
 				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+
 				new iTotalMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID],
 					iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] - arrWeaponDataAC[playerid][ac_iFakeMiss][iExtraID];
 
@@ -2416,6 +1409,28 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 				defer AC_ResetAnim(playerid);
 				GivePlayerWeapon(playerid, w, 0);
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Please do not C-Bug / CS.");
+				return 1;
+			}
+			case AC_SILENTAIM: {
+
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using Silent Aim (detector %d) on %s with a %s (warnings: %d).", GetPlayerNameExt(playerid), iExtraID3, GetPlayerNameExt(iExtraID2), AC_GetWeaponName(iExtraID), arrAntiCheat[playerid][ac_iFlags][processid]);
+				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+
+				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s (%d) used Silent Aim (detector %d) on %s (%d) with a %s (warnings: %d).", GetPlayerNameExt(playerid), PlayerInfo[playerid][pId], iExtraID3, GetPlayerNameExt(iExtraID2), PlayerInfo[iExtraID2][pId], AC_GetWeaponName(iExtraID), arrAntiCheat[playerid][ac_iFlags][processid]);
+				Log("logs/anticheat.log", szMiscArray);
+
+				new iTotalMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID],
+					iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] - arrWeaponDataAC[playerid][ac_iFakeMiss][iExtraID];
+
+				iRelevantMiss++; // Can't divide by 0;
+				new Float:fRatio = arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] / iRelevantMiss;
+
+				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
+					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
+				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for being desynced.");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
 				return 1;
 			}
 			case AC_PROAIM: {
@@ -2486,6 +1501,21 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID) {
 			case AC_DIALOGSPOOFING: {
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s is spoofing dialogs (dialog ID: %d).", GetPlayerNameEx(playerid), iExtraID);
 				Log("logs/anticheat.log", szMiscArray);
+			}
+
+			case AC_GHOSTHACKS: {
+
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for being desynced.");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s is using ghost hacks (Shooting while AFK). WeaponID: %d", GetPlayerNameEx(playerid), iExtraID);
+				Log("logs/anticheat.log", szMiscArray);
+			}
+			case AC_DESYNC: {
+
+				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s has a weird camera mode (probably aimbot). Camera Mode: %d.", GetPlayerNameEx(playerid), iExtraID);
+				Log("logs/anticheat.log", szMiscArray);
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for being desynced.");
+				SetTimerEx("KickEx", 1000, 0, "i", playerid);
 			}
 		
 		}
@@ -2574,6 +1604,227 @@ stock IsMeleeWeapon(weaponid) {
 	return (WEAPON_UNARMED <= weaponid <= WEAPON_KATANA) || (WEAPON_DILDO <= weaponid <= WEAPON_CANE) || weaponid == WEAPON_PISTOLWHIP;
 }
 
+IsCorrectCameraMode(playerid) {
+
+	switch(GetPlayerCameraMode(playerid)) {
+
+		case 4, 7, 8, 15, 46, 51, 53, 55: return 1;
+	}
+	return 0;
+}
+
+
+CMD:system(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	format(szMiscArray, sizeof(szMiscArray), "Detecting\tStatus\n\
+		Aimbot\t%s\n\
+		(Auto) C-Bug\t%s\n\
+		Silent Aim\t%s\n\
+		Pro-Aim\t%s\n\
+		Weapon Range Hacks\t%s\n\
+		Speed Hacks (B2-B5)\t%s\n\
+		Vehicle Hacks\t%s\n\
+		Command Spamming\t%s\n\
+		Car Surfing\t%s\n\
+		Ninja Jacking\t%s\n\
+		Ghost Hacks\t%s\n\
+		Name Tags\t%s\n\
+		Airbreaking\t%s\n\
+		Infinite Stamina\t%s\n\
+		---------\t%s\n\
+		Dialog Spoofing\t%s\n\
+		Rejected Hits\t%s\n\
+		Desync\t%s",
+		(ac_ACToggle[AC_AIMBOT] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_CBUG] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_SILENTAIM] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_PROAIM] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_RANGEHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_SPEEDHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_VEHICLEHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_CMDSPAM] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_CARSURFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_NINJAJACK] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_GHOSTHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_NAMETAGS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_AIRBREAKING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_INFINITESTAMINA] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_HEALTHARMORHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_DIALOGSPOOFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_REJECTHITS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
+		(ac_ACToggle[AC_DESYNC] == true) ? ("{00FF00}On") : ("{FF0000}Off"));
+	ShowPlayerDialogEx(playerid, DIALOG_AC_MAIN, DIALOG_STYLE_TABLIST_HEADERS, "[SYSTEM]: Anti-Cheat", szMiscArray, "Toggle", "");
+	return 1;
+}
+
+
+CMD:aimcheck(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+
+	new uPlayer,
+		szTitle[32 + MAX_PLAYER_NAME];
+
+	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /aimcheck [playerid/name]");
+	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
+
+	format(szMiscArray, sizeof(szMiscArray), "Weapon (total fired)\tHit --- Real Miss (of Total Missed)\tRatio\n");
+
+	new Float:fRatio,
+		iTotalMiss,
+		iRelevantMiss;
+
+	for(new i; i < 46; ++i) {
+		if(IsBulletWeapon(i)) {
+			iTotalMiss = arrWeaponDataAC[uPlayer][ac_iBulletsFired][i] - arrWeaponDataAC[uPlayer][ac_iBulletsHit][i];
+			iRelevantMiss = arrWeaponDataAC[uPlayer][ac_iBulletsFired][i] - arrWeaponDataAC[uPlayer][ac_iBulletsHit][i] - arrWeaponDataAC[uPlayer][ac_iFakeMiss][i];
+
+			iRelevantMiss++;
+			fRatio = arrWeaponDataAC[uPlayer][ac_iBulletsHit][i] / iRelevantMiss;
+			
+			if(arrWeaponDataAC[uPlayer][ac_iBulletsFired][i] < 30) {
+				format(szMiscArray, sizeof(szMiscArray), "%s {FFFFFF}[IGNORE] %s (tot: %d)\tHit: %d --- Miss: %d (missed total: %d)\tRatio: %.1f\n", szMiscArray, AC_GetWeaponName(i), arrWeaponDataAC[uPlayer][ac_iBulletsFired][i],
+					arrWeaponDataAC[uPlayer][ac_iBulletsHit][i], iRelevantMiss, iTotalMiss, fRatio);
+			}
+			else if(fRatio < 1.5) {
+				format(szMiscArray, sizeof(szMiscArray), "%s {FFFFFF}%s (tot: %d)\tHit: %d --- Miss: %d (missed total: %d)\tRatio: %.1f\n", szMiscArray, AC_GetWeaponName(i), arrWeaponDataAC[uPlayer][ac_iBulletsFired][i],
+					arrWeaponDataAC[uPlayer][ac_iBulletsHit][i], iRelevantMiss, iTotalMiss, fRatio);
+			}
+			else if(1.5 <= fRatio < 3.0) {
+				format(szMiscArray, sizeof(szMiscArray), "%s {FFFF00}%s (tot: %d)\t{FFFF00}Hit: %d --- Miss: %d (missed total: %d)\t{FFFF00}Ratio: %.1f\n", szMiscArray, AC_GetWeaponName(i), arrWeaponDataAC[uPlayer][ac_iBulletsFired][i],
+					arrWeaponDataAC[uPlayer][ac_iBulletsHit][i], iRelevantMiss, iTotalMiss, fRatio);
+			}
+			else {
+				format(szMiscArray, sizeof(szMiscArray), "%s {FF0000}%s (tot: %d)\t{FF0000}Hit: %d --- Miss: %d (missed total: %d)\t{FF0000}Ratio: %.1f\n", szMiscArray, AC_GetWeaponName(i), arrWeaponDataAC[uPlayer][ac_iBulletsFired][i],
+					arrWeaponDataAC[uPlayer][ac_iBulletsHit][i], iRelevantMiss, iTotalMiss, fRatio);
+			}
+		}
+	}
+	format(szTitle, sizeof(szTitle), "Aimbot Check | Weapon Data {FFFF00}(%s)", GetPlayerNameEx(uPlayer));
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
+	SendClientMessageEx(playerid, COLOR_YELLOW, "---------- [ ANTICHEAT ] ----------");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Jingles:");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "");
+	SendClientMessageEx(playerid, COLOR_GRAD1, "Player ratios for some weapons (especially Combat Shotguns (SPAS)) can be high even though they're not aimbotting.");
+	format(szMiscArray, sizeof(szMiscArray), "Only make conclusions if the total shots fired is higher than approx. 50. TIMESTAMP: %s", date(gettime(), 3));
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_YELLOW, "------------------------------ ");
+	return 1;
+}
+
+CMD:acflags(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	new uPlayer,
+		szTitle[32 + MAX_PLAYER_NAME];
+
+	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /acflags [playerid/name]");
+	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
+
+	format(szMiscArray, sizeof(szMiscArray), "Name\tFlags");
+	for(new i; i < AC_MAX; ++i) {
+
+		switch(arrAntiCheat[uPlayer][ac_iFlags][i]) {
+
+			case 0: format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFFFF}%s\t%d", szMiscArray, ac_ACNames[i], arrAntiCheat[uPlayer][ac_iFlags][i]);
+			case 1 .. 9: format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFF00}%s\t{FFFF00}%d", szMiscArray, ac_ACNames[i], arrAntiCheat[uPlayer][ac_iFlags][i]);
+			default: format(szMiscArray, sizeof(szMiscArray), "%s\n{FF0000}%s\t{FF0000}%d", szMiscArray, ac_ACNames[i], arrAntiCheat[uPlayer][ac_iFlags][i]);	
+		}
+	}
+	format(szTitle, sizeof(szTitle), "AC System Flags | %s", GetPlayerNameEx(uPlayer));
+	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
+	return 1;
+}
+
+CMD:resetacflags(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	
+	new uPlayer;
+
+	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /resetacflags [playerid/name]");
+	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
+	for(new i; i < AC_MAX; ++i) arrAntiCheat[uPlayer][ac_iFlags][i] = 0;
+	format(szMiscArray, sizeof(szMiscArray), "You removed %s's anticheat flags.", GetPlayerNameEx(uPlayer));
+	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	format(szMiscArray, sizeof(szMiscArray), "Administrator %s removed your anticheat flags.", GetPlayerNameEx(playerid));
+	SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
+	return 1;
+}
+
+CMD:rejects(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	new uPlayer,
+		szTitle[32 + MAX_PLAYER_NAME];
+
+	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /aimcheck [playerid/name]");
+	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
+	
+	format(szMiscArray, sizeof(szMiscArray), "Reason || Date\tWeapon\tTarget || (Info (0, 1, 2))\n");
+	for(new idx; idx < AC_MAX_REJECTED_HITS; ++idx) {
+
+		format(szMiscArray, sizeof(szMiscArray), "%s\n%s || %s\t%s\t%s || (Info: %d, %d, %d)",
+			szMiscArray,
+			g_HitRejectReasons[arrRejectedHitData[uPlayer][idx][acr_iReason]],
+			date(arrRejectedHitData[uPlayer][idx][acr_iTime], 1),
+			AC_GetWeaponName(arrRejectedHitData[uPlayer][idx][acr_iWeaponID]),
+			GetPlayerNameEx(arrRejectedHitData[uPlayer][idx][acr_iDamagedID]),
+			arrRejectedHitData[uPlayer][idx][acr_iInfo][0],
+			arrRejectedHitData[uPlayer][idx][acr_iInfo][2],
+			arrRejectedHitData[uPlayer][idx][acr_iInfo][2]);
+	}
+	format(szTitle, sizeof(szTitle), "Rejected Shots | Weapon Data (%s)", GetPlayerNameEx(uPlayer));
+	ShowPlayerDialogEx(playerid, 32767, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
+	return 1;
+}
+
+CMD:resetaim(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
+	foreach(new i : Player) {
+
+		for(new j; j < 46; ++j) {
+			arrWeaponDataAC[i][ac_iBulletsHit][j] = 0;
+			arrWeaponDataAC[i][ac_iBulletsFired][j] = 0;
+			arrWeaponDataAC[i][ac_iFakeMiss][j] = 0;
+		}
+	}
+	return 1;
+}
+
+CMD:listacflags(playerid, params[]) {
+
+	if(PlayerInfo[playerid][pAdmin] >= 2) {
+
+		SendClientMessageEx(playerid, COLOR_GREEN, "____________________ Current players flagged by the anti pro-aim system: ____________________");
+		foreach(new i: Player) {
+
+			if(arrAntiCheat[i][ac_iFlags][AC_PROAIM] > 0) {
+
+				format(szMiscArray, sizeof szMiscArray, "%s (ID: %d) - %d flags.", GetPlayerNameEx(i), i, PlayerInfo[i][pProAimFlags]);
+				SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+			}
+		}
+		if(PlayerInfo[playerid][pAdmin] >= 4) SendClientMessage(playerid, COLOR_GRAD2, "NOTE: If you are certain a player is not hacking, you may use /resetpaflags.");
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
+	return 1;
+}
+
+CMD:setproaimvar(playerid, params[]) {
+
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+	if(sscanf(params, "d", iShotVariance)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setproaimvar [range]");
+
+	if(!(0 < strval(params) < 30)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Set it between 0 and 30.");
+	iShotVariance = strval(params);
+	format(szMiscArray, sizeof(szMiscArray), "You set the shot variance to: %d", iShotVariance);
+	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
+	return 1;
+}
+
 
 
 /* Custom Anti-Aimbot by Jingles
@@ -2591,7 +1842,7 @@ Using these data, one can obtain the following prior proba- bility distributions
 Inferring the probability of cheating for any particular player follows the following steps.
 At the very first time slice where t = 0, we initialize P(C ̃ = true) to 0.5 (i.e., a player is 0 equally likely to be a cheater or an honest player).
 For each time slice t, the inference carries out in two stages: (See paper)
-*/
+
 
 
 stock AC_BayesianNetwork(playerid, iTargetID) {
@@ -2803,7 +2054,6 @@ stock AC_Probability(playerid, iTargetID) {
 	arrAntiCheat[playerid][ac_fCamFVector][4] = arrAntiCheat[playerid][ac_fCamFVector][1];
 	arrAntiCheat[playerid][ac_fCamFVector][5] = arrAntiCheat[playerid][ac_fCamFVector][2];
 	
-	/*
 	// The Equation:
 	// Computation of our variables:
 	// P(At|At−1,Ct,Mtp,Mt,Pt,Dt,△Dt,△At)
@@ -2827,7 +2077,7 @@ stock AC_Probability(playerid, iTargetID) {
 	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
 
 	arrAntiCheat[playerid][ac_iCheatingIndex][1] = arrAntiCheat[playerid][ac_iCheatingIndex][0]; // t-1 = t;
-	*/
+
 
 	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `aimbot` (`pID`, `time`, `ratio`, `accuracy`, `aimingdirection`, `playerspeed`, `targetspeed`, `distance`, `deltaaim`) VALUES \
 		(%d, %d, %0.1f, %0.1f, %0.1f, %d, %d, %d, %d)",
@@ -2861,212 +2111,9 @@ CMD:analytics(playerid, params[]) {
 	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Player Analytics", szMiscArray, "Okay", "");
 	return 1;
 }
+*/
 
-
-CMD:system(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
-	format(szMiscArray, sizeof(szMiscArray), "Detecting\tStatus\n\
-		Aimbot\t%s\n\
-		(Auto)-C-Bug\t%s\n\
-		Pro-Aim\t%s\n\
-		Weapon Range Hacks\t%s\n\
-		Speed Hacks (B2-B5)\t%s\n\
-		Vehicle Hacks\t%s\n\
-		Command Spamming\t%s\n\
-		Car Surfing\t%s\n\
-		Ninja Jacking\t%s\n\
-		Airbreaking\t%s\n\
-		Infinite Stamina\t%s\n\
-		---------\t%s\n\
-		Dialog Spoofing\t%s\n\
-		Rejected Hits\t%s",
-		(ac_ACToggle[AC_AIMBOT] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_CBUG] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_PROAIM] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_RANGEHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_SPEEDHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_VEHICLEHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_CMDSPAM] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_CARSURFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_NINJAJACK] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		//(ac_ACToggle[AC_NAMETAGS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_AIRBREAKING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_INFINITESTAMINA] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_HEALTHARMORHACKS] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_DIALOGSPOOFING] == true) ? ("{00FF00}On") : ("{FF0000}Off"),
-		(ac_ACToggle[AC_REJECTHITS] == true) ? ("{00FF00}On") : ("{FF0000}Off"));
-	ShowPlayerDialogEx(playerid, DIALOG_AC_MAIN, DIALOG_STYLE_TABLIST_HEADERS, "[SYSTEM]: Anti-Cheat", szMiscArray, "Toggle", "");
-	return 1;
-}
-
-
-CMD:aimcheck(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
-
-	new uPlayer,
-		szTitle[32 + MAX_PLAYER_NAME];
-
-	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /aimcheck [playerid/name]");
-	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
-
-	format(szMiscArray, sizeof(szMiscArray), "Weapon (total fired)\tHit --- Real Miss (of Total Missed)\tRatio\n");
-
-	new Float:fRatio,
-		iTotalMiss,
-		iRelevantMiss;
-
-	for(new i; i < 46; ++i) {
-		if(IsBulletWeapon(i)) {
-			iTotalMiss = arrWeaponDataAC[uPlayer][ac_iBulletsFired][i] - arrWeaponDataAC[uPlayer][ac_iBulletsHit][i];
-			iRelevantMiss = arrWeaponDataAC[uPlayer][ac_iBulletsFired][i] - arrWeaponDataAC[uPlayer][ac_iBulletsHit][i] - arrWeaponDataAC[uPlayer][ac_iFakeMiss][i];
-
-			iRelevantMiss++;
-			fRatio = arrWeaponDataAC[uPlayer][ac_iBulletsHit][i] / iRelevantMiss;
-			
-			if(arrWeaponDataAC[uPlayer][ac_iBulletsFired][i] < 30) {
-				format(szMiscArray, sizeof(szMiscArray), "%s {FFFFFF}[IGNORE] %s (tot: %d)\tHit: %d --- Miss: %d (missed total: %d)\tRatio: %.1f\n", szMiscArray, AC_GetWeaponName(i), arrWeaponDataAC[uPlayer][ac_iBulletsFired][i],
-					arrWeaponDataAC[uPlayer][ac_iBulletsHit][i], iRelevantMiss, iTotalMiss, fRatio);
-			}
-			else if(fRatio < 1.5) {
-				format(szMiscArray, sizeof(szMiscArray), "%s {FFFFFF}%s (tot: %d)\tHit: %d --- Miss: %d (missed total: %d)\tRatio: %.1f\n", szMiscArray, AC_GetWeaponName(i), arrWeaponDataAC[uPlayer][ac_iBulletsFired][i],
-					arrWeaponDataAC[uPlayer][ac_iBulletsHit][i], iRelevantMiss, iTotalMiss, fRatio);
-			}
-			else if(1.5 <= fRatio < 3.0) {
-				format(szMiscArray, sizeof(szMiscArray), "%s {FFFF00}%s (tot: %d)\t{FFFF00}Hit: %d --- Miss: %d (missed total: %d)\t{FFFF00}Ratio: %.1f\n", szMiscArray, AC_GetWeaponName(i), arrWeaponDataAC[uPlayer][ac_iBulletsFired][i],
-					arrWeaponDataAC[uPlayer][ac_iBulletsHit][i], iRelevantMiss, iTotalMiss, fRatio);
-			}
-			else {
-				format(szMiscArray, sizeof(szMiscArray), "%s {FF0000}%s (tot: %d)\t{FF0000}Hit: %d --- Miss: %d (missed total: %d)\t{FF0000}Ratio: %.1f\n", szMiscArray, AC_GetWeaponName(i), arrWeaponDataAC[uPlayer][ac_iBulletsFired][i],
-					arrWeaponDataAC[uPlayer][ac_iBulletsHit][i], iRelevantMiss, iTotalMiss, fRatio);
-			}
-		}
-	}
-	format(szTitle, sizeof(szTitle), "Aimbot Check | Weapon Data {FFFF00}(%s)", GetPlayerNameEx(uPlayer));
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
-	SendClientMessageEx(playerid, COLOR_YELLOW, "---------- [ ANTICHEAT ] ----------");
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Jingles:");
-	SendClientMessageEx(playerid, COLOR_GRAD1, "");
-	SendClientMessageEx(playerid, COLOR_GRAD1, "Player ratios for some weapons (especially Combat Shotguns (SPAS)) can be high even though they're not aimbotting.");
-	format(szMiscArray, sizeof(szMiscArray), "Only make conclusions if the total shots fired is higher than approx. 50. TIMESTAMP: %s", date(gettime(), 3));
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-	SendClientMessageEx(playerid, COLOR_YELLOW, "------------------------------ ");
-	return 1;
-}
-
-CMD:acflags(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
-	new uPlayer,
-		szTitle[32 + MAX_PLAYER_NAME];
-
-	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /acflags [playerid/name]");
-	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
-
-	format(szMiscArray, sizeof(szMiscArray), "Name\tFlags");
-	for(new i; i < AC_MAX; ++i) {
-
-		switch(arrAntiCheat[uPlayer][ac_iFlags][i]) {
-
-			case 0: format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFFFF}%s\t%d", szMiscArray, AC_GetACName(i), arrAntiCheat[uPlayer][ac_iFlags][i]);
-			case 1 .. 9: format(szMiscArray, sizeof(szMiscArray), "%s\n{FFFF00}%s\t{FFFF00}%d", szMiscArray, AC_GetACName(i), arrAntiCheat[uPlayer][ac_iFlags][i]);
-			default: format(szMiscArray, sizeof(szMiscArray), "%s\n{FF0000}%s\t{FF0000}%d", szMiscArray, AC_GetACName(i), arrAntiCheat[uPlayer][ac_iFlags][i]);	
-		}
-	}
-	format(szTitle, sizeof(szTitle), "AC System Flags | {FFFF00}(%s)", GetPlayerNameEx(uPlayer));
-	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
-	return 1;
-}
-
-CMD:resetacflags(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
-	
-	new uPlayer;
-
-	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /resetacflags [playerid/name]");
-	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
-	for(new i; i < AC_MAX; ++i) arrAntiCheat[uPlayer][ac_iFlags][i] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "You removed %s's anticheat flags.", GetPlayerNameEx(uPlayer));
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "Administrator %s removed your anticheat flags.", GetPlayerNameEx(playerid));
-	SendClientMessageEx(uPlayer, COLOR_YELLOW, szMiscArray);
-	return 1;
-}
-
-CMD:rejects(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
-	new uPlayer,
-		szTitle[32 + MAX_PLAYER_NAME];
-
-	if(sscanf(params, "u", uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "Usage: /aimcheck [playerid/name]");
-	if(!IsPlayerConnected(uPlayer)) return SendClientMessage(playerid, 0xFFFFFFFF, "You specified an invalid player.");
-	
-	format(szMiscArray, sizeof(szMiscArray), "Reason || Date\tWeapon\tTarget || (Info (0, 1, 2))\n");
-	for(new idx; idx < AC_MAX_REJECTED_HITS; ++idx) {
-
-		format(szMiscArray, sizeof(szMiscArray), "%s\n%s || %s\t%s\t%s || (Info: %d, %d, %d)",
-			szMiscArray,
-			g_HitRejectReasons[arrRejectedHitData[uPlayer][idx][acr_iReason]],
-			date(arrRejectedHitData[uPlayer][idx][acr_iTime], 1),
-			AC_GetWeaponName(arrRejectedHitData[uPlayer][idx][acr_iWeaponID]),
-			GetPlayerNameEx(arrRejectedHitData[uPlayer][idx][acr_iDamagedID]),
-			arrRejectedHitData[uPlayer][idx][acr_iInfo][0],
-			arrRejectedHitData[uPlayer][idx][acr_iInfo][2],
-			arrRejectedHitData[uPlayer][idx][acr_iInfo][2]);
-	}
-	format(szTitle, sizeof(szTitle), "Rejected Shots | Weapon Data (%s)", GetPlayerNameEx(uPlayer));
-	ShowPlayerDialogEx(playerid, 32767, DIALOG_STYLE_TABLIST_HEADERS, szTitle, szMiscArray, "<>", "");
-	return 1;
-}
-
-CMD:resetaim(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR)) return 1;
-	foreach(new i : Player) {
-
-		for(new j; j < 46; ++j) {
-			arrWeaponDataAC[i][ac_iBulletsHit][j] = 0;
-			arrWeaponDataAC[i][ac_iBulletsFired][j] = 0;
-			arrWeaponDataAC[i][ac_iFakeMiss][j] = 0;
-		}
-	}
-	return 1;
-}
-
-CMD:listacflags(playerid, params[]) {
-
-	if(PlayerInfo[playerid][pAdmin] >= 2) {
-
-		SendClientMessageEx(playerid, COLOR_GREEN, "____________________ Current players flagged by the anti pro-aim system: ____________________");
-		foreach(new i: Player) {
-
-			if(arrAntiCheat[i][ac_iFlags][AC_PROAIM] > 0) {
-
-				format(szMiscArray, sizeof szMiscArray, "%s (ID: %d) - %d flags.", GetPlayerNameEx(i), i, PlayerInfo[i][pProAimFlags]);
-				SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-			}
-		}
-		if(PlayerInfo[playerid][pAdmin] >= 4) SendClientMessage(playerid, COLOR_GRAD2, "NOTE: If you are certain a player is not hacking, you may use /resetpaflags.");
-	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
-	return 1;
-}
-
-CMD:setproaimvar(playerid, params[]) {
-
-	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
-	if(sscanf(params, "d", iShotVariance)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /setproaimvar [range]");
-
-	if(!(0 < strval(params) < 30)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Set it between 0 and 30.");
-	iShotVariance = strval(params);
-	format(szMiscArray, sizeof(szMiscArray), "You set the shot variance to: %d", iShotVariance);
-	SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);
-	return 1;
-}
-
+/*
 CMD:setcheating(playerid, params[]) {
 
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
@@ -3111,6 +2158,7 @@ CMD:settraining(playerid, params[]) {
 	}
 	return 1;
 }
+*/
 
 /*
 CMD:acresults(playerid, params[]) {
@@ -3207,6 +2255,7 @@ GetHealthArmorForLabel(playerid) {
 }
 */
 
+/*
 stock GetPValueForLabel(Float:fData) {
 
 	new szString[128],
@@ -3235,34 +2284,12 @@ stock GetPValueForLabel(Float:fData) {
 		case 81 .. 85: strins(szString, "..................{000000}..", 0, sizeof(szString));
 		case 90 .. 95: strins(szString, "...................{000000}.", 0, sizeof(szString));
 		case 96 .. 300: strins(szString, "....................", 0, sizeof(szString));
-
-		/*
-		case 0: strpack(szString, "{000000}0");
-		case 1 .. 5: strpack(szString, "¤                   ", sizeof(szString));
-		case 6 .. 10: strpack(szString, "¤¤                 ", sizeof(szString));
-		case 11 .. 15: strpack(szString, "¤¤¤               ", sizeof(szString));
-		case 16 .. 20: strpack(szString, "¤¤¤¤              ", sizeof(szString));
-		case 21 .. 25: strpack(szString, "¤¤¤¤¤             ", sizeof(szString));
-		case 26 .. 30: strpack(szString, "¤¤¤¤¤¤            ", sizeof(szString));
-		case 31 .. 35: strpack(szString, "¤¤¤¤¤¤¤           ", sizeof(szString));
-		case 36 .. 40: strpack(szString, "¤¤¤¤¤¤¤¤          ", sizeof(szString));
-		case 41 .. 45: strpack(szString, "¤¤¤¤¤¤¤¤¤         ", sizeof(szString));
-		case 46 .. 50: strpack(szString, "¤¤¤¤¤¤¤¤¤¤        ", sizeof(szString));
-		case 51 .. 55: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤       ", sizeof(szString));
-		case 56 .. 60: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤      ", sizeof(szString));
-		case 61 .. 65: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤     ", sizeof(szString));
-		case 66 .. 70: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤    ", sizeof(szString));
-		case 71 .. 75: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤   ", sizeof(szString));
-		case 76 .. 80: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤  ", sizeof(szString));
-		case 81 .. 85: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ ", sizeof(szString));
-		case 90 .. 95: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ ", sizeof(szString));
-		case 96 .. 100: strpack(szString, "¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤", sizeof(szString));
-		*/
 		default: szString = "-------";
 	}
 
 	return szString;
 }
+*/
 
 /*
 CreatePlayerLabel(playerid) {

@@ -1959,7 +1959,7 @@ enum e_AntiCheat {
 	Float:ac_fPlayerAngle[2],
 	ac_iLastTargetID,
 	ac_fAimAccuracy,
-	ac_iFlags[15],
+	ac_iFlags[AC_MAX],
 	ac_iCommandCount,
 	//ac_iPlayerAreaID,
 	Float:ac_fProbability,

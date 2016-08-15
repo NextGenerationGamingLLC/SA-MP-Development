@@ -1500,20 +1500,23 @@ native IsValidVehicle(vehicleid);
         			
 #define 			AC_AIMBOT					0
 #define 			AC_CBUG 					1
-#define 			AC_PROAIM					2
-#define 			AC_RANGEHACKS 				3
-#define 			AC_SPEEDHACKS 				4
-#define 			AC_VEHICLEHACKS				5
-#define 			AC_CMDSPAM					6
-#define 			AC_CARSURFING				7
-#define 			AC_NINJAJACK 				8
-//#define 			AC_NAMETAGS 				9
-#define 			AC_AIRBREAKING 				9
-#define 			AC_INFINITESTAMINA			10
-#define 			AC_HEALTHARMORHACKS			11
-#define 			AC_DIALOGSPOOFING			12
-#define 			AC_REJECTHITS				13
-#define 			AC_MAX						14
+#define 			AC_SILENTAIM				2
+#define 			AC_PROAIM					3
+#define 			AC_RANGEHACKS 				4
+#define 			AC_SPEEDHACKS 				5
+#define 			AC_VEHICLEHACKS				6
+#define 			AC_CMDSPAM					7
+#define 			AC_CARSURFING				8
+#define 			AC_NINJAJACK 				9
+#define 			AC_GHOSTHACKS				10
+#define 			AC_NAMETAGS 				11
+#define 			AC_AIRBREAKING 				12
+#define 			AC_INFINITESTAMINA			13
+#define 			AC_HEALTHARMORHACKS			14
+#define 			AC_DIALOGSPOOFING			15
+#define 			AC_REJECTHITS				16
+#define 			AC_DESYNC					17
+#define 			AC_MAX						18
         			
 /* PVARS */
 #define 			PVAR_DRUGS_MIXSLOT				"DRM_S"

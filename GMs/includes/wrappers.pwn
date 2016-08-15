@@ -122,6 +122,18 @@ Internal_SetPlayerColor(playerid, color) {
 }
 */
 
+
+// From fixer.inc
+stock FIX_GetTickCount() {
+
+	new ret = GetTickCount();
+
+	if (ret < 0)
+		ret += 2147483647;
+
+	return ret;
+}
+
 #if defined TEXTLABEL_DEBUG
 Int_DestDyn3DTxtLabel(Text3D:id) {
 
@@ -208,6 +220,7 @@ Internal_StreamerSetIntData(type, id, data, value) {
 #define SetPlayerInterior(%0) Internal_SetPlayerInterior(%0)
 //#define SetPlayerName(%0) Internal_SetPlayerName(%0)
 //#define SetPlayerColor(%0) Internal_SetPlayerColor(%0)
+#define GetTickCount(%0) FIX_GetTickCount(%0)
 
 #if defined TEXTLABEL_DEBUG
 #define DestroyDynamic3DTextLabel(%0) Int_DestDyn3DTxtLabel(%0)
