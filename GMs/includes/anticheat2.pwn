@@ -8,6 +8,8 @@
 
 #include <YSI\y_hooks>
 
+new PLoss; // Temp. var to toggle packet loss function.
+
 // From 3DTryg Funcs By AbyssMorgan (http://forum.sa-mp.com/showthread.php?t=591010)
 #define GetRotationFor2Point2D(%0,%1,%2,%3,%4)			(CompRotationFloat((atan2((%3)-(%1),(%2)-(%0))-90.0),(%4)))
 #define GetDistanceBetweenPoints3D(%1,%2,%3,%4,%5,%6)	VectorSize((%1)-(%4),(%2)-(%5),(%3)-(%6))
@@ -26,6 +28,22 @@ stock bool:GetRotationFor2Point3D(Float:x,Float:y,Float:z,Float:tx,Float:ty,Floa
 	CompRotationFloat(-(acos((tz-z)/radius)-90.0),rx);
 	CompRotationFloat((atan2(ty-y,tx-x)-90.0),rz);
 	return true;`
+}
+
+// Made by Fusez
+stock Float:GetPlayerPacketloss(playerid) {
+
+	if(PLoss == 1) return 0.0;
+	if(!IsPlayerConnected(playerid)) return 0.0;
+
+	new nstats[400+1], nstats_loss[20], start, end;
+	GetPlayerNetworkStats(playerid, nstats, sizeof(nstats));
+
+	start = strfind(nstats,"packetloss",true);
+	end = strfind(nstats,"%",true,start);
+
+	strmid(nstats_loss, nstats, start+12, end, sizeof(nstats_loss));
+	return floatstr(nstats_loss);
 }
 
 enum E_SHOT_INFO {
@@ -1074,94 +1092,96 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart) {
 	}
 
 	if(ac_ACToggle[AC_SILENTAIM]) {
+		
 		// Anti Silent-Aim (Jingles)
-		if(GetTickCount() - ac_iSilentAimTick[playerid] > 50) {
+ 		if(GetPlayerPacketloss(playerid) < 0.5 && GetPlayerPacketloss(damagedid) < 0.5) {
 
-			ac_iSilentAimTick[playerid] = GetTickCount();
-			if(GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK) {
+ 			if(GetTickCount() - ac_iSilentAimTick[playerid] > 50) {
 
-				if(!IsPlayerInAnyVehicle(damagedid)) {
+				ac_iSilentAimTick[playerid] = GetTickCount();
+				if(GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK) {
 
-					if(20 < weaponid < 35) {
+					if(!IsPlayerInAnyVehicle(damagedid)) {
 
-						new szWeapon[32],
-							iCameraMode = GetPlayerCameraMode(playerid);
+						if(20 < weaponid < 35 || weaponid > 54) {
 
-						GetWeaponName(weaponid, szWeapon, 32);		
-					
-						// Pro Aim
-						new Float:fOriginX,
-							Float:fOriginY,
-							Float:fOriginZ,
-							Float:fHitPosX,
-							Float:fHitPosY,
-							Float:fHitPosZ,
-							Float:fDistance;
+							new szWeapon[32],
+								iCameraMode = GetPlayerCameraMode(playerid);
 
-					    GetPlayerLastShotVectors(playerid, fOriginX, fOriginY, fOriginZ, fHitPosX, fHitPosY, fHitPosZ);
-						fDistance = GetPlayerDistanceFromPoint(damagedid, fHitPosX, fHitPosY, fHitPosZ);
+							GetWeaponName(weaponid, szWeapon, 32);		
+						
+							// Pro Aim
+							new Float:fOriginX,
+								Float:fOriginY,
+								Float:fOriginZ,
+								Float:fHitPosX,
+								Float:fHitPosY,
+								Float:fHitPosZ,
+								Float:fDistance;
 
-						if(iCameraMode != 4 && iCameraMode != 55) {
+						    GetPlayerLastShotVectors(playerid, fOriginX, fOriginY, fOriginZ, fHitPosX, fHitPosY, fHitPosZ);
+							fDistance = GetPlayerDistanceFromPoint(damagedid, fHitPosX, fHitPosY, fHitPosZ);
 
-							if(GetPlayerTargetPlayer(playerid) != damagedid) {
+							if(iCameraMode != 4 && iCameraMode != 55) {
+
+								if(GetPlayerTargetPlayer(playerid) != damagedid) {
+
+									ac_iSilentAimWarnings[playerid]++;
+									if(ac_iSilentAimWarnings[playerid] > 10) {
+
+										AC_Process(playerid, AC_SILENTAIM, weaponid, damagedid, 1);
+									}
+								}
+
+								if(fDistance <= 0.1) {
+
+									ac_iSilentAimWarnings2[playerid]++;
+									if(ac_iSilentAimWarnings2[playerid] > 4) {
+
+										AC_Process(playerid, AC_SILENTAIM, weaponid, damagedid, 2);
+									}
+								}
+								else ac_iSilentAimWarnings2[playerid] = 0;
+
+								if(weaponid != 28 && weaponid != 32) {
+								
+									new Float:fPos[3],
+										Float:fAngle[2];
+
+									if(fDistance < 100)
+									{
+
+										GetRotationFor2Point2D(fOriginX, fOriginY, fHitPosX, fHitPosY, fAngle[0]);
+										GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
+										GetPlayerFacingAngle(playerid, fAngle[1]);
+										
+										new Float:fDifference;
+										fDifference = floatabs((360 - fAngle[1]) - (360 - fAngle[0]));
+										if(fDifference > 10) {
+
+											ac_iSilentAimWarnings3[playerid]++;
+											if(ac_iSilentAimWarnings3[playerid] > 3) {
+
+												AC_Process(playerid, AC_SILENTAIM, weaponid, damagedid, 3);
+											}
+										}							
+									}
+								}
+							}
+
+							// ProAim
+							/*
+							if(fDistance >= MAX_SHOT_VARIANCE && fDistance < 300.0) {
 
 								ac_iSilentAimWarnings[playerid]++;
-								if(ac_iSilentAimWarnings[playerid] > 10) {
-
-									AC_Process(playerid, AC_SILENTAIM, weaponid, damagedid, 1);
-								}
-							}
-
-							if(fDistance <= 0.1) {
-
-								ac_iSilentAimWarnings2[playerid]++;
-								if(ac_iSilentAimWarnings2[playerid] > 4) {
-
-									AC_Process(playerid, AC_SILENTAIM, weaponid, damagedid, 2);
-								}
-							}
-							else ac_iSilentAimWarnings2[playerid] = 0;
-
-							if(weaponid != 28 && weaponid != 32) {
-							
-								new Float:fPos[3],
-									Float:fAngle[2];
-
-								if(fDistance < 100)
-								{
-
-									GetRotationFor2Point2D(fOriginX, fOriginY, fHitPosX, fHitPosY, fAngle[0]);
-									GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
-									GetPlayerFacingAngle(playerid, fAngle[1]);
+								if(ac_iSilentAimWarnings[playerid] > 5) {
 									
-									new Float:fDifference;
-									fDifference = (360 - fAngle[1]) - (360 - fAngle[0]);
-									if(fDifference < 0) fDifference = fDifference * -1;
-
-									if(fDifference > 10) {
-
-										ac_iSilentAimWarnings3[playerid]++;
-										if(ac_iSilentAimWarnings3[playerid] > 3) {
-
-											AC_Process(playerid, AC_SILENTAIM, weaponid, damagedid, 3);
-										}
-									}							
+									format(szMiscArray, sizeof(szMiscArray), "%s is using pro aim (%d).", GetPlayerNameExt(playerid), ac_iSilentAimWarnings[playerid]);
+									SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
 								}
 							}
+							*/
 						}
-
-						// ProAim
-						/*
-						if(fDistance >= MAX_SHOT_VARIANCE && fDistance < 300.0) {
-
-							ac_iSilentAimWarnings[playerid]++;
-							if(ac_iSilentAimWarnings[playerid] > 5) {
-								
-								format(szMiscArray, sizeof(szMiscArray), "%s is using pro aim (%d).", GetPlayerNameExt(playerid), ac_iSilentAimWarnings[playerid]);
-								SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
-							}
-						}
-						*/
 					}
 				}
 			}
@@ -1413,25 +1433,28 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 			}
 			case AC_SILENTAIM: {
 
-				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using Silent Aim (detector %d) on %s with a %s (warnings: %d).", GetPlayerNameExt(playerid), iExtraID3, GetPlayerNameExt(iExtraID2), AC_GetWeaponName(iExtraID), arrAntiCheat[playerid][ac_iFlags][processid]);
-				ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
-
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s (%d) used Silent Aim (detector %d) on %s (%d) with a %s (warnings: %d).", GetPlayerNameExt(playerid), PlayerInfo[playerid][pId], iExtraID3, GetPlayerNameExt(iExtraID2), PlayerInfo[iExtraID2][pId], AC_GetWeaponName(iExtraID), arrAntiCheat[playerid][ac_iFlags][processid]);
 				Log("logs/anticheat.log", szMiscArray);
-
-				new iTotalMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID],
-					iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] - arrWeaponDataAC[playerid][ac_iFakeMiss][iExtraID];
-
-				iRelevantMiss++; // Can't divide by 0;
-				new Float:fRatio = arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] / iRelevantMiss;
-
-				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
-					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				
+				/*
+				if(arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] > 0) {
+					
+					new iTotalMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID],
+						iRelevantMiss = arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID] - arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] - arrWeaponDataAC[playerid][ac_iFakeMiss][iExtraID];
+
+					iRelevantMiss++; // Can't divide by 0;
+					new Float:fRatio = arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID] / iRelevantMiss;
+
+					format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
+						PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
+					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				}
+				*/
+
 				SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for being desynced.");
 				SetTimerEx("KickEx", 1000, 0, "i", playerid);
-				return 1;
+
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using Silent Aim (detector %d) on %s with a %s (warnings: %d).", GetPlayerNameExt(playerid), iExtraID3, GetPlayerNameExt(iExtraID2), AC_GetWeaponName(iExtraID), arrAntiCheat[playerid][ac_iFlags][processid]);
 			}
 			case AC_PROAIM: {
 
@@ -1447,6 +1470,13 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
 					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
 				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
+
+				if(arrAntiCheat[playerid][ac_iFlags][processid] > 15) {
+					
+					SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: You were kicked for being desynced.");
+					SetTimerEx("KickEx", 1000, 0, "i", playerid);
+				}
 				return 1;
 			}
 			case AC_RANGEHACKS: {
@@ -1612,7 +1642,6 @@ IsCorrectCameraMode(playerid) {
 	}
 	return 0;
 }
-
 
 CMD:system(playerid, params[]) {
 
@@ -1825,7 +1854,14 @@ CMD:setproaimvar(playerid, params[]) {
 	return 1;
 }
 
+CMD:ploss(playerid, params[]) {
 
+	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
+	if(PLoss) PLoss = 0;
+	else PLoss = 1;
+	SendClientMessageEx(playerid, COLOR_GRAD1, "You toggled the packet loss function.");
+	return 1;
+}
 
 /* Custom Anti-Aimbot by Jingles
 1) Cheating (C), with C ∈ [true,false],
