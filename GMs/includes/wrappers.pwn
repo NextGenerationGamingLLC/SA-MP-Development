@@ -46,6 +46,7 @@ Internal_TogglePlayerSpectating(playerid, toggle) {
 	Bit_On(arrPAntiCheat[playerid], ac_bitValidSpectating);
 	return TogglePlayerSpectating(playerid, toggle);
 }
+
 /*
 Internal_ShowPlayerNameTag(playerid, showplayerid, show) {
 
@@ -71,6 +72,12 @@ ShowPlayerDialogEx(playerid, dialogid, style, caption[], info[], button1[], butt
 
 	iLastDialogID[playerid] = dialogid;
 	return ShowPlayerDialog(playerid, dialogid, style, caption, info, button1, button2);
+}
+
+Internal_PutPlayerInVehicle(playerid, vehicle, seat){ 
+
+	arrAntiCheat[playerid][ac_iVehID] = vehicle;
+	return PutPlayerInVehicle(playerid,vehicle,seat); 
 }
 
 Internal_SetPlayerWeather(playerid, iWeatherID) {
@@ -203,6 +210,7 @@ Internal_StreamerSetIntData(type, id, data, value) {
 }
 #endif
 
+#define PutPlayerInVehicle(%0) Internal_PutPlayerInVehicle(%0)
 #define SetPlayerWeather(%0) Internal_SetPlayerWeather(%0)
 #define SetPlayerTime(%0) Internal_SetPlayerTime(%0)
 //#define SetPlayerHealth(%0) Internal_SetPlayerHealth(%0)

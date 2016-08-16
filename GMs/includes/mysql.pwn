@@ -3886,7 +3886,7 @@ public ParkRentedVehicle(playerid, vehicleid, modelid, Float:X, Float:Y, Float:Z
         mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 		IsPlayerEntering{playerid} = true;
-		AC_PutPlayerInVehicle(playerid, vehicleid, 0);
+		PutPlayerInVehicle(playerid, vehicleid, 0);
 		SetPlayerArmedWeapon(playerid, 0);
 		format(string, sizeof(string), "* %s has parked their vehicle.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

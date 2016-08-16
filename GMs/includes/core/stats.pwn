@@ -97,58 +97,58 @@ stock ShowStats(playerid,targetid)
 		SetPVarInt(playerid, "ShowStats", targetid);
 		format(header, sizeof(header), "Showing Statistics of %s", GetPlayerNameEx(targetid));
 		format(resultline, sizeof(resultline),"%s\n\
-		%s\
-		%s\
-		%s\
-		%s\
-		%s\
-		{FFFFFF}Level: %d\n\
-		Gender: %s\n\
-		Date of Birth: %s\n\
-		Current Location: %s (%0.2f, %0.2f, %0.2f)\n\
-		Married To: %s\n\
-		Health: %.1f\n\
-		Armor: %.1f\n\
-		Playing Hours: %s\n\
-		Fitness: %d\n\
-		Upgrade Points: %s\n\
-		Next Level: %s{303030}/{FFFFFF}%s hours ($%s)\n\
-		Nation: %s\n\
-		%s\
-		%s\
-		Job: %s (Level: %d)\n\
-		Job 2: %s (Level: %d)\n\
-		Job 3: %s (Level: %d)\n\
-		Insurance: %s",
-		staffrank,
-		famedrank,
-		dprank,
-		drank,
-		svipmod,
-		fifstr,
-		PlayerInfo[targetid][pLevel],
-		sext,
-		PlayerInfo[targetid][pBirthDate],
-		zone, px, py, pz,
-		PlayerInfo[targetid][pMarriedName],
-		health,
-		armor,
-		number_format(PlayerInfo[targetid][pConnectHours]),
-		PlayerInfo[targetid][pFitness],
-		number_format(PlayerInfo[targetid][gPupgrade]),
-		number_format(PlayerInfo[targetid][pExp]),
-		number_format(expamount),
-		number_format(costlevel),
-		nation,
-		org,
-		biz,
-		GetJobName(PlayerInfo[targetid][pJob]),
-		GetJobLevel(targetid, PlayerInfo[targetid][pJob]),
-		GetJobName(PlayerInfo[targetid][pJob2]),
-		GetJobLevel(targetid, PlayerInfo[targetid][pJob2]),
-		GetJobName(PlayerInfo[targetid][pJob3]),
-		GetJobLevel(targetid, PlayerInfo[targetid][pJob3]),
-		insur);
+			%s\
+			%s\
+			%s\
+			%s\
+			%s\
+			{FFFFFF}Level: %d\n\
+			Gender: %s\n\
+			Date of Birth: %s\n\
+			Current Location: %s (%0.2f, %0.2f, %0.2f)\n\
+			Married To: %s\n\
+			Health: %.1f\n\
+			Armor: %.1f\n\
+			Playing Hours: %s\n\
+			Fitness: %d\n\
+			Upgrade Points: %s\n\
+			Next Level: %s{303030}/{FFFFFF}%s hours ($%s)\n\
+			Nation: %s\n\
+			%s\
+			%s\
+			Job: %s (Level: %d)\n\
+			Job 2: %s (Level: %d)\n\
+			Job 3: %s (Level: %d)\n\
+			Insurance: %s",
+			staffrank,
+			famedrank,
+			dprank,
+			drank,
+			svipmod,
+			fifstr,
+			PlayerInfo[targetid][pLevel],
+			sext,
+			PlayerInfo[targetid][pBirthDate],
+			zone, px, py, pz,
+			PlayerInfo[targetid][pMarriedName],
+			health,
+			armor,
+			number_format(PlayerInfo[targetid][pConnectHours]),
+			PlayerInfo[targetid][pFitness],
+			number_format(PlayerInfo[targetid][gPupgrade]),
+			number_format(PlayerInfo[targetid][pExp]),
+			number_format(expamount),
+			number_format(costlevel),
+			nation,
+			org,
+			biz,
+			GetJobName(PlayerInfo[targetid][pJob]),
+			GetJobLevel(targetid, PlayerInfo[targetid][pJob]),
+			GetJobName(PlayerInfo[targetid][pJob2]),
+			GetJobLevel(targetid, PlayerInfo[targetid][pJob2]),
+			GetJobName(PlayerInfo[targetid][pJob3]),
+			GetJobLevel(targetid, PlayerInfo[targetid][pJob3]),
+			insur);
 		ShowPlayerDialogEx(playerid, DISPLAY_STATS, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
 	}
 	return 1;

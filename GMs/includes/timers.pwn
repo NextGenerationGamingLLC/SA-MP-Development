@@ -731,186 +731,6 @@ task MoneyUpdate[1000]()
 			SendClientMessageToAllEx( COLOR_LIGHTBLUE, "* The event has been finished because the time limit has been reached." );
 		}
 	}
-	foreach(new i: Player)
-	{
-		if(gPlayerLogged{i})
-		{
-			if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337)
-			{
-				SpawnKick[i]++;
-				if(SpawnKick[i] >= 120)
-				{
-					IsSpawned[i] = 1;
-					SpawnKick[i] = 0;
-					new string[128];
-					SendClientMessageEx(i, COLOR_WHITE, "SERVER: You have been kicked for being AFK.");
-					format(string, sizeof(string), " %s(%d) (ID: %d) (IP: %s) has been kicked for not being spawned over 2 minutes.", GetPlayerNameEx(i), GetPlayerSQLId(i), i, GetPlayerIpEx(i));
-					Log("logs/spawnafk.log", string);
-					SetTimerEx("KickEx", 1000, 0, "i", i);
-				}
-			}
-			if(IsSpawned[i] > 0 && SpawnKick[i] > 0)
-			{
-				SpawnKick[i] = 0;
-			}
-			if(GetPlayerPing(i) > MAX_PING)
-			{
-				if(playerTabbed[i] == 0)
-				{
-					if(GetPVarInt(i, "BeingKicked") != 1)
-					{
-						new
-							string[89 + MAX_PLAYER_NAME], ping;
-
-						ping = GetPlayerPing(i);
-						if(ping != 65535) // Invalid Ping
-						{
-							format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just been kicked for %d ping (maximum: "#MAX_PING").", GetPlayerNameEx(i), ping);
-							ABroadCast(COLOR_YELLOW, string, 2);
-							SendClientMessageEx(i, COLOR_WHITE, "You have been kicked because your ping is higher than the maximum.");
-							SetPVarInt(i, "BeingKicked", 1);
-							SetTimerEx("KickEx", 1000, 0, "i", i);
-						}
-					}
-				}
-			}
-			if(rBigEarT[i] > 0) {
-				rBigEarT[i]--;
-				if(rBigEarT[i] == 0) {
-					DeletePVar(i, "BigEar");
-					DeletePVar(i, "BigEarPlayer");
-					SendClientMessageEx(i, COLOR_WHITE, "Big Ears has been turned off.");
-				}
-			}
-			if(PlayerInfo[i][pTriageTime] != 0)
-			{
-				PlayerInfo[i][pTriageTime]--;
-			}
-			if(PlayerInfo[i][pTicketTime] != 0)
-			{
-				PlayerInfo[i][pTicketTime]--;
-			}
-			if(GetPVarInt(i, "InRangeBackup") > 0)
-			{
-				SetPVarInt(i, "InRangeBackup", GetPVarInt(i, "InRangeBackup")-1);
-			}
-			if(GetPVarType(i, "IsTackled"))
-			{
-				new copcount, string[128];
-				foreach(new j: Player)
-				{
-					if(ProxDetectorS(4.0, i, j) && IsACop(j) && j != i)
-					{
-						copcount++;
-					}
-				}
-				if(copcount == 0 || !ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
-				{
-					SendClientMessageEx(i, COLOR_GREEN, "You're able to escape due to the cops leaving you unrestrained.");
-					ClearTackle(i);
-				}
-				if(GetPVarInt(i, "TackleCooldown") > 0)
-				{
-					if(IsPlayerConnected(GetPVarInt(i, "IsTackled")) && GetPVarInt(GetPVarInt(i, "IsTackled"), "Tackling") == i)
-					{
-						format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~%d", GetPVarInt(i, "TackleCooldown"));
-						GameTextForPlayer(i, string, 1100, 3);
-						SetPVarInt(i, "TackleCooldown", GetPVarInt(i, "TackleCooldown")-1);
-						if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 2 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
-						{
-							new escapechance = random(100);
-							switch(escapechance)
-							{
-								case 35,40,22,72,11..16, 62..64:
-								{
-									GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
-									SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
-									format(string, sizeof(string), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
-									ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									TogglePlayerControllable(GetPVarInt(i, "IsTackled"), 0);
-									ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
-									SetTimerEx("CopGetUp", 2500, 0, "i", GetPVarInt(i, "IsTackled"));
-									ClearTackle(i);
-								}
-							}
-						}
-						else if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 3 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
-						{
-							new escapechance = random(100);
-							switch(escapechance)
-							{
-								case 35,40,22,62:
-								{
-									GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
-									SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
-									format(string, sizeof(string), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
-									ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-									TogglePlayerControllable(GetPVarInt(i, "IsTackled"), 0);
-									ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
-									SetTimerEx("CopGetUp", 2500, 0, "i", GetPVarInt(i, "IsTackled"));
-									ClearTackle(i);
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					if(ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
-					{
-						CopGetUp(GetPVarInt(i, "IsTackled"));
-					}
-					SetPVarInt(GetPVarInt(i, "IsTackled"), "CopTackleCooldown", 30);
-					ShowPlayerDialogEx(i, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
-					ClearTackle(i);
-				}
-			}
-			if(GetPVarInt(i, "CopTackleCooldown") > 0)
-			{
-				SetPVarInt(i, "CopTackleCooldown", GetPVarInt(i, "CopTackleCooldown")-1);
-			}
-			if(GetPVarInt(i, "CantBeTackledCount") > 0)
-			{
-				SetPVarInt(i, "CantBeTackledCount", GetPVarInt(i, "CantBeTackledCount")-1);
-			}
-			if(PlayerInfo[i][pCash] != GetPlayerMoney(i))
-			{
-				ResetPlayerMoney(i);
-				GivePlayerMoney(i, PlayerInfo[i][pCash]);
-			}
-			if(PlayerInfo[i][pGPS] > 0 && GetPVarType(i, "gpsonoff"))
-			{
-				new zone[28];
-				GetPlayer3DZone(i, zone, MAX_ZONE_NAME);
-				TextDrawSetString(GPS[i], zone);
-			}
-			if(GetPVarType(i, "Injured")) SetPlayerArmedWeapon(i, 0);
-			if(GetPVarType(i, "IsFrozen")) TogglePlayerControllable(i, 0);
-			if(PlayerCuffed[i] > 1) {
-				SetHealth(i, 1000);
-				SetArmour(i, GetPVarFloat(i, "cuffarmor"));
-			}
-			if(IsPlayerInAnyVehicle(i) && TruckUsed[i] != INVALID_VEHICLE_ID)
-			{
-				if(TruckUsed[i] == GetPlayerVehicleID(i) && GetPVarInt(i, "Gas_TrailerID") != 0)
-				{
-					if(Businesses[TruckDeliveringTo[TruckUsed[i]]][bType] == BUSINESS_TYPE_GASSTATION)
-					{
-						if(GetVehicleTrailer(GetPlayerVehicleID(i)) != GetPVarInt(i, "Gas_TrailerID"))
-						{
-							SetPVarInt(i, "GasWarnings", GetPVarInt(i, "GasWarnings") + 1);
-							if(GetPVarInt(i, "GasWarnings") > 10)
-							{
-								CancelTruckDelivery(i);
-								DeletePVar(i, "GasWarnings");
-								SendClientMessageEx(i, COLOR_REALRED, "You have failed your delivery as you lost your load!");
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 }
 
 // Timer Name: SpecUpdate()
@@ -2791,6 +2611,187 @@ ptask SaveAccountsUpdate[900000](i)
 	if(gPlayerLogged{i}) {
 		SetPVarInt(i, "AccountSaving", 1);
 		OnPlayerStatsUpdate(i);
+	}
+}
+
+ptask PlayerUpdate[1000](i) {
+
+	if(gPlayerLogged{i})
+	{
+		if(IsSpawned[i] == 0 && PlayerInfo[i][pAdmin] < 1337)
+		{
+			SpawnKick[i]++;
+			if(SpawnKick[i] >= 120)
+			{
+				IsSpawned[i] = 1;
+				SpawnKick[i] = 0;
+				new string[128];
+				SendClientMessageEx(i, COLOR_WHITE, "SERVER: You have been kicked for being AFK.");
+				format(string, sizeof(string), " %s(%d) (ID: %d) (IP: %s) has been kicked for not being spawned over 2 minutes.", GetPlayerNameEx(i), GetPlayerSQLId(i), i, GetPlayerIpEx(i));
+				Log("logs/spawnafk.log", string);
+				SetTimerEx("KickEx", 1000, 0, "i", i);
+			}
+		}
+		if(IsSpawned[i] > 0 && SpawnKick[i] > 0)
+		{
+			SpawnKick[i] = 0;
+		}
+		if(GetPlayerPing(i) > MAX_PING)
+		{
+			if(playerTabbed[i] == 0)
+			{
+				if(GetPVarInt(i, "BeingKicked") != 1)
+				{
+					new
+						string[89 + MAX_PLAYER_NAME], ping;
+
+					ping = GetPlayerPing(i);
+					if(ping != 65535) // Invalid Ping
+					{
+						format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has just been kicked for %d ping (maximum: "#MAX_PING").", GetPlayerNameEx(i), ping);
+						ABroadCast(COLOR_YELLOW, string, 2);
+						SendClientMessageEx(i, COLOR_WHITE, "You have been kicked because your ping is higher than the maximum.");
+						SetPVarInt(i, "BeingKicked", 1);
+						SetTimerEx("KickEx", 1000, 0, "i", i);
+					}
+				}
+			}
+		}
+		if(rBigEarT[i] > 0) {
+			rBigEarT[i]--;
+			if(rBigEarT[i] == 0) {
+				DeletePVar(i, "BigEar");
+				DeletePVar(i, "BigEarPlayer");
+				SendClientMessageEx(i, COLOR_WHITE, "Big Ears has been turned off.");
+			}
+		}
+		if(PlayerInfo[i][pTriageTime] != 0)
+		{
+			PlayerInfo[i][pTriageTime]--;
+		}
+		if(PlayerInfo[i][pTicketTime] != 0)
+		{
+			PlayerInfo[i][pTicketTime]--;
+		}
+		if(GetPVarInt(i, "InRangeBackup") > 0)
+		{
+			SetPVarInt(i, "InRangeBackup", GetPVarInt(i, "InRangeBackup")-1);
+		}
+		if(GetPVarType(i, "IsTackled"))
+		{
+			new copcount, string[128];
+			foreach(new j: Player)
+			{
+				if(ProxDetectorS(4.0, i, j) && IsACop(j) && j != i)
+				{
+					copcount++;
+				}
+			}
+			if(copcount == 0 || !ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
+			{
+				SendClientMessageEx(i, COLOR_GREEN, "You're able to escape due to the cops leaving you unrestrained.");
+				ClearTackle(i);
+			}
+			if(GetPVarInt(i, "TackleCooldown") > 0)
+			{
+				if(IsPlayerConnected(GetPVarInt(i, "IsTackled")) && GetPVarInt(GetPVarInt(i, "IsTackled"), "Tackling") == i)
+				{
+					format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~%d", GetPVarInt(i, "TackleCooldown"));
+					GameTextForPlayer(i, string, 1100, 3);
+					SetPVarInt(i, "TackleCooldown", GetPVarInt(i, "TackleCooldown")-1);
+					if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 2 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
+					{
+						new escapechance = random(100);
+						switch(escapechance)
+						{
+							case 35,40,22,72,11..16, 62..64:
+							{
+								GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
+								SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
+								format(string, sizeof(string), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
+								ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), 0);
+								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+								SetTimerEx("CopGetUp", 2500, 0, "i", GetPVarInt(i, "IsTackled"));
+								ClearTackle(i);
+							}
+						}
+					}
+					else if(GetPVarInt(i, "TackledResisting") == 2 && copcount <= 3 && GetPVarInt(i, "TackleCooldown") < 12) // resisting
+					{
+						new escapechance = random(100);
+						switch(escapechance)
+						{
+							case 35,40,22,62:
+							{
+								GameTextForPlayer(i, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~ESCAPE!", 10000, 3);
+								SendClientMessageEx(i, COLOR_GREEN, "You're able to push the officer off you and escape.");
+								format(string, sizeof(string), "** %s pushes %s aside and is able to escape.", GetPlayerNameEx(i), GetPlayerNameEx(GetPVarInt(i, "IsTackled")));
+								ProxDetector(30.0, i, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+								TogglePlayerControllable(GetPVarInt(i, "IsTackled"), 0);
+								ApplyAnimation(GetPVarInt(i, "IsTackled"), "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 1, 0, 1);
+								SetTimerEx("CopGetUp", 2500, 0, "i", GetPVarInt(i, "IsTackled"));
+								ClearTackle(i);
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				if(ProxDetectorS(5.0, i, GetPVarInt(i, "IsTackled")))
+				{
+					CopGetUp(GetPVarInt(i, "IsTackled"));
+				}
+				SetPVarInt(GetPVarInt(i, "IsTackled"), "CopTackleCooldown", 30);
+				ShowPlayerDialogEx(i, -1, DIALOG_STYLE_LIST, "Close", "Close", "Close", "Close");
+				ClearTackle(i);
+			}
+		}
+		if(GetPVarInt(i, "CopTackleCooldown") > 0)
+		{
+			SetPVarInt(i, "CopTackleCooldown", GetPVarInt(i, "CopTackleCooldown")-1);
+		}
+		if(GetPVarInt(i, "CantBeTackledCount") > 0)
+		{
+			SetPVarInt(i, "CantBeTackledCount", GetPVarInt(i, "CantBeTackledCount")-1);
+		}
+		if(PlayerInfo[i][pCash] != GetPlayerMoney(i))
+		{
+			ResetPlayerMoney(i);
+			GivePlayerMoney(i, PlayerInfo[i][pCash]);
+		}
+		if(PlayerInfo[i][pGPS] > 0 && GetPVarType(i, "gpsonoff"))
+		{
+			new zone[28];
+			GetPlayer3DZone(i, zone, MAX_ZONE_NAME);
+			TextDrawSetString(GPS[i], zone);
+		}
+		if(GetPVarType(i, "Injured")) SetPlayerArmedWeapon(i, 0);
+		if(GetPVarType(i, "IsFrozen")) TogglePlayerControllable(i, 0);
+		if(PlayerCuffed[i] > 1) {
+			SetHealth(i, 1000);
+			SetArmour(i, GetPVarFloat(i, "cuffarmor"));
+		}
+		if(IsPlayerInAnyVehicle(i) && TruckUsed[i] != INVALID_VEHICLE_ID)
+		{
+			if(TruckUsed[i] == GetPlayerVehicleID(i) && GetPVarInt(i, "Gas_TrailerID") != 0)
+			{
+				if(Businesses[TruckDeliveringTo[TruckUsed[i]]][bType] == BUSINESS_TYPE_GASSTATION)
+				{
+					if(GetVehicleTrailer(GetPlayerVehicleID(i)) != GetPVarInt(i, "Gas_TrailerID"))
+					{
+						SetPVarInt(i, "GasWarnings", GetPVarInt(i, "GasWarnings") + 1);
+						if(GetPVarInt(i, "GasWarnings") > 10)
+						{
+							CancelTruckDelivery(i);
+							DeletePVar(i, "GasWarnings");
+							SendClientMessageEx(i, COLOR_REALRED, "You have failed your delivery as you lost your load!");
+						}
+					}
+				}
+			}
+		}
 	}
 }
 

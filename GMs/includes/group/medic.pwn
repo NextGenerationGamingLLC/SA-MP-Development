@@ -332,7 +332,7 @@ CMD:loadpt(playerid, params[])
 							SetPVarInt(giveplayerid, "EMSAttempt", 3);
 							ClearAnimations(giveplayerid);
 							IsPlayerEntering{giveplayerid} = true;
-							AC_PutPlayerInVehicle(giveplayerid,carid,seat);
+							PutPlayerInVehicle(giveplayerid,carid,seat);
 							TogglePlayerControllable(giveplayerid, false);
 						}
 						else SendClientMessageEx(playerid, COLOR_GREY, "Both you and your patient must be near the ambulance.");

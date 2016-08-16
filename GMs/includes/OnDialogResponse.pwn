@@ -8428,7 +8428,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Businesses[d][bTotalSales]++;
 			IsPlayerEntering{playerid} = true;
 			new car = CreatePlayerVehicle(playerid, playervehicleid, Businesses[d][bModel][v], Businesses[d][bPurchaseX], Businesses[d][bPurchaseY], Businesses[d][bPurchaseZ], Businesses[d][bPurchaseAngle], randcolor1, randcolor2, cost, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-			AC_PutPlayerInVehicle(playerid, car, 0);
+			PutPlayerInVehicle(playerid, car, 0);
 			SaveBusiness(d);
 			format(string, sizeof(string), "%s(%d) has purchased a %s(%d) from %s for $%s", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), VehicleName[Businesses[d][bModel][v] - 400], Businesses[d][bModel][v], Businesses[d][bName], number_format(Businesses[d][bPrice][v]));
 			Log("logs/dealership.log", string);
@@ -10355,7 +10355,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			GivePlayerCredits(playerid, -ShopItems[20][sItemPrice], 1);
 			printf("Price20: %d", ShopItems[20][sItemPrice]);
 			IsPlayerEntering{playerid} = true;
-			AC_PutPlayerInVehicle(playerid, GetPVarInt(playerid, "RentedVehicle"), 0);
+			PutPlayerInVehicle(playerid, GetPVarInt(playerid, "RentedVehicle"), 0);
 
 			format(szQuery, sizeof(szQuery), "[RentaCar] [User: %s(%i)] [IP: %s] [Model: %d] [Credits: %s] [Price: %s]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), GetPVarInt(playerid, "VehicleID"), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[20][sItemPrice]));
 			Log("logs/credits.log", szQuery), print(szQuery);
@@ -10408,7 +10408,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GivePlayerCredits(playerid, -ShopItems[5][sItemPrice], 1);
 					printf("Price5: %d", ShopItems[5][sItemPrice]);
 					IsPlayerEntering{playerid} = true;
-					AC_PutPlayerInVehicle(playerid, createdcar, 0);
+					PutPlayerInVehicle(playerid, createdcar, 0);
 					AmountSold[5]++;
 					AmountMade[5] += ShopItems[5][sItemPrice];
 					//ShopItems[5][sSold]++;
@@ -10466,7 +10466,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 					Log("logs/credits.log", string), print(string);
 					IsPlayerEntering{playerid} = true;
-					AC_PutPlayerInVehicle(playerid, createdcar, 0);
+					PutPlayerInVehicle(playerid, createdcar, 0);
 					format(string, sizeof(string), "[Car Shop] You have purchased a %s for %s credits.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 					SendClientMessageEx(playerid, COLOR_CYAN, string);
 				}
@@ -10497,7 +10497,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 				Log("logs/carvoucher.log", string), print(string);
 				IsPlayerEntering{playerid} = true;
-				AC_PutPlayerInVehicle(playerid, createdcar, 0);
+				PutPlayerInVehicle(playerid, createdcar, 0);
 				format(string, sizeof(string), "[Car Shop] You have purchased a %s for 1 restricted car voucher.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400]);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);
 			}
@@ -12150,31 +12150,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				format(header, sizeof(header), "Showing Statistics of %s", GetPlayerNameEx(targetid));
 				format(resultline, sizeof(resultline),"{FFFFFF}Wanted Level: %d\n\
-				Crimes: %s\n\
-				Arrests: %s\n\
-				Referrals: %s\n\
-				Warnings: %s\n\
-				Weapon Restriction: %s hour(s)\n\
-				Gang Warnings: %s\n\
-				Newbie Chat Mutes: %s\n\
-				Advertisement Mutes: %s\n\
-				Report Mutes: %s\n\
-				%s\
-				%s\
-				%s",
-				PlayerInfo[targetid][pWantedLevel],
-				number_format(PlayerInfo[targetid][pCrimes]),
-				number_format(PlayerInfo[targetid][pArrested]),
-				number_format(PlayerInfo[targetid][pRefers]),
-				number_format(PlayerInfo[targetid][pWarns]),
-				number_format(PlayerInfo[targetid][pWRestricted]),
-				number_format(PlayerInfo[targetid][pGangWarn]),
-				number_format(PlayerInfo[targetid][pNMuteTotal]),
-				number_format(PlayerInfo[targetid][pADMuteTotal]),
-				number_format(PlayerInfo[targetid][pRMutedTotal]),
-				pvtstring,
-				advisorstring,
-				adminstring);
+					Crimes: %s\n\
+					Arrests: %s\n\
+					Referrals: %s\n\
+					Warnings: %s\n\
+					Weapon Restriction: %s hour(s)\n\
+					Gang Warnings: %s\n\
+					Newbie Chat Mutes: %s\n\
+					Advertisement Mutes: %s\n\
+					Report Mutes: %s\n\
+					%s\
+					%s\
+					%s",
+					PlayerInfo[targetid][pWantedLevel],
+					number_format(PlayerInfo[targetid][pCrimes]),
+					number_format(PlayerInfo[targetid][pArrested]),
+					number_format(PlayerInfo[targetid][pRefers]),
+					number_format(PlayerInfo[targetid][pWarns]),
+					number_format(PlayerInfo[targetid][pWRestricted]),
+					number_format(PlayerInfo[targetid][pGangWarn]),
+					number_format(PlayerInfo[targetid][pNMuteTotal]),
+					number_format(PlayerInfo[targetid][pADMuteTotal]),
+					number_format(PlayerInfo[targetid][pRMutedTotal]),
+					pvtstring,
+					advisorstring,
+					adminstring);
 				ShowPlayerDialogEx(playerid, DISPLAY_STATS2, DIALOG_STYLE_MSGBOX, header, resultline, "First Page", "Close");
 			}
 			else DeletePVar(playerid, "ShowStats");

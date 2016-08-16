@@ -1867,7 +1867,7 @@ CMD:apark(playerid, params[]) {
 					SurfingCheck(GetPlayerVehicleID(playerid));
 					UpdatePlayerVehicleParkPosition(ownerid, d, x, y, z, angle, health, GetPlayerVirtualWorld(ownerid), GetPlayerInterior(ownerid));
 					IsPlayerEntering{playerid} = true;
-					AC_PutPlayerInVehicle(playerid, GetPlayerVehicleID(playerid), 0);
+					PutPlayerInVehicle(playerid, GetPlayerVehicleID(playerid), 0);
 					SetPlayerArmedWeapon(playerid, 0);
 
 					new szMessage[128];
@@ -4433,7 +4433,7 @@ CMD:entercar(playerid, params[])
 		if(sscanf(params, "ii", carid, seatid))	return SendClientMessage(playerid, COLOR_WHITE, "USAGE: /entercar [carid] [seatid]");
 		if(!(1 <= carid <= MAX_VEHICLES)) return SendClientMessageEx(playerid, COLOR_GREY, "Valid vehicle IDs run from 1 to 2000.");
 		if(seatid < 0 || seatid > 3) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Seat ID!");
-		else if(!IsVehicleOccupied(carid, seatid)) IsPlayerEntering{playerid} = true, AC_PutPlayerInVehicle(playerid, carid, seatid), SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
+		else if(!IsVehicleOccupied(carid, seatid)) IsPlayerEntering{playerid} = true, PutPlayerInVehicle(playerid, carid, seatid), SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
 		else SendClientMessageEx(playerid, COLOR_GREY, "That seat is occupied.");
 	}
 	else

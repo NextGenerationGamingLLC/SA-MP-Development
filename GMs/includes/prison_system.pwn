@@ -103,7 +103,7 @@ LoadPrisoner(iLoadingID, iPrisonerID, iVehicleID, iVehicleSeat, iNewVW, iNewIW)
 	PlayerInfo[iPrisonerID][pVW] = iNewVW;
 	SetPlayerInterior(iPrisonerID, iNewIW);
 	PlayerInfo[iPrisonerID][pInt] = iNewIW;
-	AC_PutPlayerInVehicle(iPrisonerID, iVehicleID, iVehicleSeat);
+	PutPlayerInVehicle(iPrisonerID, iVehicleID, iVehicleSeat);
 	TogglePlayerControllable(iPrisonerID, 0);
 	DeletePVar(iPrisonerID, "ArrestPoint");
 

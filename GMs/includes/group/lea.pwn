@@ -2027,7 +2027,7 @@ CMD:detain(playerid, params[])
 						ClearAnimations(giveplayerid);
 						TogglePlayerControllable(giveplayerid, false);
 						IsPlayerEntering{giveplayerid} = true;
-						AC_PutPlayerInVehicle(giveplayerid, carid, seat);
+						PutPlayerInVehicle(giveplayerid, carid, seat);
 					}
 					else
 					{

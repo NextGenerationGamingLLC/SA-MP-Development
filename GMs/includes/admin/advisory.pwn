@@ -934,7 +934,7 @@ CMD:accepthelp(playerid, params[])
 			GetPlayerPos(Player, x, y, z);
 			vw = GetPlayerVirtualWorld(Player);
 			i = GetPlayerInterior(Player);
-			SetPlayerPos(playerid, x, y+2, z);
+			SetPlayerPos(playerid, x, y+2, z+0.75);
 			SetPlayerVirtualWorld(playerid, vw);
 			SetPlayerInterior(playerid, i);
 			GetHealth(playerid,health);
@@ -1012,7 +1012,7 @@ CMD:pa(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pHelper] < 1 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	if(PlayerInfo[playerid][pToggledChats][16] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have Player Advisor chat disabled - /tog pa or /settings to enable it.");
+	if(PlayerInfo[playerid][pToggledChats][16] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have Player Advisor chat disabled - /tog advisor or /settings to enable it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pa [text]");
 	if(strlen(params) >= 128)  return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long. ");
 	szMiscArray[0] = 0;

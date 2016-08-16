@@ -622,7 +622,7 @@ hook OnPlayerUpdate(playerid) {
 
 		if(GetPlayerVehicleID(playerid) != arrAntiCheat[playerid][ac_iVehID]) {
 
-			arrAntiCheat[playerid][ac_iVehID] = -1;
+			arrAntiCheat[playerid][ac_iVehID] = INVALID_VEHICLE_ID;
 			
 			new Float:fPos[3];
 			GetPlayerPos(playerid, fPos[0], fPos[1], fPos[2]);
@@ -988,7 +988,10 @@ AC_SpeedHacks(playerid) {
 	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerSurfingVehicleID(playerid) == INVALID_VEHICLE_ID && GetPlayerSpecialAction(playerid) != SPECIAL_ACTION_USEJETPACK && iSpeed > 45) {
 		
 		GetPlayerVelocity(playerid, fVel[0], fVel[1], fVel[2]);
-		if(fVel[2] == 0) AC_Process(playerid, AC_SPEEDHACKS);
+		if(fVel[2] == 0) {
+
+			if(GetPlayerPacketloss(playerid) < 0.3) AC_Process(playerid, AC_SPEEDHACKS);
+		}
 	}
 }
 
@@ -1347,12 +1350,6 @@ stock GetDriverID(iVehID) {
 		if(GetPlayerVehicleID(i) == iVehID && GetPlayerState(i) == PLAYER_STATE_DRIVER) return i;
 	}
 	return INVALID_PLAYER_ID;
-}
-
-stock AC_PutPlayerInVehicle(playerid,vehicle,seat){ 
-
-	arrAntiCheat[playerid][ac_iVehID] = vehicle;
-	PutPlayerInVehicle(playerid,vehicle,seat); 
 }
 
 AC_Flag(playerid, processid, iExtraID = INVALID_PLAYER_ID, Float:fInfo = 0.0) {

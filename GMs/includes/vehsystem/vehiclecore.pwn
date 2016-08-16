@@ -2722,7 +2722,7 @@ CMD:rc(playerid, params[])
 					GetPlayerPos(playerid,playerPos[0],playerPos[1],playerPos[2]);
 					SetPlayerPos(playerid,playerPos[0],playerPos[1],playerPos[2]-500);
 					IsPlayerEntering{playerid} = true;
-					AC_PutPlayerInVehicle(playerid, ccar, 0);
+					PutPlayerInVehicle(playerid, ccar, 0);
 				}
 			}	
 		}

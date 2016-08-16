@@ -1049,7 +1049,7 @@ Interact_DetainPlayer(playerid, giveplayerid, seatid = -1) {
 		ClearAnimations(giveplayerid);
 		TogglePlayerControllable(giveplayerid, false);
 		IsPlayerEntering{giveplayerid} = true;
-		AC_PutPlayerInVehicle(giveplayerid, carid, seatid);
+		PutPlayerInVehicle(giveplayerid, carid, seatid);
 	}
 	return 1;
 }
@@ -1104,7 +1104,7 @@ Interact_LoadPatient(playerid, giveplayerid, seatid = -1) {
 		SetPVarInt(giveplayerid, "EMSAttempt", 3);
 		ClearAnimations(giveplayerid);
 		IsPlayerEntering{giveplayerid} = true;
-		AC_PutPlayerInVehicle(giveplayerid,carid,seatid);
+		PutPlayerInVehicle(giveplayerid,carid,seatid);
 		TogglePlayerControllable(giveplayerid, false);
 	}
 	return 1;
