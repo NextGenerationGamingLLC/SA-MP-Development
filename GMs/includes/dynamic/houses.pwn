@@ -77,10 +77,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	return 0;
 }
 
-stock SaveHouse(houseid)
-{
+stock SaveHouse(houseid) {
+
 	szMiscArray[0] = 0;
-	printf("Saving House ID %d", houseid);
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `houses` SET \
 		`Owned`=%d, \
 		`Level`=%d, \
@@ -97,7 +96,8 @@ stock SaveHouse(houseid)
 		`ExtIW`=%d, \
 		`ExtVW`=%d, \
 		`IntIW`=%d, \
-		`IntVW`=%d,",
+		`IntVW`=%d \
+		WHERE `id` =%d",
 		HouseInfo[houseid][hOwned],
 		HouseInfo[houseid][hLevel],
 		g_mysql_ReturnEscaped(HouseInfo[houseid][hDescription], MainPipeline),
@@ -113,10 +113,12 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hExtIW],
 		HouseInfo[houseid][hExtVW],
 		HouseInfo[houseid][hIntIW],
-		HouseInfo[houseid][hIntVW]
+		HouseInfo[houseid][hIntVW],
+		houseid+1
 	);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnSaveHouse", "ii", houseid, 0);
 
-	format(szMiscArray, sizeof(szMiscArray), "%s \
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `houses` SET \
 		`Lock`=%d, \
 		`Rentable`=%d, \
 		`RentFee`=%d, \
@@ -144,8 +146,8 @@ stock SaveHouse(houseid)
 		`MailType`=%d, \
 		`ClosetX`=%f, \
 		`ClosetY`=%f, \
-		`ClosetZ`=%f,",
-		szMiscArray,
+		`ClosetZ`=%f \
+		WHERE `id` =%d",
 		HouseInfo[houseid][hLock],
 		HouseInfo[houseid][hRentable],
 		HouseInfo[houseid][hRentFee],
@@ -174,10 +176,12 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hMailType],
 		HouseInfo[houseid][hClosetX],
 		HouseInfo[houseid][hClosetY],
-		HouseInfo[houseid][hClosetZ]
+		HouseInfo[houseid][hClosetZ],
+		houseid+1
 	);
-		
-	format(szMiscArray, sizeof(szMiscArray), "%s \
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnSaveHouse", "ii", houseid, 1);
+
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `houses` SET \
 		`SignDesc`='%s', \
 		`SignX`=%f, \
 		`SignY`=%f, \
@@ -188,8 +192,8 @@ stock SaveHouse(houseid)
 		`Expire`=%d, \
 		`Inactive`=%d, \
 		`Ignore`=%d, \
-		`Counter`=%d,",
-		szMiscArray,
+		`Counter`=%d \
+		WHERE `id` =%d",
 		g_mysql_ReturnEscaped(HouseInfo[houseid][hSignDesc], MainPipeline),
 		HouseInfo[houseid][hSign][0],
 		HouseInfo[houseid][hSign][1],
@@ -200,10 +204,12 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][hExpire],
 		HouseInfo[houseid][hInactive],
 		HouseInfo[houseid][hIgnore],
-		HouseInfo[houseid][hCounter]
+		HouseInfo[houseid][hCounter],
+		houseid+1
 	);
-	
-	format(szMiscArray, sizeof(szMiscArray), "%s \
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnSaveHouse", "ii", houseid, 2);
+
+	format(szMiscArray, sizeof(szMiscArray), "UPDATE `houses` SET \
 		`Listed`=%d, \
 		`PendingApproval`=%d, \
 		`ListedTimeStamp`=%d, \
@@ -218,7 +224,6 @@ stock SaveHouse(houseid)
 		`LinkedGarage1`=%d, \
 		`Lights`=%d \
 		WHERE `id`=%d",
-		szMiscArray,
 		HouseInfo[houseid][Listed],
 		HouseInfo[houseid][PendingApproval],
 		HouseInfo[houseid][ListedTimeStamp],
@@ -234,8 +239,15 @@ stock SaveHouse(houseid)
 		HouseInfo[houseid][h_iLights],
 		houseid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnSaveHouse", "ii", houseid, 3);
+}
 
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+forward OnSaveHouse(i, thread);
+public OnSaveHouse(i, thread) {
+
+	if(mysql_errno(MainPipeline)) printf("Error saving HouseID %d (Thread: %d)", i, thread);
+	printf("Successfully saved HouseID %d (Thread: %d)", i, thread);
+	return 1;
 }
 
 stock LoadHouse(houseid)

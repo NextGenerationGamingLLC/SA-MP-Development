@@ -50,10 +50,11 @@ hook OnGameModeInit() {
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-	if(newkeys & KEY_YES && IsPlayerInDynamicArea(playerid, DMVPointArea)) {
-		ShowDMVMenu(playerid);
+	if(newkeys & KEY_YES) {
+
+		if(IsPlayerInDynamicArea(playerid, DMVPointArea)) ShowDMVMenu(playerid);
+		else if(IsPlayerInRangeOfPoint(playerid, 2.0, 833.60, 3.23, 1004.17)) ShowDMVMenu(playerid);
 	}
-	else if(IsPlayerInRangeOfPoint(playerid, 2.0, 833.60, 3.23, 1004.17)) ShowDMVMenu(playerid);
 	return 1;
 }
 
