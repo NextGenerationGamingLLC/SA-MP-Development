@@ -615,6 +615,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pDrugs][3] 	  = cache_get_field_content_int(row, "Ecstasy", MainPipeline);
 					PlayerInfo[extraid][pDrugs][4] 	  = cache_get_field_content_int(row, "Heroin", MainPipeline);
 
+					PlayerInfo[extraid][pHitman] = cache_get_field_content_int(row, "Hitman");
+					PlayerInfo[extraid][pHitmanLeader] = cache_get_field_content_int(row, "HitmanLeader");
+					PlayerInfo[extraid][pHitmanBlacklisted] = cache_get_field_content_int(row, "HitmanBlacklisted");
+					cache_get_field_content(row, "BlacklistReason", PlayerInfo[extraid][pBlacklistReason], MainPipeline);
+
 					cache_get_field_content(row, "PollKeyA", PlayerInfo[extraid][pPollKey1], MainPipeline, 128);
 					cache_get_field_content(row, "PollKeyB", PlayerInfo[extraid][pPollKey2], MainPipeline, 128);
 					cache_get_field_content(row, "PollKeyC", PlayerInfo[extraid][pPollKey3], MainPipeline, 128);
@@ -2431,6 +2436,11 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Meth", PlayerInfo[playerid][pDrugs][2]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ecstasy", PlayerInfo[playerid][pDrugs][3]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Heroin", PlayerInfo[playerid][pDrugs][4]);
+
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Hitman", PlayerInfo[playerid][pHitman]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HitmanLeader", PlayerInfo[playerid][pHitmanLeader]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HitmanBlacklisted", PlayerInfo[playerid][pHitmanBlacklisted]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "BlacklistReason", PlayerInfo[playerid][pBlacklistReason]);
 
 	new szForLoop[16];
 	for(new x = 0; x < 12; x++) {

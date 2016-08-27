@@ -15,14 +15,14 @@
 
 				Current Developers:
 								*** Director of SA:MP Development:
-								    Winterfield									
+								    Jason Gray (Winterfield)									
 
 								**  Development Staff:
 									Miguel (s0nic)
 									Farva
 									Jingles
 									Westen
-									Behemoth
+									Behemoth									
 				Past Developers:
 								*** Director of SA:MP Development:
 									Dom
@@ -77,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.360"
+#define SERVER_GM_TEXT "NG:RP v3.0.361"
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
 
@@ -160,13 +160,10 @@
 #include "./includes/core/acceptcancel.pwn"
 #include "./includes/core/advertisements.pwn"
 #include "./includes/core/banking.pwn"
-//#include "./includes/banking/bankmain.pwn"
 #include "./includes/core/chat.pwn"
-//#include "./includes/core/enterexit.pwn"
 #include "./includes/core/fireworks.pwn"
 #include "./includes/core/helpcmds.pwn"
 #include "./includes/core/hospital.pwn"
-//#include "./includes/core/hunger.pwn"
 #include "./includes/core/lotto.pwn"
 #include "./includes/core/lselevator.pwn"
 #include "./includes/core/marriage.pwn"
@@ -201,6 +198,7 @@
 #include "./includes/core/AccountSettings.pwn"
 //#include "./includes/core/tutorial_new.pwn"
 #include "./includes/core/deluxegps.pwn"
+//#include "./includes/core/nametags.pwn"
 
 // #tryinclude "./includes/core/inactive.pwn"
 
@@ -252,7 +250,8 @@
 
 //dynamic group system includes
 #include "./includes/group/citizenship.pwn"
-#include "./includes/group/contract.pwn"
+//#include "./includes/group/contract.pwn"
+#include "./includes/group/hitman.pwn"
 #include "./includes/group/fires.pwn"
 #include "./includes/group/gov.pwn"
 #include "./includes/group/groupcore.pwn"
@@ -277,7 +276,7 @@
 //#include "./includes/group/URLrace.pwn"
 #include "./includes/group/sanews.pwn"
 #include "./includes/group/turfs.pwn"
-//#include "./includes/group/turfs2.pwn"
+#include "./includes/group/casefile.pwn"
 
 //job system includes
 #include "./includes/jobs/bartender.pwn"
@@ -286,7 +285,6 @@
 #include "./includes/jobs/craftsman.pwn"
 #include "./includes/jobs/detective.pwn"
 #include "./includes/jobs/drugs.pwn"
-// #include "./includes/jobs/fishing.pwn"
 #include "./includes/garbagesystem.pwn"
 #include "./includes/fishingsystem.pwn"
 #include "./includes/jobs/jobcore.pwn"
@@ -338,6 +336,9 @@
 
 // Westen WIP
 #include "./includes/dynamic/dynpolls2.pwn"
+
+// Jason WIP
+//#include "./includes/core/interact.pwn"
 
 main(){}
 

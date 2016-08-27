@@ -45,7 +45,8 @@ CMD:drughelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpot, /plantopium, /pickplant, /checkplant /makeheroin");
-	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "POLICE: | /destroyplant | /searchcar");
+	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpop, /plantopium, /pickplant, /checkplant, /makeheroin");
+	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "POLICE: /destroyplant, /searchcar");
 	if(IsAdminLevel(playerid, ADMIN_JUNIOR, 0)) SendClientMessageEx(playerid, COLOR_GREY, "ADMINISTRATOR: /adestroyplant");
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	return 1;
@@ -720,31 +721,6 @@ Character_Actor(playerid, choice)
 	}
 }
 
-
-GetMaxDrugsAllowed(iDrugID) {
-	
-	
-	switch(iDrugID) {
-
-		case 0: return 1000;
-		case 1: return 1000;
-		case 2: return 1000;
-		case 3: return 1000;
-		case 4: return 1000;
-		case 5: return 1000;
-		case 6: return 1000;
-		case 7: return 1000;
-		case 8: return 1000;
-		case 9: return 1000;
-		case 10: return 1000;
-		case 11: return 1000;
-		case 12: return 1000;
-		case 13: return 1000;
-		case 14: return 1000;
-	}
-	return 0;
-}
-
 // PLANT SYSTEM //
 
 stock LoadPlants() {
@@ -1212,6 +1188,30 @@ public AttemptPurify(playerid)
 	    SendClientMessageEx(playerid, COLOR_GREY, "You stopped the purification process.");
 	}
 	return 1;
+}
+
+GetMaxDrugsAllowed(iDrugID) {
+	
+	
+	switch(iDrugID) {
+
+		case 0: return 1000;
+		case 1: return 1000;
+		case 2: return 1000;
+		case 3: return 1000;
+		case 4: return 1000;
+		case 5: return 1000;
+		case 6: return 1000;
+		case 7: return 1000;
+		case 8: return 1000;
+		case 9: return 1000;
+		case 10: return 1000;
+		case 11: return 1000;
+		case 12: return 1000;
+		case 13: return 1000;
+		case 14: return 1000;
+	}
+	return 0;
 }
 
 PlacePlant(id, ownerid, planttype, objectid, drugskill, Float:x, Float:y, Float:z, virtualworld, interior)

@@ -257,12 +257,6 @@ stock IsACop(playerid)
 	return 0;
 }
 
-stock IsAHitman(playerid)
-{
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT)) return 1;
-	return 0;
-}
-
 stock IsAMedic(playerid)
 {
 	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_MEDIC)) return 1;
@@ -3201,6 +3195,7 @@ CMD:online(playerid, params[]) {
 		new badge[11];
 		foreach(new i: Player)
 		{
+			if(PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 0) goto end;
 			if(strcmp(PlayerInfo[i][pBadge], "None", true) != 0) format(badge, sizeof(badge), "[%s] ", PlayerInfo[i][pBadge]);
 			else format(badge, sizeof(badge), "");
 			if(IsAnFTSDriver(playerid) && IsAnFTSDriver(i)) switch(TransportDuty[i]) {
@@ -3219,6 +3214,7 @@ CMD:online(playerid, params[]) {
 				case 1: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (on duty)", szMiscArray, badge, GetPlayerNameEx(i));
 				default: format(szMiscArray, sizeof(szMiscArray), "%s\n* %s%s (off duty)", szMiscArray, badge, GetPlayerNameEx(i));
 			}
+			end:
 		}
 		if(!isnull(szMiscArray)) {
 			if(!IsACriminal(playerid)) strdel(szMiscArray, 0, 1), ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Online Members", szMiscArray, "Select", "Cancel");
@@ -3255,40 +3251,6 @@ CMD:badge(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have shown your badge, and will now be identified as being on-duty.");
 			if(IsAMedic(playerid) || IsFirstAid(playerid))
 			{
-				Medics += 1;
-			}
-		}
-	}
-	return 1;
-}
-
-CMD:medbadge(playerid, params[]) {
-    if(PlayerInfo[playerid][pMember] >= 0 && arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] != 0xFFFFFF && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL)
-	{
-		if(GetPVarType(playerid, "IsInArena") || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "EventToken") != 0)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You can't use your badge now.");
-			return 1;
-		}
-		#if defined zombiemode
-		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
-		#endif
-		if(PlayerInfo[playerid][pDuty]) {
-			PlayerInfo[playerid][pDuty] = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have hidden your medic badge, and will now be identified as being off-duty.");
-			SetPlayerToTeamColor(playerid);
-			if(IsAMedic(playerid) || IsFirstAid(playerid))
-			{
-				Medics -= 1;
-			}
-		}
-		else {
-			PlayerInfo[playerid][pDuty] = 1;
-			SetPVarInt(playerid, "MedBadge", 1);
-			SetPlayerToTeamColor(playerid);
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have shown your medic badge, and will now be identified as being on-duty.");
-			if(IsAMedic(playerid) || IsFirstAid(playerid)) {
-
 				Medics += 1;
 			}
 		}
@@ -5120,33 +5082,6 @@ CMD:groupban(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "Player not connected.");
 		}
-	}
-	return 1;
-}
-
-CMD:hshowbadge(playerid, params[])
-{
-	if(IsAHitman(playerid))
-	{
-		new giveplayerid, rank, faction, division, badge[8], oldbadge[8];
-		if(sscanf(params, "uiiiS(None)[8]", giveplayerid, faction, rank, division, badge))
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hshowbadge [player] [faction] [rank] [division] [badge (optional)]");
-			return 1;
-		}
-		new oldfaction = PlayerInfo[playerid][pMember];
-		new oldrank = PlayerInfo[playerid][pRank];
-		new olddivision = PlayerInfo[playerid][pDivision];
-		strcpy(oldbadge, PlayerInfo[playerid][pBadge], 9);
-		PlayerInfo[playerid][pMember] = faction - 1;
-		PlayerInfo[playerid][pRank] = rank;
-		PlayerInfo[playerid][pDivision] = division;
-		strcpy(PlayerInfo[playerid][pBadge], badge, sizeof(badge));
-		cmd_showbadge(playerid, params);
-		PlayerInfo[playerid][pMember] = oldfaction;
-		PlayerInfo[playerid][pRank] = oldrank;
-		PlayerInfo[playerid][pDivision] = olddivision;
-		strcpy(PlayerInfo[playerid][pBadge], oldbadge, sizeof(oldbadge));
 	}
 	return 1;
 }

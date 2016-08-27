@@ -319,7 +319,6 @@ GetWeaponSlot(iWeaponID) {
 
 OnPlayerChangeWeapon(playerid, newweapon)
 {
-	if(IsPlayerInDynamicArea(playerid, NGGShop)) SetPlayerArmedWeapon(playerid, 0);
 	if(pTazer{playerid} == 1) SetPlayerArmedWeapon(playerid,23);
 	if(GetPVarInt(playerid, "WeaponsHolstered") == 1)
 	{
@@ -528,8 +527,8 @@ CMD:switchgun(playerid, params[])
 			else if(strcmp(weapon, "Spas12", true) == 0) id = 27;
 			else if(strcmp(weapon, "Uzi", true) == 0) id = 28;
 			else if(strcmp(weapon, "Mp5", true) == 0) id = 29;
-			else if(strcmp(weapon, "M4", true) == 0) id = 30;
-			else if(strcmp(weapon, "AK47", true) == 0) id = 31;
+			else if(strcmp(weapon, "AK47", true) == 0) id = 30;
+			else if(strcmp(weapon, "M4", true) == 0) id = 31;
 			else if(strcmp(weapon, "Tec9", true) == 0) id = 32;
 			else return SendClientMessageEx(playerid, COLOR_GREY, "Weapons: Fist, 9mm, Shotgun, Sawnoff, Spas12, UZI, MP5, M4, AK47, Tec9");
 

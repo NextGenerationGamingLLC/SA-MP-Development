@@ -1608,6 +1608,7 @@ CMD:take(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, "   Invalid item specified.");
 			return 1;
 		}
+		GroupLog(PlayerInfo[playerid][pMember], string);
 	}
 	else
 	{

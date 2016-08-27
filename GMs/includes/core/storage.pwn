@@ -3148,7 +3148,7 @@ CMD:show(playerid, params[])
 	if(sscanf(params, "us[32]", giveplayerid, choice))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /show [player] [name]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack, Heroin, Materials");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack, Meth, Ecstasy, Heroin, Materials");
 		return 1;
 	}
 
@@ -3176,37 +3176,37 @@ CMD:show(playerid, params[])
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any materials!");
 					return 1;
 			    }
-				format(string, sizeof(string), "%s has shown you their %d Materials.",  GetPlayerNameEx(playerid), amount);
+				format(string, sizeof(string), "%s has shown you their %d materials.",  GetPlayerNameEx(playerid), amount);
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 
-				format(string, sizeof(string), "You have shown %s your %d Materials.", GetPlayerNameEx(giveplayerid), amount);
+				format(string, sizeof(string), "You have shown %s your %d materials.", GetPlayerNameEx(giveplayerid), amount);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 
-				format(string, sizeof(string), "* %s has shown %s some Materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s has shown %s some materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
 			if (strcmp(choice, "pot", true) == 0)
 			{
-			    new amount = PlayerInfo[playerid][pDrugs][1];
+			    new amount = PlayerInfo[playerid][pDrugs][0];
 			    if(amount < 1)
 			    {
-			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any Pot!");
+			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any pot!");
 					return 1;
 			    }
-				format(string, sizeof(string), "%s has shown you their %d grams of Pot.",  GetPlayerNameEx(playerid), amount);
+				format(string, sizeof(string), "%s has shown you their %d grams of pot.",  GetPlayerNameEx(playerid), amount);
 				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
 
-				format(string, sizeof(string), "You have shown %s your %d grams of Pot.", GetPlayerNameEx(giveplayerid), amount);
+				format(string, sizeof(string), "You have shown %s your %d grams of pot.", GetPlayerNameEx(giveplayerid), amount);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 
-				format(string, sizeof(string), "* %s has shown %s some Pot.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s has shown %s some pot.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
 			if (strcmp(choice, "crack", true) == 0)
 			{
-			    new amount = PlayerInfo[playerid][pDrugs][2];
+			    new amount = PlayerInfo[playerid][pDrugs][1];
 			    if(amount < 1)
 			    {
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any crack!");
@@ -3218,13 +3218,49 @@ CMD:show(playerid, params[])
 				format(string, sizeof(string), "You have shown %s your %d grams of crack.", GetPlayerNameEx(giveplayerid), amount);
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 
-				format(string, sizeof(string), "* %s has shown %s some Crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "* %s has shown %s some crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				return 1;
+			}
+			if (strcmp(choice, "meth", true) == 0)
+			{
+			    new amount = PlayerInfo[playerid][pDrugs][2];
+			    if(amount < 1)
+			    {
+			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any meth!");
+					return 1;
+			    }
+				format(string, sizeof(string), "%s has shown you their %d grams of meth.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+
+				format(string, sizeof(string), "You have shown %s your %d grams of meth.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+
+				format(string, sizeof(string), "* %s has shown %s some meth.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				return 1;
+			}
+			if (strcmp(choice, "ecstasy", true) == 0)
+			{
+			    new amount = PlayerInfo[playerid][pDrugs][3];
+			    if(amount < 1)
+			    {
+			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any ecstasy!");
+					return 1;
+			    }
+				format(string, sizeof(string), "%s has shown you their %d grams of ecstasy.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+
+				format(string, sizeof(string), "You have shown %s your %d grams of ecstasy.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+
+				format(string, sizeof(string), "* %s has shown %s some ecstasy.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
    			if (strcmp(choice, "heroin", true) == 0)
 			{
-			    new amount = PlayerInfo[playerid][pHeroin];
+			    new amount = PlayerInfo[playerid][pDrugs][4];
 			    if(amount < 1)
 			    {
 			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any heroin!");

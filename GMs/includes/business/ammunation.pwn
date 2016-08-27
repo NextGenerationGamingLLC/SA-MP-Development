@@ -13,6 +13,44 @@ CMD:buygun(playerid, params[])
 	return 1;
 }
 
+CMD:editgsprices(playerid, params[]) {
+
+	szMiscArray[0] = 0;
+
+	new 
+		choice[32], 
+		amount;
+
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use that command!");
+
+	if(sscanf(params, "s[32]d", choice, amount)) {
+		SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /editgsprices [choice] [amount]"); 
+		SendClientMessageEx(playerid, COLOR_WHITE, "Available choices: colt45, shotgun, deagle");
+		format(szMiscArray, sizeof(szMiscArray), "colt45: $%s | shotgun: $%s | Deagle: $%s", number_format(GunPrices[0]), number_format(GunPrices[1]), number_format(GunPrices[2]));
+		return SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+	}
+	if(strcmp(choice, "colt45", true) == 0) {
+		GunPrices[0] = amount; 
+		format(szMiscArray, sizeof(szMiscArray), "%s has changed the colt45 price to $%s", GetPlayerNameEx(playerid), number_format(amount));
+		Log("logs/business.log", szMiscArray);
+		g_mysql_SaveMOTD();
+	}
+	if(strcmp(choice, "shotgun", true) == 0) {
+		GunPrices[1] = amount; 
+		format(szMiscArray, sizeof(szMiscArray), "%s has changed the shotgun price to $%s", GetPlayerNameEx(playerid), number_format(amount));
+		Log("logs/business.log", szMiscArray);
+		g_mysql_SaveMOTD();
+	}
+	if(strcmp(choice, "deagle", true) == 0) {
+		GunPrices[2] = amount; 
+		format(szMiscArray, sizeof(szMiscArray), "%s has changed the deagle price to $%s", GetPlayerNameEx(playerid), number_format(amount));
+		Log("logs/business.log", szMiscArray);
+		g_mysql_SaveMOTD();
+	}
+	g_mysql_SaveMOTD();
+	return 1;
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;

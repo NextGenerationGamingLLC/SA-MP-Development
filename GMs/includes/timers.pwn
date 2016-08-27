@@ -536,7 +536,7 @@ task SyncTime[60000]()
 						case 6: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_COLT45, 10);
 						case 7: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_TEC9, 10);
 						case 8: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_UZI, 10);
-						case 9: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SNIPER, 5);
+						case 9: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SNIPER, 2);
 						case 10: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_M4, 5);
 						case 11: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SHOTGSPA, 5);
 						case 12: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SPRAYCAN, 1);

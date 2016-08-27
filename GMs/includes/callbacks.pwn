@@ -1007,7 +1007,8 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 				new Float: arr_fPlayerPos[4], szLog[128], szString[128];
 				GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 				GetPlayerFacingAngle(playerid, arr_fPlayerPos[3]);
-				CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), modelid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+				CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), modelid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, 0, 0);
+				SetPlayerVirtualWorld(playerid, 0);
 
 				PlayerInfo[playerid][pVehVoucher]--;
 				format(szString, sizeof(szString), "You have successfully used one of your car voucher(s), you have %d car voucher(s) left.", PlayerInfo[playerid][pVehVoucher]);
@@ -1210,6 +1211,7 @@ public OnPlayerConnect(playerid)
 	SetPVarInt(playerid, "AOSlotPaintballFlag", -1);
 	DeletePVar(playerid, "TempLevel");
 	HackingMods[playerid] = 0;
+	PlayerInfo[playerid][pHitman] = -1;
 	pSpeed[playerid] = 0.0;
 	//SetTimerEx("HackingTimer", 1000, 0, "i", playerid);
 
@@ -4119,7 +4121,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							GivePlayerCash(playerid, takemoney);
 							GivePlayerCash(GoChase[playerid], -takemoney);
 							format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d",GetPlayerNameEx(playerid),GetPlayerNameEx(GoChase[playerid]),takemoney);
-							SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
+							foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, string);
 							format(string,sizeof(string),"You have been critically injured by a Hitman and lost $%d!",takemoney);
 							ResetPlayerWeaponsEx(GoChase[playerid]);
 						    // SpawnPlayer(GoChase[playerid]);
@@ -4131,6 +4133,10 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							GotHit[GoChase[playerid]] = 0;
 							GetChased[GoChase[playerid]] = INVALID_PLAYER_ID;
 							GoChase[playerid] = INVALID_PLAYER_ID;
+							new iHitPercent = floatround(takemoney * 0.10);
+							iHMASafe_Val += iHitPercent;
+							format(szMiscArray, sizeof szMiscArray, "[HIT COMPLETE] $%s deposited from %s's hit.", number_format(iHitPercent), GetPlayerNameEx(playerid));
+							Log("logs/hitman.log", szMiscArray);
 						}
 					}
 			    }
@@ -4190,7 +4196,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					GivePlayerCash(GetChased[playerid], takemoney);
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
-					SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
+					foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, string);
 					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -4202,6 +4208,11 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					PlayerInfo[GetChased[playerid]][pC4] = 0;
 					GotHit[playerid] = 0;
 					GetChased[playerid] = INVALID_PLAYER_ID;
+
+					new iHitPercent = floatround(takemoney * 0.10);
+					iHMASafe_Val += iHitPercent;
+					format(szMiscArray, sizeof szMiscArray, "[HIT COMPLETE] $%s deposited from %s's hit.", number_format(iHitPercent), GetPlayerNameEx(playerid));
+					Log("logs/hitman.log", szMiscArray);
 					return 1;
 				}
 			}

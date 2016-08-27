@@ -63,7 +63,7 @@ CMD:impound(playerid, params[]) {
 					if(iVehIndex != -1) {
 						iVehType = 1;
 						iTargetOwner = i;
-						iCost = (((PlayerVehicleInfo[iTargetOwner][iVehIndex][pvPrice] / 20 + PlayerVehicleInfo[iTargetOwner][iVehIndex][pvTicket]) / 100) * 20);
+						iCost = (((PlayerVehicleInfo[iTargetOwner][iVehIndex][pvPrice] / 20 + PlayerVehicleInfo[iTargetOwner][iVehIndex][pvTicket]) / 100) * 30);
 						break;
 					}
 				}	

@@ -3039,9 +3039,11 @@ CMD:mole(playerid, params[])
 	return 1;
 }
 
+// Both below were adjusted to Head Admin because of them now being able to roleplay on their admin account. - Winterfield
+
 CMD:togspec(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] == 99999)
+	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 	    if(GetPVarType(playerid, "EASpecable"))
 	    {
@@ -3059,7 +3061,7 @@ CMD:togspec(playerid, params[])
 
 CMD:togtp(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] == 99999)
+	if(PlayerInfo[playerid][pAdmin] >= 1337)
 	{
 	    if(GetPVarType(playerid, "EATeleportable"))
 	    {
@@ -3116,7 +3118,7 @@ CMD:spec(playerid, params[])
 				case 3, 4: if(!(1 <= PlayerInfo[giveplayerid][pLevel] <= 10)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only use this on Levels 1 - 10 as a SPA/CPA!");
 			}
 		}
-		if(PlayerInfo[giveplayerid][pAdmin] == 99999 && !GetPVarType(giveplayerid, "EASpecable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot spectate this person.");
+		if(PlayerInfo[giveplayerid][pAdmin] >= 1337 && !GetPVarType(giveplayerid, "EASpecable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot spectate this person.");
 		if(PlayerInfo[playerid][pAdmin] >= 4 && Spectate[giveplayerid] != INVALID_PLAYER_ID && Spectating[giveplayerid] == 1)
 		{
 			new string[128];
@@ -4492,7 +4494,7 @@ CMD:gotoid(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD2, "You can not do this while spectating.");
 				return 1;
 			}
-			if(PlayerInfo[giveplayerid][pAdmin] == 99999 && !GetPVarType(giveplayerid, "EATeleportable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot teleport to them");
+			if(PlayerInfo[giveplayerid][pAdmin] >= 1337 && !GetPVarType(giveplayerid, "EATeleportable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot teleport to them");
 			GetPlayerPos(giveplayerid, plocx, plocy, plocz);
 			SetPlayerVirtualWorld(playerid, PlayerInfo[giveplayerid][pVW]);
 			Streamer_UpdateEx(playerid, plocx, plocy, plocz);

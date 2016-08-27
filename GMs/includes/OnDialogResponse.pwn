@@ -10389,25 +10389,26 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new createdcar;
 					if(IsPlayerInRangeOfPoint(playerid, 4, -2214.1636, 2422.4763, 2.4961))
 					{
-						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), -2218.4795, 2424.9880, -0.3707, 314.4837, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), -2218.4795, 2424.9880, -0.3707, 314.4837, 0, 0, 2000000, 0, 0);
 					}
 					else if(IsPlayerInRangeOfPoint(playerid, 4, -2975.8950, 505.1325, 2.4297))
 					{
-						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), -2975.4841, 509.6216, -0.4241, 89.7179, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), -2975.4841, 509.6216, -0.4241, 89.7179, 0, 0, 2000000, 0, 0);
 					}
 					else if(IsPlayerInRangeOfPoint(playerid, 4, 723.1553, -1494.4547, 1.9343))
 					{
-						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), 723.4292, -1505.4899, -0.4145, 180.4212, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), 723.4292, -1505.4899, -0.4145, 180.4212, 0, 0, 2000000, 0, 0);
 					}
 					else if(IsPlayerInRangeOfPoint(playerid, 4, 2974.7520, -1462.9265, 2.8184))
 					{
-						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), 2996.4255, -1467.3026, 2.8184, 0, 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+						createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), 2996.4255, -1467.3026, 2.8184, 0, 0, 0, 2000000, 0, 0);
 						DeletePVar(playerid, "ShopTP");
 					}
 
 					GivePlayerCredits(playerid, -ShopItems[5][sItemPrice], 1);
 					printf("Price5: %d", ShopItems[5][sItemPrice]);
 					IsPlayerEntering{playerid} = true;
+					SetPlayerVirtualWorld(playerid, 0);
 					PutPlayerInVehicle(playerid, createdcar, 0);
 					AmountSold[5]++;
 					AmountMade[5] += ShopItems[5][sItemPrice];
@@ -10455,17 +10456,18 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						arr_fPlayerPos[3] = 11.4626;
 						if(IsAPlane(GetPVarInt(playerid, "VehicleID"), 1))
 						{
-							arr_fPlayerPos[0] = 2947.2390;
-							arr_fPlayerPos[1] = -1224.1877;
-							arr_fPlayerPos[2] = 4.6875;
-							arr_fPlayerPos[3] = 0;
+							arr_fPlayerPos[0] = 1937.1254;
+							arr_fPlayerPos[1] = -2494.1057;
+							arr_fPlayerPos[2] = 14.4581;
+							arr_fPlayerPos[3] = 90.2559;
 						}
 						DeletePVar(playerid, "ShopTP");
 					}
-					createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+					createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, 0, 0);
 					format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 					Log("logs/credits.log", string), print(string);
 					IsPlayerEntering{playerid} = true;
+					SetPlayerVirtualWorld(playerid, 0);
 					PutPlayerInVehicle(playerid, createdcar, 0);
 					format(string, sizeof(string), "[Car Shop] You have purchased a %s for %s credits.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 					SendClientMessageEx(playerid, COLOR_CYAN, string);
@@ -10493,10 +10495,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				new Float: arr_fPlayerPos[4], createdcar;
 				GetPlayerPos(playerid, arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2]);
 				GetPlayerFacingAngle(playerid, arr_fPlayerPos[3]);
-				createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+				createdcar = CreatePlayerVehicle(playerid, GetPlayerFreeVehicleId(playerid), GetPVarInt(playerid, "VehicleID"), arr_fPlayerPos[0], arr_fPlayerPos[1], arr_fPlayerPos[2], arr_fPlayerPos[3], 0, 0, 2000000, 0, 0);
 				format(string, sizeof(string), "[CAR %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Vehicle: %s] [Price: %s]", AmountSold[5], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), VehicleName[GetPVarInt(playerid, "VehicleID") - 400], number_format(ShopItems[5][sItemPrice]));
 				Log("logs/carvoucher.log", string), print(string);
 				IsPlayerEntering{playerid} = true;
+				SetPlayerVirtualWorld(playerid, 0);
 				PutPlayerInVehicle(playerid, createdcar, 0);
 				format(string, sizeof(string), "[Car Shop] You have purchased a %s for 1 restricted car voucher.", VehicleName[GetPVarInt(playerid, "VehicleID") - 400]);
 				SendClientMessageEx(playerid, COLOR_CYAN, string);

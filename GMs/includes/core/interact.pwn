@@ -64,39 +64,36 @@ ShowInteractionMenu(playerid, menu)
 	{
 		case 0: // Main Menu
 		{
-			format(szMiscArray, sizeof(szMiscArray), "Pay\nGive Item\nSell Item\nFrisk\nShow License");
+			DeletePVar(playerid, "pGiving");
+			DeletePVar(playerid, "pSelling");
 
-			/*if(IsACop(playerid)) format(szMiscArray, sizeof(szMiscArray), "%s\n(Un)cuff\nJailcuff\nDrag\nDetain\nTicket\nConfiscate", szMiscArray);
-			if(IsAMedic(playerid)) format(szMiscArray, sizeof(szMiscArray), "%s\nLoad Patient\nTriage\nHeal\nMove Patient", szMiscArray);
-			if(IsAGuard(playerid)) format(szMiscArray, sizeof(szMiscArray), "%s\n(Un)cuff\nJailcuff\nDrag\nDetain\nConfiscate\nExtend Sentence\nReduce Sentence\nIsolation", szMiscArray);*/
+			format(szMiscArray, sizeof(szMiscArray), "Pay\nGive Item\nSell Item\nFrisk\nShow License");
 
 			if(IsACop(playerid)) format(szMiscArray, sizeof(szMiscArray), "%s\nCop", szMiscArray);
 			if(IsAMedic(playerid)) format(szMiscArray, sizeof(szMiscArray), "%s\nMedic", szMiscArray);
-			if(IsAGuard(playerid)) format(szMiscArray, sizeof(szMiscArray), "%s\nGuard", szMiscArray);
+			if(IsADocGuard(playerid)) format(szMiscArray, sizeof(szMiscArray), "%s\nGuard", szMiscArray);
 
 			ShowPlayerDialogEx(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu", szMiscArray, "Select", "Cancel");
 		}
 		case 1: // Give / Sell
 		{
 			format(szMiscArray, sizeof(szMiscArray), "Item\tCurrent Amount\n\
-				Ammo\n\
 				Drugs\n\
 				Weapons\n\
 				Materials\t%d\n\
 				Syringes\t%d\n\
 				Sprunk\t%d\n\
-				Fireworks\t%d\n\
-				PB Tokens\t%d",
+				Fireworks\t%d",
 				PlayerInfo[playerid][pMats],
 				PlayerInfo[playerid][pSyringes],
 				PlayerInfo[playerid][pSprunk],
-				PlayerInfo[playerid][pFirework]
-				PlayerInfo[playerid][pPaintTokens]);
+				PlayerInfo[playerid][pFirework]);
 
-			if(GetPVarInt(playerid, "pGiving")) ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GIVEITEM, DIALOG_STYLE_TABLIST_HEADERS, "Interaction Menu - Give", szMiscArray);
-			else if(GetPVarInt(playerid, "pSelling")) ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GIVEITEM, DIALOG_STYLE_TABLIST_HEADERS, "Interaction Menu - Sell", szMiscArray);
+			if(GetPVarInt(playerid, "pGiving")) ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GIVEITEM, DIALOG_STYLE_TABLIST_HEADERS, "Interaction Menu - Give", szMiscArray, "Select", "Cancel");
+			else if(GetPVarInt(playerid, "pSelling")) ShowPlayerDialogEx(playerid, DIALOG_INTERACT_SELLITEM, DIALOG_STYLE_TABLIST_HEADERS, "Interaction Menu - Sell", szMiscArray, "Select", "Cancel");
 		}
 	}
+	return 1;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
@@ -107,13 +104,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		case DIALOG_INTERACT:
 		{
 			if(!response) return 1;
-			if(!IsPlayerConnected) return SendClientMessage(playerid, COLOR_GRAD1, "The player you were interacting with has disconnected!");
+			if(!IsPlayerConnected(GetPVarInt(playerid, "pInteract"))) return SendClientMessage(playerid, COLOR_GRAD1, "The player you were interacting with has disconnected!");
 			if(!ProxDetectorS(8.0, playerid, GetPVarInt(playerid, "pInteract"))) return SendClientMessageEx(playerid, COLOR_GREY, "The player you have tried to interact with is not near you.");
 
 			szMiscArray[0] = 0;
 			switch(listitem)
 			{
-				case 0: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_PAY, DIALOG_STYLE_INPUT, "Interaction Menu - Pay", "How much would you like to transfer?"); // Pay
+				case 0: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_PAY, DIALOG_STYLE_INPUT, "Interaction Menu - Pay", "How much would you like to transfer?", "Select", "Cancel"); // Pay
 				case 1: // Give
 				{
 					SetPVarInt(playerid, "pGiving", 1);
@@ -126,173 +123,196 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				case 3: // Frisk
 				{
-					PlayerFriskPlayer(playerid, GetPVarInt(playerid, "pInteract"));
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
 
-					format(szMiscArray, sizeof(szMiscArray), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-					ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+					cmd_frisk(playerid, id);
 				}
 				case 4: // Show License
 				{
-					PlayerShowLicenses(playerid, GetPVarInt(playerid, "pInteract"));
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					cmd_showlicenses(playerid, id);
 				}
 			}
 
 			if(listitem == 5 && IsACop(playerid))
 			{
 				format(szMiscArray, sizeof(szMiscArray), "(Un)cuff\nJailcuff\nDrag\nDetain\nTicket\nConfiscate", szMiscArray);
-				ShowPlayerDialogEx(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_INTERACT_COP, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
 			}
 			if(listitem == 5 && IsAMedic(playerid))
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%s\nLoad Patient\nTriage\nHeal\nMove Patient", szMiscArray);
-				ShowPlayerDialogEx(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
+				format(szMiscArray, sizeof(szMiscArray), "Move Patient\nLoad Patient\nTriage\nHeal", szMiscArray);
+				ShowPlayerDialogEx(playerid, DIALOG_INTERACT_MEDIC, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
 			}
-			if(listitem == 5 && IsAGuard(playerid))
+			if(listitem == 5 && IsADocGuard(playerid))
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%s\n(Un)cuff\nJailcuff\nDrag\nDetain\nConfiscate\nExtend Sentence\nReduce Sentence\nIsolation", szMiscArray);
-				ShowPlayerDialogEx(playerid, DIALOG_INTERACT, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
+				format(szMiscArray, sizeof(szMiscArray), "(Un)cuff\nJailcuff\nDrag\nDetain\nConfiscate\nExtend Sentence\nReduce Sentence\nIsolate", szMiscArray);
+				ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GUARD, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
 			}
 		}
-		case DIALOG_INTERACT_COP
+		case DIALOG_INTERACT_PAY: 
 		{
+			if(!response) return 1;
+			if(!IsPlayerConnected(GetPVarInt(playerid, "pInteract"))) return SendClientMessage(playerid, COLOR_GRAD1, "The player you were interacting with has disconnected!");
+			if(!ProxDetectorS(8.0, playerid, GetPVarInt(playerid, "pInteract"))) return SendClientMessageEx(playerid, COLOR_GREY, "The player you have tried to interact with is not near you.");
+
+			new id[3], realstring[50];
+			valstr(id, GetPVarInt(playerid, "pInteract"));
+			format(realstring, 50, "%s %s", id, inputtext);
+
+			cmd_pay(playerid, realstring);
+		}
+		case DIALOG_INTERACT_GIVEITEM:
+		{
+			if(!response) return 1;
+			if(!IsPlayerConnected(GetPVarInt(playerid, "pInteract"))) return SendClientMessage(playerid, COLOR_GRAD1, "The player you were interacting with has disconnected!");
+			if(!ProxDetectorS(8.0, playerid, GetPVarInt(playerid, "pInteract"))) return SendClientMessageEx(playerid, COLOR_GREY, "The player you have tried to interact with is not near you.");
+
 			switch(listitem)
 			{
-				case 5: // (Un)cuff
+				case 0:
 				{
-					if(GetPVarInt(GetPVarInt(playerid, "pInteract"), "Injured") == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot cuff someone in a injured state.");
+					szMiscArray[0] = 0;
+					for(new i; i < sizeof(Drugs); i++) format(szMiscArray, sizeof(szMiscArray), "%s\n{A9C4E4}%s {FFFFFF}(%dg){A9C4E4}", szMiscArray, GetDrugName(i), PlayerInfo[playerid][pDrugs][i]);
 
-					if(PlayerCuffed[GetPVarInt(playerid, "pInteract")] > 1)
-					{
-						DeletePVar(GetPVarInt(playerid, "pInteract"), "IsFrozen");
-						format(szMiscArray, sizeof(szMiscArray), "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(GetPVarInt(playerid, "pInteract"), COLOR_LIGHTBLUE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* You uncuffed %s.", GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						GameTextForPlayer(GetPVarInt(playerid, "pInteract"), "~g~Uncuffed", 2500, 3);
-						TogglePlayerControllable(GetPVarInt(playerid, "pInteract"), 1);
-						ClearAnimations(GetPVarInt(playerid, "pInteract"));
-						SetPlayerSpecialAction(GetPVarInt(playerid, "pInteract"), SPECIAL_ACTION_NONE);
-						PlayerCuffed[GetPVarInt(playerid, "pInteract")] = 0;
-                  	    PlayerCuffedTime[GetPVarInt(playerid, "pInteract")] = 0;
-                   	    SetHealth(GetPVarInt(playerid, "pInteract"), GetPVarFloat(GetPVarInt(playerid, "pInteract"), "cuffhealth"));
-                    	SetArmour(GetPVarInt(playerid, "pInteract"), GetPVarFloat(GetPVarInt(playerid, "pInteract"), "cuffarmor"));
-                    	DeletePVar(GetPVarInt(playerid, "pInteract"), "cuffhealth");
-						DeletePVar(GetPVarInt(playerid, "pInteract"), "PlayerCuffed");
-						DeletePVar(GetPVarInt(playerid, "pInteract"), "jailcuffs");
-					}
-					else if(GetPVarInt(GetPVarInt(playerid, "pInteract"), "jailcuffs") == 1)
-					{
-						DeletePVar(GetPVarInt(playerid, "pInteract"), "IsFrozen");
-						format(szMiscArray, sizeof(szMiscArray), "* You have been uncuffed by %s.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(GetPVarInt(playerid, "pInteract"), COLOR_LIGHTBLUE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* You uncuffed %s.", GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						GameTextForPlayer(GetPVarInt(playerid, "pInteract"), "~g~Uncuffed", 2500, 3);
-						ClearAnimations(GetPVarInt(playerid, "pInteract"));
-						SetPlayerSpecialAction(GetPVarInt(playerid, "pInteract"), SPECIAL_ACTION_NONE);
-						DeletePVar(GetPVarInt(playerid, "pInteract"), "jailcuffs");
-					}
-					else
-					{
-						new Float:health, Float:armor;
-						if(PlayerCuffed[GetPVarInt(playerid, "pInteract")] == 1 || GetPlayerSpecialAction(GetPVarInt(playerid, "pInteract")) == SPECIAL_ACTION_HANDSUP || GetPVarInt(GetPVarInt(playerid, "pInteract"), "pBagged") >= 1)
-						{
-							if(PlayerInfo[GetPVarInt(playerid, "pInteract")][pConnectHours] < 32) SendClientMessageEx(GetPVarInt(playerid, "pInteract"), COLOR_WHITE, "If you logout now you will automatically be prisoned for 2+ hours!");
-							format(szMiscArray, sizeof(szMiscArray), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
-							SendClientMessageEx(GetPVarInt(playerid, "pInteract"), COLOR_LIGHTBLUE, szMiscArray);
-							format(szMiscArray, sizeof(szMiscArray), "* You handcuffed %s, till uncuff.", GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
-							format(szMiscArray, sizeof(szMiscArray), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-							ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-							GameTextForPlayer(GetPVarInt(playerid, "pInteract"), "~r~Cuffed", 2500, 3);
-							TogglePlayerControllable(GetPVarInt(playerid, "pInteract"), 0);
-							ClearAnimations(GetPVarInt(playerid, "pInteract"));
-							GetHealth(GetPVarInt(playerid, "pInteract"), health);
-							GetArmour(GetPVarInt(playerid, "pInteract"), armor);
-							SetPVarFloat(GetPVarInt(playerid, "pInteract"), "cuffhealth",health);
-							SetPVarFloat(GetPVarInt(playerid, "pInteract"), "cuffarmor",armor);
-							SetPlayerSpecialAction(GetPVarInt(playerid, "pInteract"), SPECIAL_ACTION_CUFFED);
-							ApplyAnimation(GetPVarInt(playerid, "pInteract"),"ped","cower",1,1,0,0,0,0,1);
-							PlayerCuffed[GetPVarInt(playerid, "pInteract")] = 2;
-							SetPVarInt(GetPVarInt(playerid, "pInteract"), "PlayerCuffed", 2);
-							SetPVarInt(GetPVarInt(playerid, "pInteract"), "IsFrozen", 1);
-							DeletePVar(GetPVarInt(playerid, "pInteract"), "pBagged");
-							//Frozen[GetPVarInt(playerid, "pInteract")] = 1;
-							PlayerCuffedTime[GetPVarInt(playerid, "pInteract")] = 300;
-						}
-						else if(GetPVarType(GetPVarInt(playerid, "pInteract"), "IsTackled"))
-						{
-				    		format(szMiscArray, sizeof(szMiscArray), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-							ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-							SetTimerEx("CuffTackled", 4000, 0, "ii", playerid, GetPVarInt(playerid, "pInteract"));
-						}
-						else
-						{
-							return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't restrained!");
-						}
-					}
+					ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GI_DRUGS, DIALOG_STYLE_LIST, "Interaction Menu - Give Item (Drugs)", szMiscArray, "Select", "Cancel");
 				}
-				case 6:
+				case 1:
 				{
-					if(GetPlayerSpecialAction(GetPVarInt(playerid, "pInteract")) == SPECIAL_ACTION_HANDSUP || PlayerCuffed[GetPVarInt(playerid, "pInteract")] == 1)
+					szMiscArray[0] = 0;
+					new weapon[16], weapons[13][2];
+					for (new i = 0; i <= 12; i++) 
 					{
-						format(szMiscArray, sizeof(szMiscArray), "* You have been handcuffed by %s.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(GetPVarInt(playerid, "pInteract"), COLOR_LIGHTBLUE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* You handcuffed %s, till uncuff.", GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						GameTextForPlayer(GetPVarInt(playerid, "pInteract"), "~r~Cuffed", 2500, 3);
-						ClearAnimations(GetPVarInt(playerid, "pInteract"));
-						TogglePlayerControllable(GetPVarInt(playerid, "pInteract"), 0);
-						SetPlayerSpecialAction(GetPVarInt(playerid, "pInteract"), SPECIAL_ACTION_CUFFED);
-						TogglePlayerControllable(GetPVarInt(playerid, "pInteract"), 1);
-						SetPVarInt(GetPVarInt(playerid, "pInteract"), "jailcuffs", 1);
+						GetPlayerWeaponData(playerid, i, weapons[i][0], weapons[i][1]);
+						GetWeaponName(weapons[i][0], weapon, sizeof(weapon));
+						if(PlayerInfo[playerid][pGuns][i] == weapons[i][0]) format(szMiscArray, sizeof(szMiscArray), "%s\n{A9C4E4}%s {FFFFFF}(%d){A9C4E4}", szMiscArray, weapon, weapons[i][0]);
 					}
-					else if(GetPVarType(GetPVarInt(playerid, "pInteract"), "IsTackled"))
-					{
-				    	format(szMiscArray, sizeof(szMiscArray), "* %s removes a set of cuffs from his belt and attempts to cuff %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						SetTimerEx("CuffTackled", 4000, 0, "ii", playerid, GetPVarInt(playerid, "pInteract"));
-					}
-					else
-					{
-						return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't restrained!");
-					}
-				}
-				case 7:
-				{
-					if(GetPVarInt(GetPVarInt(playerid, "pInteract"), "PlayerCuffed") == 2)
-					{
-						if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, " You must be out of the vehicle to use this command.");
-						if(GetPVarInt(GetPVarInt(playerid, "pInteract"), "BeingDragged") == 1)
-						{
-							SendClientMessageEx(playerid, COLOR_WHITE, " That person is already being dragged. ");
-							return 1;
-						}
-                		new Float:dX, Float:dY, Float:dZ;
-						GetPlayerPos(GetPVarInt(playerid, "pInteract"), dX, dY, dZ);
 
-						format(szMiscArray, sizeof(szMiscArray), "* %s is now dragging you.", GetPlayerNameEx(playerid));
-						SendClientMessageEx(GetPVarInt(playerid, "pInteract"), COLOR_WHITE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* You are now dragging %s, you may move them now.", GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-						SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
-						format(szMiscArray, sizeof(szMiscArray), "* %s grabs ahold of %s and begins to move them.", GetPlayerNameEx(playerid), GetPlayerNameEx(GetPVarInt(playerid, "pInteract")));
-						ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-						SendClientMessageEx(playerid, COLOR_WHITE, "You are now dragging the suspect, press the '{AA3333}FIRE{FFFFFF}' button to stop.");
-						SetPVarInt(GetPVarInt(playerid, "pInteract"), "BeingDragged", 1);
-						SetPVarInt(playerid, "DraggingPlayer", GetPVarInt(playerid, "pInteract"));
-						SetTimerEx("DragPlayer", 1000, 0, "ii", playerid, GetPVarInt(playerid, "pInteract"));
-					}
-					else
-					{
-						SendClientMessageEx(playerid, COLOR_WHITE, " The specified person is not cuffed !");
-					}
+					ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GI_WEAPON, DIALOG_STYLE_LIST, "Interaction Menu - Give Item (Weapons)", szMiscArray, "Select", "Cancel");
 				}
+			}
+		}
+		case DIALOG_INTERACT_COP:
+		{
+			if(!response) return 1;
+			if(!IsPlayerConnected(GetPVarInt(playerid, "pInteract"))) return SendClientMessage(playerid, COLOR_GRAD1, "The player you were interacting with has disconnected!");
+			if(!ProxDetectorS(8.0, playerid, GetPVarInt(playerid, "pInteract"))) return SendClientMessageEx(playerid, COLOR_GREY, "The player you have tried to interact with is not near you.");
+
+			switch(listitem)
+			{
+				case 0: // (Un)cuff
+				{
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					if(PlayerCuffed[GetPVarInt(playerid, "pInteract")] > 1) cmd_uncuff(playerid, id);
+					else cmd_cuff(playerid, id);
+				}
+				case 1: // Jailcuff
+				{
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					cmd_jailcuff(playerid, id);
+				}
+				case 2: // Drag
+				{
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					cmd_drag(playerid, id);
+				}
+				case 3: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_DETAIN, DIALOG_STYLE_INPUT, "Interaction Menu - Detain", "Please choose the number of seat you'd like to detain the suspect in. (1-3)", "Select", "Cancel");
+				case 4: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_TICKET, DIALOG_STYLE_INPUT, "Interaction Menu - Ticket", "Please choose how much you would like to ticket the suspect.", "Select", "Cancel");
+				case 5: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_CONFISCATE, DIALOG_STYLE_LIST, "Interaction Menu - Confiscate", "Weapons\nPot\nCrack\nMeth\nEcstasy\nMaterials\nRadio\nHeroin\nRawopium\nSyringes\nPotSeeds\nOpiumSeeds\nDrugCrates", "Select", "Cancel");
+			}
+		}
+		case DIALOG_INTERACT_MEDIC:
+		{
+			if(!response) return 1;
+			if(!IsPlayerConnected(GetPVarInt(playerid, "pInteract"))) return SendClientMessage(playerid, COLOR_GRAD1, "The player you were interacting with has disconnected!");
+			if(!ProxDetectorS(8.0, playerid, GetPVarInt(playerid, "pInteract"))) return SendClientMessageEx(playerid, COLOR_GREY, "The player you have tried to interact with is not near you.");
+
+			switch(listitem)
+			{
+				case 0: // Move Patient
+				{
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					cmd_movept(playerid, id);
+				}
+				case 1: // Load Patient
+				{
+					new id[3], seat = -1, realstring[50];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					new carid = gLastCar[playerid];
+                    if(IsAnAmbulance(carid))
+					{
+						for(new i = 2; i < 3; i++)
+                        if(!IsVehicleOccupied(carid, i)) { seat = i; break; } 
+					}
+					else return 1;
+					format(realstring, 50, "%s %d", id, seat);
+
+					if(seat != -1) cmd_loadpt(playerid, realstring);
+				}
+				case 2: // Jailcuff
+				{
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					cmd_jailcuff(playerid, id);
+				}
+				case 3: // Triage
+				{
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					cmd_triage(playerid, id);
+				}
+				case 4: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_HEAL, DIALOG_STYLE_INPUT, "Interaction Menu - Heal", "How much would you like to heal the patient for? ($200 - $1,000)", "Select", "Cancel");
+			}
+		}
+		case DIALOG_INTERACT_GUARD:
+		{
+			if(!response) return 1;
+			if(!IsPlayerConnected(GetPVarInt(playerid, "pInteract"))) return SendClientMessage(playerid, COLOR_GRAD1, "The player you were interacting with has disconnected!");
+			if(!ProxDetectorS(8.0, playerid, GetPVarInt(playerid, "pInteract"))) return SendClientMessageEx(playerid, COLOR_GREY, "The player you have tried to interact with is not near you.");
+
+			switch(listitem)
+			{
+				case 0: // (Un)cuff
+				{
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					if(PlayerCuffed[GetPVarInt(playerid, "pInteract")] > 1) cmd_uncuff(playerid, id);
+					else cmd_cuff(playerid, id);
+				}
+				case 1: // Jailcuff
+				{
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					cmd_jailcuff(playerid, id);
+				}
+				case 2: // Drag
+				{
+					new id[3];
+					valstr(id, GetPVarInt(playerid, "pInteract"));
+
+					cmd_drag(playerid, id);
+				}
+				case 3: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_DETAIN, DIALOG_STYLE_INPUT, "Interaction Menu - Detain", "Please choose the number of seat you'd like to detain the suspect in. (1-3)", "Select", "Cancel");
+				case 4: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_CONFISCATE, DIALOG_STYLE_LIST, "Interaction Menu - Confiscate", "Weapons\nPot\nCrack\nMeth\nEcstasy\nMaterials\nRadio\nHeroin\nRawopium\nSyringes\nPotSeeds\nOpiumSeeds\nDrugCrates", "Select", "Cancel");
+				case 5: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_EXTEND, DIALOG_STYLE_INPUT, "Interaction Menu - Extend Sentence", "How much would you like to extend the prisoners sentence? (1 - 30)", "Select", "Cancel");
+				case 6: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_REDUCE, DIALOG_STYLE_INPUT, "Interaction Menu - Reduce Sentence", "How much would you like to reduce the prisoners sentence? (1 - 30)", "Select", "Cancel");
+				case 7: ShowPlayerDialogEx(playerid, DIALOG_INTERACT_ISOLATION, DIALOG_STYLE_LIST, "Interaction Menu - Isolation", "IC Isolation\nOOC Isolation", "Select", "Cancel");
 			}
 		}
 	}

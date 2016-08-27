@@ -175,7 +175,7 @@ public TeleportToShop(playerid)
 	{
 		SetPlayerPos(playerid, 2957.9670, -1459.4045, 10.8092);
 		SetPlayerInterior(playerid, 0);
-		SetPlayerVirtualWorld(playerid, 0);
+		SetPlayerVirtualWorld(playerid, 1);
 		TogglePlayerControllable(playerid, 1);
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "If you wish to leave the shop, type /leaveshop to return to your previous location.");
 		SendClientMessageEx(playerid, COLOR_ORANGE, "Note{ffffff}: You will {ff0000}not{ffffff} be able to return to your previous location upon purchasing a vehicle.");
@@ -800,7 +800,7 @@ CMD:miscshop(playerid, params[])
     if(ShopClosed == 1)
 	    return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
 
-	if (IsAt247(playerid) || IsPlayerInRangeOfPoint(playerid, 4.0, 2939.8442, -1411.2906, 11.0000))
+	if (IsAt247(playerid) || IsPlayerInRangeOfPoint(playerid, 4.0, 2939.8442, -1411.2906, 11.0000) && GetPlayerVirtualWorld(playerid) == 1)
 	{
  		if(GetPVarInt(playerid, "PinConfirmed"))
    		{
@@ -1073,7 +1073,7 @@ CMD:changepin(playerid, params[])
 CMD:houseshop(playerid, params[])
 {
 	if(ShopClosed == 1) return SendClientMessageEx(playerid, COLOR_GREY, "The shop is currently closed.");
-	if(IsPlayerInRangeOfPoint(playerid, 4.0, 2938.2734, -1391.0596, 11.0000))
+	if(IsPlayerInRangeOfPoint(playerid, 4.0, 2938.2734, -1391.0596, 11.0000) && GetPlayerVirtualWorld(playerid) == 1)
 	{
 		if(GetPVarInt(playerid, "PinConfirmed"))
 		{

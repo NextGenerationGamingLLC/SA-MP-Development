@@ -552,7 +552,7 @@ CMD:deliverpt(playerid, params[])
                             SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD anymore because of the hospital's help!");
                         }
                         GivePlayerCash(giveplayerid, -1000);
-						GivePlayerCash(playerid, 10000);
+						GivePlayerCash(playerid, 20000);
 
 						//SendClientMessageEx(giveplayerid, TEAM_CYAN_COLOR, "Doc: Your medical bill comes in at $1000. Have a nice day!");
                         format(string,sizeof(string),"You received $10000 for successfully delivering the patient!");
@@ -566,15 +566,18 @@ CMD:deliverpt(playerid, params[])
 						
 						switch(ReturnDeliveryPointNation(iHospitalDeliver))
 						{
-							case 0: Tax -= 9000;
-							case 1: TRTax -= 9000;
+							case 0: Tax += 1000;
+							case 1: TRTax += 1000;
 						}
+
+						arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] -= 20000;
                         						
 						DeliverPlayerToHospital(giveplayerid, iHospital);
                         PlayerInfo[playerid][pPatientsDelivered]++;
                         
 						format(string, sizeof(string), "EMS Driver %s has successfully delivered Patient %s to the hospital.",GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, string);
+						GroupLog(PlayerInfo[playerid][pMember], string);
 						foreach(new i: Player)
 						{
 							if(IsFirstAid(i))

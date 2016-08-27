@@ -772,7 +772,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 				GivePlayerCash(killerid, takemoney);
 				GivePlayerCash(playerid, -takemoney);
 				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
-				SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, szMessage);
+				foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_HMARADIO, szMessage);
 				format(szMessage, sizeof(szMessage),"You have been critically injured by a hitman and lost $%d.",takemoney);
 				PlayerInfo[playerid][pContractDetail][0] = 0;
 				ResetPlayerWeaponsEx(playerid);
@@ -787,6 +787,11 @@ public OnPlayerDeath(playerid, killerid, reason)
 				GetWeaponName(reason, weaponname, sizeof(weaponname));
 				format(szMessage, sizeof szMessage, "[HMA] %s (%d) has succeeded in killing %s (%d) with a %s.", GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponname);
 				GroupLog(iGroupID, szMessage);
+
+				new iHitPercent = floatround(takemoney * 0.10);
+				iHMASafe_Val += iHitPercent;
+				format(szMiscArray, sizeof szMiscArray, "[HIT COMPLETE] $%s deposited from %s's hit.", number_format(iHitPercent), GetPlayerNameEx(playerid));
+				Log("logs/hitman.log", szMiscArray);
 			}
 		}
 		if(GoChase[playerid] == killerid)
@@ -795,7 +800,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			new takemoney = PlayerInfo[killerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
 			GivePlayerCash(killerid, takemoney);
 			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), number_format(takemoney));
-			SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, szMessage);
+			foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_HMARADIO, szMessage);
 			GivePlayerCash(playerid, -takemoney);
 			format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%s, removing the contract on your head.", number_format(takemoney));
 			PlayerInfo[killerid][pContractDetail][0] = 0;

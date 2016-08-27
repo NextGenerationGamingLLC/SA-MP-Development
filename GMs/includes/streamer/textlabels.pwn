@@ -68,16 +68,17 @@ hook OnGameModeInit() {
 	CreateDynamic3DTextLabel("Famed Locker \nType /famedlocker to access the locker", COLOR_YELLOW,901.4825,1429.7404,-82.3235+0.6,4.0); //Famed Locker
 	
 	//NGGShop
-	CreateDynamic3DTextLabel("Car Shop\n/carshop", COLOR_YELLOW, 2958.2200, -1339.2900, 5.2100+0.6, 10.0);
-	CreateDynamic3DTextLabel("Plane Shop\n/planeshop", COLOR_YELLOW, 2950.4014, -1283.0776, 4.6875+0.6, 10.0);
-	CreateDynamic3DTextLabel("Boat Shop\n/boatshop", COLOR_YELLOW, 2974.7520, -1462.9265, 2.8184+0.6, 10.0);
-	CreateDynamic3DTextLabel("VIP Shop\n/vipshop", COLOR_YELLOW, 2939.0134, -1401.2946, 11.0000+0.6, 10.0);
-	CreateDynamic3DTextLabel("Toy Shop\n/toyshop", COLOR_YELLOW, 2927.5244, -1549.1826, 11.0000+0.6, 10.0);
-	CreateDynamic3DTextLabel("Gift Reset\n/buygiftreset", COLOR_YELLOW, 2937.2878, -1357.2294, 11.0000+0.6, 10.0);
-	CreateDynamic3DTextLabel("House Shop\n/houseshop", COLOR_YELLOW, 2938.2734, -1391.0596, 11.0000+0.6, 10.0);
-	CreateDynamic3DTextLabel("Misc Shop\n/miscshop", COLOR_YELLOW, 2939.8442, -1411.2906, 11.0000+0.6, 10.0);
-	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 2958.0425, -1393.6724, 5.5500+0.6, 10.0);
-	CreateDynamic3DTextLabel("HealthCare Shop\n/buyhealthcare", COLOR_YELLOW, 2946.8672, -1484.9561, 11.0000+0.6, 10.0);
+	//CreateDynamic3DTextLabel(const text[], color, Float:x, Float:y, Float:z, Float:drawdistance, attachedplayer = INVALID_PLAYER_ID, attachedvehicle = INVALID_VEHICLE_ID, testlos = 0, worldid = -1, interiorid = -1, playerid = -1, Float:distance = 100.0); 
+	CreateDynamic3DTextLabel("Car Shop\n/carshop", COLOR_YELLOW, 2958.2200, -1339.2900, 5.2100+0.6, 10.0, .worldid = 1);
+	CreateDynamic3DTextLabel("Plane Shop\n/planeshop", COLOR_YELLOW, 2950.4014, -1283.0776, 4.6875+0.6, 10.0, .worldid = 1);
+	CreateDynamic3DTextLabel("Boat Shop\n/boatshop", COLOR_YELLOW, 2974.7520, -1462.9265, 2.8184+0.6, 10.0, .worldid = 1);
+	CreateDynamic3DTextLabel("VIP Shop\n/vipshop", COLOR_YELLOW, 2939.0134, -1401.2946, 11.0000+0.6, 10.0, .worldid = 1);
+	CreateDynamic3DTextLabel("Toy Shop\n/toyshop", COLOR_YELLOW, 2927.5244, -1549.1826, 11.0000+0.6, 10.0, .worldid = 1);
+	CreateDynamic3DTextLabel("Gift Reset\n/buygiftreset", COLOR_YELLOW, 2937.2878, -1357.2294, 11.0000+0.6, 10.0, .worldid = 1);
+	CreateDynamic3DTextLabel("House Shop\n/houseshop", COLOR_YELLOW, 2938.2734, -1391.0596, 11.0000+0.6, 10.0, .worldid = 1);
+	CreateDynamic3DTextLabel("Misc Shop\n/miscshop", COLOR_YELLOW, 2939.8442, -1411.2906, 11.0000+0.6, 10.0,.worldid = 1);
+	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 2958.0425, -1393.6724, 5.5500+0.6, 10.0, .worldid = 1);
+	CreateDynamic3DTextLabel("HealthCare Shop\n/buyhealthcare", COLOR_YELLOW, 2946.8672, -1484.9561, 11.0000+0.6, 10.0, .worldid = 1);
 	
 	CreateDynamic3DTextLabel("Hot Dogs\n/buyhotdog", COLOR_YELLOW, 1973.0710, -1298.6427, 25.0172+0.6, 10.0);//Glen Park
 	

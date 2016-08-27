@@ -517,7 +517,7 @@ public SetVehicleEngine(vehicleid, playerid)
 					GivePlayerCash(GetChased[playerid], takemoney);
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
-					SendGroupMessage(GROUP_TYPE_CONTRACT, COLOR_YELLOW, string);
+					foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, string);
 					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					// SpawnPlayer(playerid);
@@ -531,6 +531,11 @@ public SetVehicleEngine(vehicleid, playerid)
 					PlayerInfo[GetChased[playerid]][pC4] = 0;
 					GotHit[playerid] = 0;
 					GetChased[playerid] = INVALID_PLAYER_ID;
+
+					new iHitPercent = floatround(takemoney * 0.10);
+					iHMASafe_Val += iHitPercent;
+					format(szMiscArray, sizeof szMiscArray, "[HIT COMPLETE] $%s deposited from %s's hit.", number_format(iHitPercent), GetPlayerNameEx(playerid));
+					Log("logs/hitman.log", szMiscArray);
 					return 1;
 				}
 			}
@@ -1422,8 +1427,7 @@ stock SendBugMessage(playerid, member, string[])
 		iGroupID = PlayerInfo[i][pMember];
 		if(iGroupID == member && PlayerInfo[i][pRank] >= arrGroupData[iGroupID][g_iBugAccess] && gBug{i} == 1)	{
 
-			if(playerid != i) ChatTrafficProcess(i, COLOR_LIGHTGREEN, string, 13);
-				
+			if(playerid != i) ChatTrafficProcess(i, COLOR_LIGHTGREEN, string, 13);				
 		}
 	}	
 	return 1;

@@ -252,7 +252,7 @@ CaptureTurfWarsZone(iGroupID, zone)
 			SetPlayerToTeamColor(i);
 		}
 		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-		    if(iGroupID != INVALID_GROUP_ID) {
+		    if(iGroupID != -2) {
 				format(string,sizeof(string),"%s has successfully claimed this turf for their own!",arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessageEx(i,COLOR_RED,string);
 				//SendAudioToPlayer(i, 62, 100);
@@ -581,6 +581,9 @@ CMD:turfinfo(playerid, params[])
         if(TurfWars[tw][twOwnerId] != -1) {
             format(string,sizeof(string),"Owner: %s.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
         }
+        if(TurfWars[tw][twOwnerId] == -2) {
+            format(string,sizeof(string),"Owner: Law Enforcement.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
+        }
         else {
             format(string,sizeof(string),"Owner: Vacant.");
         }
@@ -738,8 +741,8 @@ CMD:shutdown(playerid, params[])
         new string[128];
         new tw = GetPlayerTurfWarsZone(playerid);
         new rank = PlayerInfo[playerid][pRank];
-        if(rank < 3) {
-            SendClientMessageEx(playerid, COLOR_GRAD2, "You have to be at least Rank 3 to shutdown turfs!");
+        if(rank < arrGroupData[PlayerInfo[playerid][pMember]][g_iTurfCapRank]) {
+            SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot shutdown turfs because of your rank!");
             return 1;
         }
         if(tw != -1) {
@@ -761,7 +764,7 @@ CMD:shutdown(playerid, params[])
                     foreach(new i: Player)
 					{
 						if(TurfWars[tw][twAttemptId] == PlayerInfo[i][pMember]) {
-							if(GetPlayerTurfWarsZone(i) == tw) {
+							if(GetPlayerTurfWarsZone(i) == tw && GetPVarInt(i, "Injured") != 1) {
 								count++;
 							}
 						}
@@ -789,7 +792,6 @@ CMD:shutdown(playerid, params[])
     }
 	return 1;
 }
-
 
 CMD:claim(playerid, params[])
 {
@@ -825,7 +827,7 @@ CMD:claim(playerid, params[])
                 foreach(new i: Player)
 				{
 					if(family == PlayerInfo[i][pMember] && PlayerInfo[i][pAccountRestricted] != 1) {
-						if(GetPlayerTurfWarsZone(i) == tw) {
+						if(GetPlayerTurfWarsZone(i) == tw && GetPVarInt(i, "Injured") != 1) {
 							count++;
 						}
 					}
@@ -849,13 +851,13 @@ CMD:claim(playerid, params[])
                 foreach(new i: Player)
 				{
 					if(TurfWars[tw][twAttemptId] == PlayerInfo[i][pMember]) {
-						if(GetPlayerTurfWarsZone(i) == tw) {
+						if(GetPlayerTurfWarsZone(i) == tw && GetPVarInt(i, "Injured") != 1) {
 							count++;
 						}
 					}
 					if(TurfWars[tw][twAttemptId] == -2) {
 						if(IsACop(i)) {
-							if(GetPlayerTurfWarsZone(i) == tw) {
+							if(GetPlayerTurfWarsZone(i) == tw && GetPVarInt(i, "Injured") != 1) {
 								leocount++;
 							}
 						}

@@ -43,16 +43,16 @@ hook OnGameModeInit() {
 	CreateDynamicPickup(371, 23, 1536.0, -1360.0, 1150.0); //LS towertop
 	CreateDynamicPickup(1242, 23, 1527.5,-12.1,1002.0); //binco armor
 	//CreateDynamicPickup(1240, 23, 279.3000,1853.5619,8.7649); //area51 health
-	CreateDynamicPickup(2485, 23, 2958.2200, -1339.2900, 5.2100);// NGGShop - Car Shop
-	CreateDynamicPickup(1239, 23, 2950.4014, -1283.0776, 4.6875);// NGGShop - Plane Shop
-	CreateDynamicPickup(1239, 23, 2974.7520, -1462.9265, 2.8184);// NGGShop - Boat Shop
-	CreateDynamicPickup(1314, 23, 2939.0134, -1401.2946, 11.0000);// NGGShop - VIP Shop
-	CreateDynamicPickup(1272, 23, 2938.2734, -1391.0596, 11.0000);// NGGShop - House Shop
-	CreateDynamicPickup(1239, 23, 2939.8442, -1411.2906, 11.0000);// NGGShop - Misc Shop
-	CreateDynamicPickup(1239, 23, 2927.5000, -1530.0601, 11.0000);// NGGShop - ATM
-	CreateDynamicPickup(1239, 23, 2958.0425, -1393.6724, 5.5500);// NGGShop - Hotdog Stand
-	CreateDynamicPickup(1241, 23, 2946.8672, -1484.9561, 11.0000);// NGGShop - Healthcare
-	CreateDynamicPickup(1239, 23, 2937.2878, -1357.2294, 11.0000);// NGGShop - Gift Reset
+	CreateDynamicPickup(2485, 23, 2958.2200, -1339.2900, 5.2100, 1);// NGGShop - Car Shop
+	CreateDynamicPickup(1239, 23, 2950.4014, -1283.0776, 4.6875, 1);// NGGShop - Plane Shop
+	CreateDynamicPickup(1239, 23, 2974.7520, -1462.9265, 2.8184, 1);// NGGShop - Boat Shop
+	CreateDynamicPickup(1314, 23, 2939.0134, -1401.2946, 11.0000, 1);// NGGShop - VIP Shop
+	CreateDynamicPickup(1272, 23, 2938.2734, -1391.0596, 11.0000, 1);// NGGShop - House Shop
+	CreateDynamicPickup(1239, 23, 2939.8442, -1411.2906, 11.0000, 1);// NGGShop - Misc Shop
+	CreateDynamicPickup(1239, 23, 2927.5000, -1530.0601, 11.0000, 1);// NGGShop - ATM
+	CreateDynamicPickup(1239, 23, 2958.0425, -1393.6724, 5.5500, 1);// NGGShop - Hotdog Stand
+	CreateDynamicPickup(1241, 23, 2946.8672, -1484.9561, 11.0000, 1);// NGGShop - Healthcare
+	CreateDynamicPickup(1239, 23, 2937.2878, -1357.2294, 11.0000, 1);// NGGShop - Gift Reset
 
 	CreateDynamicPickup(1239, 23, 1973.0710, -1298.6427, 25.0172);// Glen Park - Hotdog Stand
 	print("[Streamer] Dynamic Pickups have been loaded.");	

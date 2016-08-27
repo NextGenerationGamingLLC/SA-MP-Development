@@ -390,8 +390,8 @@ ShowTutorialDialog(playerid, stage)
 				\t\t\tBehemoth\n\
 				\t\t\tWesten\n\
 				\t\t\tFarva\n\
-				\t\t\t{F69500}Past Developers{FFFFFF}:\n\
-				\t\t\tAkatony\tJohn\t\tBrendan\n\
+				\t\t{F69500}Past Developers{FFFFFF}:\n\
+				\t\t\tAkatony\t\tJohn\t\tBrendan\n\
 				\t\t\tBrian\t\tScott\t\tGhoulSlayer\n\
 				\t\t\tZhao\t\tDonuts\t\tMo Cena\n\
 				\t\t\tCalgon\t\tNeo\t\tThomasJ\n\
