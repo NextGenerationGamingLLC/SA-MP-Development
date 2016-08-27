@@ -1235,6 +1235,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pOpiumSeeds] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any opium seeds.");
+
 					format(string, sizeof(string), "* You have taken away %s's opiumseeds.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your opiumseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1262,6 +1264,7 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pWSeeds] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any pot seeds.");
 					format(string, sizeof(string), "* You have taken away %s's Cannabisseeds.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your Cannabisseeds.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1289,6 +1292,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pCrates] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any drug crates.");
+
 					format(string, sizeof(string), "* You have taken away %s's Drug Crates.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your Drug Crates.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1316,6 +1321,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pSyringes] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any syringes.");
+
 					format(string, sizeof(string), "* You have taken away %s's syringes.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your syringes.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1343,6 +1350,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pRawOpium] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any raw opium.");
+
 					format(string, sizeof(string), "* You have taken away %s's raw opium.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your raw opium.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1370,6 +1379,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pDrugs][2] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any meth.");
+
 					format(string, sizeof(string), "* You have taken away %s's Meth.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your Meth.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1397,6 +1408,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pDrugs][3] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any ecstasy.");
+
 					format(string, sizeof(string), "* You have taken away %s's Ecstasy.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your Ecstasy.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1424,6 +1437,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pDrugs][4] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any heroin.");
+
 					format(string, sizeof(string), "* You have taken away %s's Heroin.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your Heroin.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1451,6 +1466,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pRadio] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have a radio.");
+
 					format(string, sizeof(string), "* You have taken away %s's radio.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your radio.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1506,13 +1523,15 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pDrugs][0] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any pot.");
+
 					format(string, sizeof(string), "* You have taken away %s's Cannabis.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your Cannabis.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away %s's Cannabis.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-					PlayerInfo[giveplayerid][pDrugs][1] = 0;
+					PlayerInfo[giveplayerid][pDrugs][0] = 0;
 				}
 				else
 				{
@@ -1532,6 +1551,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pDrugs][1] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any crack.");
+
 					format(string, sizeof(string), "* You have taken away %s's crack.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s has taken away your crack.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
@@ -1559,6 +1580,8 @@ CMD:take(playerid, params[])
 			{
 				if (ProxDetectorS(8.0, playerid, giveplayerid))
 				{
+					if(PlayerInfo[giveplayerid][pMats] == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player does not have any materials.");
+
 					format(string, sizeof(string), "* You have taken away %s's materials.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 					format(string, sizeof(string), "* Officer %s as taken away your materials.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));

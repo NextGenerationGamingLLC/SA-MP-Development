@@ -1582,7 +1582,7 @@ stock ShowInventory(playerid,targetid)
 		Rope: %s\n\
 		Rags: %s\n\
 		Screwdrivers: %s\n\
-		Tires: %d\n\
+		Tires: %s\n\
 		Paper: %s\n\
 		Cigars: %s\n\
 		Sprunk Cans: %s\n\
@@ -1857,6 +1857,18 @@ CMD:trunkput(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited an MP5 in your car gun locker.");
 			weapon = PlayerInfo[playerid][pGuns][4];
 			format(string,sizeof(string), "* %s deposited their MP5 in their car safe.", GetPlayerNameEx(playerid));
+			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
+		}
+	}
+
+	else if(strcmp(weaponchoice, "tec9", true, strlen(weaponchoice)) == 0)
+	{
+		if( PlayerInfo[playerid][pGuns][4] == 32 && PlayerInfo[playerid][pAGuns][4] == 0 )
+		{
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have deposited a TEC9 in your car gun locker.");
+			weapon = PlayerInfo[playerid][pGuns][4];
+			format(string,sizeof(string), "* %s deposited their TEC9 in their car safe.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "GiveWeaponTimer", 10); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_GIVEWEAPONTIMER);
 		}

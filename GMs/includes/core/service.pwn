@@ -73,9 +73,11 @@ CMD:service(playerid, params[])
 		if(TaxiDrivers < 1) return SendClientMessageEx(playerid, COLOR_GREY, "   There are no taxi drivers on duty at the moment, try again later!");
 		if(TransportDuty[playerid] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You can't call for a taxi now!");
 
+		if(GetPVarInt(playerid, "TaxiCall")) return SendClientMessage(playerid, COLOR_GREY, "	You already have a pending taxi request (/cancel taxi).");
+
 		new szZoneName[MAX_ZONE_NAME];
 		GetPlayer2DZone(playerid, szZoneName, MAX_ZONE_NAME);
-		format(string, sizeof(string), "** %s(%d) is in need of a taxi driver at %s - use /ataxi to accept the call.", GetPlayerNameEx(playerid), playerid, szZoneName );
+		format(string, sizeof(string), "** %s (%d) is in need of a taxi driver at %s - use /ataxi to accept the call.", GetPlayerNameEx(playerid), playerid, szZoneName );
 		SendTaxiMessage(TEAM_AZTECAS_COLOR, string);
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have called for a taxi driver, wait for a reply.");
 		SetPVarInt(playerid, "TaxiCall", 1);
