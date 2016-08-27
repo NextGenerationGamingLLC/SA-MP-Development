@@ -772,7 +772,9 @@ public OnPlayerDeath(playerid, killerid, reason)
 				GivePlayerCash(killerid, takemoney);
 				GivePlayerCash(playerid, -takemoney);
 				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
-				foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_HMARADIO, szMessage);
+				foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, szMessage);
+				format(szMessage, sizeof szMessage, "You have completed the hit on %s and collected $%s", GetPlayerNameEx(killerid), number_format(takemoney));
+				SendClientMessage(playerid, COLOR_YELLOW, szMessage);
 				format(szMessage, sizeof(szMessage),"You have been critically injured by a hitman and lost $%d.",takemoney);
 				PlayerInfo[playerid][pContractDetail][0] = 0;
 				ResetPlayerWeaponsEx(playerid);
@@ -800,7 +802,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			new takemoney = PlayerInfo[killerid][pHeadValue]; //floatround((PlayerInfo[killerid][pHeadValue] / 4) * 2);
 			GivePlayerCash(killerid, takemoney);
 			format(szMessage, sizeof(szMessage),"Hitman %s has failed the contract on %s and lost $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(killerid), number_format(takemoney));
-			foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_HMARADIO, szMessage);
+			foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_HMARADIO, szMessage);
 			GivePlayerCash(playerid, -takemoney);
 			format(szMessage, sizeof(szMessage),"You have just killed a hitman and gained $%s, removing the contract on your head.", number_format(takemoney));
 			PlayerInfo[killerid][pContractDetail][0] = 0;

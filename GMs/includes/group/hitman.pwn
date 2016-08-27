@@ -221,7 +221,7 @@ CMD:pcb(playerid, params[])
 
 CMD:gotohmasafe(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1337)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4)
 	{
 		if(!iFileLoaded) return SendClientMessage(playerid, COLOR_GREY, "There was an error loading the Hitman Agency safe. A server restart is needed.");
 
@@ -412,44 +412,6 @@ CMD:ranks(playerid, params[])
 	return 1;
 }
 
-/*
-CMD:hmaradio(playerid, params[])
-{
-	if(IsAHitman(playerid))
-	{
-		new szText[256];
-		if(sscanf(params, "s[256]", szText)) return SendClientMessage(playerid, COLOR_GREY, "USAGE /hmaradio [text]");
-
-		format(szMiscArray, sizeof szMiscArray, "* (hitman radio) %s %s: %s *", GetHitmanRank(playerid), GetPlayerNameEx(playerid), szText);
-
-		foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_HMARADIO, szMiscArray);
-	}
-	else return 0;
-	return 1;
-}
-
-CMD:hmaooc(playerid, params[])
-{
-	if(IsAHitman(playerid))
-	{
-		new szText[256];
-		if(sscanf(params, "s[256]", szText)) return SendClientMessage(playerid, COLOR_GREY, "USAGE /hmaooc [text]");
-
-		format(szMiscArray, sizeof szMiscArray, "* (hitman ooc) %s %s: %s *", GetHitmanRank(playerid), GetPlayerNameEx(playerid), szText);
-
-		foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_HMAOOC, szMiscArray);
-	}
-	else return 0;
-	return 1;
-}
-
-CMD:hmar(playerid, params[]) return cmd_hmaradio(playerid, params);
-
-CMD:hmao(playerid, params[]) return cmd_hmaooc(playerid, params);
-
-- removed per Devin.
-*/ 
-
 CMD:profile(playerid, params[])
 {
     if(IsAHitman(playerid))
@@ -463,7 +425,7 @@ CMD:profile(playerid, params[])
             if(0 <= PlayerInfo[giveplayerid][pMember] < MAX_GROUPS)
             {
                 format(str2, sizeof(str2), "%s{FF6347} | Division: {BFC0C2}%s\n{FF6347}Rank: {BFC0C2}%s (%d)\n", arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName],
-                	arrGroupDivisions[PlayerInfo[giveplayerid][pMember]][PlayerInfo[giveplayerid][pDivision]], arrGroupRanks[PlayerInfo[giveplayerid][pMember]][PlayerInfo[playerid][pRank]], PlayerInfo[giveplayerid][pRank]);
+                	arrGroupDivisions[PlayerInfo[giveplayerid][pMember]][PlayerInfo[giveplayerid][pDivision]], arrGroupRanks[PlayerInfo[giveplayerid][pMember]][PlayerInfo[giveplayerid][pRank]], PlayerInfo[giveplayerid][pRank]);
             }
             else str2 = "None";
  
@@ -760,13 +722,12 @@ CMD:hmahelp(playerid, params[])
 	if(IsAHitman(playerid))
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /hmao(oc) /hmar(adio) /contracts /givemehit /order /ranks /profile /hfind");
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /plantbomb /plantcarbomb /pickupbomb /myc4, /quithma");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /contracts /givemehit /order /profile /hfind /plantbomb /plantcarbomb /pickupbomb /myc4 /quithma");
 
 		if(IsAHitmanLeader(playerid))
 		{
 			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Leadership Commands *** /makehitman /removehitman /blacklist /unblacklist /viewblacklist /givehitmanrank");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Leadership C ommands *** /oremovehitman /oremovehitmanleader /oblacklist /ounblacklist");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Leadership Commands *** /oremovehitman /oremovehitmanleader /oblacklist /ounblacklist");
 		}
 
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
