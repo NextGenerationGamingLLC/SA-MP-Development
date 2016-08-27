@@ -97,8 +97,6 @@ stock CalculatePlayerPollKeys(playerid)
 	if(iFound[0] == 0) format(PlayerInfo[playerid][pPollKey1], 128, "Invalid Key");
 	if(iFound[1] == 0) format(PlayerInfo[playerid][pPollKey2], 128, "Invalid Key");
 	if(iFound[2] == 0) format(PlayerInfo[playerid][pPollKey3], 128, "Invalid Key");
-
-	printf("%s's poll keys have been recalculated.", GetPlayerNameEx(playerid));
 }
 
 stock GenerateRandomCharacter() return (random(1000) % 2 == 0) ? (65 + random(26)) : (97 + random(26)); // Decides whether it's upper / lower case, then generates a random ascii character based on that.

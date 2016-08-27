@@ -399,58 +399,53 @@ CMD:triage(playerid, params[])
 
 CMD:heal(playerid, params[])
 {
-	new giveplayerid, price;
-	if(sscanf(params, "ud", giveplayerid, price)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /heal [player] [price]");
+	new giveplayerid, price = 1000;
+	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /heal [player]");
 
-	if(!(200 <= price <= 1000))
-	{
-		SendClientMessageEx(playerid, COLOR_GREY, "Healing price can't below $200 or above $1,000.");
-		return 1;
-	}
 	if (giveplayerid == playerid)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You can't heal yourself.");
 		return 1;
 	}
+
+	if(gettime() < GetPVarInt(playerid, "pHealTimer")) return SendClientMessage(playerid, COLOR_GRAD1, "You must wait 1 minute before you can heal again.");
+
 	if (IsPlayerConnected(giveplayerid))
 	{
-		new iVehicle = GetPlayerVehicleID(playerid);
 		if(IsAMedic(playerid) || IsFirstAid(playerid))
 		{
-			if(GetPlayerVehicleID(giveplayerid) == iVehicle && (IsAnAmbulance(iVehicle)))
-			{
-			    new Float:X, Float:Y, Float:Z;
-	   			GetPlayerPos(giveplayerid, X, Y, Z);
+			new Float:X, Float:Y, Float:Z;
+	   		GetPlayerPos(giveplayerid, X, Y, Z);
 
-				if(!IsPlayerInRangeOfPoint(playerid, 10, X, Y, Z)) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"You are not near them!");
-				new Float:tempheal;
-				GetHealth(giveplayerid,tempheal);
-				if(tempheal >= 100.0)
-				{
-					SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"That person is fully healed.");
-					return 1;
-				}
-				new string[64];
-				format(string, sizeof(string), "You healed %s for $%d.", GetPlayerNameEx(giveplayerid),price);
-				SendClientMessageEx(playerid, COLOR_PINK, string);
-				GivePlayerCash(playerid, price / 2);
-				Tax += price / 2;
-				GivePlayerCash(giveplayerid, -price);
-				SetHealth(giveplayerid, 100);
-				PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
-				PlayerPlaySound(giveplayerid, 1150, 0.0, 0.0, 0.0);
-				format(string, sizeof(string), "You have been healed to 100 health for $%d by %s.",price, GetPlayerNameEx(playerid));
-				SendClientMessageEx(giveplayerid, TEAM_GREEN_COLOR,string);
-				if(GetPVarType(giveplayerid, "STD"))
-				{
-					DeletePVar(giveplayerid, "STD");
-					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD because of the medic's help.");
-				}
-			}
-			else
+			if(!IsPlayerInRangeOfPoint(playerid, 10, X, Y, Z)) return SendClientMessageEx(playerid, TEAM_GREEN_COLOR," You are not near them!");
+
+			if(GetPlayerCash(giveplayerid) < 1000) return SendClientMessage(playerid, COLOR_GRAD1, "That player cannot afford this treatment.");
+
+			new Float:tempheal;
+			GetHealth(giveplayerid,tempheal);
+			if(tempheal >= 100.0)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "Both you and the patient must be in an ambulance.");
+				SendClientMessageEx(playerid, TEAM_GREEN_COLOR,"That person is fully healed.");
 				return 1;
+			}
+			new string[64];
+			format(string, sizeof(string), "You healed %s for $%d.", GetPlayerNameEx(giveplayerid), price);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			GivePlayerCash(playerid, price / 2);
+			Tax += price / 2;
+			GivePlayerCash(giveplayerid, -price);
+			SetHealth(giveplayerid, 100);
+			PlayerPlaySound(playerid, 1150, 0.0, 0.0, 0.0);
+			PlayerPlaySound(giveplayerid, 1150, 0.0, 0.0, 0.0);
+			format(string, sizeof(string), "You have been healed to 100 health for $%d by %s.",price, GetPlayerNameEx(playerid));
+			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
+
+			SetPVarInt(playerid, "pHealTimer", gettime() + 60); // Adding a minute check.
+
+			if(GetPVarType(giveplayerid, "STD"))
+			{
+				DeletePVar(giveplayerid, "STD");
+				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, "* You are no longer infected with a STD because of the medic's help.");
 			}
 		}
 		else

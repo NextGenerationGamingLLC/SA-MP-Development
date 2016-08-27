@@ -815,7 +815,7 @@ CMD:loadforklift(playerid, params[]) {
 		              	{
 		              		if(IsACop(i)) 
 		              		{
-		              			SendClientMessage(i, COLOR_LIGHTRED, szMiscArray);
+		              			SendClientMessage(i, COLOR_LIGHTRED, "A crate has been manufactured at the facility.");
 		              		}
 		              	}
 		              	LoadForkliftStatus = 1;
