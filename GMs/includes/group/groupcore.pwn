@@ -4904,12 +4904,13 @@ CMD:bug(playerid, params[])
         if(sscanf(params, "u", iTargetID)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bug [player]");
 		}
-        else if(PlayerInfo[iTargetID][pAdmin] >= 2 && PlayerInfo[iTargetID][pTogReports] == 0) {
-			SendClientMessageEx(playerid, COLOR_GREY, "You cannot place bugs on admins.");
+        else if(PlayerInfo[iTargetID][pAdmin] >= 2) {
+			SendClientMessageEx(playerid, COLOR_GREY, "You cannot place a bug on this person.");
 		}
 		else if(GetPVarInt(iTargetID, "AdvisorDuty") == 1 && (GetPVarType(iTargetID, "HelpingSomeone") || GetPVarType(iTargetID, "pGodMode"))) {
     		SendClientMessageEx(playerid, COLOR_GREY, "You cannot place bugs on advisors while they are on duty.");
 		}
+
   		else if(PlayerInfo[iTargetID][pBugged] != INVALID_GROUP_ID) {
 
 			new

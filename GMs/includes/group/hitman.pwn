@@ -47,6 +47,8 @@
 //new iHMASafe_Val = 0; 
 //new File:HMAFile, iFileLoaded = 0;
 
+
+
 /****** Stocks & Functions ******/
 hook OnGameModeInit()
 {
@@ -56,7 +58,8 @@ hook OnGameModeInit()
 		fwrite(NewFile, "1415.727905\r\n");
 		fwrite(NewFile, "-1299.371093\r\n");
 		fwrite(NewFile, "15.054657\r\n");
-		fwrite(NewFile, "0");
+		fwrite(NewFile, "0\r\n");
+		fwrite(NewFile, "New Agency!\r");
 		fclose(NewFile);
 	}
 	HMAFile = fopen("hma.cfg", io_readwrite);
@@ -72,6 +75,9 @@ hook OnGameModeInit()
 	// Load safe value.
 	fread(HMAFile, szTemp, sizeof szTemp);
 	iHMASafe_Val = strval(szTemp);
+	
+	// Load MOTD
+	fread(HMAFile, HMAMOTD, sizeof HMAMOTD);
 	iFileLoaded = 1;
 }
 
@@ -152,7 +158,7 @@ stock SaveHitmanSafe()
 		fremove("hma.cfg");
 
 		HMAFile = fopen("hma.cfg", io_readwrite);
-		format(szMiscArray, sizeof szMiscArray, "%f\r\n%f\r\n%f\r\n%d", fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2], iHMASafe_Val);
+		format(szMiscArray, sizeof szMiscArray, "%f\r\n%f\r\n%f\r\n%d\r\n%s", fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2], iHMASafe_Val, HMAMOTD);
 		fwrite(HMAFile, szMiscArray);
 	}
 	else
@@ -333,6 +339,21 @@ CMD:hmasafe(playerid, params[])
 	return 1;
 }
 
+CMD:sethmamotd(playerid, params[])
+{
+	if(!IsAHitmanLeader(playerid)) return 0;
+
+	if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /sethmamotd [motd]");
+
+	format(HMAMOTD, sizeof HMAMOTD, params);
+
+	format(szMiscArray, sizeof szMiscArray, "Agency MOTD changed! The new MOTD is: {FFFFFF}%s", HMAMOTD);
+	foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+
+	SaveHitmanSafe();
+	return 1;
+}
+
 CMD:givehit(playerid, params[])
 {
 	if(IsAHitmanLeader(playerid))
@@ -451,26 +472,7 @@ CMD:viewblacklist(playerid, params[])
 		SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
 		SendClientMessage(playerid, COLOR_GRAD1, "Hitman Agency Blacklist:");
 
-		mysql_query(MainPipeline, "SELECT `Username`, `BlacklistReason` FROM `accounts` WHERE `HitmanBlacklisted`=1", true);
-
-		new rows, fields;
-		cache_get_data(rows, fields);
-
-		if(rows > 0)
-		{
-			new szName[MAX_PLAYER_NAME], szBlacklistReason[64];
-			for(new row = 0; row < rows; row++)
-			{
-				cache_get_field_content(row, "Username", szName, MainPipeline); for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szName[i] == '_') szName[i] = ' ';
-				cache_get_field_content(row, "BlacklistReason", szBlacklistReason, MainPipeline);
-
-				format(szMiscArray, sizeof szMiscArray, "{A9C4E4}Name: {FFFFFF}%s {A9C4E4}| Reason: {FFFFFF}%s", szName, szBlacklistReason);
-				SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
-			}
-		}
-		else SendClientMessage(playerid, COLOR_GRAD3, "The blacklist is empty. To add a player, use /blacklist or /oblacklist.");
-
-		SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
+		mysql_function_query(MainPipeline, "SELECT `Username`, `BlacklistReason` FROM `accounts` WHERE `HitmanBlacklisted`=1", true, "ShowBlacklistedPlayers", "d", playerid);
 	}
 	else return 0;
 	return 1;
@@ -881,6 +883,29 @@ CMD:oremovehitmanleader(playerid, params[])
 
 
 /****** Query Related Functions ******/
+forward ShowBlacklistedPlayers(playerid);
+public ShowBlacklistedPlayers(playerid)
+{
+	new rows, fields;
+	cache_get_data(rows, fields);
+
+	if(rows > 0)
+	{
+		new szName[MAX_PLAYER_NAME], szBlacklistReason[64];
+		for(new row = 0; row < rows; row++)
+		{
+			cache_get_field_content(row, "Username", szName, MainPipeline); for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szName[i] == '_') szName[i] = ' ';
+			cache_get_field_content(row, "BlacklistReason", szBlacklistReason, MainPipeline);
+
+			format(szMiscArray, sizeof szMiscArray, "{A9C4E4}Name: {FFFFFF}%s {A9C4E4}| Reason: {FFFFFF}%s", szName, szBlacklistReason);
+			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
+		}
+	}
+	else SendClientMessage(playerid, COLOR_GRAD3, "The blacklist is empty. To add a player, use /blacklist or /oblacklist.");
+
+	SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
+	return 1;
+}
 forward OfflineBlacklistAccountFetch(playerid, reason[], account[]);
 public OfflineBlacklistAccountFetch(playerid, reason[], account[])
 {

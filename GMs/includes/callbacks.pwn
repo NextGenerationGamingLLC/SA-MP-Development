@@ -4585,8 +4585,15 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			newcar = GetPlayerVehicleID(playerid),
 			engine, lights, alarm, doors, bonnet, boot, objective, v;
 
-		gLastCar[playerid] = newcar;
-		format(CrateVehicleLoad[newcar][vLastDriver], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
+		if(PlayerInfo[playerid][pMember] == DynVehicleInfo[DynVeh[newcar]][gv_igID] || PlayerInfo[playerid][pLeader] == DynVehicleInfo[DynVeh[newcar]][gv_igID])
+		{
+			if(PlayerInfo[playerid][pDivision] == DynVehicleInfo[DynVeh[newcar]][gv_igDivID] || DynVehicleInfo[DynVeh[newcar]][gv_igDivID] == -1)
+			{
+				gLastCar[playerid] = newcar;
+				format(CrateVehicleLoad[newcar][vLastDriver], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
+			}
+		}
+		
 		
 		if(GetPVarInt(playerid, "EventToken") == 1) {
 			if(EventKernel[EventFootRace] == 1) {

@@ -55,6 +55,8 @@ IncreaseFishingLevel(playerid) {
     if(PlayerInfo[playerid][pDoubleEXP] > 0)
     {
         PlayerInfo[playerid][pFishingSkill] += 2;
+        format(szMiscArray, sizeof(szMiscArray), "You have gained 2 fishing skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[playerid][pDoubleEXP]);
+        SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
         // PlayerInfo[playerid][pXP] += PlayerInfo[playerid][pLevel] * XP_RATE * 2;
     }
     else

@@ -1263,7 +1263,7 @@ CMD:interact(playerid, params[]) {
 
 	new giveplayerid = strval(params);
 	if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot interact with yourself.");
-	if(IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "This player isn't online.");
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "This player isn't online.");
 	if(GetPVarInt(playerid, "Injured") == 1) return 1;
 	if(!ProxDetectorS(8.0, playerid, giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");
 	if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not near you.");

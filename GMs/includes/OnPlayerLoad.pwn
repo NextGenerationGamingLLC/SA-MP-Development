@@ -827,6 +827,12 @@ public OnPlayerLoad(playerid)
 			SendClientMessageEx(playerid, arrGroupData[PlayerInfo[playerid][pMember]][g_hDutyColour] * 256 + 255, string);
 		}
 	}
+
+	if(IsAHitman(playerid))
+	{
+		format(szMiscArray, sizeof szMiscArray, "Agency MOTD: %s", HMAMOTD);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
+	}
 	CountFlags(playerid);
 	if(PlayerInfo[playerid][pFlagged] > 5)
 	{

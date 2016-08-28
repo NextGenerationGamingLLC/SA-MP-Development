@@ -3301,11 +3301,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if (PlayerInfo[playerid][pBusiness] != InBusiness(playerid)) Businesses[iBusiness][bLevelProgress]++;
 					SaveBusiness(iBusiness);
 					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-					if (PlayerInfo[playerid][pDonateRank] >= 1)
+					/*if (PlayerInfo[playerid][pDonateRank] >= 1)
 					{
 						format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
 						SendClientMessageEx(playerid, COLOR_YELLOW, string);
-					}
+					}*/
 					format(string,sizeof(string),"%s(%d) (IP: %s) has bought a Standard Car Alarm in %s (%d) for $%s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
 					Log("logs/business.log", string);
 					format(string,sizeof(string),"* You have purchased a Standard Car Alarm from %s for $%s.", Businesses[iBusiness][bName], number_format(cost));
@@ -3398,11 +3398,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if (PlayerInfo[playerid][pBusiness] != InBusiness(playerid)) Businesses[iBusiness][bLevelProgress]++;
 					SaveBusiness(iBusiness);
 					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-					if (PlayerInfo[playerid][pDonateRank] >= 1)
+					/*if (PlayerInfo[playerid][pDonateRank] >= 1)
 					{
 						format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
 						SendClientMessageEx(playerid, COLOR_YELLOW, string);
-					}
+					}*/
 					format(string,sizeof(string),"%s(%d) (IP: %s) has bought a Electronic Lock in %s (%d) for $%s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
 					Log("logs/business.log", string);
 					format(string,sizeof(string),"* You have purchased a Electronic Lock from %s for $%s.", Businesses[iBusiness][bName], number_format(cost));
@@ -3455,11 +3455,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if (PlayerInfo[playerid][pBusiness] != InBusiness(playerid)) Businesses[iBusiness][bLevelProgress]++;
 					SaveBusiness(iBusiness);
 					PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-					if (PlayerInfo[playerid][pDonateRank] >= 1)
+					/*if (PlayerInfo[playerid][pDonateRank] >= 1)
 					{
 						format(string,sizeof(string),"VIP: You have received 20 percent off this product. Instead of paying $%s, you paid $%s.", number_format(Businesses[iBusiness][bItemPrices][iItem]), number_format(cost));
 						SendClientMessageEx(playerid, COLOR_YELLOW, string);
-					}
+					}*/
 					format(string,sizeof(string),"%s(%d) (IP: %s) has bought a Industrial Lock in %s (%d) for $%s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), Businesses[iBusiness][bName], iBusiness, number_format(cost));
 					Log("logs/business.log", string);
 					format(string,sizeof(string),"* You have purchased a Industrial Lock from %s for $%s.",Businesses[iBusiness][bName], number_format(cost));

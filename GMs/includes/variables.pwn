@@ -878,6 +878,7 @@ new lspddoor2;
 new Seatbelt[MAX_PLAYERS];
 new Float:fHMASafe_Loc[3];
 new iHMASafe_Val = 0;
+new HMAMOTD[64];
 new File:HMAFile, iFileLoaded = 0;
 new SpikeStrips[MAX_GROUPS][MAX_SPIKES][Spikes];
 new Cones[MAX_GROUPS][MAX_CONES][Cone];
