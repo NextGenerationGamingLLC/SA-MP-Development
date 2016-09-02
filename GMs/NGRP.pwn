@@ -77,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.363"
+#define SERVER_GM_TEXT "NG:RP v3.0.364"
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
 
@@ -120,7 +120,7 @@
 #include "./includes/areadebug.pwn"
 #endif
 
-//streamer includes
+//streamer includes 
 #include "./includes/streamer/removebuildings.pwn"
 #include "./includes/streamer/areas.pwn"
 #include "./includes/streamer/buttons.pwn"
@@ -148,7 +148,7 @@
 #include "./includes/admin/watch.pwn"
 #include "./includes/admin/newbie.pwn"
 #include "./includes/admin/ban.pwn"
-#include "./includes/admin/staffban.pwn"
+#include "./includes/admin/newstaffban.pwn"
 
 //business includes
 #include "./includes/business/247items.pwn"

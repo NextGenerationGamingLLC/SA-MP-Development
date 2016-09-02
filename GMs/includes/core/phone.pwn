@@ -211,7 +211,7 @@ CMD:tempnum(playerid, params[]) {
 }
 
 CMD:tempnumber(playerid, params[]){
-	if (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][gTempNum]) {
+	if (PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][gTempNum] || IsAHitman(playerid)) {
         new num;
         if(TempNumber[playerid] == 1) {
 			SendClientMessageEx(playerid, COLOR_GREY, "Your temporary number has been disabled and your original number has been restored.");

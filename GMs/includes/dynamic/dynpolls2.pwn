@@ -70,9 +70,8 @@ stock ShowPlayerEditPollDialog(playerid)
 
 	format(szTitle, sizeof szTitle, "Editing Poll | ID: %d", iPollID);
 
-	format(szMiscArray, sizeof szMiscArray, "{FFFFFF}Title: {5EC7EB}%s\n{FFFFFF}No. of Options: {5EC7EB}%d\n{FFFFFF}Edit Options\nEdit Position\nType: {5EC7EB}%s (%d)\n{FFFFFF}Type Rank: {5EC7EB}%d{FFFFFF}\nType ID (group/business): {5EC7EB}%d\n{FFFFFF}Expiration Date: {5EC7EB}%d days (%d remaining)",
-	PollInfo[iPollID][poll_szTitle], PollInfo[iPollID][poll_iOptions], PollTypes[PollInfo[iPollID][poll_iType]], PollInfo[iPollID][poll_iType], PollInfo[iPollID][poll_iTypeRank], PollInfo[iPollID][poll_iTypeID], (PollInfo[iPollID][poll_iExpirationDate] - PollInfo[iPollID][poll_iCreationDate]) / 24 / 60 / 60,
-	(PollInfo[iPollID][poll_iExpirationDate] - gettime()) / 24 / 60 / 60);
+	format(szMiscArray, sizeof szMiscArray, "{FFFFFF}Title: {5EC7EB}%s\n{FFFFFF}No. of Options: {5EC7EB}%d\n{FFFFFF}Edit Options\nEdit Position\nType: {5EC7EB}%s (%d)\n{FFFFFF}Type Rank: {5EC7EB}%d{FFFFFF}\nType ID (group/business): {5EC7EB}%d\n{FFFFFF}Expiration Date: {5EC7EB}%s",
+	PollInfo[iPollID][poll_szTitle], PollInfo[iPollID][poll_iOptions], PollTypes[PollInfo[iPollID][poll_iType]], PollInfo[iPollID][poll_iType], PollInfo[iPollID][poll_iTypeRank], PollInfo[iPollID][poll_iTypeID], date(PollInfo[iPollID][poll_iExpirationDate], 1));
 
 	return ShowPlayerDialogEx(playerid, DIALOG_EDIT_POLL, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
 }
@@ -946,6 +945,8 @@ CMD:gotopoll(playerid, params[]) {
 
     new iPollID;
     if(sscanf(params, "d", iPollID)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /gotopoll [poll id]");
+
+    if(iPollID < 0 || iPollID >= MAX_POLLS) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid poll specified.");
 
     if(PollInfo[iPollID][poll_iID] == -1) return SendClientMessage(playerid, COLOR_GRAD2, "This poll does not exist.");
 

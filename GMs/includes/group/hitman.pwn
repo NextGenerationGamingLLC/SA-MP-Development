@@ -1326,6 +1326,27 @@ stock SearchingHit(playerid)
     return 0;
 }
 
+CMD:hmastats(playerid, params[])
+{
+	if(!IsAHitman(playerid)) return 0;
+
+	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+	SendClientMessageEx(playerid, COLOR_GRAD3, "Your Hitman Agency statistics:");
+
+	if(!IsAHitmanLeader(playerid)) format(szMiscArray, sizeof szMiscArray, "Rank: %s (%d)", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman]);
+	else format(szMiscArray, sizeof szMiscArray, "Rank: %s (%d) [{FF0000}L{B4B5B7}]", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman]);
+	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+
+	format(szMiscArray, sizeof szMiscArray, "Completed Hits: %s | Failed Hits: %s", number_format(PlayerInfo[playerid][pCHits]), number_format(PlayerInfo[playerid][pFHits]));
+	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+
+	format(szMiscArray, sizeof szMiscArray, "Your C4: %s", number_format(PlayerInfo[playerid][pBombs]));
+
+	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
+	return 1;
+}
+
 CMD:contracts(playerid, params[])
 {
     if(IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
@@ -1497,13 +1518,13 @@ CMD:setmylevel(playerid, params[])
     new level;
     if(sscanf(params, "d", level)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmylevel [level]");
     if(PlayerInfo[playerid][pLevel] < level)  return SendClientMessageEx(playerid, COLOR_GREY, "The new level can't be greater than your current level.");
+    if(level < 1 || level > 80) return SendClientMessage(playerid, COLOR_GREY, "The new level cannot be below 1 or above 80."); 
     DeletePVar(playerid, "TempLevel");
     SetPVarInt(playerid, "TempLevel", level);
     SetPlayerScore(playerid, level);
     format(szMiscArray, sizeof(szMiscArray), "You have set your level to %d", level);
     return SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
 }
-
  
 CMD:givemehit(playerid, params[])
 {
