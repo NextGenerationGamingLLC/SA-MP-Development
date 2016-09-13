@@ -578,14 +578,14 @@ CMD:turfinfo(playerid, params[])
         new tw = GetPlayerTurfWarsZone(playerid);
         format(string,sizeof(string),"|___________ (ID: %d) %s ___________|",tw,TurfWars[tw][twName]);
         SendClientMessageEx(playerid, COLOR_GREEN, string);
-        if(TurfWars[tw][twOwnerId] != -1) {
-            format(string,sizeof(string),"Owner: %s.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
+        if(TurfWars[tw][twOwnerId] == -1) {
+            format(string,sizeof(string),"Owner: Vacant.");
         }
-        if(TurfWars[tw][twOwnerId] == -2) {
+        else if(TurfWars[tw][twOwnerId] == -2) {
             format(string,sizeof(string),"Owner: Law Enforcement.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
         }
         else {
-            format(string,sizeof(string),"Owner: Vacant.");
+            format(string,sizeof(string),"Owner: %s.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
         }
         SendClientMessageEx(playerid, COLOR_WHITE, string);
         format(string,sizeof(string),"Vulnerable: %d Hours.",TurfWars[tw][twVulnerable]);

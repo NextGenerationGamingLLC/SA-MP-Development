@@ -3377,8 +3377,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						DeletePVar(playerid, "lockmenu");
 						return 1;
 					}
-					if(IsABike(PlayerVehicleInfo[playerid][pvid][pvId]))
-						return SendClientMessageEx(playerid, COLOR_GRAD4, "You cannot place this type of lock on a bike.");
 					format(string, sizeof(string), "   You have purchased an electronic lock!");
 					SendClientMessageEx(playerid, COLOR_GRAD4, string);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");
@@ -3435,8 +3433,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						DeletePVar(playerid, "lockmenu");
 						return 1;
 					}
-					if(IsABike(PlayerVehicleInfo[playerid][pvid][pvId]))
-						return SendClientMessageEx(playerid, COLOR_GRAD4, "You cannot place this type of lock on a bike.");
 					format(string, sizeof(string), "   You have Purchased an industrial lock!");
 					SendClientMessageEx(playerid, COLOR_GRAD4, string);
 					SendClientMessageEx(playerid, COLOR_YELLOW, "HINT: You can now use /pvlock to lock your car.");

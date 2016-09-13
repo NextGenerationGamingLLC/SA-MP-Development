@@ -4118,7 +4118,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						{
 							new string[128];
 							new takemoney = PlayerInfo[GoChase[playerid]][pHeadValue];//(PlayerInfo[GoChase[playerid]][pHeadValue] / 4) * 2;
-							GivePlayerCash(playerid, takemoney);
+							GivePlayerCash(playerid, takemoney * 0.9);
 							GivePlayerCash(GoChase[playerid], -takemoney);
 							format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d",GetPlayerNameEx(playerid),GetPlayerNameEx(GoChase[playerid]),takemoney);
 							foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, string);
@@ -4193,12 +4193,12 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					VehicleBomb{vehicleid} = 0;
 					PlacedVehicleBomb[GetChased[playerid]] = INVALID_VEHICLE_ID;
 					new takemoney = PlayerInfo[playerid][pHeadValue];//(PlayerInfo[playerid][pHeadValue] / 4) * 2;
-					GivePlayerCash(GetChased[playerid], takemoney);
+					GivePlayerCash(GetChased[playerid], takemoney * 0.9);
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
 					foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, string);
 					format(string, sizeof string, "You have completed the hit on %s and collected $%s", GetPlayerNameEx(playerid), number_format(takemoney));
-					SendClientMessage(playerid, COLOR_YELLOW, string);
+					SendClientMessage(GetChased[playerid], COLOR_YELLOW, string);
 					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -4585,12 +4585,15 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			newcar = GetPlayerVehicleID(playerid),
 			engine, lights, alarm, doors, bonnet, boot, objective, v;
 
-		if(PlayerInfo[playerid][pMember] == DynVehicleInfo[DynVeh[newcar]][gv_igID] || PlayerInfo[playerid][pLeader] == DynVehicleInfo[DynVeh[newcar]][gv_igID])
+		if(DynVeh[newcar] != -1)
 		{
-			if(PlayerInfo[playerid][pDivision] == DynVehicleInfo[DynVeh[newcar]][gv_igDivID] || DynVehicleInfo[DynVeh[newcar]][gv_igDivID] == -1)
+			if(PlayerInfo[playerid][pMember] == DynVehicleInfo[DynVeh[newcar]][gv_igID] || PlayerInfo[playerid][pLeader] == DynVehicleInfo[DynVeh[newcar]][gv_igID])
 			{
-				gLastCar[playerid] = newcar;
-				format(CrateVehicleLoad[newcar][vLastDriver], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
+				if(PlayerInfo[playerid][pDivision] == DynVehicleInfo[DynVeh[newcar]][gv_igDivID] || DynVehicleInfo[DynVeh[newcar]][gv_igDivID] == -1)
+				{
+					gLastCar[playerid] = newcar;
+					format(CrateVehicleLoad[newcar][vLastDriver], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
+				}
 			}
 		}
 		
