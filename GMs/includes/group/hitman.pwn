@@ -1,5 +1,5 @@
 /*
- 
+
      /$$   /$$  /$$$$$$          /$$$$$$$  /$$$$$$$
     | $$$ | $$ /$$__  $$        | $$__  $$| $$__  $$
     | $$$$| $$| $$  \__/        | $$  \ $$| $$  \ $$
@@ -8,12 +8,12 @@
     | $$\  $$$| $$  \ $$        | $$  \ $$| $$
     | $$ \  $$|  $$$$$$/        | $$  | $$| $$
     |__/  \__/ \______/         |__/  |__/|__/
- 
+
                     Contract Group Type
- 
+
                 Next Generation Gaming, LLC
     (created by Next Generation Gaming Development Team)
- 
+
     * Copyright (c) 2016, Next Generation Gaming, LLC
     *
     * All rights reserved.
@@ -44,7 +44,7 @@
 #define COLOR_HMAOOC			0x00FFFFFF
 
 //new Float:fHMASafe_Loc[3];
-//new iHMASafe_Val = 0; 
+//new iHMASafe_Val = 0;
 //new File:HMAFile, iFileLoaded = 0;
 
 
@@ -75,7 +75,7 @@ hook OnGameModeInit()
 	// Load safe value.
 	fread(HMAFile, szTemp, sizeof szTemp);
 	iHMASafe_Val = strval(szTemp);
-	
+
 	// Load MOTD
 	fread(HMAFile, HMAMOTD, sizeof HMAMOTD);
 	iFileLoaded = 1;
@@ -428,7 +428,7 @@ CMD:ranks(playerid, params[])
 			}
 		}
 
-		
+
 	}
 	return 1;
 }
@@ -439,7 +439,7 @@ CMD:profile(playerid, params[])
     {
         new string[600], giveplayerid;
         if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /profile [player]");
- 
+
         if(IsPlayerConnected(giveplayerid))
         {
             new str2[256];
@@ -449,9 +449,9 @@ CMD:profile(playerid, params[])
                 	arrGroupDivisions[PlayerInfo[giveplayerid][pMember]][PlayerInfo[giveplayerid][pDivision]], arrGroupRanks[PlayerInfo[giveplayerid][pMember]][PlayerInfo[giveplayerid][pRank]], PlayerInfo[giveplayerid][pRank]);
             }
             else str2 = "None";
- 
- 
- 
+
+
+
             format(string, sizeof(string),
             "{FF6347}Name: {BFC0C2}%s\n\
             {FF6347}Date of Birth: {BFC0C2}%s\n\
@@ -512,7 +512,7 @@ CMD:givehitmanrank(playerid, params[])
 		format(szMiscArray, sizeof szMiscArray, "%s %s has %s %s to %s (%d) from %s (%d).", GetHitmanRank(playerid), GetPlayerNameEx(playerid), szChange, GetPlayerNameEx(iTarget), szRank, iRank, GetHitmanRank(iTarget), PlayerInfo[iTarget][pHitman]);
 		Log("logs/hitman.log", szMiscArray);
 		PlayerInfo[iTarget][pHitman] = iRank;
-		
+
 
 		format(szMiscArray, sizeof szMiscArray, "* (hitman) You have %s %s to the rank of %s (%d).", szChange, GetPlayerNameEx(iTarget), szRank, iRank);
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
@@ -814,7 +814,7 @@ CMD:unblacklist(playerid, params[])
 	else return 0;
 	return 1;
 }
-
+/*
 CMD:oblacklist(playerid, params[])
 {
 	if(IsAHitmanLeader(playerid))
@@ -878,7 +878,7 @@ CMD:oremovehitmanleader(playerid, params[])
 	else return 0;
 	return 1;
 }
-
+*/
 
 
 
@@ -1057,10 +1057,10 @@ public OfflineHitmanLeaderRemoved(playerid, account[])
 
 /////////////////// ADDITIONAL
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
- 
+
  	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
     szMiscArray[0] = 0;
- 
+
     switch(dialogid)
     {
         case DIALOG_ORDER_HMA1:
@@ -1287,7 +1287,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
     }
     return 0;
 }
- 
+
 
 stock SearchingHit(playerid)
 {
@@ -1362,7 +1362,7 @@ CMD:execute(playerid, params[])
     {
         if(GoChase[playerid] != INVALID_PLAYER_ID || HitToGet[playerid] != INVALID_PLAYER_ID) {
             if(GetPVarInt(playerid, "KillShotCooldown") != 0 && gettime() < GetPVarInt(playerid, "KillShotCooldown") + 300) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait 5 minutes between execution shots.");
- 
+
             SetPVarInt(playerid, "ExecutionMode", 1);
             SendClientMessageEx(playerid, COLOR_GRAD2, " You have loaded a Hollow point round.  Aim for the Head when executing your target. ");
             SetPVarInt(playerid, "KillShotCooldown", gettime());
@@ -1371,7 +1371,7 @@ CMD:execute(playerid, params[])
     }
     return 1;
 }
- 
+
 CMD:resetheadshot(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 1337)
@@ -1380,11 +1380,11 @@ CMD:resetheadshot(playerid, params[])
     }
     return 1;
 }
- 
+
 CMD:plantbomb(playerid, params[]) {
     return cmd_pb(playerid, params);
 }
- 
+
 CMD:pb(playerid, params[])
 {
     if (IsAHitman(playerid))
@@ -1449,11 +1449,11 @@ CMD:order(playerid, params[])
 	}
 	return 1;
 }
- 
+
 CMD:pub(playerid, params[]) {
     return cmd_pickupbomb(playerid, params);
 }
- 
+
 CMD:pickupbomb(playerid, params[])
 {
     if (!IsAHitman(playerid))
@@ -1490,13 +1490,13 @@ CMD:pickupbomb(playerid, params[])
     }
     return 1;
 }
- 
+
 CMD:myc4(playerid, params[])
 {
     if (IsAHitman(playerid))
     {
         new string[128];
- 
+
         if (PlayerInfo[playerid][pBombs] > 0)
         {
             format(string, sizeof(string), "You currently have %i C4 in your inventory.", PlayerInfo[playerid][pBombs]);
@@ -1505,34 +1505,34 @@ CMD:myc4(playerid, params[])
         {
             format(string, sizeof(string), "You do not have any C4 in your inventory.");
         }
- 
+
         SendClientMessageEx(playerid, COLOR_GRAD2, string);
     }
- 
+
     return 1;
 }
- 
+
 CMD:setmylevel(playerid, params[])
 {
     if (!IsAHitman(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command.");
     new level;
     if(sscanf(params, "d", level)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /setmylevel [level]");
     if(PlayerInfo[playerid][pLevel] < level)  return SendClientMessageEx(playerid, COLOR_GREY, "The new level can't be greater than your current level.");
-    if(level < 1 || level > 80) return SendClientMessage(playerid, COLOR_GREY, "The new level cannot be below 1 or above 80."); 
+    if(level < 1 || level > 80) return SendClientMessage(playerid, COLOR_GREY, "The new level cannot be below 1 or above 80.");
     DeletePVar(playerid, "TempLevel");
     SetPVarInt(playerid, "TempLevel", level);
     SetPlayerScore(playerid, level);
     format(szMiscArray, sizeof(szMiscArray), "You have set your level to %d", level);
     return SendClientMessage(playerid, COLOR_LIGHTRED, szMiscArray);
 }
- 
+
 CMD:givemehit(playerid, params[])
 {
     if (IsAHitman(playerid))
     {
         new string[128], targetid;
         if(sscanf(params, "u", targetid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givemehit [targetid]");
- 
+
         if(IsPlayerConnected(targetid))
         {
             if(GoChase[playerid] != INVALID_PLAYER_ID)
@@ -1564,20 +1564,20 @@ CMD:givemehit(playerid, params[])
     }
     return 1;
 }
- 
+
 CMD:deletehit(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || IsAHitmanLeader(playerid))
     {
         new string[128], giveplayerid;
         if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /deletehit [player]");
- 
+
         if(!IsPlayerConnected(giveplayerid))
         {
             SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
             return 1;
         }
- 
+
         if(PlayerInfo[giveplayerid][pHeadValue] >= 1 )
         {
             PlayerInfo[giveplayerid][pHeadValue] = 0;
@@ -1586,7 +1586,7 @@ CMD:deletehit(playerid, params[])
             format(string, sizeof(string), "You have removed the contract which was on %s's head.", GetPlayerNameEx(giveplayerid) );
             SendClientMessageEx(playerid, COLOR_WHITE, string);
             GoChase[giveplayerid] = INVALID_PLAYER_ID;
- 
+
             foreach(new i: Player)
             {
                 if( HitToGet[i] == giveplayerid )
@@ -1603,39 +1603,39 @@ CMD:deletehit(playerid, params[])
     }
     return 1;
 }
- 
+
 CMD:contract(playerid, params[])
 {
     if(PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts while in cuffs.");
     if(PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts while in jail.");
- 
+
     new string[128], giveplayerid, moneys, detail[32];
     if(sscanf(params, "uds[32]", giveplayerid, moneys, detail))
         return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /contract [player] [amount] [details]");
- 
+
     if (IsPlayerConnected(giveplayerid) && giveplayerid != INVALID_PLAYER_ID)
     {
         if(giveplayerid == playerid)
             return SendClientMessageEx(playerid, COLOR_GREY, "You can't contract yourself.");
- 
+
         if(PlayerInfo[playerid][pLevel] < 3 || PlayerInfo[giveplayerid][pLevel] < 3)
             return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place a contract unless both you and the hit are at least level 3.");
- 
+
         if(moneys < 50000 || moneys > 3000000)
             return SendClientMessageEx(playerid, COLOR_GREY, "You can't place contracts that are less than $50,000 or more than $3,000,000.");
- 
+
         if((moneys < 50000 || moneys > 3000000) && IsACop(giveplayerid))
             return SendClientMessageEx(playerid, COLOR_GREY, "The minimum hit amount for a law enforcement officer is $150,000.");
- 
+
         if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID && arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_CONTRACT)
             return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this to that person.");
- 
+
         if(PlayerInfo[giveplayerid][pHeadValue] >= 3000000 || moneys + PlayerInfo[giveplayerid][pHeadValue] > 3000000)
             return SendClientMessageEx(playerid, COLOR_GREY, "That person has the maximum on their head.");
- 
+
         if(PlayerInfo[playerid][pJailTime] > 0 || PlayerCuffed[playerid] > 0)
             return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now");
- 
+
         if (moneys > 0 && GetPlayerCash(playerid) >= moneys)
         {
             if(strlen(detail) > 32) return SendClientMessageEx(playerid, COLOR_GRAD1, "Contract details may not be longer than 32 characters in length.");
@@ -1664,7 +1664,7 @@ CMD:contract(playerid, params[])
     }
     return 1;
 }
- 
+
 CMD:knife(playerid, params[])
 {
     if(IsAHitman(playerid)) {

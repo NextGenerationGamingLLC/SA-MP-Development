@@ -52,6 +52,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
+  printf("[DIALOG] [%s] %s", GetPlayerNameEx(playerid), inputtext);
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	if(dialogid == DIALOG_DISABLED) return ShowPlayerDialogEx(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
 	new sendername[MAX_PLAYER_NAME];
@@ -5169,7 +5170,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					WantLawyer[suspect] = 1;
 					TogglePlayerControllable(suspect, 1);
 					ClearAnimations(suspect);
-					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);					
+					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
 					PlayerCuffed[suspect] = 0;
 					DeletePVar(suspect, "PlayerCuffed");
 					PlayerCuffedTime[suspect] = 0;
@@ -10129,7 +10130,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(PlayerInfo[playerid][pCredits] < ShopItems[42][sItemPrice])
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
-			
+
 			if(PlayerInfo[playerid][pFurnitureSlots] >= MAX_FURNITURE_SLOTS) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot buy anymore furniture slots.");
 			PlayerInfo[playerid][pFurnitureSlots] += 40;
 			if(PlayerInfo[playerid][pFurnitureSlots] > MAX_FURNITURE_SLOTS) {
@@ -10156,7 +10157,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(PlayerInfo[playerid][pCredits] < ShopItems[43][sItemPrice])
 				return SendClientMessageEx(playerid, COLOR_GREY, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
-			
+
 			if(PlayerInfo[playerid][pFurnitureSlots] >= MAX_FURNITURE_SLOTS) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot buy anymore furniture slots.");
 			PlayerInfo[playerid][pFurnitureSlots] += 50;
 			if(PlayerInfo[playerid][pFurnitureSlots] > MAX_FURNITURE_SLOTS) {
@@ -12867,7 +12868,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				format(szMiscArray, sizeof(szMiscArray), "%s\nFurniture Slots - Bronze Pack (25 slots) (Credits: {FFD700}%s{FFFFFF})\nFurniture Slots - Silver Pack (40 slots) (Credits: {FFD700}%s{FFFFFF})\n\
 					Furniture Slots - Gold Pack (50 slots) (Credits: {FFD700}%s{FFFFFF})", szMiscArray, number_format(ShopItems[41][sItemPrice]), number_format(ShopItems[42][sItemPrice]), number_format(ShopItems[43][sItemPrice]));
-				
+
 				ShowPlayerDialogEx(playerid, DIALOG_MICROSHOP2, DIALOG_STYLE_LIST, "Microtransaction Shop - House", szMiscArray, "Select", "Exit");
 			}
 			if(listitem == 4)

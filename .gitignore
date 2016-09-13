@@ -10,7 +10,7 @@ FSs/Mapping/Server.amx
 FSs/Mapping/PlayerExteriors.amx
 *.amx
 GMs/includes/gangtags.pwn
-
+.atom-build.json
 *.zip
 *.amx
 
