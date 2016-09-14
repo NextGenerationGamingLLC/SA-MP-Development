@@ -340,7 +340,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				new x;
 				DeletePVar(playerid, "processtext");
-				SetPVarString(playerid, "tmpstr", inputtext);
 				if(isnull(inputtext) && GetPVarType(playerid, "studio"))  {
 
 					PlayerTextureMenuInfo[playerid][ptextm_TPreviewState] = PREVIEW_STATE_ALLTEXTURES;

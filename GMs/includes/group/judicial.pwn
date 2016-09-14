@@ -140,7 +140,7 @@ CMD:owarrant(playerid, params[]) {
 		format(string, sizeof(string), "Attempting to warrant %s's account for %s...", name, reason);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 
-		format(query,sizeof(query),"UPDATE `accounts` SET `Warrants` = '%s' WHERE `Warrants` = '' AND `Username` = '%s'", reason, name);
+		format(query,sizeof(query),"UPDATE `accounts` SET `Warrants` = '%s' WHERE `Warrants` = '' AND `Username` = '%s'", g_mysql_ReturnEscaped(reason, MainPipeline), g_mysql_ReturnEscaped(name, MainPipeline));
 		mysql_function_query(MainPipeline, query, false, "OfflineWarranting", "i", playerid);
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot offline warrant online players!");
@@ -171,7 +171,7 @@ CMD:owarrantwd(playerid, params[])
 		format(string, sizeof(string), "Attempting to recall the warrant on %s's account...", name);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 
-		format(query,sizeof(query),"UPDATE `accounts` SET `Warrants` = '' WHERE `Warrants` != '' AND `Username` = '%s'", name);
+		format(query,sizeof(query),"UPDATE `accounts` SET `Warrants` = '' WHERE `Warrants` != '' AND `Username` = '%s'", g_mysql_ReturnEscaped(name, MainPipeline));
 		mysql_function_query(MainPipeline, query, false, "OfflineWarrantWD", "i", playerid);
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot offline warrant online players!");

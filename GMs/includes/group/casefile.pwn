@@ -97,9 +97,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				szMiscArray[0] = 0;
 
-				SetPVarString(playerid, "CasefileName", inputtext);
+				SetPVarString(playerid, "CasefileName", g_mysql_ReturnEscaped(inputtext, MainPipeline));
 
-				format(szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", inputtext);
+				format(szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", g_mysql_ReturnEscaped(inputtext, MainPipeline));
 				mysql_function_query(MainPipeline, szMiscArray, true, "OnCasefileName", "i", playerid);
 			}
 		}
@@ -115,7 +115,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if(strlen(inputtext) < 257)
 				{
-					SetPVarString(playerid, "CasefileInfo", inputtext);
+					SetPVarString(playerid, "CasefileInfo", g_mysql_ReturnEscaped(inputtext, MainPipeline));
 					ShowCasefileDialog(playerid);
 				}
 			}
@@ -212,7 +212,7 @@ public OnCasefileList(playerid)
 				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
 			}
 		}
-		else return SendClientMessageEx(playerid, COLOR_WHITE, "Your group does not have any casfiles.");
+		else return SendClientMessageEx(playerid, COLOR_WHITE, "Your group does not have any casefiles.");
 	}
 	return 1;
 }

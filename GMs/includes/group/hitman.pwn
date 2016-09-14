@@ -824,7 +824,7 @@ CMD:oblacklist(playerid, params[])
 
 		if(IsPlayerConnected(GetPlayerIDEx(szAccount))) return SendClientMessage(playerid, COLOR_GRAD2, "That player is connected, please use /blacklist instead.");
 
-		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", szAccount);
+		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(szAccount, MainPipeline));
 		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineBlacklistAccountFetch", "dss", playerid, szReason, szAccount);
 	}
 	else return 0;
@@ -840,7 +840,7 @@ CMD:ounblacklist(playerid, params[])
 
 		if(IsPlayerConnected(GetPlayerIDEx(szAccount))) return SendClientMessage(playerid, COLOR_GRAD2, "That player is connected, please use /unblacklist instead.");
 
-		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", szAccount);
+		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(szAccount, MainPipeline));
 		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineUnBlacklistAccountFetch", "ds", playerid, szAccount);
 	}
 	else return 0;
@@ -856,7 +856,7 @@ CMD:oremovehitman(playerid, params[])
 
 		if(IsPlayerConnected(GetPlayerIDEx(szAccount))) return SendClientMessage(playerid, COLOR_GRAD2, "That player is connected, please use /removehitman instead.");
 
-		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", szAccount);
+		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(szAccount, MainPipeline));
 		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineRemoveHitman", "ds", playerid, szAccount);
 	}
 	else return 0;
@@ -872,7 +872,7 @@ CMD:oremovehitmanleader(playerid, params[])
 
 		if(IsPlayerConnected(GetPlayerIDEx(szAccount))) return SendClientMessage(playerid, COLOR_GRAD2, "That player is connected, please use /removehitman instead.");
 
-		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", szAccount);
+		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(szAccount, MainPipeline));
 		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineRemoveHitmanLeader", "ds", playerid, szAccount);
 	}
 	else return 0;

@@ -52,7 +52,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
-  printf("[DIALOG] [%s] %s", GetPlayerNameEx(playerid), inputtext);
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	if(dialogid == DIALOG_DISABLED) return ShowPlayerDialogEx(playerid, DIALOG_DISABLED, DIALOG_STYLE_MSGBOX, "Account Disabled - Visit http://www.ng-gaming.net/forums", "Your account has been disabled as it has been inactive for more than six months.\nPlease visit the forums and post an Administrative Request to begin the process to reactivate your account.", "Okay", "");
 	new sendername[MAX_PLAYER_NAME];

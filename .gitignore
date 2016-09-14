@@ -1,20 +1,8 @@
 # Compiled sources
-GMs/NGRP.amx
-GMs/NGRP.zip
+*.amx
 
-FSs/Mapping/PlayerInteriors.amx
-FSs/Mapping/PlayerExteriors.amx
-FSs/Mapping/PlayerExteriors.amx
-FSs/Mapping/Server.amx
-*.amx
-FSs/Mapping/PlayerExteriors.amx
-*.amx
-GMs/includes/gangtags.pwn
-.atom-build.json
+# Compressed sources
 *.zip
-*.amx
+*.rar
 
-GMs/NGRP.amx
-*.amx
-*.amx
-GMs/NGRP.amx
+.atom-build.json

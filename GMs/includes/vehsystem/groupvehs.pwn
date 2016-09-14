@@ -141,7 +141,7 @@ DynVeh_Save(iDvSlotID) {
 		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRX%i` = '%.2f'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectRX]);
 		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRY%i` = '%.2f'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectRY]);
 		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectRZ%i` = '%.2f'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectRZ]);
-		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectText%i` = '%s'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectText]);
+		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectText%i` = '%s'", szMiscArray, i+1, g_mysql_ReturnEscaped(DynVehicleObjInfo[iDvSlotID][i][gv_fObjectText], MainPipeline));
 		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectMatSize%i` = '%d'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectMatSize]);
 		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectFont%i` = '%s'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectFont]);
 		format(szMiscArray, sizeof szMiscArray, "%s, `vObjectSize%i` = '%d'", szMiscArray, i+1, DynVehicleObjInfo[iDvSlotID][i][gv_fObjectSize]);
