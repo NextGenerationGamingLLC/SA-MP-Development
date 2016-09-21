@@ -69,106 +69,50 @@ CMD:sellgun(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)");
 				}
-				case 50 .. 149: // level 2
+				case 50 .. 199: // level 2
 				{
 					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)");
 				}
-				case 150 .. 299: // level 3
+				case 200 .. 699: // level 3
 				{
 					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)    sdpistol(800)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)		 rifle(3000)");
 				}
-				case 300 .. 499:
+				case 700 .. 1199:// Level 4 
 				{
 					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)    sdpistol(800)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "uzi(1000)          tec9(1000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)		 rifle(3000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "tec9(3000)       	uzi(2500)");
 				}
-				case 500 .. 874:
+				case 1200 .. 1949:// Level 5
 				{
 					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)    sdpistol(800)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "uzi(1000)          tec9(1000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "rifle(2000)");
-				}
-				case 875 .. 1474:
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)    sdpistol(800)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "uzi(1000)          tec9(1000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "rifle(2000)         MP5(2500)");
-				}
-				case 1475 .. 2349:
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)    sdpistol(800)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "uzi(1000)          tec9(1000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "rifle(2000)         MP5(2500)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "deagle(4000)");
-				}
-				case 2350 .. 3549:
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)    sdpistol(800)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "uzi(1000)          tec9(1000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "rifle(2000)         MP5(2500)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "deagle(4000)      AK47(12000)");
-				}
-				case 3550 .. 5349:
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)    sdpistol(800)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "uzi(1000)          tec9(1000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "rifle(2000)         MP5(2500)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "deagle(4000)      AK47(12000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "M4(20000)");
-				}
-				case 5350 .. 7849:
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)    sdpistol(800)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "uzi(1000)          tec9(1000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "rifle(2000)         MP5(2500)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "deagle(4000)      AK47(12000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "M4(20000)       SPAS12(30000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)		 rifle(3000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "tec9(3000)       	uzi(2500)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "deagle(5000)");
 				}
 				default:
 				{
@@ -177,14 +121,13 @@ CMD:sellgun(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
 					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "shotgun(650)    sdpistol(800)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "uzi(1000)          tec9(1000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "rifle(2000)         MP5(2500)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "deagle(4000)      AK47(12000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "M4(20000)       SPAS12(30000)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "Sniper(30000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)		  rifle(3000)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "tec9(3000)        	uzi(2500)");
+					SendClientMessageEx(playerid, COLOR_WHITE, "deagle(5000)");
 				}
 			}
+			if(PlayerInfo[playerid][pDonator] >= 3 && PlayerInfo[playerid][pArmsSkill] > 1949) SendClientMessageEx(playerid, COLOR_WHITE, "ak47(10000)");
 			SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------");
 			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /sellgun [playerid] [weapon]");
 			return 1;
@@ -381,110 +324,110 @@ CMD:sellgun(playerid, params[])
 			}
 			else if(strcmp(weapon, "Shotgun", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 50)
 			{
-				if(PlayerInfo[playerid][pMats] >= 650)
+				if(PlayerInfo[playerid][pMats] >= 4000)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 650;
+						PlayerInfo[playerid][pMats] -= 4000;
 						GivePlayerValidWeapon(id, 25);
 
-						PlayerInfo[playerid][pArmsSkill] += 2;
+						PlayerInfo[playerid][pArmsSkill] += 1;
 					}
 					else
 					{
 						SetPVarInt(id, "pSellGun", 25);
-						SetPVarInt(id, "pSellGunMats", 650);
+						SetPVarInt(id, "pSellGunMats", 4000);
 						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 2);
+						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
-			else if(strcmp(weapon, "SDPistol", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 150)
+			else if(strcmp(weapon, "SDPistol", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 0)
 			{
-				if(PlayerInfo[playerid][pMats] >= 800)
+				if(PlayerInfo[playerid][pMats] >= 1000)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 800;
+						PlayerInfo[playerid][pMats] -= 1000;
 						GivePlayerValidWeapon(id, 23);
 
-						PlayerInfo[playerid][pArmsSkill] += 3;
+						PlayerInfo[playerid][pArmsSkill] += 1;
 					}
 					else
 					{
 						SetPVarInt(id, "pSellGun", 23);
-						SetPVarInt(id, "pSellGunMats", 800);
+						SetPVarInt(id, "pSellGunMats", 1000);
 						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 3);
+						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
-			else if(strcmp(weapon, "Uzi", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 300)
+			else if(strcmp(weapon, "Uzi", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 700)
 			{
-				if(PlayerInfo[playerid][pMats] >= 1000)
+				if(PlayerInfo[playerid][pMats] >= 2500)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 1000;
+						PlayerInfo[playerid][pMats] -= 2500;
 						GivePlayerValidWeapon(id, 28);
 
-						PlayerInfo[playerid][pArmsSkill] += 4;
+						PlayerInfo[playerid][pArmsSkill] += 1;
 					}
 					else
 					{
 						SetPVarInt(id, "pSellGun", 28);
-						SetPVarInt(id, "pSellGunMats", 1000);
+						SetPVarInt(id, "pSellGunMats", 2500);
 						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 4);
+						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
-			else if(strcmp(weapon, "Tec9", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 300)
+			else if(strcmp(weapon, "Tec9", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 700)
 			{
-				if(PlayerInfo[playerid][pMats] >= 1000)
+				if(PlayerInfo[playerid][pMats] >= 2500)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 1000;
+						PlayerInfo[playerid][pMats] -= 2500;
 						GivePlayerValidWeapon(id, 32);
 
-						PlayerInfo[playerid][pArmsSkill] += 4;
+						PlayerInfo[playerid][pArmsSkill] += 1;
 					}
 					else
 					{
 						SetPVarInt(id, "pSellGun", 32);
-						SetPVarInt(id, "pSellGunMats", 1000);
+						SetPVarInt(id, "pSellGunMats", 2500);
 						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 4);
+						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
-			else if(strcmp(weapon, "Rifle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 500)
+			else if(strcmp(weapon, "Rifle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 200)
 			{
-				if(PlayerInfo[playerid][pMats] >= 1000)
+				if(PlayerInfo[playerid][pMats] >= 5000)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 1000;
+						PlayerInfo[playerid][pMats] -= 5000;
 						GivePlayerValidWeapon(id, 33);
 
-						PlayerInfo[playerid][pArmsSkill] += 5;
+						PlayerInfo[playerid][pArmsSkill] += 1;
 					}
 					else
 					{
 						SetPVarInt(id, "pSellGun", 33);
-						SetPVarInt(id, "pSellGunMats", 1000);
+						SetPVarInt(id, "pSellGunMats", 5000);
 						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 5);
+						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
-			else if(strcmp(weapon, "MP5", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 875)
+			else if(strcmp(weapon, "MP5", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 200)
 			{
 				if(PlayerInfo[playerid][pMats] >= 2500)
 				{
@@ -493,119 +436,56 @@ CMD:sellgun(playerid, params[])
 						PlayerInfo[playerid][pMats] -= 2500;
 						GivePlayerValidWeapon(id, 29);
 
-						PlayerInfo[playerid][pArmsSkill] += 6;
+						PlayerInfo[playerid][pArmsSkill] += 1;
 					}
 					else
 					{
 						SetPVarInt(id, "pSellGun", 29);
 						SetPVarInt(id, "pSellGunMats", 2500);
 						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 6);
+						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
-			else if(strcmp(weapon, "Deagle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 1475)
+			else if(strcmp(weapon, "Deagle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 1200)
 			{
-				if(PlayerInfo[playerid][pMats] >= 4000)
+				if(PlayerInfo[playerid][pMats] >= 3000)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 4000;
+						PlayerInfo[playerid][pMats] -= 3000;
 						GivePlayerValidWeapon(id, 24);
 
-						PlayerInfo[playerid][pArmsSkill] += 7;
+						PlayerInfo[playerid][pArmsSkill] += 1;
 					}
 					else
 					{
 						SetPVarInt(id, "pSellGun", 24);
-						SetPVarInt(id, "pSellGunMats", 4000);
+						SetPVarInt(id, "pSellGunMats", 3000);
 						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 7);
+						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
-			else if(strcmp(weapon, "AK47", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 2350)
+			else if(strcmp(weapon, "AK47", true) == 0 && PlayerInfo[playerid][pDonator] >= 3 && PlayerInfo[playerid][pArmsSkill] >= 1200)
 			{
-				if(PlayerInfo[playerid][pMats] >= 12000)
+				if(PlayerInfo[playerid][pMats] >= 10000)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 12000;
+						PlayerInfo[playerid][pMats] -= 10000;
 						GivePlayerValidWeapon(id, 30);
 
-						PlayerInfo[playerid][pArmsSkill] += 8;
+						PlayerInfo[playerid][pArmsSkill] += 1;
 					}
 					else
 					{
 						SetPVarInt(id, "pSellGun", 30);
-						SetPVarInt(id, "pSellGunMats", 12000);
+						SetPVarInt(id, "pSellGunMats", 10000);
 						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 8);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "M4", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 3350)
-			{
-				if(PlayerInfo[playerid][pMats] >= 20000)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 20000;
-						GivePlayerValidWeapon(id, 31);
-
-						PlayerInfo[playerid][pArmsSkill] += 9;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 31);
-						SetPVarInt(id, "pSellGunMats", 20000);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 9);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "SPAS12", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 5350)
-			{
-				if(PlayerInfo[playerid][pMats] >= 30000)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 30000;
-						GivePlayerValidWeapon(id, 27);
-
-						PlayerInfo[playerid][pArmsSkill] += 10;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 27);
-						SetPVarInt(id, "pSellGunMats", 30000);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 10);
-					}
-				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
-			}
-			else if(strcmp(weapon, "Sniper", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 7850)
-			{
-				if(PlayerInfo[playerid][pMats] >= 30000)
-				{
-					if(id == playerid)
-					{
-						PlayerInfo[playerid][pMats] -= 30000;
-						GivePlayerValidWeapon(id, 34);
-
-						PlayerInfo[playerid][pArmsSkill] += 10;
-					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 34);
-						SetPVarInt(id, "pSellGunMats", 30000);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 10);
+						SetPVarInt(id, "pSellGunXP", 1);
 					}
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");

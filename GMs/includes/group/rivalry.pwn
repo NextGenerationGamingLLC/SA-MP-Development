@@ -58,7 +58,6 @@ timer RepFam_Cooldown[1000 * 120](playerid) { // 2 minutes
 
 Rivalry_Toggle(playerid, bool:bState) {
  
-    PlayAnim(playerid, "goggles", "goggles_put_on", 4.0, 0, 0, 0, 0, 0, 1);
     RemovePlayerAttachedObject(playerid, 8);
     if(bState == true) {
  

@@ -789,7 +789,7 @@ stock SavePlants()
 
 CMD:makeheroin(playerid, params[]) 
 {
-	if(!IsPlayerInRangeOfPoint(playerid, 5.0, -882.2048,1109.3385,5442.8193))
+	if(!IsPlayerInRangeOfPoint(playerid, 15.0, -882.2048,1109.3385,5442.8193))
 	    return SendClientMessageEx(playerid, COLOR_GREY, "You are not at the purification lab.");
 
 	if(PlayerInfo[playerid][pRawOpium] == 0)

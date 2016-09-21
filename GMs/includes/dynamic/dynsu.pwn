@@ -381,7 +381,7 @@ CMD:su(playerid, params[])
 		if(sscanf(params, "u", iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/su)spect [player]");
 		if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
 		if(iTargetID == playerid) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot place charges on yourself.");
-		if(IsACop(iTargetID)) 
+		if(IsACop(iTargetID) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == arrGroupData[PlayerInfo[iTargetID][pMember]][g_iAllegiance]) 
 		{
 			if(arrGroupData[PlayerInfo[playerid][pMember]][gLEOArrest] == INVALID_RANK || arrGroupData[PlayerInfo[playerid][pMember]][gLEOArrest] > PlayerInfo[playerid][pRank]) return SendClientMessageEx(playerid, COLOR_GREY, "You can't use this command on a law enforcement officer.");
 		}

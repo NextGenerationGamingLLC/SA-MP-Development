@@ -769,7 +769,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 			{
 				new szMessage[86 + MAX_PLAYER_NAME];
 				new takemoney = PlayerInfo[playerid][pHeadValue];//floatround((PlayerInfo[playerid][pHeadValue] / 4) * 2);
-				GivePlayerCash(killerid, takemoney * 0.9);
+				GivePlayerCash(killerid, floatround(takemoney * 0.9));
 				GivePlayerCash(playerid, -takemoney);
 				format(szMessage, sizeof(szMessage),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(killerid),GetPlayerNameEx(playerid),takemoney);
 				foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, szMessage);

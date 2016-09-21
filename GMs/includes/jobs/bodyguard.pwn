@@ -65,8 +65,10 @@ CMD:frisk(playerid, params[])
 
 				PlayerFriskPlayer(playerid, giveplayerid);
 
-				format(string, sizeof(string), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
-				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SetPVarInt(playerid, "Frisking", giveplayerid);
+				SetPVarInt(giveplayerid, "FriskedBy", playerid);
+				format(szMiscArray, sizeof(szMiscArray), "%s has requested to frisk you, /accept frisk to conform.", GetPlayerNameEx(playerid));
+				SendClientMessage(giveplayerid, COLOR_YELLOW, szMiscArray);
 			}
 			else
 			{
@@ -97,6 +99,10 @@ PlayerFriskPlayer(playerid, giveplayerid)
 	format(szMiscArray, sizeof(szMiscArray), "Listing pocket for %s.", GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Items **");
+	format(string, sizeof(string), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	DeletePVar(playerid, "Frisking");
+	DeletePVar(giveplayerid, "FriskedBy");
 	if(PlayerInfo[giveplayerid][pMats] > 0)
 	{
 		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);

@@ -3118,7 +3118,7 @@ CMD:spec(playerid, params[])
 				case 3, 4: if(!(1 <= PlayerInfo[giveplayerid][pLevel] <= 10)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only use this on Levels 1 - 10 as a SPA/CPA!");
 			}
 		}
-		if(PlayerInfo[giveplayerid][pAdmin] >= 1337 && !GetPVarType(giveplayerid, "EASpecable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot spectate this person.");
+		if(PlayerInfo[giveplayerid][pAdmin] > 1337 && !GetPVarType(giveplayerid, "EASpecable")) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot spectate this person.");
 		if(PlayerInfo[playerid][pAdmin] >= 4 && Spectate[giveplayerid] != INVALID_PLAYER_ID && Spectating[giveplayerid] == 1)
 		{
 			new string[128];

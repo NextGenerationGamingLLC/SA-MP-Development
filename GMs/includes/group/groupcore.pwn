@@ -233,7 +233,7 @@ stock SendMedicMessage(color, string[])
 {
 	foreach(new i: Player)
 	{
-		if(IsFirstAid(i))
+		if(IsFirstAid(i) || IsAMedic(i))
 		{
 			SendClientMessageEx(i, color, string);
 		}

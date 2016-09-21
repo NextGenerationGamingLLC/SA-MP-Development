@@ -1967,7 +1967,7 @@ public OnPlayerDisconnect(playerid, reason)
 		if(gettime() >= PlayerInfo[playerid][pSexTime]) PlayerInfo[playerid][pSexTime] = 0;
 
 		if(GetPVarInt(playerid, "HidingKnife") == 1) PlayerInfo[playerid][pGuns][1] = 4;
-
+		if(GetPVarType(playerid, "IsInArena")) LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 		new string[128];
 		switch(reason)
 		{
@@ -2220,6 +2220,7 @@ public OnPlayerDisconnect(playerid, reason)
 				break;
 			}
 		}
+		/*
 		if(GetPVarType(playerid, "IsInArena"))
 		{
 			LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
@@ -2236,7 +2237,7 @@ public OnPlayerDisconnect(playerid, reason)
 			Log("logs/debug.log", szLog);
 			SetHealth(playerid,GetPVarFloat(playerid, "pbOldHealth"));
 			SetArmour(playerid,GetPVarFloat(playerid, "pbOldArmor"));
-		}
+		}*/
 		else if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "LoadingObjects"))
 		{
 		    if(IsPlayerInRangeOfPoint(playerid, 1200, -1083.90002441,4289.70019531,7.59999990) && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID)
@@ -4118,7 +4119,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						{
 							new string[128];
 							new takemoney = PlayerInfo[GoChase[playerid]][pHeadValue];//(PlayerInfo[GoChase[playerid]][pHeadValue] / 4) * 2;
-							GivePlayerCash(playerid, takemoney * 0.9);
+							GivePlayerCash(playerid, floatround(takemoney * 0.9));
 							GivePlayerCash(GoChase[playerid], -takemoney);
 							format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d",GetPlayerNameEx(playerid),GetPlayerNameEx(GoChase[playerid]),takemoney);
 							foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, string);
@@ -4193,7 +4194,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					VehicleBomb{vehicleid} = 0;
 					PlacedVehicleBomb[GetChased[playerid]] = INVALID_VEHICLE_ID;
 					new takemoney = PlayerInfo[playerid][pHeadValue];//(PlayerInfo[playerid][pHeadValue] / 4) * 2;
-					GivePlayerCash(GetChased[playerid], takemoney * 0.9);
+					GivePlayerCash(GetChased[playerid], floatround(takemoney * 0.9));
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
 					foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, string);
@@ -4284,7 +4285,13 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		{
 			ShowVehicleHUDForPlayer(playerid);
 		}
-
+		if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
+		{	
+			if(GetPlayerWeapon(playerid) == 24) 
+			{
+				SetPlayerArmedWeapon(playerid, 0);
+			}
+		}
 	    new vehicleid = GetPlayerVehicleID(playerid);
 		new Float: pX, Float: pY, Float: pZ;
 		GetPlayerPos(playerid, pX, pY, pZ);

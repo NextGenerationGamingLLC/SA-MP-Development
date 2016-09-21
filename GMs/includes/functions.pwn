@@ -514,7 +514,7 @@ public SetVehicleEngine(vehicleid, playerid)
 					VehicleBomb{vehicleid} = 0;
 					PlacedVehicleBomb[GetChased[playerid]] = INVALID_VEHICLE_ID;
 					new takemoney = PlayerInfo[playerid][pHeadValue];//(PlayerInfo[playerid][pHeadValue] / 4) * 2;
-					GivePlayerCash(GetChased[playerid], takemoney * 0.9);
+					GivePlayerCash(GetChased[playerid], floatround(takemoney * 0.9));
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
 					foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, string);

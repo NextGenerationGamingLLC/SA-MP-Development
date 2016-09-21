@@ -2043,7 +2043,11 @@ CMD:window(playerid, params[]) {
             format(szMiscArray, sizeof(szMiscArray), "* %s glances out the window.", GetPlayerNameEx(playerid));
             ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
         }
-        else TogglePlayerSpectating(playerid, 0);
+        else 
+        {
+        	TogglePlayerSpectating(playerid, 0);
+        	SetPlayerPos(playerid, GetPVarFloat(playerid, "air_Xpos"), GetPVarFloat(playerid, "air_Ypos"), GetPVarFloat(playerid, "air_Zpos"));
+   		}
     }
     return 1;
 }

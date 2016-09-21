@@ -944,7 +944,7 @@ CMD:accepthelp(playerid, params[])
 			SetHealth(playerid, 0x7FB00000);
 		    SetArmour(playerid, 0x7FB00000);
 		    SetPVarInt(playerid, "pGodMode", 1);
-			if(i > 0 || vw > 0) Player_StreamPrep(playerid, x, y, z, FREEZE_TIME);
+			if(i > 0 || vw > 0) Player_StreamPrep(playerid, x, y, z, 6000);
 			HelpingNewbie[playerid] = Player;
 			AddCAReportToken(playerid); // Advisor Tokens
 			DeletePVar(Player, "COMMUNITY_ADVISOR_REQUEST");
