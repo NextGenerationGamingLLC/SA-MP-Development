@@ -39,7 +39,7 @@ CMD:frisk(playerid, params[])
 {
 	if(IsACop(playerid) || PlayerInfo[playerid][pJob] == 8 || PlayerInfo[playerid][pJob2] == 8 || PlayerInfo[playerid][pJob3] == 8)
 	{
-		new string[128], giveplayerid;
+		new giveplayerid;
 		if(sscanf(params, "u", giveplayerid)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /frisk [player]");
 			return 1;
@@ -99,8 +99,8 @@ PlayerFriskPlayer(playerid, giveplayerid)
 	format(szMiscArray, sizeof(szMiscArray), "Listing pocket for %s.", GetPlayerNameEx(giveplayerid));
 	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Items **");
-	format(string, sizeof(string), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
-	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	format(szMiscArray, sizeof(szMiscArray), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
+	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	DeletePVar(playerid, "Frisking");
 	DeletePVar(giveplayerid, "FriskedBy");
 	if(PlayerInfo[giveplayerid][pMats] > 0)

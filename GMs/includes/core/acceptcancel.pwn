@@ -100,7 +100,7 @@ CMD:accept(playerid, params[])
 		}
 		else if(strcmp(params, "frisk", true) == 0)
 		{
-			PlayerFriskingPlayer(GetPVarInt(playerid, "FriskedBy"), playerid);
+			PlayerFriskPlayer(GetPVarInt(playerid, "FriskedBy"), playerid);
 		}
 		else if(strcmp(params, "renderaid", true) == 0)
 		{

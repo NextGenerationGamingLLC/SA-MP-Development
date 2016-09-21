@@ -2238,7 +2238,7 @@ public OnPlayerDisconnect(playerid, reason)
 			SetHealth(playerid,GetPVarFloat(playerid, "pbOldHealth"));
 			SetArmour(playerid,GetPVarFloat(playerid, "pbOldArmor"));
 		}*/
-		else if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "LoadingObjects"))
+		if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "LoadingObjects"))
 		{
 		    if(IsPlayerInRangeOfPoint(playerid, 1200, -1083.90002441,4289.70019531,7.59999990) && PlayerInfo[playerid][pMember] == INVALID_GROUP_ID)
 			{
