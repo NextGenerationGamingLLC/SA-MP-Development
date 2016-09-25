@@ -414,6 +414,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						format(string, sizeof(string), "Your vehicle had active tickets on it. You have been charged the amount of the tickets ($%s).", number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 					}
+					
+					format(szMiscArray, sizeof(szMiscArray), "[DELETECAR] %s (IP: %s) (SQLID: %d) has deleted their %s (%d) (SQLID: %d).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerSQLId(playerid), VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], PlayerVehicleInfo[playerid][i][pvModelId], PlayerVehicleInfo[playerid][i][pvSlotId]);
+					Log("logs/playervehicle.log", szMiscArray);
+					
 					PlayerVehicleInfo[playerid][i][pvId] = 0;
 					PlayerVehicleInfo[playerid][i][pvModelId] = 0;
 					PlayerVehicleInfo[playerid][i][pvPosX] = 0.0;
@@ -2283,8 +2287,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(string,sizeof(string),"You have changed numbers from %d, to %d, and it cost $%s", GetPVarInt(playerid, "CurrentPh"), GetPVarInt(playerid, "WantedPh"), number_format(GetPVarInt(playerid, "PhChangeCost")));
 			SendClientMessageEx(playerid,COLOR_GREY,string);
 			PlayerInfo[playerid][pPnumber] = GetPVarInt(playerid, "WantedPh");
-			new iCost = GetPVarInt(playerid, "PhChangeCost");
-			abs(iCost);
+			new iCost = abs(GetPVarInt(playerid, "PhChangeCost"));
 			GivePlayerCash(playerid, -iCost);
 			format(string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[playerid][pPnumber], GetPlayerSQLId(playerid));
 			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);

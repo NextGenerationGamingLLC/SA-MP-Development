@@ -871,7 +871,7 @@ CMD:findnewb(playerid, params[]) {
 		else
 		{
 		    DeletePVar(playerid, "HelpingSomeone");
-			SetPlayerHealth(playerid, 100);
+			SetHealth(playerid, 100);
 			SetPlayerPos(playerid, GetPVarFloat(playerid, "AdvisorLastx"), GetPVarFloat(playerid, "AdvisorLasty"), GetPVarFloat(playerid, "AdvisorLastz"));
 			SetPlayerVirtualWorld(playerid, GetPVarInt(playerid, "AdvisorLastVW"));
 			SetPlayerInterior(playerid, GetPVarInt(playerid, "AdvisorLastInt"));

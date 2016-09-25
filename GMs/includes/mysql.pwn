@@ -785,10 +785,10 @@ public OnQueryFinish(resultid, extraid, handleid)
 					return 1;
 				}
 				if(PassComplexCheck && CheckPasswordComplexity(szBuffer) != 1) ShowLoginDialogs(extraid, 0);
-				//DeletePVar(extraid, "PassAuth");
 				break;
 			}
 			GetPVarString(extraid, "PassAuth", PlayerInfo[extraid][pLastPass], 65);
+			DeletePVar(extraid, "PassAuth");
 			HideNoticeGUIFrame(extraid);
 			g_mysql_LoadAccount(extraid);
 			return 1;
@@ -1357,11 +1357,12 @@ stock g_mysql_AccountOnline(playerid, stateid)
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Online`=%d, `LastLogin` = NOW() WHERE `id` = %d", stateid, GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid))
-		HouseInfo[PlayerInfo[playerid][pPhousekey]][hLastLogin] = iTimeStamp + Inactive_CalcTime(), SaveHouse(PlayerInfo[playerid][pPhousekey]);
+		HouseInfo[PlayerInfo[playerid][pPhousekey]][hLastLogin] = iTimeStamp, SaveHouse(PlayerInfo[playerid][pPhousekey]);
 	if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid))
-		HouseInfo[PlayerInfo[playerid][pPhousekey2]][hLastLogin] = iTimeStamp + Inactive_CalcTime(), SaveHouse(PlayerInfo[playerid][pPhousekey2]);
+		HouseInfo[PlayerInfo[playerid][pPhousekey2]][hLastLogin] = iTimeStamp, SaveHouse(PlayerInfo[playerid][pPhousekey2]);
 	if(PlayerInfo[playerid][pPhousekey3] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey3]][hOwnerID] == GetPlayerSQLId(playerid))
-		HouseInfo[PlayerInfo[playerid][pPhousekey3]][hLastLogin] = iTimeStamp, HouseInfo[PlayerInfo[playerid][pPhousekey3]][hLastLogin] = iTimeStamp + Inactive_CalcTime(), SaveHouse(PlayerInfo[playerid][pPhousekey3]);
+		HouseInfo[PlayerInfo[playerid][pPhousekey3]][hLastLogin] = iTimeStamp, SaveHouse(PlayerInfo[playerid][pPhousekey3]);
+
 	for(new i; i != MAX_DDOORS; i++)
 	{
 		if(DDoorsInfo[i][ddType] == 1 && DDoorsInfo[i][ddOwner] == GetPlayerSQLId(playerid)) DDoorsInfo[i][ddLastLogin] = gettime(), SaveDynamicDoor(i);
@@ -6674,44 +6675,6 @@ public OnSaveFIF(playerid) {
 
 	printf("Saved %s's FIF stats", GetPlayerNameEx(playerid));
 
-	return 1;
-}
-
-
-stock CheckPassAgain(playerid)
-{
-	new string[128];
-	format(string, sizeof(string), "SELECT `Key`, `Salt` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-	mysql_function_query(MainPipeline, string, true, "OnCheckPassAgain", "i", playerid);
-	return 1;
-}
-
-forward OnCheckPassAgain(playerid);
-public OnCheckPassAgain(playerid)
-{
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
-	for(new i;i < rows;i++)
-	{
-		new szPass[129],
-			szResult[129],
-			szBuffer[129],
-			salt[11];
-		cache_get_field_content(i, "Key", szResult, MainPipeline, 129);
-		cache_get_field_content(i, "Salt", salt, MainPipeline, 11);
-		GetPVarString(playerid, "PassAuth", szBuffer, sizeof(szBuffer));
-		if(!isnull(salt)) strcat(szBuffer, salt);
-		WP_Hash(szPass, sizeof(szPass), szBuffer);
-		if((isnull(szPass)) || (isnull(szResult)) || (strcmp(szPass, szResult) != 0)) {
-			// Invalid Password
-			format(szBuffer, sizeof(szBuffer), "%s(%d)(IP: %s) failed pass recheck.", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], GetPlayerIpEx(playerid));
-			Log("logs/passcheck.log", szBuffer);
-			Kick(playerid);
-			return 1;
-		}
-		DeletePVar(playerid, "PassAuth");
-		break;
-	}
 	return 1;
 }
 

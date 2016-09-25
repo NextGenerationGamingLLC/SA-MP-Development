@@ -2461,7 +2461,7 @@ public _ShowerTimer(playerid)
 	new Float: health;
 	GetPlayerHealth(playerid, health);
 
-	SetPlayerHealth(playerid, 150.0);
+	SetHealth(playerid, 150.0);
 
 	ClearAnimations(playerid);
 
@@ -2492,7 +2492,7 @@ public _DrinkWineTimer(playerid)
 	new Float: health;
 	GetPlayerHealth(playerid, health);
 
-	SetPlayerHealth(playerid, 200.0);
+	SetHealth(playerid, 200.0);
 
 	SendClientMessage(playerid, COLOR_GREY, "You begin to stabalize, you also feel stronger.");
 	SetPVarInt(playerid, "pWineConsumed", 2);
@@ -2682,7 +2682,7 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart)
 	{
 	    new Float:health;
 	    GetPlayerHealth(damagedid, health);
-	    SetPlayerHealth(damagedid, health - random(40));
+	    SetHealth(damagedid, health - random(40));
 
 	    SetPVarInt(playerid, "pShankUsages", GetPVarInt(playerid, "pShankUsages") - 1);
 
@@ -2705,7 +2705,7 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float: amount, weaponid, bodypart)
 	{
 	    new Float:health;
     	GetPlayerHealth(damagedid, health);
-    	SetPlayerHealth(damagedid, health - 15.0);
+    	SetHealth(damagedid, health - 15.0);
 	}
     return 1;
 }

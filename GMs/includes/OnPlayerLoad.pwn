@@ -81,7 +81,6 @@ public OnPlayerLoad(playerid)
 		SetTimerEx("KickEx", 1000, 0, "i", playerid);
 		return 1;
 	}
-	CheckPassAgain(playerid);
 
 	TotalLogin++;
 

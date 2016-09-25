@@ -77,7 +77,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.366"
+#define SERVER_GM_TEXT "NG:RP v3.0.370"
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
 
@@ -322,7 +322,6 @@
 #include "./includes/vehsystem/vehauto.pwn"
 #include "./includes/DBLog.pwn"
 #include "./includes/core/Player_Interact.pwn"
-#include "./includes/core/inactive2.pwn"
 
 
 // Jingles WIP

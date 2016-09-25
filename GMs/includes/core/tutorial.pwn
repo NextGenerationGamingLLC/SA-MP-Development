@@ -52,7 +52,7 @@ AdvanceTutorial(playerid)
 			SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 			SetPlayerInterior(playerid, 0);
 			SetPlayerVirtualWorld(playerid, 0);
-			SetPlayerHealth(playerid, 100);
+			SetHealth(playerid, 100);
 			ClearChatbox(playerid);
 		}
 		case 0:
@@ -228,7 +228,7 @@ CharacterCreation(playerid)
 			SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 			SetPlayerInterior(playerid, 0);
 			SetPlayerVirtualWorld(playerid, 0);
-			SetPlayerHealth(playerid, 100);
+			SetHealth(playerid, 100);
 			ClearChatbox(playerid);
 
 			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Welcome", "Would you like to have the server provide you with objectives to guide you around the server?", "Yes, please!", "No, thanks.");

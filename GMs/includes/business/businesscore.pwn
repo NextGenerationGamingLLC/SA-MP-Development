@@ -686,9 +686,6 @@ stock GetFreeGasPumpID(biz)
 forward GasPumpSaleTimer(playerid, iBusinessID, iPumpID);
 public GasPumpSaleTimer(playerid, iBusinessID, iPumpID)
 {
-
-
-
 	new
 		Float: fPumpAmount = FUEL_PUMP_RATE / 4,
 		iVehicleID = Businesses[iBusinessID][GasPumpVehicleID][iPumpID];
@@ -711,7 +708,7 @@ public GasPumpSaleTimer(playerid, iBusinessID, iPumpID)
 	    StopRefueling(playerid, iBusinessID, iPumpID);
 	    return 1;
 	}
-	else if (GetPlayerCash(playerid) < floatround(Businesses[iBusinessID][GasPumpSalePrice][iPumpID]) && DynVehicleInfo[DynVeh[iVehicleID]][gv_igID] == INVALID_GROUP_ID)
+	else if (GetPlayerCash(playerid) < floatround(Businesses[iBusinessID][GasPumpSalePrice][iPumpID]) && DynVeh[iVehicleID] != -1 && DynVehicleInfo[DynVeh[iVehicleID]][gv_igID] == INVALID_GROUP_ID)
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "You are out of cash.");
 	    StopRefueling(playerid, iBusinessID, iPumpID);

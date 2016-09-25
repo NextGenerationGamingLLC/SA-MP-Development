@@ -36,7 +36,7 @@
 */
 #include <YSI\y_hooks>
 
-new CASINOPoint[10]; 
+new CASINOPoint[12]; 
 
 stock randomEx(min, max)
 {
@@ -70,9 +70,9 @@ CMD:rolldice(playerid, params[])
 	SetPVarInt(playerid, "pRollDiceID", theplayer);
 	SetPVarInt(playerid, "pRollDiceMoney", amount);
 	SetPVarInt(playerid, "pRollDiceAmount", dice);
-	format(szMiscArray, sizeof(szMiscArray), "CASINO: %s has offered you a game of dice for %s with %d dice rolls. (/acceptdice)", GetPlayerNameEx(playerid), number_format(amount), dice);
+	format(szMiscArray, sizeof(szMiscArray), "CASINO: %s has offered you a game of dice for $%s with %d dice rolls. (/acceptdice)", GetPlayerNameEx(playerid), number_format(amount), dice);
 	SendClientMessage(theplayer, COLOR_LIGHTBLUE, szMiscArray);
-	format(szMiscArray, sizeof(szMiscArray), "CASINO: You have offered %s a game of dice for %s with %d dice rolls. (/canceldice)", GetPlayerNameEx(theplayer), number_format(amount), dice);
+	format(szMiscArray, sizeof(szMiscArray), "CASINO: You have offered %s a game of dice for $%s with %d dice rolls. (/canceldice)", GetPlayerNameEx(theplayer), number_format(amount), dice);
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
 	return 1;
 }
@@ -205,10 +205,10 @@ CMD:slots(playerid, params[])
 	} 
 	else if(randsymbol[0] == randsymbol[1] && randsymbol[1] == randsymbol[2] && randsymbol[1] == 7)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "%s has just won the Casino %s JackPot of %s", GetPlayerNameEx(playerid), Businesses[InBusiness(playerid)][bName], number_format(winPrize));
+		format(szMiscArray, sizeof(szMiscArray), "%s has just won the Casino %s JackPot of $%s", GetPlayerNameEx(playerid), Businesses[InBusiness(playerid)][bName], number_format(winPrize));
 		SendClientMessageToAll(COLOR_YELLOW, szMiscArray);
 	}
-	format(szMiscArray, sizeof(szMiscArray), "Congratulations, you won %s", number_format(winPrize));
+	format(szMiscArray, sizeof(szMiscArray), "Congratulations, you won $%s", number_format(winPrize));
 	PlayerInfo[playerid][pCash] += winPrize;
 	Businesses[InBusiness(playerid)][bSafeBalance] -= winPrize;
 	SaveBusiness(InBusiness(playerid));
@@ -419,6 +419,8 @@ LoadCASINOPoints()
 	CASINOPoint[7] = CreateDynamicSphere(-2780.5718,50.6592,4500.2012,5);
 	CASINOPoint[8] = CreateDynamicSphere(-2780.5603,52.8230,4500.2012,5);
 	CASINOPoint[9] = CreateDynamicSphere(-2780.5342,54.3733,4500.2012,5);
+	CASINOPoint[10] = CreateDynamicSphere(228.35, 1812.55, 2001.09, 5); // Lucky Cowboy Casino
+	CASINOPoint[11] = CreateDynamicSphere(200.95, 1828.80, 2001.09, 5); // Lucky Cowboy Casino
 }
 
 CasinoPullLoad(playerid)

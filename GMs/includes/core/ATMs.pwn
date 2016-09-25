@@ -5,7 +5,7 @@
 #define ATM_TRANSFER_TO		10002
 #define ATM_TRANSFER_AMT	10003
 
-new ATMPoint[42]; 
+new ATMPoint[43]; 
 
 LoadATMPoints() {
 	
@@ -51,6 +51,7 @@ LoadATMPoints() {
 	ATMPoint[39] = CreateDynamicSphere(1014.1004, 2061.80117, 1085.5, 3.0);
 	ATMPoint[40] = CreateDynamicSphere(527.5063, 1417.8333, 11000.0996, 3.0);
 	ATMPoint[41] = CreateDynamicSphere(1538.3831, -2785.1677, 15.3602, 3.0);
+	ATMPoint[42] = CreateDynamicSphere(218.18401, 1809.87610, 2000.68555, 3.0);  // Lucky Cowboy Casino
 
 	// for(new i = 0; i < 37; i++) Streamer_SetIntData(STREAMER_TYPE_AREA, ATMPoint[i], E_STREAMER_EXTRA_ID, i);
 
