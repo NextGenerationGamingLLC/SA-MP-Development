@@ -77,7 +77,13 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
+<<<<<<< Updated upstream
 #define SERVER_GM_TEXT "NG:RP v3.0.370"
+=======
+
+#define SERVER_GM_TEXT "NG:RP v3.0.371"
+
+>>>>>>> Stashed changes
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
 
@@ -296,6 +302,7 @@
 #include "./includes/jobs/treasure.pwn"
 #include "./includes/jobs/whore.pwn"
 #include "./includes/jobs/armsdealer.pwn"
+//#include "./includes/jobs/newshipment.pwn" - not supposed to be in yet! Don't forget to uncomment the reset, line 1975 in callbacks.pwn
 #include "./includes/core/drugcore.pwn"
 
 //perk system includes

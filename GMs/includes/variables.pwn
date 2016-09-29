@@ -468,6 +468,7 @@ new InsideTut[MAX_PLAYERS char];
 new pDrunkLevelLast[MAX_PLAYERS];
 new pFPS[MAX_PLAYERS];
 
+
 //new File:dumpfile; // global variable for buffer overflow protection
 #if defined _WIN32
 new File:logfile; // global variable for buffer overflow protection
@@ -487,6 +488,10 @@ new SpoofKill[MAX_PLAYERS];
 new KillTime[MAX_PLAYERS];
 
 // SHIPMENT CONTRACTOR JOB
+
+// Shipment revamp.
+//new TruckUsedBy[MAX_VEHICLES] = -1;
+//new TruckHolding[MAX_VEHICLES] = 0;
 
 new TruckUsed[MAX_PLAYERS];
 new TruckDeliveringTo[MAX_VEHICLES];

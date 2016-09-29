@@ -113,7 +113,7 @@ CMD:unstaffban(playerid, params[])
 
 		if(!PlayerInfo[iTarget][pStaffBanned]) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not staff banned.");
 
-		format(szMiscArray, sizeof szMiscArray, "DELETE FROM `staffbans` WHERE `playerid`=%d", GetPlayerSQLId(iTarget));
+		format(szMiscArray, sizeof szMiscArray, "UPDATE `staffbans` SET `status`=2 WHERE `playerid`=%d AND `status`=1", GetPlayerSQLId(iTarget));
 		mysql_function_query(MainPipeline, szMiscArray, true, "RemoveStaffBan", "dds", playerid, iTarget, szReason);
 	}
 	else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
@@ -257,7 +257,7 @@ public RetrieveTargetIDUnban(iIssuer, szTarget[])
 			iSQLID = cache_get_field_content_int(row, "id", MainPipeline);
 		}
 
-		format(szMiscArray, sizeof szMiscArray, "DELETE FROM `staffbans` WHERE `playerid`=%d", iSQLID);
+		format(szMiscArray, sizeof szMiscArray, "UPDATE `staffbans` SET `status`=2 WHERE `playerid`=%d AND `status`=1", iSQLID);
 		mysql_function_query(MainPipeline, szMiscArray, true, "ProcessOfflineUnStaffBan", "dsd", iIssuer, szTarget, iSQLID);
 	}
 	else // Because we don't have their SQL ID we shouldn't log it, because we can't track who the staff ban belongs to.

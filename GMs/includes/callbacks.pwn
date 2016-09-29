@@ -1967,7 +1967,17 @@ public OnPlayerDisconnect(playerid, reason)
 		if(gettime() >= PlayerInfo[playerid][pSexTime]) PlayerInfo[playerid][pSexTime] = 0;
 
 		if(GetPVarInt(playerid, "HidingKnife") == 1) PlayerInfo[playerid][pGuns][1] = 4;
+
 		if(GetPVarType(playerid, "IsInArena")) LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
+
+
+		// Trucker revamp.
+		/*for(new i = 0; i < MAX_VEHICLES; i++)
+		{
+			if(TruckUsedBy[i] == playerid) TruckUsedBy[i] = -1; // Resets a truck if a player disconnects mid-route.
+			PlayerInfo[playerid][pUsingTruck] = -1;
+		}*/
+
 		new string[128];
 		switch(reason)
 		{
@@ -4127,6 +4137,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							ResetPlayerWeaponsEx(GoChase[playerid]);
 						    // SpawnPlayer(GoChase[playerid]);
 							SendClientMessageEx(GoChase[playerid], COLOR_YELLOW, string);
+
+							format(szMiscArray, sizeof szMiscArray, "You have completed the hit on %s and collected $%s.", GetPlayerNameEx(GoChase[playerid]), number_format(takemoney));
+							SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 							PlayerInfo[GoChase[playerid]][pHeadValue] = 0;
 							PlayerInfo[playerid][pCHits] += 1;
 							SetHealth(GoChase[playerid], 0.0);

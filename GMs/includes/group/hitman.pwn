@@ -348,7 +348,7 @@ CMD:sethmamotd(playerid, params[])
 	format(HMAMOTD, sizeof HMAMOTD, params);
 
 	format(szMiscArray, sizeof szMiscArray, "Agency MOTD changed! The new MOTD is: {FFFFFF}%s", HMAMOTD);
-	foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+	foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_GRAD1, szMiscArray);
 
 	SaveHitmanSafe();
 	return 1;
@@ -498,6 +498,8 @@ CMD:givehitmanrank(playerid, params[])
 		}
 
 		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified.");
+
+		if(!IsAHitman(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not a hitman.");
 
 		if(iRank < 0 || iRank > 6) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid rank specified. Valid ranks are between 0 and 6.");
 
@@ -1634,7 +1636,10 @@ CMD:contract(playerid, params[])
             return SendClientMessageEx(playerid, COLOR_GREY, "That person has the maximum on their head.");
 
         if(PlayerInfo[playerid][pJailTime] > 0 || PlayerCuffed[playerid] > 0)
-            return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now");
+            return SendClientMessageEx(playerid, COLOR_GREY, "You can't do this right now.");
+
+        if(IsAHitman(playerid))
+        	return SendClientMessageEx(playerid, COLOR_GREY, "Hitmen cannot place contracts.");
 
         if (moneys > 0 && GetPlayerCash(playerid) >= moneys)
         {

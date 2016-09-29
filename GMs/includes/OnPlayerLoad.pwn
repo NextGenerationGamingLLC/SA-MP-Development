@@ -392,6 +392,9 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pGroupToy][6] = 1.0;
 		PlayerInfo[playerid][pGroupToy][7] = 1.0;
 		PlayerInfo[playerid][pGroupToy][8] = 1.0;
+
+		PlayerInfo[playerid][pUsingTruck] = INVALID_VEHICLE_ID;
+		PlayerInfo[playerid][pCurrentShipment] = -1;
 	}
 
 	if(PlayerInfo[playerid][pHospital] == 1)

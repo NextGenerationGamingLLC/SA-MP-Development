@@ -1224,6 +1224,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_EDIT_EXPIRATIONDATE		(6189)
 #define 		DIALOG_EDIT_TYPERANK			(6190)
 #define 		DIALOG_EDIT_TYPEID				(6191)
+#define 		DIALOG_EDIT_NATION				(7155)
 
 #define 		DIALOG_VOTE						(6192)
 
@@ -1265,6 +1266,8 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_CASEFILE_NAME			(7051)
 #define 		DIALOG_CASEFILE_INFO			(7052)
 #define 		DIALOG_CASEFILE_QUIT			(7053)
+
+#define 		DIALOG_SHIPMENT_OPTIONS			(7054)
 
 // GangTags
 #define 			GANGTAG_TIME				60000

@@ -1208,7 +1208,10 @@ enum pInfo
 	pProAimFlags,
 	pPollKey1[128],
 	pPollKey2[128],
-	pPollKey3[128]
+	pPollKey3[128],
+	pUsingTruck,
+	pShipmentOptions[10],
+	pCurrentShipment
 };
 
 enum pvInfo

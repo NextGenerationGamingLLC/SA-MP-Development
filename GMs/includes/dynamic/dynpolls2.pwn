@@ -40,6 +40,7 @@ enum PollingInformation
 	poll_szPlacedBy[MAX_PLAYER_NAME],
 	poll_iInterior,
 	poll_iVirtualWorld,
+	poll_iNation,
 	Float:poll_fLocation[3],
 
 	poll_szUniqueKey[128],
@@ -70,8 +71,13 @@ stock ShowPlayerEditPollDialog(playerid)
 
 	format(szTitle, sizeof szTitle, "Editing Poll | ID: %d", iPollID);
 
-	format(szMiscArray, sizeof szMiscArray, "{FFFFFF}Title: {5EC7EB}%s\n{FFFFFF}No. of Options: {5EC7EB}%d\n{FFFFFF}Edit Options\nEdit Position\nType: {5EC7EB}%s (%d)\n{FFFFFF}Type Rank: {5EC7EB}%d{FFFFFF}\nType ID (group/business): {5EC7EB}%d\n{FFFFFF}Expiration Date: {5EC7EB}%s",
-	PollInfo[iPollID][poll_szTitle], PollInfo[iPollID][poll_iOptions], PollTypes[PollInfo[iPollID][poll_iType]], PollInfo[iPollID][poll_iType], PollInfo[iPollID][poll_iTypeRank], PollInfo[iPollID][poll_iTypeID], date(PollInfo[iPollID][poll_iExpirationDate], 1));
+	new szNation[25];
+	if(PollInfo[iPollID][poll_iNation] == 0) format(szNation, sizeof szNation, "San Andreas");
+	else if(PollInfo[iPollID][poll_iNation] == 1) format(szNation, sizeof szNation, "New Robada");
+	else format(szNation, sizeof szNation, "None");
+
+	format(szMiscArray, sizeof szMiscArray, "{FFFFFF}Title: {5EC7EB}%s\n{FFFFFF}No. of Options: {5EC7EB}%d\n{FFFFFF}Edit Options\nEdit Position\nType: {5EC7EB}%s (%d)\n{FFFFFF}Type Rank: {5EC7EB}%d{FFFFFF}\nType ID (group/business): {5EC7EB}%d\n{FFFFFF}Nation: {5EC7EB}%s\n{FFFFFF}Expiration Date: {5EC7EB}%s",
+	PollInfo[iPollID][poll_szTitle], PollInfo[iPollID][poll_iOptions], PollTypes[PollInfo[iPollID][poll_iType]], PollInfo[iPollID][poll_iType], PollInfo[iPollID][poll_iTypeRank], PollInfo[iPollID][poll_iTypeID], szNation, date(PollInfo[iPollID][poll_iExpirationDate], 1));
 
 	return ShowPlayerDialogEx(playerid, DIALOG_EDIT_POLL, DIALOG_STYLE_LIST, szTitle, szMiscArray, "Select", "Cancel");
 }
@@ -137,6 +143,8 @@ public LoadPoll()
 			PollInfo[row][poll_iOptionResults][i] = cache_get_field_content_int(row, szMiscArray);
 		}
 
+		PollInfo[row][poll_iNation] = cache_get_field_content_int(row, "Nation");
+
 		cache_get_field_content(row, "PlacedBy", PollInfo[row][poll_szPlacedBy], MainPipeline, MAX_PLAYER_NAME);
 
 		PollInfo[row][poll_iInterior] = cache_get_field_content_int(row, "Interior");
@@ -154,7 +162,7 @@ public LoadPoll()
 		cache_get_field_content(row, "UniqueKey", PollInfo[row][poll_szUniqueKey], MainPipeline, 128);
 
 		format(szMiscArray, sizeof szMiscArray, "Polling Station (ID: %d)\n{5EC7EB}%s\n{FFFF00}/vote", row, PollInfo[row][poll_szTitle]);
-		PollInfo[row][poll_textLabel] = CreateDynamic3DTextLabel(szMiscArray, 0xFFFF00FF, PollInfo[row][poll_fLocation][0], PollInfo[row][poll_fLocation][1], PollInfo[row][poll_fLocation][2], 100.00, INVALID_PLAYER_ID,INVALID_VEHICLE_ID, 0, PollInfo[row][poll_iVirtualWorld], PollInfo[row][poll_iInterior]);
+		PollInfo[row][poll_textLabel] = CreateDynamic3DTextLabel(szMiscArray, 0xFFFF00FF, PollInfo[row][poll_fLocation][0], PollInfo[row][poll_fLocation][1], PollInfo[row][poll_fLocation][2], 10.00, INVALID_PLAYER_ID,INVALID_VEHICLE_ID, 0, PollInfo[row][poll_iVirtualWorld], PollInfo[row][poll_iInterior]);
 
 		PollInfo[row][poll_iPickupID] = CreateDynamicPickup(1239, 1, PollInfo[row][poll_fLocation][0], PollInfo[row][poll_fLocation][1], PollInfo[row][poll_fLocation][2], PollInfo[row][poll_iVirtualWorld], PollInfo[row][poll_iInterior]);
 
@@ -204,7 +212,7 @@ forward poll_MySQL_Save(i);
 public poll_MySQL_Save(i)
 {
 	// This is split into 2 queries to make it easier to handle.
-	format(szMiscArray, sizeof szMiscArray, "UPDATE `polls` SET `Title`='%s', `Options`=%d, `PlacedBy`='%s', `Interior`=%d, `VirtualWorld`=%d, `UniqueKey`='%s', `Type`=%d, `TypeRank`=%d, `TypeID`=%d, `CreationDate`=%d, `ExpirationDate`=%d WHERE `ID`=%d",
+	format(szMiscArray, sizeof szMiscArray, "UPDATE `polls` SET `Title`='%s', `Options`=%d, `PlacedBy`='%s', `Interior`=%d, `VirtualWorld`=%d, `UniqueKey`='%s', `Type`=%d, `TypeRank`=%d, `TypeID`=%d, `CreationDate`=%d, `Nation`=%d, `ExpirationDate`=%d WHERE `ID`=%d",
 	 g_mysql_ReturnEscaped(PollInfo[i][poll_szTitle], MainPipeline),
 	 PollInfo[i][poll_iOptions],
 	 g_mysql_ReturnEscaped(PollInfo[i][poll_szPlacedBy], MainPipeline),
@@ -215,6 +223,7 @@ public poll_MySQL_Save(i)
 	 PollInfo[i][poll_iTypeRank],
 	 PollInfo[i][poll_iTypeID],
 	 PollInfo[i][poll_iCreationDate],
+	 PollInfo[i][poll_iNation],
 	 PollInfo[i][poll_iExpirationDate],
 	 i + 1);
 
@@ -362,7 +371,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DestroyDynamicPickup(PollInfo[iPollID][poll_iPickupID]);
 
 					format(szMiscArray, sizeof szMiscArray, "Polling Station (ID: %d)\n{5EC7EB}%s\n{FFFF00}/vote", iPollID, PollInfo[iPollID][poll_szTitle]);
-					PollInfo[iPollID][poll_textLabel] = CreateDynamic3DTextLabel(szMiscArray, 0xFFFF00FF, fPos[0], fPos[1], fPos[2], 100.00, INVALID_PLAYER_ID,INVALID_VEHICLE_ID, 0, PollInfo[iPollID][poll_iVirtualWorld], PollInfo[iPollID][poll_iInterior]);
+					PollInfo[iPollID][poll_textLabel] = CreateDynamic3DTextLabel(szMiscArray, 0xFFFF00FF, fPos[0], fPos[1], fPos[2], 10.00, INVALID_PLAYER_ID,INVALID_VEHICLE_ID, 0, PollInfo[iPollID][poll_iVirtualWorld], PollInfo[iPollID][poll_iInterior]);
 					PollInfo[iPollID][poll_iPickupID] = CreateDynamicPickup(1239, 1, fPos[0], fPos[1], fPos[2], PollInfo[iPollID][poll_iVirtualWorld], PollInfo[iPollID][poll_iInterior]);
 
 					SendClientMessageEx(playerid, COLOR_WHITE, "Poll position edited successfully.");
@@ -391,7 +400,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(PollInfo[iPollID][poll_iType] == 2 || PollInfo[iPollID][poll_iType] == 3) ShowPlayerDialogEx(playerid, DIALOG_EDIT_TYPEID, DIALOG_STYLE_INPUT, "Editing Type ID", "Input the desired group / business ID in the box below.", "Edit", "Cancel");
 					else return SendClientMessageEx(playerid, COLOR_GRAD2, "The current poll type does not support specific IDs.");
 				}
-				case 7: ShowPlayerDialogEx(playerid, DIALOG_EDIT_EXPIRATIONDATE, DIALOG_STYLE_INPUT, "Editing Expiration Date", "Input the desired amount of days at which you want the poll to expire (note - this is from the creation date).", "Edit", "Cancel");
+				case 7:
+				{
+					ShowPlayerDialogEx(playerid, DIALOG_EDIT_NATION, DIALOG_STYLE_LIST, "Editing Nation Restriction", "No Nation Restriction\nSan Andreas\nNew Robada", "Edit", "Cancel");
+				}
+				case 8: ShowPlayerDialogEx(playerid, DIALOG_EDIT_EXPIRATIONDATE, DIALOG_STYLE_INPUT, "Editing Expiration Date", "Input the desired amount of days at which you want the poll to expire (note - this is from the creation date).", "Edit", "Cancel");
 			}
 		}
 		case DIALOG_EDIT_TITLE:
@@ -501,6 +514,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 
 			PollInfo[iPollID][poll_iOptionResults][listitem]++;
+
+			format(szMiscArray, sizeof szMiscArray, "%s (%d) (IP: %s) has voted on poll %s (%d), for option %d.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), PollInfo[iPollID][poll_szTitle],
+				iPollID, listitem + 1);
+
+			Log("logs/pollvotes.log", szMiscArray);
+			szMiscArray[0] = 0;
+
 			poll_MySQL_Save(iPollID);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Your vote has been counted!");
 		}
@@ -591,6 +611,29 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			}
 		}
+
+		case DIALOG_EDIT_NATION:
+		{
+			if(!response)
+			{
+				DeletePVar(playerid, "iEditingPoll");
+				return 0;
+			}
+
+			new iPollID = GetPVarInt(playerid, "iEditingPoll");
+
+			switch(listitem)
+			{
+				case 0: PollInfo[iPollID][poll_iNation] = -1;
+				case 1: PollInfo[iPollID][poll_iNation] = 0;
+				case 2: PollInfo[iPollID][poll_iNation] = 1;
+				default: return 1; // some sort of error occured here so we just gonna move along
+			}
+
+			poll_MySQL_Save(iPollID);
+			SendClientMessage(playerid, COLOR_WHITE, "Poll nation restriction edited successfully.");
+		}
+
 		case DIALOG_EDIT_EXPIRATIONDATE:
 		{	
 			if(!response)
@@ -667,13 +710,15 @@ CMD:createpoll(playerid, params[])
 			PollInfo[iPollID][poll_iVirtualWorld] = GetPlayerVirtualWorld(playerid);
 
 			format(szMiscArray, sizeof szMiscArray, "Polling Station (ID: %d)\n{5EC7EB}%s\n{FFFF00}/vote", iPollID, PollInfo[iPollID][poll_szTitle]);
-			PollInfo[iPollID][poll_textLabel] = CreateDynamic3DTextLabel(szMiscArray, 0xFFFF00FF, fPos[0], fPos[1], fPos[2], 100.00, INVALID_PLAYER_ID,INVALID_VEHICLE_ID, 0, PollInfo[iPollID][poll_iVirtualWorld], PollInfo[iPollID][poll_iInterior]);
+			PollInfo[iPollID][poll_textLabel] = CreateDynamic3DTextLabel(szMiscArray, 0xFFFF00FF, fPos[0], fPos[1], fPos[2], 10.00, INVALID_PLAYER_ID,INVALID_VEHICLE_ID, 0, PollInfo[iPollID][poll_iVirtualWorld], PollInfo[iPollID][poll_iInterior]);
 
 			PollInfo[iPollID][poll_iPickupID] = CreateDynamicPickup(1239, 1, fPos[0], fPos[1], fPos[2], PollInfo[iPollID][poll_iVirtualWorld], PollInfo[iPollID][poll_iInterior]);
 
 			PollInfo[iPollID][poll_iType] = 0;
 			PollInfo[iPollID][poll_iTypeRank] = 0;
 			PollInfo[iPollID][poll_iTypeID] = 0;
+
+			PollInfo[iPollID][poll_iNation] = -1;
 
 			PollInfo[iPollID][poll_iCreationDate] = gettime();
 			PollInfo[iPollID][poll_iExpirationDate] = gettime() + 432000; // 5 days.
@@ -684,7 +729,7 @@ CMD:createpoll(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 			SendClientMessageEx(playerid, COLOR_WHITE, "It is set to expire automatically in 5 days.");
 			
-			format(szMiscArray, sizeof szMiscArray, "INSERT INTO `polls` VALUES(%d, '%s', %d, '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d, '%s', %d, %d, %f, %f, %f, '%s', %d, %d, %d, %d, %d)",
+			format(szMiscArray, sizeof szMiscArray, "INSERT INTO `polls` VALUES(%d, '%s', %d, '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d, '%s', %d, %d, %f, %f, %f, '%s', %d, %d, %d, %d, %d, %d)",
 				iPollID + 1,
 				g_mysql_ReturnEscaped(PollInfo[iPollID][poll_szTitle], MainPipeline),
 				PollInfo[iPollID][poll_iOptions],
@@ -711,7 +756,8 @@ CMD:createpoll(playerid, params[])
 				PollInfo[iPollID][poll_iExpirationDate],
 				PollInfo[iPollID][poll_iType],
 				PollInfo[iPollID][poll_iTypeRank],
-				PollInfo[iPollID][poll_iTypeID]);
+				PollInfo[iPollID][poll_iTypeID],
+				PollInfo[iPollID][poll_iNation]);
 
 			mysql_function_query(MainPipeline, szMiscArray, false, "NewPollCreated", "i", iPollID);
 			szMiscArray[0] = 0;
@@ -751,6 +797,8 @@ CMD:deletepoll(playerid, params[])
 
 				PollInfo[iPollID][poll_iInterior] = 0;
 				PollInfo[iPollID][poll_iVirtualWorld] = 0;
+
+				PollInfo[iPollID][poll_iNation] = -1;
 
 				format(szMiscArray, sizeof szMiscArray, "DELETE FROM `polls` WHERE `ID`=%d", iPollID + 1);
 				mysql_function_query(MainPipeline, szMiscArray, false, "PollDeleted", "i", iPollID);
@@ -869,7 +917,13 @@ CMD:vote(playerid, params[])
 					case 4: if(PlayerInfo[playerid][pAdmin] >= PollInfo[iPollID][poll_iTypeRank]) iCanUse = 1;
 				}
 
-				if(iCanUse)
+				if(PollInfo[iPollID][poll_iNation] != -1)
+				{
+					if(PollInfo[iPollID][poll_iNation] == 0 && PlayerInfo[playerid][pNation] != 0) return SendClientMessage(playerid, COLOR_GRAD2, "This poll is restricted to San Andreas - you cannot vote in it.");
+					else if(PollInfo[iPollID][poll_iNation] == 1 && PlayerInfo[playerid][pNation] != 1) return SendClientMessage(playerid, COLOR_GRAD2, "This poll is restricted to New Robada - you cannot vote in it.");
+				}
+
+				if(iCanUse) // Just in case?
 				{
 					SetPVarInt(playerid, "iVotingOnPoll", iPollID);
 
@@ -921,12 +975,17 @@ CMD:polls(playerid, params[]) {
         SendClientMessage(playerid, COLOR_GREEN, "_______________________________________");
 
         new iPollCount = 0;
+       	new szNation[25];
         for(new i = 0; i < MAX_POLLS; i++) {
 
             if(PollInfo[i][poll_iID] != -1) {
             	
+            	if(PollInfo[i][poll_iNation] == -1) format(szNation, sizeof szNation, "None");
+            	else if(PollInfo[i][poll_iNation] == 0) format(szNation, sizeof szNation, "San Andreas");
+            	else if(PollInfo[i][poll_iNation] == 1) format(szNation, sizeof szNation, "New Robada");
+
                 iPollCount++;
-                format(szMiscArray, sizeof(szMiscArray), "Poll ID: %d | Title / Topic: %s | No. of Options: %d | Placed By: %s (Unique Key: %s)", i, PollInfo[i][poll_szTitle], PollInfo[i][poll_iOptions], PollInfo[i][poll_szPlacedBy], PollInfo[i][poll_szUniqueKey]);
+                format(szMiscArray, sizeof(szMiscArray), "Poll ID: %d | Title / Topic: %s | No. of Options: %d | Placed By: %s (Unique Key: %s) | Nation: %s", i, PollInfo[i][poll_szTitle], PollInfo[i][poll_iOptions], PollInfo[i][poll_szPlacedBy], PollInfo[i][poll_szUniqueKey], szNation);
                 SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
             }
         }
