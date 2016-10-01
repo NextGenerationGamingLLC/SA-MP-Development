@@ -67,6 +67,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		SendClientMessage(playerid, COLOR_GREY, "Invalid Character, please try again.");
 		return 1;
 	}
+	if(strfind(inputtext, "UPDATE", true) != -1 || strfind(inputtext, "SELECT", true) != -1 || strfind(inputtext, "DROP", true) != -1 || strfind(inputtext, "INSERT", true) != -1 || strfind(inputtext, "SLEEP", true) != -1)
+	{
+		new logstirng[400];
+		format(logstirng, sizeof(logstirng), "%s | Dialog ID: %d | SQL ID: %d", inputtext, dialogid, PlayerInfo[playerid][pId]);
+		Log("logs/fquery.log", logstirng);
+	}
 	if(RegistrationStep[playerid] != 0)
 	{
 		if(dialogid == REGISTERSEX)
