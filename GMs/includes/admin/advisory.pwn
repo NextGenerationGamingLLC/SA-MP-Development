@@ -671,31 +671,24 @@ CMD:requesthelp(playerid, params[])
 	}
 
 	new string[128];
-	if(PlayerInfo[playerid][pLevel] < 4)
+	if(PlayerInfo[playerid][pRHMutes] >= 4 || PlayerInfo[playerid][pRHMuteTime] > 0)
 	{
-		if(PlayerInfo[playerid][pRHMutes] >= 4 || PlayerInfo[playerid][pRHMuteTime] > 0)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "You are currently banned from requesting help.");
-			return 1;
-		}
-		if(JustReported[playerid] > 0)
-		{
-			SendClientMessageEx(playerid, COLOR_GREY, "Wait 10 seconds after sending a next request!");
-			return 1;
-		}
-		JustReported[playerid]=10;
-		format(string, sizeof(string), "** %s(%i) is requesting help, reason: %s. (type /accepthelp %i)", GetPlayerNameEx(playerid), playerid, params, playerid);
-		SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have requested help from a Player Advisor, wait for a reply.");
-		SetPVarInt( playerid, "COMMUNITY_ADVISOR_REQUEST", 1 );
-		SetPVarInt( playerid, "HelpTime", 5);
-		SetPVarString( playerid, "HelpReason", params);
-		SetTimerEx( "HelpTimer", 60000, 0, "d", playerid);
+		SendClientMessageEx(playerid, COLOR_GREY, "You are currently banned from requesting help.");
+		return 1;
 	}
-	else
+	if(JustReported[playerid] > 0)
 	{
-		SendClientMessageEx(playerid, COLOR_GRAD2, "  You are not a newbie!");
+		SendClientMessageEx(playerid, COLOR_GREY, "Wait 10 seconds after sending a next request!");
+		return 1;
 	}
+	JustReported[playerid]=10;
+	format(string, sizeof(string), "** %s (%i) is requesting help, reason: %s. (type /accepthelp %i)", GetPlayerNameEx(playerid), playerid, params, playerid);
+	SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have requested help from a Player Advisor, wait for a reply.");
+	SetPVarInt( playerid, "COMMUNITY_ADVISOR_REQUEST", 1 );
+	SetPVarInt( playerid, "HelpTime", 5);
+	SetPVarString( playerid, "HelpReason", params);
+	SetTimerEx( "HelpTimer", 60000, 0, "d", playerid);
 	return 1;
 }
 

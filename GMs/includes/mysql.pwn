@@ -525,6 +525,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pPrisonWineTime]		= cache_get_field_content_int(row, "PrisonWineTime", MainPipeline);
 					PlayerInfo[extraid][pPrisonCell] 			= cache_get_field_content_int(row, "PrisonCell", MainPipeline);
 
+					SetPVarInt(extraid, "MedVestKit", cache_get_field_content_int(row, "CopKit", MainPipeline));
+
 					SetPVarInt(extraid, "pPrisonSoap", cache_get_field_content_int(row, "PrisonSoap", MainPipeline));
 					SetPVarInt(extraid, "pPrisonSugar", cache_get_field_content_int(row, "PrisonSugar", MainPipeline));
 					SetPVarInt(extraid, "pPrisonBread", cache_get_field_content_int(row, "PrisonBread", MainPipeline));
@@ -2437,6 +2439,8 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Meth", PlayerInfo[playerid][pDrugs][2]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Ecstasy", PlayerInfo[playerid][pDrugs][3]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Heroin", PlayerInfo[playerid][pDrugs][4]);
+
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "CopKit", GetPVarInt(playerid, "MedVestKit"));
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Hitman", PlayerInfo[playerid][pHitman]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "HitmanLeader", PlayerInfo[playerid][pHitmanLeader]);
@@ -6041,9 +6045,9 @@ stock SaveHGBackpack(id)
 {
 	new string[1024];
 	format(string, sizeof(string), "UPDATE `hgbackpacks` SET \
-		`type` = %d,
-		`posx` = %f,
-		`posy` = %f,
+		`type` = %d, \
+		`posx` = %f,\
+		`posy` = %f,\
 		`posz` = %f WHERE `id` = %d",
 		HungerBackpackInfo[id][hgBackpackType],
 		HungerBackpackInfo[id][hgBackpackPos][0],

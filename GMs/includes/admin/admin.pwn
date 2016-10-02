@@ -6084,6 +6084,24 @@ CMD:dice(playerid, params[])
     return 1;
 }
 
+CMD:randomnumber(playerid, params[])
+{
+	new iLower, iUpper;
+	if(sscanf(params, "dd", iLower, iUpper)) return SendClientMessage(playerid, COLOR_GRAD2, "USAGE: /randomnumber [minimum] [maximum]");
+
+	if(iLower < 2 || iUpper > 999999) return SendClientMessage(playerid, COLOR_GRAD2, "The minimum value must be 2 or above, and you cannot go above 999,999.");
+
+	if((iUpper - iLower) < 2) return SendClientMessage(playerid, COLOR_GRAD2, "There must be a difference of at least 2 between the min and max values.");
+
+	new val = randomEx(iLower, iUpper + 1);
+
+	format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s picks a random number - %s.", GetPlayerNameEx(playerid), number_format(val));
+    ProxDetector(9.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+	return 1;
+}
+
+CMD:randnum(playerid, params[]) return cmd_randomnumber(playerid, params);
+
 CMD:card(playerid, params[]) {
 
     new iDeck = Random(0, 3),

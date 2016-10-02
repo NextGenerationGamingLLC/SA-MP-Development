@@ -2342,9 +2342,9 @@ IsPlayerInAShower(playerid)
 }
 
 
-/* TESTING COMANDS - REMOOOVE */
+/* TESTING COMANDS - REMOVE removed*/
 
-CMD:givemematerials(playerid, params[])
+/*CMD:givemematerials(playerid, params[])
 {
     PlayerInfo[playerid][pPrisonMaterials] += 100000;
 	return 1;
@@ -2362,7 +2362,7 @@ CMD:mycell(playerid, params[])
 	format(string, sizeof(string), "%d.", PlayerInfo[playerid][pPrisonCell]);
 	SendClientMessage(playerid, COLOR_WHITE, string);
 	return 1;
-}
+}*/
 
 ShowPrisonInventory(playerid)
 {

@@ -471,6 +471,41 @@ CMD:placekit(playerid, params[]) {
 	return 1;
 }
 
+CMD:givekit(playerid, params[])
+{
+	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
+	{
+		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
+		if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }
+		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
+
+		new iTarget;
+		if(sscanf(params, "u", iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "USAGE: /givekit [playerid]");
+
+		if(!IsPlayerConnected(iTarget)) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid player specified.");
+
+		new Float:X, Float:Y, Float:Z; GetPlayerPos(iTarget, X, Y, Z);
+		if(!IsPlayerInRangeOfPoint(playerid, 5.0, X, Y, Z)) return SendClientMessage(playerid, COLOR_GRAD2, "You're not close enough to that player.");
+
+		if(IsACop(iTarget) || IsAMedic(iTarget) || IsAGovernment(iTarget) || IsATowman(iTarget))
+		{
+			if(GetPVarInt(playerid, "MedVestKit") > 0)
+			{
+				if(GetPVarInt(iTarget, "MedVestKit") > 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player already has a kit.");
+
+				format(szMiscArray, sizeof(szMiscArray), "{FF8000}** {C2A2DA}%s gives a Med Kit to %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
+				SendClientMessageEx(iTarget, COLOR_WHITE, "You have been given a Med Kit. To use it, use /placekit and then /usekit.");
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SetPVarInt(playerid, "MedVestKit", 0);
+				SetPVarInt(iTarget, "MedVestKit", 1);
+			}
+			else SendClientMessage(playerid, COLOR_GRAD2, "You do not have a kit.");
+		}
+		else SendClientMessage(playerid, COLOR_GRAD2, "That player cannot use kits.");
+	}
+	return 1;
+}
+
 CMD:usekit(playerid, params[]) {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{

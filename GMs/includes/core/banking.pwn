@@ -666,11 +666,8 @@ CMD:pay(playerid, params[])
 	else if(id == playerid) {
 		SendClientMessageEx(playerid, COLOR_GREY, "You can not use this command on yourself!");
 	}
-	else if(amount > 1000 && PlayerInfo[playerid][pLevel] < 3) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You must be level 3 to pay over $1,000 at a time.");
-	}
-	else if(!(1 <= amount <= 100000)) {
-		SendClientMessageEx(playerid, COLOR_GRAD1, "Don't go below $1, or above $100,000 at once.");
+	else if(!(1 <= amount <= 99999999)) {
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot pay below $1, or above $99,999,999 at once.");
 	}
 	else if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) {
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");
@@ -695,14 +692,9 @@ CMD:writecheck(playerid, params[])
 	if(sscanf(params, "uds[64]", giveplayerid, monies, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /writecheck [Playerid/PartOfName] [Amount] [Reason]");
 
     if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
-    if(monies > 1000 && PlayerInfo[playerid][pLevel] < 3)
+    if(monies < 1 || monies > 99999999)
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "   You must be level 3 to write a check for greater then 1000$ !");
-        return 1;
-    }
-    if(monies < 1 || monies > 100000)
-	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "   You can't write a check for under 1$ or over 100,000$ !");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "   You can't write a check for under $1 or over $99,999,999!");
         return 1;
     }
 	if(PlayerInfo[playerid][pCash] < 0 || PlayerInfo[playerid][pAccount] < 0)
@@ -711,7 +703,7 @@ CMD:writecheck(playerid, params[])
 	}
     if(PlayerInfo[playerid][pChecks] == 0)
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "   You must have a checkbook to write a check !");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "   You must have a checkbook to write a check!");
         return 1;
     }
     if(gettime()-GetPVarInt(playerid, "LastTransaction") < 10) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only make a transaction once every 10 seconds, please wait!");

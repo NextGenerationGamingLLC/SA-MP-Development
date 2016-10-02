@@ -20,9 +20,11 @@
 								**  Development Staff:
 									Miguel (s0nic)
 									Farva
+									Rothschild
+									Connor
 									Jingles
 									Westen
-									Behemoth									
+																	
 				Past Developers:
 								*** Director of SA:MP Development:
 									Dom
@@ -49,6 +51,7 @@
 									Kareemtastic
 									Sew Sumi
 									Razbit
+									Behemoth
 
 				Credits to alternate sources (Y_Less for foreach, gf, etc)
  *
@@ -77,7 +80,7 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.372"
+#define SERVER_GM_TEXT "NG:RP v3.0.373"
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
 
