@@ -4149,7 +4149,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							GoChase[playerid] = INVALID_PLAYER_ID;
 							new iHitPercent = floatround(takemoney * 0.10);
 							iHMASafe_Val += iHitPercent;
-							format(szMiscArray, sizeof szMiscArray, "[HIT COMPLETE] $%s deposited from %s's hit.", number_format(iHitPercent), GetPlayerNameEx(playerid));
+							format(szMiscArray, sizeof szMiscArray, "[hit] %s (%d) has killed %s (%d) [C4] for $%s ($%s deposited to safe).", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(GoChase[playerid]), GetPlayerSQLId(GoChase[playerid]), number_format(takemoney), number_format(iHitPercent));
 							Log("logs/hitman.log", szMiscArray);
 						}
 					}
@@ -4227,7 +4227,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 					new iHitPercent = floatround(takemoney * 0.10);
 					iHMASafe_Val += iHitPercent;
-					format(szMiscArray, sizeof szMiscArray, "[HIT COMPLETE] $%s deposited from %s's hit.", number_format(iHitPercent), GetPlayerNameEx(playerid));
+					format(szMiscArray, sizeof szMiscArray, "[hit] %s (%d) has killed %s (%d) [car bomb] for $%s ($%s deposited to safe).", GetPlayerNameEx(GetChased[playerid]), GetPlayerSQLId(GetChased[playerid]), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(takemoney), number_format(iHitPercent));
 					Log("logs/hitman.log", szMiscArray);
 					return 1;
 				}

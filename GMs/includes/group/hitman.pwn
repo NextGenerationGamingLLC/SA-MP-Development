@@ -726,7 +726,7 @@ CMD:hmahelp(playerid, params[])
 	if(IsAHitman(playerid))
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /contracts /givemehit /order /profile /hfind /plantbomb /plantcarbomb /pickupbomb /myc4 /quithma");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /contracts /givemehit /order /profile /hfind /plantbomb /plantcarbomb /pickupbomb /myc4 /hmastats /quithma");
 
 		if(IsAHitmanLeader(playerid))
 		{
@@ -1127,7 +1127,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) {
                             return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only request a name change every two minutes.");
                         }
-                        ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Back");
+                        ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE2, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Back");
                     }
                 }
             }
@@ -1144,6 +1144,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 5000) {
                             GivePlayerValidWeapon(playerid, 17);
                             GivePlayerCash(playerid, - 5000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken teargas (17) from the locker at $5,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1151,6 +1154,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 12000) {
                             GivePlayerValidWeapon(playerid, 4);
                             GivePlayerCash(playerid, - 12000);
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a knife (4) from the locker at $12,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1158,6 +1163,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 5000) {
                             GivePlayerValidWeapon(playerid, 3);
                             GivePlayerCash(playerid, - 5000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a baton (3) from the locker at $5,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1165,6 +1173,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 4500) {
                             GivePlayerValidWeapon(playerid, 41);
                             GivePlayerCash(playerid, - 4500);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a spraycan (41) from the locker at $4,500.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1172,6 +1183,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 5000) {
                             GivePlayerValidWeapon(playerid, 22);
                             GivePlayerCash(playerid, - 5000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a 9mm (22) from the locker at $5,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1179,6 +1193,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 7500) {
                             GivePlayerValidWeapon(playerid, 23);
                             GivePlayerCash(playerid, - 7500);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken an SD pistol (23) from the locker at $7,500.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1186,6 +1203,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 12000) {
                             GivePlayerValidWeapon(playerid, 24);
                             GivePlayerCash(playerid, - 12000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a deagle (24) from the locker at $12,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1193,6 +1213,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 17500) {
                             GivePlayerValidWeapon(playerid, 29);
                             GivePlayerCash(playerid, - 17500);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken an MP5 (29) from the locker at $17,500.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1200,6 +1223,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 17500) {
                             GivePlayerValidWeapon(playerid, 28);
                             GivePlayerCash(playerid, - 17500);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken an uzi (28) from the locker at $17,500.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1207,6 +1233,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 17500) {
                             GivePlayerValidWeapon(playerid, 32);
                             GivePlayerCash(playerid, - 17500);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a tec9 (32) from the locker at $17,500.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1214,6 +1243,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 11000) {
                             GivePlayerValidWeapon(playerid, 25);
                             GivePlayerCash(playerid, - 11000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a shotgun (25) from the locker at $11,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1221,6 +1253,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 90000) {
                             GivePlayerValidWeapon(playerid, 27);
                             GivePlayerCash(playerid, - 90000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a SPAS-12 (27) from the locker at $90,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1228,6 +1263,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 35000) {
                             GivePlayerValidWeapon(playerid, 30);
                             GivePlayerCash(playerid, - 35000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken an AK47 (30) from the locker at $35,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1235,6 +1273,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 70000) {
                             GivePlayerValidWeapon(playerid, 31);
                             GivePlayerCash(playerid, - 70000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken an m4 (31) from the locker at $70,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1242,6 +1283,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 10000) {
                             GivePlayerValidWeapon(playerid, 33);
                             GivePlayerCash(playerid, - 10000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a rifle (33) from the locker at $10,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1249,6 +1293,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 65000) {
                             GivePlayerValidWeapon(playerid, 34);
                             GivePlayerCash(playerid, - 65000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a sniper (34) from the locker at $65,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1256,6 +1303,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                         if(GetPlayerCash(playerid) >= 20000) {
                             GivePlayerValidWeapon(playerid, 9);
                             GivePlayerCash(playerid, - 20000);
+
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a chainsaw (9) from the locker at $20,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1264,6 +1314,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             PlayerInfo[playerid][pC4Get] = 1;
                             PlayerInfo[playerid][pBombs]++;
                             GivePlayerCash(playerid, -50000);
+                            format(szMiscArray, sizeof szMiscArray, "%s has taken a block of C4 from the locker at $50,000.", GetPlayerNameEx(playerid));
+                            Log("logs/hitman.log", szMiscArray);
                             SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased one block of C4!");
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
@@ -1431,7 +1483,7 @@ CMD:order(playerid, params[])
 	if (IsAHitman(playerid))
 	{
 	    if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this right now.");
-		if(IsPlayerInRangeOfPoint(playerid, 4.0, 63.973995, 1973.618774, -68.786064) || IsPlayerInRangeOfPoint(playerid, 6.0, 1415.727905, -1299.371093, 15.054657))
+		if(IsPlayerInRangeOfPoint(playerid, 4.0, 63.973995, 1973.618774, -68.786064) || IsPlayerInRangeOfPoint(playerid, 6.0, 1415.727905, -1299.371093, 15.054657) || IsPlayerInRangeOfPoint(playerid, 2.0, 1666.3503, -1576.5717, 2195.8643))
 		{
 			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
 			new string[128];

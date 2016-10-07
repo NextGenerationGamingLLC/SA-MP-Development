@@ -785,14 +785,11 @@ public OnPlayerDeath(playerid, killerid, reason)
 				GetChased[playerid] = INVALID_PLAYER_ID;
 				GoChase[killerid] = INVALID_PLAYER_ID;
 
-				new weaponname[32], iGroupID = PlayerInfo[killerid][pMember];
+				new weaponname[32];
 				GetWeaponName(reason, weaponname, sizeof(weaponname));
-				format(szMessage, sizeof szMessage, "[HMA] %s (%d) has succeeded in killing %s (%d) with a %s.", GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponname);
-				GroupLog(iGroupID, szMessage);
-
 				new iHitPercent = floatround(takemoney * 0.10);
 				iHMASafe_Val += iHitPercent;
-				format(szMiscArray, sizeof szMiscArray, "[HIT COMPLETE] $%s deposited from %s's hit.", number_format(iHitPercent), GetPlayerNameEx(playerid));
+				format(szMiscArray, sizeof szMiscArray, "[hit] %s (%d) has killed %s (%d) [%s] for $%s ($%s deposited to safe).", GetPlayerNameEx(killerid), GetPlayerSQLId(killerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), weaponname, number_format(takemoney), number_format(iHitPercent));
 				Log("logs/hitman.log", szMiscArray);
 			}
 		}

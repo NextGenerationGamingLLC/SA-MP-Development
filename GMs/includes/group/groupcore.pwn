@@ -6178,7 +6178,54 @@ CMD:adjustwithdrawrank(playerid, params[])
 	return 1;
 }
 
-CMD:families(playerid, params[]) return cmd_orgs(playerid, params);
+CMD:families(playerid, params[]) 
+{
+	if(!IsACriminal(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You need to be in a family / gang to use this command.");
+
+	if(isnull(params))
+	{
+		szMiscArray[0] = 0;
+		SendClientMessage(playerid, COLOR_GRAD2, "USAGE: /families [id]");
+		for(new i = 0; i < MAX_GROUPS; i++)
+		{
+			if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_CRIMINAL && strlen(arrGroupData[i][g_szGroupName]) > 0)
+			{
+				new iMemberCount = 0;
+				foreach(new x: Player)
+				{
+					if(PlayerInfo[x][pMember] == i) iMemberCount++;
+				}
+
+				format(szMiscArray, sizeof szMiscArray, "** %s (%d) | Total Members: %d | Members Online: %d", arrGroupData[i][g_szGroupName], i, arrGroupData[i][g_iMemberCount], iMemberCount);
+				SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+			}
+		}
+	}
+	else
+	{
+		new grp = strval(params);
+		if(grp < 0 || grp > MAX_GROUPS || strlen(arrGroupData[grp][g_szGroupName]) == 0) return SendClientMessage(playerid, COLOR_GRAD2, "Invalid group ID specified.");
+
+		if(arrGroupData[grp][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessage(playerid, COLOR_GRAD2, "That group is not a family / gang.");
+
+		new iCount = 0;
+
+		foreach(new i: Player)
+		{
+			if(PlayerInfo[i][pMember] == grp)
+			{
+				format(szMiscArray, sizeof szMiscArray, "** %s (ID: %d) - %s (%d)", GetPlayerNameEx(i), i, arrGroupRanks[grp][PlayerInfo[i][pRank]], PlayerInfo[i][pRank]);
+				SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
+				iCount++;
+			}
+		}
+
+		if(iCount == 0) SendClientMessage(playerid, COLOR_GRAD3, "There are no players online in this gang.");
+	}
+	return 1;
+}
+
+//CMD:families(playerid, params[]) return cmd_orgs(playerid, params);
 CMD:orgs(playerid, params[])
 {
 	szMiscArray[0] = 0;
