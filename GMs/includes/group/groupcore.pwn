@@ -4494,7 +4494,7 @@ CMD:destroy(playerid, params[])
 				else if(PlayerInfo[playerid][pAdmin] < 2 && Tapes[type][sDeployedByStatus] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot destroy a tape that an Administrator deployed.");
 				else
 				{
-					if(PlayerInfo[palyerid][pMember] == Tapes[type][iDeployedByGroup])
+					if(PlayerInfo[playerid][pMember] == Tapes[type][iDeployedByGroup])
 					{
 							new string[43 + MAX_PLAYER_NAME + MAX_ZONE_NAME];
 							DestroyDynamicObject(Tapes[type][sObjectID]);

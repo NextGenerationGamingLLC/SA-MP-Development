@@ -1831,7 +1831,7 @@ public DeleteHouse(houseid, adminid)
 	return 1;
 }
 
-
+/*
 CMD:housefix(playerid, params[]) {
 
 	new Float:fPos[3];
@@ -1859,3 +1859,4 @@ CMD:housefix(playerid, params[]) {
 	}
 	return 1;
 }
+*/
