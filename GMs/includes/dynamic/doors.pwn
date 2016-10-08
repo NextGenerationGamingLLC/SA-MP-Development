@@ -253,40 +253,40 @@ public OnLoadDynamicDoor(index)
 
 	for(new row; row < rows; row++)
 	{
-		DDoorsInfo[index][ddSQLId] = cache_get_field_content_int(rows, "id", MainPipeline);
-		cache_get_field_content(rows, "Description", DDoorsInfo[index][ddDescription], MainPipeline, 128);
-	 	DDoorsInfo[index][ddOwner] = cache_get_field_content_int(rows, "Owner", MainPipeline);
-		cache_get_field_content(rows, "OwnerName", DDoorsInfo[index][ddOwnerName], MainPipeline, 42);
-		DDoorsInfo[index][ddCustomExterior] = cache_get_field_content_int(rows, "CustomExterior", MainPipeline);
-		DDoorsInfo[index][ddCustomInterior] = cache_get_field_content_int(rows, "CustomInterior", MainPipeline);
-		DDoorsInfo[index][ddExteriorVW] = cache_get_field_content_int(rows, "ExteriorVW", MainPipeline); 
-		DDoorsInfo[index][ddExteriorInt] = cache_get_field_content_int(rows, "ExteriorInt", MainPipeline); 
-		DDoorsInfo[index][ddInteriorVW] = cache_get_field_content_int(rows, "InteriorVW", MainPipeline); 
-		DDoorsInfo[index][ddInteriorInt] = cache_get_field_content_int(rows, "InteriorInt", MainPipeline);
-		DDoorsInfo[index][ddExteriorX] = cache_get_field_content_float(rows, "ExteriorX", MainPipeline);
-		DDoorsInfo[index][ddExteriorY] = cache_get_field_content_float(rows, "ExteriorY", MainPipeline);
-		DDoorsInfo[index][ddExteriorZ] = cache_get_field_content_float(rows, "ExteriorZ", MainPipeline);
-		DDoorsInfo[index][ddExteriorA] = cache_get_field_content_float(rows, "ExteriorA", MainPipeline);
-		DDoorsInfo[index][ddInteriorX] = cache_get_field_content_float(rows, "InteriorX", MainPipeline);
-		DDoorsInfo[index][ddInteriorY] = cache_get_field_content_float(rows, "InteriorY", MainPipeline);
-		DDoorsInfo[index][ddInteriorZ] = cache_get_field_content_float(rows, "InteriorZ", MainPipeline);
-		DDoorsInfo[index][ddInteriorA] = cache_get_field_content_float(rows, "InteriorA", MainPipeline);
-		DDoorsInfo[index][ddType] = cache_get_field_content_int(rows, "Type", MainPipeline); 
-		DDoorsInfo[index][ddRank] = cache_get_field_content_int(rows, "Rank", MainPipeline); 
-		DDoorsInfo[index][ddVIP] = cache_get_field_content_int(rows, "VIP", MainPipeline); 
-		DDoorsInfo[index][ddFamed] = cache_get_field_content_int(rows, "Famed", MainPipeline); 
-		DDoorsInfo[index][ddDPC] = cache_get_field_content_int(rows, "DPC", MainPipeline); 
-		DDoorsInfo[index][ddAllegiance] = cache_get_field_content_int(rows, "Allegiance", MainPipeline);
-		DDoorsInfo[index][ddGroupType] = cache_get_field_content_int(rows, "GroupType", MainPipeline); 
-		DDoorsInfo[index][ddFaction] = cache_get_field_content_int(rows, "Faction", MainPipeline); 
-		DDoorsInfo[index][ddAdmin] = cache_get_field_content_int(rows, "Admin", MainPipeline); 
-		DDoorsInfo[index][ddWanted]	= cache_get_field_content_int(rows, "Wanted", MainPipeline); 
-		DDoorsInfo[index][ddVehicleAble] = cache_get_field_content_int(rows, "VehicleAble", MainPipeline); 
-		DDoorsInfo[index][ddColor] = cache_get_field_content_int(rows, "Color", MainPipeline); 
-		DDoorsInfo[index][ddPickupModel] = cache_get_field_content_int(rows, "PickupModel", MainPipeline); 
-		cache_get_field_content(rows, "Pass", DDoorsInfo[index][ddPass], MainPipeline, 24);
-		DDoorsInfo[index][ddLocked] = cache_get_field_content_int(rows, "Locked", MainPipeline); 
-		DDoorsInfo[index][ddLastLogin] = cache_get_field_content_int(rows, "LastLogin", MainPipeline);
+		DDoorsInfo[index][ddSQLId] = cache_get_field_content_int(row, "id", MainPipeline);
+		cache_get_field_content(row, "Description", DDoorsInfo[index][ddDescription], MainPipeline, 128);
+	 	DDoorsInfo[index][ddOwner] = cache_get_field_content_int(row, "Owner", MainPipeline);
+		cache_get_field_content(row, "OwnerName", DDoorsInfo[index][ddOwnerName], MainPipeline, 42);
+		DDoorsInfo[index][ddCustomExterior] = cache_get_field_content_int(row, "CustomExterior", MainPipeline);
+		DDoorsInfo[index][ddCustomInterior] = cache_get_field_content_int(row, "CustomInterior", MainPipeline);
+		DDoorsInfo[index][ddExteriorVW] = cache_get_field_content_int(row, "ExteriorVW", MainPipeline); 
+		DDoorsInfo[index][ddExteriorInt] = cache_get_field_content_int(row, "ExteriorInt", MainPipeline); 
+		DDoorsInfo[index][ddInteriorVW] = cache_get_field_content_int(row, "InteriorVW", MainPipeline); 
+		DDoorsInfo[index][ddInteriorInt] = cache_get_field_content_int(row, "InteriorInt", MainPipeline);
+		DDoorsInfo[index][ddExteriorX] = cache_get_field_content_float(row, "ExteriorX", MainPipeline);
+		DDoorsInfo[index][ddExteriorY] = cache_get_field_content_float(row, "ExteriorY", MainPipeline);
+		DDoorsInfo[index][ddExteriorZ] = cache_get_field_content_float(row, "ExteriorZ", MainPipeline);
+		DDoorsInfo[index][ddExteriorA] = cache_get_field_content_float(row, "ExteriorA", MainPipeline);
+		DDoorsInfo[index][ddInteriorX] = cache_get_field_content_float(row, "InteriorX", MainPipeline);
+		DDoorsInfo[index][ddInteriorY] = cache_get_field_content_float(row, "InteriorY", MainPipeline);
+		DDoorsInfo[index][ddInteriorZ] = cache_get_field_content_float(row, "InteriorZ", MainPipeline);
+		DDoorsInfo[index][ddInteriorA] = cache_get_field_content_float(row, "InteriorA", MainPipeline);
+		DDoorsInfo[index][ddType] = cache_get_field_content_int(row, "Type", MainPipeline); 
+		DDoorsInfo[index][ddRank] = cache_get_field_content_int(row, "Rank", MainPipeline); 
+		DDoorsInfo[index][ddVIP] = cache_get_field_content_int(row, "VIP", MainPipeline); 
+		DDoorsInfo[index][ddFamed] = cache_get_field_content_int(row, "Famed", MainPipeline); 
+		DDoorsInfo[index][ddDPC] = cache_get_field_content_int(row, "DPC", MainPipeline); 
+		DDoorsInfo[index][ddAllegiance] = cache_get_field_content_int(row, "Allegiance", MainPipeline);
+		DDoorsInfo[index][ddGroupType] = cache_get_field_content_int(row, "GroupType", MainPipeline); 
+		DDoorsInfo[index][ddFaction] = cache_get_field_content_int(row, "Faction", MainPipeline); 
+		DDoorsInfo[index][ddAdmin] = cache_get_field_content_int(row, "Admin", MainPipeline); 
+		DDoorsInfo[index][ddWanted]	= cache_get_field_content_int(row, "Wanted", MainPipeline); 
+		DDoorsInfo[index][ddVehicleAble] = cache_get_field_content_int(row, "VehicleAble", MainPipeline); 
+		DDoorsInfo[index][ddColor] = cache_get_field_content_int(row, "Color", MainPipeline); 
+		DDoorsInfo[index][ddPickupModel] = cache_get_field_content_int(row, "PickupModel", MainPipeline); 
+		cache_get_field_content(row, "Pass", DDoorsInfo[index][ddPass], MainPipeline, 24);
+		DDoorsInfo[index][ddLocked] = cache_get_field_content_int(row, "Locked", MainPipeline); 
+		DDoorsInfo[index][ddLastLogin] = cache_get_field_content_int(row, "LastLogin", MainPipeline);
 		DDoorsInfo[index][ddExpire] = cache_get_field_content_int(row, "Expire", MainPipeline);
 		DDoorsInfo[index][ddInactive] = cache_get_field_content_int(row, "Inactive", MainPipeline);
 		DDoorsInfo[index][ddIgnore] = cache_get_field_content_int(row, "Ignore", MainPipeline);
@@ -402,7 +402,7 @@ stock RehashDynamicDoors()
 	{
 		RehashDynamicDoor(i);
 	}
-	LoadDynamicDoors();
+	//LoadDynamicDoors();
 }
 
 forward OnSetDDOwner(playerid, doorid);

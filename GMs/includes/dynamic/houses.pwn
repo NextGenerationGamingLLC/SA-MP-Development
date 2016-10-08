@@ -590,7 +590,7 @@ stock RehashHouses()
 	{
 		RehashHouse(i);
 	}
-	LoadHouses();
+	//LoadHouses();
 }
 
 CMD:househelp(playerid, params[])

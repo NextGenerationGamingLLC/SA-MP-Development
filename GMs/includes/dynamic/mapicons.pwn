@@ -153,7 +153,7 @@ stock RehashDynamicMapIcons()
 	{
 		RehashDynamicMapIcon(i);
 	}
-	LoadDynamicMapIcons();
+	//LoadDynamicMapIcons();
 }
 
 
