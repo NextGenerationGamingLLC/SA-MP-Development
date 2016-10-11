@@ -48,16 +48,12 @@ CMD:getmats(playerid, params[])
 		return 1;
 	}
 
-	new mypoint = -1;
-	new mypointex = -1;
-
 	new playername[MAX_PLAYER_NAME];
 	GetPlayerName(playerid, playername, sizeof(playername));
 	for(new i = 0; i < MAX_POINTS; i++)	{
 
 		if(IsPlayerInRangeOfPoint(playerid, 3.0, DynPoints[i][poPos][0], DynPoints[i][poPos][1], DynPoints[i][poPos][2]) && DynPoints[i][poType] == 0)
 		{
-			szMiscArray[0] = 0;
 			if(DynPoints[i][poType] == 0)
 			{
 				if(DynPoints[i][poPos2][0] == 0) return SendClientMessageEx(playerid, COLOR_WHITE, "Sorry, this point is still being set up!");
@@ -169,14 +165,6 @@ CMD:getmats(playerid, params[])
 		}
 		return 1;
 	}
-	for(new i = 0; i < MAX_GROUPS; i++)
-	{
-		if(strcmp(Points[mypointex][Owner], arrGroupData[i][g_szGroupName], true) == 0)
-		{
-			arrGroupData[i][g_iBudget] +=125;
-		}
-	}
-	if(mypoint != -1) SetPlayerCheckpoint(playerid, Points[mypoint][Pointx], Points[mypoint][Pointy], Points[mypoint][Pointz], 5);
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a point.");
 	return 1;
 }

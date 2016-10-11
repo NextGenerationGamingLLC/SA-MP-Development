@@ -68,7 +68,7 @@ stock g_mysql_Init()
 	}
 	fclose(fileHandle);
 
-	mysql_log(LOG_ERROR | LOG_WARNING, LOG_TYPE_TEXT);
+	mysql_log(E_MYSQL_LOGLEVEL:SQL_DEBUG, E_MYSQL_LOGTYPE:SQL_DEBUGLOG);
 
 	MainPipeline = mysql_connect(SQL_HOST, SQL_USER, SQL_DB, SQL_PASS);
 

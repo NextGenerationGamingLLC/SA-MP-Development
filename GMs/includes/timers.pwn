@@ -265,7 +265,7 @@ task SyncTime[60000]()
 	{
 		if(tmphour == 0 && ghour == 23)
 		{
-			CallLocalFunction("InactiveResourceCheck", "");
+			//CallLocalFunction("InactiveResourceCheck", "");
 
 			/*
 			new month, day, year;
@@ -645,19 +645,15 @@ task ProductionUpdate[300000]()
 // TickRate: 1 secs.
 task MoneyUpdate[1000]()
 {
-	new secondet=second;
+	new minuitet=minuite;
 	gettime(hour,minuite,second);
 	FixHour(hour);
 	hour = shifthour;
 
-	new
-		iTempHour = CalculateWorldGameTime(hour, minuite),
-		iTempMinute = CalculateGameMinute(minuite, second);
-
-	if(secondet != second)
+	if(minuitet != minuite)
 	{
-		if(iTempMinute < 10)format(szMiscArray, sizeof(szMiscArray), "%d:0%d", iTempHour, iTempMinute);
-		else format(szMiscArray, sizeof(szMiscArray), "%d:%d", iTempHour, iTempMinute);
+		if(minuite < 10)format(szMiscArray, sizeof(szMiscArray), "%d:0%d", hour, minuite);
+		else format(szMiscArray, sizeof(szMiscArray), "%d:%d", hour, minuite);
 		TextDrawSetString(WristWatch, szMiscArray);
 	}
 	if(EventKernel[EventStatus] >= 2 && EventKernel[EventTime] > 0)

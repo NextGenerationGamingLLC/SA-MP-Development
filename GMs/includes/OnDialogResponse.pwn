@@ -4210,7 +4210,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, szMessage);
 				return SendClientMessageEx(playerid, COLOR_YELLOW, "The police has been warned that you are wanted, and are on their way.");
 			}
-			if(PlayerVehicleInfo[playerid][listitem][pvTicket]) {
+			if(PlayerVehicleInfo[playerid][listitem][pvTicket] && PlayerVehicleInfo[playerid][listitem][pvImpounded] == 0) {
 				if(GetPlayerCash(playerid) < PlayerVehicleInfo[playerid][listitem][pvTicket]) {
 					return SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have enough money on you to pay the ticket.");
 				}
@@ -4253,9 +4253,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				GivePlayerCash(playerid, -iCost);
 				Tax += iCost;
 				SpeedingTickets += iCost;
+				
 				for(new z; z < MAX_GROUPS; z++)
 				{
-					if(arrGroupData[z][g_iAllegiance] == arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
+					if(arrGroupData[z][g_iAllegiance] == 0 || arrGroupData[z][g_iAllegiance] == 1)
 					{
 						if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 						{
@@ -4270,24 +4271,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 
 				Misc_Save();
-
-				/*switch(PlayerInfo[playerid][pNation]) {
-
-					case 0: {
-
-						new rand = random(sizeof(DMVRelease));
-						PlayerVehicleInfo[playerid][listitem][pvPosX] = DMVRelease[rand][0];
-						PlayerVehicleInfo[playerid][listitem][pvPosY] = DMVRelease[rand][1];
-						PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVRelease[rand][2];
-					}
-					case 1: {
-
-						new rand = random(sizeof(DMVReleaseNE));
-						PlayerVehicleInfo[playerid][listitem][pvPosX] = DMVReleaseNE[rand][0];
-						PlayerVehicleInfo[playerid][listitem][pvPosY] = DMVReleaseNE[rand][1];
-						PlayerVehicleInfo[playerid][listitem][pvPosZ] = DMVReleaseNE[rand][2];
-					}
-				}*/
 
 				new rand = random(sizeof(DMVRelease));
 				PlayerVehicleInfo[playerid][listitem][pvPosX] = DMVRelease[rand][0];
