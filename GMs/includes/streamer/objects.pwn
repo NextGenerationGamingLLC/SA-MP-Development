@@ -131,6 +131,10 @@ hook OnGameModeInit() {
 	SFPDLobbyDoor[1] = CreateDynamicObject(1495, -1598.17004, 702.68219, 12.85020,   0.00000, 0.00000, 0.00000, .streamdistance = 50);
 
 	CreateDynamicObject(6922, 2551.58936, 112.29691, 28.16482,   0.00000, 0.00000, 90.00000); // New Robada DMV
+
+	// SASD Interior doors.
+	SASDDoors[0] = CreateDynamicObject(1495, 14.92530, 53.51950, 996.84857,   0.00000, 0.00000, 90.00000);
+	SASDDoors[1] = CreateDynamicObject(1495, 8.70370, 57.32530, 991.03699,   0.00000, 0.00000, 270.00000);
 	
 	print("[Streamer] Dynamic Objects has been loaded.");
 	return 1;

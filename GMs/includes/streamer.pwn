@@ -112,6 +112,20 @@ public CloseChief()
 	return 1;
 }
 
+forward CloseSASDNew1();
+public CloseSASDNew1()
+{
+	MoveDynamicObject(SASDDoors[0], 14.92530, 53.51950, 996.84857, 4, 0.00000, 0.00000, 90.00000);
+	return 1;
+}
+
+forward CloseSASDNew2();
+public CloseSASDNew2()
+{
+	MoveDynamicObject(SASDDoors[1], 8.70370, 57.32530, 991.03699, 4, 0.00000, 0.00000, 270.00000);
+	return 1;
+}
+
 forward CloseSASD1();
 public CloseSASD1()
 {

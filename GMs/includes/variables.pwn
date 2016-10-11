@@ -2715,6 +2715,7 @@ new FBILobbyLeft, FBILobbyLeftBTN[2], FBILobbyRight, FBILobbyRightBTN[2], FBIPri
 new DocButton[19];
 new DocCPButton[2];
 new SFPDHighCMDButton[3], SFPDHighCMDDoor[3], SFPDLobbyButton[2], SFPDLobbyDoor[2];
+new SASDButtons[4], SASDDoors[2]; // New SASD interior vars.
 
 new bool:emailcheck = true;
 

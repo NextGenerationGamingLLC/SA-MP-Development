@@ -580,6 +580,36 @@ public OnPlayerInteriorChange(playerid,newinteriorid,oldinteriorid)
 
 public OnPlayerPressButton(playerid, buttonid)
 {
+	// New SASD interior.
+	if(buttonid == SASDButtons[0] || buttonid == SASDButtons[3])
+	{
+		if(IsACop(playerid))
+		{
+			MoveDynamicObject(SASDDoors[0], 14.92530, 53.51950, 996.84857, 4, 0.00000, 0.00000, 180.00000);
+			SetTimer("CloseSASDNew1", 2500, 0);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY," Access denied.");
+			return 1;
+		}
+	}
+
+	if(buttonid == SASDButtons[2] || buttonid == SASDButtons[1])
+	{
+		if(IsACop(playerid))
+		{
+			MoveDynamicObject(SASDDoors[1], 8.70370, 57.32530, 991.03699, 4, 0.00000, 0.00000, 0.00000);
+			SetTimer("CloseSASDNew2", 2500, 0);
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_GREY," Access denied.");
+			return 1;
+		}
+	}
+	
+
 	if(buttonid == sasdbtn1)
 	{
 	    if(IsACop(playerid) && PlayerInfo[playerid][pRank] >= 5)

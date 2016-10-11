@@ -253,7 +253,10 @@ CMD:edithmasafepos(playerid, params[])
 		SendClientMessage(playerid, COLOR_GRAD2, "	Hitman agency safe position edited successfully.");
 
 		format(szMiscArray, sizeof szMiscArray, "Administrator %s has edited the safe position to X: %f, Y: %f, Z: %f.", GetPlayerNameEx(playerid), fHMASafe_Loc[0], fHMASafe_Loc[1], fHMASafe_Loc[2]);
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 	}
 	else return SendClientMessage(playerid, COLOR_GRAD2, "You're not authorized to use this command.");
 
@@ -282,7 +285,10 @@ CMD:hmasafedeposit(playerid, params[])
 		SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "[SAFE DEPOSIT] %s %s | $%s deposited (total balance: $%s)", GetHitmanRank(playerid), GetPlayerNameEx(playerid), number_format(iVal), number_format(iHMASafe_Val));
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 	}
 	else return 0;
 	return 1;
@@ -311,7 +317,10 @@ CMD:hmasafewithdraw(playerid, params[])
 		SendClientMessage(playerid, COLOR_GRAD2, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "[SAFE WITHDRAW] %s %s | $%s withdrawn (total balance: $%s)", GetHitmanRank(playerid), GetPlayerNameEx(playerid), number_format(iVal), number_format(iHMASafe_Val));
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 	}
 	else return 0;
 	return 1;
@@ -512,7 +521,10 @@ CMD:givehitmanrank(playerid, params[])
 		else if(iRank < PlayerInfo[iTarget][pHitman]) format(szChange, sizeof szChange, "demoted");
 
 		format(szMiscArray, sizeof szMiscArray, "%s %s has %s %s to %s (%d) from %s (%d).", GetHitmanRank(playerid), GetPlayerNameEx(playerid), szChange, GetPlayerNameEx(iTarget), szRank, iRank, GetHitmanRank(iTarget), PlayerInfo[iTarget][pHitman]);
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 		PlayerInfo[iTarget][pHitman] = iRank;
 
 
@@ -570,7 +582,10 @@ CMD:makehitman(playerid, params[])
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "%s %s has made %s a hitman.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 	}
 	else if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4) // They're either a HA+ or a Senior Admin w/ FMod.
 	{
@@ -599,7 +614,10 @@ CMD:makehitman(playerid, params[])
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "Administrator %s has admin invited %s to the Hitman Agency.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 	}
 	else return 0;
 
@@ -630,7 +648,10 @@ CMD:removehitman(playerid, params[])
 		if(PlayerInfo[iTarget][pGuns][1] == 4) RemovePlayerWeapon(iTarget, 4);
 
 		format(szMiscArray, sizeof szMiscArray, "%s %s has kicked %s from the Hitman Agency.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 	}
 	else if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pFactionModerator] != 0 && PlayerInfo[playerid][pAdmin] >= 4)
 	{
@@ -652,7 +673,10 @@ CMD:removehitman(playerid, params[])
 		if(PlayerInfo[iTarget][pGuns][1] == 4) RemovePlayerWeapon(iTarget, 4);
 
 		format(szMiscArray, sizeof szMiscArray, "Administrator %s has kicked %s from the Hitman Agency.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 	}
 	else return 0;
 
@@ -688,7 +712,10 @@ CMD:makehitmanleader(playerid, params[])
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "Administrator %s has made %s a hitman leader.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 	}
 	else return 0;
 
@@ -715,7 +742,10 @@ CMD:removehitmanleader(playerid, params[])
 		SendClientMessage(iTarget, COLOR_LIGHTBLUE, szMiscArray);
 
 		format(szMiscArray, sizeof szMiscArray, "Administrator %s has removed %s's hitman leadership.", GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
-		Log("logs/hitman.log", szMiscArray);
+		new file[256], month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+		Log(file, szMiscArray);
 	}
 	else return 0;
 	return 1;
@@ -775,7 +805,10 @@ CMD:blacklist(playerid, params[])
 			SendClientMessage(playerid, COLOR_GREY, szMiscArray);
 
 			format(szMiscArray, sizeof szMiscArray, "%s %s has blacklisted %s, reason: %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget), szReason);
-			Log("logs/hitman.log", szMiscArray);
+			new file[256], month, day, year;
+			getdate(year,month,day);
+			format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+			Log(file, szMiscArray);
 
 			g_mysql_SaveAccount(iTarget); // The reason accounts are saved is because the /viewblacklist uses a mysql query to fetch whichever players are blacklisted.
 		}
@@ -808,7 +841,10 @@ CMD:unblacklist(playerid, params[])
 			SendClientMessage(playerid, COLOR_GREY, szMiscArray);
 
 			format(szMiscArray, sizeof szMiscArray, "%s %s has unblacklisted %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), GetPlayerNameEx(iTarget));
-			Log("logs/hitman.log", szMiscArray);
+			new file[256], month, day, year;
+			getdate(year,month,day);
+			format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+			Log(file, szMiscArray);
 
 			g_mysql_SaveAccount(iTarget); // The reason accounts are saved is because the /viewblacklist uses a mysql query to fetch whichever players are blacklisted.
 		}
@@ -942,7 +978,10 @@ public OfflineBlacklisted(playerid, reason[], account[])
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof szMiscArray, "%s %s has offline-blacklisted %s, reason: %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), account, reason);
-	Log("logs/hitman.log", szMiscArray);
+	new file[256], month, day, year;
+	getdate(year,month,day);
+	format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+	Log(file, szMiscArray);
 	return 1;
 }
 
@@ -981,8 +1020,10 @@ public OfflineUnBlacklisted(playerid, account[])
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof szMiscArray, "%s %s has offline-unblacklisted %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), account);
-	Log("logs/hitman.log", szMiscArray);
-
+	new file[256], month, day, year;
+	getdate(year,month,day);
+	format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+	Log(file, szMiscArray);
 	return 1;
 }
 
@@ -1017,7 +1058,10 @@ public OfflineHitmanRemoved(playerid, account[])
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof szMiscArray, "%s %s has offline-removed %s.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), account);
-	Log("logs/hitman.log", szMiscArray);
+	new file[256], month, day, year;
+	getdate(year,month,day);
+	format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+	Log(file, szMiscArray);
 	return 1;
 }
 
@@ -1053,7 +1097,10 @@ public OfflineHitmanLeaderRemoved(playerid, account[])
 	SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
 
 	format(szMiscArray, sizeof szMiscArray, "Administrator %s has offline-removed %s's hitman leadership.", GetHitmanRank(playerid), GetPlayerNameEx(playerid), account);
-	Log("logs/hitman.log", szMiscArray);
+	new file[256], month, day, year;
+	getdate(year,month,day);
+	format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+	Log(file, szMiscArray);
 	return 1;
 }
 
@@ -1146,7 +1193,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 5000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken teargas (17) from the locker at $5,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1155,7 +1205,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerValidWeapon(playerid, 4);
                             GivePlayerCash(playerid, - 12000);
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a knife (4) from the locker at $12,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1165,7 +1218,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 5000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a baton (3) from the locker at $5,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1175,7 +1231,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 4500);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a spraycan (41) from the locker at $4,500.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1185,7 +1244,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 5000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a 9mm (22) from the locker at $5,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1195,7 +1257,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 7500);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken an SD pistol (23) from the locker at $7,500.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1205,7 +1270,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 12000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a deagle (24) from the locker at $12,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1215,7 +1283,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 17500);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken an MP5 (29) from the locker at $17,500.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1225,7 +1296,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 17500);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken an uzi (28) from the locker at $17,500.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1235,7 +1309,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 17500);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a tec9 (32) from the locker at $17,500.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1245,7 +1322,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 11000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a shotgun (25) from the locker at $11,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1255,7 +1335,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 90000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a SPAS-12 (27) from the locker at $90,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1265,7 +1348,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 35000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken an AK47 (30) from the locker at $35,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1275,7 +1361,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 70000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken an m4 (31) from the locker at $70,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1285,7 +1374,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 10000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a rifle (33) from the locker at $10,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1295,7 +1387,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 65000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a sniper (34) from the locker at $65,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1305,7 +1400,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             GivePlayerCash(playerid, - 20000);
 
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a chainsaw (9) from the locker at $20,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);
                     }
@@ -1315,7 +1413,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                             PlayerInfo[playerid][pBombs]++;
                             GivePlayerCash(playerid, -50000);
                             format(szMiscArray, sizeof szMiscArray, "%s has taken a block of C4 from the locker at $50,000.", GetPlayerNameEx(playerid));
-                            Log("logs/hitman.log", szMiscArray);
+                            new file[256], month, day, year;
+							getdate(year,month,day);
+							format(file, sizeof(file), "logs/hitman/%d-%d-%d.log", month, day, year);
+							Log(file, szMiscArray);
                             SendClientMessageEx(playerid, COLOR_LIGHTBLUE,"   You have purchased one block of C4!");
                         }
                         else SendClientMessageEx(playerid, COLOR_GRAD2, MSG_NOMONEY);

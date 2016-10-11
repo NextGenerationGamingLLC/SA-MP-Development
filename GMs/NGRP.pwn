@@ -80,7 +80,11 @@
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
+<<<<<<< Updated upstream
 #define SERVER_GM_TEXT "NG:RP v3.0.379"
+=======
+#define SERVER_GM_TEXT "NG:RP v3.0.380"
+>>>>>>> Stashed changes
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
 
