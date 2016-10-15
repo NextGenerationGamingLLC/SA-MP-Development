@@ -31,7 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /*new const Drugs[][] = {
 	"LSD",
 	"Cannabis",
@@ -127,7 +127,7 @@ enum eGroupData {
 	g_iHeroin,
 	g_iSyringes,
 	g_iOpium,
-	g_iMaterials, 
+	g_iMaterials,
 	g_iWeapons[50],
 	g_iClothes[MAX_GROUP_RANKS],
 	g_iTurfCapRank,
@@ -308,7 +308,7 @@ enum eBiz {
 	bGymBoxingArena2[2],
 	bGymBikePlayers[10],
 	bGymBikeVehicles[10],
-	
+
 	bMaxLevel,
 	bAreaID[2],
 	bPhoneNr
@@ -514,7 +514,8 @@ enum Tape
 	sObjectID,
 	sDeployedBy[MAX_PLAYER_NAME],
 	sDeployedByStatus,
-	sDeployedAt[MAX_ZONE_NAME]
+	sDeployedAt[MAX_ZONE_NAME],
+  iDeployedByGroup
 }
 
 enum Plant
@@ -722,7 +723,7 @@ enum PaintBallArenaEnum
 	Float: pbVeh6X,
 	Float: pbVeh6Y,
 	Float: pbVeh6Z,
-	Float: pbVeh6A	
+	Float: pbVeh6A
 };
 
 enum TurfWarsEnum
@@ -1375,7 +1376,7 @@ enum ddInfo
 	ddPickupID,
 	ddPickupID_int,
 	ddAreaID,
-	ddAreaID_int, 
+	ddAreaID_int,
 	Text3D: ddTextID,
 	ddCustomInterior,
 	ddExteriorVW,
@@ -1664,8 +1665,8 @@ enum FIREWORK_INFO
 
 /* Dynamic Gift Box Stuff
 Note: dgGVIP = 7 Days | dgGVIPEx = 1 Month
-Example: 
-	dgVar[dgMoney][0] = Is it enabled? 
+Example:
+	dgVar[dgMoney][0] = Is it enabled?
 	dgVar[dgMoney][1] = Quantity of gift available
 	dgVar[dgMoney][2] = Quantity of money the player will receive
 	dgVar[dgMoney][3] = Rarity Category of Item (Common, Less Common, Rare, Super Rare)
@@ -1706,7 +1707,7 @@ enum dgItems
 	dgPlatinumVIPVoucher
 };
 
-enum PollData 
+enum PollData
 {
 	PollID,
 	PollQuestion[255],
@@ -1840,7 +1841,7 @@ new arrPayPhoneData[MAX_PAYPHONES][e_PayPhoneData];
 }
 new arrPoint[MAX_DYNPOINTS][eDynPoints];*/
 
-enum PointData 
+enum PointData
 {
 	poID,
 	poType,

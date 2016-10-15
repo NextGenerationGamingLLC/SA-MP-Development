@@ -594,7 +594,7 @@ task ProductionUpdate[300000]()
 
 		if(AdvisorMessage == 3 && Advisors > 0 && PlayerInfo[i][pLevel] < 4)
 		{
-			SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need help? The Player Advisors are here to help you. (/requesthelp to get help)");
+			SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need help? The Advisors are here to help you. (/requesthelp to get help)");
 		}
 		if(PlayerInfo[i][pConnectHours] < 2) {
 			SendClientMessageEx(i, COLOR_LIGHTRED, "Due to an increase in new playing accounts being created for Death Matching, weapons for new players are restricted for the first two hours of game play.");

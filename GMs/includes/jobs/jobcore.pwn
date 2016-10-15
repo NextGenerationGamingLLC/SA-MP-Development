@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -43,7 +43,7 @@ stock SendJobMessage(job, color, string[])
 	{
 		if(((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && JobDuty[i] == 1) || ((PlayerInfo[i][pJob] == job || PlayerInfo[i][pJob2] == job || PlayerInfo[i][pJob3] == job) && (job == 7 && GetPVarInt(i, "MechanicDuty") == 1) || (job == 2 && GetPVarInt(i, "LawyerDuty") == 1))) {
 			SendClientMessageEx(i, color, string);
-		}	
+		}
 	}
 }
 
@@ -341,7 +341,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response)
 			{
-				ShowPlayerDialogEx(playerid, DRUGDEALERJOB3, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Commands:\n\n/getpot, /sell, /getcrack, /getseeds, /plantpotseeds\n\nLocation of job: This job can be located outside the Drug Den, opposite the Ganton Gym, at the 'D' icon.", "Done", "Cancel");
+				ShowPlayerDialogEx(playerid, DRUGDEALERJOB3, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Commands:\n\n/sell, /mydrugs, /usedrug, /buypot, /buyopium, /plantpot, /plantopium, /pickplant, /checkplant, /makeheroin\n\nLocation of job: This job can be located outside the Drug Den, opposite the Ganton Gym, at the 'D' icon.", "Done", "Cancel");
 			}
 		}
 		case WHOREJOB2:
@@ -411,7 +411,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 1;
 				return 1;
-			}			
+			}
 		}
 		else if(IsPlayerInRangeOfPoint(playerid, 3.0, 1469.5247, -1755.7039, 3285.2859)) {
 			if(PlayerInfo[playerid][pJob] == 0){
@@ -430,7 +430,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 2;
 				return 1;
-			}			
+			}
 		}
 		else if (IsPlayerInRangeOfPoint(playerid,3.0,1215.1304,-11.8431,1000.9219)) {
 			if(PlayerInfo[playerid][pJob] == 0){
@@ -449,7 +449,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 3;
 				return 1;
-			}			
+			}
 		}
 		/*else if (IsPlayerInRangeOfPoint(playerid,3.0,2166.3772,-1675.3829,15.0859) || IsPlayerInRangeOfPoint(playerid,3.0,-2089.344970, 87.800231, 35.320312) || IsPlayerInRangeOfPoint(playerid,3.0,-1528.0924,2688.7837,55.8359)) {
 			if(PlayerInfo[playerid][pJob] == 0){
@@ -468,7 +468,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 4;
 				return 1;
-			}			
+			}
 		}*/
 		else if (IsPlayerInRangeOfPoint(playerid,3.0,161.92, -25.70, 1.57) || IsPlayerInRangeOfPoint(playerid,3.0,-2032.601928, 143.866592, 28.835937) || IsPlayerInRangeOfPoint(playerid,3.0,-1475.4224,1877.3550,32.6328) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2279.8159, 4.8137)) {
 			if(PlayerInfo[playerid][pJob] == 0){
@@ -487,7 +487,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 7;
 				return 1;
-			}			
+			}
 		}
 		else if (IsPlayerInRangeOfPoint(playerid,3.0,1224.13, 267.98, 19.55) || IsPlayerInRangeOfPoint(playerid,3.0,-2269.256103, -158.054321, 35.320312) || IsPlayerInRangeOfPoint(playerid,3.0,2226.1716,-1718.1792,13.5165) || IsPlayerInRangeOfPoint(playerid,3.0,1099.73,-1504.67,15.800) || IsPlayerInRangeOfPoint(playerid,3.0,-821.3508,1574.9393,27.1172) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2293.3923, 4.8137)) {
 			if(PlayerInfo[playerid][pJob] == 0){
@@ -506,7 +506,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 8;
 				return 1;
-			}			
+			}
 		}
 		/*else if (IsPlayerInRangeOfPoint(playerid,3.0,1366.4325,-1275.2096,13.5469) || IsPlayerInRangeOfPoint(playerid,3.0,-2623.333984, 209.235931, 4.684767) || IsPlayerInRangeOfPoint(playerid,3.0,-1513.4904,2614.3591,55.8078)) {
 			if(PlayerInfo[playerid][pJob] == 0){
@@ -525,7 +525,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 9;
 				return 1;
-			}			
+			}
 		}*/
 		/*else if (PlayerInfo[playerid][pJob] == 0 && GetPlayerState(playerid) == 1 && IsPlayerInRangeOfPoint(playerid,3.0,531.7930,-1292.4044,17.2422)) {
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Car Dealer, type /accept job.");
@@ -549,7 +549,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 12;
 				return 1;
-			}			
+			}
 		}
 		/*else if (IsPlayerInRangeOfPoint(playerid,3.0,2354.2808,-1169.2959,28.0066) || IsPlayerInRangeOfPoint(playerid,3.0,-2630.7375,2349.3994,8.4892)) {
 			if(PlayerInfo[playerid][pJob] == 0){
@@ -568,7 +568,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 14;
 				return 1;
-			}			
+			}
 		}*/
 		/*else if (PlayerInfo[playerid][pJob] == 0 && GetPlayerState(playerid) == 1 && IsPlayerInRangeOfPoint(playerid,3.0,-2040.9436,456.2395,35.1719)) {
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* If you are sure to become a Paper Boy, type /accept job.");
@@ -597,7 +597,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 17;
 				return 1;
-			}			
+			}
 		}*/
 		else if (IsPlayerInRangeOfPoint(playerid,3.0,2195.8335,-1973.0638,13.5589) || IsPlayerInRangeOfPoint(playerid,3.0,-1356.7195,2065.3450,52.4677) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2246.2598, 4.8137)) {
 			if(PlayerInfo[playerid][pJob] == 0){
@@ -616,7 +616,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 18;
 				return 1;
-			}			
+			}
 		}
 		else if (IsPlayerInRangeOfPoint(playerid,3.0,502.6696,-11.6603,1000.6797) || IsPlayerInRangeOfPoint(playerid,3.0,-864.3550,1536.9703,22.5870)) {
 			if(PlayerInfo[playerid][pJob] == 0){
@@ -635,7 +635,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 19;
 				return 1;
-			}			
+			}
 		}
 		else if (IsPlayerInRangeOfPoint(playerid,3.0,-1560.963867, 127.491157, 3.554687) || IsPlayerInRangeOfPoint(playerid,3.0,-2412.5095, 2240.7227, 4.8137)) {
 			if(PlayerInfo[playerid][pLevel] >= 2)
@@ -656,7 +656,7 @@ CMD:join(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 					GettingJob3[playerid] = 20;
 					return 1;
-				}				
+				}
 			}
 			else return SendClientMessageEx(playerid, COLOR_GREY, "You must be at least level 2 to become a Shipment Contractor.");
 		}
@@ -677,7 +677,7 @@ CMD:join(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_YELLOW, "You are getting a third job. Only Gold VIP+ can do this.");
 				GettingJob3[playerid] = 21;
 				return 1;
-			}			
+			}
 		}
 		else {
 			SendClientMessageEx(playerid, COLOR_GREY, "You are not even near a place to get a Job!");

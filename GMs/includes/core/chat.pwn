@@ -348,7 +348,7 @@ CMD:ooc(playerid, params[])
 	else if(PlayerInfo[playerid][pHelper] >= 1)
 	{
 		new string[128];
-		format(string, sizeof(string), "(( Player Advisor %s: %s ))", GetPlayerNameEx(playerid), params);
+		format(string, sizeof(string), "(( Advisor %s: %s ))", GetPlayerNameEx(playerid), params);
 		OOCOff(COLOR_OOC,string);
 		return 1;
 	}

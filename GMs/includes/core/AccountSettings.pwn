@@ -63,7 +63,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				{FFFFFF}Point Messages\t%s\n\
 				{FFFFFF}--- Staff ---\t\n\
 				{FFFFFF}Staff Chat\t%s\n\
-				{FFFFFF}Player Advisor Chat\t%s\n\
+				{FFFFFF}Advisor Chat\t%s\n\
 				{FFFFFF}Watchdog Chat\t%s\n",
 				szMiscArray,
 				(PlayerInfo[playerid][pToggledChats][10] == 0) ? ("{00FF00}On") : ("{FF0000}Off"),
@@ -100,7 +100,7 @@ ShowAccountSettings(playerid, menu = 0) {
 				Biz Radio\t%d\n\
 				--- Staff ---\t\n\
 				Staff Chat\t%d\n\
-				Player Advisor Chat\t%d\n\
+				Advisor Chat\t%d\n\
 				Watchdog Chat\t%d\n",
 				PlayerInfo[playerid][pChatbox][0],
 				PlayerInfo[playerid][pChatbox][1],
@@ -198,7 +198,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else if(strcmp(inputtext, "Biz Radio", true) == 0) id = 14;
 			else if(strcmp(inputtext, "Point Messages", true) == 0) id = 22;
 			else if(strcmp(inputtext, "Staff Chat", true) == 0) id = 15;
-			else if(strcmp(inputtext, "Player Advisor Chat", true) == 0) id = 16;
+			else if(strcmp(inputtext, "Advisor Chat", true) == 0) id = 16;
 			else if(strcmp(inputtext, "Watchdog Chat", true) == 0) id = 17;
 			// else if(strcmp(inputtext, "Admin", true) == 0) id = 18;
 			if(id == -1) return ShowAccountSettings(playerid, 1);
@@ -252,7 +252,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				else if(strcmp(inputtext, "Bug Chat", true) == 0) id = 13;
 				else if(strcmp(inputtext, "Biz Radio", true) == 0) id = 14;
 				else if(strcmp(inputtext, "Staff Chat", true) == 0) id = 15;
-				else if(strcmp(inputtext, "Player Advisor Chat", true) == 0) id = 16;
+				else if(strcmp(inputtext, "Advisor Chat", true) == 0) id = 16;
 				else if(strcmp(inputtext, "Watchdog Chat", true) == 0) id = 17;
 				if(id == -1) return ShowAccountSettings(playerid, 1);
 				// else if(strcmp(inputtext, "Admin", true) == 0) id = 18;

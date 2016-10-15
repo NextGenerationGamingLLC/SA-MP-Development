@@ -41,11 +41,10 @@
 
 new dr_iPlayerTimeStamp[MAX_PLAYERS];
 
-CMD:drughelp(playerid, params[]) 
+CMD:drughelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpot, /plantopium, /pickplant, /checkplant /makeheroin");
-	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpop, /plantopium, /pickplant, /checkplant, /makeheroin");
 	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_GREY, "POLICE: /destroyplant, /searchcar");
 	if(IsAdminLevel(playerid, ADMIN_JUNIOR, 0)) SendClientMessageEx(playerid, COLOR_GREY, "ADMINISTRATOR: /adestroyplant");
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
@@ -80,7 +79,7 @@ CMD:usedrug(playerid, params[])
 	if(PlayerInfo[playerid][pHospital]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this at this time.");
 
 	new drugstring[16], amount;
-	if(sscanf(params, "s[16]d", drugstring, amount)) 
+	if(sscanf(params, "s[16]d", drugstring, amount))
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /usedrug [drug name] [amount]");
 		ListDrugs(playerid);
@@ -90,7 +89,7 @@ CMD:usedrug(playerid, params[])
 	if(amount < 1 || amount > 20) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take that.");
 
 	new drug = GetDrugID(drugstring);
-	if(drug == -1) 
+	if(drug == -1)
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /usedrug [drug name] [amount]");
 		ListDrugs(playerid);
@@ -138,7 +137,7 @@ CMD:getcrate(playerid, params[])
 			format(string, sizeof(string), "You have purchased %d pot packages for $2,000", 10 * vip);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 
-			if(vip >> 1) 
+			if(vip >> 1)
 			{
 				format(string, sizeof(string), "VIP: You have been given %dx more packages because of your VIP level.", vip);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -159,7 +158,7 @@ CMD:getcrate(playerid, params[])
 
 			format(string, sizeof(string), "You have purchased %d crack packages for $10,000", 10 * vip);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
-			if(vip >> 1) 
+			if(vip >> 1)
 			{
 				format(string, sizeof(string), "VIP: You have been given %dx more packages because of your VIP level.", vip);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -278,7 +277,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					format(string, sizeof(string), "You have purchased %d meth packages for $25,000", 10 * vip);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					if(vip >> 1) 
+					if(vip >> 1)
 					{
 						format(string, sizeof(string), "VIP: You have been given %dx more packages because of your VIP level.", vip);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -310,7 +309,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					format(string, sizeof(string), "You have purchased %d ecstasy packages for $50,000", 10 * vip);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
-					if(vip >> 1) 
+					if(vip >> 1)
 					{
 						format(string, sizeof(string), "VIP: You have been given %dx more packages because of your VIP level.", vip);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -485,7 +484,7 @@ GivePlayerDrugEffects(playerid, id, amount)
 		}
 		case 4: // Heroin
 		{
-			if(GetPVarInt(playerid, "Injured") != 1) 
+			if(GetPVarInt(playerid, "Injured") != 1)
 			{
 				SetPVarInt(playerid, "HeroinLastUsed", gettime());
 				PlayerInfo[playerid][pSyringes] -= 1;
@@ -605,7 +604,7 @@ GivePlayerDrugSideEffect(playerid, id, amount)
 
 GetDrugName(id)
 {
-	switch(id) 
+	switch(id)
 	{
 		case 0: szMiscArray = "Pot";
 		case 1: szMiscArray = "Crack";
@@ -616,10 +615,10 @@ GetDrugName(id)
 	return szMiscArray;
 }
 
-ListDrugs(playerid) 
+ListDrugs(playerid)
 {
 	szMiscArray[0] = 0;
-	for(new i; i < sizeof(Drugs); ++i) 
+	for(new i; i < sizeof(Drugs); ++i)
 	{
 		format(szMiscArray, sizeof(szMiscArray),"%s | %s | %s | %s | %s", Drugs[0], Drugs[1], Drugs[2], Drugs[3], Drugs[4]);
 	}
@@ -636,9 +635,9 @@ GetDrugID(Drug[])
 	return -1;
 }
 
-IncreaseSmugglerLevel(playerid) 
+IncreaseSmugglerLevel(playerid)
 {
-    
+
     if(PlayerInfo[playerid][pDoubleEXP] > 0)
     {
         PlayerInfo[playerid][pDrugSmuggler] += 2;
@@ -739,7 +738,7 @@ public PlantsLoadQuery() {
 
 	cache_get_data(iRows, iFields, MainPipeline);
 
-	while((iIndex < iRows)) 
+	while((iIndex < iRows))
 	{
 		cache_get_field_content(iIndex, "Owner", szResult, MainPipeline); Plants[iIndex][pOwner] = strval(szResult);
 		cache_get_field_content(iIndex, "Object", szResult, MainPipeline); Plants[iIndex][pObject] = strval(szResult);
@@ -753,7 +752,7 @@ public PlantsLoadQuery() {
 		cache_get_field_content(iIndex, "Expires", szResult, MainPipeline); Plants[iIndex][pExpires] = strval(szResult);
 		cache_get_field_content(iIndex, "DrugsSkill", szResult, MainPipeline); Plants[iIndex][pDrugsSkill] = strval(szResult);
 
-		if(Plants[iIndex][pOwner] != 0) 
+		if(Plants[iIndex][pOwner] != 0)
 		{
 		    Plants[iIndex][pObjectSpawned] = CreateDynamicObject(Plants[iIndex][pObject], Plants[iIndex][pPos][0], Plants[iIndex][pPos][1], Plants[iIndex][pPos][2], 0.0, 0.0, 0.0, Plants[iIndex][pVirtual], Plants[iIndex][pInterior]);
 		}
@@ -787,7 +786,7 @@ stock SavePlants()
 	return 1;
 }
 
-CMD:makeheroin(playerid, params[]) 
+CMD:makeheroin(playerid, params[])
 {
 	if(!IsPlayerInRangeOfPoint(playerid, 15.0, -882.2048,1109.3385,5442.8193))
 	    return SendClientMessageEx(playerid, COLOR_GREY, "You are not at the purification lab.");
@@ -809,9 +808,9 @@ CMD:makeheroin(playerid, params[])
 	return 1;
 }
 
-CMD:plantopium(playerid, params[]) 
+CMD:plantopium(playerid, params[])
 {
- 	if(PlayerInfo[playerid][pOpiumSeeds] > 0) 
+ 	if(PlayerInfo[playerid][pOpiumSeeds] > 0)
  	{
 		if(PlayerInfo[playerid][pWeedObject] > 0)
 		{
@@ -851,9 +850,9 @@ CMD:plantopium(playerid, params[])
 	return 1;
 }
 
-CMD:plantpot(playerid, params[]) 
+CMD:plantpot(playerid, params[])
 {
- 	if(PlayerInfo[playerid][pWSeeds] > 0) 
+ 	if(PlayerInfo[playerid][pWSeeds] > 0)
  	{
 		if(PlayerInfo[playerid][pWeedObject] > 0)
 		{
@@ -894,7 +893,7 @@ CMD:plantpot(playerid, params[])
 	return 1;
 }
 
-CMD:adestroyplant(playerid, params[]) 
+CMD:adestroyplant(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
 
@@ -919,7 +918,7 @@ CMD:adestroyplant(playerid, params[])
 						{
 							PlayerInfo[z][pWeedObject] = 0;
 						}
-					}	
+					}
 					format(szMessage, sizeof(szMessage), "You have destroyed %s's plant.", GetPlayerNameEx(iTargetID), Plants[i][pGrowth]);
 					SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 
@@ -941,9 +940,9 @@ CMD:adestroyplant(playerid, params[])
 	return 1;
 }
 
-CMD:destroyplant(playerid, params[]) 
+CMD:destroyplant(playerid, params[])
 {
-	if(IsACop(playerid) || IsAMedic(playerid)) 
+	if(IsACop(playerid) || IsAMedic(playerid))
 	{
 		for(new i = 0; i < MAX_PLANTS; ++i)
 		{
@@ -969,7 +968,7 @@ CMD:destroyplant(playerid, params[])
 								{
 									PlayerInfo[z][pWeedObject] = 0;
 								}
-							}	
+							}
 							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has destroyed weed plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 							Log("logs/plant.log", szMessage);
 							DestroyPlant(i);
@@ -989,7 +988,7 @@ CMD:destroyplant(playerid, params[])
 								{
 									PlayerInfo[z][pWeedObject] = 0;
 								}
-							}	
+							}
 							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has destroyed opium plant (%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i);
 							Log("logs/plant.log", szMessage);
 							DestroyPlant(i);
@@ -1078,7 +1077,7 @@ CMD:pickplant(playerid, params[])
 								{
 									PlayerInfo[z][pWeedObject] = 0;
 								}
-							}	
+							}
 							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has picked weed plant (%d) and recieved %d grams", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i, Plants[i][pGrowth]);
 							Log("logs/plant.log", szMessage);
 							PlayerInfo[playerid][pDrugs][0] += Plants[i][pGrowth];
@@ -1108,7 +1107,7 @@ CMD:pickplant(playerid, params[])
 								{
 									PlayerInfo[z][pWeedObject] = 0;
 								}
-							}	
+							}
 							format(szMessage, sizeof(szMessage), "%s(%d) (IP:%s) has picked opium plant (%d) and recieved %d milligrams", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), i, Grams);
 							Log("logs/plant.log", szMessage);
 							PlayerInfo[playerid][pRawOpium] += Grams;
@@ -1191,8 +1190,8 @@ public AttemptPurify(playerid)
 }
 
 GetMaxDrugsAllowed(iDrugID) {
-	
-	
+
+
 	switch(iDrugID) {
 
 		case 0: return 1000;

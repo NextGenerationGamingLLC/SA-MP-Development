@@ -7037,7 +7037,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					JustReported[playerid]=10;
 					format(string, sizeof(string), "** %s(%i) is requesting help, reason: Report Menu. (type /accepthelp %i)", GetPlayerNameEx(playerid), playerid, playerid);
 					SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
-					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have requested help from a Player Advisor, wait for a reply.");
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have requested help from a Advisor, wait for a reply.");
 					SetPVarInt( playerid, "COMMUNITY_ADVISOR_REQUEST", 1 );
 					SetPVarInt( playerid, "HelpTime", 5);
 					SetPVarString( playerid, "HelpReason", "Report Menu");

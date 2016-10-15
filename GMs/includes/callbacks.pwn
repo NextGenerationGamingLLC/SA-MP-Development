@@ -365,7 +365,7 @@ public OnPlayerUpdate(playerid)
     		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(pCurWeap)] != pCurWeap) {
 
     			if(GetPVarType(playerid, "IsInArena") || GetPVarType(playerid, "EventToken")) return 1;
-    			
+
 				GetWeaponName(pCurWeap, szMiscArray, sizeof(szMiscArray));
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: %s has given themself a client-sided weapon (%s). It was removed from the player.", GetPlayerNameEx(playerid), szMiscArray);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
@@ -608,7 +608,7 @@ public OnPlayerPressButton(playerid, buttonid)
 			return 1;
 		}
 	}
-	
+
 
 	if(buttonid == sasdbtn1)
 	{
@@ -1600,7 +1600,7 @@ public OnPlayerConnect(playerid)
 
 	SetPlayerColor(playerid,TEAM_HIT_COLOR);
 	SendClientMessage( playerid, COLOR_WHITE, "SERVER: Welcome to Next Generation Roleplay." );
-	
+
 	SyncPlayerTime(playerid);
 
 	ShowNoticeGUIFrame(playerid, 1);
@@ -3223,7 +3223,7 @@ public OnPlayerEnterCheckpoint(playerid)
 			    	format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) is possibly teleport matrunning.", GetPlayerNameEx(playerid), playerid);
 			    	ABroadCast( COLOR_YELLOW, string, 2 );
 				}
-				
+
 			}
 		}
 		else if(GetPVarInt(playerid, "MatDeliver") == 333 && IsPlayerInRangeOfPoint(playerid, 6.0, -330.44, -467.54, 0.85))
@@ -4329,8 +4329,8 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			ShowVehicleHUDForPlayer(playerid);
 		}
 		if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
-		{	
-			if(GetPlayerWeapon(playerid) == 24) 
+		{
+			if(GetPlayerWeapon(playerid) == 24)
 			{
 				SetPlayerArmedWeapon(playerid, 0);
 			}
@@ -4645,7 +4645,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 				}
 			}
 		}
-		
+
 		gLastCar[playerid] = newcar;
 		if(GetPVarInt(playerid, "EventToken") == 1) {
 			if(EventKernel[EventFootRace] == 1) {
@@ -4811,18 +4811,23 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		}
 		else if(IsAnTaxi(vehicleid) || IsAnBus(vehicleid))
 		{
-	        if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
+	    if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
 			{
 			}
-		    else
+		  else
 			{
-		        SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Taxi/Bus Driver!");
-		        RemovePlayerFromVehicle(playerid);
-		        new Float:slx, Float:sly, Float:slz;
-				GetPlayerPos(playerid, slx, sly, slz);
-				SetPlayerPos(playerid, slx, sly, slz);
-				defer NOPCheck(playerid);
-		    }
+					for(new i = 0; i < GetPlayerVehicleSlots(playerid); i++)
+					{
+						if(IsAnTaxi(PlayerVehicleInfo[playerid][i][pvModelId]))
+						return 1;
+					}
+			    SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Taxi/Bus Driver!");
+			    RemovePlayerFromVehicle(playerid);
+			    new Float:slx, Float:sly, Float:slz;
+					GetPlayerPos(playerid, slx, sly, slz);
+					SetPlayerPos(playerid, slx, sly, slz);
+					defer NOPCheck(playerid);
+		  }
 		}
 
 		if(GetCarBusiness(newcar) != INVALID_BUSINESS_ID && PlayerInfo[playerid][pAdmin] < 1337)
@@ -5547,7 +5552,7 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 
 public OnPlayerModelSelectionEx(playerid, response, extraid, modelid, extralist_id) {
 	if(extraid == 1500 && response) {
-		
+
 		new iGroup = PlayerInfo[playerid][pMember];
 		for(new i; i < MAX_BARRICADES; i++)
 		{

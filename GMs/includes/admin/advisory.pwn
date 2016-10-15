@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -43,7 +43,7 @@ stock CBroadCast(color,string[],level)
 			SendClientMessageEx(i, color, string);
 			//printf("%s", string);
 		}
-	}	
+	}
 	return 1;
 }
 
@@ -84,7 +84,7 @@ stock SendDutyAdvisorMessage(color, string[])
 {
 	foreach(new i: Player)
 	{
-		if(PlayerInfo[i][pHelper] >= 2 && GetPVarInt(i, "AdvisorDuty") == 1) 
+		if(PlayerInfo[i][pHelper] >= 2 && GetPVarInt(i, "AdvisorDuty") == 1)
 		{
 			SendClientMessageEx(i, color, string);
 		}
@@ -94,7 +94,7 @@ stock SendDutyAdvisorMessage(color, string[])
 CMD:advisors(playerid, params[])
 {
     new string[128];
-    if(PlayerInfo[playerid][pHelper] >= 1) 
+    if(PlayerInfo[playerid][pHelper] >= 1)
     {
         SendClientMessageEx(playerid, COLOR_GRAD1, "Advisors Online:");
         foreach(new i: Player)
@@ -104,23 +104,23 @@ CMD:advisors(playerid, params[])
 			format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 			format(thour, sizeof(thour), "%02d:00:00", hour);
 
-			if(PlayerInfo[i][pHelper] != 0 && PlayerInfo[i][pHelper] <= PlayerInfo[playerid][pHelper]) 
+			if(PlayerInfo[i][pHelper] != 0 && PlayerInfo[i][pHelper] <= PlayerInfo[playerid][pHelper])
 			{
 				if(PlayerInfo[i][pHelper] == 1 && PlayerInfo[i][pAdmin] < 2) {
-					format(string, sizeof(string), "** JPA: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					format(string, sizeof(string), "** JA: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 				}
 				if(PlayerInfo[i][pHelper] == 2&&PlayerInfo[i][pAdmin]<2) {
-					format(string, sizeof(string), "** GPA: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					format(string, sizeof(string), "** GA: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 				}
 				if(PlayerInfo[i][pHelper] == 3&&PlayerInfo[i][pAdmin]<2) {
-					format(string, sizeof(string), "** SPA: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					format(string, sizeof(string), "** SA: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 				}
 				if(PlayerInfo[i][pHelper] >= 4&&PlayerInfo[i][pAdmin]<2) {
-					format(string, sizeof(string), "** CPA: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					format(string, sizeof(string), "** CA: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 				}
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
 			}
-		}	
+		}
     }
     else if(PlayerInfo[playerid][pAdmin] >= 2) {
         SendClientMessageEx(playerid, COLOR_GRAD1, "Advisors Online:");
@@ -160,7 +160,7 @@ CMD:advisors(playerid, params[])
 					}
 				}
 				SendClientMessageEx(playerid, COLOR_GRAD2, string);
-			}	
+			}
         }
     }
     else {
@@ -170,26 +170,26 @@ CMD:advisors(playerid, params[])
     return 1;
 }
 
-CMD:paduty(playerid, params[])
+CMD:caduty(playerid, params[])
 {
     if(PlayerInfo[playerid][pHelper] >= 2)
 	{
         if(GetPVarInt(playerid, "AdvisorDuty") == 1)
 		{
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty as a Player Advisor and will not receive calls anymore.");
+            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now off duty as a Advisor and will not receive calls anymore.");
             DeletePVar(playerid, "AdvisorDuty");
             Advisors -= 1;
         }
         else
 		{
-            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now on duty as a Player Advisor and will receive calls from people in need.");
+            SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You are now on duty as a Advisor and will receive calls from people in need.");
             SetPVarInt(playerid, "AdvisorDuty", 1);
             Advisors += 1;
         }
     }
     else
 	{
-        SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not a Player Advisor!");
+        SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not a Advisor!");
     }
     return 1;
 }
@@ -360,7 +360,7 @@ CMD:hl(playerid, params[])
 	if(PlayerInfo[playerid][pHelper] == 2 && PlayerInfo[playerid][pAdmin] < 2)
 	{
 		NewbieTimer[playerid] = gettime()+10;
-		format(string, sizeof(string), "** Player Advisor %s: %s", GetPlayerNameEx(playerid), params);
+		format(string, sizeof(string), "** Advisor %s: %s", GetPlayerNameEx(playerid), params);
 	}
 	if(PlayerInfo[playerid][pHelper] == 3 && PlayerInfo[playerid][pAdmin] < 2)
 	{
@@ -376,7 +376,7 @@ CMD:hl(playerid, params[])
 	foreach(new n: Player)
 	{
 		ChatTrafficProcess(n, COLOR_HELPERCHAT, string, 0);
-	}	
+	}
 	return 1;
 }
 
@@ -406,7 +406,7 @@ CMD:joinhelp(playerid, params[])
 			format(szMiscArray, sizeof(szMiscArray), "* %s has joined the helper channel.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(n, COLOR_JOINHELPERCHAT, szMiscArray);
 		}
-	}	
+	}
 	PlayerInfo[playerid][pToggledChats][0] = 0;
 	return 1;
 }
@@ -441,7 +441,7 @@ CMD:hlkick(playerid, params[])
 			if(PlayerInfo[playerid][pToggledChats][0] == 0) {
 				SendClientMessageEx(n, COLOR_JOINHELPERCHAT, string);
 			}
-		}	
+		}
 		PlayerInfo[giveplayerid][pToggledChats][0] = 1;
 	}
 	else {
@@ -536,7 +536,7 @@ CMD:nmute(playerid, params[])
 				}
 				else
 				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "That person is currently muted. You are unable to unmute players from the newbie chat as a Player Advisor.");
+					SendClientMessageEx(playerid, COLOR_GRAD1, "That person is currently muted. You are unable to unmute players from the newbie chat as a Advisor.");
 				}
 			}
 		}
@@ -559,13 +559,13 @@ CMD:makeadvisor(playerid, params[])
 		{
 			if(PlayerInfo[giveplayerid][pAdmin] > 1)
 			{
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot make admins Player Advisors!");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot make admins Advisors!");
 				return 1;
 			}
-			if(PlayerInfo[playerid][pHelper] == 3 && level > 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can only promote players to Junior Player Advisor!");
-			if(PlayerInfo[playerid][pHelper] == 4 && level > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can only promote players to Junior/General Player Advisor!");
+			if(PlayerInfo[playerid][pHelper] == 3 && level > 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can only promote players to Junior Advisor!");
+			if(PlayerInfo[playerid][pHelper] == 4 && level > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can only promote players to Junior/General Advisor!");
 
-			if(PlayerInfo[giveplayerid][pHelper] < level && PlayerInfo[giveplayerid][pHelper] >= PlayerInfo[playerid][pHelper] > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot set someone's rank when they're the same as you!"); 
+			if(PlayerInfo[giveplayerid][pHelper] < level && PlayerInfo[giveplayerid][pHelper] >= PlayerInfo[playerid][pHelper] > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot set someone's rank when they're the same as you!");
 
 			if(PlayerInfo[giveplayerid][pStaffBanned] >= 1) return SendClientMessage(playerid, COLOR_WHITE, "That player is currently staff banned.");
 
@@ -574,38 +574,38 @@ CMD:makeadvisor(playerid, params[])
 			{
 				case 1:
 				{
-					format(string, sizeof(string), "You have been made a Junior Player Advisor by %s", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "You have been made a Junior Advisor by %s", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "You have given Junior Player Advisor to %s", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "You have given Junior Advisor to %s", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a Junior Player Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s(%d) has been made a Junior Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/admin.log", string);
 				}
 				case 2:
 				{
-					format(string, sizeof(string), "You have been made a General Player Advisor by %s", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "You have been made a General Advisor by %s", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "You have given General Player Advisor to %s", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "You have given General Advisor to %s", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a General Player Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s(%d) has been made a General Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/admin.log", string);
 				}
 				case 3:
 				{
-					format(string, sizeof(string), "You have been promoted to Senior Player Advisor by %s", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "You have been promoted to Senior Advisor by %s", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "You have promoted %s to Senior Player Advisor", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "You have promoted %s to Senior Advisor", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a Senior Player Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s(%d) has been made a Senior Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/admin.log", string);
 				}
 				case 4:
 				{
-					format(string, sizeof(string), "You have been promoted to Chief Player Advisor by %s", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "You have been promoted to Chief Advisor by %s", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "You have promoted %s to Chief Player Advisor", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "You have promoted %s to Chief Advisor", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a Chief Player Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s(%d) has been made a Chief Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/admin.log", string);
 				}
 			}
@@ -639,9 +639,9 @@ CMD:takeadvisor(playerid, params[])
 					Advisors -= 1;
 				}
 				PlayerInfo[giveplayerid][pHelper] = 0;
-				format(string, sizeof(string), "%s has kicked you out from the Player Advisor team.", GetPlayerNameEx(playerid));
+				format(string, sizeof(string), "%s has kicked you out from the Advisor team.", GetPlayerNameEx(playerid));
 				SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "You took %s's Player Advisor rank.", GetPlayerNameEx(giveplayerid));
+				format(string, sizeof(string), "You took %s's Advisor rank.", GetPlayerNameEx(giveplayerid));
 				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 				format(string, sizeof(string), "%s(%d) has had their advisor removed by %s(%d)", GetPlayerNameEx(giveplayerid), PlayerInfo[giveplayerid][pId], GetPlayerNameEx(playerid), PlayerInfo[playerid][pId]);
 				Log("logs/admin.log", string);
@@ -661,7 +661,7 @@ CMD:requesthelp(playerid, params[])
 {
 	if(Advisors < 1)
 	{
-		SendClientMessageEx(playerid, COLOR_GREY, "   There are no Player Advisors On Duty at the moment, try again later!");
+		SendClientMessageEx(playerid, COLOR_GREY, "   There are no Advisors On Duty at the moment, try again later!");
 		return 1;
 	}
 	if(isnull(params))
@@ -684,7 +684,7 @@ CMD:requesthelp(playerid, params[])
 	JustReported[playerid]=10;
 	format(string, sizeof(string), "** %s (%i) is requesting help, reason: %s. (type /accepthelp %i)", GetPlayerNameEx(playerid), playerid, params, playerid);
 	SendDutyAdvisorMessage(TEAM_AZTECAS_COLOR, string);
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have requested help from a Player Advisor, wait for a reply.");
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have requested help from a Advisor, wait for a reply.");
 	SetPVarInt( playerid, "COMMUNITY_ADVISOR_REQUEST", 1 );
 	SetPVarInt( playerid, "HelpTime", 5);
 	SetPVarString( playerid, "HelpReason", params);
@@ -706,7 +706,7 @@ CMD:showrequests(playerid, params[])
 				format(string, sizeof(string), "%s  | ID: %i | Reason: %s | Expires in: %i minutes.", GetPlayerNameEx(i), i, reason, GetPVarInt(i, "HelpTime"));
 				SendClientMessageEx(playerid, COLOR_REPORT, string);
 			}
-		}	
+		}
 		SendClientMessageEx(playerid, COLOR_GREEN, "_________________________________________________________");
 	}
 	return 1;
@@ -729,7 +729,7 @@ CMD:rhmute(playerid, params[])
 					format(string, sizeof(string), "*** %s has given %s their first warning about help request abuse", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					SendAdvisorMessage(COLOR_COMBINEDCHAT, string);
 
-					ShowPlayerDialogEx(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Help request abuse warning", "A Player Advisor has warned you not to abuse /requesthelp.\n\nNote that future abuse of /requesthelp could result in a mute from /requesthelp or loss of that privilege altogether.", "Next", "");
+					ShowPlayerDialogEx(giveplayerid, 7954, DIALOG_STYLE_MSGBOX, "Help request abuse warning", "A Advisor has warned you not to abuse /requesthelp.\n\nNote that future abuse of /requesthelp could result in a mute from /requesthelp or loss of that privilege altogether.", "Next", "");
 
 					format(string, sizeof(string), "AdmCmd: %s(%d) has given %s(%d) their first warning about help request abuse", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
 					Log("logs/mute.log", string);
@@ -823,10 +823,10 @@ CMD:rhmutereset(playerid, params[])
 CMD:findnewb(playerid, params[]) {
 
 	if(PlayerInfo[playerid][pHelper] < 2) {
-        SendClientMessageEx(playerid, COLOR_GREY, "You are not a Player Advisor.");
+        SendClientMessageEx(playerid, COLOR_GREY, "You are not a Advisor.");
 	}
 	else if(GetPVarInt(playerid, "AdvisorDuty") == 0) {
-	    SendClientMessageEx(playerid, COLOR_GREY, "You are not on duty as a Player Advisor.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "You are not on duty as a Advisor.");
 	}
 	else {
 	    new Float: Pos[3][2], i[2], vw[2];
@@ -853,13 +853,13 @@ CMD:findnewb(playerid, params[]) {
 					PlayerInfo[x][pHelpedBefore] = 1;
 					SetPVarInt(playerid, "HelpingSomeone", 1);
 					SetPlayerHealth(playerid, 999999);
-					ShowPlayerDialogEx(x, 0, DIALOG_STYLE_MSGBOX, "Advisor Alert", "A Player Advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
+					ShowPlayerDialogEx(x, 0, DIALOG_STYLE_MSGBOX, "Advisor Alert", "A Advisor has just teleported to you. Feel free to ask him anything related to Next Generation Gaming that you may have issues/concerns with.", "Close", "");
 					if(i[0] > 0 || vw[0] > 0) Player_StreamPrep(playerid, Pos[0][0], Pos[1][0], Pos[2][0], FREEZE_TIME);
 					format(szMiscArray, sizeof(szMiscArray), "You have been teleported to newbie %s, retype the command to be teleported back.", GetPlayerNameEx(x));
 					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 					break;
 				}
-			}	
+			}
 		}
 		else
 		{
@@ -878,13 +878,13 @@ CMD:findnewb(playerid, params[]) {
 CMD:accepthelp(playerid, params[])
 {
     if(PlayerInfo[playerid][pHelper] < 2) {
-        SendClientMessageEx(playerid, COLOR_GREY, "You are not a Player Advisor.");
+        SendClientMessageEx(playerid, COLOR_GREY, "You are not a Advisor.");
 	}
 	else if(HelpingNewbie[playerid] != INVALID_PLAYER_ID) {
 	    SendClientMessageEx(playerid, COLOR_GREY, "You are already helping someone.");
 	}
 	else if(GetPVarInt(playerid, "AdvisorDuty") == 0) {
-	    SendClientMessageEx(playerid, COLOR_GREY, "You are not on duty as a Player Advisor.");
+	    SendClientMessageEx(playerid, COLOR_GREY, "You are not on duty as a Advisor.");
 	}
 	else {
 
@@ -988,28 +988,28 @@ CMD:togca(playerid, params[])
 {
 	if(PlayerInfo[playerid][pHelper] < 2 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	if(GetPVarInt(playerid, "CAChat") == 1)
-	{	
+	{
 		PlayerInfo[playerid][pToggledChats][16] = 1;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled Player Advisor chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have disabled Advisor chat.");
 		return SetPVarInt(playerid, "CAChat", 0);
 	}
 	else
 	{
 		PlayerInfo[playerid][pToggledChats][16] = 0;
-		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled Player Advisor chat.");
+		SendClientMessageEx(playerid, COLOR_GRAD1, "** You have enabled Advisor chat.");
 		return SetPVarInt(playerid, "CAChat", 1);
 	}
 }
 
-CMD:pa(playerid, params[])
+CMD:ca(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
 	if(PlayerInfo[playerid][pHelper] < 1 && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
-	if(PlayerInfo[playerid][pToggledChats][16] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have Player Advisor chat disabled - /tog advisor or /settings to enable it.");
+	if(PlayerInfo[playerid][pToggledChats][16] == 1) return SendClientMessageEx(playerid, COLOR_GREY, "You have Advisor chat disabled - /tog advisor or /settings to enable it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pa [text]");
 	if(strlen(params) >= 128)  return SendClientMessageEx(playerid, COLOR_GREY, "Your input was too long. ");
 	szMiscArray[0] = 0;
-	
+
 	format(szMiscArray, sizeof(szMiscArray), "- %s %s: %s", GetStaffRank(playerid), GetPlayerNameEx(playerid), params);
 	foreach(new i : Player)
 	{

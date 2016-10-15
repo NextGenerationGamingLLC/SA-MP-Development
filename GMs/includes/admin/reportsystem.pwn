@@ -646,16 +646,16 @@ CMD:sta(playerid, params[])
 		}
 		if(Advisors < 1)
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "There are no Player Advisors On Duty at the moment, try again later!");
+			SendClientMessageEx(playerid, COLOR_GREY, "There are no Advisors On Duty at the moment, try again later!");
 			return 1;
 		}
 
-		format(string, sizeof(string), "AdmCmd: %s has sent %s (ID: %i) report RID: %i) to the Player Advisors.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
+		format(string, sizeof(string), "AdmCmd: %s has sent %s (ID: %i) report RID: %i) to the Advisors.", GetPlayerNameEx(playerid), GetPlayerNameEx(Reports[reportid][ReportFrom]),Reports[reportid][ReportFrom],reportid);
 		ABroadCast(COLOR_ORANGE, string, 2);
 		Log("logs/report.log", string);
 		if(PlayerInfo[playerid][pAdmin] == 1)
 		{
-			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An admin has reviewed your report and referred it to the Player Advisors.");
+			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An admin has reviewed your report and referred it to the Advisors.");
 			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An Advisor should be with you shortly.");
 			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Newer players are encouraged to use /requesthelp for any questions you may have as opposed to using /report which is to report rule violations and get admin help.");
 			SetPVarInt( Reports[reportid][ReportFrom], "COMMUNITY_ADVISOR_REQUEST", 1 );
@@ -665,7 +665,7 @@ CMD:sta(playerid, params[])
 		}
 		else
 		{
-			format(string, sizeof(string), "%s has reviewed your report and referred it to the Player Advisors.", GetPlayerNameEx(playerid));
+			format(string, sizeof(string), "%s has reviewed your report and referred it to the Advisors.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, string);
 			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "An Advisor should be with you shortly.");
 			SendClientMessageEx(Reports[reportid][ReportFrom], COLOR_WHITE, "Newer players are encouraged to use /requesthelp for any questions you may have as opposed to using /report which is to report rule violations and get admin help.");

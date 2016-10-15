@@ -130,10 +130,10 @@ stock GetStaffRank(playerid)
 	{
 		switch(PlayerInfo[playerid][pHelper])
 		{
-			case 1: szMiscArray = "{6495ED}Junior Player Advisor{FFFFFF}";
-			case 2: szMiscArray = "{00FFFF}General Player Advisor{FFFFFF}";
-			case 3: szMiscArray = "{00FFFF}Senior Player Advisor{FFFFFF}";
-			case 4: szMiscArray = "{00FFFF}Chief Player Advisor{FFFFFF}";
+			case 1: szMiscArray = "{6495ED}Junior Advisor{FFFFFF}";
+			case 2: szMiscArray = "{00FFFF}General Advisor{FFFFFF}";
+			case 3: szMiscArray = "{00FFFF}Senior Advisor{FFFFFF}";
+			case 4: szMiscArray = "{00FFFF}Chief Advisor{FFFFFF}";
 		}
 	}
 
@@ -270,11 +270,11 @@ CMD:givegun(playerid, params[])
 
 CMD:givedrug(playerid, params[])
 {
-    if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) 
+    if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
     {
         new id, drugstring[16], amount;
 
-        if(sscanf(params, "us[16]d", id, drugstring, amount)) 
+        if(sscanf(params, "us[16]d", id, drugstring, amount))
         {
             SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givedrug [player] [drug] [amount]");
             ListDrugs(playerid);
@@ -282,7 +282,7 @@ CMD:givedrug(playerid, params[])
         }
 
         new drug = GetDrugID(drugstring);
-        if(drug == -1) 
+        if(drug == -1)
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givedrug [player] [drug] [amount]");
 			ListDrugs(playerid);
@@ -817,7 +817,7 @@ CMD:mjail(playerid, params[]) {
 				return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on administrators.");
 			}
 			if(PlayerInfo[iTargetID][pHelper] >= 2) {
-				return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on Player Advisors.");
+				return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on Advisors.");
 			}
             if(PlayerInfo[iTargetID][pJailTime] > 0) {
 			    return SendClientMessageEx(playerid, COLOR_GREY, "You can't perform this action on someone in jail already.");
@@ -1760,7 +1760,7 @@ CMD:removepvehicle(playerid, params[])
 }
 
 CMD:makeadmin(playerid, params[])  {
-	
+
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAP] >= 2 || PlayerInfo[playerid][pHR] >= 3) {
 
 		new
@@ -1772,7 +1772,7 @@ CMD:makeadmin(playerid, params[])  {
 		}
 		else if(IsPlayerConnected(iTargetID)) {
 			if(PlayerInfo[iTargetID][pHelper] >= 1) {
-				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot make Player Advisors admins!");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot make Advisors admins!");
 			}
 			if(PlayerInfo[iTargetID][pAdmin] == iAdminValue) return SendClientMessageEx(playerid, COLOR_GREY, "This person already has this administrator level.");
 			else {
@@ -1958,7 +1958,7 @@ CMD:staff(playerid, params[]) {
 			else if(PlayerInfo[playerid][pAdmin] == 4) format(szMiscArray, sizeof(szMiscArray), "** Senior Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1337) format(szMiscArray, sizeof(szMiscArray), "** Head Admin %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 99999) format(szMiscArray, sizeof(szMiscArray), "** Executive Admin %s: %s", GetPlayerNameEx(playerid), params);
-			else if(PlayerInfo[playerid][pHelper] == 2) format(szMiscArray, sizeof(szMiscArray), "** Player Advisor %s: %s", GetPlayerNameEx(playerid), params);
+			else if(PlayerInfo[playerid][pHelper] == 2) format(szMiscArray, sizeof(szMiscArray), "** Advisor %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pHelper] == 3) format(szMiscArray, sizeof(szMiscArray), "** Senior Advisor %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pHelper] >= 4) format(szMiscArray, sizeof(szMiscArray), "** Chief Advisor %s: %s", GetPlayerNameEx(playerid), params);
 			else if(PlayerInfo[playerid][pAdmin] == 1)
@@ -2160,7 +2160,7 @@ CMD:createpvehicle(playerid, params[]) {
 		else if(IsATrain(iModelID)) SendClientMessageEx(playerid, COLOR_GREY, "Trains cannot be spawned during runtime.");
 		else if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
 		else if(!vehicleCountCheck(iTargetID)) SendClientMessageEx(playerid, COLOR_GREY, "That person can't have more vehicles - they own too many.");
-		else if(!vehicleSpawnCountCheck(iTargetID)) SendClientMessageEx(playerid, COLOR_GREY, "That person has too many vehicles spawned - they must store one first.");	
+		else if(!vehicleSpawnCountCheck(iTargetID)) SendClientMessageEx(playerid, COLOR_GREY, "That person has too many vehicles spawned - they must store one first.");
 		else if(PlayerInfo[iTargetID][pLevel] == 1 && PlayerInfo[iTargetID][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /givemoney on level 1's");
 		else
 		{
@@ -2609,7 +2609,7 @@ CMD:revivenear(playerid, params[])
 			{
 				if(GetPVarInt(i, "Injured") == 1)
 				{
-				
+
 					SetHealth(i, 100);
 					count++;
 					SendClientMessageEx(i, COLOR_WHITE, "You have been revived by an Admin.");
@@ -5402,10 +5402,10 @@ CMD:ah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine");
 	}
 
-	if (PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Player Advisor --* /advisors /pa /newbquestions /an /tn /spec");
-	if ( PlayerInfo[playerid][pHelper] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* General Player Advisor --* /paduty /showrequests /accepthelp /finishhelp /findnewb /staff /kick /mjail /rhmute /nmute");
-	if ( PlayerInfo[playerid][pHelper] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Senior Player Advisor --* /makeadvisor /takeadvisor /requestevent /newbspec");
-	if ( PlayerInfo[playerid][pHelper] == 4) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Chief Player Advisor --* /advisormotd /nonewbie /newbspec");
+	if (PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Advisor --* /advisors /ca /newbquestions /an /tn /spec");
+	if ( PlayerInfo[playerid][pHelper] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* General Advisor --* /caduty /showrequests /accepthelp /finishhelp /findnewb /staff /kick /mjail /rhmute /nmute");
+	if ( PlayerInfo[playerid][pHelper] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Senior Advisor --* /makeadvisor /takeadvisor /requestevent /newbspec");
+	if ( PlayerInfo[playerid][pHelper] == 4) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Chief Advisor --* /advisormotd /nonewbie /newbspec");
 
 	if ( PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	return 1;
@@ -6158,4 +6158,3 @@ CMD:giveeventtokens(playerid, params[])
 	}
 	return 1;
 }
-

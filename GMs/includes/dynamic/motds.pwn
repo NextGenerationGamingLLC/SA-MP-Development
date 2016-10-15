@@ -90,15 +90,15 @@ CMD:advisormotd(playerid, params[])
 		format(CAMOTD, sizeof(CAMOTD), "%s", params);
 		if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pPR] > 0)
 		{
-			format(string, sizeof(string), "AdmCmd: %s has changed the Player Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
+			format(string, sizeof(string), "AdmCmd: %s has changed the Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
 			ABroadCast( COLOR_LIGHTRED, string, 4);
 		}
 		else if(PlayerInfo[playerid][pHelper] >= 4)
 		{
-		    format(string, sizeof(string), "CACmd: %s has changed the Player Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
+		    format(string, sizeof(string), "CACmd: %s has changed the Advisor motd to: %s.", GetPlayerNameEx(playerid), params);
 			CBroadCast( COLOR_YELLOW, string, 2);
 		}
-		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the Player Advisor MOTD.");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the Advisor MOTD.");
 		g_mysql_SaveMOTD();
 	}
 	return 1;

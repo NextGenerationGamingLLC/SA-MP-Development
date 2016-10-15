@@ -479,7 +479,7 @@ CMD:admute(playerid, params[])
 					}
 					else
 					{
-						SendClientMessageEx(playerid, COLOR_GRAD1, "That person is currently muted. You are unable to unmute players from advertisements as a Player Advisor.");
+						SendClientMessageEx(playerid, COLOR_GRAD1, "That person is currently muted. You are unable to unmute players from advertisements as a Advisor.");
 					}
 				}
 
