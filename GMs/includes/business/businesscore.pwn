@@ -688,42 +688,45 @@ public GasPumpSaleTimer(playerid, iBusinessID, iPumpID)
 {
 	new
 		Float: fPumpAmount = FUEL_PUMP_RATE / 4,
-		iVehicleID = Businesses[iBusinessID][GasPumpVehicleID][iPumpID];
+		iVehicleID = Businesses[iBusinessID][GasPumpVehicleID][iPumpID],
+		szSaleText[148];
 
+	if (GetVehicleDistanceFromPoint(iVehicleID, Businesses[iBusinessID][GasPumpPosX][iPumpID], Businesses[iBusinessID][GasPumpPosY][iPumpID], Businesses[iBusinessID][GasPumpPosZ][iPumpID]) > 5.0)
+	{
+	    StopRefueling(playerid, iBusinessID, iPumpID);
+		return 1;
+	}
 	if (fPumpAmount*10 + VehicleFuel[iVehicleID] > 100.0)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN, "Your vehicle tank is now full.");
 	    StopRefueling(playerid, iBusinessID, iPumpID);
 	    return 1;
 	}
-	else if (GetPVarInt(playerid, "Refueling") == -1)
+	if (GetPVarInt(playerid, "Refueling") == -1)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN, "You have stopped refueling.");
 	    StopRefueling(playerid, iBusinessID, iPumpID);
 	    return 1;
 	}
-	else if (fPumpAmount > Businesses[iBusinessID][GasPumpGallons][iPumpID])
+	if (fPumpAmount > Businesses[iBusinessID][GasPumpGallons][iPumpID])
 	{
 		SendClientMessageEx(playerid, COLOR_RED, "No more gas left in the station's gas pump.");
 	    StopRefueling(playerid, iBusinessID, iPumpID);
 	    return 1;
 	}
-	else if (GetPlayerCash(playerid) < floatround(Businesses[iBusinessID][GasPumpSalePrice][iPumpID]) && DynVeh[iVehicleID] != -1 && DynVehicleInfo[DynVeh[iVehicleID]][gv_igID] == INVALID_GROUP_ID)
-	{
-		SendClientMessageEx(playerid, COLOR_RED, "You are out of cash.");
-	    StopRefueling(playerid, iBusinessID, iPumpID);
-	    return 1;
+	if(DynVeh[iVehicleID] != -1 && DynVehicleInfo[DynVeh[iVehicleID]][gv_igID] != INVALID_GROUP_ID) {
+		if(arrGroupData[DynVehicleInfo[DynVeh[iVehicleID]][gv_igID]][g_iBudget] < floatround(Businesses[iBusinessID][GasPumpSalePrice][iPumpID])) {
+			SendClientMessageEx(playerid, COLOR_RED, "The group vehicle this belongs to has ran out of cash!");
+		    StopRefueling(playerid, iBusinessID, iPumpID);
+		    return 1;
+		}
 	}
-	else if (arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] < floatround(Businesses[iBusinessID][GasPumpSalePrice][iPumpID]) && DynVeh[iVehicleID] != -1 && DynVehicleInfo[DynVeh[iVehicleID]][gv_igID] != INVALID_GROUP_ID)
-	{
-		SendClientMessageEx(playerid, COLOR_RED, "Your group is out of cash.");
-	    StopRefueling(playerid, iBusinessID, iPumpID);
-	    return 1;
-	}
-	else if (GetVehicleDistanceFromPoint(iVehicleID, Businesses[iBusinessID][GasPumpPosX][iPumpID], Businesses[iBusinessID][GasPumpPosY][iPumpID], Businesses[iBusinessID][GasPumpPosZ][iPumpID]) > 5.0)
-	{
-	    StopRefueling(playerid, iBusinessID, iPumpID);
-	    return 1;
+	else {
+		if(GetPlayerCash(playerid) < floatround(Businesses[iBusinessID][GasPumpSalePrice][iPumpID])) {
+			SendClientMessageEx(playerid, COLOR_RED, "You are out of cash.");
+		    StopRefueling(playerid, iBusinessID, iPumpID);
+		    return 1;
+		}
 	}
 
 	Businesses[iBusinessID][GasPumpGallons][iPumpID] -= fPumpAmount;
@@ -731,7 +734,6 @@ public GasPumpSaleTimer(playerid, iBusinessID, iPumpID)
 	Businesses[iBusinessID][GasPumpSaleGallons][iPumpID] += fPumpAmount;
 	Businesses[iBusinessID][GasPumpSalePrice][iPumpID] += fPumpAmount * Businesses[iBusinessID][bGasPrice];
 
-	new szSaleText[148];
 	format(szSaleText,sizeof(szSaleText),"Price Per Gallon: $%.2f\nThis Sale: $%.2f\nGallons: %.3f\nGas Available: %.2f/%.2f gallons", Businesses[iBusinessID][bGasPrice], Businesses[iBusinessID][GasPumpSalePrice][iPumpID], Businesses[iBusinessID][GasPumpSaleGallons][iPumpID], Businesses[iBusinessID][GasPumpGallons][iPumpID], Businesses[iBusinessID][GasPumpCapacity][iPumpID]);
 	UpdateDynamic3DTextLabelText(Businesses[iBusinessID][GasPumpSaleTextID][iPumpID], COLOR_YELLOW, szSaleText);
 	return 1;
