@@ -2449,7 +2449,8 @@ CMD:cancel(playerid, params[])
  		DeletePVar(playerid, "LoadTruckTime");
 		DeletePVar(playerid, "TruckDeliver");
 
-		Businesses[TruckDeliveringTo[vehicleid]][bOrderState] = 0;
+		TruckContents{vehicleid} = 0;
+		if((0 <= TruckDeliveringTo[vehicleid] < MAX_BUSINESSES)) Businesses[TruckDeliveringTo[vehicleid]][bOrderState] = 0;
 		TruckDeliveringTo[vehicleid] = INVALID_BUSINESS_ID;
 
 		TruckUsed[playerid] = INVALID_VEHICLE_ID;

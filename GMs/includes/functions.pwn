@@ -1246,8 +1246,8 @@ public Float: GetDistanceToCar(playerid, veh) {
 }
 
 
-forward Float: vehicle_get_speed(vehicleid);
-public Float: vehicle_get_speed(vehicleid)
+forward Float:vehicle_get_speed(vehicleid);
+public Float:vehicle_get_speed(vehicleid)
 {
 	new
 		Float: fVelocity[3];
@@ -1266,8 +1266,7 @@ Float:GetDistanceBetweenPlayers(iPlayerOne, iPlayerTwo)
 }
 
 // This needs to be tested! - Akatony
-forward Float: player_get_speed(playerid);
-public Float: player_get_speed(playerid)
+public Float:player_get_speed(playerid)
 {
 	new
 		Float: fVelocity[3];
@@ -1342,8 +1341,6 @@ public UpdateCarRadars()
 }
 			
 			/*  ---------------- STOCK FUNCTIONS ----------------- */
-forward Float:GetDistanceBetweenPoints(Float:x1, Float:y1, Float:z1, Float:x2, Float:y2, Float:z2);
-
 stock Float:GetDistanceBetweenPoints(Float:x1, Float:y1, Float:z1, Float:x2, Float:y2, Float:z2) {
     return floatsqroot(floatpower(x1 - x2, 2) + floatpower(y1 - y2, 2) + floatpower(z1 - z2, 2));
 }

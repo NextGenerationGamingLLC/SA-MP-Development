@@ -4811,23 +4811,23 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		}
 		else if(IsAnTaxi(vehicleid) || IsAnBus(vehicleid))
 		{
-	    if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
+		    if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || IsATaxiDriver(playerid) || PlayerInfo[playerid][pTaxiLicense] == 1)
 			{
 			}
-		  else
+			else
 			{
-					for(new i = 0; i < GetPlayerVehicleSlots(playerid); i++)
-					{
-						if(IsAnTaxi(PlayerVehicleInfo[playerid][i][pvModelId]))
-						return 1;
-					}
-			    SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Taxi/Bus Driver!");
-			    RemovePlayerFromVehicle(playerid);
-			    new Float:slx, Float:sly, Float:slz;
-					GetPlayerPos(playerid, slx, sly, slz);
-					SetPlayerPos(playerid, slx, sly, slz);
-					defer NOPCheck(playerid);
-		  }
+				for(new i = 0; i < GetPlayerVehicleSlots(playerid); i++)
+				{
+					if(IsAnTaxi(PlayerVehicleInfo[playerid][i][pvModelId]))
+					return 1;
+				}
+				SendClientMessageEx(playerid,COLOR_GREY,"   You are not a Taxi/Bus Driver!");
+				RemovePlayerFromVehicle(playerid);
+				new Float:slx, Float:sly, Float:slz;
+				GetPlayerPos(playerid, slx, sly, slz);
+				SetPlayerPos(playerid, slx, sly, slz);
+				defer NOPCheck(playerid);
+			}
 		}
 
 		if(GetCarBusiness(newcar) != INVALID_BUSINESS_ID && PlayerInfo[playerid][pAdmin] < 1337)

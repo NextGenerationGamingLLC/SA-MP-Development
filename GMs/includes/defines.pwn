@@ -1557,3 +1557,7 @@ native IsValidVehicle(vehicleid);
 
 /* IRC/Slack */
 #define MAX_BOTS (1)
+
+// Forwards placed here are for warning: 208
+forward Float:player_get_speed(playerid);
+forward Float:GetDistanceBetweenPoints(Float:x1, Float:y1, Float:z1, Float:x2, Float:y2, Float:z2);

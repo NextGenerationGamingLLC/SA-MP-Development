@@ -570,7 +570,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 					return 1;
 				}
-				new handguns, primguns, wbid;
+				new handguns, primguns, wbid, weapname[32], slot = GetBackpackFreeSlotGun(playerid);
 				for(new i = 6; i < 11; i++) {
 					if(PlayerInfo[playerid][pBItems][i] > 0) {
 						if(IsWeaponHandgun(PlayerInfo[playerid][pBItems][i])) handguns++;
@@ -585,7 +585,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}You can only carry 2 handguns");
 							return 1;
 						}
-						slot = GetBackpackFreeSlotGun(playerid);
 						if(slot != 0 && PlayerInfo[playerid][pGuns][GetWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetWeaponSlot(wbid)] == 0) {
 							RemovePlayerWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
@@ -613,7 +612,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}You can only carry 2 handguns and 1 primary");
 							return 1;
 						}
-						slot = GetBackpackFreeSlotGun(playerid);
 						if(slot != 0 && PlayerInfo[playerid][pGuns][GetWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetWeaponSlot(wbid)] == 0) {
 							RemovePlayerWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;
@@ -641,7 +639,6 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							ShowBackpackMenu(playerid, DIALOG_BGUNS, "- You can only carry 2 handguns and 3 primary");
 							return 1;
 						}
-						slot = GetBackpackFreeSlotGun(playerid);
 						if(slot != 0 && PlayerInfo[playerid][pGuns][GetWeaponSlot(wbid)] == wbid && PlayerInfo[playerid][pAGuns][GetWeaponSlot(wbid)] == 0) {
 							RemovePlayerWeapon(playerid, wbid);
 							PlayerInfo[playerid][pBItems][slot] = wbid;

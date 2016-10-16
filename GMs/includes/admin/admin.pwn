@@ -3108,10 +3108,10 @@ CMD:spec(playerid, params[])
 	new giveplayerid;
 
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /spec (playerid/off)");
-	if(PlayerInfo[playerid][pHelper] < PlayerInfo[giveplayerid][pHelper] && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can't spectate higher level helpers.");
-	if(PlayerInfo[playerid][pHelper] > 0 && PlayerInfo[giveplayerid][pAdmin] > 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can't spectate an administrator");
 	if(IsPlayerConnected(giveplayerid))
 	{
+		if(PlayerInfo[playerid][pHelper] < PlayerInfo[giveplayerid][pHelper] && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can't spectate higher level helpers.");
+		if(PlayerInfo[playerid][pHelper] > 0 && PlayerInfo[giveplayerid][pAdmin] > 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can't spectate an administrator");
 		if(PlayerInfo[playerid][pHelper] > 0) {
 			switch(PlayerInfo[playerid][pHelper]) {
 				case 1, 2: if(!(1 <= PlayerInfo[giveplayerid][pLevel] <= 5)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only use this on Levels 1 - 5 as a JPA/GPA!");
