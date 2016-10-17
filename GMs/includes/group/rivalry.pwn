@@ -115,6 +115,7 @@ CMD:aviewrivals(playerid, params[]) {
 CMD:repfam(playerid, params[]) {
  
     if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
+    if(PlayerInfo[playerid][pHospital] > 0) return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
     if(GetPVarType(playerid, "RepFam")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot take your bandana off yet.");
     if(GetPVarType(playerid, "RepFam_TL")) Rivalry_Toggle(playerid, false);
     else {

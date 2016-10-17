@@ -362,6 +362,22 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 	}
 	else
 	{
+		if(iHospital != HOSPITAL_DOCJAIL)
+		{
+			if(!IsPlayerInRangeOfPoint(playerid, 7.0, HospitalSpawns[iBed][0], HospitalSpawns[iBed][1], HospitalSpawns[iBed][2]))
+			{
+				TogglePlayerControllable(playerid, 0);
+				SetTimerEx("Hospital_StreamIn", FREEZE_TIME, false, "iii", playerid, iHospital, iBed);
+				Streamer_UpdateEx(playerid, HospitalSpawns[iBed][0], HospitalSpawns[iBed][1], HospitalSpawns[iBed][2]);
+				SetPlayerPos(playerid, HospitalSpawns[iBed][0], HospitalSpawns[iBed][1], HospitalSpawns[iBed][2]);
+				SetPlayerFacingAngle(playerid, 180);
+				SetPlayerInterior(playerid, 1);
+				PlayerInfo[playerid][pInt] = 1;
+				SetPlayerVirtualWorld(playerid, iHospital);
+				PlayerInfo[playerid][pVW] = iHospital;
+
+			}
+		}
 		format(string, sizeof(string), "Time Left: ~r~%d ~w~seconds", arrHospitalBedData[iHospital][iCountDown][iBed]);
 		PlayerTextDrawHide(playerid, HospTime[playerid]);
 		PlayerTextDrawSetString(playerid, HospTime[playerid], string);

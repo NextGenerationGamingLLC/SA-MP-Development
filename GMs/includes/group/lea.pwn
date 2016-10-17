@@ -567,39 +567,22 @@ CMD:usekit(playerid, params[]) {
 
 CMD:searchcar(playerid, params[])
 {
-    new string[128];
-    if (!IsACop(playerid))
+	if(!IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a law enforcement officer!");
+	if(GetPVarInt(playerid, "Injured") != 0 || GetPVarInt(playerid, "EventToken") != 0) return SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
+	new closestcar = GetClosestCar(playerid), v, string[128];
+	if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0)) return SendClientMessageEx(playerid,COLOR_GREY,"You are not near any vehicles.");
+	if(IsABike(closestcar) || IsAPlane(closestcar)) return SendClientMessageEx(playerid,COLOR_GREY,"You can't search this type of vehicle!");
+
+	new engine,lights,alarm,doors,bonnet,boot,objective;
+	GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
+	if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET) return SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle's trunk must be opened in order to search it.");
+
+	foreach(new i: Player)
 	{
-        SendClientMessageEx(playerid, COLOR_GREY, "   You are not a law enforcement officer!");
-        return 1;
-    }
-    if(GetPVarInt(playerid, "Injured") != 0) {
-		SendClientMessageEx (playerid, COLOR_GRAD2, "You cannot do this at this time.");
-		return 1;
-	}
-    new carid = GetPlayerVehicleID(playerid);
-    new closestcar = GetClosestCar(playerid,carid);
-    if(!IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0))
-	{
-        SendClientMessageEx(playerid,COLOR_GREY,"You are not near any vehicles.");
-        return 1;
-    }
-	if(!IsABike(closestcar) && !IsAPlane(closestcar)) {
-		new engine,lights,alarm,doors,bonnet,boot,objective;
-		GetVehicleParamsEx(closestcar,engine,lights,alarm,doors,bonnet,boot,objective);
-		if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET)
-		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "The vehicle's trunk must be opened in order to search it.");
-			return 1;
-		}
-	}
-    foreach(new i: Player)
-	{
-		new v = GetPlayerVehicle(i, closestcar);
-		if(v != -1)
-		{
-			Smuggle_VehicleLoad(playerid, v);
-			string[0] = 0;
+		v = GetPlayerVehicle(i, closestcar);
+		string[0] = 0;
+		if(v != -1) {
+			Smuggle_VehicleLoad(playerid, i, v);
 			for(new x = 0; x < 3; x++)
 			{
 				if(PlayerVehicleInfo[i][v][pvWeapons][x] != 0)
@@ -621,12 +604,10 @@ CMD:searchcar(playerid, params[])
 				}
 			}
 			else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
-			Smuggle_VehicleLoad(playerid, closestcar);
 			strins(string, "F", 0, sizeof(string));
 		}
 	}
     if(isnull(string)) {
-
         if(CrateVehicleLoad[closestcar][vCarVestKit] > 0) {
             new str[84];
             SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains:");
@@ -636,7 +617,6 @@ CMD:searchcar(playerid, params[])
             SendClientMessageEx(playerid, COLOR_WHITE, str);
 		}
 		else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
-		Smuggle_VehicleLoad(playerid, closestcar);
     }
     return 1;
 }

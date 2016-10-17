@@ -651,7 +651,7 @@ IncreaseSmugglerLevel(playerid)
     return 1;
 }
 
-Smuggle_VehicleLoad(playerid, iVehID)
+Smuggle_VehicleLoad(playerid, iTargetID, iVehID)
 {
 	new iTotalAmount;
 
@@ -662,10 +662,10 @@ Smuggle_VehicleLoad(playerid, iVehID)
 		szMiscArray = "Drugs\tAmount in vehicle\n";
 		for(new i; i < sizeof(Drugs); ++i) {
 
-			if(PlayerVehicleInfo[playerid][iVehID][pvDrugs][i] > 0) {
+			if(PlayerVehicleInfo[iTargetID][iVehID][pvDrugs][i] > 0) {
 
-				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, Drugs[i], PlayerVehicleInfo[playerid][iVehID][pvDrugs][i]);
-				iTotalAmount += PlayerVehicleInfo[playerid][iVehID][pvDrugs][i];
+				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d\n", szMiscArray, Drugs[i], PlayerVehicleInfo[iTargetID][iVehID][pvDrugs][i]);
+				iTotalAmount += PlayerVehicleInfo[iTargetID][iVehID][pvDrugs][i];
 			}
 		}
 		if(iTotalAmount == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no drugs in this vehicle.");
