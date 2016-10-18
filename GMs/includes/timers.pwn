@@ -214,7 +214,7 @@ task TurfWarsUpdate[1000]()
 	        }
 	        else
 	        {
-	            if(TurfWars[i][twAttemptId] != -1)
+	        	if(TurfWars[i][twAttemptId] != -1)
 	            {
 					CaptureTurfWarsZone(TurfWars[i][twAttemptId],i);
 	            }

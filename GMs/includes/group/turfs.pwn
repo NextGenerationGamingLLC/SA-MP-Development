@@ -208,7 +208,11 @@ ShutdownTurfWarsZone(zone)
 	ResetTurfWarsZone(0, zone);
 
 	TurfWars[zone][twActive] = 1;
-	TurfWars[zone][twTimeLeft] = 600;
+	if(TurfWars[zone][twSpecial] != 2) {
+		TurfWars[zone][twTimeLeft] = 300;
+	} else {
+		TurfWars[zone][twTimeLeft] = 600;
+	}
 	TurfWars[zone][twVulnerable] = 0;
 	TurfWars[zone][twAttemptId] = -2;
 	TurfWars[zone][twFlash] = 1;
@@ -232,7 +236,11 @@ TakeoverTurfWarsZone(iGroupID, zone)
 	ResetTurfWarsZone(0, zone);
 
 	TurfWars[zone][twActive] = 1;
-	TurfWars[zone][twTimeLeft] = 600;
+	if(TurfWars[zone][twSpecial] != 2) {
+		TurfWars[zone][twTimeLeft] = 300;
+	} else {
+		TurfWars[zone][twTimeLeft] = 600;
+	}
 	TurfWars[zone][twVulnerable] = 0;
 	TurfWars[zone][twAttemptId] = iGroupID;
 	TurfWars[zone][twFlash] = 1;
@@ -252,7 +260,7 @@ CaptureTurfWarsZone(iGroupID, zone)
 			SetPlayerToTeamColor(i);
 		}
 		if(IsPlayerInDynamicArea(i, TurfWars[zone][twAreaId])) {
-		    if(iGroupID != -2) {
+		    if((0 <= iGroupID < MAX_GROUPS)) {
 				format(string,sizeof(string),"%s has successfully claimed this turf for their own!",arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessageEx(i,COLOR_RED,string);
 				//SendAudioToPlayer(i, 62, 100);
@@ -262,7 +270,7 @@ CaptureTurfWarsZone(iGroupID, zone)
 			}
 		}
 		if(PlayerInfo[i][pGangModerator] >= 1) {
-		    if(iGroupID != INVALID_GROUP_ID) {
+		    if((0 <= iGroupID < MAX_GROUPS)) {
 				format(string,sizeof(string),"%s has successfully claimed turf %d",arrGroupData[iGroupID][g_szGroupName], zone);
 				SendClientMessageEx(i,COLOR_RED,string);
 			}
@@ -272,8 +280,13 @@ CaptureTurfWarsZone(iGroupID, zone)
 			}
 		}	
 	}
-	if(iGroupID != INVALID_GROUP_ID) TurfWars[zone][twOwnerId] = iGroupID;
-	else TurfWars[zone][twOwnerId] = -1;
+	if(TurfWars[zone][twOwnerId] != -2) {
+		if((0 <= iGroupID < MAX_GROUPS)) {
+			TurfWars[zone][twOwnerId] = iGroupID;
+		} else {
+			TurfWars[zone][twOwnerId] = -1;
+		}
+	}
 	SaveTurfWar(zone);
 }
 
@@ -494,7 +507,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					ShowPlayerDialogEx(playerid,TWEDITTURFSOWNER,DIALOG_STYLE_INPUT,"Turf Wars - Edit Turfs Owner Menu:","Please enter a group ID that you wish to assign to this turf:\n\nHint: Enter -1 if you wish to vacant the turf.","Change","Back");
 					return 1;
 				}
-				SetOwnerTurfWarsZone(1, tw, strval(inputtext)-1);
+				SetOwnerTurfWarsZone(1, tw, strval(inputtext));
 				SaveTurfWar(tw);
 				ShowPlayerDialogEx(playerid,TWEDITTURFSMENU,DIALOG_STYLE_LIST,"Turf Wars - Edit Turfs Menu:","Edit Dimensions...\nEdit Owners...\nEdit Vulnerable Time...\nEdit Locked...\nEdit Perks...\nReset War...\nDestroy Turf","Select","Back");
 			}
@@ -582,7 +595,7 @@ CMD:turfinfo(playerid, params[])
             format(string,sizeof(string),"Owner: Vacant.");
         }
         else if(TurfWars[tw][twOwnerId] == -2) {
-            format(string,sizeof(string),"Owner: Law Enforcement.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
+            format(string,sizeof(string),"Owner: Law Enforcement.");
         }
         else {
             format(string,sizeof(string),"Owner: %s.",arrGroupData[TurfWars[tw][twOwnerId]][g_szGroupName]);
@@ -794,6 +807,12 @@ CMD:shutdown(playerid, params[])
 }
 
 CMD:claim(playerid, params[])
+{
+	SendClientMessageEx(playerid, COLOR_GRAD2, "Command has been changed to /claimturf");
+	return 1;
+}
+
+CMD:claimturf(playerid, params[])
 {
 	if(servernumber == 2)
 	{

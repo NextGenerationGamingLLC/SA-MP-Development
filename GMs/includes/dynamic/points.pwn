@@ -56,9 +56,8 @@ CMD:capture(playerid, params[])
 		}		
 	}
 
-	if(DynPoints[id][poInactive] >= 1) return SendClientMessageEx(playerid, COLOR_GRAD1, " You cannot capture this point!");
-
 	if(id == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, " You are not at the capture place!"); // A small check.
+	if(DynPoints[id][poInactive] >= 1) return SendClientMessageEx(playerid, COLOR_GRAD1, " You cannot capture this point!");
 	if(DynPoints[id][poCapturable] <= 0) return SendClientMessageEx(playerid, COLOR_GRAD1, " This point is not ready for takeover.");
 	if(DynPoints[id][poBeingCaptured] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD1, " This point is already being captured!");
 	if(DynPoints[id][poCapperGroup] == PlayerInfo[playerid][pMember]) return SendClientMessageEx(playerid, COLOR_GRAD1, " This point is already being captured by your family!");
