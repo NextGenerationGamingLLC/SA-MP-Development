@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -40,14 +40,14 @@
 stock IsBackpackAvailable(playerid)
 {
 	#if defined zombiemode
-		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) 
+		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
 			return 0;
 	#endif
-	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "EMSAttempt") != 0 || HungerPlayerInfo[playerid][hgInEvent] != 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerInfo[playerid][pAccountRestricted] != 0) 
+	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || GetPVarInt(playerid, "EMSAttempt") != 0 || HungerPlayerInfo[playerid][hgInEvent] != 0 || PlayerInfo[playerid][pHospital] > 0 || PlayerInfo[playerid][pAccountRestricted] != 0)
 		return 0;
-	if(GetPVarType(playerid, "IsInArena") || GetPVarInt( playerid, "EventToken") != 0 || IsPlayerInAnyVehicle(playerid) || GetPVarType(playerid, "AttemptingLockPick") || GetPVarInt(playerid, "WatchingTV") || PlayerInfo[playerid][pJailTime] > 0 || !PlayerInfo[playerid][pBEquipped]) 
+	if(GetPVarType(playerid, "IsInArena") || GetPVarInt( playerid, "EventToken") != 0 || IsPlayerInAnyVehicle(playerid) || GetPVarType(playerid, "AttemptingLockPick") || GetPVarInt(playerid, "WatchingTV") || PlayerInfo[playerid][pJailTime] > 0 || !PlayerInfo[playerid][pBEquipped])
 		return 0;
-	
+
 	return 1;
 }
 
@@ -55,7 +55,7 @@ stock GetBackpackFreeSlotGun(playerid) {
 	new slot;
 	for(new g = 6; g < 11; g++)
 	{
-		
+
 		if(PlayerInfo[playerid][pBItems][g] == 0)
 		{
 			slot = g;
@@ -78,7 +78,7 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 		DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 		return 1;
 	}
-		
+
 	format(dgTitle, sizeof(dgTitle), "%s Items %s", GetBackpackName(PlayerInfo[playerid][pBackpack]), extramsg);
 	switch(dialogid) {
 		case DIALOG_OBACKPACK: {
@@ -112,7 +112,7 @@ ShowBackpackMenu(playerid, dialogid, extramsg[]) {
 			format(szMiscArray, sizeof(szMiscArray), "%s\nEnter the amount to %s                                                        ", extramsg, (GetPVarInt(playerid, "bnwd")) ? ("deposit") : ("withdraw"));
 			ShowPlayerDialogEx(playerid, DIALOG_BNARCOTICS3, DIALOG_STYLE_INPUT, dgTitle, szMiscArray, "Select", "Cancel");
 		}
-		
+
 		case DIALOG_BGUNS: {
 			new weapname[20], itemcount;
 			for(new i = 6; i < 11; i++)
@@ -154,14 +154,14 @@ stock GetBackpackName(backpackid) {
 }
 
 stock GetBackpackNarcoticsGrams(playerid) {
-	
+
 	new grams;
 	for(new i; i < sizeof(Drugs); ++i) grams += PlayerInfo[playerid][pBDrugs][i];
 	return grams;
 }
 
 stock GetBackpackIngredientsGrams(playerid) {
-	
+
 	new grams;
 	for(new i; i < sizeof(szIngredients); ++i) grams += PlayerInfo[playerid][pBIngredients][i];
 	return grams;
@@ -176,7 +176,7 @@ stock CountBackpackGuns(playerid) {
 }
 
 CMD:shopbpack(playerid, params[]) {
-	if(PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pAdmin] > 3) 
+	if(PlayerInfo[playerid][pShopTech] >= 1 || PlayerInfo[playerid][pAdmin] > 3)
 	{
 		new playertogive, type, orderid;
 
@@ -194,36 +194,36 @@ CMD:shopbpack(playerid, params[]) {
 				TypeName[7],
 				szMessage[87];
 
-			
+
 			switch(type)
 			{
-				case 1: 
+				case 1:
 				{
 					TypeName = "Small";
 					SetPlayerAttachedObject(playertogive, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 				}
-				case 2: 
+				case 2:
 				{
 					TypeName = "Medium";
 					SetPlayerAttachedObject(playertogive, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 				}
-				case 3: 
+				case 3:
 				{
 					TypeName = "Large";
 					SetPlayerAttachedObject(playertogive, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
 				}
 			}
-			
+
 			PlayerInfo[playertogive][pBackpack] = type;
 			PlayerInfo[playertogive][pBEquipped] = 1;
 			PlayerInfo[playertogive][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 			PlayerInfo[playertogive][pBStoredH] = INVALID_HOUSE_ID;
 			format(szMessage, sizeof(szMessage), "You have successfully created a %s Backpack for %s (OrderID: %d).", TypeName, GetPlayerNameEx(playertogive), orderid);
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
-			
+
 			format(szMessage, sizeof(szMessage), "You now have a %s Backpack from %s (OrderID: %d).", TypeName, GetPlayerNameEx(playerid), orderid);
 			SendClientMessageEx(playertogive, COLOR_WHITE, szMessage);
-			
+
 			SendClientMessageEx(playertogive, COLOR_GREY, "Use /backpackhelp to see the list of commands.");
 
 			format(szMessage, sizeof(szMessage), "%s created a %s Backpack (%i) for %s(%d) (OrderID: %d).", GetPlayerNameEx(playerid), TypeName, type, GetPlayerNameEx(playertogive), GetPlayerSQLId(playertogive), orderid);
@@ -288,7 +288,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(GetPVarInt(playerid, "BackpackMeal") == 1) {
 					ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "- {A80000}You're already using a meal.");
 				}
-				else 
+				else
 				{
 					defer FinishMeal(playerid);
 					SetPVarInt(playerid, "BackpackMeal", 1);
@@ -311,7 +311,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(GetPVarInt(playerid, "BackpackMedKit") == 1) {
 					ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "- {A80000}You're already using a med kit.");
 				}
-				else 
+				else
 				{
 					defer FinishMedKit(playerid);
 					SetPVarInt(playerid, "BackpackMedKit", 1);
@@ -358,7 +358,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					return 1;
 				}
 
-				new pbi = GetPVarInt(playerid, "pbitemindex");	
+				new pbi = GetPVarInt(playerid, "pbitemindex");
 				if(GetPVarInt(playerid, "bnwd")) {
 					new namount, maxgrams, dInfo[135];
 					if(sscanf(inputtext, "d", namount)) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}");
@@ -368,7 +368,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						case 2: maxgrams = 100;
 						case 3: maxgrams = 250;
 					}
-					if(namount > (maxgrams-GetBackpackNarcoticsGrams(playerid))) 
+					if(namount > (maxgrams-GetBackpackNarcoticsGrams(playerid)))
 					{
 						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you can only store %d grams{A9C4E4}\nGrams available to store left {FFF600}%d{A9C4E4}\nEnter the amount to deposit", maxgrams, maxgrams-GetBackpackNarcoticsGrams(playerid));
 						ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, dInfo);
@@ -377,7 +377,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					if(PlayerInfo[playerid][pDrugs][pbi] >= namount) PlayerInfo[playerid][pDrugs][pbi] -= namount;
 					else return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou don't have that that amount of grams.");
-					
+
 					PlayerInfo[playerid][pBDrugs][pbi] += namount;
 					format(szMiscArray, sizeof(szMiscArray), "You have deposited %d grams of %s in your backpack.", namount, Drugs[pbi]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
@@ -391,7 +391,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					new namount, dInfo[135];
 					if(sscanf(inputtext, "d", namount)) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}");
 					if(namount < 1) return ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, "{B20400}Wrong input{A9C4E4}\nYou cannot put the amount less than 1");
-					if(namount > PlayerInfo[playerid][pBDrugs][pbi]) 
+					if(namount > PlayerInfo[playerid][pBDrugs][pbi])
 					{
 						format(dInfo, sizeof(dInfo), "{B20400}Wrong input, you only have %d grams of %s{A9C4E4}\nGrams trying to withdraw {FFF600}%d{A9C4E4}\nEnter the amount to deposit", PlayerInfo[playerid][pBDrugs][pbi], Drugs[pbi], namount);
 						ShowBackpackMenu(playerid, DIALOG_BNARCOTICS3, dInfo);
@@ -525,7 +525,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								ShowBackpackMenu(playerid, DIALOG_BGUNS, "- {02B0F5}Select a weapon - No guns to store");
 							}
 						}
-					}	
+					}
 				}
 				else {
 
@@ -542,7 +542,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 						GetWeaponName(PlayerInfo[playerid][pBItems][slot], weapname, sizeof(weapname));
 						GivePlayerValidWeapon(playerid, PlayerInfo[playerid][pBItems][slot]);
-						
+
 						DeletePVar(playerid, szMiscArray);
 
 						format(szMiscArray, sizeof(szMiscArray), "You have withdrawn a %s from your backpack.", weapname);
@@ -570,7 +570,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 					return 1;
 				}
-				new handguns, primguns, wbid, weapname[32], slot = GetBackpackFreeSlotGun(playerid);
+				new handguns, primguns, wbid, slot = GetBackpackFreeSlotGun(playerid);
 				for(new i = 6; i < 11; i++) {
 					if(PlayerInfo[playerid][pBItems][i] > 0) {
 						if(IsWeaponHandgun(PlayerInfo[playerid][pBItems][i])) handguns++;
@@ -730,7 +730,7 @@ CMD:sellbackpack(playerid, params[])
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
 		if(GetPVarInt(playerid, "sellingbackpack")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are already selling a backpack!");
-		
+
 		new string[128], giveplayerid, price, bptype[8];
 		if(sscanf(params, "ui", giveplayerid, price)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /sellbackpack [player] [price]");
@@ -801,7 +801,7 @@ CMD:listbitems(playerid, params[])
 				format(string, sizeof(string), "(Backpack) %d meals.", PlayerInfo[giveplayerid][pBItems][0]);
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
-			
+
 			for(new i; i < sizeof(Drugs); ++i) {
 
 				if(PlayerInfo[giveplayerid][pBDrugs][i] > 0) {
@@ -815,7 +815,7 @@ CMD:listbitems(playerid, params[])
 				format(string, sizeof(string), "(Backpack) %d Medical Kits.", PlayerInfo[giveplayerid][pBItems][5]);
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
-			
+
 			if(PlayerInfo[giveplayerid][pBItems][11] > 0)
 			{
 				format(string, sizeof(string), "(Backpack) %d Energy Bars.", PlayerInfo[giveplayerid][pBItems][11]);
@@ -826,7 +826,7 @@ CMD:listbitems(playerid, params[])
 			{
 				if(PlayerInfo[giveplayerid][pBItems][i] > 0)
 				{
-					if(!sent) 
+					if(!sent)
 					{
 						format(string, sizeof(string), "*** %s' %s Backpack weapons...  ***", GetPlayerNameEx(giveplayerid), btype);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -874,7 +874,7 @@ CMD:bsearch(playerid, params[])
 				format(string, sizeof(string), "(Backpack) %d meals.", PlayerInfo[giveplayerid][pBItems][0]);
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
-			
+
 			for(new i; i < sizeof(Drugs); ++i) {
 
 				if(PlayerInfo[giveplayerid][pBDrugs][i] > 0) {
@@ -883,13 +883,13 @@ CMD:bsearch(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GREY, string);
 				}
 			}
-			
+
 			if(PlayerInfo[giveplayerid][pBItems][5] > 0)
 			{
 				format(string, sizeof(string), "(Backpack) %d Medical Kits.", PlayerInfo[giveplayerid][pBItems][5]);
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 			}
-			
+
 			if(PlayerInfo[giveplayerid][pBItems][11] > 0)
 			{
 				format(string, sizeof(string), "(Backpack) %d Energy Bars.", PlayerInfo[giveplayerid][pBItems][11]);
@@ -900,7 +900,7 @@ CMD:bsearch(playerid, params[])
 			{
 				if(PlayerInfo[giveplayerid][pBItems][i] > 0)
 				{
-					if(!sent) 
+					if(!sent)
 					{
 						format(string, sizeof(string), "*** %s' %s Backpack weapons...  ***", GetPlayerNameEx(giveplayerid), btype);
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -1013,7 +1013,7 @@ CMD:bwear(playerid, params[])
 			for(i = 0 ; i < MAX_PLAYERVEHICLES; i++)
 			{
 				if(PlayerVehicleInfo[playerid][i][pvId] != INVALID_PLAYER_VEHICLE_ID && PlayerVehicleInfo[playerid][i][pvSlotId] == PlayerInfo[playerid][pBStoredV]) GetVehiclePos(PlayerVehicleInfo[playerid][i][pvId], x, y, z);
-				if(IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z)) 
+				if(IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z))
 				{
 					pvid = i;
 					break;
@@ -1023,21 +1023,21 @@ CMD:bwear(playerid, params[])
 			new engine,lights,alarm,doors,bonnet,boot,objective;
 			GetVehicleParamsEx(PlayerVehicleInfo[playerid][pvid][pvId],engine,lights,alarm,doors,bonnet,boot,objective);
 			if(boot == VEHICLE_PARAMS_OFF || boot == VEHICLE_PARAMS_UNSET) return SendClientMessageEx(playerid, COLOR_GRAD3, "You can't take/put stuff inside the trunk if it's closed!(/car trunk to open it)");
-			if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+			if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9))
 				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 			switch(PlayerInfo[playerid][pBackpack])
 			{
-				case 1: 
+				case 1:
 				{
 					btype = "Small";
 					SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 				}
-				case 2: 
+				case 2:
 				{
 					btype = "Medium";
 					SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 				}
-				case 3: 
+				case 3:
 				{
 					btype = "Large";
 					SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
@@ -1047,7 +1047,7 @@ CMD:bwear(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, string);
 			PlayerInfo[playerid][pBStoredV] = INVALID_PLAYER_VEHICLE_ID;
 			PlayerInfo[playerid][pBEquipped] = 1;
-			
+
 			format(string, sizeof(string), "* %s has taken a backpack from their car trunk.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		}
@@ -1055,7 +1055,7 @@ CMD:bwear(playerid, params[])
 		{
 			for(i = 0; i < MAX_HOUSES; i++)
 			{
-				if(HouseInfo[i][hSQLId] == PlayerInfo[playerid][pBStoredH]) 
+				if(HouseInfo[i][hSQLId] == PlayerInfo[playerid][pBStoredH])
 				{
 					pvid = i;
 					break;
@@ -1063,21 +1063,21 @@ CMD:bwear(playerid, params[])
 			}
 			if(IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[pvid][hInteriorX], HouseInfo[pvid][hInteriorY], HouseInfo[pvid][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[pvid][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[pvid][hIntIW])
 			{
-				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9)) 
+				if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9))
 					RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 				switch(PlayerInfo[playerid][pBackpack])
 				{
-					case 1: 
+					case 1:
 					{
 						btype = "Small";
 						SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 					}
-					case 2: 
+					case 2:
 					{
 						btype = "Medium";
 						SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
 					}
-					case 3: 
+					case 3:
 					{
 						btype = "Large";
 						SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
@@ -1087,7 +1087,7 @@ CMD:bwear(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GREY, string);
 				PlayerInfo[playerid][pBStoredH] = INVALID_HOUSE_ID;
 				PlayerInfo[playerid][pBEquipped] = 1;
-				
+
 				format(string, sizeof(string), "* %s has taken a backpack from their house.", GetPlayerNameEx(playerid));
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
@@ -1112,10 +1112,10 @@ CMD:bstore(playerid, params[])
 		new Float: Health;
 		GetHealth(playerid, Health);
 		if(Health < 50.0) return SendClientMessageEx(playerid,COLOR_GREY,"You cannot store a backpack in a house/car when your health lower than 80.");
-		
+
 		new string[128], housecar[6];
 		if(sscanf(params, "s[6]", housecar)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /bstore [house/car]");
-		
+
 
 		if(strcmp(housecar, "car", true, strlen(housecar)) == 0)
 		{
@@ -1159,7 +1159,7 @@ CMD:bstore(playerid, params[])
 				new hid = -1;
 				for(new i; i < MAX_HOUSES; i++)
 				{
-					if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW]) 
+					if(GetPlayerSQLId(playerid) == HouseInfo[i][hOwnerID] && IsPlayerInRangeOfPoint(playerid, 50, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][hIntVW] && GetPlayerInterior(playerid) == HouseInfo[i][hIntIW])
 					{
 						hid = i;
 						break;
@@ -1213,7 +1213,7 @@ CMD:bopen(playerid, params[])
 		// ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		SetPVarInt(playerid, "BackpackProt", 1);
 		SetPVarInt(playerid, "BackpackOpen", 1);
-		
+
 		ShowBackpackMenu(playerid, DIALOG_OBACKPACK, "");
 	}
 	return 1;
@@ -1226,7 +1226,7 @@ CMD:backpackhelp(playerid, params[]) {
 	format(szMiscArray, sizeof(szMiscArray), "%sItem: Medium Backpack\nFood Storage: 4 Meals\nNarcotics Storage: 100 Grams\nFirearms Storage: 3 Weapons(2 Handguns & 1 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n", szMiscArray, number_format(ShopItems[37][sItemPrice]));
 	format(szMiscArray, sizeof(szMiscArray), "%sItem: Large Backpack\nFood Storage: 5 Meals\nNarcotics Storage: 250 Grams\nFirearms Storage: 5 Weapons(2 Handguns & 3 Primary)\nCost: {FFD700}%s{A9C4E4}\n\n\n", szMiscArray, number_format(ShopItems[38][sItemPrice]));
 	format(szMiscArray, sizeof(szMiscArray), "%sCommands available: /bstore /bwear /bopen /sellbackpack /drop backpack (/miscshop to buy one with credits)", szMiscArray);
-	
+
 	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Backpack Information", szMiscArray, "Exit", "");
     return 1;
 }

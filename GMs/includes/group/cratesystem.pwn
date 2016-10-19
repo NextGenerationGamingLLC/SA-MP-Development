@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -198,10 +198,19 @@ public LoadForklift(playerid)
 		SetPVarInt(playerid, "tpForkliftTimer", 80);
 		SetPVarInt(playerid, "tpForkliftID", GetPlayerVehicleID(playerid));
 		SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_CRATETIMER);
-		Tax -= CRATE_COST;
+		if(IsPlayerInRangeOfPoint(playerid, 5, 2801.2664,-2521.2539,13.6278))
+		{
+				Tax -= CRATE_COST;
+				HideCrate(0);
+				SetTimerEx("ShowCrate",CRATE_PRODUCTION_DELAY,false,"d",0);
+		}
+		else if(IsPlayerInRangeOfPoint(playerid, 5, 2579.1321,2812.9534,10.8203))
+		{
+				TRTax -= 500000;
+				HideCrate(1);
+				SetTimerEx("ShowCrate",CRATE_PRODUCTION_DELAY,false,"d",1);
+		}
 		Misc_Save();
-		HideCrate();
-		SetTimer("ShowCrate", CRATE_PRODUCTION_DELAY, 0);
 		for(new i = 0; i < sizeof(CrateInfo); i++)
 		{
 		    if(!CrateInfo[i][crActive])
@@ -217,17 +226,17 @@ public LoadForklift(playerid)
 	return 1;
 }
 
-forward HideCrate();
-public HideCrate()
+forward HideCrate(num);
+public HideCrate(num)
 {
-    Streamer_SetArrayData(STREAMER_TYPE_OBJECT, CrateLoad, E_STREAMER_WORLD_ID, { 1 });
+    Streamer_SetArrayData(STREAMER_TYPE_OBJECT, CrateLoad[num], E_STREAMER_WORLD_ID, { 1 });
     return 1;
 }
 
-forward ShowCrate();
-public ShowCrate()
+forward ShowCrate(num);
+public ShowCrate(num)
 {
-    Streamer_SetArrayData(STREAMER_TYPE_OBJECT, CrateLoad, E_STREAMER_WORLD_ID, { 0 });
+    Streamer_SetArrayData(STREAMER_TYPE_OBJECT, CrateLoad[num], E_STREAMER_WORLD_ID, { 0 });
     return 1;
 }
 
@@ -267,7 +276,28 @@ CMD:crates(playerid, params[]) {
 	}
 	return 1;
 }
-
+CMD:shutdowncrates(playerid, params[])
+{
+	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] = 1 && PlayerInfo[playerid][pRank] >= 6) return SendClientMessage(playerid, -1, "You can't perform this action");
+	if(TRCrateShutDown == 0)
+	{
+		TRCrateShutDown = 1;
+		format(szMiscArray, sizeof(szMiscArray), "%s has closed the New Robada Crate Production Facility.");
+	} 
+	else
+	{
+		TRCrateShutDown = 0;
+		format(szMiscArray, sizeof(szMiscArray), "%s has opened the New Robada Crate Production Facility.");
+	}
+    foreach(new i : Player)
+  	{
+  		if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember])
+  		{
+  			SendClientMessage(i, COLOR_LIGHTRED, szMiscArray);
+  		}
+  	}
+  	return 1;
+}
 CMD:destroycrate(playerid, params[]) {
 	if(IsACop(playerid))
 	{
@@ -785,18 +815,28 @@ CMD:loadforklift(playerid, params[]) {
 		{
 		    new CrateFound;
 		    //if(IsPlayerInRangeOfPoint(playerid, 5, -2114.1, -1723.5, 11984.5))
-			if(IsPlayerInRangeOfPoint(playerid, 5, 134.7094,-4380.9165,51.8603))
-		    {
+			if(IsPlayerInRangeOfPoint(playerid, 5, 2801.2664,-2521.2539,13.6278) || IsPlayerInRangeOfPoint(playerid, 5, 2579.1321,2812.9534,10.8203))
+		  	{
 				Streamer_Update(playerid);
 		        if(CountCrates() < MAXCRATES)
 		        {
-		            if(Tax < CRATE_COST)
+		            if(Tax < CRATE_COST && IsPlayerInRangeOfPoint(playerid, 5, 2801.2664,-2521.2539,13.6278))
 		            {
 		                SendClientMessageEx(playerid, COLOR_GRAD2, "The San Andreas Government cannot afford this crate");
 		                return 1;
 		            }
-					if(MAXCRATES == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot take crates from the factory. Production is at a standstill!");
-		            if(LoadForkliftStatus)
+					else if(TRTax < 500000 && IsPlayerInRangeOfPoint(playerid, 5, 2579.1321,2812.9534,10.8203))
+					{
+	                	SendClientMessageEx(playerid, COLOR_GRAD2, "The New Robada Government cannot afford this crate");
+	                	return 1;
+					}
+					if(TRCrateShutDown == 1  && IsPlayerInRangeOfPoint(playerid, 5, 2579.1321,2812.9534,10.8203))
+					{
+	                	SendClientMessageEx(playerid, COLOR_GRAD2, "The New Robada Government has terminated Crate Production.");
+	                	return 1;
+					}
+					if(MAXCRATES == 0 && IsPlayerInRangeOfPoint(playerid, 5, 2579.1321,2812.9534,10.8203)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot take crates from the factory. Production is at a standstill!");
+            		if(LoadForkliftStatus)
 		            {
 		                SendClientMessageEx(playerid, COLOR_GRAD2, "A Crate is already being loaded.");
 		                return 1;
@@ -806,16 +846,16 @@ CMD:loadforklift(playerid, params[]) {
 		                SendClientMessageEx(playerid, COLOR_WHITE, "You are currently loading your forklift!");
 						return 1;
 		            }
-		            if(Streamer_IsItemVisible(playerid, STREAMER_TYPE_OBJECT, CrateLoad))
+		            if(Streamer_IsItemVisible(playerid, STREAMER_TYPE_OBJECT, CrateLoad[0]) || Streamer_IsItemVisible(playerid, STREAMER_TYPE_OBJECT, CrateLoad[1]))
 		            {
 		            	format(szMiscArray, sizeof(szMiscArray), "%s %s has created a weapon crate.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid));
 		              	GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
 		              	if(!IsAHitman(playerid)) ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 		              	foreach(new i : Player)
 		              	{
-		              		if(IsACop(i)) 
+		              		if(IsACop(i))
 		              		{
-		              			SendClientMessage(i, COLOR_LIGHTRED, "A crate has been manufactured at the facility.");
+		              			SendClientMessage(i, COLOR_LIGHTRED, "A crate has been manufactured at the facility Ocean Docks Facility.");
 		              		}
 		              	}
 		              	LoadForkliftStatus = 1;
@@ -826,9 +866,9 @@ CMD:loadforklift(playerid, params[]) {
 							PlayerInfo[playerid][pSpeedo] = 0;
 							SetPVarInt(playerid, "Speedo", 1);
 						}
-		                SetTimerEx("LoadForklift", 1000, 0, "d", playerid);
+	            		SetTimerEx("LoadForklift", 1000, 0, "d", playerid);
 						TogglePlayerControllable(playerid, 0);
-					    CrateFound = 1;
+				    	CrateFound = 1;
 					}
 					else return SendClientMessage(playerid, COLOR_GRAD2, " Please wait.  There is another crate in production. ");
 				}
@@ -871,7 +911,7 @@ CMD:loadforklift(playerid, params[]) {
 		}
 		else
 		{
-			if(IsPlayerInRangeOfPoint(playerid, 800, 134.5410,-4396.7666,51.8603)) return SendClientMessage(playerid, COLOR_LIGHTRED, "Crates can't be unloaded on the Island.");
+			if(IsPlayerInRangeOfPoint(playerid, 800, 2801.2664,-2521.2539,13.6278) || IsPlayerInRangeOfPoint(playerid, 500, 222, 222, 222)) return SendClientMessage(playerid, COLOR_LIGHTRED, "Crates can't be unloaded on the Island.");
 		    new Float: vX, Float: vY, Float: vZ;
 		    GetVehiclePos(vehicleid, vX, vY, vZ);
 		    GetXYInFrontOfPlayer(playerid, vX, vY, 2);
@@ -923,13 +963,13 @@ CMD:cvrespawn(playerid, params[])
 		{
 			if(DynVeh[i] != -1 && DynVehicleInfo[DynVeh[i]][gv_iType] == 1)
 			{
-				if(!IsVehicleOccupied(DynVeh[i])) 
+				if(!IsVehicleOccupied(DynVeh[i]))
 				{
 					DynVeh_Spawn(DynVeh[i]);
 				}
 			}
 		}
-		
+
 		format(szString,sizeof(szString),"{AA3333}AdmWarning{FFFF00}: %s has respawned all dynamic crate vehicles.", GetPlayerNameEx(playerid));
 		ABroadCast(COLOR_YELLOW, szString, 2);
         format(szString, sizeof(szString), "%s has respawned all dynamic crate vehicles.", GetPlayerNameEx(playerid));
@@ -966,12 +1006,12 @@ CMD:cratelimit(playerid, params[]) {
     //if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
     {
-		new string[128];
+		new string[128];\
 		new moneys;
 	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
 		if(moneys < 5 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
 		MAXCRATES = moneys;
-		
+
 		//if(moneys == 0) HideCrate();
 		//else if(moneys > 0) SetTimer("ShowCrate", CRATE_PRODUCTION_DELAY, 0);
 
@@ -991,7 +1031,7 @@ CMD:cratelimit(playerid, params[]) {
 					SendClientMessageEx(i, DEPTRADIO, string);
 				}
 			}
-		}	
+		}
 	}
 	else
 	{
@@ -1080,7 +1120,7 @@ CMD:cgun(playerid, params[]) {
     		    else
     		    {
 	    		    SetPVarInt(playerid, "CrateGuns_CID", i);
-	    		    ShowPlayerDialogEx(playerid, CRATE_GUNMENU, DIALOG_STYLE_LIST, "Select a gun from the Crate",	"Desert Eagle - 4 HG Mats\nSPAS-12 - 8 HG Mats\nMP5 - 5 HG Mats\nM4A1 - 6 HG Mats\nAK-47 - 5 HG Mats\nSniper Rifle - 5 HG Mats\nShotgun - 3 HG Mats\n9mm - 1 HG Mats", "Select", "Cancel");
+	    		    ShowPlayerDialogEx(playerid, CRATE_GUNMENU, DIALOG_STYLE_LIST, "Select a gun from the Crate",	"Desert Eagle - 4 HG Mats\nSPAS-12 - 10 HG Mats\nMP5 - 5 HG Mats\nM4A1 - 10 HG Mats\nAK-47 - 5 HG Mats\nSniper Rifle - 10 HG Mats\nShotgun - 3 HG Mats\n9mm - 1 HG Mats", "Select", "Cancel");
 					CrateFound = 1;
 					break;
 				}
@@ -1141,7 +1181,7 @@ CMD:alockdown(playerid, params[]) {
 					SendClientMessageEx(i, COLOR_YELLOW, "** MEGAPHONE --  UNAUTHORISED INTRUDERS!! LOCKDOWN SEQUENCE INITIATED!!");
 					PlayAudioStreamForPlayer(i, "http://sampweb.ng-gaming.net/brendan/siren.mp3", -1083.90002441,4289.70019531,7.59999990, 500, 1);
 				}
-			}	
+			}
 		  	format(string, sizeof(string), "** %s has initiated a lockdown sequence at the Weapons Manufacturing Facility. **", GetPlayerNameEx(playerid));
 			SendGroupMessage(GROUP_TYPE_LEA, DEPTRADIO, string);
 			IslandGateStatus = gettime();

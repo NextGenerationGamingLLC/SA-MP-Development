@@ -1268,7 +1268,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_CASEFILE_QUIT			(7053)
 
 #define 		DIALOG_SHIPMENT_OPTIONS			(7054)
-
+#define 		DIALOG_GDELIVER_CRATE 			(7055)
 // GangTags
 #define 			GANGTAG_TIME				60000
 

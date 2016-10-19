@@ -945,8 +945,15 @@ CMD:gdelivercrate(playerid, params[])
 			{
 				if(CrateVehicleLoad[iVehID][vForkLoaded])
 				{
-					CrateVehicleLoad[iVehID][vForkLoaded] = 0;
-					DeliverGCCrate(playerid, iGroupID, CrateVehicleLoad[iVehID][vCrateID][0]);
+					for(new ix = 0; ix < sizeof(CrateInfo); ix++)
+					{
+						if(CrateInfo[ix][InVehicle] == iVehID)
+						{
+	    		    		SetPVarInt(playerid, "CrateGuns_CID", ix);
+						}
+					}
+					//DeliverGCCrate(playerid, iGroupID, CrateVehicleLoad[iVehID][vCrateID][0]);
+					ShowPlayerDialogEx(playerid, DIALOG_GDELIVER_CRATE, DIALOG_STYLE_LIST, "Weapon - Quantity for Gang Deposit", "Desert Eagle - 13\nSPAS-12 - 5\nMP5 - 10\nM4A1 - 5\nAK-47 - 10\nSniper Rifle - 5\nShotgun - 17\n9mm - 50", "Select", "Cancel");
 					break;
 				}
 				else SendClientMessageEx(playerid, COLOR_GRAD1, "Your vehicle does not have a crate stored.");

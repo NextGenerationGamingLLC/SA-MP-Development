@@ -6704,6 +6704,87 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 		}
 	}
+	else if(dialogid == DIALOG_GDELIVER_CRATE)
+	{
+		if(response)
+		{
+			new CrateID = GetPVarInt(playerid, "CrateGuns_CID");
+			switch(listitem)
+			{
+				case 0: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_DEAGLE, 13); // deagle
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 1: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_SHOTGSPA, 5); //spas
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 2: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_MP5, 10);//mp5
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 3: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_M4, 5); //m4
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 4: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_AK47, 10);//ak47
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 5: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_SNIPER, 5);//sniper
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 6: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_SHOTGUN, 17);//shotgun
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 7: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_COLT45, 50);//shotgun
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+			}
+			CrateInfo[CrateID][crActive] = 0;
+		    CrateInfo[CrateID][InVehicle] = INVALID_VEHICLE_ID;
+		    CrateInfo[CrateID][crX] = 0;
+		    CrateInfo[CrateID][crY] = 0;
+		    CrateInfo[CrateID][crZ] = 0;
+			DeleteGCrate(playerid, CrateID);
+			mysql_SaveCrates();
+		}
+	}
 	else if(dialogid == CRATE_GUNMENU)
 	{
 		if(response)
@@ -6730,7 +6811,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				case 1: // CRATE GUNS
 				{
-					if(CrateInfo[CrateID][GunQuantity] >= 8)
+					if(CrateInfo[CrateID][GunQuantity] >= 10)
 					{
 						GivePlayerValidWeapon(playerid, 27); //spas
 						CrateInfo[CrateID][GunQuantity] -= 8;
@@ -6746,7 +6827,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				case 3: // CRATE GUNS
 				{
-					if(CrateInfo[CrateID][GunQuantity] >= 6)
+					if(CrateInfo[CrateID][GunQuantity] >= 10)
 					{
 						GivePlayerValidWeapon(playerid, 31); //m4
 						CrateInfo[CrateID][GunQuantity] -= 6;
@@ -6762,7 +6843,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				case 5: // CRATE GUNS
 				{
-					if(CrateInfo[CrateID][GunQuantity] >= 5)
+					if(CrateInfo[CrateID][GunQuantity] >= 10)
 					{
 						GivePlayerValidWeapon(playerid, 34);//sniper
 						CrateInfo[CrateID][GunQuantity] -= 5;

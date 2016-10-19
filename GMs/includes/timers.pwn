@@ -515,35 +515,14 @@ task SyncTime[60000]()
 			}
 			if(DynPoints[x][poCapperGroupOwned] != INVALID_GROUP_ID)
 			{
-				format(szMiscArray, sizeof(szMiscArray), "Your family has recieved weapons for owning %s.", DynPoints[x][poName]);
+				format(szMiscArray, sizeof(szMiscArray), "Your family has recieved a %d materials for owning %s.", DynPoints[x][poMaterials], DynPoints[x][poName]);
 				foreach(new i: Player)
 				{
 					if(PlayerInfo[i][pMember] == DynPoints[x][poCapperGroupOwned]) {
 						SendClientMessageEx(i, COLOR_LIGHTBLUE, szMiscArray);
 					}
 				}
-				//format(szMiscArray, sizeof(szMiscArray), "Your family has recieved a %d materials for owning %s.", DynPoints[x][poMaterials], DynPoints[x][poName]);
-				for(new g = 0; g < 14; g++)
-				{
-					switch(g)
-					{
-						case 0: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_DEAGLE, 10);
-						case 1: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SHOTGUN, 10);
-						case 2: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SILENCED, 10);
-						case 3: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_AK47, 10);
-						case 4: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_MP5, 10);
-						case 5: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_RIFLE, 10);
-						case 6: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_COLT45, 10);
-						case 7: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_TEC9, 10);
-						case 8: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_UZI, 10);
-						case 9: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SNIPER, 2);
-						case 10: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_M4, 5);
-						case 11: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SHOTGSPA, 5);
-						case 12: AddGroupSafeWeapon(INVALID_PLAYER_ID, DynPoints[x][poCapperGroupOwned], WEAPON_SPRAYCAN, 1);
-						default: break;
-					}
-				}
-				//arrGroupData[DynPoints[x][poCapperGroupOwned]][g_iMaterials] += DynPoints[x][poMaterials];
+				arrGroupData[DynPoints[x][poCapperGroupOwned]][g_iMaterials] += DynPoints[x][poMaterials];
 			}
 		}
 

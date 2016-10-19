@@ -527,7 +527,7 @@ new TempNumber[MAX_PLAYERS];
 
 new Carrier[17];
 
-new CrateLoad;
+new CrateLoad[2];
 new MAXCRATES;
 new AdminWarning;
 
@@ -762,6 +762,7 @@ new GunStorageID[MAX_PLAYERS];
 new GunId[MAX_PLAYERS];
 new GunMats[MAX_PLAYERS];
 new CraftOffer[MAX_PLAYERS];
+new TRCrateShutDown = 0;
 new CraftId[MAX_PLAYERS];
 new CraftMats[MAX_PLAYERS];
 new CraftName[MAX_PLAYERS][50];
