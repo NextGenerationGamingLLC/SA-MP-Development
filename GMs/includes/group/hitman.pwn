@@ -446,7 +446,7 @@ CMD:profile(playerid, params[])
 {
     if(IsAHitman(playerid))
     {
-        new string[600], giveplayerid;
+        new string[600], giveplayerid, employer[GROUP_MAX_NAME_LEN], rank[GROUP_MAX_RANK_LEN], division[GROUP_MAX_DIV_LEN];
         if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /profile [player]");
 
         if(IsPlayerConnected(giveplayerid))
@@ -454,12 +454,10 @@ CMD:profile(playerid, params[])
             new str2[256];
             if(0 <= PlayerInfo[giveplayerid][pMember] < MAX_GROUPS)
             {
-                format(str2, sizeof(str2), "%s{FF6347} | Division: {BFC0C2}%s\n{FF6347}Rank: {BFC0C2}%s (%d)\n", arrGroupData[PlayerInfo[giveplayerid][pMember]][g_szGroupName],
-                	arrGroupDivisions[PlayerInfo[giveplayerid][pMember]][PlayerInfo[giveplayerid][pDivision]], arrGroupRanks[PlayerInfo[giveplayerid][pMember]][PlayerInfo[giveplayerid][pRank]], PlayerInfo[giveplayerid][pRank]);
+            	GetPlayerGroupInfo(giveplayerid, rank, division, employer);
+                format(str2, sizeof(str2), "%s{FF6347} | Division: {BFC0C2}%s\n{FF6347}Rank: {BFC0C2}%s (%d)\n", employer, division, rank);
             }
             else str2 = "None";
-
-
 
             format(string, sizeof(string),
             "{FF6347}Name: {BFC0C2}%s\n\

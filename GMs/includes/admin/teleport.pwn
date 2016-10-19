@@ -651,14 +651,14 @@ CMD:sendto(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD3, "Locations 4: glenpark, palomino, nggshop, fc, unity, LC (loscolinas), SFDocks");
 			return 1;
 		}
-		if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin])
-		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
-			return 1;
-		}
 		if (!IsPlayerConnected(giveplayerid))
 		{
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+			return 1;
+		}
+		if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin])
+		{
+			SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 			return 1;
 		}
 		if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING)

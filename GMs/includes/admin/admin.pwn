@@ -2112,6 +2112,7 @@ CMD:reloadpvehicles(playerid, params[])
 	new string[128], giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /reloadpvehicles [player]");
 
+	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Player specified is invalid!");
 	UnloadPlayerVehicles(giveplayerid);
 	LoadPlayerVehicles(giveplayerid);
 

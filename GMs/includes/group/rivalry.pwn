@@ -136,6 +136,7 @@ CMD:repcheck(playerid, params[]) {
 
 CMD:myrivals(playerid, params[]) {
 
+	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
 	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] != GROUP_TYPE_CRIMINAL) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a gang.");
 	Rivalry_GetRivalList(playerid, PlayerInfo[playerid][pMember]);
 	return 1;
@@ -143,6 +144,7 @@ CMD:myrivals(playerid, params[]) {
 
 CMD:grouptoy(playerid, params[]) {
 
+	if(!IsACriminal(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not part of a gang.");
 	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupToyID] == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your group does not have a toy.");
 	if(!GetPVarType(playerid, "RepFam_TL")) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not wearing it.");
 	if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GRAD1, "USAGE: /grouptoy [pos/bone]");

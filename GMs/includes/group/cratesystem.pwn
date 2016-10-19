@@ -278,7 +278,7 @@ CMD:crates(playerid, params[]) {
 }
 CMD:shutdowncrates(playerid, params[])
 {
-	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] = 1 && PlayerInfo[playerid][pRank] >= 6) return SendClientMessage(playerid, -1, "You can't perform this action");
+	if((0 <= PlayerInfo[playerid][pMember] <= MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1 && PlayerInfo[playerid][pRank] >= 6) return SendClientMessage(playerid, -1, "You can't perform this action");
 	if(TRCrateShutDown == 0)
 	{
 		TRCrateShutDown = 1;
