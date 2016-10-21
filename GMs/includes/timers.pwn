@@ -1181,25 +1181,6 @@ foreach(new i: Player)
 				SetHealth(i, 1000);
 				SetArmour(i, GetPVarFloat(i, "cuffarmor"));
 			}
-			if(IsPlayerInAnyVehicle(i) && TruckUsed[i] != INVALID_VEHICLE_ID)
-			{
-				if(TruckUsed[i] == GetPlayerVehicleID(i) && GetPVarInt(i, "Gas_TrailerID") != 0)
-				{
-					if(Businesses[TruckDeliveringTo[TruckUsed[i]]][bType] == BUSINESS_TYPE_GASSTATION)
-					{
-						if(GetVehicleTrailer(GetPlayerVehicleID(i)) != GetPVarInt(i, "Gas_TrailerID"))
-						{
-							SetPVarInt(i, "GasWarnings", GetPVarInt(i, "GasWarnings") + 1);
-							if(GetPVarInt(i, "GasWarnings") > 10)
-							{
-								CancelTruckDelivery(i);
-								DeletePVar(i, "GasWarnings");
-								SendClientMessageEx(i, COLOR_REALRED, "You have failed your delivery as you lost your load!");
-							}
-						}
-					}
-				}
-			}
 		}
 
 		if(playerTabbed[i] == 0) {
@@ -2752,7 +2733,7 @@ ptask PlayerUpdate[1000](i) {
 		{
 			if(TruckUsed[i] == GetPlayerVehicleID(i) && GetPVarInt(i, "Gas_TrailerID") != 0)
 			{
-				if(Businesses[TruckDeliveringTo[TruckUsed[i]]][bType] == BUSINESS_TYPE_GASSTATION)
+				if((0 <= TruckDeliveringTo[TruckUsed[i]] < MAX_BUSINESSES) && Businesses[TruckDeliveringTo[TruckUsed[i]]][bType] == BUSINESS_TYPE_GASSTATION)
 				{
 					if(GetVehicleTrailer(GetPlayerVehicleID(i)) != GetPVarInt(i, "Gas_TrailerID"))
 					{
@@ -2764,6 +2745,9 @@ ptask PlayerUpdate[1000](i) {
 							SendClientMessageEx(i, COLOR_REALRED, "You have failed your delivery as you lost your load!");
 						}
 					}
+				} else {
+					CancelTruckDelivery(i);
+					SendClientMessageEx(i, COLOR_REALRED, "There was an issue with the delivery unknown bussiness specified.");
 				}
 			}
 		}
