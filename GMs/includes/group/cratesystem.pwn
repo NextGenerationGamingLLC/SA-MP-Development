@@ -278,7 +278,7 @@ CMD:crates(playerid, params[]) {
 }
 CMD:shutdowncrates(playerid, params[])
 {
-	if((0 <= PlayerInfo[playerid][pMember] <= MAX_GROUPS) && arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1 && PlayerInfo[playerid][pRank] >= 6) return SendClientMessage(playerid, -1, "You can't perform this action");
+	if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 1 && PlayerInfo[playerid][pRank] >= 6) return SendClientMessage(playerid, -1, "You can't perform this action");
 	if(TRCrateShutDown == 0)
 	{
 		TRCrateShutDown = 1;
@@ -815,12 +815,12 @@ CMD:loadforklift(playerid, params[]) {
 		{
 		    new CrateFound;
 		    //if(IsPlayerInRangeOfPoint(playerid, 5, -2114.1, -1723.5, 11984.5))
-			if(IsPlayerInRangeOfPoint(playerid, 5, 2801.2664,-2521.2539,13.6278) || IsPlayerInRangeOfPoint(playerid, 5, 2579.1321,2812.9534,10.8203))
+			if(IsPlayerInRangeOfPoint(playerid, 5, 2701.17188, -2654.36353, 12.63166) || IsPlayerInRangeOfPoint(playerid, 5, 2579.1321,2812.9534,10.8203))
 		  	{
 				Streamer_Update(playerid);
 		        if(CountCrates() < MAXCRATES)
 		        {
-		            if(Tax < CRATE_COST && IsPlayerInRangeOfPoint(playerid, 5, 2801.2664,-2521.2539,13.6278))
+		            if(Tax < CRATE_COST && IsPlayerInRangeOfPoint(playerid, 5, 2701.17188, -2654.36353, 12.63166))
 		            {
 		                SendClientMessageEx(playerid, COLOR_GRAD2, "The San Andreas Government cannot afford this crate");
 		                return 1;
@@ -853,9 +853,13 @@ CMD:loadforklift(playerid, params[]) {
 		              	if(!IsAHitman(playerid)) ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 		              	foreach(new i : Player)
 		              	{
-		              		if(IsACop(i))
+		              		if(IsACop(i) && IsPlayerInRangeOfPoint(playerid, 5, 2701.17188, -2654.36353, 12.63166))
 		              		{
 		              			SendClientMessage(i, COLOR_LIGHTRED, "A crate has been manufactured at the facility Ocean Docks Facility.");
+		              		} 
+		              		else if(IsACop(i) && arrGroupData[PlayerInfo[i][pMember]][g_iAllegiance] == 1 && IsPlayerInRangeOfPoint(playerid, 5, 2579.1321,2812.9534,10.8203))
+		              		{
+		              			SendClientMessage(i, COLOR_LIGHTRED, "A crate has been manufactured at the facility New Robada Facility.");
 		              		}
 		              	}
 		              	LoadForkliftStatus = 1;
@@ -911,7 +915,7 @@ CMD:loadforklift(playerid, params[]) {
 		}
 		else
 		{
-			if(IsPlayerInRangeOfPoint(playerid, 800, 2801.2664,-2521.2539,13.6278) || IsPlayerInRangeOfPoint(playerid, 500, 222, 222, 222)) return SendClientMessage(playerid, COLOR_LIGHTRED, "Crates can't be unloaded on the Island.");
+			if(IsPlayerInRangeOfPoint(playerid, 800, 2701.17188, -2654.36353, 12.63166) || IsPlayerInRangeOfPoint(playerid, 500, 222, 222, 222)) return SendClientMessage(playerid, COLOR_LIGHTRED, "Crates can't be unloaded on the Island.");
 		    new Float: vX, Float: vY, Float: vZ;
 		    GetVehiclePos(vehicleid, vX, vY, vZ);
 		    GetXYInFrontOfPlayer(playerid, vX, vY, 2);
@@ -1006,7 +1010,7 @@ CMD:cratelimit(playerid, params[]) {
     //if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iCrateIsland])
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
     {
-		new string[128];\
+		new string[128];
 		new moneys;
 	    if(sscanf(params, "d", moneys)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");
 		if(moneys < 5 || moneys > MAX_CRATES) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cratelimit [5-50] (Limits the total production of crates)");

@@ -120,7 +120,7 @@ CMD:accept(playerid, params[])
 			DeletePVar(playerid, "renderaid");
 			DeletePVar(target, "MedVestKit");
 		}
-		else if(strcmp(params, "sellgun", true) == 0)
+		else if(strcmp(params, "weapon", true) == 0)
 		{
 			if(!GetPVarType(playerid, "pSellGunID") || GetPVarInt(playerid, "pSellGunID") == INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "No one has offered you a gun!");
 

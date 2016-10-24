@@ -640,7 +640,7 @@ CMD:sellvip(playerid, params[]) {
 
 CMD:newgvip(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pShopTech] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pShopTech] >= 2)
 	{
 	    new
 	        iOrderID,
@@ -901,7 +901,7 @@ CMD:setvip(playerid, params[])
 
 CMD:giftgvip(playerid, params[])
 {
-	if (PlayerInfo[playerid][pAdmin] >= 1337)
+	if (PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[128], giveplayerid, days,reason[32];
 		if(sscanf(params, "uds[32]", giveplayerid, days, reason))

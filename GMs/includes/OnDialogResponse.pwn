@@ -6715,7 +6715,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(CrateInfo[CrateID][GunQuantity] == 50)
 					{
-						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_DEAGLE, 13); // deagle
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_DEAGLE, 13); // deagle
 						CrateInfo[CrateID][GunQuantity] = 0;
 					}
 				}
@@ -6723,7 +6723,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(CrateInfo[CrateID][GunQuantity] == 50)
 					{
-						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_SHOTGSPA, 5); //spas
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_SHOTGSPA, 5); //spas
 						CrateInfo[CrateID][GunQuantity] = 0;
 					}
 				}
@@ -6731,7 +6731,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(CrateInfo[CrateID][GunQuantity] == 50)
 					{
-						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_MP5, 10);//mp5
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_MP5, 10);//mp5
 						CrateInfo[CrateID][GunQuantity] = 0;
 					}
 				}
@@ -6739,7 +6739,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(CrateInfo[CrateID][GunQuantity] == 50)
 					{
-						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_M4, 5); //m4
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_M4, 5); //m4
 						CrateInfo[CrateID][GunQuantity] = 0;
 					}
 				}
@@ -6747,7 +6747,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(CrateInfo[CrateID][GunQuantity] == 50)
 					{
-						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_AK47, 10);//ak47
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_AK47, 10);//ak47
 						CrateInfo[CrateID][GunQuantity] = 0;
 					}
 				}
@@ -6755,7 +6755,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(CrateInfo[CrateID][GunQuantity] == 50)
 					{
-						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_SNIPER, 5);//sniper
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_SNIPER, 5);//sniper
 						CrateInfo[CrateID][GunQuantity] = 0;
 					}
 				}
@@ -6763,7 +6763,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(CrateInfo[CrateID][GunQuantity] == 50)
 					{
-						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_SHOTGUN, 17);//shotgun
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_SHOTGUN, 17);//shotgun
 						CrateInfo[CrateID][GunQuantity] = 0;
 					}
 				}
@@ -6771,11 +6771,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					if(CrateInfo[CrateID][GunQuantity] == 50)
 					{
-						AddGroupSafeWeapon(playerid, PlayerInfo[playerid][pMember], WEAPON_COLT45, 50);//shotgun
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_COLT45, 50);//shotgun
 						CrateInfo[CrateID][GunQuantity] = 0;
 					}
 				}
 			}
+			CrateVehicleLoad[GetPlayerVehicleID(playerid)][vForkLoaded] = 0;
+		    CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCrateID][0] = -1;
 			CrateInfo[CrateID][crActive] = 0;
 		    CrateInfo[CrateID][InVehicle] = INVALID_VEHICLE_ID;
 		    CrateInfo[CrateID][crX] = 0;
@@ -6783,6 +6785,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		    CrateInfo[CrateID][crZ] = 0;
 			DeleteGCrate(playerid, CrateID);
 			mysql_SaveCrates();
+			Streamer_Update(playerid);
+			format(szMiscArray, sizeof(szMiscArray), "%s has just delivered weapon crates to your gang locker!", GetPlayerNameEx(playerid));
+			foreach(new i: Player)
+			{
+
+				if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) return SendClientMessage(i, -1, szMiscArray);
+			}
 		}
 	}
 	else if(dialogid == CRATE_GUNMENU)

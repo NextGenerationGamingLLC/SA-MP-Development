@@ -570,7 +570,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DeletePVar(playerid, "BackpackOpen"), DeletePVar(playerid, "BackpackProt"), SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 					return 1;
 				}
-				new handguns, primguns, wbid, slot = GetBackpackFreeSlotGun(playerid), weapname[32];
+				new handguns, primguns, wbid, slot = GetBackpackFreeSlotGun(playerid);
 				for(new i = 6; i < 11; i++) {
 					if(PlayerInfo[playerid][pBItems][i] > 0) {
 						if(IsWeaponHandgun(PlayerInfo[playerid][pBItems][i])) handguns++;

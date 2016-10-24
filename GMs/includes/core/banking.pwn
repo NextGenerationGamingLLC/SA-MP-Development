@@ -500,7 +500,7 @@ PayDay(i) {
 					if(FIFGP3 == 1 && PlayerInfo[i][pDonateRank] >= 3)
 					{
 						FIFInfo[i][FIFChances] += 3;
-						format(string,sizeof(string), "You have earned 3 FIF Chance's! You now have %d chances!", FIFInfo[i][FIFChances]);
+						format(string,sizeof(string), "You have earned 3 FIF Chances! You now have %d chances!", FIFInfo[i][FIFChances]);
 						SendClientMessageEx(i, COLOR_WHITE, string);
 						format(string, sizeof(string), "%s(%d) won 3 FIF Chances", GetPlayerNameEx(i), GetPlayerSQLId(i));
 						Log("logs/fif.log", string);
