@@ -1843,30 +1843,31 @@ new arrPoint[MAX_DYNPOINTS][eDynPoints];*/
 
 enum PointData
 {
+	Text3D: poTextID,
 	poID,
-	poType,
 	poName[MAX_PLAYER_NAME],
+	poType,
 	Float:poPos[3],
 	Float:poPos2[3],
 	Float:CapturePos[3],
-	CapturePlayerName[MAX_PLAYER_NAME], // The person who SUCCESSFULLY captured the point.
-	PlayerNameCapping[MAX_PLAYER_NAME], // The person who is ATTEMPTING to capture the point.
-	poCapperGroup, // The ID of the group who is ATTEMPTING to capture the point.
-	poCapperGroupOwned, // The ID of the group who actually OWNS the point.
+	poVW,
+	poInt,
+	po2VW,
+	po2Int,
+	poBoat,
+	poCaptureName[MAX_PLAYER_NAME],
+	poCaptureGroup,
+	poCapperGroup, // Group ID of the capture
+	poCapping, // Player ID of the capture
 	poCapturable,
-	poInactive,
-	poPickupID,
-	poPickup2ID,
-	poMaterials,
-	HasCrashed,
-	pointVW,
-	pointVW2,
 	poTimer,
-	poTimestamp1, // Timestamp til becomes capturable
-	poTimestamp2, // Timestamp til is captured
-	Text3D:poTextID,
-	poBeingCaptured,
-	poCaptureTime
+	poAmountHour, // Used for the hourly rate for gangs
+	poAmount[5], // Used for the Player VIP rank
+	poLocked,
+	poPickupID,
+	poPName[MAX_PLAYER_NAME],
+	poTimeLeft,
+	poTimeCapLeft
 }
 new DynPoints[MAX_POINTS][PointData];
 

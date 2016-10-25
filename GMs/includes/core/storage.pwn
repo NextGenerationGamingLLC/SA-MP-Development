@@ -703,7 +703,7 @@ stock TransferStorage(playerid, storageid, fromplayerid, fromstorageid, itemid, 
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
 				PlayerInfo[playerid][pMats] += amount;
 				//format(string, sizeof(string), "%d Materials has been transfered to your Pocket (%d/%d).", amount, PlayerInfo[playerid][pMats], onhandlimit[itemid-1]);
-				format(string, sizeof(string), "%d Materials has been transfered to your Pocket (%d).", amount, PlayerInfo[playerid][pMats]);
+				format(string, sizeof(string), "%s Materials has been transfered to your Pocket (%s).", number_format(amount), number_format(PlayerInfo[playerid][pMats]));
 				SendClientMessage(playerid, COLOR_WHITE, string);
 
 				if(fromplayerid != -1 && fromstorageid != -1 && playerid != fromplayerid) {

@@ -6,7 +6,7 @@ hook OnGameModeInit() {
 	
     // Pickups
 	CreateDynamicPickup(1239, 23, -4429.944824, 905.032470, 987.078186, -1); // VIP Garage Travel
-	CreateDynamicPickup(1239, 23, 2102.71,-103.97,2.28, -1); // Matrun 3
+	//CreateDynamicPickup(1239, 23, 2102.71,-103.97,2.28, -1); // Matrun 3
 	/*CreateDynamicPickup(1239, 23, -1816.528686, -179.502624, 9.398437, -1); // Matrun 4 (pickup)
 	CreateDynamicPickup(1239, 23, -1872.879760, 1416.312500, 7.180089, -1);*/ // Matrun 4 (dropoff)
   	//CreateDynamicPickup(1239, 23, 2565.346191, 1403.409790, 7699.584472, -1);// VIP ph changing station.
@@ -38,7 +38,7 @@ hook OnGameModeInit() {
 	CreateDynamicPickup(1239, 23, 366.54, 159.09, 1008.38, -1); // LICENSES @ CITY HALL
 	CreateDynamicPickup(1239, 23, -1560.963867, 127.491157, 3.554687); //Trucker registration
 	CreateDynamicPickup(371, 23, 1544.2,-1353.4,329.4); //LS towertop
-	CreateDynamicPickup(1239, 23, -1446.8916,1503.4746,1.7366); //Drug Boatrun
+	//CreateDynamicPickup(1239, 23, -1446.8916,1503.4746,1.7366); //Drug Boatrun
 
 	CreateDynamicPickup(371, 23, 1536.0, -1360.0, 1150.0); //LS towertop
 	CreateDynamicPickup(1242, 23, 1527.5,-12.1,1002.0); //binco armor

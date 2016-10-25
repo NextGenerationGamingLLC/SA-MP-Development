@@ -499,30 +499,27 @@ task SyncTime[60000]()
 
 		if(tmphour == 0) CountCitizens();
 
-		for (new x = 0; x < MAX_POINTS; x++)
+		for(new x = 0; x < MAX_POINTS; x++)
 		{
-			if (DynPoints[x][poTimestamp1] > 0)
-			{
-				DynPoints[x][poTimestamp1]--;
-				SavePoint(x);
-			}
-			if (DynPoints[x][poTimestamp1] == 0 && DynPoints[x][poInactive] != 1 && DynPoints[x][poBeingCaptured] == INVALID_PLAYER_ID)
-			{
-				format(szMiscArray, sizeof(szMiscArray), "%s has become available for capture.", DynPoints[x][poName]);
-				SendClientMessageToAllEx(COLOR_YELLOW, szMiscArray);
-				DynPoints[x][poCapturable] = 1;
-				SavePoint(x);
-			}
-			if(DynPoints[x][poCapperGroupOwned] != INVALID_GROUP_ID)
-			{
-				format(szMiscArray, sizeof(szMiscArray), "Your family has recieved a %d materials for owning %s.", DynPoints[x][poMaterials], DynPoints[x][poName]);
-				foreach(new i: Player)
-				{
-					if(PlayerInfo[i][pMember] == DynPoints[x][poCapperGroupOwned]) {
-						SendClientMessageEx(i, COLOR_LIGHTBLUE, szMiscArray);
-					}
+			if(strcmp(DynPoints[x][poName], "NULL", true) != 0) {
+				if(DynPoints[x][poTimer] > 0) DynPoints[x][poTimer]--, SavePoint(x);
+				if(!DynPoints[x][poTimer] && !DynPoints[x][poCapturable] && !DynPoints[x][poLocked]) {
+					format(szMiscArray, sizeof(szMiscArray), "%s has become available for capture.", DynPoints[x][poName]);
+					SendClientMessageToAllEx(COLOR_YELLOW, szMiscArray);
+					DynPoints[x][poCapturable] = 1;
+					SavePoint(x);
 				}
-				arrGroupData[DynPoints[x][poCapperGroupOwned]][g_iMaterials] += DynPoints[x][poMaterials];
+				if((0 <= DynPoints[x][poCaptureGroup] < MAX_GROUPS) && DynPoints[x][poAmountHour] > 0) {
+					format(szMiscArray, sizeof(szMiscArray), "Your family has recieved %s %s for owning %s.", number_format(DynPoints[x][poAmountHour]), PointTypeToName(DynPoints[x][poType]), DynPoints[x][poName]);
+					foreach(new i: Player)
+					{
+						if(PlayerInfo[i][pMember] == DynPoints[x][poCaptureGroup]) {
+							SendClientMessageEx(i, COLOR_LIGHTBLUE, szMiscArray);
+						}
+					}
+					if(DynPoints[x][poType] == 0) arrGroupData[DynPoints[x][poCaptureGroup]][g_iMaterials] += DynPoints[x][poAmountHour];
+					if((1 <= DynPoints[x][poType] < 5)) arrGroupData[DynPoints[x][poCaptureGroup]][g_iDrugs][DynPoints[x][poType]-1] = DynPoints[x][poAmountHour];
+				}
 			}
 		}
 
@@ -991,9 +988,15 @@ foreach(new i: Player)
 		// alerttimer - Merged by Jingles
 		if(AlertTime[i] != 0) AlertTime[i]--;
 
-		// playertabbedloop - Merged by Jingles
-		new
-			iTick = gettime() - 1;
+		new Float:playerArmour = GetArmour(i, playerArmour);
+        // playertabbedloop - Merged by Jingles
+        new
+            iTick = gettime() - 1;
+
+        if(floatround(playerArmour, floatround_round) < 0)
+        {
+            SetPlayerArmour(i, 0);
+        }
 
 		if(1 <= GetPlayerState(i) <= 3) {
 			if(playerTabbed[i] >= 1) {

@@ -808,18 +808,6 @@ public OnPlayerLoad(playerid)
 	format(string, sizeof(string), "SELECT * FROM `rentedcars` WHERE `sqlid` = '%d'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, string, true, "LoadRentedCar", "i", playerid);
 
-	if(IsACriminal(playerid))
-	{
-		for(new i = 0; i < MAX_POINTS; i++)
-		{
-			if(DynPoints[i][HasCrashed] == 1)
-			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "Point Crash Protection:");
-				format(string, sizeof(string), "%s has attempted to take control of the %s for %s, it will be theirs in %d minutes.", DynPoints[i][PlayerNameCapping], DynPoints[i][poName], arrGroupData[DynPoints[i][poCapperGroup]][g_szGroupName], DynPoints[i][poTimestamp2]);
-				SendClientMessageEx(playerid, COLOR_YELLOW, string);
-			}
-		}
-	}
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
 		

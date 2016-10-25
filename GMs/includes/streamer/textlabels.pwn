@@ -31,7 +31,7 @@ hook OnGameModeInit() {
 	CreateDynamic3DTextLabel("Factions Duty Point", COLOR_DBLUE, 1533.6, -1760.9, 2264.4+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 2345, 18, -1); //
 	CreateDynamic3DTextLabel("Back Entrance", COLOR_DBLUE, -2033.7502,-154.8784,35.3203+0.6, 4.0); // Prison
 	
-	CreateDynamic3DTextLabel("Type /getmats from a boat \nto obtain Materials Packages",COLOR_YELLOW,2102.71,-103.97,2.28+0.5,8.0);// Deliver
+	//CreateDynamic3DTextLabel("Type /getmats from a boat \nto obtain Materials Packages",COLOR_YELLOW,2102.71,-103.97,2.28+0.5,8.0);// Deliver
     CreateDynamic3DTextLabel("Type /getpizza from a Pizzaboy \nto get pizzas for delivery!",COLOR_YELLOW,-1713.961425, 1348.545166, 7.180452, 4.0); //getpizza
 	//CreateDynamic3DTextLabel("Type /registerplate to\nchange your license plate.",COLOR_YELLOW,366.54,159.09,1008.38+1,8.0);// Licenses.
     CreateDynamic3DTextLabel("/buyclothes\n To change your skin.",COLOR_YELLOW,208.8970,-100.3289,1005.2578,8.0);
@@ -84,7 +84,7 @@ hook OnGameModeInit() {
 	
 	CreateDynamic3DTextLabel("Prisoner Delivery Point\n/deliverinmates", COLOR_YELLOW, -2053.6279,-198.0207,15.0703, 10.0);
 
-	CreateDynamic3DTextLabel("Drug Run\nType /getcrate here to get meth & ecsasy", COLOR_YELLOW, -1446.8916,1503.4746,1.7366, 10.0);
+	//CreateDynamic3DTextLabel("Drug Run\nType /getcrate here to get meth & ecsasy", COLOR_YELLOW, -1446.8916,1503.4746,1.7366, 10.0);
 	
 	for(new i = 0; i < MAX_DELIVERY_POINTS; i++)
 	{

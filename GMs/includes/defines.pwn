@@ -1203,6 +1203,9 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_EDITPOINT_TYPE 			(6172)
 #define 		DIALOG_EDITPOINT_POSITION 		(6173)
 #define 		DIALOG_EDITPOINT_MATERIALS		(6174)
+#define 		DIALOG_EDITPOINT_MATVIPLIST		(7056)
+#define 		DIALOG_EDITPOINT_MATVIPSET		(7057)
+#define 		DIALOG_EDITPOINT_CAPTIME		(7058)
 
 #define 		MAX_POLLS_CHOICES				(5)
 
@@ -1269,6 +1272,7 @@ native IsValidVehicle(vehicleid);
 
 #define 		DIALOG_SHIPMENT_OPTIONS			(7054)
 #define 		DIALOG_GDELIVER_CRATE 			(7055)
+
 // GangTags
 #define 			GANGTAG_TIME				60000
 

@@ -36,7 +36,7 @@
 */
 #include <YSI\y_hooks>
 
-new CASINOPoint[12]; 
+new CASINOPoint[17]; 
 
 stock randomEx(min, max)
 {
@@ -421,6 +421,11 @@ LoadCASINOPoints()
 	CASINOPoint[9] = CreateDynamicSphere(-2780.5342,54.3733,4500.2012,5);
 	CASINOPoint[10] = CreateDynamicSphere(228.35, 1812.55, 2001.09, 5); // Lucky Cowboy Casino
 	CASINOPoint[11] = CreateDynamicSphere(200.95, 1828.80, 2001.09, 5); // Lucky Cowboy Casino
+	CASINOPoint[12] = CreateDynamicSphere(1969.5468,1006.3386,992.4745,5);
+    CASINOPoint[13] = CreateDynamicSphere(1969.6664,1021.0531,992.4688,5);
+    CASINOPoint[14] = CreateDynamicSphere(1969.5417,1029.4148,992.4745,5);
+    CASINOPoint[15] = CreateDynamicSphere(1942.3467,1014.5384,992.4688,5);
+    CASINOPoint[16] = CreateDynamicSphere(1941.8306,1021.7505,992.4688,5);
 }
 
 CasinoPullLoad(playerid)

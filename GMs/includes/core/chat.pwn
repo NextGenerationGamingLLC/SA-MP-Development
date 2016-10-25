@@ -102,6 +102,7 @@ hook OnPlayerConnect(playerid) {
 	return 1;
 }
 
+/*
 stock SendClientMessageEx(playerid, color, string[])
 {
 	if(InsideMainMenu{playerid} == 1 || InsideTut{playerid} == 1 || ActiveChatbox[playerid] == 0)
@@ -110,7 +111,20 @@ stock SendClientMessageEx(playerid, color, string[])
 	else SendClientMessage(playerid, color, string);
 	return 1;
 }
+*/
 
+// Test with SendClientMessageEx
+stock SendClientMessageEx(playerid, color, msg[], va_args<>)
+{
+        new string[128];
+        if(InsideMainMenu{playerid} == 1 || InsideTut{playerid} == 1 || ActiveChatbox[playerid] == 0)
+                return 0;
+        else {
+                va_format(string, sizeof(string), msg, va_start<3>);
+                SendClientMessage(playerid, color, string);
+        }
+        return 1;
+}
 stock SendClientMessageToAllEx(color, string[])
 {
 	foreach(new i: Player)

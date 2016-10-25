@@ -44,7 +44,7 @@ CMD:prison(playerid, params[])
 		new giveplayerid, minutes, reason[64];
 		if(sscanf(params, "uds[64]", giveplayerid, minutes, reason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /prison [player] [minutes] [reason]");
 
-		if(IsPlayerConnected(giveplayerid))
+		if(giveplayerid != INVALID_PLAYER_ID)
 		{
 			if((PlayerInfo[giveplayerid][pAdmin] && PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin]) || (PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 			if(PrisonPlayer(playerid, giveplayerid, reason, minutes, .custom=1) == 0) return 1;
