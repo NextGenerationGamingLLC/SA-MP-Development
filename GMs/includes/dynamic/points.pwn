@@ -254,7 +254,8 @@ public ProgressTimer(id)
 			DynPoints[id][poTimeCapLeft] = 0;
 			DynPoints[id][poCapperGroup] = fam;
 			DynPoints[id][poTimeLeft] = 10;
-			SetTimerEx("CaptureTimer", 60000, 0, "d", id);
+			if(DynPoints[id][CapTimer] != 0) KillTimer(DynPoints[id][CapTimer]);
+			DynPoints[id][CapTimer] = SetTimerEx("CaptureTimer", 60000, 1, "d", id);
 		}
 	} else {
 		DynPoints[id][poCapping] = INVALID_PLAYER_ID;
@@ -271,7 +272,6 @@ public CaptureTimer(id)
 	if(--DynPoints[id][poTimeLeft] > 0) {
 		format(szMiscArray, sizeof(szMiscArray), "%s has successfully attempted to take over of %s for %s, it will be theirs in %d minutes!", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName], DynPoints[id][poTimeLeft]);
 		UpdateDynamic3DTextLabelText(DynPoints[id][poTextID], COLOR_YELLOW, szMiscArray);
-		SetTimerEx("CaptureTimer", 60000, 0, "d", id);
 	} else {
 		format(szMiscArray, sizeof(szMiscArray), "%s has successfully taken control of the %s for %s.", DynPoints[id][poPName], DynPoints[id][poName], arrGroupData[DynPoints[id][poCapperGroup]][g_szGroupName]);
 		SendClientMessageToAllEx(COLOR_YELLOW, szMiscArray);
@@ -281,6 +281,8 @@ public CaptureTimer(id)
 		DynPoints[id][poTimeLeft] = 0;
 		DynPoints[id][poCapturable] = 0;
 		DynPoints[id][poTimer] = 25;
+		KillTimer(DynPoints[id][CapTimer]);
+		DynPoints[id][CapTimer] = 0;
 		UpdatePoint(id);
 		SavePoint(id);
 	}
@@ -464,6 +466,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poCapperGroup] = INVALID_GROUP_ID;
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poCapping] = INVALID_PLAYER_ID;
 					format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poPName], MAX_PLAYER_NAME, "No One");
+					if(DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer] != 0) KillTimer(DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer]);
+					DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer] = 0;
 					SendClientMessageEx(playerid, COLOR_YELLOW, "You have reset %s's capture timer / group owner.", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName]);
 					UpdatePoint(GetPVarInt(playerid, "pEditingPoint"));
 					SavePoint(GetPVarInt(playerid, "pEditingPoint"));
@@ -495,6 +499,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poCapperGroup] = INVALID_GROUP_ID;
 					DynPoints[GetPVarInt(playerid, "pEditingPoint")][poCapping] = INVALID_PLAYER_ID;
 					format(DynPoints[GetPVarInt(playerid, "pEditingPoint")][poPName], MAX_PLAYER_NAME, "No One");
+					if(DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer] != 0) KillTimer(DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer]);
+					DynPoints[GetPVarInt(playerid, "pEditingPoint")][CapTimer] = 0;
 					SendClientMessageEx(playerid, COLOR_YELLOW, "You have delete point: %s.", DynPoints[GetPVarInt(playerid, "pEditingPoint")][poName]);
 					format(szMiscArray, sizeof(szMiscArray), "%s has deleted point ID: %d", GetPlayerNameEx(playerid), GetPVarInt(playerid, "pEditingPoint"));
 					Log("logs/editpoint.log", szMiscArray);
@@ -814,6 +820,7 @@ public OnLoadPoints()
 		DynPoints[i][poCapperGroup] = INVALID_GROUP_ID;
 		DynPoints[i][poCapping] = INVALID_PLAYER_ID;
 		format(DynPoints[i][poPName], MAX_PLAYER_NAME, "No One");
+		DynPoints[i][CapTimer] = 0;
 		UpdatePoint(i);
 		i++;
 	}

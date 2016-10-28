@@ -1867,7 +1867,8 @@ enum PointData
 	poPickupID,
 	poPName[MAX_PLAYER_NAME],
 	poTimeLeft,
-	poTimeCapLeft
+	poTimeCapLeft,
+	CapTimer
 }
 new DynPoints[MAX_POINTS][PointData];
 

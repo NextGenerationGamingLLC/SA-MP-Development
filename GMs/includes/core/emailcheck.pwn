@@ -27,7 +27,7 @@ public OnInvalidEmailCheck(playerid, response_code, data[])
 		if(result == 1) // Valid from login check
 			if(!GetPVarInt(playerid, "EmailConfirmed"))
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Your email has not yet been confirmed. Please take steps to confirm it or go to newcp.ng-gaming.net to change your email.");
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "Your email has not yet been confirmed. Please take steps to confirm it or go to cp.ng-gaming.net to change your email.");
 			}
 		if(result == 2) // Valid from dialog
 		{

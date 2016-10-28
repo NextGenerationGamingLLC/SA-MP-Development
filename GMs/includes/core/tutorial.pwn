@@ -255,7 +255,7 @@ ShowTutorialDialog(playerid, stage)
 			strcat(szMiscArray, "As a community, we've been around since 2010 and have grown significantly since then.\n\n");
 			strcat(szMiscArray, "{FF0000}NG:RP Related Services{FFFFFF}:\n");
 			strcat(szMiscArray, "\t{F69500}Website{FFFFFF}: ng-gaming.net - Sign up on our forums and interact with the community!\n");
-			strcat(szMiscArray, "\t{F69500}User Control Panel{FFFFFF}: newcp.ng-gaming.net - Control your account and take measures to ensure your account's security!\n");
+			strcat(szMiscArray, "\t{F69500}User Control Panel{FFFFFF}: cp.ng-gaming.net - Control your account and take measures to ensure your account's security!\n");
 			strcat(szMiscArray, "\t{F69500}Shop{FFFFFF}: shop.ng-gaming.net - Purchase credits from the shop and purchase items in game!\n");
 			strcat(szMiscArray, "\t{F69500}TeamSpeak{FFFFFF}: ts.ng-gaming.net - Connect and speak to different members of the community!\n");
 			strcat(szMiscArray, "\t{F69500}Image Sharing{FFFFFF}: ngg.up - Share your favourite images with your friends, with the press of a button.\n\n");
