@@ -4962,6 +4962,7 @@ CMD:kick(playerid, params[])
 
 		if(giveplayerid != INVALID_PLAYER_ID)
 		{
+			if(playerid == giveplayerid) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't kick yourself from the server, use /q instead!"); 
 			if(PlayerInfo[playerid][pAdmin] == 1 && (PlayerInfo[giveplayerid][pHelper] >= 2 || PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 			if(PlayerInfo[giveplayerid][pAdmin] >= PlayerInfo[playerid][pAdmin] && (PlayerInfo[giveplayerid][pHelper] >= 2 || PlayerInfo[giveplayerid][pAdmin] > 0) && playerid != giveplayerid && PlayerInfo[giveplayerid][pWatchdog] >= PlayerInfo[playerid][pWatchdog]) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't perform this action on an equal or higher level administrator.");
 			else

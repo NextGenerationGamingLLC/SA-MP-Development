@@ -38,7 +38,9 @@
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	if(PlayerIsDead[damagedid]) return 1;
-	if(floatround(damagedid, floatround_round) < 0) return 1;
+	new thebigstring[15];
+	format(thebigstring, sizeof(thebigstring), "%f", amount);
+    if((150 < floatround(amount, floatround_round) < 0) || strfind(thebigstring, ")", true) != -1) return 1;
 	szMiscArray[0] = 0;
 	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID)
 	{

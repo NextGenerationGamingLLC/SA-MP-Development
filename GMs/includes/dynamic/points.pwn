@@ -133,8 +133,8 @@ CMD:pointtime(playerid, params[])
 	new point;
 	if(sscanf(params, "i", point)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /pointtime [pointid]");
 	if((1 <= point <= MAX_POINTS)) {
-		if(strcmp(DynPoints[point-1][poName], "NULL", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point hasn't been set up officaly!");
-		if(DynPoints[point][poCapturable] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "%s is not ready for takeover.", DynPoints[point-1][poName]);
+		if(strcmp(DynPoints[point-1][poName], "NULL", true) == 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point hasn't officaly been setup yet!");
+		if(DynPoints[point-1][poCapturable] != 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "%s is not ready for takeover.", DynPoints[point-1][poName]);
 		if(!DynPoints[point-1][poTimeLeft]) return SendClientMessageEx(playerid, COLOR_GRAD1, "%s is currently is not being captured!", DynPoints[point-1][poName]);
 		SendClientMessageEx(playerid, COLOR_YELLOW, "This point is currently being captured by: %s | Time left: %d minute(s)", arrGroupData[DynPoints[point-1][poCapperGroup]][g_szGroupName], DynPoints[point-1][poTimeLeft]);
 	} else {
