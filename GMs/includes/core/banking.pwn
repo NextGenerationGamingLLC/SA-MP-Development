@@ -399,12 +399,22 @@ PayDay(i) {
 					 PlayerInfo[i][pVials] += 1;
 				}
 			}	
-
+			/*
 			if((month == 12 && day == 24) || (month == 10 && day == 31))
 			{
 				if(PlayerInfo[i][pTrickortreat] > 0)
 				{
 					PlayerInfo[i][pTrickortreat]--;
+				}
+			}*/
+			if(month == 10 && (day == 29 || day == 30 || day == 31))
+			{
+				++PlayerInfo[i][pTrickortreat];
+				if(PlayerInfo[i][pTrickortreat] == 15) {
+					GiveHtoy(i, 2590, "Scythe");
+				}
+				if(PlayerInfo[i][pTrickortreat] == 30) {
+					GiveHtoy(i, 2907, "Zombie Torso");
 				}
 			}
 			if(month == 5 && day == 25) //Memorial Day 2015
@@ -562,6 +572,69 @@ PayDay(i) {
 	{
 		SendClientMessageEx(i, COLOR_YELLOW, "You have unread items in your mailbox");
 	}
+	return 1;
+}
+
+forward GiveHtoy(giveplayerid, toyid, name[]);
+public GiveHtoy(giveplayerid, toyid, name[]) {
+	new icount = GetPlayerToySlots(giveplayerid), success = 0, string[128];
+	for(new v = 0; v < icount; v++)
+	{
+		if(PlayerToyInfo[giveplayerid][v][ptModelID] == 0)
+		{
+			PlayerToyInfo[giveplayerid][v][ptModelID] = toyid;
+			PlayerToyInfo[giveplayerid][v][ptBone] = 6;
+			PlayerToyInfo[giveplayerid][v][ptPosX] = 0.0;
+			PlayerToyInfo[giveplayerid][v][ptPosY] = 0.0;
+			PlayerToyInfo[giveplayerid][v][ptPosZ] = 0.0;
+			PlayerToyInfo[giveplayerid][v][ptRotX] = 0.0;
+			PlayerToyInfo[giveplayerid][v][ptRotY] = 0.0;
+			PlayerToyInfo[giveplayerid][v][ptRotZ] = 0.0;
+			PlayerToyInfo[giveplayerid][v][ptScaleX] = 1.0;
+			PlayerToyInfo[giveplayerid][v][ptScaleY] = 1.0;
+			PlayerToyInfo[giveplayerid][v][ptScaleZ] = 1.0;
+			PlayerToyInfo[giveplayerid][v][ptTradable] = 1;
+			
+			g_mysql_NewToy(giveplayerid, v);
+			success = 1;
+			break;
+		}
+	}
+	
+	if(success == 0)
+	{
+		for(new i = 0; i < MAX_PLAYERTOYS; i++)
+		{
+			if(PlayerToyInfo[giveplayerid][i][ptModelID] == 0)
+			{
+				PlayerToyInfo[giveplayerid][i][ptModelID] = toyid;
+				PlayerToyInfo[giveplayerid][i][ptBone] = 6;
+				PlayerToyInfo[giveplayerid][i][ptPosX] = 0.0;
+				PlayerToyInfo[giveplayerid][i][ptPosY] = 0.0;
+				PlayerToyInfo[giveplayerid][i][ptPosZ] = 0.0;
+				PlayerToyInfo[giveplayerid][i][ptRotX] = 0.0;
+				PlayerToyInfo[giveplayerid][i][ptRotY] = 0.0;
+				PlayerToyInfo[giveplayerid][i][ptRotZ] = 0.0;
+				PlayerToyInfo[giveplayerid][i][ptScaleX] = 1.0;
+				PlayerToyInfo[giveplayerid][i][ptScaleY] = 1.0;
+				PlayerToyInfo[giveplayerid][i][ptScaleZ] = 1.0;
+				PlayerToyInfo[giveplayerid][i][ptTradable] = 1;
+				PlayerToyInfo[giveplayerid][i][ptSpecial] = 1;
+				
+				g_mysql_NewToy(giveplayerid, i); 
+				
+				SendClientMessageEx(giveplayerid, COLOR_GRAD1, "Due to you not having any available slots, we've temporarily gave you an additional slot to use/sell/trade your %s.", name);
+				SendClientMessageEx(giveplayerid, COLOR_RED, "Note: Please take note that after selling the %s, the temporarily additional toy slot will be removed.", name);
+				break;
+			}	
+		}
+	}
+
+	SendClientMessageEx(giveplayerid, COLOR_GRAD2, "For playing %d hours you have recived a %s!", PlayerInfo[giveplayerid][pTrickortreat], name);
+	format(string, sizeof(string), "* %s was just gifted a %s!", GetPlayerNameEx(giveplayerid), name);
+	ProxDetector(30.0, giveplayerid, string, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
+	format(string, sizeof(string), "* %s(%d) was just gifted a %s for playing %d hours during the zombie event.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), name, PlayerInfo[giveplayerid][pTrickortreat]);
+	Log("logs/giftbox.log", string), OnPlayerStatsUpdate(giveplayerid);
 	return 1;
 }
 

@@ -463,6 +463,8 @@ CMD:curevirus(playerid, params[])
 }
 #endif
 
+/*
+// Changed to give an you instead of this. (15 hours playing time during this time)
 CMD:trickortreat(playerid, params[])
 {
 	new year, month, day, string[256];
@@ -515,7 +517,7 @@ CMD:trickortreat(playerid, params[])
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "It isn't Halloween!");
 	return 1;
-}
+}*/
 
 CMD:prezombie(playerid, params[])
 {

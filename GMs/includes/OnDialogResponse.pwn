@@ -1758,6 +1758,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new Float:aX, Float:aY, Float:aZ;
 			GetPlayerPos(playerid, aX, aY, aZ);
 			//SendAudioURLToRange(inputtext,aX,aY,aZ,range);
+			format(audiourlurl, sizeof(audiourlurl), "%s", inputtext);
 			SetGVarInt("MusicArea", CreateDynamicSphere(aX, aY, aZ, range, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid)));
 
 
