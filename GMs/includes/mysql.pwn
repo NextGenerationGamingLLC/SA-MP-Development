@@ -633,6 +633,11 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 					PlayerInfo[extraid][pFurnitureSlots] = cache_get_field_content_int(row, "FurnitureSlots", MainPipeline);
 
+
+					cache_get_field_content(row,  "DedicatedDaymarker", PlayerInfo[extraid][pDedicatedDaymarker], MainPipeline, 11);
+					cache_get_field_content(row,  "DedicatedTimestamp", PlayerInfo[extraid][pDedicatedTimestamp], MainPipeline, 11);
+					PlayerInfo[extraid][pDedicatedHours] = cache_get_field_content_int(row, "DedicatedHours", MainPipeline);
+
 					/*for(new i = 0; i < MAX_POLLS; i++)
 					{
 						format(szField, sizeof(szField), "HasVoted%d", i);
@@ -2599,6 +2604,10 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FurnitureSlots", PlayerInfo[playerid][pFurnitureSlots]);
 
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "StaffBanned", PlayerInfo[playerid][pStaffBanned]);
+
+	SavePlayerString(query, GetPlayerSQLId(playerid), "DedicatedDaymarker", PlayerInfo[playerid][pDedicatedDaymarker]);
+	SavePlayerString(query, GetPlayerSQLId(playerid), "DedicatedTimestamp", PlayerInfo[playerid][pDedicatedTimestamp]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "DedicatedHours", PlayerInfo[playerid][pDedicatedHours]);
 
 
 	//for(new d; d < sizeof(Drugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), GetDrugName(d), PlayerInfo[playerid][pDrugs][d]);

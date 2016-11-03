@@ -518,7 +518,7 @@ task SyncTime[60000]()
 						}
 					}
 					if(DynPoints[x][poType] == 0) arrGroupData[DynPoints[x][poCaptureGroup]][g_iMaterials] += DynPoints[x][poAmountHour];
-					if((1 <= DynPoints[x][poType] < 5)) arrGroupData[DynPoints[x][poCaptureGroup]][g_iDrugs][DynPoints[x][poType]-1] = DynPoints[x][poAmountHour];
+					if((1 <= DynPoints[x][poType] < 5)) arrGroupData[DynPoints[x][poCaptureGroup]][g_iDrugs][DynPoints[x][poType]-1] += DynPoints[x][poAmountHour];
 				}
 			}
 		}

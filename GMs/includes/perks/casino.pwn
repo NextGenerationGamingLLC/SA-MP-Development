@@ -55,7 +55,7 @@ CMD:rolldice(playerid, params[])
 	if(sscanf(params, "udd", theplayer, amount, dice)) return SendClientMessage(playerid, COLOR_GREY, "Usage: /rolldice [PlayerID] [Money Amount] [Amount of Dice]");
 	if(!IsPlayerConnected(theplayer)) return SendClientMessage(playerid, COLOR_GREY, "This players isn't connected.");
 	if(playerid == theplayer) return SendClientMessage(playerid, COLOR_GREY, "You can't dice with yourself.");
-	if(amount > 10000000 || amount < 1000) return SendClientMessage(playerid, COLOR_GREY, "You can only bet $1000-$10,000,000");
+	if(amount > 50000000 || amount < 1000) return SendClientMessage(playerid, COLOR_GREY, "You can only bet $1000-$50,000,000");
 	if(dice > 3 || dice <= 0) return SendClientMessage(playerid, COLOR_GREY, "You can only use 1-3 Dice.");
 	if(PlayerInfo[theplayer][pCash] < amount) 
 	{

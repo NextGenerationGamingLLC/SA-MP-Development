@@ -322,7 +322,7 @@ PayDay(i) {
 
 			//GivePlayerCash(i, PlayerInfo[i][pPayCheck]);
 			GivePlayerCashEx(i, TYPE_BANK, PlayerInfo[i][pPayCheck]);
-			
+			HourDedicatedPlayer(i);
 			/*if(month == 12 && day == 5)
 			{
 				if(++PlayerInfo[i][pFallIntoFun] == 5)

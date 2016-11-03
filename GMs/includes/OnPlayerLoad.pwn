@@ -629,6 +629,7 @@ public OnPlayerLoad(playerid)
 		Log("logs/security.log", string);
 		PlayerInfo[playerid][pAdmin] = 0;
 	}
+	DayDedicatedPlayer(playerid);
 	if (PlayerInfo[playerid][pAdmin] > 0)
 	{
 		if(PlayerInfo[playerid][pAdmin] == 1)

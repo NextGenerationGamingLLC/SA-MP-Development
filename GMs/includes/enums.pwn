@@ -1212,7 +1212,10 @@ enum pInfo
 	pPollKey3[128],
 	pUsingTruck,
 	pShipmentOptions[10],
-	pCurrentShipment
+	pCurrentShipment,
+	pDedicatedHours,
+	pDedicatedDaymarker,
+	pDedicatedTimestamp
 };
 
 enum pvInfo

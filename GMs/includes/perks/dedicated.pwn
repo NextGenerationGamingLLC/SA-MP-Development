@@ -37,6 +37,9 @@
 
 /** Austin's DP system **/
 
+
+#include <YSI\y_hooks>
+
 SendDedicatedMessage(color, string[])
 {
 	foreach(new i: Player) 
@@ -48,13 +51,57 @@ SendDedicatedMessage(color, string[])
 	}
 }
 
+HourDedicatedPlayer(playerid)
+{
+	PlayerInfo[playerid][pDedicatedHours]++;
+	if(PlayerInfo[playerid][pDedicatedHours] >= 50 || PlayerInfo[playerid][pDedicatedPlayer] == 0)
+	{
+		PlayerInfo[playerid][pDedicatedPlayer] = 1;
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Ruby Dedicated Player!");
+		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Ruby Dedicated Player after playing 50 hours!", GetPlayerNameEx(playerid));
+		SendClientMessageToAll(-1, szMiscArray);
+	}
+	else if(PlayerInfo[playerid][pDedicatedHours] >= 75 || PlayerInfo[playerid][pDedicatedPlayer] == 1)
+	{
+		PlayerInfo[playerid][pDedicatedPlayer] = 2;
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Sapphire Dedicated Player!");
+		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Sapphire Dedicated Player after playing 75 hours!", GetPlayerNameEx(playerid));
+		SendClientMessageToAll(-1, szMiscArray);
+	} 
+	else if(PlayerInfo[playerid][pDedicatedHours] >= 90 || PlayerInfo[playerid][pDedicatedPlayer] == 2)
+	{
+		PlayerInfo[playerid][pDedicatedPlayer] = 3;
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Emerald Dedicated Player!");
+		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Emerald Dedicated Player after playing 90 hours!.", GetPlayerNameEx(playerid));
+		SendClientMessageToAll(-1, szMiscArray);
+	} 
+}
+
+DayDedicatedPlayer(playerid)
+{
+	new	thedate[3],
+	    tdate[3];	
+	getdate(thedate[0], thedate[1], thedate[2]);	
+	sscanf(PlayerInfo[playerid][pDedicatedTimestamp], "p<->iii", tdate[0], tdate[1], tdate[2]);
+	if(tdate[0] == thedate[0]+1 && PlayerInfo[playerid][pDedicatedPlayer] >= 2)
+	{
+		GiftPlayer(MAX_PLAYERS, playerid);
+	} 
+	else if(thedate[0] == 1 && thedate[1] != tdate[1])
+	{
+		PlayerInfo[playerid][pDedicatedPlayer] = 0;
+		PlayerInfo[playerid][pDedicatedHours] = 0;
+	}
+}
+
+
 GetDPRankName(playerid)
 {
-	new rank[23];
+	new rank[77];
 	
 	if(PlayerInfo[playerid][pAdmin] >= 4 && (PlayerInfo[playerid][pTogReports] == 1 || GetPVarType(playerid, "Undercover")))
 	{
-		rank = "Dedicated Player";
+		rank = "Ruby Dedicated Player";
 	}
 	else if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 	{
@@ -71,13 +118,129 @@ GetDPRankName(playerid)
 	{
 		switch(PlayerInfo[playerid][pDedicatedPlayer])
 		{
-			case 1: rank = "Dedicated Player";
-			case 2: rank = "Super Dedicated Player";
-			case 3: rank = "Dedicated Moderator";
-			case 4: rank = "Dedicated Associate";
+			case 1: rank = "Ruby Dedicated Player";
+			case 2: rank = "Sapphire Dedicated Player";
+			case 3: rank = "Emerald Dedicated Player";
+			case 4: rank = "Dedicated Moderator";
 		}
 	}
 	return rank;
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+
+	if(dialogid == DIALOG_LOCKER_DP1)
+	{
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
+		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 0, 0, 0))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
+		if(listitem == 0)
+		{
+			new Float:health;
+			GetHealth(playerid, health);
+			new hpint = floatround( health, floatround_round );
+			if( hpint >= 100 )
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
+				return 1;
+			}
+			else {
+				SetHealth(playerid, 100);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have used a first aid kit, you now have 100.0 HP.");
+			}
+		}
+		if(listitem == 1)
+		{
+			new Float:armour;
+			GetArmour(playerid, armour);
+			if(armour >= 100)
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
+				return 1;
+			}
+			else if(GetPlayerCash(playerid) < 10000)
+			{
+				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $10000");
+				return 1;
+			}
+			else 
+			{
+				GivePlayerCash(playerid, -10000);
+				SetArmour(playerid, 100);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You paid $10000 for a kevlar vest.");
+			}
+		}
+	}
+	else if(dialogid == DIALOG_LOCKER_DP2)
+	{
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
+		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 0, 0, 0))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
+		if(listitem == 0)
+		{
+			new Float:health;
+			GetHealth(playerid, health);
+			new hpint = floatround( health, floatround_round );
+			if( hpint >= 100 )
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You already have full health.");
+				return 1;
+			}
+			else {
+				SetHealth(playerid, 100);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have used a first aid kit, you now have 100.0 HP.");
+			}
+		}
+		if(listitem == 1)
+		{
+			new Float:armour;
+			GetArmour(playerid, armour);
+			if(armour >= 100)
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
+				return 1;
+			}
+			else if(GetPlayerCash(playerid) < 10000)
+			{
+				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $10000");
+				return 1;
+			}
+			else 
+			{
+				GivePlayerCash(playerid, -10000);
+				SetArmour(playerid, 100);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You paid $10000 for a kevlar vest.");
+			}
+		}
+		if(listitem == 2)
+		{
+			if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
+			ShowPlayerDialogEx(playerid, 3498, DIALOG_STYLE_LIST, "Dedicated Weapon Inventory", "Desert Eagle (Free)\nSemi-Automatic MP5 (Free)\nPump Shotgun (Free)", "Take", "Cancel");
+		}
+	}
+	else if(dialogid == DIALOG_DEDICATED_WEAPON)
+	{
+		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
+		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 0, 0, 0))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
+		switch(listitem)
+		{
+			case 0: //Deagle
+			{
+				GivePlayerValidWeapon(playerid, 24);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Desert Eagle from the famed locker.");
+			}
+			case 1: //MP5
+			{
+				GivePlayerValidWeapon(playerid, 29);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Semi-Automatic MP5 from the famed locker.");
+			}
+			case 2: //Shotgun
+			{
+				GivePlayerValidWeapon(playerid, 25);
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Pump Shotgun from the famed locker.");
+			}
+		}
+
+	}
+	return 0;
 }
 
 /** Austin's Dedicated Player System **/
@@ -119,6 +282,25 @@ CMD:togdp(playerid, params[])
 	return 1;
 }
 
+CMD:dplocker(playerid, params[])
+{
+	#if defined zombiemode
+	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
+	#endif
+	if(IsPlayerInRangeOfPoint(playerid, 4.0, 0, 0, 0)) // Need co-ordinates
+	{
+	    switch(PlayerInfo[playerid][pDedicatedPlayer])
+	    {
+			case 0: SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a dedicated player!");
+			case 1: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP1, DIALOG_STYLE_LIST, "Dedicated Player 1", "First Aid Kit (Free)\nKevlar Vest ($10000)", "Select", "Cancel");
+			case 2: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 2", "First Aid Kit (Free)\nKevlar Vest ($5000)\nWeapons (Free)", "Select", "Cancel");
+			default:  ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 3", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)", "Select", "Cancel");
+		}
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not at the famed locker!");
+	return 1;
+}
+/*
 CMD:dpplate(playerid, params[])
 {
 	if(PlayerInfo[playerid][pDedicatedPlayer] < 1)
@@ -173,11 +355,11 @@ CMD:dpplate(playerid, params[])
 	}
 	return 1;
 }
-
+*/
 CMD:dpwarn(playerid, params[])
 {
 	new giveplayerid, reason[24], string[164];
-	if(PlayerInfo[playerid][pDedicatedPlayer] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) 
+	if(PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) 
 	{
 		if(!sscanf(params, "us[24]", giveplayerid, reason))
 		{
@@ -213,13 +395,13 @@ CMD:dpwarn(playerid, params[])
 
 CMD:setdedicated(playerid, params[])
 {
-    if(PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pAdmin] >= 1337)
+    if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
         new string[128], targetid, level;
 	    if(sscanf(params, "ui", targetid, level)) 
 	    {
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /setdedicated [player] [level]");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "(1) Dedicated - (2) Super Dedicated - (3) DP Mod - (4) DP Associate");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "(1) Ruby Dedicated - (2) Sapphire Dedicated - (3) Emerald Dedicated 3 - (4) DP Moderator");
 			return 1;
 		}
 
@@ -251,7 +433,7 @@ CMD:setdedicated(playerid, params[])
 
 CMD:osetdedicated(playerid, params[])
 {
-    if(PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
+    if(PlayerInfo[playerid][pAdmin] >= 1337)
     {
         new string[128], pname[MAX_PLAYER_NAME], level;
 	    if(sscanf(params, "s[32]i", pname, level))
@@ -288,7 +470,7 @@ CMD:osetdedicated(playerid, params[])
 
 CMD:dpmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDedicatedPlayer] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
+	if(PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pAdmin] >= 4)
 	{
 	    new string[128], targetid, reason[64];
 	    if(sscanf(params, "us[64]", targetid, reason))
@@ -331,7 +513,7 @@ CMD:dpmute(playerid, params[])
 
 CMD:dpunmute(playerid, params[])
 {
-	if(PlayerInfo[playerid][pDedicatedPlayer] >= 3 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
+	if(PlayerInfo[playerid][pDedicatedPlayer] >= 4 || PlayerInfo[playerid][pAdmin] >= 4)
 	{
 	    new string[128], targetid, reason[64];
 	    if(sscanf(params, "us[64]", targetid, reason))
