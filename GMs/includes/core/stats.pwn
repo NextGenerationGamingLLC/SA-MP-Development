@@ -72,10 +72,10 @@ stock ShowStats(playerid,targetid)
 		{
 			switch(PlayerInfo[targetid][pDedicatedPlayer])
 			{
-				case 1: dprank = "{336600}Dedicated Player{FFFFFF}\n";
-				case 2: dprank = "{336600}Super Dedicated Player{FFFFFF}\n";
-				case 3: dprank = "{336600}Dedicated Moderator{FFFFFF}\n";
-				case 4: dprank = "{336600}Dedicated Associate{FFFFFF}\n";
+				case 1: dprank = "{336600}Ruby Dedicated Player{FFFFFF}\n";
+				case 2: dprank = "{336600}Sapphire Dedicated Player{FFFFFF}\n";
+				case 3: dprank = "{336600}Emerald Dedicated Player{FFFFFF}\n";
+				case 4: dprank = "{336600}Dedicated Moderator{FFFFFF}\n";
 			}
 		}
 		if(PlayerInfo[targetid][pMarriedID] == -1) format(PlayerInfo[targetid][pMarriedName], MAX_PLAYER_NAME, "Nobody");

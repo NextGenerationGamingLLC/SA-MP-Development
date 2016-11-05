@@ -54,21 +54,21 @@ SendDedicatedMessage(color, string[])
 HourDedicatedPlayer(playerid)
 {
 	PlayerInfo[playerid][pDedicatedHours]++;
-	if(PlayerInfo[playerid][pDedicatedHours] >= 50 || PlayerInfo[playerid][pDedicatedPlayer] == 0)
+	if(PlayerInfo[playerid][pDedicatedHours] >= 50 && PlayerInfo[playerid][pDedicatedPlayer] == 0)
 	{
 		PlayerInfo[playerid][pDedicatedPlayer] = 1;
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Ruby Dedicated Player!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Ruby Dedicated Player after playing 50 hours!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
 	}
-	else if(PlayerInfo[playerid][pDedicatedHours] >= 75 || PlayerInfo[playerid][pDedicatedPlayer] == 1)
+	else if(PlayerInfo[playerid][pDedicatedHours] >= 75 && PlayerInfo[playerid][pDedicatedPlayer] == 1)
 	{
 		PlayerInfo[playerid][pDedicatedPlayer] = 2;
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Sapphire Dedicated Player!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Sapphire Dedicated Player after playing 75 hours!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
 	} 
-	else if(PlayerInfo[playerid][pDedicatedHours] >= 90 || PlayerInfo[playerid][pDedicatedPlayer] == 2)
+	else if(PlayerInfo[playerid][pDedicatedHours] >= 90 && PlayerInfo[playerid][pDedicatedPlayer] == 2)
 	{
 		PlayerInfo[playerid][pDedicatedPlayer] = 3;
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Emerald Dedicated Player!");
