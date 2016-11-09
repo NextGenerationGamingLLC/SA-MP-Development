@@ -38,14 +38,8 @@ stock SendTaxiMessage(color, string[])
 {
 	foreach(new i: Player)
 	{
-		if(IsATaxiDriver(i) && PlayerInfo[i][pDuty] > 0) {
+		if((IsATaxiDriver(i) && PlayerInfo[i][pDuty] > 0) || (IsATaxiDriver(i) && TransportDuty[i] > 0)) {
 			SendClientMessageEx(i, color, string);
-		}
-
-		if(TransportDuty[i] > 0 && (PlayerInfo[i][pJob] == 17 || PlayerInfo[i][pJob2] == 17 || PlayerInfo[i][pJob3] == 17 || PlayerInfo[i][pTaxiLicense] == 1)) {
-			if(!IsATaxiDriver(i)) {
-				SendClientMessageEx(i, color, string);
-			}
 		}
 	}	
 }

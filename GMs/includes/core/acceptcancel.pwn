@@ -1924,7 +1924,7 @@ CMD:accept(playerid, params[])
                 return 1;
             }
             else {
-                SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you a Weapon!");
+                SendClientMessageEx(playerid, COLOR_GREY, "   No-one offered you a craft!");
                 return 1;
             }
         }

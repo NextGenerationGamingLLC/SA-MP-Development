@@ -136,10 +136,11 @@ CMD:buyopium(playerid, params[])
 {
 	new string[256];
 	if(PlayerInfo[playerid][pJob] != 14 && PlayerInfo[playerid][pJob2] != 14 && PlayerInfo[playerid][pJob3] != 14) return SendClientMessageEx(playerid,COLOR_GREY,"  You are not a drug smuggler!");
+	if(GetPlayerMoney(playerid) < 100000) return SendClientMessageEx(playerid,COLOR_GREY,"  You can't afford to buy Opium");
 
 	for (new i=0; i<MAX_POINTS; i++)
 	{
-		if(IsPlayerInRangeOfPoint(playerid, 3.0, DynPoints[i][poPos][0], DynPoints[i][poPos][1], DynPoints[i][poPos][2]) && DynPoints[i][poType] == 2)
+		if(IsPlayerInRangeOfPoint(playerid, 5.0, DynPoints[i][poPos][0], DynPoints[i][poPos][1], DynPoints[i][poPos][2]) && DynPoints[i][poType] == 2)
 		{
 			if(GetPlayerMoney(playerid) < 100000) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot afford the $100,000!");
 			GivePlayerCashEx(playerid, TYPE_ONHAND, -100000);

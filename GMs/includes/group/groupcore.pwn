@@ -290,8 +290,7 @@ stock IsALawyer(playerid)
 
 stock IsATaxiDriver(playerid)
 {
-	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI))	return 1;
-	if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17) return 1;
+	if((0 < PlayerInfo[playerid][pJob] < 50) && (PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || PlayerInfo[i][pTaxiLicense] == 1)) return 1;
 	return 0;
 }
 
@@ -4247,7 +4246,7 @@ CMD:deploy(playerid, params[])
 		}
 		else if(strcmp(object, "tape", true) == 0) {
 			if(PlayerInfo[playerid][pRank] >= arrGroupData[PlayerInfo[playerid][pMember]][g_iTapes]) {
-			    if(!GetPVarType(playerid, "DeployingTapeID")) {
+			    if(GetPVarType(playerid, "DeployingTapeID")) {
 					for(new i; i < sizeof(Tapes); i++) {
 						if(Tapes[i][sX] == 0 && Tapes[i][sY] == 0 && Tapes[i][sZ] == 0)	{
 

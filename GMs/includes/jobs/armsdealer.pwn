@@ -387,11 +387,11 @@ CMD:sellgun(playerid, params[])
 			}
 			else if(strcmp(weapon, "Tec9", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 700)
 			{
-				if(PlayerInfo[playerid][pMats] >= 2500)
+				if(PlayerInfo[playerid][pMats] >= 3000)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 2500;
+						PlayerInfo[playerid][pMats] -= 3000;
 						GivePlayerValidWeapon(id, 32);
 
 						PlayerInfo[playerid][pArmsSkill] += 1;
@@ -399,7 +399,7 @@ CMD:sellgun(playerid, params[])
 					else
 					{
 						SetPVarInt(id, "pSellGun", 32);
-						SetPVarInt(id, "pSellGunMats", 2500);
+						SetPVarInt(id, "pSellGunMats", 3000);
 						SetPVarInt(id, "pSellGunID", playerid);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
@@ -408,11 +408,11 @@ CMD:sellgun(playerid, params[])
 			}
 			else if(strcmp(weapon, "Rifle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 200)
 			{
-				if(PlayerInfo[playerid][pMats] >= 5000)
+				if(PlayerInfo[playerid][pMats] >= 3000)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 5000;
+						PlayerInfo[playerid][pMats] -= 3000;
 						GivePlayerValidWeapon(id, 33);
 
 						PlayerInfo[playerid][pArmsSkill] += 1;
@@ -420,7 +420,7 @@ CMD:sellgun(playerid, params[])
 					else
 					{
 						SetPVarInt(id, "pSellGun", 33);
-						SetPVarInt(id, "pSellGunMats", 5000);
+						SetPVarInt(id, "pSellGunMats", 3000);
 						SetPVarInt(id, "pSellGunID", playerid);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}
@@ -450,11 +450,11 @@ CMD:sellgun(playerid, params[])
 			}
 			else if(strcmp(weapon, "Deagle", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 1200)
 			{
-				if(PlayerInfo[playerid][pMats] >= 3000)
+				if(PlayerInfo[playerid][pMats] >= 5000)
 				{
 					if(id == playerid)
 					{
-						PlayerInfo[playerid][pMats] -= 3000;
+						PlayerInfo[playerid][pMats] -= 5000;
 						GivePlayerValidWeapon(id, 24);
 
 						PlayerInfo[playerid][pArmsSkill] += 1;
@@ -462,7 +462,7 @@ CMD:sellgun(playerid, params[])
 					else
 					{
 						SetPVarInt(id, "pSellGun", 24);
-						SetPVarInt(id, "pSellGunMats", 3000);
+						SetPVarInt(id, "pSellGunMats", 5000);
 						SetPVarInt(id, "pSellGunID", playerid);
 						SetPVarInt(id, "pSellGunXP", 1);
 					}

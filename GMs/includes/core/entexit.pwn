@@ -342,8 +342,8 @@ DDoor_Enter(playerid, i)
 		return 1;
 	}
 
-	if(DDoorsInfo[i][ddDPC] > 0 && PlayerInfo[playerid][pRewardHours] < 150) {
-		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a Dedicated Player.");
+	if(DDoorsInfo[i][ddDPC] > 0 && PlayerInfo[playerid][pDedicatedPlayer] < 2) {
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a high enough Dedicated Player.");
 		return 1;
 	}
 

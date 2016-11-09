@@ -121,17 +121,11 @@ stock GetJobLevel(playerid, job)
 		case 9:
 		{
 			new skilllevel = PlayerInfo[playerid][pArmsSkill];
-			if(skilllevel >= 0 && skilllevel < 50) jlevel = 1;
-			else if(skilllevel >= 50 && skilllevel < 150) jlevel = 2;
-			else if(skilllevel >= 150 && skilllevel < 300) jlevel = 3;
-			else if(skilllevel >= 300 && skilllevel < 500) jlevel = 4;
-			else if(skilllevel >= 500 && skilllevel < 875) jlevel = 5;
-			else if(skilllevel >= 875 && skilllevel < 1475) jlevel = 6;
-			else if(skilllevel >= 1475 && skilllevel < 2350) jlevel = 7;
-			else if(skilllevel >= 2350 && skilllevel < 3550) jlevel = 8;
-			else if(skilllevel >= 3550 && skilllevel < 5349) jlevel = 9;
-			else if(skilllevel >= 5350 && skilllevel < 7850) jlevel = 10;
-			else if(skilllevel >= 7850) jlevel = 11;
+			if(skilllevel >= 50 && skilllevel < 200) jlevel = 1;
+			else if(skilllevel >= 200 && skilllevel < 300) jlevel = 2;
+			else if(skilllevel >= 300 && skilllevel < 700) jlevel = 3;
+			else if(skilllevel >= 700 && skilllevel < 1200) jlevel = 4;
+			else if(skilllevel >= 1200) jlevel = 5;
 		}
 		case 12:
 		{

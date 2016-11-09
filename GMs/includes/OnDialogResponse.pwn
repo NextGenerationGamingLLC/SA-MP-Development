@@ -6824,7 +6824,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(CrateInfo[CrateID][GunQuantity] >= 10)
 					{
 						GivePlayerValidWeapon(playerid, 27); //spas
-						CrateInfo[CrateID][GunQuantity] -= 8;
+						CrateInfo[CrateID][GunQuantity] -= 10;
 					}
 				}
 				case 2: // CRATE GUNS
@@ -6840,7 +6840,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(CrateInfo[CrateID][GunQuantity] >= 10)
 					{
 						GivePlayerValidWeapon(playerid, 31); //m4
-						CrateInfo[CrateID][GunQuantity] -= 6;
+						CrateInfo[CrateID][GunQuantity] -= 10;
 					}
 				}
 				case 4: // CRATE GUNS
@@ -6856,7 +6856,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(CrateInfo[CrateID][GunQuantity] >= 10)
 					{
 						GivePlayerValidWeapon(playerid, 34);//sniper
-						CrateInfo[CrateID][GunQuantity] -= 5;
+						CrateInfo[CrateID][GunQuantity] -= 10;
 					}
 				}
 				case 6: // CRATE GUNS
