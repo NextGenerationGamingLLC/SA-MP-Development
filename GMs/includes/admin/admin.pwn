@@ -181,8 +181,8 @@ CMD:id(playerid, params[]) {
 
 	if(IsNumeric(params) && IsPlayerConnected(strval(params)))
 	{
-	    if(PlayerInfo[playerid][pAdmin] >= 2) format(szMessage, sizeof szMessage, "%s (ID: %d) - (Level: %d) - (Ping: %d) - (FPS: %d)", GetPlayerNameEx(iTargetID), iTargetID, PlayerInfo[iTargetID][pLevel], GetPlayerPing(iTargetID), pFPS[iTargetID]);
-		else format(szMessage, sizeof szMessage, "%s (ID: %d) - (Level: %d) - (Ping: %d)", GetPlayerNameEx(iTargetID), iTargetID, GetPlayerScore(iTargetID), GetPlayerPing(iTargetID));
+	    if(PlayerInfo[playerid][pAdmin] >= 2) format(szMessage, sizeof szMessage, "%s (ID: %d · Hours: %s · Ping: %d · FPS: %d · Packet Loss: %.2f)", GetPlayerNameEx(iTargetID), iTargetID, number_format(PlayerInfo[iTargetID][pConnectHours]), GetPlayerPing(iTargetID), GetPlayerFPS(iTargetID), GetPlayerPacketLoss(iTargetID));
+		else format(szMessage, sizeof szMessage, "%s (ID: %d · Level: %d · Ping: %d)", GetPlayerNameEx(iTargetID), iTargetID, GetPlayerScore(iTargetID), GetPlayerPing(iTargetID));
 		return SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 	}
 	else if(strlen(params) < 3) {
@@ -192,8 +192,8 @@ CMD:id(playerid, params[]) {
 	{
 		GetPlayerName(i, szPlayerName, sizeof szPlayerName);
 		if(strfind(szPlayerName, params, true) != -1) {
-			if(PlayerInfo[playerid][pAdmin] >= 2) format(szMessage, sizeof szMessage, "%s (ID: %d) - (Level: %d) - (Ping: %d) - (FPS: %d)", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], GetPlayerPing(i), pFPS[i]);
-			else format(szMessage, sizeof szMessage, "%s (ID: %d) - (Level: %d) - (Ping: %d)", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], GetPlayerPing(i));
+			if(PlayerInfo[playerid][pAdmin] >= 2) format(szMessage, sizeof szMessage, "%s (ID: %d · Hours: %s · Ping: %d · FPS: %d · Packet Loss: %.2f)", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pConnectHours]), GetPlayerPing(i), GetPlayerFPS(i), GetPlayerPacketLoss(i));
+			else format(szMessage, sizeof szMessage, "%s (ID: %d · Level: %d · Ping: %d)", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], GetPlayerPing(i));
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 		}
 	}
@@ -214,7 +214,7 @@ CMD:near(playerid, params[])
 		{
 			if(i != playerid && ProxDetectorS(radius, playerid, i))
 			{
-				format(szMiscArray, sizeof(szMiscArray), "%s (ID: %d - Level: %d)", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel]);
+				format(szMiscArray, sizeof(szMiscArray), "%s (ID: %d - Hours: %s)", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pConnectHours]));
 				SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 			}
 		}
@@ -3665,33 +3665,33 @@ CMD:setstat(playerid, params[])
 		{
 			switch (statcode)
 			{
-			case 1:
+				case 1:
 				{
 					PlayerInfo[giveplayerid][pLevel] = amount;
 					format(string, sizeof(string), "   %s's(%d) Level has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 					SetPlayerScore(giveplayerid, PlayerInfo[giveplayerid][pLevel]);
 				}
-			case 2:
+				case 2:
 				{
 					PlayerInfo[giveplayerid][pSHealth] = amount;
 					format(string, sizeof(string), "   %s's(%d) ArmorUpgrade has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 3:
+				case 3:
 				{
 					PlayerInfo[giveplayerid][gPupgrade] = amount;
 					format(string, sizeof(string), "   %s's(%d) Upgrade Points has been set %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 4:
+				case 4:
 				{
 					PlayerInfo[giveplayerid][pModel] = amount;
 					format(string, sizeof(string), "   %s's(%d) Model has been set %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 5:
+				case 5:
 				{
 					PlayerInfo[giveplayerid][pAccount] = amount;
 					format(string, sizeof(string), "   %s's(%d) Bank Account has been set to $%d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 6:
+				case 6:
 				{
 					if(amount == 0)
 					{
@@ -3710,150 +3710,150 @@ CMD:setstat(playerid, params[])
 						return 1;
 					}
 				}
-			case 7:
+				case 7:
 				{
 					PlayerInfo[giveplayerid][pExp] = amount;
 					format(string, sizeof(string), "   %s's(%d) Respect Points have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 8:
+				case 8:
 				{
 					PlayerInfo[giveplayerid][pPhousekey] = amount;
 					format(string, sizeof(string), "   %s's(%d) House 1 has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 9:
+				case 9:
 				{
 					PlayerInfo[giveplayerid][pPhousekey2] = amount;
 					format(string, sizeof(string), "   %s's(%d) House 2 has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 10:
+				case 10:
 				{
 					PlayerInfo[giveplayerid][pPhousekey3] = amount;
 					format(string, sizeof(string), "   %s's(%d) House 3 has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 11:
+				case 11:
 				{
-					SendClientMessageEx(playerid, COLOR_WHITE, "Family system has been merged to group system!");
+					return SendClientMessageEx(playerid, COLOR_WHITE, "Family system has been merged to group system!");
 				}
-			case 12:
+				case 12:
 				{
 					PlayerInfo[giveplayerid][pDetSkill] = amount;
 					format(string, sizeof(string), "   %s's(%d) Detective Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 13:
+				case 13:
 				{
 					PlayerInfo[giveplayerid][pLawSkill] = amount;
 					format(string, sizeof(string), "   %s's(%d) Lawyer Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 14:
+				case 14:
 				{
 					PlayerInfo[giveplayerid][pMechSkill] = amount;
 					format(string, sizeof(string), "   %s's(%d) Car Mechanic Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 17:
+				case 17:
 				{
 					return 1;
 				}
-			case 18:
+				case 18:
 				{
 					PlayerInfo[giveplayerid][pSexSkill] = amount;
 					format(string, sizeof(string), "   %s's(%d) Sex Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 19:
+				case 19:
 				{
 					PlayerInfo[giveplayerid][pBoxSkill] = amount;
 					format(string, sizeof(string), "   %s's(%d) Box Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 20:
+				case 20:
 				{
 					PlayerInfo[giveplayerid][pArmsSkill] = amount;
 					format(string, sizeof(string), "   %s's(%d) Arms Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 21:
+				case 21:
 				{
 					PlayerInfo[giveplayerid][pMats] = amount;
 					format(string, sizeof(string), "   %s's(%d) Materials have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 22:
+				case 22:
 				{
 					PlayerInfo[giveplayerid][pDrugs][0] = amount;
 					format(string, sizeof(string), "   %s's(%d) Pot has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 23:
+				case 23:
 				{
 					PlayerInfo[giveplayerid][pDrugs][1] = amount;
 					format(string, sizeof(string), "   %s's(%d) Crack has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 24:
+				case 24:
 				{
 					PlayerInfo[playerid][pFishingSkill] = amount;
 					format(string, sizeof(string), "   %s's(%d) Fishing Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 25:
+				case 25:
 				{
 					PlayerInfo[giveplayerid][pJob] = amount;
 					format(string, sizeof(string), "   %s's(%d) Job has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 26:
+				case 26:
 				{
 					PlayerInfo[giveplayerid][pRank] = amount;
 					format(string, sizeof(string), "   %s's(%d) Rank has been to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 27:
+				case 27:
 				{
 					SetPVarInt(giveplayerid, "Packages", amount);
 					format(string, sizeof(string), "   %s's(%d) Materials Packages have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 28:
+				case 28:
 				{
 					PlayerInfo[giveplayerid][pCrates] = amount;
 					format(string, sizeof(string), "   %s's(%d) Drug Crates have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 29:
+				case 29:
 				{
 					PlayerInfo[giveplayerid][pDrugSmuggler] = amount;
 					format(string, sizeof(string), "   %s's(%d) Smuggler Skill has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 30:
+				case 30:
 				{
 					PlayerInfo[giveplayerid][pInsurance] = amount;
 					format(string, sizeof(string), "   %s's(%d) Insurance has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 31:
+				case 31:
 				{
 					PlayerInfo[giveplayerid][pWarns] = amount;
 					format(string, sizeof(string), "   %s's(%d) Warnings have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 32:
+				case 32:
 				{
 					PlayerInfo[giveplayerid][pScrewdriver] = amount;
 					format(string, sizeof(string), "   %s's(%d) Screwdrivers have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			/*case 33:
+				/*case 33:
 				{
 					PlayerInfo[giveplayerid][pBirthDate] = amount;
 					format(string, sizeof(string), "   %s's(%d) Age has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}*/
-			case 34:
+				case 34:
 				{
 					PlayerInfo[giveplayerid][pSex] = amount;
 					format(string, sizeof(string), "   %s's(%d) Gender has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 35:
+				case 35:
 				{
 					PlayerInfo[giveplayerid][pNMuteTotal] = amount;
 					format(string, sizeof(string), "   %s's(%d) Total Newbie Mutes has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 36:
+				case 36:
 				{
 					PlayerInfo[giveplayerid][pADMuteTotal] = amount;
 					format(string, sizeof(string), "   %s's(%d) Total Ad Mutes has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 37:
+				case 37:
 				{
 					PlayerInfo[giveplayerid][pMember] = amount;
 					format(string, sizeof(string), "   %s's(%d) Faction has been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 38:
+				case 38:
 				{
 					if(PlayerInfo[giveplayerid][pConnectHours] >= 2) {
 						PlayerInfo[giveplayerid][pWRestricted] = amount;
@@ -3864,132 +3864,130 @@ CMD:setstat(playerid, params[])
 						return SendClientMessageEx(playerid, COLOR_GREY, "You cannot set this on a person who has under 2 playing hours.");
 					}
 				}
-			case 39:
+				case 39:
 				{
 					PlayerInfo[giveplayerid][pGangWarn] = amount;
 					format(string, sizeof(string), "   %s's(%d) Gang Warns have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 40:
+				case 40:
 				{
 					PlayerInfo[giveplayerid][pRMutedTotal] = amount;
 					format(string, sizeof(string), "   %s's(%d) Report Mutes have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 41:
+				case 41:
 				{
 					PlayerInfo[giveplayerid][pRewardHours] = amount;
 					format(string, sizeof(string), "   %s's(%d) Reward Playing Hours have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 42:
+				case 42:
 				{
 					PlayerInfo[giveplayerid][pConnectHours] = amount;
 					format(string, sizeof(string), "   %s's(%d) Playing Hours have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-            case 43:
+				case 43:
 				{
 					PlayerInfo[giveplayerid][pGoldBoxTokens] = amount;
 					format(string, sizeof(string), "   %s's(%d) Box Tokens have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 44:
+				case 44:
 				{
 					PlayerInfo[giveplayerid][pRewardDrawChance] = amount;
 					format(string, sizeof(string), "   %s's(%d) Computer Drawings have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 45:
+				case 45:
 				{
 					PlayerInfo[giveplayerid][pPaper] = amount;
 					format(string, sizeof(string), "   %s's(%d) Papers have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 46:
+				case 46:
 				{
 				    if (amount < 0 || amount >= MAX_BUSINESSES) return 1;
 					PlayerInfo[giveplayerid][pBusiness] = amount;
 					format(string, sizeof(string), "   %s's(%d) Business have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 47:
+				case 47:
 				{
 				    if (amount < 0 || amount > 5) return 1;
 					PlayerInfo[giveplayerid][pBusinessRank] = amount;
 					format(string, sizeof(string), "   %s's(%d) Business Rank have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 48:
+				case 48:
 				{
                 	PlayerInfo[giveplayerid][pSpraycan] = amount;
 					format(string, sizeof(string), "   %s's(%d) Spraycans have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 49:
+				case 49:
 			    {
 			        PlayerInfo[giveplayerid][pHeroin] = amount;
 			        format(string, sizeof(string), "   %s's(%d) Heroin have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 			    }
-			case 50:
+				case 50:
 				{
                 	PlayerInfo[giveplayerid][pRawOpium] = amount;
 					format(string, sizeof(string), "   %s's(%d) raw opium have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-            case 51:
+				case 51:
 				{
                 	PlayerInfo[giveplayerid][pSyringes] = amount;
 					format(string, sizeof(string), "   %s's(%d) Syringes have been set to %d.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 
-			case 52:
+				case 52:
 				{
 					return 1;
 				}
 
-			case 53:
+				case 53:
 				{
 					return 1;
 				}
 
-			case 54:
+				case 54:
 				{
 					PlayerInfo[giveplayerid][pEventTokens] = amount;
 					format(string, sizeof(string), "   %s's(%d) Event Tokens have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 55:
+				case 55:
 				{
 					PlayerInfo[giveplayerid][pRimMod] = amount;
 					format(string, sizeof(string), "   %s's(%d) Rim Kits have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 56:
+				case 56:
 				{
 					PlayerInfo[giveplayerid][pCarLockPickSkill] = amount;
 					format(string, sizeof(string), "   %s's(%d) Car Lock Pick Skill have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 57:
+				case 57:
 				{
 					PlayerInfo[giveplayerid][pLockPickVehCount] = amount;
 					format(string, sizeof(string), "   %s's(%d) Lock Pick Vehicle Count have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 58:
+				case 58:
 				{
 					PlayerInfo[giveplayerid][pLockPickTime] = amount;
 					format(string, sizeof(string), "   %s's(%d) Lock Pick Vehicle Time have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 59:
+				case 59:
 				{
 					PlayerInfo[giveplayerid][pToolBox] = amount;
 					format(string, sizeof(string), "   %s's(%d) Tool Box usages have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-			case 60:
+				case 60:
 				{
 					PlayerInfo[giveplayerid][pCrowBar] = amount;
 					format(string, sizeof(string), "   %s's(%d) Crowbar usages have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
 
-			default:
+				default:
 				{
 					format(string, sizeof(string), "   Invalid stat code.", amount);
 				}
 			}
-
-
 			format(string, sizeof(string), "%s by %s", string, GetPlayerNameEx(playerid));
 			Log("logs/stats.log", string);
 			SendClientMessageEx(playerid, COLOR_GRAD1, string);
-
 		}
+		else return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
 	}
 	return 1;
 }
@@ -4448,6 +4446,7 @@ CMD:entercar(playerid, params[])
 
 CMD:gotocar(playerid, params[])
 {
+	new string[128];
 	if (PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		new carid;
@@ -4465,8 +4464,11 @@ CMD:gotocar(playerid, params[])
 		{
 			SetPlayerPos(playerid, cwx2, cwy2, cwz2);
 		}
-		SendClientMessageEx(playerid, COLOR_GRAD1, "   You have been teleported!");
-		SetPlayerInterior(playerid,0);
+		
+		format(string, sizeof(string), "   You have teleported to vehicle ID %d (%s)", carid, GetVehicleName(carid));
+		SendClientMessageEx(playerid, COLOR_GRAD1, string);
+		SetPlayerInterior(playerid, 0);
+		SetPlayerVirtualWorld(playerid, GetVehicleVirtualWorld(carid));
 	}
 	else
 	{
@@ -5295,7 +5297,16 @@ CMD:ahelp(playerid, params[]) {
 	return cmd_ah(playerid, params);
 }
 
-CMD:ah(playerid, params[])
+CMD:ah(playerid, params[]) {
+	if(PlayerInfo[playerid][pAdmin] >= 1) Help_ListCat(playerid, DIALOG_HELPCATADMIN);
+	return 1;
+}
+
+CMD:oahelp(playerid, params[]) {
+	return cmd_oah(playerid, params);
+}
+
+CMD:oah(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] >= 1 || PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	if (PlayerInfo[playerid][pAdmin] >= 1)

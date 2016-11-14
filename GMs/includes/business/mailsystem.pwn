@@ -135,6 +135,13 @@ stock ClearStreetMailbox(boxid)
 
 CMD:mailhelp(playerid, params[])
 {
+	SetPVarInt(playerid, "HelpResultCat0", 7);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:omailhelp(playerid, params[])
+{
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Mail System Help");
 	SendClientMessageEx(playerid, COLOR_GRAD2, "You can purchase writing paper from any 24/7 and send letters to your friends");
 	SendClientMessageEx(playerid, COLOR_GRAD2, "and colleagues regardless of whether they are online or not. Letters can be sent");

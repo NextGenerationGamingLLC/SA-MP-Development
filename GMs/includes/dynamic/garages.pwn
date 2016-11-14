@@ -446,15 +446,31 @@ CMD:garagenear(playerid, params[])
 		{
 			if(GarageInfo[i][gar_InteriorX] != 0.0)
 			{
-				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && GarageInfo[i][gar_InteriorVW] == option)
+				if(option == -1)
 				{
-					format(string, sizeof(string), "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]))
+					{
+						format(string, sizeof(string), "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+					if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]))
+					{
+						format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
 				}
-				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && GarageInfo[i][gar_ExteriorVW] == option)
+				else
 				{
-					format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
-					SendClientMessageEx(playerid, COLOR_WHITE, string);
+					if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && GarageInfo[i][gar_InteriorVW] == option)
+					{
+						format(string, sizeof(string), "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
+					if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && GarageInfo[i][gar_ExteriorVW] == option)
+					{
+						format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+					}
 				}
 			}
 		}
@@ -466,14 +482,14 @@ CMD:garagenear(playerid, params[])
 		{
 			if(GarageInfo[i][gar_InteriorX] != 0.0)
 			{
-				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]))
+				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]) && GarageInfo[i][gar_InteriorVW] == GetPlayerVirtualWorld(playerid))
 				{
-					format(string, sizeof(string), "(Interior) Garage ID %d | %f from you | Virtual World: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]), GarageInfo[i][gar_InteriorVW]);
+					format(string, sizeof(string), "(Interior) Garage ID %d | %f from you", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ]));
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
-				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]))
+				if(IsPlayerInRangeOfPoint(playerid, 30, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]) && GarageInfo[i][gar_ExteriorVW] == GetPlayerVirtualWorld(playerid))
 				{
-					format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorVW], GarageInfo[i][gar_ExteriorInt]);
+					format(string, sizeof(string), "(Exterior) Garage ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ]), GarageInfo[i][gar_ExteriorInt]);
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
 			}

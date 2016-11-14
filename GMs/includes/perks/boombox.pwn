@@ -115,7 +115,7 @@ CMD:placeboombox(playerid, params[])
     	y += (2 * floatcos(-a, degrees));
     	z -= 1.0;
 
-	    SetPVarInt(playerid, "pBoomBox", CreateDynamicObject(2103, x, y, z, 0.0, 0.0, 0.0, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid)));
+	    SetPVarInt(playerid, "pBoomBox", CreateDynamicObject(2103, x, y, z, 0.0, 0.0, a, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid)));
 	    SetPVarFloat(playerid, "pBoomBoxX", x); SetPVarFloat(playerid, "pBoomBoxY", y); SetPVarFloat(playerid, "pBoomBoxZ", z);
 		format(string, sizeof(string), "%s's boombox\n{FF0000}/setboombox {FFFF00}or\n{FF0000}/destroyboombox", GetPlayerNameEx(playerid));
 	    SetPVarInt(playerid, "pBoomBoxLabel", _:CreateDynamic3DTextLabel(string, COLOR_YELLOW, x, y, z+0.6, 5.0, .worldid = GetPlayerVirtualWorld(playerid), .interiorid = GetPlayerInterior(playerid)));

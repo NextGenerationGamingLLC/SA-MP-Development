@@ -85,6 +85,13 @@ public RingTonerRev()
 
 CMD:cellphonehelp(playerid, params[])
 {
+	SetPVarInt(playerid, "HelpResultCat0", 4);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:ocellphonehelp(playerid, params[])
+{
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
     if (PlayerInfo[playerid][pPnumber] != 0) {
         SendClientMessageEx(playerid, COLOR_WHITE,"*** HELP *** - type a command for more infomation.");

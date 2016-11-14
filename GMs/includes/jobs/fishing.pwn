@@ -203,6 +203,13 @@ stock ClearFishID(playerid, fish)
 
 CMD:fishhelp(playerid, params[])
 {
+	SetPVarInt(playerid, "HelpResultCat0", 5);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:ofishhelp(playerid, params[])
+{
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
     SendClientMessageEx(playerid, COLOR_WHITE,"*** FISH HELP *** - type a command for more infomation.");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** FISHING *** /fish (Try to catch a fish)   /fishes (Show the fishes you have caught)");

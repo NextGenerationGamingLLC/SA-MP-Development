@@ -51,7 +51,7 @@ InitiateGamemode()
 	LoadPlants();
 	LoadElevatorStuff();
 	ClearCalls();
-	//LoadHelp();
+	LoadHelp();
 	Misc_Load();
 	InitPokerTables();
 	ResetElevatorQueue();

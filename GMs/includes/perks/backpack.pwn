@@ -1219,7 +1219,14 @@ CMD:bopen(playerid, params[])
 	return 1;
 }
 
-CMD:backpackhelp(playerid, params[]) {
+CMD:backpackhelp(playerid, params[])
+{
+	SetPVarInt(playerid, "HelpResultCat0", 2);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:obackpackhelp(playerid, params[]) {
 
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "Item: Small Backpack\nFood Storage: 1 Meals\nNarcotics Storage: 40 Grams\nFirearms Storage: 2 Weapons(Handguns only)\nCost: {FFD700}%s{A9C4E4}\n\n", number_format(ShopItems[36][sItemPrice]));

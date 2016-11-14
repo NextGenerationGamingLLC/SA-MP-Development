@@ -13,7 +13,7 @@
 
 				Next Generation Gaming, LLC
 	(created by Next Generation Gaming Development Team)
-					
+
 	* Copyright (c) 2016, Next Generation Gaming, LLC
 	*
 	* All rights reserved.
@@ -96,6 +96,7 @@ CMD:citylockdown(playerid, params[])
 		}
 	}
 }*/
+
 CMD:gsave(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
@@ -353,7 +354,7 @@ CMD:gnear(playerid, params[])
     if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new option;
-		if(!sscanf(params, "d", option)) 
+		if(!sscanf(params, "d", option))
 		{
 			new string[64];
 			format(string, sizeof(string), "* Listing all gates within 30 meters of you in VW %d...", option);
@@ -361,25 +362,39 @@ CMD:gnear(playerid, params[])
 			for(new i, Float: fGatePos[3], szMessage[48]; i < MAX_GATES; i++)
 			{
 				GetDynamicObjectPos(GateInfo[i][gGATE], fGatePos[0], fGatePos[1], fGatePos[2]);
-				if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]) && GateInfo[i][gVW] == option)
+				if(option == -1)
 				{
-					if(GateInfo[i][gModel] != 0)
+					if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]))
 					{
-						format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
-						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+						if(GateInfo[i][gModel] != 0 && GateInfo[i][gModel] != 18631)
+						{
+							format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
+							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+						}
+					}
+				}
+				else
+				{
+					if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]) && GateInfo[i][gVW] == option)
+					{
+						if(GateInfo[i][gModel] != 0 && GateInfo[i][gModel] != 18631)
+						{
+							format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
+							SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+						}
 					}
 				}
 			}
 		}
-		else 
+		else
 		{
 			SendClientMessageEx(playerid, COLOR_RED, "* Listing all gates within 30 meters of you...");
 			for(new i, Float: fGatePos[3], szMessage[48]; i < MAX_GATES; i++)
 			{
 				GetDynamicObjectPos(GateInfo[i][gGATE], fGatePos[0], fGatePos[1], fGatePos[2]);
-				if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]))
+				if(IsPlayerInRangeOfPoint(playerid, 30, fGatePos[0], fGatePos[1], fGatePos[2]) && GateInfo[i][gVW] == GetPlayerVirtualWorld(playerid))
 				{
-					if(GateInfo[i][gModel] != 0)
+					if(GateInfo[i][gModel] != 0 && GateInfo[i][gModel] != 18631)
 					{
 						format(szMessage, sizeof(szMessage), "Gate ID %d (VW: %d) | %f from you", i, GateInfo[i][gVW], GetPlayerDistanceFromPoint(playerid, fGatePos[0], fGatePos[1], fGatePos[2]));
 						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
@@ -513,7 +528,7 @@ CMD:gedit(playerid, params[])
 					format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
 					return SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
-			}	
+			}
 			SetPVarInt(playerid, "gEdit", 1);
 			SetPVarInt(playerid, "EditingGateID", gateid);
 			SetDynamicObjectPos(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ]);
@@ -532,7 +547,7 @@ CMD:gedit(playerid, params[])
 					format(string, sizeof(string), "ERROR: %s (ID: %d) is currently editing this gate.", GetPlayerNameEx(i), i);
 					return SendClientMessageEx(playerid, COLOR_WHITE, string);
 				}
-			}	
+			}
 			SetPVarInt(playerid, "gEdit", 2);
 			SetPVarInt(playerid, "EditingGateID", gateid);
 			EditDynamicObject(playerid, GateInfo[gateid][gGATE]);
@@ -744,6 +759,95 @@ CMD:gedit(playerid, params[])
 	return 1;
 }
 
+CMD:gedittexture(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
+	{
+		new gateid, option[16], var[64], string[128];
+
+		if(sscanf(params, "is[16]s[64]", gateid, option, var))
+		{
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gedittexture [gateid] [name] [value]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Index, Model, TXD, Texture, Color, Delete");
+			return 1;
+		}
+
+		if(strcmp(option, "index", true) == 0)
+		{
+			new value = strval(var);
+		    GateInfo[gateid][gTIndex] = value;
+		    format(string, sizeof(string), "Texture index %d assigned to Gate %d", GateInfo[gateid][gTIndex], gateid);
+		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SaveGate(gateid);
+
+		    format(string, sizeof(string), "%s has edited GateID %d's texture index to %d.", GetPlayerNameEx(playerid), gateid, value);
+		    Log("logs/gedit.log", string);
+		}
+		else if(strcmp(option, "model", true) == 0)
+		{
+		    new value = strval(var);
+		    GateInfo[gateid][gTModel] = value;
+		    format(string, sizeof(string), "Texture model %d assigned to Gate %d", GateInfo[gateid][gTModel], gateid);
+		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SaveGate(gateid);
+			CreateGate(gateid);
+
+		    format(string, sizeof(string), "%s has edited GateID %d's texture model to %d.", GetPlayerNameEx(playerid), gateid, value);
+		    Log("logs/gedit.log", string);
+		}
+		else if(strcmp(option, "txd", true) == 0)
+		{
+		    format(GateInfo[gateid][gTTXD], 64, "%s", var);
+		    format(string, sizeof(string), "TXD file %s assigned to Gate %d", GateInfo[gateid][gTTXD], gateid);
+		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SaveGate(gateid);
+
+		    format(string, sizeof(string), "%s has edited GateID %d's TXD file to %s.", GetPlayerNameEx(playerid), gateid, var);
+		    Log("logs/gedit.log", string);
+		}
+		else if(strcmp(option, "texture", true) == 0)
+		{
+		    format(GateInfo[gateid][gTTexture], 64, "%s", var);
+		    format(string, sizeof(string), "Texture %s assigned to Gate %d", GateInfo[gateid][gTTexture], gateid);
+		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SaveGate(gateid);
+
+		    format(string, sizeof(string), "%s has edited GateID %d's texture to %s.", GetPlayerNameEx(playerid), gateid, var);
+		    Log("logs/gedit.log", string);
+		}
+		else if(strcmp(option, "color", true) == 0)
+		{
+			if(strlen(var) > 6 || !ishex(var)) return SendClientMessageEx(playerid, COLOR_GREY, "Color must be a valid hexadecimal color (ie: BCA3FF)");
+			new value;
+			sscanf(var, "h", value);
+		    GateInfo[gateid][gTColor] = value;
+		    format(string, sizeof(string), "Material color %d assigned to Gate %d", GateInfo[gateid][gTColor], gateid);
+		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SaveGate(gateid);
+
+		    format(string, sizeof(string), "%s has edited GateID %d's material color to %d.", GetPlayerNameEx(playerid), gateid, value);
+		    Log("logs/gedit.log", string);
+		}
+		if(strcmp(option, "delete", true) == 0)
+		{
+		    GateInfo[gateid][gTIndex] = -1;
+			GateInfo[gateid][gTModel] = INVALID_OBJECT_ID;
+			GateInfo[gateid][gTTXD] = EOS;
+			GateInfo[gateid][gTTexture] = EOS;
+			GateInfo[gateid][gTColor] = 0;
+		    format(string, sizeof(string), "Texture removed from Gate %d", gateid);
+		    SendClientMessageEx(playerid, COLOR_WHITE, string);
+		    SaveGate(gateid);
+			CreateGate(gateid);
+
+		    format(string, sizeof(string), "%s has removed GateID %d's texture.", GetPlayerNameEx(playerid), gateid);
+		    Log("logs/gedit.log", string);
+		}
+	}
+	else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use that command.");
+	return 1;
+}
+
 CMD:listgates(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
@@ -828,16 +932,29 @@ CMD:gmove(playerid, params[])
 	return 1;
 }
 
+CMD:reloadgate(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	new gateid, string[128];
+	if(sscanf(params, "d", gateid)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /reloadgate <gateid>");
+	CreateGate(gateid);
+	format(string, sizeof(string), "Reloading Gate ID %d...", gateid);
+	SendClientMessageEx(playerid, COLOR_WHITE, string);
+	return 1;
+}
+
 CreateGate(gateid) {
 	if(IsValidDynamicObject(GateInfo[gateid][gGATE])) DestroyDynamicObject(GateInfo[gateid][gGATE]);
 	GateInfo[gateid][gGATE] = -1;
 	if(GateInfo[gateid][gPosX] == 0.0) return 1;
-	switch(GateInfo[gateid][gRenderHQ]) {
+	switch(GateInfo[gateid][gRenderHQ])
+	{
 		case 1: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 100.0);
 		case 2: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 150.0);
 		case 3: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 200.0);
 		default: GateInfo[gateid][gGATE] = CreateDynamicObject(GateInfo[gateid][gModel], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ], GateInfo[gateid][gVW], GateInfo[gateid][gInt], -1, 60.0);
 	}
+	if(GateInfo[gateid][gTModel] != INVALID_OBJECT_ID) SetDynamicObjectMaterial(GateInfo[gateid][gGATE], GateInfo[gateid][gTIndex], GateInfo[gateid][gTModel], GateInfo[gateid][gTTXD], GateInfo[gateid][gTTexture], GateInfo[gateid][gTColor]);
 	return 1;
 }
 
@@ -855,11 +972,11 @@ public OnLoadGates()
 
 	while(i < rows)
 	{
-		GateInfo[i][gHID] = cache_get_field_content_int(i, "HID", MainPipeline); 
-		GateInfo[i][gSpeed] = cache_get_field_content_float(i, "Speed", MainPipeline); 
-		GateInfo[i][gRange] = cache_get_field_content_float(i, "Range", MainPipeline); 
-		GateInfo[i][gModel] = cache_get_field_content_int(i, "Model", MainPipeline); 
-		GateInfo[i][gVW] = cache_get_field_content_int(i, "VW", MainPipeline); 
+		GateInfo[i][gHID] = cache_get_field_content_int(i, "HID", MainPipeline);
+		GateInfo[i][gSpeed] = cache_get_field_content_float(i, "Speed", MainPipeline);
+		GateInfo[i][gRange] = cache_get_field_content_float(i, "Range", MainPipeline);
+		GateInfo[i][gModel] = cache_get_field_content_int(i, "Model", MainPipeline);
+		GateInfo[i][gVW] = cache_get_field_content_int(i, "VW", MainPipeline);
 		GateInfo[i][gInt] = cache_get_field_content_int(i, "Int", MainPipeline);
 		cache_get_field_content(i, "Pass", GateInfo[i][gPass], MainPipeline, 24);
 		GateInfo[i][gPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
@@ -874,13 +991,18 @@ public OnLoadGates()
 		GateInfo[i][gRotXM] = cache_get_field_content_float(i, "RotXM", MainPipeline);
 		GateInfo[i][gRotYM] = cache_get_field_content_float(i, "RotYM", MainPipeline);
 		GateInfo[i][gRotZM] = cache_get_field_content_float(i, "RotZM", MainPipeline);
-		GateInfo[i][gAllegiance] = cache_get_field_content_int(i, "Allegiance", MainPipeline); 
-		GateInfo[i][gGroupType] = cache_get_field_content_int(i, "GroupType", MainPipeline); 
-		GateInfo[i][gGroupID] = cache_get_field_content_int(i, "GroupID", MainPipeline); 
-		GateInfo[i][gRenderHQ] = cache_get_field_content_int(i, "RenderHQ",  MainPipeline); 
-		GateInfo[i][gTimer] = cache_get_field_content_int(i, "Timer", MainPipeline); 
-		GateInfo[i][gAutomate] = cache_get_field_content_int(i, "Automate", MainPipeline); 
-		GateInfo[i][gLocked] = cache_get_field_content_int(i, "Locked", MainPipeline); 
+		GateInfo[i][gAllegiance] = cache_get_field_content_int(i, "Allegiance", MainPipeline);
+		GateInfo[i][gGroupType] = cache_get_field_content_int(i, "GroupType", MainPipeline);
+		GateInfo[i][gGroupID] = cache_get_field_content_int(i, "GroupID", MainPipeline);
+		GateInfo[i][gRenderHQ] = cache_get_field_content_int(i, "RenderHQ",  MainPipeline);
+		GateInfo[i][gTimer] = cache_get_field_content_int(i, "Timer", MainPipeline);
+		GateInfo[i][gAutomate] = cache_get_field_content_int(i, "Automate", MainPipeline);
+		GateInfo[i][gLocked] = cache_get_field_content_int(i, "Locked", MainPipeline);
+		GateInfo[i][gTIndex] = cache_get_field_content_int(i, "TIndex", MainPipeline);
+		GateInfo[i][gTModel] = cache_get_field_content_int(i, "TModel", MainPipeline);
+		cache_get_field_content(i, "TTXD", GateInfo[i][gTTXD], MainPipeline, 64);
+		cache_get_field_content(i, "TTexture", GateInfo[i][gTTexture], MainPipeline, 64);
+		GateInfo[i][gTColor] = cache_get_field_content_int(i, "TColor", MainPipeline);
 		if(GateInfo[i][gPosX] != 0.0) CreateGate(i);
 		i++;
 	}
@@ -914,7 +1036,12 @@ stock SaveGate(id) {
 		`RenderHQ`=%d, \
 		`Timer`=%d, \
 		`Automate`=%d, \
-		`Locked`=%d \
+		`Locked`=%d, \
+		`TIndex`=%d, \
+		`TModel`=%d, \
+		`TTXD`='%s', \
+		`TTexture`='%s', \
+		`TColor`=%d \
 		WHERE `ID` = %d",
 		GateInfo[id][gHID],
 		GateInfo[id][gSpeed],
@@ -942,6 +1069,11 @@ stock SaveGate(id) {
 		GateInfo[id][gTimer],
 		GateInfo[id][gAutomate],
 		GateInfo[id][gLocked],
+		GateInfo[id][gTIndex],
+		GateInfo[id][gTModel],
+		g_mysql_ReturnEscaped(GateInfo[id][gTTXD], MainPipeline),
+		g_mysql_ReturnEscaped(GateInfo[id][gTTexture], MainPipeline),
+		GateInfo[id][gTColor],
 		id+1
 	);
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);

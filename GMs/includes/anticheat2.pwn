@@ -1308,10 +1308,10 @@ stock AC_AddRejectedHit(playerid, damagedid, reason, weapon, inf0 = 0, inf1 = 0,
 	}
 }
 
-stock IsPlayerPaused(playerid) {
+/*stock IsPlayerPaused(playerid) {
 
 	return (GetTickCount() - ac_LastUpdate[playerid] > 2000);
-}
+}*/
 
 stock IsPlayerSpawned(playerid) {
 

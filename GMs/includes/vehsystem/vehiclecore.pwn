@@ -1832,6 +1832,13 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 
 CMD:carhelp(playerid, params[])
 {
+	SetPVarInt(playerid, "HelpResultCat0", 3);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:ocarhelp(playerid, params[])
+{
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
     SendClientMessageEx(playerid, COLOR_WHITE,"*** CAR OWNERSHIP HELP *** - type a command for more infomation.");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** CAR OWNERSHIP *** /lock /pvlock /park /parktrailer /unmodcar /deletecar /sellmycar /trackcar");
@@ -2289,7 +2296,7 @@ CMD:park(playerid, params[])
 		if(IsValidDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot])) DestroyDynamic3DTextLabel(Businesses[iBusiness][bVehicleLabel][iSlot]), Businesses[iBusiness][bVehicleLabel][iSlot] = Text3D:-1;
 		szMiscArray[0] = 0;
 		format(szMiscArray, sizeof(szMiscArray), "%s For Sale | Price: $%s", GetVehicleName(Businesses[iBusiness][bVehID][iSlot]), number_format(Businesses[iBusiness][bPrice][iSlot]));
-		Businesses[iBusiness][bVehicleLabel][iSlot] = CreateDynamic3DTextLabel(szMiscArray,COLOR_LIGHTBLUE,Businesses[iBusiness][bParkPosX][iSlot], Businesses[iBusiness][bParkPosY][iSlot], Businesses[iBusiness][bParkPosZ][iSlot],8.0,INVALID_PLAYER_ID, Businesses[iBusiness][bVehID][iSlot]);
+		Businesses[iBusiness][bVehicleLabel][iSlot] = CreateDynamic3DTextLabel(szMiscArray, COLOR_LIGHTBLUE, Businesses[iBusiness][bParkPosX][iSlot]+1.0, Businesses[iBusiness][bParkPosY][iSlot]+1.0, Businesses[iBusiness][bParkPosZ][iSlot]+1.0, 8.0, INVALID_PLAYER_ID, Businesses[iBusiness][bVehID][iSlot]);
 		
         SaveDealershipVehicle(iBusiness, iSlot);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You've parked this vehicle.");

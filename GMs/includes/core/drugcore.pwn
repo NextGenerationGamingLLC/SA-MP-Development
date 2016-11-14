@@ -41,7 +41,7 @@
 
 new dr_iPlayerTimeStamp[MAX_PLAYERS];
 
-CMD:drughelp(playerid, params[])
+CMD:odrughelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
 	SendClientMessageEx(playerid, COLOR_GREY, "GENERAL: /mydrugs, /usedrug, /buypot, /buyopium, /plantpot, /plantopium, /pickplant, /checkplant /makeheroin");
@@ -59,6 +59,27 @@ CMD:mydrugs(playerid, params[])
 	format(string, sizeof(string),"%s | Pot Seeds: %d | Opium Seeds: %d | Syringes: %d |", string, PlayerInfo[playerid][pWSeeds], PlayerInfo[playerid][pOpiumSeeds], PlayerInfo[playerid][pSyringes]);
 	SendClientMessageEx(playerid, COLOR_GREY, string);
 	SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
+	return 1;
+}
+
+CMD:checkdrugs(playerid, params[])
+{
+	if (PlayerInfo[playerid][pAdmin] >= 2)
+	{
+		new giveplayerid;
+		if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /checkdrugs [player]");
+		if(IsPlayerConnected(giveplayerid))
+		{
+			new string[450];
+			SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
+			for(new i; i < sizeof(Drugs); i++) format(string, sizeof(string),"%s | %s: %dg", string, Drugs[i], PlayerInfo[giveplayerid][pDrugs][i]);
+			format(string, sizeof(string),"%s | Pot Seeds: %d | Opium Seeds: %d | Syringes: %d |", string, PlayerInfo[giveplayerid][pWSeeds], PlayerInfo[giveplayerid][pOpiumSeeds], PlayerInfo[giveplayerid][pSyringes]);
+			SendClientMessageEx(playerid, COLOR_GREY, string);
+			SendClientMessageEx(playerid, COLOR_WHITE,"-----------------------------------------------------------------------------------");
+		}
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "Invalid player specified.");
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use this command.");
 	return 1;
 }
 

@@ -66,7 +66,15 @@ IncreaseFishingLevel(playerid) {
     }
     return 1;
 }
+
 CMD:fishhelp(playerid, params[])
+{
+	SetPVarInt(playerid, "HelpResultCat0", 5);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:ofishhelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
     SendClientMessageEx(playerid, COLOR_WHITE,"*** FISH HELP *** - type a command for more infomation.");
@@ -74,6 +82,7 @@ CMD:fishhelp(playerid, params[])
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** FISHING *** /sellfish (Sell your fish)");
     return 1;
 }
+
 CMD:fish(playerid, params[]) {
     //if(PlayerInfo[playerid][pJob] == 70 || PlayerInfo[playerid][pJob2] == 70 || PlayerInfo[playerid][pJob3] == 70)
     {

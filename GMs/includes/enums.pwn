@@ -1215,7 +1215,8 @@ enum pInfo
 	pCurrentShipment,
 	pDedicatedHours,
 	pDedicatedDaymarker,
-	pDedicatedTimestamp
+	pDedicatedTimestamp,
+	pWalkStyle
 };
 
 enum pvInfo
@@ -1271,6 +1272,7 @@ enum ptInfo
 	ptBone,
 	ptTradable,
 	ptSpecial,
+	ptAutoAttach,
     Float:ptPosX,
 	Float:ptPosY,
 	Float:ptPosZ,
@@ -1447,6 +1449,11 @@ enum gInfo
 	gTimer,
 	gAutomate,
 	gLocked,
+	gTIndex,
+	gTModel,
+	gTTXD[64],
+	gTTexture[64],
+	gTColor
 };
 
 enum ePoints
@@ -1999,6 +2006,18 @@ enum eUfo {
 	ufo_iObjectID[13],
 	ufo_iPlayerID
 }
+
+enum helpInfo
+{
+	HelpID,
+	HelpName[128],
+	HelpParam[128],
+	HelpDesc[255],
+	HelpType,
+	HelpSubtype,
+	HelpLevel
+}
+new Help[MAX_HELP_ENTRIES][helpInfo];
 
 /*
 enum eSafeData {

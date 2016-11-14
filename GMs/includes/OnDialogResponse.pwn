@@ -420,10 +420,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						format(string, sizeof(string), "Your vehicle had active tickets on it. You have been charged the amount of the tickets ($%s).", number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
 						SendClientMessageEx(playerid, COLOR_WHITE, string);
 					}
-					
+
 					format(szMiscArray, sizeof(szMiscArray), "[DELETECAR] %s (IP: %s) (SQLID: %d) has deleted their %s (%d) (SQLID: %d).", GetPlayerNameEx(playerid), GetPlayerIpEx(playerid), GetPlayerSQLId(playerid), VehicleName[PlayerVehicleInfo[playerid][i][pvModelId] - 400], PlayerVehicleInfo[playerid][i][pvModelId], PlayerVehicleInfo[playerid][i][pvSlotId]);
 					Log("logs/playervehicle.log", szMiscArray);
-					
+
 					PlayerVehicleInfo[playerid][i][pvId] = 0;
 					PlayerVehicleInfo[playerid][i][pvModelId] = 0;
 					PlayerVehicleInfo[playerid][i][pvPosX] = 0.0;
@@ -1474,6 +1474,14 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				SendClientMessage(playerid, COLOR_WHITE, "HINT: Hold {8000FF}~k~~PED_SPRINT~ {FFFFAA}to move your camera, press escape to cancel");
 			}
+			case 2:
+			{
+				new szstring[128];
+				if(PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptAutoAttach] == -2) format(szstring, sizeof(szstring), "Select an auto-attach option (Currently Disabled)");
+				else if(PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptAutoAttach] == -1) format(szstring, sizeof(szstring), "Select an auto-attach option (Currently: All Skins)");
+				else format(szstring, sizeof(szstring), "Select an auto-attach option (Currently: Skin %d)", GetPlayerSkin(playerid));
+				ShowPlayerDialogEx(playerid, EDITTOYSAUTOATTACH, DIALOG_STYLE_LIST, szstring, "Attach to any skin\nAttach to current skin\nDisable auto-attachment", "Select", "Cancel");
+			}
 		}
 		else
 		{
@@ -1518,6 +1526,31 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			else {
 				PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptBone] = listitem+1;
 				g_mysql_SaveToys(playerid,GetPVarInt(playerid, "ToySlot"));
+			}
+		}
+		ShowEditMenu(playerid);
+	}
+	if(dialogid == EDITTOYSAUTOATTACH)
+	{
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0:
+				{
+					PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptAutoAttach] = -1;
+					g_mysql_SaveToys(playerid,GetPVarInt(playerid, "ToySlot"));
+				}
+				case 1:
+				{
+					PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptAutoAttach] = GetPlayerSkin(playerid);
+					g_mysql_SaveToys(playerid,GetPVarInt(playerid, "ToySlot"));
+				}
+				case 2:
+				{
+					PlayerToyInfo[playerid][GetPVarInt(playerid, "ToySlot")][ptAutoAttach] = -2;
+					g_mysql_SaveToys(playerid,GetPVarInt(playerid, "ToySlot"));
+				}
 			}
 		}
 		ShowEditMenu(playerid);
@@ -1645,33 +1678,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 				}
 			}
-			else
-			{
-				new toycount = GetFreeToySlot(playerid);
-				if(toycount == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects.");
-				if(toycount == 9 && PlayerInfo[playerid][pBEquipped]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
-
-				if(PlayerToyInfo[playerid][listitem][ptScaleX] == 0) {
-					PlayerToyInfo[playerid][listitem][ptScaleX] = 1.0;
-					PlayerToyInfo[playerid][listitem][ptScaleY] = 1.0;
-					PlayerToyInfo[playerid][listitem][ptScaleZ] = 1.0;
-				}
-				new name[24];
-				format(name, sizeof(name), "None");
-
-				for(new i;i<sizeof(HoldingObjectsAll);i++)
-				{
-					if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][listitem][ptModelID])
-					{
-						format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
-					}
-				}
-				format(string, sizeof(string), "Successfully attached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][listitem][ptBone]], listitem);
-				SendClientMessageEx(playerid, COLOR_RED, string);
-				PlayerHoldingObject[playerid][toycount] = listitem;
-				SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][listitem][ptModelID], PlayerToyInfo[playerid][listitem][ptBone], PlayerToyInfo[playerid][listitem][ptPosX], PlayerToyInfo[playerid][listitem][ptPosY], PlayerToyInfo[playerid][listitem][ptPosZ],
-				PlayerToyInfo[playerid][listitem][ptRotX], PlayerToyInfo[playerid][listitem][ptRotY], PlayerToyInfo[playerid][listitem][ptRotZ], PlayerToyInfo[playerid][listitem][ptScaleX], PlayerToyInfo[playerid][listitem][ptScaleY], PlayerToyInfo[playerid][listitem][ptScaleZ]);
-			}
+			else AttachToy(playerid, listitem);
 		}
 	}
 
@@ -4254,7 +4261,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				GivePlayerCash(playerid, -iCost);
 				Tax += iCost;
 				SpeedingTickets += iCost;
-				
+
 				for(new z; z < MAX_GROUPS; z++)
 				{
 					if(arrGroupData[z][g_iAllegiance] == 0 || arrGroupData[z][g_iAllegiance] == 1)

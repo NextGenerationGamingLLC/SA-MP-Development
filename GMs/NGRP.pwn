@@ -24,7 +24,6 @@
 									Connor
 									Jingles
 									Westen
-
 				Past Developers:
 								*** Director of SA:MP Development:
 									Dom
@@ -76,15 +75,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+ #include <a_samp>
+
 /*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
 
-#define SERVER_GM_TEXT "NG:RP v3.0.395"
+#define SERVER_GM_TEXT "NG:RP v3.0.397"
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
 
-#include <a_samp>
 #undef  MAX_PLAYERS
 #define MAX_PLAYERS (500)
 #include <a_mysql>
@@ -99,6 +99,7 @@
 #include <gvar>
 #include <irc>
 #include <geo_ip>
+#include <callbacks>
 #include <attachments>
 //#include <profiler>
 
@@ -119,6 +120,7 @@
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
 #include "./includes/irc.pwn"
+#include "./includes/walkstyle.pwn"
 
 #if defined AREA_DEBUG
 #include "./includes/areadebug.pwn"

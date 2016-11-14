@@ -595,6 +595,13 @@ stock RehashHouses()
 
 CMD:househelp(playerid, params[])
 {
+	SetPVarInt(playerid, "HelpResultCat0", 6);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:ohousehelp(playerid, params[])
+{
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
     SendClientMessageEx(playerid, COLOR_WHITE,"*** HOUSE HELP *** - type a command for more infomation.");
     SendClientMessageEx(playerid, COLOR_GRAD3,"*** HOUSE *** /lockhouse /setrentable /setrent /evict /evictall /sellmyhouse /ringbell");
@@ -605,6 +612,13 @@ CMD:househelp(playerid, params[])
 }
 
 CMD:renthelp(playerid, params[])
+{
+	SetPVarInt(playerid, "HelpResultCat0", 8);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:orenthelp(playerid, params[])
 {
     SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
     SendClientMessageEx(playerid, COLOR_WHITE,"*** RENTING HELP *** - type a command for more infomation.");
@@ -1571,15 +1585,31 @@ CMD:hnear(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_RED, string);
 			for(new i, szMessage[128]; i < MAX_HOUSES; i++)
 			{
-				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && HouseInfo[i][hIntVW] == option)
+				if(option == -1)
 				{
-					format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && HouseInfo[i][hIntVW] == option)
+					{
+						format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
+					if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && HouseInfo[i][hExtVW] == option)
+					{
+						format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
 				}
-				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && HouseInfo[i][hExtVW] == option)
+				else
 				{
-					format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
-					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && HouseInfo[i][hIntVW] == option)
+					{
+						format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
+					if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && HouseInfo[i][hExtVW] == option)
+					{
+						format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
+						SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
+					}
 				}
 			}
 		}
@@ -1588,14 +1618,14 @@ CMD:hnear(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_RED, "* Listing all houses within 30 meters of you...");
 			for(new i, szMessage[128]; i < MAX_HOUSES; i++)
 			{
-				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]))
+				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]) && HouseInfo[i][hIntVW] == GetPlayerVirtualWorld(playerid))
 				{
-					format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntVW], HouseInfo[i][hIntIW]);
+					format(szMessage, sizeof(szMessage), "(Interior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hInteriorX], HouseInfo[i][hInteriorY], HouseInfo[i][hInteriorZ]), HouseInfo[i][hIntIW]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 				}
-				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]))
+				if(IsPlayerInRangeOfPoint(playerid, 30, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]) && HouseInfo[i][hExtVW] == GetPlayerVirtualWorld(playerid))
 				{
-					format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Virtual World: %d | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtVW], HouseInfo[i][hExtIW]);
+					format(szMessage, sizeof(szMessage), "(Exterior) House ID %d | %f from you | Interior: %d", i, GetPlayerDistanceFromPoint(playerid, HouseInfo[i][hExteriorX], HouseInfo[i][hExteriorY], HouseInfo[i][hExteriorZ]), HouseInfo[i][hExtIW]);
 					SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 				}
 			}

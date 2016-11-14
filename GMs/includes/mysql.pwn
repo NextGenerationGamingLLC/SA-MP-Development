@@ -638,6 +638,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 					cache_get_field_content(row,  "DedicatedTimestamp", PlayerInfo[extraid][pDedicatedTimestamp], MainPipeline, 11);
 					PlayerInfo[extraid][pDedicatedHours] = cache_get_field_content_int(row, "DedicatedHours", MainPipeline);
 
+					PlayerInfo[extraid][pWalkStyle] = cache_get_field_content_int(row, "WalkStyle", MainPipeline);
+					if(PlayerInfo[extraid][pWalkStyle]) SetPlayerWalkingStyle(extraid, PlayerInfo[extraid][pWalkStyle]);
+
 					/*for(new i = 0; i < MAX_POLLS; i++)
 					{
 						format(szField, sizeof(szField), "HasVoted%d", i);
@@ -843,6 +846,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 						PlayerToyInfo[extraid][i][ptScaleY] 		= cache_get_field_content_float(i, "scaley", MainPipeline);
 						PlayerToyInfo[extraid][i][ptScaleZ] 		= cache_get_field_content_float(i, "scalez", MainPipeline);
 						PlayerToyInfo[extraid][i][ptSpecial] 		= cache_get_field_content_int(i, "special", MainPipeline);
+						PlayerToyInfo[extraid][i][ptAutoAttach] 	= cache_get_field_content_int(i, "autoattach", MainPipeline);
+						
+						if(PlayerToyInfo[extraid][i][ptAutoAttach] == -1 || PlayerToyInfo[extraid][i][ptAutoAttach] == GetPlayerSkin(extraid)) AttachToy(extraid, i, 0);
 
 						format(szMiscArray, sizeof(szMiscArray), "[TOYSLOAD] [User: %s(%i)] [Toy Model ID: %d] [Toy ID]", GetPlayerNameEx(extraid), PlayerInfo[extraid][pId], PlayerToyInfo[extraid][i][ptModelID], PlayerToyInfo[extraid][i][ptID]);
 						Log("logs/toydebug.log", szMiscArray);
@@ -1493,7 +1499,7 @@ stock g_mysql_SaveToys(playerid, slotid)
 	{
 		//printf("%s (%i) saving toy %i...", GetPlayerNameEx(playerid), playerid, slotid);
 
-		format(szQuery, sizeof(szQuery), "UPDATE `toys` SET `modelid` = '%d', `bone` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', `rotx` = '%f', `roty` = '%f', `rotz` = '%f', `scalex` = '%f', `scaley` = '%f', `scalez` = '%f', `tradable` = '%d' WHERE `id` = '%d'",
+		format(szQuery, sizeof(szQuery), "UPDATE `toys` SET `modelid` = '%d', `bone` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', `rotx` = '%f', `roty` = '%f', `rotz` = '%f', `scalex` = '%f', `scaley` = '%f', `scalez` = '%f', `tradable` = '%d', `autoattach` = '%d' WHERE `id` = '%d'",
 		PlayerToyInfo[playerid][slotid][ptModelID],
 		PlayerToyInfo[playerid][slotid][ptBone],
 		PlayerToyInfo[playerid][slotid][ptPosX],
@@ -1506,6 +1512,7 @@ stock g_mysql_SaveToys(playerid, slotid)
 		PlayerToyInfo[playerid][slotid][ptScaleY],
 		PlayerToyInfo[playerid][slotid][ptScaleZ],
 		PlayerToyInfo[playerid][slotid][ptTradable],
+		PlayerToyInfo[playerid][slotid][ptAutoAttach],
 		PlayerToyInfo[playerid][slotid][ptID]);
 
 		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
@@ -1518,7 +1525,7 @@ stock g_mysql_NewToy(playerid, slotid)
 	new szQuery[2048];
 	//if(PlayerToyInfo[playerid][slotid][ptSpecial] != 1) { PlayerToyInfo[playerid][slotid][ptSpecial] = 0; }
 
-	format(szQuery, sizeof(szQuery), "INSERT INTO `toys` (player, modelid, bone, posx, posy, posz, rotx, roty, rotz, scalex, scaley, scalez, tradable, special) VALUES ('%d', '%d', '%d', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%d', '%d')",
+	format(szQuery, sizeof(szQuery), "INSERT INTO `toys` (player, modelid, bone, posx, posy, posz, rotx, roty, rotz, scalex, scaley, scalez, tradable, special, autoattach) VALUES ('%d', '%d', '%d', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%d', '%d', '%d')",
 	PlayerInfo[playerid][pId],
 	PlayerToyInfo[playerid][slotid][ptModelID],
 	PlayerToyInfo[playerid][slotid][ptBone],
@@ -1532,7 +1539,8 @@ stock g_mysql_NewToy(playerid, slotid)
 	PlayerToyInfo[playerid][slotid][ptScaleY],
 	PlayerToyInfo[playerid][slotid][ptScaleZ],
 	PlayerToyInfo[playerid][slotid][ptTradable],
-	PlayerToyInfo[playerid][slotid][ptSpecial]);
+	PlayerToyInfo[playerid][slotid][ptSpecial],
+	PlayerToyInfo[playerid][slotid][ptAutoAttach]);
 
 	mysql_function_query(MainPipeline, szQuery, true, "OnQueryCreateToy", "ii", playerid, slotid);
 }
@@ -2608,6 +2616,8 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerString(query, GetPlayerSQLId(playerid), "DedicatedDaymarker", PlayerInfo[playerid][pDedicatedDaymarker]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "DedicatedTimestamp", PlayerInfo[playerid][pDedicatedTimestamp]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "DedicatedHours", PlayerInfo[playerid][pDedicatedHours]);
+	
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WalkStyle", PlayerInfo[playerid][pWalkStyle]);
 
 
 	//for(new d; d < sizeof(Drugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), GetDrugName(d), PlayerInfo[playerid][pDrugs][d]);
@@ -6242,32 +6252,6 @@ stock GivePlayerCashEx(playerid, type, amount)
 	}
 	return 1;
 }
-
-/*stock LoadHelp()
-{
-	printf("[LoadHelp] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `help`", true, "OnLoadHelp", "");
-}
-
-forward OnLoadHelp();
-public OnLoadHelp()
-{
-	new i, rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
-
-	TOTAL_COMMANDS = rows;
-	while(i < rows)
-	{
-		cache_get_field_content(i, "id", tmp, MainPipeline); HelpInfo[i][id] = strval(tmp);
-		cache_get_field_content(i, "name", HelpInfo[i][name], MainPipeline, 255);
-		cache_get_field_content(i, "params", HelpInfo[i][params], MainPipeline, 255);
-		cache_get_field_content(i, "description", HelpInfo[i][description], MainPipeline, 255);
-		cache_get_field_content(i, "type", tmp, MainPipeline); HelpInfo[i][type] = strval(tmp);
-		cache_get_field_content(i, "subtype", tmp, MainPipeline); HelpInfo[i][subtype] = strval(tmp);
-		cache_get_field_content(i, "perms", tmp, MainPipeline); HelpInfo[i][perms] = strval(tmp);
-		i++;
-	}
-}*/
 
 // g_mysql_LoadGiftBox()
 // Description: Loads the data of the dynamic giftbox from the SQL Database.

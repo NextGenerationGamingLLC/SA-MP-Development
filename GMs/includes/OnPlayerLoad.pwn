@@ -148,6 +148,7 @@ public OnPlayerLoad(playerid)
 			PlayerToyInfo[playerid][v][ptScaleY] = 1.0;
 			PlayerToyInfo[playerid][v][ptScaleZ] = 1.0;
 			PlayerToyInfo[playerid][v][ptSpecial] = 0;
+			PlayerToyInfo[playerid][v][ptAutoAttach] = -2;
 		}
 
 		PlayerInfo[playerid][pTokens] = 0;

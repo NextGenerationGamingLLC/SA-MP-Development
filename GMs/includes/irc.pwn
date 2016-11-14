@@ -192,13 +192,13 @@ public IRC_OnUserSay(botid, recipient[], user[], host[], message[])
 	{
 		user[0] = toupper(user[0]);
 		format(szMessage, sizeof(szMessage), "* [Slack] Administrator %s: %s", user, message);
-		ABroadCast(COLOR_YELLOW, szMessage, 2, false, true);
+		ABroadCast(COLOR_YELLOW, szMessage, 2, true, true);
 	}
 	else if(!strcmp(recipient, IRC_CHANNEL_HEADADMIN, true) && strcmp(user, "samp", true))
 	{
 		user[0] = toupper(user[0]);
 		format(szMessage, sizeof(szMessage), "(PRIVATE) [Slack] Administrator %s: %s", user, message);
-		ABroadCast(COLOR_GREEN, szMessage, 1337, false, true);
+		ABroadCast(COLOR_GREEN, szMessage, 1337, true, true);
 	}
 	return 1;
 }

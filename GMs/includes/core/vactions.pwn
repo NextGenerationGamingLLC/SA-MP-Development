@@ -298,6 +298,13 @@ CMD:time(playerid, params[])
 
 CMD:animhelp(playerid, params[])
 {
+	SetPVarInt(playerid, "HelpResultCat0", 1);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:oanimhelp(playerid, params[])
+{
 	return cmd_animlist(playerid, params);
 }
 

@@ -207,7 +207,7 @@ stock ShowEditMenu(playerid)
 	PlayerToyInfo[playerid][iIndex][ptScaleY], PlayerToyInfo[playerid][iIndex][ptScaleZ]);
 
     new stringg[128];
-    format(stringg, sizeof(stringg), "Bone (%s)\nOffset", HoldingBones[PlayerToyInfo[playerid][iIndex][ptBone]]);
+    format(stringg, sizeof(stringg), "Bone (%s)\nOffset\nToggle Auto-Attach", HoldingBones[PlayerToyInfo[playerid][iIndex][ptBone]]);
  	ShowPlayerDialogEx(playerid, EDITTOYS2, DIALOG_STYLE_LIST, "Toy Menu: Edit", stringg, "Select", "Cancel");
 	return 1;
 }
@@ -274,6 +274,47 @@ GetPlayerToySlots(playerid)
 {
 	new special =  GetSpecialPlayerToyCount(playerid);
 	return PlayerInfo[playerid][pToySlot] + 10 + special;
+}
+
+AttachToy(playerid, toyid, msg = 1)
+{
+	new toycount = GetFreeToySlot(playerid);
+	if(toycount == -1)
+	{
+		if(msg) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot attach more than 10 objects.");
+		else return 1;
+	}
+	if(toycount == 9 && PlayerInfo[playerid][pBEquipped])
+	{
+		if(msg) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot attach an object to slot 10 since you have a backpack equipped.");
+		else return 1;
+	}
+
+	if(PlayerToyInfo[playerid][toyid][ptScaleX] == 0) {
+		PlayerToyInfo[playerid][toyid][ptScaleX] = 1.0;
+		PlayerToyInfo[playerid][toyid][ptScaleY] = 1.0;
+		PlayerToyInfo[playerid][toyid][ptScaleZ] = 1.0;
+	}
+	new name[24];
+	format(name, sizeof(name), "None");
+
+	for(new i; i < sizeof(HoldingObjectsAll); i++)
+	{
+		if(HoldingObjectsAll[i][holdingmodelid] == PlayerToyInfo[playerid][toyid][ptModelID])
+		{
+			format(name, sizeof(name), "%s", HoldingObjectsAll[i][holdingmodelname]);
+		}
+	}
+	if(msg)
+	{
+		new string[128];
+		format(string, sizeof(string), "Successfully attached %s (Bone: %s) (Slot: %d)", name, HoldingBones[PlayerToyInfo[playerid][toyid][ptBone]], toyid);
+		SendClientMessageEx(playerid, COLOR_RED, string);
+	}
+	PlayerHoldingObject[playerid][toycount] = toyid;
+	SetPlayerAttachedObject(playerid, toycount, PlayerToyInfo[playerid][toyid][ptModelID], PlayerToyInfo[playerid][toyid][ptBone], PlayerToyInfo[playerid][toyid][ptPosX], PlayerToyInfo[playerid][toyid][ptPosY], PlayerToyInfo[playerid][toyid][ptPosZ],
+	PlayerToyInfo[playerid][toyid][ptRotX], PlayerToyInfo[playerid][toyid][ptRotY], PlayerToyInfo[playerid][toyid][ptRotZ], PlayerToyInfo[playerid][toyid][ptScaleX], PlayerToyInfo[playerid][toyid][ptScaleY], PlayerToyInfo[playerid][toyid][ptScaleZ]);
+	return 1;
 }
 
 stock player_remove_vip_toys(iTargetID)
@@ -513,6 +554,13 @@ CMD:buytoys(playerid, params[])
 }
 
 CMD:toyhelp(playerid, params[])
+{
+	SetPVarInt(playerid, "HelpResultCat0", 9);
+	Help_ListCat(playerid, DIALOG_HELPCATOTHER1);
+	return 1;
+}
+
+CMD:otoyhelp(playerid, params[])
 {
 	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
 	SendClientMessageEx(playerid, COLOR_WHITE,"*** TOY HELP ***");

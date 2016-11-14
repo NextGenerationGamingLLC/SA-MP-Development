@@ -197,6 +197,10 @@ DeliverPlayerToHospital(playerid, iHospital)
 	PlayerTextDrawSetString(playerid, HospTime[playerid], string);
 	PlayerTextDrawShow(playerid, HospTime[playerid]);
 	arrHospitalBedData[iHospital][iTimer][index] = SetTimerEx("ReleaseFromHospital", 1000, false, "iii", playerid, iHospital, index);
+	for(new i = 0; i < MAX_PLAYERTOYS; i++)
+	{
+		if(PlayerToyInfo[playerid][i][ptAutoAttach] == -1 || PlayerToyInfo[playerid][i][ptAutoAttach] == GetPlayerSkin(playerid)) AttachToy(playerid, i, 0);
+	}
 	return 1;
 }
 

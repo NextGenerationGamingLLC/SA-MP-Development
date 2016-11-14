@@ -1,24 +1,22 @@
 /*
- Navicat Premium Data Transfer
+Navicat MySQL Data Transfer
 
- Source Server         : NGG
- Source Server Type    : MySQL
- Source Server Version : 50625
- Source Host           : samp.ng-gaming.net
- Source Database       : samp_beta
+Source Server         : [SAMP] 149.202.89.123 (OVH)
+Source Server Version : 50173
+Source Host           : 149.202.89.123:3306
+Source Database       : samp_beta
 
- Target Server Type    : MySQL
- Target Server Version : 50625
- File Encoding         : utf-8
+Target Server Type    : MYSQL
+Target Server Version : 50173
+File Encoding         : 65001
 
- Date: 08/12/2015 11:46:59 AM
+Date: 2016-10-26 14:24:47
 */
 
-SET NAMES utf8;
-SET FOREIGN_KEY_CHECKS = 0;
+SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
---  Table structure for `accounts`
+-- Table structure for accounts
 -- ----------------------------
 DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE `accounts` (
@@ -97,34 +95,7 @@ CREATE TABLE `accounts` (
   `WRestricted` int(11) NOT NULL DEFAULT '0',
   `Materials` int(11) NOT NULL DEFAULT '0',
   `Crates` int(11) NOT NULL DEFAULT '0',
-  `Pot` int(11) NOT NULL DEFAULT '0',
   `Crack` int(11) NOT NULL DEFAULT '0',
-  `lsd` int(11) NOT NULL DEFAULT '0',
-  `cannabis` int(11) NOT NULL DEFAULT '0',
-  `meth` int(11) NOT NULL DEFAULT '0',
-  `cocaine` int(11) NOT NULL DEFAULT '0',
-  `opium` int(11) NOT NULL DEFAULT '0',
-  `ecstacy` int(11) NOT NULL DEFAULT '0',
-  `speed` int(11) NOT NULL DEFAULT '0',
-  `alcohol` int(11) NOT NULL DEFAULT '0',
-  `demerol` int(11) NOT NULL DEFAULT '0',
-  `morphine` int(11) NOT NULL DEFAULT '0',
-  `haloperidol` int(11) NOT NULL DEFAULT '0',
-  `aspirin` int(11) NOT NULL DEFAULT '0',
-  `mgseeds` int(11) NOT NULL DEFAULT '0',
-  `canseeds` int(11) NOT NULL DEFAULT '0',
-  `lye` int(11) NOT NULL DEFAULT '0',
-  `ethyl` int(11) NOT NULL DEFAULT '0',
-  `ephedrine` int(11) NOT NULL DEFAULT '0',
-  `diswater` int(11) NOT NULL DEFAULT '0',
-  `opiumpop` int(11) NOT NULL DEFAULT '0',
-  `lime` int(11) NOT NULL DEFAULT '0',
-  `baking` int(11) NOT NULL DEFAULT '0',
-  `cocextract` int(11) NOT NULL DEFAULT '0',
-  `nbenzynol` int(11) NOT NULL DEFAULT '0',
-  `pmkoil` int(11) NOT NULL DEFAULT '0',
-  `mdmacrys` int(11) NOT NULL DEFAULT '0',
-  `cafeine` int(11) NOT NULL DEFAULT '0',
   `Nation` int(1) NOT NULL DEFAULT '0',
   `Leader` int(11) NOT NULL DEFAULT '-1',
   `Member` int(11) NOT NULL DEFAULT '-1',
@@ -242,6 +213,7 @@ CREATE TABLE `accounts` (
   `JudgeJailType` int(11) NOT NULL DEFAULT '0',
   `BeingSentenced` int(11) NOT NULL DEFAULT '0',
   `ProbationTime` int(11) NOT NULL DEFAULT '0',
+  `PlayerKills` int(11) NOT NULL,
   `DMKills` int(11) NOT NULL DEFAULT '0',
   `Order` varchar(63) NOT NULL DEFAULT '',
   `OrderConfirmed` int(11) NOT NULL DEFAULT '0',
@@ -383,6 +355,7 @@ CREATE TABLE `accounts` (
   `LockPickTime` int(11) NOT NULL DEFAULT '0',
   `SEC` int(11) NOT NULL DEFAULT '0',
   `BM` int(11) NOT NULL DEFAULT '0',
+  `ASM` int(1) NOT NULL,
   `Isolated` int(11) NOT NULL DEFAULT '0',
   `WantedJailTime` int(11) NOT NULL DEFAULT '0',
   `WantedJailFine` int(11) NOT NULL DEFAULT '0',
@@ -419,13 +392,129 @@ CREATE TABLE `accounts` (
   `pBAmmo2` int(11) NOT NULL DEFAULT '0',
   `pBAmmo3` int(11) NOT NULL DEFAULT '0',
   `pBAmmo4` int(11) NOT NULL DEFAULT '0',
+  `Wallpaper` int(11) NOT NULL DEFAULT '0',
+  `Cannabis` int(11) NOT NULL DEFAULT '0',
+  `Meth` int(11) NOT NULL DEFAULT '0',
+  `Cocaine` int(11) NOT NULL DEFAULT '0',
+  `Opium` int(11) NOT NULL DEFAULT '0',
+  `Ecstasy` int(11) NOT NULL DEFAULT '0',
+  `Speed` int(11) NOT NULL DEFAULT '0',
+  `Alcohol` int(11) NOT NULL DEFAULT '0',
+  `Demerol` int(11) NOT NULL DEFAULT '0',
+  `Morphine` int(11) NOT NULL DEFAULT '0',
+  `Haloperidol` int(11) NOT NULL DEFAULT '0',
+  `Aspirin` int(11) NOT NULL DEFAULT '0',
+  `Mgseeds` int(11) NOT NULL DEFAULT '0',
+  `Canseeds` int(11) NOT NULL DEFAULT '0',
+  `Lye` int(11) NOT NULL DEFAULT '0',
+  `Ethyl` int(11) NOT NULL DEFAULT '0',
+  `Ephedrine` int(11) NOT NULL DEFAULT '0',
+  `Diswater` int(11) NOT NULL DEFAULT '0',
+  `Opiumpop` int(11) NOT NULL DEFAULT '0',
+  `Lime` int(11) NOT NULL DEFAULT '0',
+  `Baking` int(11) NOT NULL DEFAULT '0',
+  `Cocextract` int(11) NOT NULL DEFAULT '0',
+  `Nbenzynol` int(11) NOT NULL DEFAULT '0',
+  `Pmkoil` int(11) NOT NULL DEFAULT '0',
+  `Mdmacrys` int(11) NOT NULL DEFAULT '0',
+  `Caffeine` int(11) NOT NULL DEFAULT '0',
+  `Lsd` int(11) NOT NULL DEFAULT '0',
+  `Muriatic` int(11) NOT NULL DEFAULT '0',
+  `DrugQuality` varchar(255) NOT NULL DEFAULT '0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0',
+  `ToggledChats` varchar(255) NOT NULL DEFAULT '0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0',
+  `ChatboxSettings` varchar(255) NOT NULL DEFAULT '0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0',
+  `ChatTog0` int(2) NOT NULL DEFAULT '0',
+  `ChatTog1` int(2) NOT NULL DEFAULT '0',
+  `ChatTog2` int(2) NOT NULL DEFAULT '0',
+  `ChatTog3` int(2) NOT NULL DEFAULT '0',
+  `ChatTog4` int(2) NOT NULL DEFAULT '0',
+  `ChatTog5` int(2) NOT NULL DEFAULT '0',
+  `ChatTog6` int(2) NOT NULL DEFAULT '0',
+  `ChatTog7` int(2) NOT NULL DEFAULT '0',
+  `ChatTog8` int(2) NOT NULL DEFAULT '0',
+  `ChatTog9` int(2) NOT NULL DEFAULT '0',
+  `ChatTog10` int(2) NOT NULL DEFAULT '0',
+  `ChatTog11` int(2) NOT NULL DEFAULT '0',
+  `ChatTog12` int(2) NOT NULL DEFAULT '0',
+  `ChatTog13` int(2) NOT NULL DEFAULT '0',
+  `ChatTog14` int(2) NOT NULL DEFAULT '0',
+  `ChatTog15` int(2) NOT NULL DEFAULT '0',
+  `ChatTog16` int(2) NOT NULL DEFAULT '0',
+  `ChatTog17` int(2) NOT NULL DEFAULT '0',
+  `ChatTog18` int(2) NOT NULL DEFAULT '0',
+  `ChatTog19` int(2) NOT NULL DEFAULT '0',
+  `ChatTog20` int(2) NOT NULL DEFAULT '0',
+  `ChatTog21` int(2) NOT NULL DEFAULT '0',
+  `ChatTog22` int(2) NOT NULL DEFAULT '0',
+  `ChatTog23` int(2) NOT NULL DEFAULT '0',
+  `GroupToy0` float NOT NULL DEFAULT '0',
+  `GroupToy1` float NOT NULL DEFAULT '0',
+  `GroupToy2` float NOT NULL DEFAULT '0',
+  `GroupToy3` float NOT NULL DEFAULT '0',
+  `GroupToy4` float NOT NULL DEFAULT '0',
+  `GroupToy5` float NOT NULL DEFAULT '0',
+  `GroupToy6` float NOT NULL DEFAULT '0',
+  `GroupToy7` float NOT NULL DEFAULT '1',
+  `GroupToy8` float NOT NULL DEFAULT '1',
+  `GroupToy9` float NOT NULL DEFAULT '1',
+  `GroupToyBone` int(4) NOT NULL DEFAULT '1',
+  `BDrug0` int(11) NOT NULL DEFAULT '0',
+  `BDrug1` int(11) NOT NULL DEFAULT '0',
+  `BDrug2` int(11) NOT NULL DEFAULT '0',
+  `BDrug3` int(11) NOT NULL DEFAULT '0',
+  `BDrug4` int(11) NOT NULL DEFAULT '0',
+  `BDrug5` int(11) NOT NULL DEFAULT '0',
+  `BDrug6` int(11) NOT NULL DEFAULT '0',
+  `BDrug7` int(11) NOT NULL DEFAULT '0',
+  `BDrug8` int(11) NOT NULL DEFAULT '0',
+  `BDrug9` int(11) NOT NULL DEFAULT '0',
+  `BDrug10` int(11) NOT NULL DEFAULT '0',
+  `BDrug11` int(11) NOT NULL DEFAULT '0',
+  `BDrug12` int(11) NOT NULL DEFAULT '0',
+  `BDrug13` int(11) NOT NULL DEFAULT '0',
+  `PrisonSoap` int(11) NOT NULL DEFAULT '0',
+  `PrisonSugar` int(11) NOT NULL DEFAULT '0',
+  `PrisonBread` int(11) NOT NULL DEFAULT '0',
+  `PrisonShank` int(11) NOT NULL DEFAULT '0',
+  `PrisonShankOut` int(11) NOT NULL DEFAULT '0',
+  `ShankUsages` int(11) NOT NULL DEFAULT '0',
+  `PrisonWine` int(11) NOT NULL DEFAULT '0',
+  `PrisonMWine` int(11) NOT NULL DEFAULT '0',
+  `PrisonChisel` int(11) NOT NULL DEFAULT '0',
+  `PrisonCellChisel` int(11) NOT NULL DEFAULT '0',
+  `FishingSkill` int(11) NOT NULL DEFAULT '0',
+  `FishWeight` int(11) NOT NULL DEFAULT '0',
+  `GarbageSkill` int(11) NOT NULL DEFAULT '0',
+  `PrisonDrugs` varchar(255) NOT NULL DEFAULT '0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0',
+  `PrisonCredits` int(11) NOT NULL DEFAULT '0',
+  `PrisonMaterials` int(11) NOT NULL,
+  `PrisonCell` int(11) NOT NULL,
+  `PrisonWineTime` int(11) NOT NULL,
+  `pLastPoll` int(11) NOT NULL DEFAULT '0',
+  `EventPoint` int(11) NOT NULL,
+  `EventPrizeClaim` int(11) NOT NULL,
+  `DrugSmuggler` int(11) NOT NULL,
+  `Pot` int(11) NOT NULL,
+  `HasVoted` varchar(256) NOT NULL,
+  `PollKeyA` varchar(256) NOT NULL,
+  `PollKeyB` varchar(256) NOT NULL,
+  `PollKeyC` varchar(256) NOT NULL,
+  `StaffBanned` int(11) NOT NULL,
+  `Rags` int(11) NOT NULL,
+  `FurnitureSlots` int(11) NOT NULL,
+  `Hitman` int(11) NOT NULL DEFAULT '-1',
+  `HitmanLeader` int(11) NOT NULL DEFAULT '0',
+  `HitmanBlacklisted` int(11) NOT NULL,
+  `BlacklistReason` varchar(64) NOT NULL,
+  `CopKit` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`id`) USING BTREE,
   KEY `username` (`Username`) USING BTREE,
   KEY `admin` (`AdminLevel`) USING BTREE,
   KEY `disabled` (`Disabled`) USING BTREE,
   KEY `group` (`Member`) USING BTREE,
-  KEY `phone` (`PhoneNr`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-SET FOREIGN_KEY_CHECKS = 1;
+  KEY `phone` (`PhoneNr`) USING BTREE,
+  KEY `helper` (`Helper`) USING BTREE,
+  KEY `ips` (`IP`,`SecureIP`) USING BTREE,
+  KEY `permband` (`PermBand`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=163 DEFAULT CHARSET=utf8;

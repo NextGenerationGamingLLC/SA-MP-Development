@@ -290,7 +290,7 @@ stock IsALawyer(playerid)
 
 stock IsATaxiDriver(playerid)
 {
-	if((0 < PlayerInfo[playerid][pJob] < 50) && (PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || PlayerInfo[i][pTaxiLicense] == 1)) return 1;
+	if((0 < PlayerInfo[playerid][pJob] < 50) && (PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || PlayerInfo[playerid][pTaxiLicense] == 1)) return 1;
 	return 0;
 }
 
@@ -6175,7 +6175,7 @@ CMD:adjustwithdrawrank(playerid, params[])
 
 CMD:families(playerid, params[])
 {
-	if(!IsACriminal(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You need to be in a family / gang to use this command.");
+	if(!IsACriminal(playerid) && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessage(playerid, COLOR_GRAD2, "You need to be in a family / gang to use this command.");
 
 	if(isnull(params))
 	{

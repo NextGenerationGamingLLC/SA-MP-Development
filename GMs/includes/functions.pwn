@@ -2452,3 +2452,29 @@ SpawnPlayerInPrisonCell(playerid, cellid)
 	}
 	return 1;
 }
+
+stock WindowStatusForChat(sendid, receiveid)
+{
+	new SendWindow[4], ReceiveWindow[4];
+	if(GetPlayerVehicleID(sendid) && GetPlayerVehicleID(receiveid))
+	{
+		GetVehicleParamsCarWindows(GetPlayerVehicleID(sendid), SendWindow[0], SendWindow[1], SendWindow[2], SendWindow[3]);
+		GetVehicleParamsCarWindows(GetPlayerVehicleID(receiveid), ReceiveWindow[0], ReceiveWindow[1], ReceiveWindow[2], ReceiveWindow[3]);
+		if(GetPlayerVehicleID(sendid) == GetPlayerVehicleID(receiveid)) return 1;
+		else if(SendWindow[GetPlayerVehicleSeat(sendid)] == 0 && ReceiveWindow[GetPlayerVehicleSeat(receiveid)] == 0) return 1;
+		else return 0;
+	}
+	else if(GetPlayerVehicleID(sendid) && !GetPlayerVehicleID(receiveid))
+	{
+		GetVehicleParamsCarWindows(GetPlayerVehicleID(sendid), SendWindow[0], SendWindow[1], SendWindow[2], SendWindow[3]);
+		if(SendWindow[GetPlayerVehicleSeat(sendid)] == 0) return 1;
+		else return 0;
+	}
+	else if(!GetPlayerVehicleID(sendid) && GetPlayerVehicleID(receiveid))
+	{
+		GetVehicleParamsCarWindows(GetPlayerVehicleID(receiveid), ReceiveWindow[0], ReceiveWindow[1], ReceiveWindow[2], ReceiveWindow[3]);
+		if(ReceiveWindow[GetPlayerVehicleSeat(receiveid)] == 0) return 1;
+		else return 0;
+	}
+	return 1;
+}

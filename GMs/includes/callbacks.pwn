@@ -4372,6 +4372,20 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 	    if(oldstate == PLAYER_STATE_DRIVER)
 		{
+			new vehicleid = GetPlayerVehicleID(playerid);
+			if(IsAHelicopter(vehicleid))
+			{
+				new Float:vehPos[3];
+				GetVehiclePos(vehicleid, vehPos[0], vehPos[1], vehPos[2]);
+				foreach(new i: Player)
+				{
+					if(IsPlayerInRangeOfPoint(i, 50.0, vehPos[0], vehPos[1], vehPos[2]))
+					{
+						PlayerPlaySound(i, 1000, 0.0, 0.0, 0.0);
+						PlayerPlaySound(i, 1001, 0.0, 0.0, 0.0);
+					}
+				}
+			}
 			if (_vhudVisible[playerid] == 1)
 			{
 				HideVehicleHUDForPlayer(playerid); // incase vehicle despawns
@@ -5431,28 +5445,28 @@ public OnPlayerText(playerid, text[])
 					}
 					if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2) SendBugMessage(i, PlayerInfo[i][pBugged], str);
 				}
-				if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[playerid][pAccountRestricted] == 1)
+				if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i) && PlayerInfo[playerid][pAccountRestricted] == 1)
 				{
 					format(string, sizeof(string), "[Restricted] %s: %s", GetPlayerNameEx(playerid), text);
 					SendClientMessageEx(i, COLOR_FADE5, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE1, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0 / 8, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 8, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE2, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0 / 4, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 4, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE3, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0 / 2, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 2, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE4, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE5, string);
 				}
@@ -5465,7 +5479,7 @@ public OnPlayerText(playerid, text[])
 			}
 		}
 	}
-	SetPlayerChatBubble(playerid,text,COLOR_WHITE,20.0,5000);
+	SetPlayerChatBubble(playerid, text, COLOR_WHITE, 20.0, 5000);
 
 	format(string, sizeof(string), "(BE) %s: %s", GetPlayerNameEx(playerid), text);
 	foreach(new i: Player)
