@@ -3350,7 +3350,7 @@ CMD:gwithdraw(playerid, params[])
 	else return SendClientMessage(playerid, COLOR_GRAD3, " You are not a group leader or an authorized admin. ");
 
 
-
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pLeader] != iGroupID) iGroupID--;
 	if(amount < 0)
 	{
 		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Invalid amount specified.");

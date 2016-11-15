@@ -92,6 +92,8 @@ CMD:frisk(playerid, params[])
 
 PlayerFriskPlayer(playerid, giveplayerid)
 {
+	if(playerid == giveplayerid) return 1; 
+	if(!IsPlayerConnected(playerid) || !IsPlayerConnected(giveplayerid)) return 1;
 	szMiscArray[0] = 0;
 	new packages = GetPVarInt(giveplayerid, "Packages");
 	new crates = PlayerInfo[giveplayerid][pCrates];

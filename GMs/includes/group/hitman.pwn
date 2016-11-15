@@ -455,7 +455,7 @@ CMD:profile(playerid, params[])
             if(0 <= PlayerInfo[giveplayerid][pMember] < MAX_GROUPS)
             {
             	GetPlayerGroupInfo(giveplayerid, rank, division, employer);
-                format(str2, sizeof(str2), "%s{FF6347} | Division: {BFC0C2}%s\n{FF6347}Rank: {BFC0C2}%s (%d)\n", employer, division, PlayerInfo[giveplayerid][pRank]);
+                format(str2, sizeof(str2), "%s{FF6347} | Division: {BFC0C2}%s\n{FF6347}Rank: {BFC0C2}%s (%d)\n", employer, division, rank, PlayerInfo[giveplayerid][pRank]);
             }
             else str2 = "None";
 

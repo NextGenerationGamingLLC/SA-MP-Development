@@ -57,23 +57,51 @@ HourDedicatedPlayer(playerid)
 	if(PlayerInfo[playerid][pDedicatedHours] >= 50 && PlayerInfo[playerid][pDedicatedPlayer] == 0)
 	{
 		PlayerInfo[playerid][pDedicatedPlayer] = 1;
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Ruby Dedicated Player!");
-		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Ruby Dedicated Player after playing 50 hours!", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 1 Dedicated Player!");
+		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 1 Dedicated Player after playing 50 hours!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
 	}
 	else if(PlayerInfo[playerid][pDedicatedHours] >= 75 && PlayerInfo[playerid][pDedicatedPlayer] == 1)
 	{
 		PlayerInfo[playerid][pDedicatedPlayer] = 2;
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Sapphire Dedicated Player!");
-		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Sapphire Dedicated Player after playing 75 hours!", GetPlayerNameEx(playerid));
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 2 Dedicated Player!");
+		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 2 Dedicated Player after playing 75 hours!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
+		if(PlayerInfo[playerid][pDonateRank] >= 1)
+		{
+			AddFlag(INVALID_PLAYER_ID, playerid, "1 Month Bronze VIP - Non Transferable");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been awarded a 1 Month Bronze VIP Flag");
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_YELLOW, "CONGRATULATIONS: You have been awarded a 1 Month Bronze VIP");
+			PlayerInfo[playerid][pDonateRank] = 1;
+			PlayerInfo[playerid][pTempVIP] = 0;
+			PlayerInfo[playerid][pBuddyInvited] = 0;
+			PlayerInfo[playerid][pVIPSellable] = 0;
+			PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
+		}
 	} 
 	else if(PlayerInfo[playerid][pDedicatedHours] >= 90 && PlayerInfo[playerid][pDedicatedPlayer] == 2)
 	{
 		PlayerInfo[playerid][pDedicatedPlayer] = 3;
-		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Emerald Dedicated Player!");
-		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Emerald Dedicated Player after playing 90 hours!.", GetPlayerNameEx(playerid));
-		SendClientMessageToAll(-1, szMiscArray);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 3 Dedicated Player!");
+		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 3 Dedicated Player after playing 90 hours!.", GetPlayerNameEx(playerid));
+		SendClientMessageToAll(-1, szMiscArray);		
+		if(PlayerInfo[playerid][pDonateRank] >= 2)
+		{
+			AddFlag(INVALID_PLAYER_ID, playerid, "1 Month Silver VIP - Non Transferable");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been awarded a 1 Month Silver VIP Flag");
+		}
+		else
+		{
+			SendClientMessageEx(playerid, COLOR_YELLOW, "CONGRATULATIONS: You have been awarded a 1 Month Silver VIP");
+			PlayerInfo[playerid][pDonateRank] = 2;
+			PlayerInfo[playerid][pTempVIP] = 0;
+			PlayerInfo[playerid][pBuddyInvited] = 0;
+			PlayerInfo[playerid][pVIPSellable] = 0;
+			PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
+		}
 	} 
 }
 
@@ -101,7 +129,7 @@ GetDPRankName(playerid)
 	
 	if(PlayerInfo[playerid][pAdmin] >= 4 && (PlayerInfo[playerid][pTogReports] == 1 || GetPVarType(playerid, "Undercover")))
 	{
-		rank = "Ruby Dedicated Player";
+		rank = "Tier 1 Dedicated Player";
 	}
 	else if(PlayerInfo[playerid][pAdmin] >= 4 && PlayerInfo[playerid][pTogReports] == 0)
 	{
@@ -118,9 +146,9 @@ GetDPRankName(playerid)
 	{
 		switch(PlayerInfo[playerid][pDedicatedPlayer])
 		{
-			case 1: rank = "Ruby Dedicated Player";
-			case 2: rank = "Sapphire Dedicated Player";
-			case 3: rank = "Emerald Dedicated Player";
+			case 1: rank = "Tier 1 Dedicated Player";
+			case 2: rank = "Tier 2 Dedicated Player";
+			case 3: rank = "Tier 3 Dedicated Player";
 			case 4: rank = "Dedicated Moderator";
 		}
 	}
@@ -401,7 +429,7 @@ CMD:setdedicated(playerid, params[])
 	    if(sscanf(params, "ui", targetid, level)) 
 	    {
 			SendClientMessageEx(playerid, COLOR_GRAD1, "Usage: /setdedicated [player] [level]");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "(1) Ruby Dedicated - (2) Sapphire Dedicated - (3) Emerald Dedicated 3 - (4) DP Moderator");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "(1) Tier 1 Dedicated - (2) Tier 2 Dedicated - (3) Tier 3 Dedicated 3 - (4) DP Moderator");
 			return 1;
 		}
 
