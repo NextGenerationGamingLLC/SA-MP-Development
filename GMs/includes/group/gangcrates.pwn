@@ -94,7 +94,7 @@ public OnCreateGCrate(playerid, iGroupID, iCrateID) {
 	arrGCrateData[iCrateID][gcr_iObject] = CreateDynamicObject(964, fTemp[0], fTemp[1], fTemp[2]-0.95, 0,0,0, .worldid = iVW, .interiorid = iInt);
 	
 	format(szMiscArray, sizeof(szMiscArray), "Gang Crate ID: %d\nDropped by: %s\n%s", iCrateID, GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-	arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fTemp[0], fTemp[1], fTemp[2], 5.0);
+	arrGCrateData[iCrateID][gcr_iLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_GREEN, fTemp[0], fTemp[1], fTemp[2], 5.0, _, _, 1, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), _, 20.0);
 	arrGroupData[iGroupID][g_iBudget] -= GANG_CRATE_COST;
 	arrGCrateData[iCrateID][gcr_isLoaded] = 1;
 	return 1;
@@ -960,6 +960,31 @@ CMD:gdelivercrate(playerid, params[])
 				break;
 			}
 		}
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a gang.");
+	return 1;
+}
+
+
+CMD:gdelivergangcrate(playerid, params[]) 
+{
+	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
+	new iGroupID = PlayerInfo[playerid][pMember],
+		iVehID = GetPlayerVehicleID(playerid);
+	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT) {
+		new Float:fTemp[3];
+		GetPlayerPos(playerid, fTemp[0], fTemp[1], fTemp[2]);
+		if(IsPlayerInRangeOfPoint(playerid, 6.0, arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2]))
+		{
+			if(CrateVehicleLoad[iVehID][vForkLoaded])
+			{
+				CrateVehicleLoad[iVehID][vForkLoaded] = 0;
+				DeliverGCCrate(playerid, iGroupID, CrateVehicleLoad[iVehID][vCrateID][0]);
+				return 1;
+			}
+			else SendClientMessageEx(playerid, COLOR_GRAD1, "Your vehicle does not have a crate stored.");
+		}
+		else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not near your group's crate delivery point.");
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not in a gang.");
 	return 1;

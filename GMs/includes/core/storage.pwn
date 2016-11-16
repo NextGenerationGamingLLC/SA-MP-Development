@@ -3276,6 +3276,24 @@ CMD:show(playerid, params[])
 				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				return 1;
 			}
+			if (strcmp(choice, "credits", true) == 0)
+			{
+			    new amount = PlayerInfo[playerid][pCredits];
+			    if(amount < 1)
+			    {
+			        SendClientMessageEx(playerid, COLOR_GREY, "You do not have any credits!");
+					return 1;
+			    }
+				format(string, sizeof(string), "%s has shown you their %d credits.",  GetPlayerNameEx(playerid), amount);
+				SendClientMessageEx(giveplayerid, COLOR_GRAD2, string);
+
+				format(string, sizeof(string), "You have shown %s your %d credits.", GetPlayerNameEx(giveplayerid), amount);
+				SendClientMessageEx(playerid, COLOR_GRAD2, string);
+
+				format(string, sizeof(string), "* %s has shown %s some credits.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+				ProxDetector(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				return 1;
+			}
 		}
 	}
 	return 1;
