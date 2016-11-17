@@ -21,7 +21,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 }
 
 
-CreateBan(iBanCreator, iBanned, iPlayerID, szIPAddress[], szReason[], iLength) {
+CreateBan(iBanCreator, iBanned, iPlayerID, szIPAddress[], szReason[], iLength, iPermBan = 0) {
 
 	// SPECIFY INVALID ID for iBanCreator for System Bans
 	// SPECIFY INVALID ID for iBanned when banning IP Addresses
@@ -39,13 +39,13 @@ CreateBan(iBanCreator, iBanned, iPlayerID, szIPAddress[], szReason[], iLength) {
 		VALUES ('%d', '%d', '%s', '%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(DATE_ADD(CURDATE(),INTERVAL %d DAY)), 1)",
 		iBanned, iBanCreator == INVALID_PLAYER_ID ? INVALID_PLAYER_ID:PlayerInfo[iBanCreator][pId], szIPAddress, g_mysql_ReturnEscaped(szReason, MainPipeline), iLength);
 
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnCreateBan", "iisisi", iBanCreator, iPlayerID, szIPAddress, iBanned, szReason, iLength);
+	mysql_function_query(MainPipeline, szMiscArray, false, "OnCreateBan", "iisisii", iBanCreator, iPlayerID, szIPAddress, iBanned, szReason, iLength, iPermBan);
 
 	return 1;
 }
 
-forward OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], iLength);
-public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], iLength) {
+forward OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], iLength, iPermBan);
+public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], iLength, iPermBan) {
 
 	if(!mysql_errno(MainPipeline)) {
 
@@ -63,10 +63,13 @@ public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], i
 			if(iBanCreator == INVALID_PLAYER_ID) {
 				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was auto-banned (%s)", GetPlayerNameEx(iPlayerID), szReason);
 			}
-			else if(iBanCreator != INVALID_PLAYER_ID) {
+			else if(iBanCreator != INVALID_PLAYER_ID && iPermBan == 0) {
 				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was banned by %s (%s)", GetPlayerNameEx(iPlayerID), GetPlayerNameEx(iBanCreator), szReason);
 			}
-			ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+			else if(iBanCreator != INVALID_PLAYER_ID && iPermBan == 1) {
+				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was permanently banned by %s (%s)", GetPlayerNameEx(iPlayerID), GetPlayerNameEx(iBanCreator), szReason);
+			}
+			SendClientMessageToAll(COLOR_LIGHTRED, szMiscArray, 2);
 			SendClientMessageEx(iPlayerID, COLOR_LIGHTRED, szMiscArray);
 			return SetTimerEx("KickEx", 1000, false, "i", iPlayerID);
 		}
@@ -278,6 +281,22 @@ CMD:ban(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
 
 	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, GetPlayerIpEx(iTargetID), szReason, iLength);
+
+	return 1;
+}
+
+CMD:permban(playerid, params[]) {
+
+	new
+		iTargetID,
+		szReason[64];
+
+	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
+	if(sscanf(params, "us[64]", iTargetID, szReason)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /permban [playerid] [reason]");
+	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");
+	if(PlayerInfo[playerid][pAdmin] < PlayerInfo[iTargetID][pAdmin]) return SendClientMessageEx(playerid, COLOR_GREY, "That player is a higher ranking admin than you");
+
+	CreateBan(playerid, PlayerInfo[iTargetID][pId], iTargetID, GetPlayerIpEx(iTargetID), szReason, 9999999, 1);
 
 	return 1;
 }

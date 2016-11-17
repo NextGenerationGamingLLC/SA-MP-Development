@@ -342,6 +342,9 @@ CMD:destroycrate(playerid, params[]) {
 CMD:adestroycrate(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
+
+
+			mysql_SaveCrates();
 	    if(servernumber == 2)
 		{
 		    SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
@@ -355,6 +358,10 @@ CMD:adestroycrate(playerid, params[]) {
     	{
 			if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
 			if(IsValidDynamic3DTextLabel(CrateInfo[i][crLabel])) DestroyDynamic3DTextLabel(CrateInfo[i][crLabel]), CrateInfo[i][crLabel] = Text3D:-1;
+			if(CrateInfo[i][InVehicle] != INVALID_VEHICLE_ID) { 
+				CrateVehicleLoad[CrateInfo[i][InVehicle]][vForkLoaded] = 0;
+		    	CrateVehicleLoad[CrateInfo[i][InVehicle]][vCrateID][0] = -1;
+		    }
 		    CrateInfo[i][crActive] = 0;
 		    CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
 		    CrateInfo[i][crX] = 0;
@@ -362,7 +369,9 @@ CMD:adestroycrate(playerid, params[]) {
 		    CrateInfo[i][crZ] = 0;
 		    format(string, sizeof(string), "* You have destroyed crate id %d.", i);
 			SendClientMessage(playerid, COLOR_GRAD2, string);
+			DeleteGCrate(playerid, i);
 			mysql_SaveCrates();
+			Streamer_Update(playerid);
 			return 1;
     	}
 	    else {

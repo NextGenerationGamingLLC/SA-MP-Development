@@ -1026,7 +1026,7 @@ CMD:adestroygcrate(playerid, params[]) {
 
 CMD:gcratehelp(playerid, params[]) {
 
-	SendClientMessageEx(playerid, COLOR_WHITE, "*** GANG CRATES *** /purchasegcrate /preparegcrate /gloadforklift /gunloadforklift /gloadcrate /gunloadcrate /gdelivercrate");
+	SendClientMessageEx(playerid, COLOR_WHITE, "*** GANG CRATES *** /purchasegcrate /preparegcrate /gloadforklift /gunloadforklift /gloadcrate /gunloadcrate /gdelivercrate /gdelivergangcrate");
 	if(IsACop(playerid)) SendClientMessageEx(playerid, COLOR_WHITE, "*** GANG CRATES (LEO) ***  /gdestroycrate");
 	if(PlayerInfo[playerid][pAdmin] >= 2) SendClientMessageEx(playerid, COLOR_WHITE, "*** GANG CRATES (ADMIN) *** /agcrates /adestroygcrate");
 

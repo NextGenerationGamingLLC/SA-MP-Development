@@ -290,7 +290,7 @@ stock IsALawyer(playerid)
 
 stock IsATaxiDriver(playerid)
 {
-	if((0 < PlayerInfo[playerid][pJob] < 50) && (PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || PlayerInfo[playerid][pTaxiLicense] == 1)) return 1;
+	if((0 < PlayerInfo[playerid][pJob] < 50) && (PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || PlayerInfo[playerid][pTaxiLicense] == 1) || TransportDuty[playerid] > 0) return 1;
 	return 0;
 }
 
