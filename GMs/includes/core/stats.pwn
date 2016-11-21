@@ -134,6 +134,7 @@ stock ShowStats(playerid,targetid)
 			health,
 			armor,
 			number_format(PlayerInfo[targetid][pConnectHours]),
+			number_format(PlayerInfo[targetid][pDedicatedHours]),			
 			PlayerInfo[targetid][pFitness],
 			number_format(PlayerInfo[targetid][gPupgrade]),
 			number_format(PlayerInfo[targetid][pExp]),

@@ -160,7 +160,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	if(dialogid == DIALOG_LOCKER_DP1)
 	{
 		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
-		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 0, 0, 0))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
+		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 166.6046,-2001.0406,3499.6482))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
 		if(listitem == 0)
 		{
 			new Float:health;
@@ -201,7 +201,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	else if(dialogid == DIALOG_LOCKER_DP2)
 	{
 		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
-		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 0, 0, 0))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
+		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 166.6046,-2001.0406,3499.6482))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
 		if(listitem == 0)
 		{
 			new Float:health;
@@ -247,7 +247,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	else if(dialogid == DIALOG_DEDICATED_WEAPON)
 	{
 		if(!response) return SendClientMessageEx(playerid, COLOR_GRAD2, "You have exited the locker.");
-		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 0, 0, 0))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
+		if(!IsPlayerInRangeOfPoint(playerid, 4.0, 166.6046,-2001.0406,3499.6482))  return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near the DP Locker.");// Need co-ordinates
 		switch(listitem)
 		{
 			case 0: //Deagle

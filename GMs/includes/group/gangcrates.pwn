@@ -933,7 +933,6 @@ CMD:gunloadcrate(playerid, params[])
 
 CMD:gdelivercrate(playerid, params[]) 
 {
-	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
 	new iGroupID = PlayerInfo[playerid][pMember],
 		iVehID = GetPlayerVehicleID(playerid);
 	if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CONTRACT) {

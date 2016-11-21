@@ -51,6 +51,7 @@ CMD:rolldice(playerid, params[])
 	if (PlayerInfo[playerid][pBusiness] == INVALID_BUSINESS_ID || Businesses[PlayerInfo[playerid][pBusiness]][bType] != BUSINESS_TYPE_CASINO) {
 		return SendClientMessageEx(playerid, COLOR_GREY, "You are not working for a Casino!");
 	}
+	if(PlayerInfo[playerid][pBusiness] != InBusiness(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not working for this Casino!");
 	if(GetPVarInt(playerid, "pRollDiceID") != INVALID_PLAYER_ID) return SendClientMessage(playerid, COLOR_GREY, "You are already in a game.");
 	if(sscanf(params, "udd", theplayer, amount, dice)) return SendClientMessage(playerid, COLOR_GREY, "Usage: /rolldice [PlayerID] [Money Amount] [Amount of Dice]");
 	if(!IsPlayerConnected(theplayer)) return SendClientMessage(playerid, COLOR_GREY, "This players isn't connected.");
