@@ -573,7 +573,7 @@ CMD:ddstatus(playerid, params[])
 	if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pShopTech] >= 1)
 	{
 		new string[128];
-		format(string,sizeof(string),"|___________ Door Status (ID: %d) ___________|", doorid);
+		format(string,sizeof(string),"|___________ Door Status (ID: %d · Name: %s) ___________|", doorid, DDoorsInfo[doorid][ddDescription]);
 		SendClientMessageEx(playerid, COLOR_GREEN, string);
 		format(string, sizeof(string), "(Ext) X: %f | Y: %f | Z: %f | (Int) X: %f | Y: %f | Z: %f", DDoorsInfo[doorid][ddExteriorX], DDoorsInfo[doorid][ddExteriorY], DDoorsInfo[doorid][ddExteriorZ], DDoorsInfo[doorid][ddInteriorX], DDoorsInfo[doorid][ddInteriorY], DDoorsInfo[doorid][ddInteriorZ]);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);

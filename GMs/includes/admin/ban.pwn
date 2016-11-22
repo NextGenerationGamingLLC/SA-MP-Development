@@ -69,7 +69,7 @@ public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], i
 			else if(iBanCreator != INVALID_PLAYER_ID && iPermBan == 1) {
 				format(szMiscArray, sizeof(szMiscArray), "AdmCmd: %s was permanently banned by %s (%s)", GetPlayerNameEx(iPlayerID), GetPlayerNameEx(iBanCreator), szReason);
 			}
-			SendClientMessageToAll(COLOR_LIGHTRED, szMiscArray, 2);
+			SendClientMessageToAllEx(COLOR_LIGHTRED, szMiscArray);
 			SendClientMessageEx(iPlayerID, COLOR_LIGHTRED, szMiscArray);
 			return SetTimerEx("KickEx", 1000, false, "i", iPlayerID);
 		}

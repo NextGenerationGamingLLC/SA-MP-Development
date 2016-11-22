@@ -6171,3 +6171,21 @@ CMD:giveeventtokens(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:reloadmapping(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 1337)
+	{
+		SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* The mapping filterscripts are currently being reloaded!");
+		for(new i, Float: fPlayerPos[3]; i < MAX_PLAYERS; i++)
+		{
+			GetPlayerPos(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2]);
+			Player_StreamPrep(i, fPlayerPos[0], fPlayerPos[1], fPlayerPos[2], FREEZE_TIME);
+		}
+		SendRconCommand("reloadfs mapping/Gang");
+		SendRconCommand("reloadfs mapping/PlayerExteriors");
+		SendRconCommand("reloadfs mapping/PlayerInteriors");
+		SendRconCommand("reloadfs mapping/Server");
+	}
+	return 1;
+}

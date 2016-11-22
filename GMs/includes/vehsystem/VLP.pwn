@@ -66,7 +66,7 @@ DestroyVLPTextDraws(playerid) {
 }
 
 //Vehicle Lock Pick Textdraws
-CreateVLPTextDraws(playerid)
+/*CreateVLPTextDraws(playerid)
 {
 	VLPTextDraws[playerid][0] = CreatePlayerTextDraw(playerid, 638.264770, 390.386749, "Attempting to lock pick vehicle");
 	PlayerTextDrawLetterSize(playerid, VLPTextDraws[playerid][0], 0.449999, 1.600000);
@@ -119,9 +119,9 @@ CreateVLPTextDraws(playerid)
 	PlayerTextDrawBackgroundColor(playerid, VLPTextDraws[playerid][3], 51);
 	PlayerTextDrawFont(playerid, VLPTextDraws[playerid][3], 1);
 	PlayerTextDrawSetProportional(playerid, VLPTextDraws[playerid][3], 1);
-}
+}*/
 
-ShowVLPTextDraws(playerid, vehicleid, TYPE = 0) {
+/*ShowVLPTextDraws(playerid, vehicleid, TYPE = 0) {
 	CreateVLPTextDraws(playerid);
 	new tdMessage[9 + MAX_ZONE_NAME], tdCarLocation[MAX_ZONE_NAME], Float:CarPos[3];
 	GetVehiclePos(vehicleid, CarPos[0], CarPos[1], CarPos[2]);
@@ -147,8 +147,7 @@ ShowVLPTextDraws(playerid, vehicleid, TYPE = 0) {
 	}
 	for(new i = 0; i < 4; i++)
 		PlayerTextDrawShow(playerid, VLPTextDraws[playerid][i]);
-}
-
+}*/
 
 CMD:pickvehicle(playerid, params[])
 {

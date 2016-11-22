@@ -344,6 +344,11 @@ CMD:gstatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "Range: %.3f | Speed: %.3f | Timer: %d second(s) | Stream: %d | Automated: %d | Locked: %d | Pass: %s", GateInfo[gateid][gRange], GateInfo[gateid][gSpeed], timertxt, distancetxt, GateInfo[gateid][gAutomate], GateInfo[gateid][gLocked], GateInfo[gateid][gPass]);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
+		if(GateInfo[gateid][gTModel] != INVALID_OBJECT_ID)
+		{
+			format(string, sizeof(string), "Texture Replacement - Index: %d | Model: %d | TXD File: %s | Texture: %s | Color: %x", GateInfo[gateid][gTIndex], GateInfo[gateid][gTModel], GateInfo[gateid][gTTXD], GateInfo[gateid][gTTexture], GateInfo[gateid][gTColor]);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+		}
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	return 1;

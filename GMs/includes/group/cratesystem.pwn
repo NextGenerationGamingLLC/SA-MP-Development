@@ -342,9 +342,7 @@ CMD:destroycrate(playerid, params[]) {
 CMD:adestroycrate(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFactionModerator] == 2)
 	{
-
-
-			mysql_SaveCrates();
+		mysql_SaveCrates();
 	    if(servernumber == 2)
 		{
 		    SendClientMessage(playerid, COLOR_WHITE, "This command is disabled!");
