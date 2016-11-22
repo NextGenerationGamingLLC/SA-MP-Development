@@ -53,6 +53,8 @@ SendDedicatedMessage(color, string[])
 
 HourDedicatedPlayer(playerid)
 {
+	new	thedate[3];	
+	getdate(thedate[0], thedate[1], thedate[2]);
 	PlayerInfo[playerid][pDedicatedHours]++;
 	if(PlayerInfo[playerid][pDedicatedHours] >= 50 && PlayerInfo[playerid][pDedicatedPlayer] == 0)
 	{
@@ -64,6 +66,7 @@ HourDedicatedPlayer(playerid)
 	else if(PlayerInfo[playerid][pDedicatedHours] >= 75 && PlayerInfo[playerid][pDedicatedPlayer] == 1)
 	{
 		PlayerInfo[playerid][pDedicatedPlayer] = 2;
+		format(PlayerInfo[playerid][pDedicatedTimestamp], 11, "%d-%02d-%02d", thedate[0], thedate[1], thedate[2]);
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 2 Dedicated Player!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 2 Dedicated Player after playing 75 hours!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
@@ -114,6 +117,7 @@ DayDedicatedPlayer(playerid)
 	if(tdate[0] == thedate[0]+1 && PlayerInfo[playerid][pDedicatedPlayer] >= 2)
 	{
 		GiftPlayer(MAX_PLAYERS, playerid);
+		format(PlayerInfo[playerid][pDedicatedTimestamp], 11, "%d-%02d-%02d", thedate[0], thedate[1], thedate[2]);
 	} 
 	else if(thedate[0] == 1 && thedate[1] != tdate[1])
 	{

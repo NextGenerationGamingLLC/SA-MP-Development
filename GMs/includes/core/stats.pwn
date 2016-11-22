@@ -72,9 +72,9 @@ stock ShowStats(playerid,targetid)
 		{
 			switch(PlayerInfo[targetid][pDedicatedPlayer])
 			{
-				case 1: dprank = "{336600}Ruby Dedicated Player{FFFFFF}\n";
-				case 2: dprank = "{336600}Sapphire Dedicated Player{FFFFFF}\n";
-				case 3: dprank = "{336600}Emerald Dedicated Player{FFFFFF}\n";
+				case 1: dprank = "{336600}Tier 1{FFFFFF}\n";
+				case 2: dprank = "{336600}Tier 2{FFFFFF}\n";
+				case 3: dprank = "{336600}Tier 3{FFFFFF}\n";
 				case 4: dprank = "{336600}Dedicated Moderator{FFFFFF}\n";
 			}
 		}
@@ -110,6 +110,7 @@ stock ShowStats(playerid,targetid)
 			Health: %.1f\n\
 			Armor: %.1f\n\
 			Playing Hours: %s\n\
+			Dedicated Hours: %s\n\
 			Fitness: %d\n\
 			Upgrade Points: %s\n\
 			Next Level: %s{303030}/{FFFFFF}%s hours ($%s)\n\
