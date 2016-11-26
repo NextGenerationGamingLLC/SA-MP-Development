@@ -133,14 +133,14 @@ CMD:advisors(playerid, params[])
 				format(thour, sizeof(thour), "%02d:00:00", hour);
 
 				if(PlayerInfo[i][pHelper] == 1&&PlayerInfo[i][pAdmin]<2) {
-					format(string, sizeof(string), "** Junior Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+					format(string, sizeof(string), "** Helper: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 				}
 				if(PlayerInfo[i][pHelper] == 2&&PlayerInfo[i][pAdmin]<2) {
 					if(GetPVarInt(i, "AdvisorDuty") == 1) {
-						format(string, sizeof(string), "** General Advisor: %s (On Duty)	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+						format(string, sizeof(string), "** Community Advisor: %s (On Duty)	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 					}
 					else {
-						format(string, sizeof(string), "** General Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
+						format(string, sizeof(string), "** Community Advisor: %s	(Requests This Hour: %d | Requests Today: %d)", GetPlayerNameEx(i), ReportHourCount[i], ReportCount[i]);
 					}
 				}
 				if(PlayerInfo[i][pHelper] == 3&&PlayerInfo[i][pAdmin]<2) {
@@ -562,8 +562,8 @@ CMD:makeadvisor(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot make admins Advisors!");
 				return 1;
 			}
-			if(PlayerInfo[playerid][pHelper] == 3 && level > 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can only promote players to Junior Advisor!");
-			if(PlayerInfo[playerid][pHelper] == 4 && level > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can only promote players to Junior/General Advisor!");
+			if(PlayerInfo[playerid][pHelper] == 3 && level > 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can only promote players to Helper!");
+			if(PlayerInfo[playerid][pHelper] == 4 && level > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can only promote players to Helper/Community Advisor!");
 
 			if(PlayerInfo[giveplayerid][pHelper] < level && PlayerInfo[giveplayerid][pHelper] >= PlayerInfo[playerid][pHelper] > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot set someone's rank when they're the same as you!");
 
@@ -574,20 +574,20 @@ CMD:makeadvisor(playerid, params[])
 			{
 				case 1:
 				{
-					format(string, sizeof(string), "You have been made a Junior Advisor by %s", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "You have been made a Helper by %s", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "You have given Junior Advisor to %s", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "You have given Helper to %s", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a Junior Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s(%d) has been made a Helper by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/admin.log", string);
 				}
 				case 2:
 				{
-					format(string, sizeof(string), "You have been made a General Advisor by %s", GetPlayerNameEx(playerid));
+					format(string, sizeof(string), "You have been made a Community Advisor by %s", GetPlayerNameEx(playerid));
 					SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "You have given General Advisor to %s", GetPlayerNameEx(giveplayerid));
+					format(string, sizeof(string), "You have given Community Advisor to %s", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					format(string, sizeof(string), "%s(%d) has been made a General Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
+					format(string, sizeof(string), "%s(%d) has been made a Community Advisor by %s(%d)", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/admin.log", string);
 				}
 				case 3:

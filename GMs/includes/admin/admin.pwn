@@ -130,8 +130,8 @@ stock GetStaffRank(playerid)
 	{
 		switch(PlayerInfo[playerid][pHelper])
 		{
-			case 1: szMiscArray = "{6495ED}Junior Advisor{FFFFFF}";
-			case 2: szMiscArray = "{00FFFF}General Advisor{FFFFFF}";
+			case 1: szMiscArray = "{6495ED}Helper{FFFFFF}";
+			case 2: szMiscArray = "{00FFFF}Community Advisor{FFFFFF}";
 			case 3: szMiscArray = "{00FFFF}Senior Advisor{FFFFFF}";
 			case 4: szMiscArray = "{00FFFF}Chief Advisor{FFFFFF}";
 		}
@@ -5415,8 +5415,8 @@ CMD:oah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD5,"--* Special - ASM --* /checkvouchers /srelease /ovmute /ovunmute /restrictaccount /unrestrictaccount /wdwhitelist /resetexamine");
 	}
 
-	if (PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Junior Advisor --* /advisors /ca /newbquestions /an /tn /spec");
-	if ( PlayerInfo[playerid][pHelper] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* General Advisor --* /caduty /showrequests /accepthelp /finishhelp /findnewb /staff /kick /mjail /rhmute /nmute");
+	if (PlayerInfo[playerid][pHelper] >= 1) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Helper Advisor --* /advisors /ca /newbquestions /an /tn /spec");
+	if ( PlayerInfo[playerid][pHelper] >= 2) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Community Advisor --* /caduty /showrequests /accepthelp /finishhelp /findnewb /staff /kick /mjail /rhmute /nmute");
 	if ( PlayerInfo[playerid][pHelper] >= 3) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Senior Advisor --* /makeadvisor /takeadvisor /requestevent /newbspec");
 	if ( PlayerInfo[playerid][pHelper] == 4) SendClientMessageEx(playerid, COLOR_GRAD5, "--* Chief Advisor --* /advisormotd /nonewbie /newbspec");
 

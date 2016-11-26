@@ -257,17 +257,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			case 0: //Deagle
 			{
 				GivePlayerValidWeapon(playerid, 24);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Desert Eagle from the famed locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Desert Eagle from the locker.");
 			}
 			case 1: //MP5
 			{
 				GivePlayerValidWeapon(playerid, 29);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Semi-Automatic MP5 from the famed locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Semi-Automatic MP5 from the locker.");
 			}
 			case 2: //Shotgun
 			{
 				GivePlayerValidWeapon(playerid, 25);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Pump Shotgun from the famed locker.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You have taken a Pump Shotgun from the locker.");
 			}
 		}
 
@@ -329,7 +329,7 @@ CMD:dplocker(playerid, params[])
 			default:  ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 3", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)", "Select", "Cancel");
 		}
 	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not at the famed locker!");
+	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not at the dedicated locker!");
 	return 1;
 }
 /*

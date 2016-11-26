@@ -1214,8 +1214,8 @@ enum pInfo
 	pShipmentOptions[10],
 	pCurrentShipment,
 	pDedicatedHours,
-	pDedicatedDaymarker,
-	pDedicatedTimestamp,
+	pDedicatedDaymarker[11],
+	pDedicatedTimestamp[11],
 	pWalkStyle
 };
 

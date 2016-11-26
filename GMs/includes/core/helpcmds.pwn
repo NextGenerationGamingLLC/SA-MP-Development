@@ -57,8 +57,8 @@
 		18) Ban Appealer
 	2) Advisor
 		0) All/undefined
-		1) Junior Advisor
-		2) General Advisor
+		1) Helper
+		2) Community Advisor
 		3) Senior Advisor
 		4) Chief Advisor
 	3) Famed
@@ -632,14 +632,14 @@ stock Help_ListCat(playerid, dialogid = DIALOG_HELPCATMAIN, response = 0, listit
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 1);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "Junior Advisor\n");
+				format(szMiscArray, sizeof(szMiscArray), "Helper\n");
 			}
 			if(Help_Perm(playerid, 2, 2, 2))
 			{
 				format(string, sizeof(string), "HelpResultCat%i", j);
 				SetPVarInt(playerid, string, 2);
 				j++;
-				format(szMiscArray, sizeof(szMiscArray), "%sGeneral Advisor\n", szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%Community Advisor\n", szMiscArray);
 			}
 			if(Help_Perm(playerid, 2, 3, 3))
 			{
@@ -1326,9 +1326,9 @@ stock Help_Perm(playerid, type, subtype, level)
 	else if(type == 2 && PlayerInfo[playerid][pHelper] >= 1)
 	{
 		if(subtype == 0 && PlayerInfo[playerid][pHelper] >= level) return 1;
-		// Junior Advisor
+		// Helper
 		else if(subtype == 1 && PlayerInfo[playerid][pHelper] >= level) return 1;
-		// General Advisor
+		// Community Advisor
 		else if(subtype == 2 && PlayerInfo[playerid][pHelper] >= level) return 1;
 		// Senior Advisor
 		else if(subtype == 3 && PlayerInfo[playerid][pHelper] >= level) return 1;

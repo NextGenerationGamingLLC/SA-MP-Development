@@ -37,13 +37,60 @@
 
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
-	if(PlayerIsDead[damagedid]) return 1;
-	new thebigstring[15];
-	format(thebigstring, sizeof(thebigstring), "%f", amount);
-    if((150 < floatround(amount, floatround_round) < 0) || strfind(thebigstring, ")", true) != -1) return 1;
 	szMiscArray[0] = 0;
-	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID)
-	{
+	if(PlayerIsDead[damagedid]) return 1;
+	new Float:realdam = amount;
+	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID) {
+
+	    if(amount < 0.0) amount = 0.0;
+	    if(amount > 150.0) amount = 150.0;
+	    // First define our base damage.
+		switch(weaponid)
+		{
+			case 0 .. 3, 5 .. 8, 10 .. 15, 28, 32: if(amount > 20.0) amount = 20.0;
+			case 9: if(amount > 30.0) amount = 30.0;
+			case 23: if(amount > 14.0) amount = 14.0;
+			case 24, 38: if(amount > 47.0) amount = 47.0;
+			case 25, 26: if(amount > 50.0) amount = 50.0;
+			case 27: if(amount > 40.0) amount = 40.0;
+			case 22, 29: if(amount > 9.0) amount = 9.0;
+			case 30, 31: if(amount > 10.0) amount = 10.0;
+			case 33: if(amount > 25.0) amount = 25.0;
+			case 34: if(amount > 42.0) amount = 42.0;
+			case 37, 42: if(amount > 3.0) amount = 3.0;
+			case 41: amount = 0.0;
+			default: if(amount > 20.0) amount = 20.0; // If there is no gun defined fall onto this (Should stop hacks going out of the 32-bit range)
+		}
+		if(GetPlayerCameraMode(playerid) == 55 && amount > 9.0) amount = 9.0;
+
+		if(weaponid == WEAPON_COLT45 || weaponid == WEAPON_SILENCED || weaponid == WEAPON_AK47)
+		{
+			amount *= 1.65;
+		}
+		if(weaponid == WEAPON_SNIPER)
+		{
+			amount *= 1.30;
+		}
+		//heroin damage reduction
+		if (GetPVarInt(damagedid, "HeroinDamageResist") == 1) {
+			amount *= 0.25;
+		}
+
+		new Float:difference,
+			Float:health,
+			Float:armour;
+		GetHealth(damagedid, health);
+		GetArmour(damagedid, armour);
+
+		// Ignore godmode. - Admins / Advisors (for health only)
+		if(!GetPVarInt(damagedid, "pGodMode")) {
+			if(health < 0.1) SetHealth(damagedid, 0.1), GetHealth(damagedid, health); // just set to this as they'll be killed either way.
+			if(health > 150.0) SetHealth(damagedid, 150.0), GetHealth(damagedid, health);
+		}
+
+		if(armour < 0.0) SetArmour(damagedid, 0.0), GetArmour(damagedid, armour);
+		if(armour > 100.0) SetArmour(damagedid, 100.0), GetArmour(damagedid, armour);
+
 		if(!IsPlayerStreamedIn(playerid, damagedid) || !IsPlayerStreamedIn(damagedid, playerid)) return 1;
 		new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
 		if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1)
@@ -81,7 +128,6 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		aLastShot[damagedid] = playerid;
 		aLastShotBone[damagedid] = bodypart;
 		aLastShotWeapon[damagedid] = weaponid;
-		//if(GetPVarType(damagedid, "gt_Spraying")) DeletePVar(damagedid, "gt_Spraying");
 		if(zombieevent && GetPVarInt(playerid, "z50Cal") == 1 && PlayerInfo[playerid][mInventory][17] && (weaponid == WEAPON_SNIPER || weaponid == WEAPON_RIFLE))
 		{
 			if(bodypart == BODY_PART_HEAD && GetPVarInt(damagedid, "pIsZombie")) SetHealth(damagedid, 0);
@@ -197,138 +243,41 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 			pTazer{damagedid} = 0;
 			SendClientMessageEx(damagedid, COLOR_WHITE, "Your tazer has been holstered as you have taken damage from bullets.");
 		}
-	}
-	if(GetPVarInt(damagedid, "AttemptingLockPick") == 1) {
-		DeletePVar(damagedid, "AttemptingLockPick");
-		DeletePVar(damagedid, "LockPickCountdown");
-		DeletePVar(damagedid, "LockPickTotalTime");
-		DeletePVar(damagedid, "LockPickPosX");
-		DeletePVar(damagedid, "LockPickPosY");
-		DeletePVar(damagedid, "LockPickPosZ");
-		DeletePVar(damagedid, "LockPickPosZ");
-		DestroyVLPTextDraws(damagedid);
-		if(GetPVarType(damagedid, "LockPickVehicleSQLId")) {
-			DeletePVar(damagedid, "LockPickVehicleSQLId");
-			DeletePVar(damagedid, "LockPickPlayerSQLId");
-			DeletePVar(damagedid, "LockPickPlayerName");
-			DestroyVehicle(GetPVarInt(damagedid, "LockPickVehicle"));
-		}
-		else {
-			new slot = GetPlayerVehicle(GetPVarInt(damagedid, "LockPickPlayer"), GetPVarInt(damagedid, "LockPickVehicle"));
-			PlayerVehicleInfo[GetPVarInt(damagedid, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
-			PlayerVehicleInfo[GetPVarInt(damagedid, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
-		}
-		DeletePVar(damagedid, "LockPickVehicle");
-		DeletePVar(damagedid, "LockPickPlayer");
-		format(szMiscArray, sizeof(szMiscArray), "(( You took damage from %s(%d) using %s.))", GetPlayerNameEx(playerid), playerid, GetWeaponNameEx(weaponid));
-		SendClientMessageEx(damagedid, COLOR_RED, "(( You failed to pick lock this vehicle because you took damage. ))");
-		SendClientMessageEx(damagedid, COLOR_RED, szMiscArray);
-		SendClientMessageEx(damagedid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
-		ClearAnimations(damagedid, 1);
-	}
-	if(GetPVarType(damagedid, "AttemptingCrackTrunk")) {
-		DeletePVar(damagedid, "AttemptingCrackTrunk");
-		DeletePVar(damagedid, "CrackTrunkCountdown");
-		DestroyVLPTextDraws(damagedid);
-		ClearAnimations(damagedid, 1);
-		format(szMiscArray, sizeof(szMiscArray), "(( You took damage from %s(%d) using %s.))", GetPlayerNameEx(playerid), playerid, GetWeaponNameEx(weaponid));
-		SendClientMessageEx(damagedid, COLOR_RED, "(( You failed to crack this vehicle's trunk because you took damage. ))");
-		SendClientMessageEx(damagedid, COLOR_RED, szMiscArray);
-		SendClientMessageEx(damagedid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
-	}
-	if(GetPVarInt(damagedid, "commitSuicide") == 1) SetPVarInt(damagedid, "commitSuicide", 0);
-	if(GetPVarInt(damagedid, "BackpackProt") == 1)
-	{
-		DeletePVar(damagedid, "BackpackProt");
-		if(GetPVarInt(damagedid, "BackpackOpen") == 1)
+		// Apply Ending Result
+		if(armour < 0.1)
 		{
-			SendClientMessageEx(damagedid, COLOR_RED, "You have taken damage during the backpack menu, your backpack is disabled for 3 minutes.");
-			ShowPlayerDialogEx(damagedid, -1, 0, "", "", "", "");
-			SetPVarInt(damagedid, "BackpackDisabled", 180);
-			DeletePVar(damagedid, "BackpackOpen");
-		}
-	}
-	if(GetPVarInt(damagedid, "BackpackMedKit") == 1) DeletePVar(damagedid, "BackpackMedKit");
-	if(GetPVarInt(damagedid, "BackpackMeal") == 1) DeletePVar(damagedid, "BackpackMeal");
-
-	switch(weaponid)
-	{
-		case 0 .. 3, 5 .. 8, 10 .. 15, 28, 32: if(amount > 20.0) amount = 20.0;
-		case 9: if(amount > 30.0) amount = 30.0;
-		case 23: if(amount > 14.0) amount = 14.0;
-		case 24, 38: if(amount > 47.0) amount = 47.0;
-		case 25, 26: if(amount > 50.0) amount = 50.0;
-		case 27: if(amount > 40.0) amount = 40.0;
-		case 22, 29: if(amount > 9.0) amount = 9.0;
-		case 30, 31: if(amount > 10.0) amount = 10.0;
-		case 33: if(amount > 25.0) amount = 25.0;
-		case 34: if(amount > 42.0) amount = 42.0;
-		case 37, 42: if(amount > 3.0) amount = 3.0;
-		case 41: amount = 0;
-	}
-	if(GetPlayerCameraMode(playerid) == 55 && amount > 9.0) amount = 9.0;
-
-	new Float:actual_damage = amount;
-
-	if(playerid != INVALID_PLAYER_ID && (weaponid == WEAPON_COLT45 || weaponid == WEAPON_SILENCED || weaponid == WEAPON_AK47))
-	{
-		actual_damage = amount;
-		actual_damage *= 1.65;
-	}
-	if(playerid != INVALID_PLAYER_ID && (weaponid == WEAPON_SNIPER))
-	{
-		actual_damage = amount;
-		actual_damage *= 1.30;
-	}
-
-	//heroin damage reduction
-	if (GetPVarInt(damagedid, "HeroinDamageResist") == 1) {
-		actual_damage *= 0.25;
-	}
-
-	//armor & hp calculations AFTER damage modifiers
-	new Float:difference,
-		Float:health,
-		Float:armour;
-	GetHealth(damagedid, health);
-	GetArmour(damagedid, armour);
-
-	/*format(szMiscArray, sizeof(szMiscArray), "Actual Damage: %f", actual_damage);
-	SendClientMessageToAll(-1, line);*/
-
-	if(playerid == INVALID_PLAYER_ID || armour < 0.1) // Player has no armour
-	{
-		difference = health - actual_damage;
-		if(difference < 0.1)
-		{
-			SetHealth(damagedid, 0.0);
-			OnPlayerDeath(damagedid, playerid, weaponid);
-		}
-		else SetHealth(damagedid, difference);
-	}
-	else // Player has armour
-	{
-		difference = armour - actual_damage;
-		if(difference < 0.1)
-		{
-			SetArmour(damagedid, 0.0);
-			health += difference;
-			if(health < 0.1)
+			difference = health - amount;
+			if(difference < 0.1)
 			{
 				SetHealth(damagedid, 0.0);
 				OnPlayerDeath(damagedid, playerid, weaponid);
 			}
-			else SetHealth(damagedid, health);
+			else SetHealth(damagedid, difference);
 		}
-		else SetArmour(damagedid, difference);
-	}
-	foreach(Player, i)
-	{
-		if(IsPlayerConnected(i))
+		else
 		{
-			if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-				format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %f | SSDmg:%f | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), amount, actual_damage, ReturnBoneName(bodypart));
-				SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+			difference = armour - amount;
+			if(difference < 0.1)
+			{
+				SetArmour(damagedid, 0.0);
+				health += difference;
+				if(health < 0.1) {
+					SetHealth(damagedid, 0.0);
+					OnPlayerDeath(damagedid, playerid, weaponid);
+				}
+				else SetHealth(damagedid, health);
+			}
+			else SetArmour(damagedid, difference);
+		}
+
+		foreach(Player, i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
+					format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: %.2f | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), realdam, amount, ReturnBoneName(bodypart));
+					SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+				}
 			}
 		}
 	}
@@ -352,36 +301,146 @@ timer DeathScreen[4000](playerid) {
 	return 1;
 }
 
-
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
-	/*format(szMiscArray, sizeof(szMiscArray), "Playerid: %i Issuerid: %i, Amount: %f WeaponID: %i", playerid, issuerid, amount, weaponid);
-	SendClientMessageToAll(-1, szMiscArray);*/
-	new Float:hp;
-	if(weaponid == WEAPON_COLLISION && (1061 <= GetPlayerAnimationIndex(playerid) <= 1067)) // Climb Bug
+	szMiscArray[0] = 0;
+	if(PlayerIsDead[playerid]) return 1;
+	new Float:realdam = amount;
+	if(playerid != INVALID_PLAYER_ID) 
 	{
-		ClearAnimations(playerid);
-		GetHealth(playerid, hp);
-		SetHealth(playerid, hp);
-		return 0;
-	}
-	if(issuerid == INVALID_PLAYER_ID && (weaponid == 51 || weaponid == 53 || weaponid == 54 || weaponid == 47 || weaponid == 37)) OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart);
-	else
-	{
+	    if(amount < 0.0) amount = 0.0;
+	    if(amount > 150.0) amount = 150.0;
+
 		switch(weaponid)
 		{
-			case 50: { ClearAnimations(playerid); }
-			case 49, 51, 35, 36, 37, 54, 47, 53: { OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart); }
-			case 31, 38: if(IsPlayerInAnyVehicle(issuerid)) OnPlayerGiveDamage(issuerid, playerid, amount, weaponid, bodypart);
+			// Take into account drug effects (needs to be 150 for fall damage etc..)
+			case 50: { ClearAnimations(playerid); if(amount > 150.0) amount = 150.0; }
+			default: if(amount > 150.0) amount = 150.0;
 		}
-	}
-	foreach(Player, i)
-	{
-		if(IsPlayerConnected(i))
+
+		//heroin damage reduction
+		if (GetPVarInt(playerid, "HeroinDamageResist") == 1) {
+			amount *= 0.25;
+		}
+
+		new Float:difference,
+			Float:health,
+			Float:armour;
+		GetHealth(playerid, health);
+		GetArmour(playerid, armour);
+
+		// Ignore godmode. - Admins / Advisors (for health only)
+		if(!GetPVarInt(playerid, "pGodMode")) {
+			if(health < 0.1) SetHealth(playerid, 0.1), GetHealth(playerid, health);
+			if(health > 150.0) SetHealth(playerid, 150.0), GetHealth(playerid, health);
+		}
+
+		if(armour < 0.0) SetArmour(playerid, 0.0), GetArmour(playerid, armour);
+		if(armour > 100.0) SetArmour(playerid, 100.0), GetArmour(playerid, armour);
+
+		if(PlayerInfo[playerid][pHospital] == 1) return 1;
+		if(GetPVarInt(playerid, "PlayerCuffed") == 1) return 1;
+
+		if(weaponid == WEAPON_COLLISION && (1061 <= GetPlayerAnimationIndex(playerid) <= 1067)) // Climb Bug
 		{
-			if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-				format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Issuer: %s (%d) | Wp: %s | Dmg: %f | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), amount, ReturnBoneName(bodypart));
-				SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+			new Float:hp;
+			ClearAnimations(playerid);
+			GetHealth(playerid, hp);
+			SetHealth(playerid, hp);
+			return 1;
+		}
+		if(issuerid != INVALID_PLAYER_ID) {
+			if(GetPVarInt(playerid, "AttemptingLockPick") == 1) {
+				DeletePVar(playerid, "AttemptingLockPick");
+				DeletePVar(playerid, "LockPickCountdown");
+				DeletePVar(playerid, "LockPickTotalTime");
+				DeletePVar(playerid, "LockPickPosX");
+				DeletePVar(playerid, "LockPickPosY");
+				DeletePVar(playerid, "LockPickPosZ");
+				DeletePVar(playerid, "LockPickPosZ");
+				DestroyVLPTextDraws(playerid);
+				if(GetPVarType(playerid, "LockPickVehicleSQLId")) {
+					DeletePVar(playerid, "LockPickVehicleSQLId");
+					DeletePVar(playerid, "LockPickPlayerSQLId");
+					DeletePVar(playerid, "LockPickPlayerName");
+					DestroyVehicle(GetPVarInt(playerid, "LockPickVehicle"));
+				}
+				else {
+					new slot = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle"));
+					PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLocked] = 0;
+					PlayerVehicleInfo[GetPVarInt(playerid, "LockPickPlayer")][slot][pvBeingPickLockedBy] = INVALID_PLAYER_ID;
+				}
+				DeletePVar(playerid, "LockPickVehicle");
+				DeletePVar(playerid, "LockPickPlayer");
+				format(szMiscArray, sizeof(szMiscArray), "(( You took damage from %s(%d) using %s.))", GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid));
+				SendClientMessageEx(playerid, COLOR_RED, "(( You failed to pick lock this vehicle because you took damage. ))");
+				SendClientMessageEx(playerid, COLOR_RED, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
+				ClearAnimations(playerid, 1);
+			}
+			if(GetPVarType(playerid, "AttemptingCrackTrunk")) {
+				DeletePVar(playerid, "AttemptingCrackTrunk");
+				DeletePVar(playerid, "CrackTrunkCountdown");
+				DestroyVLPTextDraws(playerid);
+				ClearAnimations(playerid, 1);
+				format(szMiscArray, sizeof(szMiscArray), "(( You took damage from %s(%d) using %s.))", GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid));
+				SendClientMessageEx(playerid, COLOR_RED, "(( You failed to crack this vehicle's trunk because you took damage. ))");
+				SendClientMessageEx(playerid, COLOR_RED, szMiscArray);
+				SendClientMessageEx(playerid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
+			}
+
+			if(GetPVarInt(playerid, "commitSuicide") == 1) SetPVarInt(playerid, "commitSuicide", 0);
+			if(GetPVarInt(playerid, "BackpackProt") == 1)
+			{
+				DeletePVar(playerid, "BackpackProt");
+				if(GetPVarInt(playerid, "BackpackOpen") == 1)
+				{
+					SendClientMessageEx(playerid, COLOR_RED, "You have taken damage during the backpack menu, your backpack is disabled for 3 minutes.");
+					ShowPlayerDialogEx(playerid, -1, 0, "", "", "", "");
+					SetPVarInt(playerid, "BackpackDisabled", 180);
+					DeletePVar(playerid, "BackpackOpen");
+				}
+			}
+			if(GetPVarInt(playerid, "BackpackMedKit") == 1) DeletePVar(playerid, "BackpackMedKit");
+			if(GetPVarInt(playerid, "BackpackMeal") == 1) DeletePVar(playerid, "BackpackMeal");
+		}
+
+		// Only update health/armour if its not from another player use OnPlayerGiveDamage for that.
+		if(issuerid == INVALID_PLAYER_ID) {
+			if(armour < 0.1)
+			{
+				difference = health - amount;
+				if(difference < 0.1)
+				{
+					SetHealth(playerid, 0.0);
+					OnPlayerDeath(playerid, issuerid, weaponid);
+				}
+				else SetHealth(playerid, difference);
+			}
+			else
+			{
+				difference = armour - amount;
+				if(difference < 0.1)
+				{
+					SetArmour(playerid, 0.0);
+					health += difference;
+					if(health < 0.1) {
+						SetHealth(playerid, 0.0);
+						OnPlayerDeath(playerid, issuerid, weaponid);
+					}
+					else SetHealth(playerid, health);
+				}
+				else SetArmour(playerid, difference);
+			}
+		}
+		foreach(Player, i)
+		{
+			if(IsPlayerConnected(i))
+			{
+				if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
+					format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Issuer: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: %.2f | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), realdam, amount, ReturnBoneName(bodypart));
+					SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+				}
 			}
 		}
 	}

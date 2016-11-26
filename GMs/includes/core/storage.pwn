@@ -3148,7 +3148,7 @@ CMD:show(playerid, params[])
 	if(sscanf(params, "us[32]", giveplayerid, choice))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /show [player] [name]");
-		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack, Meth, Ecstasy, Heroin, Materials");
+		SendClientMessageEx(playerid, COLOR_GREY, "Available names: Pot, Crack, Meth, Ecstasy, Heroin, Materials, Credits");
 		return 1;
 	}
 
