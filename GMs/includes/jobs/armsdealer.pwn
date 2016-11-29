@@ -127,7 +127,7 @@ CMD:sellgun(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_WHITE, "deagle(5000)");
 				}
 			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pArmsSkill] > 1949) SendClientMessageEx(playerid, COLOR_WHITE, "ak47(10000)");
+			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pArmsSkill] >= 1200) SendClientMessageEx(playerid, COLOR_WHITE, "ak47(10000)");
 			SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------");
 			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /sellgun [playerid] [weapon]");
 			return 1;

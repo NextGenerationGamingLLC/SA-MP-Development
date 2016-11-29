@@ -5391,6 +5391,10 @@ CMD:oah(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Shop Tech --* /g(status/next) /hnext /goto(gate/door) /goinhouse /setvip /searchvipm /newgvip /renewgvip" );
 		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Shop Tech --* /shopbusiness /shopbusinessname /brenewal");
 	}
+	if (PlayerInfo[playerid][pShopTech] >= 2)
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD5, "--* Special - Senior Shop Tech --* /shopcredits");
+	}
 
 	if(PlayerInfo[playerid][pBM] >= 1)
 	{

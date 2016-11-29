@@ -319,7 +319,7 @@ CMD:dplocker(playerid, params[])
 	#if defined zombiemode
 	if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie")) return SendClientMessageEx(playerid, COLOR_GREY, "Zombies can't use this.");
 	#endif
-	if(IsPlayerInRangeOfPoint(playerid, 4.0, 0, 0, 0)) // Need co-ordinates
+	if(IsPlayerInRangeOfPoint(playerid, 4.0, 166.6540, -2001.0413, 3499.6482)) // Need co-ordinates
 	{
 	    switch(PlayerInfo[playerid][pDedicatedPlayer])
 	    {

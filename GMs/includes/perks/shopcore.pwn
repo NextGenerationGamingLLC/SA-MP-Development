@@ -260,6 +260,44 @@ CMD:shopplate(playerid, params[])
 	return 1;
 }
 
+CMD:shopcredits(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pShopTech] >= 2)
+	{
+		new szMessage[128], player, amount, invid;
+
+		if(sscanf(params, "udd", player, amount, invid))
+			return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /givecredits [player] [amount] [invoiceid]");
+
+		if(!IsPlayerConnected(player))
+		    return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+
+		if(!(1 < amount < 2401)) return SendClientMessageEx(playerid, COLOR_GREY, "You can only go low as 1 and maximum is 2400 credits!");
+		if(PlayerInfo[player][pAdmin] > 2) return SendClientMessageEx(playerid, COLOR_GREY, "You can only issue Credits onto roleplay accounts only!");
+
+		if(amount > 999)
+		{
+			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s issued %s %s credits. (Invoice ID: %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(player), invid);
+			ABroadCast(COLOR_YELLOW, szMessage, 2);
+		}
+
+		PlayerInfo[player][pCredits] += amount;
+
+		format(szMessage, sizeof(szMessage), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[player][pCredits], GetPlayerSQLId(player));
+		mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, player);
+		print(szMessage);
+
+        SendClientMessageEx(player, COLOR_LIGHTBLUE, "* %s has given you %s credits (New total: %s)", GetPlayerNameEx(playerid), number_format(amount), number_format(PlayerInfo[player][pCredits]));
+
+		format(szMessage, sizeof(szMessage), "%s has given %s %s credits. [TC: %s] (Invoice ID: %d)", GetPlayerNameEx(playerid), GetPlayerNameEx(player), number_format(amount), number_format(PlayerInfo[player][pCredits]), invid);
+		Log("logs/shoplog.log", szMessage), print(szMessage);
+
+		SendClientMessageEx(playerid, COLOR_CYAN, "You have given %s %s credits. (Invoice ID: %d)", GetPlayerNameEx(player), number_format(amount), invid);
+	}
+	else SendClientMessageEx(playerid, COLOR_GREY, " You are not allowed to use this command."); 
+	return 1;
+}
+
 CMD:shopcar(playerid, params[]) {
 	if(PlayerInfo[playerid][pShopTech] >= 1) {
 

@@ -30,6 +30,7 @@ hook OnGameModeInit() {
 	CreateDynamic3DTextLabel("Factions Duty Point", COLOR_DBLUE, 321.43, 303.96, 999.14+0.6, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 2112, 5, -1); //
 	CreateDynamic3DTextLabel("Factions Duty Point", COLOR_DBLUE, 1533.6, -1760.9, 2264.4+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 2345, 18, -1); //
 	CreateDynamic3DTextLabel("Back Entrance", COLOR_DBLUE, -2033.7502,-154.8784,35.3203+0.6, 4.0); // Prison
+	CreateDynamic3DTextLabel("/dplocker\nTo open the Dedicated locker.",COLOR_YELLOW,166.6540, -2001.0413, 3499.6482+0.6,4.0);/// Dedicated Locker
 	
 	//CreateDynamic3DTextLabel("Type /getmats from a boat \nto obtain Materials Packages",COLOR_YELLOW,2102.71,-103.97,2.28+0.5,8.0);// Deliver
     CreateDynamic3DTextLabel("Type /getpizza from a Pizzaboy \nto get pizzas for delivery!",COLOR_YELLOW,-1713.961425, 1348.545166, 7.180452, 4.0); //getpizza
