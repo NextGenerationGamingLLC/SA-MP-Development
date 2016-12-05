@@ -552,6 +552,18 @@ task SyncTime[60000]()
 			}
 		}
 		//CallRemoteFunction("ActivateRandomQuestion", "");//Olympics
+		if(tmphour == 0 && day == 1) {
+			foreach(new i: Player)
+			{
+				if(PlayerInfo[i][pDedicatedHours] > 0) {
+					SendClientMessageEx(i, COLOR_YELLOW, "Player Dedicated has entered a new month your hours and rank have been reset.");
+					PlayerInfo[i][pDedicatedHours] = 0;
+					if(PlayerInfo[i][pDedicatedPlayer] != 4) PlayerInfo[i][pDedicatedPlayer] = 0;
+				}
+			}
+			format(query, sizeof(query), "UPDATE `accounts` SET `pDedicatedPlayer` = 0, `DedicatedHours` = 0 WHERE `DedicatedHours` > 0 AND `pDedicatedPlayer` != 4");
+			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		}
 	}
 }
 

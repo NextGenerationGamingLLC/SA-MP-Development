@@ -1400,7 +1400,7 @@ stock Help_Perm(playerid, type, subtype, level)
 		{
 			if(subtype > 0)
 			{
-				if(Businesses[PlayerInfo[playerid][pBusiness]][bType] == subtype) return 1;
+				if(PlayerInfo[playerid][pLeader] == subtype) return 1;
 				else return 0;
 			}
 			return 1;

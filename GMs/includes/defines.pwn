@@ -1275,9 +1275,9 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_SHIPMENT_OPTIONS			(7054)
 #define 		DIALOG_GDELIVER_CRATE 			(7055)
 
-#define 		DIALOG_LOCKER_DP1				(7056)
-#define 		DIALOG_LOCKER_DP2				(7057)
-#define 		DIALOG_DEDICATED_WEAPON			(7058)
+#define 		DIALOG_LOCKER_DP1				(7059)
+#define 		DIALOG_LOCKER_DP2				(7060)
+#define 		DIALOG_DEDICATED_WEAPON			(7061)
 
 #define 		DIALOG_HELPCATMAIN				8000
 #define 		DIALOG_HELPSEARCH0				8001

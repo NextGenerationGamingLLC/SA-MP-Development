@@ -48,6 +48,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		switch(weaponid)
 		{
 			case 0 .. 3, 5 .. 8, 10 .. 15, 28, 32: if(amount > 20.0) amount = 20.0;
+			case 4: if(amount > 150.0) amount = 150.0;
 			case 9: if(amount > 30.0) amount = 30.0;
 			case 23: if(amount > 14.0) amount = 14.0;
 			case 24, 38: if(amount > 47.0) amount = 47.0;
@@ -306,7 +307,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	szMiscArray[0] = 0;
 	if(PlayerIsDead[playerid]) return 1;
 	new Float:realdam = amount;
-	if(playerid != INVALID_PLAYER_ID) 
+	if(playerid != 65535) 
 	{
 	    if(amount < 0.0) amount = 0.0;
 	    if(amount > 150.0) amount = 150.0;
@@ -349,7 +350,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			SetHealth(playerid, hp);
 			return 1;
 		}
-		if(issuerid != INVALID_PLAYER_ID) {
+		if(issuerid != 65535) {
 			if(GetPVarInt(playerid, "AttemptingLockPick") == 1) {
 				DeletePVar(playerid, "AttemptingLockPick");
 				DeletePVar(playerid, "LockPickCountdown");
@@ -404,9 +405,26 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			if(GetPVarInt(playerid, "BackpackMedKit") == 1) DeletePVar(playerid, "BackpackMedKit");
 			if(GetPVarInt(playerid, "BackpackMeal") == 1) DeletePVar(playerid, "BackpackMeal");
 		}
-
-		// Only update health/armour if its not from another player use OnPlayerGiveDamage for that.
-		if(issuerid == INVALID_PLAYER_ID) {
+		/*
+		51 - Explosion
+		38 - Hunter Minigun
+		47 - Fake Pistol
+		37 - Flamethrower
+		49 - Car Ramming
+		50 - Heliblade
+		31 - Seasparrow minigun (M4)
+		54 - Splat
+		*/
+		if(issuerid == 65535) {
+			difference = health - amount;
+			if(difference < 0.1)
+			{
+				SetHealth(playerid, 0.0);
+				OnPlayerDeath(playerid, issuerid, weaponid);
+			}
+			else SetHealth(playerid, difference);
+		}
+		if(issuerid != 65535 && (weaponid == 51 || weaponid == 38 || weaponid == 47 || weaponid == 37 || weaponid == 49 || weaponid == 50 || weaponid == 31)) {
 			if(armour < 0.1)
 			{
 				difference = health - amount;
@@ -438,7 +456,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			if(IsPlayerConnected(i))
 			{
 				if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
-					format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Issuer: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: %.2f | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), realdam, amount, ReturnBoneName(bodypart));
+					format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Issuer: %s (%d) | Wp: %s (%d) | CSDmg: %.2f | SSDmg: %.2f | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), weaponid, realdam, amount, ReturnBoneName(bodypart));
 					SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
 				}
 			}

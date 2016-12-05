@@ -101,6 +101,13 @@ stock IsATrain(modelid) {
 	return 0;
 }
 
+stock NoWindows(modelid) {
+	switch(GetVehicleModel(modelid)) {
+		case 509, 481, 510, 462, 448, 581, 522, 461, 521, 523, 463, 586, 468, 471, 431, 437, 472, 473, 493, 484, 430, 454, 453, 452, 446, 595: return 1;
+	}
+	return 0;
+}
+
 stock IsASpawnedTrain(carid) {
 	switch(GetVehicleModel(carid)) {
 		case 538, 537, 590, 569, 570: return 1;
@@ -1967,6 +1974,7 @@ CMD:car(playerid, params[])
 	else if(strcmp(choice, "window", true) == 0 && IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
 	{
 		if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do that at this time.");
+		if(NoWindows(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do use this on this type of vehicle.");
 		new driver, passenger, backleft, backright;
 		GetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, backright);
 		if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 0) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 0))
@@ -2001,6 +2009,7 @@ CMD:car(playerid, params[])
 	}
 	else if(strcmp(choice, "windows", true) == 0 && IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
 	{
+		if(NoWindows(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GREY, "You can't do use this on this type of vehicle.");
 		new driver, passenger, backleft, backright;
 		GetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, backright);
 		SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), !driver, !passenger, !backleft, !backright);

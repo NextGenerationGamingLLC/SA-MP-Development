@@ -58,21 +58,21 @@ HourDedicatedPlayer(playerid)
 	PlayerInfo[playerid][pDedicatedHours]++;
 	if(PlayerInfo[playerid][pDedicatedHours] >= 50 && PlayerInfo[playerid][pDedicatedPlayer] == 0)
 	{
-		PlayerInfo[playerid][pDedicatedPlayer] = 1;
+		if(PlayerInfo[playerid][pDedicatedPlayer] != 4) PlayerInfo[playerid][pDedicatedPlayer] = 1;
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 1 Dedicated Player!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 1 Dedicated Player after playing 50 hours!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
 	}
 	else if(PlayerInfo[playerid][pDedicatedHours] >= 75 && PlayerInfo[playerid][pDedicatedPlayer] == 1)
 	{
-		PlayerInfo[playerid][pDedicatedPlayer] = 2;
+		if(PlayerInfo[playerid][pDedicatedPlayer] != 4) PlayerInfo[playerid][pDedicatedPlayer] = 2;
 		format(PlayerInfo[playerid][pDedicatedTimestamp], 11, "%d-%02d-%02d", thedate[0], thedate[1], thedate[2]);
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 2 Dedicated Player!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 2 Dedicated Player after playing 75 hours!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
 		if(PlayerInfo[playerid][pDonateRank] >= 1)
 		{
-			AddFlag(INVALID_PLAYER_ID, playerid, "1 Month Bronze VIP - Non Transferable");
+			AddFlag(playerid, INVALID_PLAYER_ID, "1 Month Bronze VIP - Non Transferable");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been awarded a 1 Month Bronze VIP Flag");
 		}
 		else
@@ -87,23 +87,29 @@ HourDedicatedPlayer(playerid)
 	} 
 	else if(PlayerInfo[playerid][pDedicatedHours] >= 90 && PlayerInfo[playerid][pDedicatedPlayer] == 2)
 	{
-		PlayerInfo[playerid][pDedicatedPlayer] = 3;
+		if(PlayerInfo[playerid][pDedicatedPlayer] != 4) PlayerInfo[playerid][pDedicatedPlayer] = 3;
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 3 Dedicated Player!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 3 Dedicated Player after playing 90 hours!.", GetPlayerNameEx(playerid));
-		SendClientMessageToAll(-1, szMiscArray);		
-		if(PlayerInfo[playerid][pDonateRank] >= 2)
-		{
-			AddFlag(INVALID_PLAYER_ID, playerid, "1 Month Silver VIP - Non Transferable");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been awarded a 1 Month Silver VIP Flag");
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "CONGRATULATIONS: You have been awarded a 1 Month Silver VIP");
-			PlayerInfo[playerid][pDonateRank] = 2;
-			PlayerInfo[playerid][pTempVIP] = 0;
-			PlayerInfo[playerid][pBuddyInvited] = 0;
-			PlayerInfo[playerid][pVIPSellable] = 0;
-			PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
+		SendClientMessageToAll(-1, szMiscArray);	
+		if(PlayerInfo[playerid][pGVip] == 0) {	
+			if(PlayerInfo[playerid][pDonateRank] >= 2)
+			{
+
+				AddFlag(playerid, INVALID_PLAYER_ID, "1 Month Silver VIP - Non Transferable");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "You have been awarded a 1 Month Silver VIP Flag");
+			}
+			else
+			{
+				SendClientMessageEx(playerid, COLOR_YELLOW, "CONGRATULATIONS: You have been awarded a 1 Month Silver VIP");
+				PlayerInfo[playerid][pDonateRank] = 2;
+				PlayerInfo[playerid][pTempVIP] = 0;
+				PlayerInfo[playerid][pBuddyInvited] = 0;
+				PlayerInfo[playerid][pVIPSellable] = 0;
+				PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
+			}
+		} else {
+			AddFlag(playerid, INVALID_PLAYER_ID, "1 Month Renewable Gold VIP - Non Transferable");
+			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been awarded a 1 Month Renewable Gold VIP Flag");
 		}
 	} 
 }
@@ -112,18 +118,21 @@ DayDedicatedPlayer(playerid)
 {
 	new	thedate[3],
 	    tdate[3];	
-	getdate(thedate[0], thedate[1], thedate[2]);	
+	getdate(thedate[0], thedate[1], thedate[2]);
 	sscanf(PlayerInfo[playerid][pDedicatedTimestamp], "p<->iii", tdate[0], tdate[1], tdate[2]);
-	if(tdate[0] == thedate[0]+1 && PlayerInfo[playerid][pDedicatedPlayer] >= 2)
+	if(tdate[2]+1 == thedate[2] && PlayerInfo[playerid][pDedicatedPlayer] >= 2)
 	{
 		GiftPlayer(MAX_PLAYERS, playerid);
 		format(PlayerInfo[playerid][pDedicatedTimestamp], 11, "%d-%02d-%02d", thedate[0], thedate[1], thedate[2]);
 	} 
-	else if(thedate[0] == 1 && thedate[1] != tdate[1])
+	/*
+	else if(thedate[2] == 1 && thedate[1] != tdate[1])
 	{
+		SendClientMessageEx(playerid, COLOR_RED, "Dedicated: It's a new month your dedicated rank has been reset!");
 		PlayerInfo[playerid][pDedicatedPlayer] = 0;
 		PlayerInfo[playerid][pDedicatedHours] = 0;
 	}
+	*/
 }
 
 
@@ -245,7 +254,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(listitem == 2)
 		{
 			if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
-			ShowPlayerDialogEx(playerid, 3498, DIALOG_STYLE_LIST, "Dedicated Weapon Inventory", "Desert Eagle (Free)\nSemi-Automatic MP5 (Free)\nPump Shotgun (Free)", "Take", "Cancel");
+			ShowPlayerDialogEx(playerid, DIALOG_DEDICATED_WEAPON, DIALOG_STYLE_LIST, "Dedicated Weapon Inventory", "Desert Eagle (Free)\nSemi-Automatic MP5 (Free)\nPump Shotgun (Free)", "Take", "Cancel");
 		}
 	}
 	else if(dialogid == DIALOG_DEDICATED_WEAPON)

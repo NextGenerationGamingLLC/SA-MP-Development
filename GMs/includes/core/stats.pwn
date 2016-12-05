@@ -72,9 +72,9 @@ stock ShowStats(playerid,targetid)
 		{
 			switch(PlayerInfo[targetid][pDedicatedPlayer])
 			{
-				case 1: dprank = "{336600}Tier 1{FFFFFF}\n";
-				case 2: dprank = "{336600}Tier 2{FFFFFF}\n";
-				case 3: dprank = "{336600}Tier 3{FFFFFF}\n";
+				case 1: dprank = "{336600}Tier 1 Dedicated Player{FFFFFF}\n";
+				case 2: dprank = "{336600}Tier 2 Dedicated Player{FFFFFF}\n";
+				case 3: dprank = "{336600}Tier 3 Dedicated Player{FFFFFF}\n";
 				case 4: dprank = "{336600}Dedicated Moderator{FFFFFF}\n";
 			}
 		}
