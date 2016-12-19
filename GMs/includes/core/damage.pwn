@@ -424,7 +424,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			}
 			else SetHealth(playerid, difference);
 		}
-		if(issuerid != 65535 && (weaponid == 51 || weaponid == 38 || weaponid == 47 || weaponid == 37 || weaponid == 49 || weaponid == 50 || weaponid == 31)) {
+		if(issuerid != 65535 && (weaponid == 51 || weaponid == 38 || weaponid == 47 || weaponid == 37 || weaponid == 49 || weaponid == 31)) {
 			if(armour < 0.1)
 			{
 				difference = health - amount;

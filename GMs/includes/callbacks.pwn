@@ -5445,28 +5445,28 @@ public OnPlayerText(playerid, text[])
 					}
 					if(PlayerInfo[playerid][pAdmin] >= 2 && PlayerInfo[playerid][pTogReports] == 1 || PlayerInfo[playerid][pAdmin] < 2 || PlayerInfo[i][pAdmin] >= 2 && PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2) SendBugMessage(i, PlayerInfo[i][pBugged], str);
 				}
-				if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i) && PlayerInfo[playerid][pAccountRestricted] == 1)
+				if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && PlayerInfo[playerid][pAccountRestricted] == 1)
 				{
 					format(string, sizeof(string), "[Restricted] %s: %s", GetPlayerNameEx(playerid), text);
 					SendClientMessageEx(i, COLOR_FADE5, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 16, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE1, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0 / 8, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 8, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE2, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0 / 4, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 4, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE3, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0 / 2, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0 / 2, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE4, string);
 				}
-				else if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2]) && WindowStatusForChat(playerid, i)) {
+				else if(IsPlayerInRangeOfPoint(i, 20.0, f_playerPos[0], f_playerPos[1], f_playerPos[2])) {
 					format(string, sizeof(string), "%s%s says: %s", accent, sendername, text);
 					SendClientMessageEx(i, COLOR_FADE5, string);
 				}

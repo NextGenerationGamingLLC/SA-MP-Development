@@ -200,14 +200,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else if(GetPlayerCash(playerid) < 10000)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $10000");
+				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $10,000");
 				return 1;
 			}
 			else 
 			{
 				GivePlayerCash(playerid, -10000);
 				SetArmour(playerid, 100);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You paid $10000 for a kevlar vest.");
+				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You paid $10,000 for a kevlar vest.");
 			}
 		}
 	}
@@ -239,16 +239,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SendClientMessageEx(playerid, COLOR_GREY, "You already have full armor.");
 				return 1;
 			}
-			else if(GetPlayerCash(playerid) < 10000)
+			else if(GetPlayerCash(playerid) < 5000 && PlayerInfo[playerid][pDedicatedPlayer] < 3)
 			{
-				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $10000");
+				SendClientMessageEx(playerid, COLOR_GREY,"You don't have $5,000");
 				return 1;
 			}
 			else 
 			{
-				GivePlayerCash(playerid, -10000);
+				if(PlayerInfo[playerid][pDedicatedPlayer] < 3) GivePlayerCash(playerid, -5000);
 				SetArmour(playerid, 100);
-				SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You paid $10000 for a kevlar vest.");
+				if(PlayerInfo[playerid][pDedicatedPlayer] < 3)
+				{
+					SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You paid $5,000 for a kevlar vest.");
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_YELLOW, "[Dedicated Locker] You take a kevlar vest from the locker.");
+				}
 			}
 		}
 		if(listitem == 2)
@@ -333,8 +340,8 @@ CMD:dplocker(playerid, params[])
 	    switch(PlayerInfo[playerid][pDedicatedPlayer])
 	    {
 			case 0: SendClientMessageEx(playerid, COLOR_GRAD2, "You're not a dedicated player!");
-			case 1: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP1, DIALOG_STYLE_LIST, "Dedicated Player 1", "First Aid Kit (Free)\nKevlar Vest ($10000)", "Select", "Cancel");
-			case 2: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 2", "First Aid Kit (Free)\nKevlar Vest ($5000)\nWeapons (Free)", "Select", "Cancel");
+			case 1: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP1, DIALOG_STYLE_LIST, "Dedicated Player 1", "First Aid Kit (Free)\nKevlar Vest ($10,000)", "Select", "Cancel");
+			case 2: ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 2", "First Aid Kit (Free)\nKevlar Vest ($5,000)\nWeapons (Free)", "Select", "Cancel");
 			default:  ShowPlayerDialogEx(playerid, DIALOG_LOCKER_DP2, DIALOG_STYLE_LIST, "Dedicated Player 3", "First Aid Kit (Free)\nKevlar Vest (Free)\nWeapons (Free)", "Select", "Cancel");
 		}
 	}

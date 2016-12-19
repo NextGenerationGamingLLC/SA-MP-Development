@@ -6193,3 +6193,22 @@ CMD:reloadmapping(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:resetpgifts(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
+
+	new query[256];
+    format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s reset everyones received gift to 0. (Login Event Gifts)", GetPlayerNameEx(playerid));
+    ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+
+	foreach(new i: Player) {
+		PlayerInfo[i][pReceivedPrize] = 0;
+	}
+	format(query, sizeof(query), "UPDATE `accounts` SET `ReceivedPrize` = 0 WHERE `ReceivedPrize` != 0");
+	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	SendClientMessageEx(playerid, COLOR_CYAN, "You have reset everyones received gift they'll be able to get gifts upon login.");
+	format(szMiscArray, sizeof(szMiscArray), "%s has reset everyones received gift to 0. (Login Event Gifts)", GetPlayerNameEx(playerid));
+	Log("logs/admin.log", szMiscArray);
+	return 1;
+}

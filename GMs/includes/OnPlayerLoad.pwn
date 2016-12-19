@@ -962,63 +962,75 @@ public OnPlayerLoad(playerid)
 	}
 	new year, month, day;
 	getdate(year, month, day);
-	if(PlayerInfo[playerid][pReceivedPrize] == 0 && month == 12 && day == 23 && year == 2014)
+	if(PlayerInfo[playerid][pReceivedPrize] == 0)
 	{
-		new icount = GetPlayerToySlots(playerid), success = 0;
-		for(new v = 0; v < icount; v++)
+		if(month == 12 && day == 22 && year == 2016)
 		{
-			if(PlayerToyInfo[playerid][v][ptModelID] == 0)
+			new icount = GetPlayerToySlots(playerid), success = 0;
+			for(new v = 0; v < icount; v++)
 			{
-				PlayerToyInfo[playerid][v][ptModelID] = 19064;
-				PlayerToyInfo[playerid][v][ptBone] = 6;
-				PlayerToyInfo[playerid][v][ptPosX] = 0.0;
-				PlayerToyInfo[playerid][v][ptPosY] = 0.0;
-				PlayerToyInfo[playerid][v][ptPosZ] = 0.0;
-				PlayerToyInfo[playerid][v][ptRotX] = 0.0;
-				PlayerToyInfo[playerid][v][ptRotY] = 0.0;
-				PlayerToyInfo[playerid][v][ptRotZ] = 0.0;
-				PlayerToyInfo[playerid][v][ptScaleX] = 1.0;
-				PlayerToyInfo[playerid][v][ptScaleY] = 1.0;
-				PlayerToyInfo[playerid][v][ptScaleZ] = 1.0;
-				PlayerToyInfo[playerid][v][ptTradable] = 1;
-				SendClientMessageEx(playerid, COLOR_GRAD2, "You've been gifted a santa hat toy! Merry Christmas!");
-				
-				g_mysql_NewToy(playerid, v);
-				success = 1;
-				PlayerInfo[playerid][pReceivedPrize] = 1;
-				break;
-			}
-		}
-		
-		if(success == 0)
-		{
-			for(new i = 0; i < MAX_PLAYERTOYS; i++)
-			{
-				if(PlayerToyInfo[playerid][i][ptModelID] == 0)
+				if(PlayerToyInfo[playerid][v][ptModelID] == 0)
 				{
-					PlayerToyInfo[playerid][i][ptModelID] = 19064;
-					PlayerToyInfo[playerid][i][ptBone] = 6;
-					PlayerToyInfo[playerid][i][ptPosX] = 0.0;
-					PlayerToyInfo[playerid][i][ptPosY] = 0.0;
-					PlayerToyInfo[playerid][i][ptPosZ] = 0.0;
-					PlayerToyInfo[playerid][i][ptRotX] = 0.0;
-					PlayerToyInfo[playerid][i][ptRotY] = 0.0;
-					PlayerToyInfo[playerid][i][ptRotZ] = 0.0;
-					PlayerToyInfo[playerid][i][ptScaleX] = 1.0;
-					PlayerToyInfo[playerid][i][ptScaleY] = 1.0;
-					PlayerToyInfo[playerid][i][ptScaleZ] = 1.0;
-					PlayerToyInfo[playerid][i][ptTradable] = 1;
-					PlayerToyInfo[playerid][i][ptSpecial] = 1;
-					
-					g_mysql_NewToy(playerid, i); 
-					
-					PlayerInfo[playerid][pReceivedPrize] = 1;
+					PlayerToyInfo[playerid][v][ptModelID] = 19065;
+					PlayerToyInfo[playerid][v][ptBone] = 6;
+					PlayerToyInfo[playerid][v][ptPosX] = 0.0;
+					PlayerToyInfo[playerid][v][ptPosY] = 0.0;
+					PlayerToyInfo[playerid][v][ptPosZ] = 0.0;
+					PlayerToyInfo[playerid][v][ptRotX] = 0.0;
+					PlayerToyInfo[playerid][v][ptRotY] = 0.0;
+					PlayerToyInfo[playerid][v][ptRotZ] = 0.0;
+					PlayerToyInfo[playerid][v][ptScaleX] = 1.0;
+					PlayerToyInfo[playerid][v][ptScaleY] = 1.0;
+					PlayerToyInfo[playerid][v][ptScaleZ] = 1.0;
+					PlayerToyInfo[playerid][v][ptTradable] = 1;
+					PlayerToyInfo[playerid][v][ptAutoAttach] = -2;
 					SendClientMessageEx(playerid, COLOR_GRAD2, "You've been gifted a santa hat toy! Merry Christmas!");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "Due to you not having any available slots, we've temporarily gave you an additional slot to use/sell/trade your toy.");
-					SendClientMessageEx(playerid, COLOR_RED, "Note: Please take note that after selling the toy, the temporarily additional toy slot will be removed.");
+					
+					g_mysql_NewToy(playerid, v);
+					success = 1;
+					PlayerInfo[playerid][pReceivedPrize] = 1;
 					break;
-				}	
+				}
 			}
+			
+			if(success == 0)
+			{
+				for(new i = 0; i < MAX_PLAYERTOYS; i++)
+				{
+					if(PlayerToyInfo[playerid][i][ptModelID] == 0)
+					{
+						PlayerToyInfo[playerid][i][ptModelID] = 19065;
+						PlayerToyInfo[playerid][i][ptBone] = 6;
+						PlayerToyInfo[playerid][i][ptPosX] = 0.0;
+						PlayerToyInfo[playerid][i][ptPosY] = 0.0;
+						PlayerToyInfo[playerid][i][ptPosZ] = 0.0;
+						PlayerToyInfo[playerid][i][ptRotX] = 0.0;
+						PlayerToyInfo[playerid][i][ptRotY] = 0.0;
+						PlayerToyInfo[playerid][i][ptRotZ] = 0.0;
+						PlayerToyInfo[playerid][i][ptScaleX] = 1.0;
+						PlayerToyInfo[playerid][i][ptScaleY] = 1.0;
+						PlayerToyInfo[playerid][i][ptScaleZ] = 1.0;
+						PlayerToyInfo[playerid][i][ptTradable] = 1;
+						PlayerToyInfo[playerid][i][ptSpecial] = 1;
+						PlayerToyInfo[playerid][i][ptAutoAttach] = -2;
+						
+						g_mysql_NewToy(playerid, i); 
+						
+						PlayerInfo[playerid][pReceivedPrize] = 1;
+						SendClientMessageEx(playerid, COLOR_GRAD2, "You've been gifted a santa hat toy! Merry Christmas!");
+						SendClientMessageEx(playerid, COLOR_GRAD1, "Due to you not having any available slots, we've temporarily gave you an additional slot to use/sell/trade your toy.");
+						SendClientMessageEx(playerid, COLOR_RED, "Note: Please take note that after selling the toy, the temporarily additional toy slot will be removed.");
+						break;
+					}	
+				}
+			}
+			print("Object ID: 19065");
+		}
+		if(PlayerInfo[playerid][pConnectHours] > 7 && month == 12 && day == 31 && year == 2016)
+		{
+			PlayerInfo[playerid][pFirework] += 5;
+			PlayerInfo[playerid][pReceivedPrize] = 1;
+			SendClientMessageEx(playerid, COLOR_GRAD2, "You've been gifted 5 fireworks to celebrate the new year!");
 		}
 	}
 	
@@ -1090,5 +1102,11 @@ public OnPlayerLoad(playerid)
 	if(PlayerInfo[playerid][pToggledChats][7]) PhoneOnline[playerid] = 1;
 
 	if(PlayerInfo[playerid][pTut] == -1 && PlayerInfo[playerid][pNation] != 0 && PlayerInfo[playerid][pNation] != 1) return ShowPlayerDialogEx(playerid, DIALOG_REGISTER_NATION, DIALOG_STYLE_LIST, "You currently do not have a nation. Please chose one.", "San Andreas\nNew Robada", "Select", "<<");
+	return 1;
+}
+
+forward OnFreeGift(playerid, date[]);
+public OnFreeGift(playerid, date[]) {
+
 	return 1;
 }

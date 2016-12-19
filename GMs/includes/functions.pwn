@@ -2452,7 +2452,7 @@ SpawnPlayerInPrisonCell(playerid, cellid)
 	}
 	return 1;
 }
-
+/*
 stock WindowStatusForChat(sendid, receiveid)
 {
 	new SendWindow[4], ReceiveWindow[4];
@@ -2482,4 +2482,4 @@ stock WindowStatusForChat(sendid, receiveid)
 		else return 0;
 	}
 	return 1;
-}
+}*/
