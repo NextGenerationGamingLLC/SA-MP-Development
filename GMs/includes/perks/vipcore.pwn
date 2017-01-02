@@ -523,7 +523,7 @@ CMD:v(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the VIP chat channel.");
 		}
 		else {
-
+			if(novip && PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "The VIP chat has been disabled by an administrator.");
 			new szMessage[128];
 
 			if(PlayerInfo[playerid][pAdmin] >= 2 && !GetPVarType(playerid, "Undercover"))
@@ -1285,6 +1285,36 @@ CMD:vipmods(playerid, params[])
 			format(szMiscArray, sizeof(szMiscArray), "%s %s - VIP Chat %s", PlayerInfo[i][pVIPMod] == 1 ? ("VIP Moderator"):("Senior VIP Moderator"), GetPlayerNameEx(i), PlayerInfo[playerid][pToggledChats][9] == 0 ? ("On"):("Off"));
 			SendClientMessageEx(playerid, -1, szMiscArray);
 		}
+	}
+	return 1;
+}
+
+CMD:novip(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 3)
+	{
+		if (!novip)
+		{
+			novip = 1;
+			foreach(new p: Player) {
+				if(PlayerInfo[p][pDonateRank] > 0 || PlayerInfo[p][pVIPMod] || PlayerInfo[p][pAdmin] > 1) {
+					SendClientMessageEx(playerid, COLOR_VIP, "** System: VIP chat channel has been disabled by an Admin!");
+				}
+			}
+		}
+		else
+		{
+			novip = 0;
+			foreach(new p: Player) {
+				if(PlayerInfo[p][pDonateRank] > 0 || PlayerInfo[p][pVIPMod] || PlayerInfo[p][pAdmin] > 1) {
+					SendClientMessageEx(playerid, COLOR_VIP, "** System: VIP chat channel has been enabled by an Admin!");
+				}
+			}
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
 	}
 	return 1;
 }

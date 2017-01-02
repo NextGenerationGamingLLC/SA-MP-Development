@@ -1058,7 +1058,7 @@ public OnPlayerLoad(playerid)
 	new szQuery[128];
 	format(szQuery, sizeof(szQuery), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d' AND `active` = '1'", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, szQuery, true, "CheckClientWatchlist", "i", playerid);
-	format(szQuery, sizeof(szQuery), "SELECT `id`, `Bug` FROM `bugs` WHERE `status` = '5' AND `ReportedBy` = '%d'", GetPlayerSQLId(playerid));
+	format(szQuery, sizeof(szQuery), "SELECT `id`, `Subject` FROM `bugs` WHERE `status` = 6 AND `Userid` = %d", GetPlayerSQLId(playerid));
 	mysql_function_query(MainPipeline, szQuery, true, "CheckPendingBugReports", "i", playerid);
 	defer CheckVehiclesLeftSpawned(playerid);
 	format(szQuery, sizeof(szQuery), "SELECT COUNT(*) as aFlagCount FROM `flags` WHERE id=%d AND type = 2", GetPlayerSQLId(playerid));

@@ -80,9 +80,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					if(listitem == 2) //Submit Anonymously?
 					{
-						new query[128];
-						format(query, sizeof(query), "SELECT * from `devcpBans` where `user` = %d AND `anon` = 1", GetPlayerSQLId(playerid));
-						return mysql_function_query(MainPipeline, query, true, "CheckBugReportBans", "ii", playerid, 2);
+						SetPVarInt(playerid, "BugStep", 3);
+						SetPVarInt(playerid, "BugListItem", 2);
+						return ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report - Submit Anonymously?", "No\nYes", "Continue", "Close");
 					}
 					if(listitem == 3) //Submit
 					{
@@ -128,8 +128,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(GetPVarInt(playerid, "BugStep") == 4) //Submit
 				{
 					new szResult[512];
-					format(szResult, sizeof(szResult), "INSERT INTO `bugs` (`ReportedBy`, `Time`, `Bug`, `Status`, `Description`, `Anonymous`) \
-					VALUES('%d', UNIX_TIMESTAMP(), '%s', '0', '%s', '%d')", GetPVarInt(playerid, "pSQLID"), g_mysql_ReturnEscaped(bug, MainPipeline), g_mysql_ReturnEscaped(bugdesc, MainPipeline), GetPVarInt(playerid, "BugAnonymous"));
+					format(szResult, sizeof(szResult), "INSERT INTO `bugs` (`Userid`, `Anoy`, `Type`, `Subject`, `Created`, `LastDate`) \
+					VALUES(%d, %d, 0, '%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP())", GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous"), g_mysql_ReturnEscaped(bug, MainPipeline));
 					mysql_function_query(MainPipeline, szResult, true, "OnBugReport", "i", playerid);
 				}
 			}
@@ -147,9 +147,9 @@ CMD:bugreport(playerid, params[]) {
 		return SendClientMessageEx(playerid, COLOR_GRAD2, "You are fixing a vehicle!");
 	}
 	if(gettime() - PlayerInfo[playerid][pBugReportTimeout] < 3600) 
-		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "You can only submit a bug report once every hour!\nAlternatively, you can visit http://devcp.ng-gaming.net and post a bug report there.", "Close", "");
+		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "You can only submit a bug report once every hour!\nAlternatively, you can visit http://cp.ng-gaming.net and post a bug report there.", "Close", "");
 
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * from `devcpBans` where `user` = %d AND `bugs` = 1", GetPlayerSQLId(playerid));
+	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `devcpbans` WHERE `Userid` = %d LIMIT 1", GetPlayerSQLId(playerid));
 	return mysql_function_query(MainPipeline, szMiscArray, true, "CheckBugReportBans", "ii", playerid, 1);
 }
 
@@ -165,13 +165,19 @@ CMD:changes(playerid, params[])
 forward OnBugReport(playerid);
 public OnBugReport(playerid)
 {
-	new string[128], bug[41];
+	new string[128], bug[41], szResult[512], bugdesc[129];
 	GetPVarString(playerid, "BugSubject", bug, 40);
+	GetPVarString(playerid, "BugDetail", bugdesc, 128);
+
+	format(szResult, sizeof(szResult), "INSERT INTO `bugcomments` (`Bugid`, `Postid`, `UserId`, `Message`, `Created`) \
+	VALUES(%d, 1, %d, '%s', UNIX_TIMESTAMP())", mysql_insert_id(MainPipeline), GetPVarInt(playerid, "pSQLID"), g_mysql_ReturnEscaped(bugdesc, MainPipeline));
+	mysql_function_query(MainPipeline, szResult, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+
 	format(string, sizeof(string), "[BugID: %d] %s(%d) submitted a%sbug (%s)", mysql_insert_id(MainPipeline), GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous") == 1 ? (" anonymous "):(" "), bug);
 	Log("logs/bugreport.log", string);
 	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", 
 	"{FFFFFF}Your bug report has been successfully submitted.\n\
-	 We highly suggest adding more information regarding the bug by visiting: http://devcp.ng-gaming.net\n\
+	 We highly suggest adding more information regarding the bug by visiting: http://cp.ng-gaming.net\n\
 	 {FF8000}Note:{FFFFFF} If you are found abusing this system you will be restricted from submitting future bug reports.", "Close", "");
 	PlayerInfo[playerid][pBugReportTimeout] = gettime();
 	DeletePVar(playerid, "BugStep");
@@ -189,22 +195,14 @@ public CheckBugReportBans(playerid, check)
 	cache_get_data(rows, fields, MainPipeline);
 	if(rows == 0)
 	{
-		if(check == 1) ShowBugReportMainMenu(playerid);
-		if(check == 2)
-		{
-			SetPVarInt(playerid, "BugStep", 3);
-			SetPVarInt(playerid, "BugListItem", 2);
-			ShowPlayerDialogEx(playerid, DIALOG_BUGREPORT, DIALOG_STYLE_LIST, "Bug Report - Submit Anonymously?", "No\nYes", "Continue", "Close");
-		}
+		ShowBugReportMainMenu(playerid);
 	}
 	else
 	{
-		if(check == 1) ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting bug reports.\nContact the Director of Development for more information.", "Close", "");
-		if(check == 2) ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting anonymous bug reports.\nContact the Director of Development for more information.", "Close", ""); 
+		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Report - {FF0000}Error", "You are restricted from submitting bug reports.\n\nPlease visit http://cp.ng-gaming.net and select anything from the Bug Report menu\nand your unban date/reason will be displayed.", "Close", "");
 	}
 	return 1;
 }
-
 
 forward CheckPendingBugReports(playerid);
 public CheckPendingBugReports(playerid)
@@ -219,8 +217,8 @@ public CheckPendingBugReports(playerid)
 	{
 		cache_get_field_content(i, "id", szResult, MainPipeline);
 		format(string, sizeof(string), "%s\n%s\t", string, szResult);
-		cache_get_field_content(i, "Bug", szResult, MainPipeline);
+		cache_get_field_content(i, "Subject", szResult, MainPipeline);
 		format(string, sizeof(string), "%s%s", string, szResult);
 	}
-	return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://devcp.ng-gaming.net", string, "Close", "");
+	return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://cp.ng-gaming.net", string, "Close", "");
 }
