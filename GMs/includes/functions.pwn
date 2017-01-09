@@ -1926,6 +1926,15 @@ stock OnPlayerStatsUpdate(playerid) {
 				PlayerInfo[playerid][pPos_r] = FormatFloat(Pos[3]);
 			}
 		}
+		else {
+			if(GetPVarInt(playerid, "IsInArena") >= 0) {
+				PlayerInfo[playerid][pInt] = GetPVarInt(playerid, "pbOldInt");
+				PlayerInfo[playerid][pVW] = GetPVarInt(playerid, "pbOldVW");
+				PlayerInfo[playerid][pPos_x] = GetPVarFloat(playerid, "pbOldX");
+				PlayerInfo[playerid][pPos_y] = GetPVarFloat(playerid, "pbOldY");
+				PlayerInfo[playerid][pPos_z] = GetPVarFloat(playerid, "pbOldZ");
+			}
+		}
 		g_mysql_SaveAccount(playerid);
 	}
 	return 1;
@@ -2483,3 +2492,30 @@ stock WindowStatusForChat(sendid, receiveid)
 	}
 	return 1;
 }*/
+
+stock ResetCreateData(vehicleid) {
+	if(vehicleid != INVALID_VEHICLE_ID) {
+		if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]))
+		{
+			DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
+			CrateVehicleLoad[vehicleid][vForkObject] = -1;
+		}
+		CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
+		for(new i = 0; i < sizeof(CrateInfo); i++)
+		{
+			if(CrateInfo[i][InVehicle] == vehicleid)
+			{
+				CrateInfo[i][crActive] = 0;
+				CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
+				if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
+				CrateInfo[i][crObject] = -1;
+				CrateInfo[i][crX] = 0;
+				CrateInfo[i][crY] = 0;
+				CrateInfo[i][crZ] = 0;
+				break;
+			}
+		}
+		if(IsValidDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject])) DestroyDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject]);
+	}
+	return 1;
+}

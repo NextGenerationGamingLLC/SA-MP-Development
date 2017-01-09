@@ -21,6 +21,7 @@
 #define 	INTERACT_SELL 			(10059)
 #define 	INTERACT_SELLCONFIRM 	(10060)
 #define 	INTERACT_DRUGS			(10061)
+#define 	INTERACT_SELLCONFIRM2 	(10062)
 
 #define 	INTERACT_PRESCRIBE		(10063)
 #define 	INTERACT_PRESCRIBE1 	(10064)
@@ -419,6 +420,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				amount = strval(inputtext),
 				itemid = GetPVarInt(playerid, "Interact_GiveItem");
 
+			if(amount < 1) {
+				SendClientMessageEx(playerid, COLOR_RED, "You must offer an item greater than 0!");
+				return Player_InteractMenu(playerid, giveplayerid, 0);
+			}
+
 			SetPVarInt(playerid, "Interact_SellAmt", amount);
 			if(GetPVarType(playerid, "Interact_Sell")) {
 
@@ -549,6 +555,43 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 		}
 		case INTERACT_SELLCONFIRM: {
+			new buyingfrom = GetPVarInt(playerid, "Interact_Buying");
+
+			if(!response) {
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have rejected the trade offer.");
+				SendClientMessageEx(buyingfrom, COLOR_WHITE, "That person has rejected the trade offer.");
+
+				DeletePVar(playerid, "Interact_Buying");
+				DeletePVar(buyingfrom, "Interact_SellPrice");
+				DeletePVar(buyingfrom, "Interact_Sell");
+				DeletePVar(buyingfrom, "Interact_SellGun");
+				DeletePVar(playerid, "Interact_Drug");
+				DeletePVar(buyingfrom, "Interact_GiveItem");
+				DeletePVar(buyingfrom, "Interact_SellAmt");
+				return 1;
+			}
+
+			new itemid = GetPVarInt(buyingfrom, "Interact_GiveItem");
+			new amount = GetPVarInt(buyingfrom, "Interact_SellAmt");
+			new offerprice = GetPVarInt(buyingfrom, "Interact_SellPrice");
+			
+			if(GetPVarType(buyingfrom, "Interact_SellGun")) {
+
+				new weaponid = GetPVarInt(buyingfrom, "Interact_SellGun");
+
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy a %s for $%s\n\nPlease confirm again if you really are sure you want to complete this transaction!", GetPlayerNameEx(buyingfrom), ReturnWeaponName(weaponid), number_format(offerprice));
+			}
+			else if(GetPVarType(buyingfrom, "Interact_Drug")) {
+				new drugid = GetPVarInt(buyingfrom, "Interact_Drug");
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %dg of %s {FFFFFF}for $%s\n\nPlease confirm again if you really are sure you want to complete this transaction!", GetPlayerNameEx(buyingfrom), amount, Drugs[drugid], number_format(offerprice));
+			}
+			else {
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered you to buy %d %s for $%s\n\nPlease confirm again if you really are sure you want to complete this transaction!", GetPlayerNameEx(playerid), amount, Item_Getname(itemid), number_format(offerprice));
+			}			
+
+			ShowPlayerDialogEx(playerid, INTERACT_SELLCONFIRM2, DIALOG_STYLE_MSGBOX, "Are you really sure?", szMiscArray, "Buy", "Reject");
+		}
+		case INTERACT_SELLCONFIRM2: {
 
 			new buyingfrom = GetPVarInt(playerid, "Interact_Buying");
 

@@ -1298,7 +1298,7 @@ CMD:novip(playerid, params[])
 			novip = 1;
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pDonateRank] > 0 || PlayerInfo[p][pVIPMod] || PlayerInfo[p][pAdmin] > 1) {
-					SendClientMessageEx(playerid, COLOR_VIP, "** System: VIP chat channel has been disabled by an Admin!");
+					SendClientMessageEx(p, COLOR_VIP, "** System: VIP chat channel has been disabled by an Admin!");
 				}
 			}
 		}
@@ -1307,7 +1307,7 @@ CMD:novip(playerid, params[])
 			novip = 0;
 			foreach(new p: Player) {
 				if(PlayerInfo[p][pDonateRank] > 0 || PlayerInfo[p][pVIPMod] || PlayerInfo[p][pAdmin] > 1) {
-					SendClientMessageEx(playerid, COLOR_VIP, "** System: VIP chat channel has been enabled by an Admin!");
+					SendClientMessageEx(p, COLOR_VIP, "** System: VIP chat channel has been enabled by an Admin!");
 				}
 			}
 		}

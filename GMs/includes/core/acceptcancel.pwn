@@ -48,7 +48,6 @@ CMD:accept(playerid, params[])
         if(isnull(params)) {
             SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accept [name]");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Crack, Cannabis, Weapon, Craft, Repair, Lawyer, Bodyguard, Job, Live, Refill");
-            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Firework, Group, Boxing, Medic, Mechanic, Ticket, Car, Death, Backpack, Sellgun");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Business, Item, Offer, Heroin, Rawopium, Syringes, Rimkit, Voucher, Kiss, RenderAid, Frisk");
             return 1;
         }
@@ -97,10 +96,6 @@ CMD:accept(playerid, params[])
 			format(string, sizeof(string), "[New Dynamic Door Sale Request]: (ID: %d) %s.", target, GetPlayerNameEx(target));
 			ABroadCast(COLOR_LIGHTRED, string, 4);
 			return 1;
-		}
-		else if(strcmp(params, "frisk", true) == 0)
-		{
-			PlayerFriskPlayer(GetPVarInt(playerid, "FriskedBy"), playerid);
 		}
 		else if(strcmp(params, "renderaid", true) == 0)
 		{

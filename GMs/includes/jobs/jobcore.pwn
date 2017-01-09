@@ -748,15 +748,10 @@ CMD:skill(playerid, params[])
 		{
 			new level = PlayerInfo[playerid][pArmsSkill], string[48];
 			if(level >= 0 && level < 50) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 1."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 50 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 50 && level < 150) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 2."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 150 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 150 && level < 300) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 3."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 300 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 300 && level < 500) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 4."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 500 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 500 && level < 875) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 5."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 875 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 875 && level < 1475) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 5."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 1475 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 1475 && level < 2350) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 5."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 2350 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 2350 && level < 3350) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 5."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 3350 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 3350 && level < 5350) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 5."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 5350 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
-			else if(level >= 5350 && level < 7850) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 5."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 7850 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			else if(level >= 50 && level < 200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 2."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			else if(level >= 200 && level < 700) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 3."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 700 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			else if(level >= 700 && level < 1200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 4."); format(string, sizeof(string), "You need to sell %d more guns to level up.", 1200 - level); SendClientMessageEx(playerid, COLOR_YELLOW, string); }
+			else if(level >= 1200) { SendClientMessageEx(playerid, COLOR_YELLOW, "Your Arms Dealer Skill Level = 5."); }
 		}
 		case 6://Car Mechanic
 		{

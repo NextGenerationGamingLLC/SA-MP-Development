@@ -63,12 +63,7 @@ CMD:frisk(playerid, params[])
 				if(giveplayerid == playerid) { SendClientMessageEx(playerid, COLOR_GREY, "You cannot frisk yourself!"); return 1; }
 				if(PlayerInfo[giveplayerid][pAdmin] >= 2 && !PlayerInfo[giveplayerid][pTogReports]) return 1;
 
-				PlayerFriskPlayer(playerid, giveplayerid);
-
-				SetPVarInt(playerid, "Frisking", giveplayerid);
-				SetPVarInt(giveplayerid, "FriskedBy", playerid);
-				format(szMiscArray, sizeof(szMiscArray), "%s has requested to frisk you, /accept frisk to conform.", GetPlayerNameEx(playerid));
-				SendClientMessage(giveplayerid, COLOR_YELLOW, szMiscArray);
+				PlayerFriskPlayer(playerid, giveplayerid); // It did a frisk ... why request?
 			}
 			else
 			{
@@ -103,8 +98,6 @@ PlayerFriskPlayer(playerid, giveplayerid)
 	SendClientMessageEx(playerid, COLOR_WHITE, "** Items **");
 	format(szMiscArray, sizeof(szMiscArray), "* %s has frisked %s for any illegal items.", GetPlayerNameEx(playerid),GetPlayerNameEx(giveplayerid));
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	DeletePVar(playerid, "Frisking");
-	DeletePVar(giveplayerid, "FriskedBy");
 	if(PlayerInfo[giveplayerid][pMats] > 0)
 	{
 		format(szMiscArray, sizeof(szMiscArray), "(Pocket) %d materials.", PlayerInfo[giveplayerid][pMats]);

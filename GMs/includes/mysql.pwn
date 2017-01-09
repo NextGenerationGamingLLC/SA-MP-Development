@@ -717,12 +717,12 @@ public OnQueryFinish(resultid, extraid, handleid)
 			}
 			if(GetPVarType(extraid, "AccountSaving") && (GetPVarInt(extraid, "AccountSaved") == 0)) {
 				SetPVarInt(extraid, "AccountSaved", 1);
-				foreach(extraid: Player)
+				foreach(new i: Player)
 				{
-					if(gPlayerLogged{extraid} && (GetPVarInt(extraid, "AccountSaved") == 0))
+					if(gPlayerLogged{i} && (GetPVarInt(i, "AccountSaved") == 0))
 					{
-						SetPVarInt(extraid, "AccountSaving", 1);
-						return OnPlayerStatsUpdate(extraid);
+						SetPVarInt(i, "AccountSaving", 1);
+						OnPlayerStatsUpdate(i);
 					}
 				}
 				ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 1);

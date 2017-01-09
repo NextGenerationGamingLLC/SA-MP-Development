@@ -2484,6 +2484,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(vstring, sizeof(vstring), "You have stored your %s. The vehicle has been despawned.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
 					SendClientMessageEx(playerid, COLOR_WHITE, vstring);
 					CheckPlayerVehiclesForDesync(playerid);
+					ResetCreateData(iVehicleID);
 				}
 			}
 			else SendClientMessageEx(playerid, COLOR_WHITE, "This vehicle is currently occupied - it cannot be despawned right now.");
@@ -2524,6 +2525,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				new
 					iVeh = CreateVehicle(PlayerVehicleInfo[playerid][listitem][pvModelId], PlayerVehicleInfo[playerid][listitem][pvPosX], PlayerVehicleInfo[playerid][listitem][pvPosY], (PlayerVehicleInfo[playerid][listitem][pvModelId] == 460) ? PlayerVehicleInfo[playerid][listitem][pvPosZ]+5 : PlayerVehicleInfo[playerid][listitem][pvPosZ], PlayerVehicleInfo[playerid][listitem][pvPosAngle],PlayerVehicleInfo[playerid][listitem][pvColor1], PlayerVehicleInfo[playerid][listitem][pvColor2], -1);
+
+				ResetCreateData(iVeh);
 
 				SetVehicleVirtualWorld(iVeh, PlayerVehicleInfo[playerid][listitem][pvVW]);
 				LinkVehicleToInterior(iVeh, PlayerVehicleInfo[playerid][listitem][pvInt]);

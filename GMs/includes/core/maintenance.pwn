@@ -1,3 +1,106 @@
+#include <YSI\y_hooks>
+
+new SystemUpdate, SystemTimer;
+new Text:UpdateIn[2];
+
+hook OnGameModeInit() {
+	UpdateIn[0] = TextDrawCreate(451.049072, 430.333709, "Server_shutdown_in:");
+	TextDrawLetterSize(UpdateIn[0], 0.400000, 1.600000);
+	TextDrawAlignment(UpdateIn[0], 1);
+	TextDrawColor(UpdateIn[0], -1);
+	TextDrawSetShadow(UpdateIn[0], 0);
+	TextDrawSetOutline(UpdateIn[0], 1);
+	TextDrawBackgroundColor(UpdateIn[0], 255);
+	TextDrawFont(UpdateIn[0], 1);
+	TextDrawSetProportional(UpdateIn[0], 1);
+	TextDrawSetShadow(UpdateIn[0], 0);
+
+	UpdateIn[1] = TextDrawCreate(593.232971, 430.333709, "00:00");
+	TextDrawLetterSize(UpdateIn[1], 0.400000, 1.600000);
+	TextDrawAlignment(UpdateIn[1], 1);
+	TextDrawColor(UpdateIn[1], -1);
+	TextDrawSetShadow(UpdateIn[1], 0);
+	TextDrawSetOutline(UpdateIn[1], 1);
+	TextDrawBackgroundColor(UpdateIn[1], 255);
+	TextDrawFont(UpdateIn[1], 1);
+	TextDrawSetProportional(UpdateIn[1], 1);
+	TextDrawSetShadow(UpdateIn[1], 0);
+	return 1;
+}
+
+hook OnPlayerConnect(playerid) {
+	if(SystemUpdate > 0) {
+		TextDrawShowForPlayer(playerid, UpdateIn[0]);
+		TextDrawShowForPlayer(playerid, UpdateIn[1]);
+	}
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
+	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
+	new string[6];
+	switch(dialogid)
+	{
+		case DIALOG_MAINTENANCE:
+		{
+			if(response) {
+				if(isnull(inputtext)) return ShowPlayerDialogEx(playerid, DIALOG_MAINTENANCE, DIALOG_STYLE_INPUT, "How long should the timer run?", "Please specify in seconds how long before the server kicks all users & shuts down?\n\nWARNING: This action can't be undone!", "Shutdown", "Exit");
+				if(!(30 <= strval(inputtext) < 3541)) return ShowPlayerDialogEx(playerid, DIALOG_MAINTENANCE, DIALOG_STYLE_INPUT, "How long should the timer run?", "Please specify in seconds how long before the server kicks all users & shuts down?\n\nWARNING: This action can't be undone!", "Shutdown", "Exit");
+				if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to perform this action!");
+
+			    SendClientMessageToAllEx(COLOR_LIGHTBLUE, "* The server will be going down for Scheduled Maintenance. (See bottom right screen)");
+			    GameTextForAll("~n~~n~~n~~n~~y~] Scheduled Maintenance Alert ]", 5000, 3);
+			    SystemUpdate = strval(inputtext);
+			    format(string, sizeof(string), "%s", STimeConvert(SystemUpdate));
+			    TextDrawShowForAll(UpdateIn[0]);
+			    TextDrawSetString(UpdateIn[1], string);
+			    TextDrawShowForAll(UpdateIn[1]);
+			    if(SystemUpdate != 0) KillTimer(SystemTimer);
+			    SystemTimer = SetTimer("MaintenanceTimer", 1000, true);
+			}
+			else SendClientMessageEx(playerid, COLOR_WHITE, "You have cancelled doing a maintenance restart.");
+
+		}
+	}
+	return 1;
+}
+
+CMD:announcem(playerid, params[])
+{
+    if(PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
+    ShowPlayerDialogEx(playerid, DIALOG_MAINTENANCE, DIALOG_STYLE_INPUT, "How long should the timer run?", "Please specify in seconds how long before the server kicks all users & shuts down?\n\nWARNING: This action can't be undone!", "Shutdown", "Exit");
+    return 1;
+}
+
+forward MaintenanceTimer();
+public MaintenanceTimer() {
+	new string[6];
+	if(--SystemUpdate == 0) KillTimer(SystemTimer), Maintenance();
+	if(SystemUpdate == 15) GameTextForAll("~n~~n~~n~~n~~w~Please ~r~log out ~w~now to ensure ~y~account data ~w~has been ~g~saved~w~!", 5000, 3);
+	if(SystemUpdate < 0) SystemUpdate = 0;
+	format(string, sizeof(string), "%s", STimeConvert(SystemUpdate));
+	TextDrawSetString(UpdateIn[1], string);
+	TextDrawShowForAll(UpdateIn[1]);
+	return 1;
+}
+
+STimeConvert(time) {
+    new jmin;
+    new jsec;
+    new string[128];
+	if(time > 59 && time < 3600){
+        jmin = floatround(time/60);
+        jsec = floatround(time - jmin*60);
+        format(string,sizeof(string),"%02d:%02d",jmin,jsec);
+    }
+    else{
+        jsec = floatround(time);
+        format(string,sizeof(string),"00:%02d",jsec);
+    }
+    return string;
+}
+
+
+
 forward Maintenance();
 public Maintenance()
 {

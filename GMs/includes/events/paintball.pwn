@@ -1047,7 +1047,7 @@ stock JoinPaintballArena(playerid, arenaid, password[])
  	return 1;
 }
 
-stock LeavePaintballArena(playerid, arenaid)
+stock LeavePaintballArena(playerid, arenaid, disconnect = 0)
 {
 	if(!GetPVarType(playerid, "IsInArena")) return 1;
 	if(arenaid == GetPVarInt(playerid, "IsInArena"))
@@ -1059,7 +1059,8 @@ stock LeavePaintballArena(playerid, arenaid)
 		{
 		    DeletePVar(playerid, "ArenaNumber");
 		}
-		DeletePVar(playerid, "IsInArena");
+		// We must not remove the var OnPlayerDisconenct or else we can't place them outside of the arena!
+		if(!disconnect) DeletePVar(playerid, "IsInArena");
 
 		PlayerInfo[playerid][pKills] = 0;
 	    PlayerInfo[playerid][pDeaths] = 0;

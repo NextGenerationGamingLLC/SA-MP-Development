@@ -146,6 +146,30 @@ stock CompleteToyTrade(playerid)
 			}
 		}
 	}
+	if(PlayerInfo[sellerid][pBackpack] > 0 && PlayerInfo[sellerid][pBEquipped])
+	{
+		switch(PlayerInfo[sellerid][pBackpack])
+		{
+			case 1: // Small
+			{
+				if(PlayerHoldingObject[sellerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(sellerid, 9))
+					RemovePlayerAttachedObject(sellerid, 9), PlayerHoldingObject[sellerid][9] = 0;
+				SetPlayerAttachedObject(sellerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+			}
+			case 2: // Med
+			{
+				if(PlayerHoldingObject[sellerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(sellerid, 9))
+					RemovePlayerAttachedObject(sellerid, 9), PlayerHoldingObject[sellerid][9] = 0;
+				SetPlayerAttachedObject(sellerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
+			}
+			case 3: // Large
+			{
+				if(PlayerHoldingObject[sellerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(sellerid, 9))
+					RemovePlayerAttachedObject(sellerid, 9), PlayerHoldingObject[sellerid][9] = 0;
+				SetPlayerAttachedObject(sellerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
+			}
+		}
+	}
 	OnPlayerStatsUpdate(playerid);
 	OnPlayerStatsUpdate(sellerid);
 

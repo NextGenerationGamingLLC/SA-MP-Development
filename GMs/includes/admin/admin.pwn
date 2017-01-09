@@ -1326,6 +1326,7 @@ CMD:destroycars(playerid, params[])
     return 1;
 }
 
+/*
 CMD:announcem(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 1337) {
@@ -1340,7 +1341,7 @@ CMD:announcem(playerid, params[])
 		GameTextForPlayer(i, "~y~Scheduled Maintenance Alert", 5000, 6);
     }
     return 1;
-}
+}*/
 
 CMD:rehashall(playerid, params[])
 {

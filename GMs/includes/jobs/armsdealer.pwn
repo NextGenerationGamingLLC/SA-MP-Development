@@ -102,18 +102,6 @@ CMD:sellgun(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)		 rifle(3000)");
 					SendClientMessageEx(playerid, COLOR_WHITE, "tec9(3000)       	uzi(2500)");
 				}
-				case 1200 .. 1949:// Level 5
-				{
-					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "bat(100)            cane(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "shovel(100)         club(100)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "pool(100)         katana(100)");
-					SendClientMessageEx(playerid, COLOR_GRAD1, "dildo(100)           9mm(500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "sdpistol(1000)  shotgun(4000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "mp5(2500)		 rifle(3000)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "tec9(3000)       	uzi(2500)");
-					SendClientMessageEx(playerid, COLOR_WHITE, "deagle(5000)");
-				}
 				default:
 				{
 					SendClientMessageEx(playerid, COLOR_GRAD1, "flowers(100)    knuckles(100)");
@@ -127,7 +115,7 @@ CMD:sellgun(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_WHITE, "deagle(5000)");
 				}
 			}
-			if(PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pArmsSkill] >= 1200) SendClientMessageEx(playerid, COLOR_WHITE, "ak47(10000)");
+			if(PlayerInfo[playerid][pArmsSkill] >= 1200) SendClientMessageEx(playerid, COLOR_WHITE, "ak47(10000) - Requires Gold VIP");
 			SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------");
 			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /sellgun [playerid] [weapon]");
 			return 1;
@@ -469,26 +457,29 @@ CMD:sellgun(playerid, params[])
 				}
 				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 			}
-			else if(strcmp(weapon, "AK47", true) == 0 && PlayerInfo[playerid][pDonateRank] >= 3 && PlayerInfo[playerid][pArmsSkill] >= 1200)
+			else if(strcmp(weapon, "AK47", true) == 0 && PlayerInfo[playerid][pArmsSkill] >= 1200)
 			{
-				if(PlayerInfo[playerid][pMats] >= 10000)
-				{
-					if(id == playerid)
+				if(PlayerInfo[playerid][pDonateRank] > 2) {
+					if(PlayerInfo[playerid][pMats] >= 10000)
 					{
-						PlayerInfo[playerid][pMats] -= 10000;
-						GivePlayerValidWeapon(id, 30);
+						if(id == playerid)
+						{
+							PlayerInfo[playerid][pMats] -= 10000;
+							GivePlayerValidWeapon(id, 30);
 
-						PlayerInfo[playerid][pArmsSkill] += 1;
+							PlayerInfo[playerid][pArmsSkill] += 1;
+						}
+						else
+						{
+							SetPVarInt(id, "pSellGun", 30);
+							SetPVarInt(id, "pSellGunMats", 10000);
+							SetPVarInt(id, "pSellGunID", playerid);
+							SetPVarInt(id, "pSellGunXP", 1);
+						}
 					}
-					else
-					{
-						SetPVarInt(id, "pSellGun", 30);
-						SetPVarInt(id, "pSellGunMats", 10000);
-						SetPVarInt(id, "pSellGunID", playerid);
-						SetPVarInt(id, "pSellGunXP", 1);
-					}
+					else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
 				}
-				else return SendClientMessage(playerid, COLOR_WHITE, "You do not have enough materials!");
+				else return SendClientMessageEx(playerid, COLOR_WHITE, "You need to be a Gold VIP to craft this weapon!");
 			}
 			else 
 			{
@@ -507,7 +498,7 @@ CMD:sellgun(playerid, params[])
 			{
 				format(szMiscArray, sizeof(szMiscArray), "You have offered %s a %s.", GetPlayerNameEx(id), weapon);
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has offered to sell you a %s, type /accept sellgun to accept it.", GetPlayerNameEx(playerid), weapon);
+				format(szMiscArray, sizeof(szMiscArray), "%s has offered to sell you a %s, type /accept weapon to accept it.", GetPlayerNameEx(playerid), weapon);
 				SendClientMessage(id, COLOR_LIGHTBLUE, szMiscArray);
 			}
 

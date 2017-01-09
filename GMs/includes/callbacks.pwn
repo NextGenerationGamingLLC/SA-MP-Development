@@ -43,6 +43,7 @@ public OnVehicleSpawn(vehicleid) {
 	}
     TruckContents{vehicleid} = 0;
 	Vehicle_ResetData(vehicleid);
+	ResetCreateData(vehicleid);
 	new
 		v;
 
@@ -95,26 +96,6 @@ public OnVehicleSpawn(vehicleid) {
 			new string[128];
 			format(string, sizeof(string), "Your %s has been sent to the location at which you last parked it.", GetVehicleName(iVehicleID));
 			SendClientMessageEx(i, COLOR_GRAD1, string);
-		}
-		if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]))
-		{
-			DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
-			CrateVehicleLoad[vehicleid][vForkObject] = -1;
-		}
-	}
-	CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
-	for(new i = 0; i < sizeof(CrateInfo); i++)
-	{
-		if(CrateInfo[i][InVehicle] == vehicleid)
-		{
-			CrateInfo[i][crActive] = 0;
-			CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-			if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
-			CrateInfo[i][crObject] = -1;
-			CrateInfo[i][crX] = 0;
-			CrateInfo[i][crY] = 0;
-			CrateInfo[i][crZ] = 0;
-			break;
 		}
 	}
 	// Make sure no one is in the vehicle window if plane.
@@ -1998,8 +1979,7 @@ public OnPlayerDisconnect(playerid, reason)
 
 		if(GetPVarInt(playerid, "HidingKnife") == 1) PlayerInfo[playerid][pGuns][1] = 4;
 
-		if(GetPVarType(playerid, "IsInArena")) LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
-
+		//if(GetPVarType(playerid, "IsInArena")) LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"));
 
 		// Trucker revamp.
 		/*for(new i = 0; i < MAX_VEHICLES; i++)
@@ -2260,6 +2240,7 @@ public OnPlayerDisconnect(playerid, reason)
 				break;
 			}
 		}
+		if(GetPVarType(playerid, "IsInArena")) LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"), 1);
 		/*
 		if(GetPVarType(playerid, "IsInArena"))
 		{
@@ -2652,6 +2633,7 @@ public OnVehicleDeath(vehicleid) {
 	new Float:XB, Float:YB, Float:ZB;
 	VehicleStatus{vehicleid} = 1;
 	TruckContents{vehicleid} = 0;
+	ResetCreateData(vehicleid);
 	foreach(new i: Player)
 	{
 		if(TruckUsed[i] == vehicleid)
@@ -2689,26 +2671,6 @@ public OnVehicleDeath(vehicleid) {
 	{
 		DynVeh_Spawn(DynVeh[vehicleid]);
 	}*/
-	if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]) && CrateVehicleLoad[vehicleid][vForkLoaded] == 1)
-	{
-		DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
-		CrateVehicleLoad[vehicleid][vForkObject] = -1;
-	}
-	CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
-	for(new i = 0; i < sizeof(CrateInfo); i++)
-	{
-		if(CrateInfo[i][InVehicle] == vehicleid)
-		{
-			CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-			if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
-			CrateInfo[i][crObject] = -1;
-			CrateInfo[i][crActive] = 0;
-			CrateInfo[i][crX] = 0;
-			CrateInfo[i][crY] = 0;
-			CrateInfo[i][crZ] = 0;
-			break;
-		}
-	}
 	arr_Engine{vehicleid} = 0;
 }
 

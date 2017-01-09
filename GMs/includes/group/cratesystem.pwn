@@ -818,6 +818,7 @@ CMD:loadforklift(playerid, params[]) {
 			ABroadCast(COLOR_YELLOW, string, 4);
 	        return SendClientMessage(playerid, COLOR_GRAD2, " You've not played long enough to do this!");
 	    }
+	    if(!(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)) return SendClientMessage(playerid, COLOR_GRAD2, " You need to be apart of a group to load crates!");
 		if(!CrateVehicleLoad[vehicleid][vForkLoaded])
 		{
 		    new CrateFound;

@@ -857,7 +857,7 @@ CMD:gunloadforklift(playerid, params[])
 	return 1;
 }
 
-
+/*
 hook OnVehicleDeath(vehicleid, killerid)
 {
 	if(CrateVehicleLoad[vehicleid][vForkLoaded]) if(IsValidDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject])) DestroyDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject]);
@@ -866,7 +866,7 @@ hook OnVehicleDeath(vehicleid, killerid)
 hook OnVehicleSpawn(vehicleid)
 {
 	if(CrateVehicleLoad[vehicleid][vForkLoaded]) if(IsValidDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject])) DestroyDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject]);
-}
+}*/
 
 CMD:gloadcrate(playerid, params[]) {
 	if(!GCrates_Permission(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot use this command.");
