@@ -876,7 +876,7 @@ CMD:setvip(playerid, params[])
 					PlayerInfo[giveplayerid][pVIPExpire] = gettime()+2592000*months;
 
 					// Level 5 Arms Job - Platinum VIP
-					PlayerInfo[giveplayerid][pArmsSkill] = 401;
+					PlayerInfo[giveplayerid][pArmsSkill] = 1200;
 
 					format(string, sizeof(string), "AdmCmd: %s has set %s's(%d) (IP:%s) VIP level to Platinum (%d) (order #%s)", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), playerip, level, orderid);
 					Log("logs/setvip.log", string);

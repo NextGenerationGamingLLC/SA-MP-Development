@@ -111,7 +111,8 @@ InitiateGamemode()
     LoadGCrates();
 	// loadSafes();
 
-    Job_LoadJobs();
+	LoadJobPoints();
+    //Job_LoadJobs();
     GangTag_Load();
 
     // Bank_LoadBank();

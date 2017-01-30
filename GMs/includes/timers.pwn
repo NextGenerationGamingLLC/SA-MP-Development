@@ -1029,7 +1029,7 @@ foreach(new i: Player)
 			else playerAFK[i] = 0;
 			GetPlayerPos(i, PlayerPos[i][0], PlayerPos[i][1], PlayerPos[i][2]);
 		}
-		if(GetPVarType(i, "IsInArena") && PlayerInfo[i][pVW] == 0)
+		if(GetPVarType(i, "IsInArena") && GetPlayerVirtualWorld(i) == 0)
 		{
 			SendClientMessageEx(i, COLOR_WHITE, "SERVER: You have been kicked for PaintBall Exploiting.");
 			format(szMiscArray, sizeof(szMiscArray), " %s(%d) (ID: %d) (IP: %s) has been kicked for attempting to Paint Ball Exploit.", GetPlayerNameEx(i), GetPlayerSQLId(i), i, GetPlayerIpEx(i));
@@ -1068,7 +1068,7 @@ foreach(new i: Player)
 						ping = GetPlayerPing(i);
 						if(ping != 65535) // Invalid Ping
 						{
-							format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has just been kicked for %d ping (maximum: "#MAX_PING").", GetPlayerNameEx(i), ping);
+							format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has just been kicked for %d ping (maximum: %d).", GetPlayerNameEx(i), ping, MAX_PING);
 							ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 							SendClientMessageEx(i, COLOR_WHITE, "You have been kicked because your ping is higher than the maximum.");
 							SetPVarInt(i, "BeingKicked", 1);

@@ -383,13 +383,9 @@ ShowTutorialDialog(playerid, stage)
 			szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
 			strcat(szMiscArray, "You are now completely finished with the tutorial. Press the next button to be taken to the character creation menu.\n\n");
 			strcat(szMiscArray, "\t{F69521}Developers\n");
-			strcat(szMiscArray, "\t\t{F69521}Director of Development{FFFFFF}:\n\t\t\tWinterfield\n\n");
+			strcat(szMiscArray, "\t\t{F69521}Director of Development{FFFFFF}:\n\t\t\tShane\n\n");
 			strcat(szMiscArray, "\t\t{F69521}Developers{FFFFFF}:\n\
-				\t\t\tMiguel\n\
-				\t\t\tJingles\n\
-				\t\t\tBehemoth\n\
-				\t\t\tWesten\n\
-				\t\t\tFarva\n\
+				\t\t\tConnolly\n\
 				\t\t{F69500}Past Developers{FFFFFF}:\n\
 				\t\t\tAkatony\t\tJohn\t\tBrendan\n\
 				\t\t\tBrian\t\tScott\t\tGhoulSlayer\n\
@@ -397,7 +393,9 @@ ShowTutorialDialog(playerid, stage)
 				\t\t\tCalgon\t\tNeo\t\tThomasJ\n\
 				\t\t\tBeren\t\tKareemtastic\tSew Sumi\n\
 				\t\t\tRazbit\t\tAlexR\t\tAustin\n\
-				\t\t\tDom\t\tRothschild\n");
+				\t\t\tMiguel\t\tJingles\t\tBehemoth\n\
+				\t\t\tWesten\t\tFarva\t\tDom\n\
+				\t\t\tRothschild\n");
 			strcat(szMiscArray, "\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
 			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Developers", szMiscArray, "Continue", "");
 		}

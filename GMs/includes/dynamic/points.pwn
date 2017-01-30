@@ -87,7 +87,9 @@ CMD:getdrugs(playerid, params[]) {
 		case 3: drank = "Gold VIP";
 		case 4: drank = "Platinum VIP";
 	}
+
 	FetchPoint(playerid, point, (IsABoat(GetPlayerVehicleID(playerid)) ? 15.0 : 3.0));
+	
 	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a drug point!");
 	if(DynPoints[point][poType] < 1 || DynPoints[point][poType] > 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point doesn't offer any drug runs! (TYPE: %d)", DynPoints[point][poType]);
 	if(DynPoints[point][poAmount][vip] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is no material amount set up for %s for this point!", drank);

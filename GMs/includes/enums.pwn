@@ -1802,15 +1802,26 @@ enum eGangTags {
 new arrGangTags[MAX_GANGTAGS][eGangTags];
 
 enum e_JobData {
-    job_iType,
-    job_iLevel,
-	Text3D:job_iTextID[2],
-	job_iActorID[2],
-	job_iActorModel,
-	job_iMapMarker,
-	job_iSpawned
+	Text3D: jTextID,
+	jPickupID,
+	jMapMarker,
+	jMarkerID,
+	jId,
+	jType,
+	Float:jPos[3],
+	jVw,
+	jInt,
+	jLevel,
+	jAreaID
 }
-new arrJobData[MAX_JOBPOINTS][e_JobData];
+new JobData[MAX_JOBPOINTS][e_JobData];
+
+/*enum e_JobVehData {
+	jveh_iTypeID,
+	jveh_iVehID
+}
+new JobVehData[MAX_JOB_VEHICLES][e_JobVehData];
+*/
 
 
 /*enum eBlackMarket {

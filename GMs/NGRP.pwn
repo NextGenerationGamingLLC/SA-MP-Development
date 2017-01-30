@@ -1,4 +1,4 @@
-/*
+ /*
     	 		 /$$   /$$  /$$$$$$          /$$$$$$$  /$$$$$$$
 				| $$$ | $$ /$$__  $$        | $$__  $$| $$__  $$
 				| $$$$| $$| $$  \__/        | $$  \ $$| $$  \ $$
@@ -15,15 +15,10 @@
 
 				Current Developers:
 								*** Director of SA:MP Development:
-								    Jason Gray (Winterfield)
+								    Shane
 
 								**  Development Staff:
-									Miguel (s0nic)
-									Farva
-									Rothschild
-									Connor
-									Jingles
-									Westen
+									Connolly
 				Past Developers:
 								*** Director of SA:MP Development:
 									Dom
@@ -51,6 +46,13 @@
 									Sew Sumi
 									Razbit
 									Behemoth
+									Miguel (s0nic)
+									Farva
+									Rothschild
+									Connor
+									Jingles
+									Westen
+									Farva
 
 				Credits to alternate sources (Y_Less for foreach, gf, etc)
  *
@@ -80,7 +82,7 @@
 /*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
-#define SERVER_GM_TEXT "NG:RP v3.0.409"
+#define SERVER_GM_TEXT "NG:RP v3.0.410"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
@@ -99,6 +101,7 @@
 #include <gvar>
 #include <irc>
 #include <geo_ip>
+#include <easyDialog>
 #include <callbacks>
 #include <attachments>
 //#include <profiler>

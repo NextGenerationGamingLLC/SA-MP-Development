@@ -2515,7 +2515,7 @@ stock ResetCreateData(vehicleid) {
 				break;
 			}
 		}
-		if(IsValidDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject])) DestroyDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject]);
+		//if(IsValidDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject])) DestroyDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject]);
 	}
 	return 1;
 }

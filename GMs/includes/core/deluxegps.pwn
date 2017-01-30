@@ -271,7 +271,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 		case CHECKPOINT_JOB:
 		{
 			new id = GetPVarInt(playerid,"gpsJob");
-			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", GetJobName(arrJobData[id][job_iType]));
+			format(szMiscArray, sizeof(szMiscArray), "You have arrived at {33CCFF}%s{FFFFFF}.", GetJobName(JobData[id][jType]));
 			SendClientMessageEx(playerid,COLOR_WHITE, szMiscArray);
 			DisablePlayerCheckpoint(playerid);
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
@@ -378,7 +378,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				{
 					for(new i; i < MAX_JOBTYPES; ++i)
 					{
-						format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, szJobNames[i]);
+						format(szMiscArray, sizeof(szMiscArray), "%s%s\n", szMiscArray, JobName[i]);
 					}
 					return ShowPlayerDialogEx(playerid, DIALOG_MAP_JOBS, DIALOG_STYLE_LIST, "San Andreas | Map | Jobs", szMiscArray, "Select", "Back");
 				}
@@ -754,22 +754,16 @@ Map_ShowBusinesses(playerid, btype)
 
 Map_ShowJobs(playerid, iJobType)
 {
+	if(!(1 <= iJobType < MAX_JOBPOINTS)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid job type specified.");
 	for(new i; i < MAX_JOBPOINTS; ++i) {
-
-		if(Job_IsValidJob(arrJobData[i][job_iType]) && arrJobData[i][job_iType] == iJobType) {
-
-			new Float:fPos[3];
-			Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrJobData[i][job_iTextID][0], E_STREAMER_X, fPos[0]);
-			Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrJobData[i][job_iTextID][0], E_STREAMER_Y, fPos[1]);
-			Streamer_GetFloatData(STREAMER_TYPE_3D_TEXT_LABEL, arrJobData[i][job_iTextID][0], E_STREAMER_Z, fPos[2]);
-
+		if(JobData[i][jType] == iJobType) {
 			gPlayerCheckpointStatus[playerid] = CHECKPOINT_JOB;
 			SetPVarInt(playerid, "gpsJob", i);
-			SetPlayerCheckpoint(playerid, fPos[0], fPos[1], fPos[2], 5.0);
+			SetPlayerCheckpoint(playerid, JobData[i][jPos][0], JobData[i][jPos][1], JobData[i][jPos][2], 5.0);
 			SendClientMessage(playerid, COLOR_YELLOW, "A checkpoint has been marked on your map.");
 			return 1;
 		}
 	}
-	SendClientMessage(playerid, COLOR_GRAD1, "No one is offering that job currently.");
+	SendClientMessage(playerid, COLOR_GRAD1, "Applications are currently closed for that job.");
 	return 1;
 }

@@ -32,6 +32,66 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+stock SQLUpdateBuild(query[], table[], sqlplayerid)
+{
+	new querylen = strlen(query);
+	if (!query[0]) {
+		format(query, 2048, "UPDATE `%s` SET ", table);
+	}
+	else if (2048-querylen < 200)
+	{
+		new whereclause[32];
+		format(whereclause, sizeof(whereclause), " WHERE `id`=%d", sqlplayerid);
+		strcat(query, whereclause, 2048);
+		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		format(query, 2048, "UPDATE `%s` SET ", table);
+	}
+	else if (strfind(query, "=", true) != -1) strcat(query, ",", 2048);
+	return 1;
+}
+
+stock SQLUpdateFinish(query[], table[], sqlplayerid)
+{
+	if (strcmp(query, "WHERE id=", false) == 0) mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	else
+	{
+		new whereclause[32];
+		format(whereclause, sizeof(whereclause), " WHERE id=%d", sqlplayerid);
+		strcat(query, whereclause, 2048);
+		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		format(query, 2048, "UPDATE `%s` SET ", table);
+	}
+	return 1;
+}
+
+stock SaveInteger(query[], table[], sqlid, Value[], Integer)
+{
+	SQLUpdateBuild(query, table, sqlid);
+	new updval[64];
+	format(updval, sizeof(updval), "`%s`=%d", Value, Integer);
+	strcat(query, updval, 2048);
+	return 1;
+}
+
+
+stock SaveString(query[], table[], sqlid, Value[], String[])
+{
+	SQLUpdateBuild(query, table, sqlid);
+	new escapedstring[160], string[160];
+	mysql_real_escape_string(String, escapedstring);
+	format(string, sizeof(string), "`%s`='%s'", Value, escapedstring);
+	strcat(query, string, 2048);
+	return 1;
+}
+
+stock SaveFloat(query[], table[], sqlid, Value[], Float:Number)
+{
+	new flotostr[32];
+	format(flotostr, sizeof(flotostr), "%0.2f", Number);
+	SaveString(query, table, sqlid, Value, flotostr);
+	return 1;
+}
+
 //--------------------------------[ FUNCTIONS ]---------------------------
 
 PinLogin(playerid)
@@ -558,6 +618,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pCarLockPickSkill]		= cache_get_field_content_int(row,  "CarLockPickSkill", MainPipeline);
 					PlayerInfo[extraid][pLockPickVehCount]		= cache_get_field_content_int(row,  "LockPickVehCount", MainPipeline);
 					PlayerInfo[extraid][pLockPickTime]			= cache_get_field_content_int(row,  "LockPickTime", MainPipeline);
+					PlayerInfo[extraid][pSEC]					= cache_get_field_content_int(row,  "SEC", MainPipeline);
 					//cache_get_field_content(row,  "SEC", szResult, MainPipeline); PlayerInfo[extraid][pSEC] = strval(szResult);
 					PlayerInfo[extraid][pBM]					= cache_get_field_content_int(row,  "BM", MainPipeline);
 					PlayerInfo[extraid][pASM]					= cache_get_field_content_int(row,  "ASM", MainPipeline);

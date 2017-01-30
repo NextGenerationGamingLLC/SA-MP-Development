@@ -232,7 +232,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					}
 					case 13: //Pizza Boy
 					{
-						ShowPlayerDialogEx(playerid, PIZZAJOB, DIALOG_STYLE_MSGBOX, "Pizza Boy","Information:\nThis job can be used to earn money by grabbing a pizza from the\n SF Pizza Stack and then delivering it to different houses.\n You will get less and less money as time moves on and eventually,\n when the pizza is cold, it will be worthless.\n\nCommands:\n/getpizza\nLocation of job: This job can be obtained at the Pier 69, at the job icon(yellow I).", "Done", "Cancel");
+						ShowPlayerDialogEx(playerid, PIZZAJOB, DIALOG_STYLE_MSGBOX, "Pizza Boy","Information:\nThis job can be used to earn money by grabbing a pizza from the\n SF Pizza Stack and then delivering it to different houses.\n You will get less and less money as time moves on and eventually,\n when the pizza is cold, it will be worthless.\n\nCommands:\n/getpizza\nLocation of job: This job can be obtained at the Pizza Stacks in Idlewood, at the job icon(yellow I).", "Done", "Cancel");
 					}
 					case 14: { // Garbageman
 						ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Garbageman","Information:\nThis job can be used to earn money by collecting trash from\n the streets.\n\nCommands:\n/garbagerun\nLocation of job: Use /map to find it.", "Done", "Cancel");
@@ -835,48 +835,66 @@ CMD:quitjob(playerid, params[])
 		{
 		case 1:
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
-				if(PlayerInfo[playerid][pJob] == 2)
-				{
-					if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
-					SetPVarInt(playerid, "LawyerDuty", 0);
+				if(PlayerInfo[playerid][pJob] > 0 ) {
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your Job.");
+					if(PlayerInfo[playerid][pJob] == 2)
+					{
+						if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+						SetPVarInt(playerid, "LawyerDuty", 0);
+					}
+					if(PlayerInfo[playerid][pJob] == 7)
+					{
+						if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+						SetPVarInt(playerid, "MechanicDuty", 0);
+					}
+					PlayerInfo[playerid][pJob] = 0;
 				}
-				if(PlayerInfo[playerid][pJob] == 7)
+				else
 				{
-					if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
-					SetPVarInt(playerid, "MechanicDuty", 0);
+					SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a job!");
 				}
-				PlayerInfo[playerid][pJob] = 0;
 			}
 		case 2:
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your secondary Job.");
-				if(PlayerInfo[playerid][pJob] == 2)
-				{
-					if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
-					SetPVarInt(playerid, "LawyerDuty", 0);
+				if(PlayerInfo[playerid][pJob2] > 0 ) {				
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your second Job.");
+					if(PlayerInfo[playerid][pJob2] == 2)
+					{
+						if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+						SetPVarInt(playerid, "LawyerDuty", 0);
+					}
+					if(PlayerInfo[playerid][pJob2] == 7)
+					{
+						if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+						SetPVarInt(playerid, "MechanicDuty", 0);
+					}
+					PlayerInfo[playerid][pJob2] = 0;
 				}
-				if(PlayerInfo[playerid][pJob2] == 7)
+				else
 				{
-					if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
-					SetPVarInt(playerid, "MechanicDuty", 0);
+					SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a second job!");
 				}
-				PlayerInfo[playerid][pJob2] = 0;
 			}
 		case 3:
 			{
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your third Job.");
-				if(PlayerInfo[playerid][pJob] == 2)
-				{
-					if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
-					SetPVarInt(playerid, "LawyerDuty", 0);
+				if(PlayerInfo[playerid][pJob3] > 0 ) {				
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have quit your third job.");
+					if(PlayerInfo[playerid][pJob3] == 2)
+					{
+						if(GetPVarInt(playerid, "LawyerDuty") == 1) Lawyers--;
+						SetPVarInt(playerid, "LawyerDuty", 0);
+					}
+					if(PlayerInfo[playerid][pJob3] == 7)
+					{
+						if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
+						SetPVarInt(playerid, "MechanicDuty", 0);
+					}
+					PlayerInfo[playerid][pJob3] = 0;
 				}
-				if(PlayerInfo[playerid][pJob3] == 7)
+				else
 				{
-					if(GetPVarInt(playerid, "MechanicDuty") == 1) Mechanics--;
-					SetPVarInt(playerid, "MechanicDuty", 0);
+					SendClientMessageEx(playerid, COLOR_GREY, "   You don't have a third job!");
 				}
-				PlayerInfo[playerid][pJob3] = 0;
 			}
 		default:
 			{

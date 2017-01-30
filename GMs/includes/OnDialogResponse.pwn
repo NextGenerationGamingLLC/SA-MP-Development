@@ -39,7 +39,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(dialogid != iLastDialogID[playerid]) {
 	    	if(dialogid == DIALOG_FS_ELEVATOR1 || dialogid == DIALOG_FS_ELEVATOR2) { }// For dialogs called from filterscripts.
 	    	else {
-	    		if(PlayerInfo[playerid][pAdmin] == 99999) return 1;
+	    		if(PlayerInfo[playerid][pAdmin] == 99999 || dialogid == 32700) return 1;
 		    	AC_Process(playerid, AC_DIALOGSPOOFING, dialogid);
 		    	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM] Please delete your dialog CLEO.");
 		    	SetTimerEx("KickEx", 1000, 0, "i", playerid);
@@ -12146,7 +12146,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(string, sizeof(string), "You have been issued your Platinum VIP and have %d PVIP Voucher(s) left.", PlayerInfo[playerid][pPVIPVoucher]);
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
 			SendClientMessageEx(playerid, COLOR_CYAN, "** Your 1 month PVIP Voucher will expire in 1 Month.");
-			PlayerInfo[playerid][pArmsSkill] = 401;
+			PlayerInfo[playerid][pArmsSkill] = 1200;
 
 			new szQuery[128];
 			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `TotalCredits`=%d WHERE `id` = %d", PlayerInfo[playerid][pTotalCredits], GetPlayerSQLId(playerid));

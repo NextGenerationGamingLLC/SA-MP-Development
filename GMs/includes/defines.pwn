@@ -256,7 +256,7 @@ native IsValidVehicle(vehicleid);
 			/*  ---------------- JOBS ----------------- */
 
 #define 	MAX_JOBNAME_LEN			24
-#define 	MAX_JOBTYPES			40
+#define 	MAX_JOBTYPES			31
 #define 	MAX_JOBPOINTS 			100
 
 			/*  ---------------- BUSINESSES ----------------- */
