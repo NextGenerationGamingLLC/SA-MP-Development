@@ -197,12 +197,8 @@ stock DynVeh_Spawn(iDvSlotID, free = 0)
 				if(arrGroupData[iGroupID][g_iBudget] >= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2))
 				{
 					arrGroupData[iGroupID][g_iBudget] -= floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2);
-					new file[32];
 					format(szMiscArray, sizeof(szMiscArray), "Vehicle Slot ID %d RTB fee cost $%d to %s's budget fund.", iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] / 2), arrGroupData[iGroupID][g_szGroupName]);
-					new month, day, year;
-					getdate(year,month,day);
-					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-					Log(file, szMiscArray);
+					GroupPayLog(iGroupID, szMiscArray);
 				}
 				else
 				{

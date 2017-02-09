@@ -8,7 +8,6 @@ InitiateGamemode()
     g_mysql_LoadMOTD();
  	g_mysql_AccountOnlineReset();
 	g_mysql_LoadGiftBox();
- 	mysql_LoadCrates();
 	LoadHouses();
 	LoadDynamicDoors();
 	LoadDynamicMapIcons();
@@ -83,9 +82,6 @@ InitiateGamemode()
 	LoadBanks();
 	LoadPayPhones();
 	
-	//Island for crate system
-    MAXCRATES = 0; // Sets Default Max Crates
-	
 	//LoadCarrier()
 	//SelectCharmPoint();
 	
@@ -108,11 +104,14 @@ InitiateGamemode()
     print("[Dynamic Groups] Loading Dynamic Groups Vehicles...");
     LoadDynamicGroupVehicles();
 
-    LoadGCrates();
+    //LoadGCrates();
+    LoadCrateBoxes();
+    LoadCrateFacilities();
+    LoadCrateOrders();
+    LoadDynamicCrateVehicles();
 	// loadSafes();
 
-	LoadJobPoints();
-    //Job_LoadJobs();
+    LoadJobPoints();
     GangTag_Load();
 
     // Bank_LoadBank();

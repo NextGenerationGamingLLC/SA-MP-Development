@@ -39,6 +39,8 @@ ClearCheckpoint(playerid) {
 	DeletePVar(playerid, "Packages");
 	DeletePVar(playerid, "hFind");
 	DeletePVar(playerid, "pDTest");
+	DeletePVar(playerid, "pDrugRun");
+	DeletePVar(playerid, "GiftBoxCP");
 	DisablePlayerCheckpoint(playerid);
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NONE;
 	return;

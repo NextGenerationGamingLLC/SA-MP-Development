@@ -34,11 +34,70 @@
 	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#include <YSI\y_hooks>
+
+new HitStatus[MAX_PLAYERS];
+
+hook OnPlayerConnect(playerid) {
+	HitStatus[playerid] = 0;
+	return 1;
+}
+
+public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
+	new string[128];
+    if(playerid != INVALID_PLAYER_ID) {
+    	if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena")) {
+		    if(weaponid > 0 && GetPlayerWeapon(playerid) == weaponid) {
+				if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid) {
+					ExecuteHackerAction(playerid, weaponid);
+					RemovePlayerWeapon(playerid, weaponid);
+					return 0;
+				}
+			}
+		}
+		if(weaponid == WEAPON_SILENCED && pTazer{playerid} == 1) {
+			new iShots = GetPVarInt(playerid, "TazerShots");
+
+			if(iShots > 0) {
+				SetPVarInt(playerid, "TazerShots", iShots - 1);
+			}
+			if(iShots < 1) {
+				TazerTimeout[playerid] = 12;
+				SetTimerEx("TazerTimer",1000,false,"d",playerid);
+				SendClientMessageEx(playerid, COLOR_WHITE, "Your tazer is recharging!");
+				
+				RemovePlayerWeapon(playerid, 23);
+				GivePlayerValidWeapon(playerid, pTazerReplace{playerid});
+				format(szMiscArray, sizeof(szMiscArray), "* %s holsters their tazer.", GetPlayerNameEx(playerid));
+				ProxDetector(4.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				pTazer{playerid} = 0;
+			}
+		}
+	}
+	if(GetPVarInt(playerid, "FireStart") == 1) {
+		if(fX != 0 && fY != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE) {
+			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
+		}
+	}
+ 	if(hittype != BULLET_HIT_TYPE_NONE ) // Bullet Crashing uses just this hittype
+    {
+        if(!(-1000.0 <= fX <= 1000.0) || !(-1000.0 <= fY <= 1000.0) || !(-1000.0 <= fZ <= 1000.0)) // a valid offset, it's impossible that a offset bigger than 1000 is legit (also less than -1000.0 is impossible, not used by this hack, but still, let's check for it, just for the future, who knows what hacks will appear). The object with biggest offset is having ~700-800 radius.
+        {
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s was kicked for a possiable invalid hit type!", GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_YELLOW, string, 2);
+            Kick(playerid);
+            Log("logs/bulletcrasher.log", string);
+            return 0; // let's desynchronize that bullet, so players won't crash
+        }
+    }
+	return 1;
+}
 
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	szMiscArray[0] = 0;
 	if(PlayerIsDead[damagedid]) return 1;
+	//if(!HitStatus[damagedid]) return 1;
 	new Float:realdam = amount;
 	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID) {
 
@@ -84,13 +143,12 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		GetArmour(damagedid, armour);
 
 		// Ignore godmode. - Admins / Advisors (for health only)
-		if(!GetPVarInt(damagedid, "pGodMode")) {
+		if(!GetPVarInt(damagedid, "pGodMode") && !GetPVarInt(playerid, "eventStaff")) {
 			if(health < 0.1) SetHealth(damagedid, 0.1), GetHealth(damagedid, health); // just set to this as they'll be killed either way.
 			if(health > 150.0) SetHealth(damagedid, 150.0), GetHealth(damagedid, health);
+			if(armour < 0.0) SetArmour(damagedid, 0.0), GetArmour(damagedid, armour);
+			if(armour > 150.0) SetArmour(damagedid, 150.0), GetArmour(damagedid, armour);
 		}
-
-		if(armour < 0.0) SetArmour(damagedid, 0.0), GetArmour(damagedid, armour);
-		if(armour > 100.0) SetArmour(damagedid, 100.0), GetArmour(damagedid, armour);
 
 		if(!IsPlayerStreamedIn(playerid, damagedid) || !IsPlayerStreamedIn(damagedid, playerid)) return 1;
 		new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
@@ -331,13 +389,12 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		GetArmour(playerid, armour);
 
 		// Ignore godmode. - Admins / Advisors (for health only)
-		if(!GetPVarInt(playerid, "pGodMode")) {
+		if(!GetPVarInt(playerid, "pGodMode") && !GetPVarInt(playerid, "eventStaff")) {
 			if(health < 0.1) SetHealth(playerid, 0.1), GetHealth(playerid, health);
 			if(health > 150.0) SetHealth(playerid, 150.0), GetHealth(playerid, health);
+			if(armour < 0.0) SetArmour(playerid, 0.0), GetArmour(playerid, armour);
+			if(armour > 150.0) SetArmour(playerid, 150.0), GetArmour(playerid, armour);
 		}
-
-		if(armour < 0.0) SetArmour(playerid, 0.0), GetArmour(playerid, armour);
-		if(armour > 100.0) SetArmour(playerid, 100.0), GetArmour(playerid, armour);
 
 		if(PlayerInfo[playerid][pHospital] == 1) return 1;
 		if(GetPVarInt(playerid, "PlayerCuffed") == 1) return 1;

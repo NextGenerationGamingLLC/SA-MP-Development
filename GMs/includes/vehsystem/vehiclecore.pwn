@@ -1240,10 +1240,6 @@ CheckPlayerVehiclesForDesync(playerid) {
 
 Vehicle_ResetData(iVehicleID) {
 	if(GetVehicleModel(iVehicleID)) {
-		for(new cv = 0; cv < 6; cv++)
-	    {
-			CrateVehicleLoad[iVehicleID][vCrateID][cv] = -1;
-		}
 		Vehicle_Armor(iVehicleID);
 		LockStatus{iVehicleID} = 0;
 		VehicleStatus{iVehicleID} = 0;
@@ -1286,6 +1282,10 @@ Vehicle_Armor(iVehicleID) {
 	if(DynVeh[iVehicleID] != -1 && iVehicleID == DynVehicleInfo[DynVeh[iVehicleID]][gv_iSpawnedID])
 	{
 	    SetVehicleHealth(iVehicleID, DynVehicleInfo[DynVeh[iVehicleID]][gv_fMaxHealth]);
+	}
+	else if(IsDynamicCrateVehicle(iVehicleID) != -1) 
+	{
+		SetVehicleHealth(iVehicleID, CrateVehicle[IsDynamicCrateVehicle(iVehicleID)][cvMaxHealth]);
 	}
 	else
 	{
@@ -1926,6 +1926,7 @@ CMD:car(playerid, params[])
 			{
 				return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
 			}
+			if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid,COLOR_WHITE,"You need both hands to open the car trunk!"); 
 			SetVehicleTrunk(vehicleid, playerid);
 		}
 		else if(!IsPlayerInAnyVehicle(playerid))
@@ -1937,6 +1938,7 @@ CMD:car(playerid, params[])
 				{
 					return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used on this vehicle.");
 				}
+				if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid,COLOR_WHITE,"You need both hands to open the car trunk!"); 
 				SetVehicleTrunk(closestcar, playerid);
 			}
 		}
@@ -1966,9 +1968,9 @@ CMD:car(playerid, params[])
 		else strcpy(enginestatus, "ON", 3);
 		if(lights != VEHICLE_PARAMS_ON) strcpy(lightstatus, "OFF", 4);
 		else strcpy(lightstatus, "ON", 3);
-		if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: Unlimited | Windows: %s",enginestatus,lightstatus,(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
-		else if(slot != -1) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s | Lock Durability: %d/5",enginestatus,lightstatus, VehicleFuel[vehicleid], (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"), PlayerVehicleInfo[playerid][slot][pvLocksLeft]);
-		else format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s",enginestatus,lightstatus, VehicleFuel[vehicleid], (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
+		if (IsVIPcar(vehicleid) || IsAdminSpawnedVehicle(vehicleid) || IsFamedVeh(vehicleid)) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: Unlimited | Windows: %s",enginestatus,lightstatus,(VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
+		else if(slot != -1) format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s | Lock Durability: %d/5",enginestatus,lightstatus, VehicleFuel[vehicleid], (VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"), PlayerVehicleInfo[playerid][slot][pvLocksLeft]);
+		else format(string, sizeof(string), "Engine: %s | Lights: %s | Fuel: %.1f percent | Windows: %s",enginestatus,lightstatus, VehicleFuel[vehicleid], (VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] == 0) ? ("Up") : ("Down"));
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 	}
 	else if(strcmp(choice, "window", true) == 0 && IsPlayerInAnyVehicle(playerid) && !IsABike(GetPlayerVehicleID(playerid)) && !IsABoat(GetPlayerVehicleID(playerid)))
@@ -1979,31 +1981,31 @@ CMD:car(playerid, params[])
 		GetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, backright);
 		if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 0) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 0))
 		{
-			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow0]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow0] = 0;
-			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow0] = 1;
+			if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindow0]) VehInfo[GetPlayerVehicleID(playerid)][vCarWindow0] = 0;
+			else VehInfo[GetPlayerVehicleID(playerid)][vCarWindow0] = 1;
 			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), !driver, passenger, backleft, backright);
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the driver-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow0] == 0) ? ("up") : ("down"));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the driver-side window %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow0] == 0) ? ("up") : ("down"));
 		}
 		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 1) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 1))
 		{
-			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow1]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow1] = 0;
-			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow1] = 1;
+			if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindow1]) VehInfo[GetPlayerVehicleID(playerid)][vCarWindow1] = 0;
+			else VehInfo[GetPlayerVehicleID(playerid)][vCarWindow1] = 1;
 			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, !passenger, backleft, backright);
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the passenger-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow1] == 0) ? ("up") : ("down"));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the passenger-side window %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow1] == 0) ? ("up") : ("down"));
 		}
 		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 2) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 2))
 		{
-			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow2]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow2] = 0;
-			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow2] = 1;
+			if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindow2]) VehInfo[GetPlayerVehicleID(playerid)][vCarWindow2] = 0;
+			else VehInfo[GetPlayerVehicleID(playerid)][vCarWindow2] = 1;
 			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, !backleft, backright);
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear driver-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow2] == 0) ? ("up") : ("down"));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear driver-side window %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow2] == 0) ? ("up") : ("down"));
 		}
 		else if((GetPlayerState(playerid) == PLAYER_STATE_DRIVER && id == 3) || (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER && GetPlayerVehicleSeat(playerid) == 3))
 		{
-			if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3]) CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] = 0;
-			else CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] = 1;
+			if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindow3]) VehInfo[GetPlayerVehicleID(playerid)][vCarWindow3] = 0;
+			else VehInfo[GetPlayerVehicleID(playerid)][vCarWindow3] = 1;
 			SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, !backright);
-			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear passenger-side window %s.", GetPlayerNameEx(playerid), (CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindow3] == 0) ? ("up") : ("down"));
+			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds the rear passenger-side window %s.", GetPlayerNameEx(playerid), (VehInfo[GetPlayerVehicleID(playerid)][vCarWindow3] == 0) ? ("up") : ("down"));
 		}
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
@@ -2013,14 +2015,14 @@ CMD:car(playerid, params[])
 		new driver, passenger, backleft, backright;
 		GetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), driver, passenger, backleft, backright);
 		SetVehicleParamsCarWindows(GetPlayerVehicleID(playerid), !driver, !passenger, !backleft, !backright);
-	    if(CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows])
+	    if(VehInfo[GetPlayerVehicleID(playerid)][vCarWindows])
 	    {
-	    	CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] = 0;
+	    	VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] = 0;
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds their windows up.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	    }
 	    else {
-            CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCarWindows] = 1;
+            VehInfo[GetPlayerVehicleID(playerid)][vCarWindows] = 1;
 			format(string, sizeof(string), "{FF8000}** {C2A2DA}%s winds their windows down.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	    }
@@ -2137,6 +2139,38 @@ CMD:vstorage(playerid, params[])
 	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
 	if(PlayerInfo[playerid][pFreezeCar] == 0 || PlayerInfo[playerid][pAdmin] >= 2)
 	{
+		new vstring[4096], icount = GetPlayerVehicleSlots(playerid);
+		new szCarLocation[MAX_ZONE_NAME];
+		format(vstring, sizeof(vstring), "Vehicle\tStatus\tLocation\tTickets\n");
+		for(new i, iModelID; i < icount; i++) {
+			if((iModelID = PlayerVehicleInfo[playerid][i][pvModelId] - 400) >= 0) {
+				Get3DZone(PlayerVehicleInfo[playerid][i][pvPosX], PlayerVehicleInfo[playerid][i][pvPosY], PlayerVehicleInfo[playerid][i][pvPosZ], szCarLocation, sizeof(szCarLocation));
+				if(PlayerVehicleInfo[playerid][i][pvImpounded]) {
+					format(vstring, sizeof(vstring), "%s%s\tImpounded\tDillimore DMV\t$%s\n", vstring, VehicleName[iModelID], number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
+				}
+				else if(PlayerVehicleInfo[playerid][i][pvDisabled]) {
+					format(vstring, sizeof(vstring), "%s%s\tDisabled\t--\t$%s\n", vstring, VehicleName[iModelID], number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
+				}
+				else if(!PlayerVehicleInfo[playerid][i][pvSpawned]) {
+					format(vstring, sizeof(vstring), "%s%s\tStored\t--\t$%s\n", vstring, VehicleName[iModelID], number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
+				}
+				else format(vstring, sizeof(vstring), "%s%s\tSpawned\t%s\t$%s\n", vstring, VehicleName[iModelID], szCarLocation, number_format(PlayerVehicleInfo[playerid][i][pvTicket]));
+			}
+			else strcat(vstring, "Empty\t--\t--\t--\t--\n");
+		}
+		format(vstring, sizeof(vstring), "%s{40FFFF}Additional Vehicle Slot\t{FFD700}(Credits: %s){A9C4E4}\t\t\n", vstring, number_format(ShopItems[23][sItemPrice]));
+
+		ShowPlayerDialogEx(playerid, VEHICLESTORAGE, DIALOG_STYLE_TABLIST_HEADERS, "Vehicle storage", vstring, "(De)spawn", "Cancel");
+	}
+	else { return SendClientMessageEx(playerid, COLOR_GRAD2, "Your vehicle assets have been frozen by the Judiciary.  Consult your local courthouse to have this cleared"); }
+	return 1;
+}
+/*
+CMD:vstorage(playerid, params[])
+{
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0 || GetPVarInt(playerid, "Injured")) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
+	if(PlayerInfo[playerid][pFreezeCar] == 0 || PlayerInfo[playerid][pAdmin] >= 2)
+	{
 		szMiscArray[0] = 0;
 		new icount = GetPlayerVehicleSlots(playerid);
 		new szCarLocation[MAX_ZONE_NAME];
@@ -2163,7 +2197,7 @@ CMD:vstorage(playerid, params[])
 	}
 	else { return SendClientMessageEx(playerid, COLOR_GRAD2, "Your vehicle assets have been frozen by the Judiciary.  Consult your local courthouse to have this cleared"); }
 	return 1;
-}
+}*/
 
 CMD:trackcar(playerid, params[])
 {

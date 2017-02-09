@@ -102,9 +102,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response)
 			{
 				szMiscArray[0] = 0;
-				new iGroupID,
-					file[32],
-					month, day, year;
+				new iGroupID;
 				for(iGroupID = 0; iGroupID < MAX_GROUPS; ++iGroupID)
 				{
 					if(arrGroupData[iGroupID][g_iGroupType] == 5) break;
@@ -115,9 +113,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				RemovePlayerWeapon(playerid, wepid);
 				arrGroupData[iGroupID][g_iBudget] -= arrWeaponCosts[wepid];
 	            format(szMiscArray, sizeof(szMiscArray), "%s sold their %s at a cost of $%d to %s's budget fund.",GetPlayerNameEx(playerid), Weapon_ReturnName(wepid), arrWeaponCosts[wepid], arrGroupData[iGroupID][g_szGroupName]);
-				getdate(year,month,day);
-				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-				Log(file, szMiscArray);
+				GroupPayLog(iGroupID, szMiscArray);
 				szMiscArray[0] = 0; // unsure if this is needed.
 				format(szMiscArray, sizeof(szMiscArray), "You have sold your %s for {FFFFFF}$%s", Weapon_ReturnName(wepid), number_format(arrWeaponCosts[wepid]));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);

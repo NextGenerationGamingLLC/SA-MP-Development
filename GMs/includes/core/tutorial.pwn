@@ -248,20 +248,30 @@ ShowTutorialDialog(playerid, stage)
 	{
 		case 0:
 		{
-			szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
-			strcat(szMiscArray, "{7091B8}Welcome to Next Generation Gaming!{FFFFFF}\n\n");
-			strcat(szMiscArray, "We are an english speaking community. At NG:RP, we speciale in Roleplay, the act of taking on the role of a character and acting as that character\n");
-			strcat(szMiscArray, "as you would in real life. Along the way your character learns new information and allows them to develop.\n\n");
-			strcat(szMiscArray, "As a community, we've been around since 2010 and have grown significantly since then.\n\n");
-			strcat(szMiscArray, "{FF0000}NG:RP Related Services{FFFFFF}:\n");
-			strcat(szMiscArray, "\t{F69500}Website{FFFFFF}: ng-gaming.net - Sign up on our forums and interact with the community!\n");
-			strcat(szMiscArray, "\t{F69500}User Control Panel{FFFFFF}: cp.ng-gaming.net - Control your account and take measures to ensure your account's security!\n");
-			strcat(szMiscArray, "\t{F69500}Shop{FFFFFF}: shop.ng-gaming.net - Purchase credits from the shop and purchase items in game!\n");
-			strcat(szMiscArray, "\t{F69500}TeamSpeak{FFFFFF}: ts.ng-gaming.net - Connect and speak to different members of the community!\n");
-			strcat(szMiscArray, "\t{F69500}Image Sharing{FFFFFF}: ngg.up - Share your favourite images with your friends, with the press of a button.\n\n");
-			strcat(szMiscArray, "Please make sure you read this tutorial as you will be asked questions at the end.");
-			strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
-			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Welcome", szMiscArray, countstring, "");
+			if(betaserver == 0) {
+				szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
+				strcat(szMiscArray, "{7091B8}Welcome to Next Generation Gaming!{FFFFFF}\n\n");
+				strcat(szMiscArray, "We are an english speaking community. At NG:RP, we speciale in Roleplay, the act of taking on the role of a character and acting as that character\n");
+				strcat(szMiscArray, "as you would in real life. Along the way your character learns new information and allows them to develop.\n\n");
+				strcat(szMiscArray, "As a community, we've been around since 2010 and have grown significantly since then.\n\n");
+				strcat(szMiscArray, "{FF0000}NG:RP Related Services{FFFFFF}:\n");
+				strcat(szMiscArray, "\t{F69500}Website{FFFFFF}: ng-gaming.net - Sign up on our forums and interact with the community!\n");
+				strcat(szMiscArray, "\t{F69500}User Control Panel{FFFFFF}: cp.ng-gaming.net - Control your account and take measures to ensure your account's security!\n");
+				strcat(szMiscArray, "\t{F69500}Shop{FFFFFF}: shop.ng-gaming.net - Purchase credits from the shop and purchase items in game!\n");
+				strcat(szMiscArray, "\t{F69500}TeamSpeak{FFFFFF}: ts.ng-gaming.net - Connect and speak to different members of the community!\n");
+				strcat(szMiscArray, "\t{F69500}Image Sharing{FFFFFF}: ngg.up - Share your favourite images with your friends, with the press of a button.\n\n");
+				strcat(szMiscArray, "Please make sure you read this tutorial as you will be asked questions at the end.");
+				strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
+				ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Tutorial - Welcome", szMiscArray, countstring, "");
+			}
+			else {
+				szMiscArray = "{FFFFFF}___________________________________________________________________________________________\n\n\n";
+				strcat(szMiscArray, "{7091B8}Welcome to Next Generation Gaming Beta Server!{FFFFFF}\n\n");
+				strcat(szMiscArray, "You are not required to sit through the tutorial, please just press \"Got it\" at the bottom.\n");
+				strcat(szMiscArray, "You'll be taken stright to the chracter creation screen.\n\n");
+				strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________");
+				ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Beta Server - Welcome", szMiscArray, "Got It", "");
+			}
 		}
 		case 1:
 		{
@@ -385,17 +395,17 @@ ShowTutorialDialog(playerid, stage)
 			strcat(szMiscArray, "\t{F69521}Developers\n");
 			strcat(szMiscArray, "\t\t{F69521}Director of Development{FFFFFF}:\n\t\t\tShane\n\n");
 			strcat(szMiscArray, "\t\t{F69521}Developers{FFFFFF}:\n\
-				\t\t\tConnolly\n\
+				\t\t\tMiguel\n\
+				\t\t\tFarva\n\
 				\t\t{F69500}Past Developers{FFFFFF}:\n\
-				\t\t\tAkatony\t\tJohn\t\tBrendan\n\
+				\t\t\tAkatony\tJohn\t\tBrendan\n\
 				\t\t\tBrian\t\tScott\t\tGhoulSlayer\n\
 				\t\t\tZhao\t\tDonuts\t\tMo Cena\n\
 				\t\t\tCalgon\t\tNeo\t\tThomasJ\n\
 				\t\t\tBeren\t\tKareemtastic\tSew Sumi\n\
 				\t\t\tRazbit\t\tAlexR\t\tAustin\n\
-				\t\t\tMiguel\t\tJingles\t\tBehemoth\n\
-				\t\t\tWesten\t\tFarva\t\tDom\n\
-				\t\t\tRothschild\n");
+				\t\t\tDom\t\tRothschild\tWinterfield\n\
+				\t\t\tJingles\tBehemoth\tWesten\n");
 			strcat(szMiscArray, "\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
 			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Developers", szMiscArray, "Continue", "");
 		}
@@ -414,10 +424,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				case 0 .. 4:
 				{
-					if(GetPVarInt(playerid, "pTutorialTimer") != 0) return ShowTutorialDialog(playerid, PlayerInfo[playerid][pTut]);
-					else
-					{
-						PlayerInfo[playerid][pTut]++;
+					if(betaserver == 0) {
+						if(GetPVarInt(playerid, "pTutorialTimer") != 0) return ShowTutorialDialog(playerid, PlayerInfo[playerid][pTut]);
+						else
+						{
+							PlayerInfo[playerid][pTut]++;
+							AdvanceTutorial(playerid);
+						}
+					} else {
+						PlayerInfo[playerid][pTut] = 13;
 						AdvanceTutorial(playerid);
 					}
 				}

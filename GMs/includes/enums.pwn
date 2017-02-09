@@ -383,34 +383,102 @@ enum ShopItem
 	//sMade,
 }
 
-enum cVehicleLoad
+enum vehProp
 {
-	vCrateAmt,
-	vCrateID[6],
-	vForkLoaded,
-	vForkObject,
 	vCarVestKit,
 	vCarWindow0,
 	vCarWindow1,
 	vCarWindow2,
 	vCarWindow3,
 	vCarWindows,
-	vLastDriver[MAX_PLAYER_NAME],
+	vLastDriver[MAX_PLAYER_NAME]
+}
+
+enum lockerWeapons
+{
+	lwGroup,
+	lwWep[46]
+}
+
+enum crateOrders
+{
+	coGroup,
+	coFacility,
+	coCrates,
+	coPerCrate,
+	coOrderBy[MAX_PLAYER_NAME],
+	coDelivered,
+	coStatus,
+	coTime
 }
 
 enum crateInfo
 {
-	crActive,
-	crObject,
-	crInt,
-	crVW,
-	crPlacedBy[MAX_PLAYER_NAME],
-	Float: crX,
-	Float: crY,
-	Float: crZ,
-	GunQuantity,
-	InVehicle,
-	Text3D: crLabel,
+	cbObject,
+	Text3D: cbTextID,
+	cbFacility,
+	cbGroup,
+	Float:cbPos[3],
+	cbInVeh,
+	cbOnVeh,
+	cbInt,
+	cbVw,
+	cbWep[46],
+	cbPlacedBy[MAX_PLAYER_NAME],
+	cbLifespan,
+	cbTransfer,
+	cbDoor,
+	cbDoorType,
+	cbPrice,
+	cbPaid,
+	cbActive
+}
+
+enum crateFacInfo
+{
+	Text3D: cfTextID,
+	cfPickupID,
+	cfMapIcon,
+	cfId,
+	cfName[32],
+	cfGroup,
+	Float: cfPos[4],
+	cfInt,
+	cfVw,
+	cfProdMax,
+	cfProdPrep,
+	cfProdReady,
+	cfProdTimer,
+	cfProdStatus,
+	cfProdCost,
+	cfRaidTimer,
+	cfCooldown,
+	cfActive,
+	cfTimer
+}
+
+enum CrateVehInfo {
+	cvSpawnID,
+	cvId,
+	cvModel,
+	cvColor[2],
+	cvGroupID,
+	cvRank,
+	cvSpawned,
+	cvDisabled,
+	cvImpound,
+	cvTickets,
+	Float:cvMaxHealth,
+	Float:cvHealth,
+	Float:cvFuel,
+	cvType,
+	Float:cvPos[4],
+	cvInt,
+	cvVw,
+	cvCrateMax,
+	cvForkObject,
+	cvCrate,
+	cvCrateLoad
 }
 
 enum Auction
@@ -1770,13 +1838,6 @@ enum FallIntoFun
 	FIFHours,
 	FIFChances
 }
-
-enum eGCrateData {
-	gcr_iObject = INVALID_OBJECT_ID,
-	Text3D:gcr_iLabel,
-	gcr_isLoaded,
-}
-new arrGCrateData[MAX_GANG_CRATES][eGCrateData];
 
 enum ParkingMeterInfo
 {

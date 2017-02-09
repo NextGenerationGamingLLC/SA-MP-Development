@@ -298,30 +298,18 @@ task SyncTime[60000]()
 			MemberCount(iGroupID);
 			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 1)
 			{
-				new file[32];
 				format(szMiscArray, sizeof(szMiscArray), "The tax vault is at $%s", number_format(Tax));
-				new month, day, year;
-				getdate(year,month,day);
-				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-				Log(file, szMiscArray);
+				GroupPayLog(iGroupID, szMiscArray);
 			}
 			else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 2)
 			{
-				new file[32];
 				format(szMiscArray, sizeof(szMiscArray), "The tax vault is at $%s", number_format(TRTax));
-				new month, day, year;
-				getdate(year,month,day);
-				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-				Log(file, szMiscArray);
+				GroupPayLog(iGroupID, szMiscArray);
 			}
 			else
 			{
-				new file[32];
 				format(szMiscArray, sizeof(szMiscArray), "The faction vault is at $%s.", number_format(arrGroupData[iGroupID][g_iBudget]));
-				new month, day, year;
-				getdate(year, month, day);
-				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-				Log(file, szMiscArray);
+				GroupPayLog(iGroupID, szMiscArray);
 			}
 			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
 			{
@@ -331,12 +319,8 @@ task SyncTime[60000]()
 					{
 						Tax -= arrGroupData[iGroupID][g_iBudgetPayment];
 						arrGroupData[iGroupID][g_iBudget] += arrGroupData[iGroupID][g_iBudgetPayment];
-						new file[32];
 						format(szMiscArray, sizeof(szMiscArray), "SA Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, szMiscArray);
+						GroupPayLog(iGroupID, szMiscArray);
 						Misc_Save();
 						SaveGroup(iGroupID);
 						for(new z; z < MAX_GROUPS; z++)
@@ -346,8 +330,7 @@ task SyncTime[60000]()
 								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									format(szMiscArray, sizeof(szMiscArray), "SA Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-									Log(file, szMiscArray);
+									GroupPayLog(z, szMiscArray);
 									break;
 								}
 							}
@@ -357,12 +340,8 @@ task SyncTime[60000]()
 					{
 						TRTax -= arrGroupData[iGroupID][g_iBudgetPayment];
 						arrGroupData[iGroupID][g_iBudget] += arrGroupData[iGroupID][g_iBudgetPayment];
-						new file[32];
 						format(szMiscArray, sizeof(szMiscArray), "NE Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, szMiscArray);
+						GroupPayLog(iGroupID, szMiscArray);
 						Misc_Save();
 						SaveGroup(iGroupID);
 						for(new z; z < MAX_GROUPS; z++)
@@ -372,8 +351,7 @@ task SyncTime[60000]()
 								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									format(szMiscArray, sizeof(szMiscArray), "NE Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
-									Log(file, szMiscArray);
+									GroupPayLog(z, szMiscArray);
 									break;
 								}
 							}
@@ -394,12 +372,8 @@ task SyncTime[60000]()
 							if(arrGroupData[iGroupID][g_iBudget] >= DynVehicleInfo[iDvSlotID][gv_iUpkeep])
 							{
 								arrGroupData[iGroupID][g_iBudget] -= DynVehicleInfo[iDvSlotID][gv_iUpkeep];
-								new file[32];
 								format(szMiscArray, sizeof(szMiscArray), "Vehicle ID %d (Slot ID %d) Maintainence fee cost $%s to %s's budget fund.",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID, number_format(DynVehicleInfo[iDvSlotID][gv_iUpkeep]), arrGroupData[iGroupID][g_szGroupName]);
-								new month, day, year;
-								getdate(year,month,day);
-								format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-								Log(file, szMiscArray);
+								GroupPayLog(iGroupID, szMiscArray);
 							}
 							else
 							{
@@ -585,7 +559,8 @@ task ProductionUpdate[300000]()
 			SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need help? The Advisors are here to help you. (/requesthelp to get help)");
 		}
 		if(PlayerInfo[i][pConnectHours] < 2) {
-			SendClientMessageEx(i, COLOR_LIGHTRED, "Due to an increase in new playing accounts being created for Death Matching, weapons for new players are restricted for the first two hours of game play.");
+			SendClientMessageEx(i, COLOR_LIGHTRED, "Due to an increase in new playing accounts being created for Death Matching.");
+			SendClientMessageEx(i, COLOR_LIGHTRED, "Weapons for new players are restricted for the first two hours of game play.");
 		}
 
 		/*if(PlayerInfo[i][pFishes] >= 5) {
@@ -2577,11 +2552,15 @@ ptask AFKUpdate[10000](i)
 
 // Timer Name: SaveAccountsUpdate()
 // TickRate: 5 Minutes.
-ptask SaveAccountsUpdate[900000](i)
+task SaveAccountsUpdate[900000]()
 {
-	if(gPlayerLogged{i}) {
-		SetPVarInt(i, "AccountSaving", 1);
-		OnPlayerStatsUpdate(i);
+	foreach(new i: Player)
+	{
+		if(gPlayerLogged{i}) {
+			SetPVarInt(i, "AccountSaving", 1);
+			OnPlayerStatsUpdate(i);
+			break; // We only need to save one person at a time.
+		}
 	}
 }
 

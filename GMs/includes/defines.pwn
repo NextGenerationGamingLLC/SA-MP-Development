@@ -204,11 +204,15 @@ native IsValidVehicle(vehicleid);
 #define			GROUP_MAX_DIV_LEN			16
 #define			GROUP_MAX_MOTD_LEN   		128
 
+// Crates Stuff
+#define         MAX_CRATE_FACILITY			10
+#define         MAX_CRATES             		500
+#define         MAX_CRATE_VEHCILES          350
+
 // General constants.
 #define			MAX_GROUP_ALLEGIANCES		3
 #define			MAX_GROUP_TYPES             11
 #define         MAX_LOCKER_STOCK        	10000
-#define         MAX_CRATES             		50
 #define 		MAX_SPIKES 					10
 #define 		MAX_CONES 					25
 #define 		MAX_FLARES 					10

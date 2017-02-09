@@ -388,11 +388,11 @@ Weapon_ReturnName(iModelID) {
 		case 7: szWepName = "Pool Cue";
 		case 8: szWepName = "Katana";
 		case 9: szWepName = "Chainsaw";
-		case 10: szWepName = "purple dildo";
-		case 11: szWepName = "small white vibrator";
-		case 12: szWepName = "large white vibrator";
-		case 13: szWepName = "silver vibrator";
-		case 14: szWepName = "bouquet of flowers";
+		case 10: szWepName = "Purple Dildo";
+		case 11: szWepName = "Small White Vibrator";
+		case 12: szWepName = "Large White Vibrator";
+		case 13: szWepName = "Silver Vibrator";
+		case 14: szWepName = "Bouquet of Flowers";
 		case 15: szWepName = "Cane";
 		case 16: szWepName = "Grenade";
 		case 17: szWepName = "Tear Gas";
@@ -427,12 +427,12 @@ Weapon_ReturnName(iModelID) {
 		case 46: szWepName = "Parachute";
 		case 47: szWepName = "";
 		case 48: szWepName = "";
-		case 49: szWepName = "vehicle";
-		case 50: szWepName = "helicopter blades";
-		case 51: szWepName = "explosion";
+		case 49: szWepName = "Vehicle";
+		case 50: szWepName = "Helicopter Blades";
+		case 51: szWepName = "Explosion";
 		case 52: szWepName = "";
-		case 53: szWepName = "drowning";
-		case 54: szWepName = "falling";
+		case 53: szWepName = "Drowning";
+		case 54: szWepName = "Falling";
 	}
 	return szWepName;
 }

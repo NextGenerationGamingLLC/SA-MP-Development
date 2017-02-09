@@ -136,14 +136,22 @@ stock SafeLogin(playerid, type)
 		}
 		case 2: // No Account Exists
 		{
-			if(!IsValidName(GetPlayerNameExt(playerid)))
+			if(betaserver == 0 || betaserver == 2)
 			{
-			    SetPVarString(playerid, "KickNonRP", GetPlayerNameEx(playerid));
-			    SetTimerEx("KickNonRP", 3000, false, "i", playerid);
+				if(!IsValidName(GetPlayerNameExt(playerid)))
+				{
+				    SetPVarString(playerid, "KickNonRP", GetPlayerNameEx(playerid));
+				    SetTimerEx("KickNonRP", 3000, false, "i", playerid);
+				}
+				else
+				{
+				    ShowMainMenuDialog(playerid, 2);
+				}
 			}
 			else
 			{
-			    ShowMainMenuDialog(playerid, 2);
+				Dialog_Show(playerid, -1, DIALOG_STYLE_MSGBOX, "ERROR: You were kicked!", "You're unable to create an account on this server!\n\nThis server is for the Beta Team only.\n\nIf you are a beta tester go to http://cp.ng-gaming.net and create an account.", "Close", "");
+				SetTimerEx("KickEx", 3000, 0, "i", playerid);
 			}
 		}
 	}
@@ -190,7 +198,7 @@ stock ShowMainMenuGUI(playerid)
 	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[10]);
 	TextDrawShowForPlayer(playerid, TD_LoginScreen);
 
-	SetPVarInt(playerid, "LoginScreen", 1);
+	SetPVarInt(playerid, "LoginScreen", Random(1,9));
 	TogglePlayerSpectating(playerid, true);
 	SetTimerEx("loginCamera", 1000, false, "i", playerid);
 }
@@ -290,6 +298,94 @@ public loginCamera(playerid)
 	if(!stage) return 1;
 	switch(stage)
 	{
+		case 1: // Gym
+		{
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			Streamer_UpdateEx(playerid,2229.4968,-1722.0701,13.5625);
+			SetPlayerPos(playerid,2211.1460,-1748.3909,-10.0);
+			SetPlayerCameraPos(playerid,2211.1460,-1748.3909,29.3744);
+			SetPlayerCameraLookAt(playerid,2229.4968,-1722.0701,13.5625);
+		}
+		case 2: // Paintball Arena
+		{
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			Streamer_UpdateEx(playerid,1295.6960,-1422.5111,14.9596);
+			SetPlayerPos(playerid,1283.8524,-1385.5304,-10.0);
+			SetPlayerCameraPos(playerid,1283.8524,-1385.5304,25.8896);
+			SetPlayerCameraLookAt(playerid,1295.6960,-1422.5111,14.9596);
+		}
+		case 3: // LSPD
+		{
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			Streamer_UpdateEx(playerid,1554.3381,-1675.5692,16.1953);
+			SetPlayerPos(playerid,1514.7783,-1700.2913,-10.0);
+			SetPlayerCameraPos(playerid,1514.7783,-1700.2913,36.7506);
+			SetPlayerCameraLookAt(playerid,1554.3381,-1675.5692,16.1953);
+		}
+		case 4: // SaC HQ (Gang HQ)
+		{
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			Streamer_UpdateEx(playerid,655.5394,-1867.2231,5.4609);
+			SetPlayerPos(playerid,655.5394,-1867.2231,-10.0);
+			SetPlayerCameraPos(playerid,699.7435,-1936.7568,24.8646);
+			SetPlayerCameraLookAt(playerid,655.5394,-1867.2231,5.4609);
+
+		}
+		case 5: // Fishing Pier
+		{
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			Streamer_UpdateEx(playerid,370.0804,-2087.8767,7.8359);
+			SetPlayerPos(playerid,370.0804,-2087.8767,-10.0);
+			SetPlayerCameraPos(playerid,423.3802,-2067.7915,29.8605);
+			SetPlayerCameraLookAt(playerid,370.0804,-2087.8767,7.8359);
+		}
+		case 6: // VIP
+		{
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			Streamer_UpdateEx(playerid,1797.3397,-1578.3440,14.0798);
+			SetPlayerPos(playerid,1797.3397,-1578.3440,-10.0);
+			SetPlayerCameraPos(playerid,1832.1698,-1600.1538,32.2877);
+			SetPlayerCameraLookAt(playerid,1797.3397,-1578.3440,14.0798);
+		}
+		case 7: // All Saints
+		{
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			Streamer_UpdateEx(playerid,1175.5581,-1324.7922,18.1610);
+			SetPlayerPos(playerid, 1188.4574,-1309.2242,-10.0);
+			SetPlayerCameraPos(playerid,1188.4574,-1309.2242,13.5625+6.0);
+			SetPlayerCameraLookAt(playerid,1175.5581,-1324.7922,18.1610);
+		}
+		case 8: // Unity
+		{
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			Streamer_UpdateEx(playerid,1716.1129,-1880.0715,22.0264);
+			SetPlayerPos(playerid,1716.1129,-1880.0715,-10.0);
+			SetPlayerCameraPos(playerid,1755.0413,-1824.8710,20.2100);
+			SetPlayerCameraLookAt(playerid,1716.1129,-1880.0715,22.0264);
+		}
+	}
+	SetTimerEx("loginCamera", 10000, false, "i", playerid);
+	SetPVarInt(playerid, "LoginScreen", Random(1,9));
+	return 1;
+}
+
+/*
+forward loginCamera(playerid);
+public loginCamera(playerid)
+{
+	if(InsideMainMenu{playerid} == 0) return 1;
+	new stage = GetPVarInt(playerid, "LoginScreen");
+	if(!stage) return 1;
+	switch(stage)
+	{
 		case 1:
 		{
 			//SetPVarInt(playerid, "o_iLoginObjectID", CreateDynamicObject(10757, -1037.50903, 453.60007, 34.86839,   0.00000, 0.00000, 315.27899, -1, -1, playerid, 500.0));
@@ -340,7 +436,7 @@ public loginCamera(playerid)
 	SetTimerEx("loginCamera", 10000, false, "i", playerid);
 	SetPVarInt(playerid, "LoginScreen", stage+1);
 	return 1;
-}
+}*/
 
 /*LoginCamToPlayer(playerid)
 {

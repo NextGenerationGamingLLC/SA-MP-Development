@@ -238,13 +238,14 @@ GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance)
     x += (distance * floatsin(-a, degrees));
     y += (distance * floatcos(-a, degrees));
 }*/
-
+/*
+//Unused
 IsInRangeOfPoint(Float: fPosX, Float: fPosY, Float: fPosZ, Float: fPosX2, Float: fPosY2, Float: fPosZ2, Float: fDist) {
     fPosX -= fPosX2;
 	fPosY -= fPosY2;
     fPosZ -= fPosZ2;
     return ((fPosX * fPosX) + (fPosY * fPosY) + (fPosZ * fPosZ)) < (fDist * fDist);
-}
+}*/
 
 /*PreloadAnimLib(playerid, animlib[])
 {
@@ -1309,7 +1310,7 @@ public UpdateCarRadars()
 			}
 			else
 			{	
-				new targetVehicle = GetPlayerVehicleID(target);
+				new targetVehicle = GetPlayerVehicleID(target), cveh;
 				if(GetVehicleModel(targetVehicle))
 				{
 					new Float: speed = player_get_speed(target);
@@ -1326,6 +1327,17 @@ public UpdateCarRadars()
 						if (veh != -1 && PlayerVehicleInfo[i][veh][pvTicket] > 0)
 						{
 							format(str, sizeof(str), "Tickets: ~r~$%s", number_format(PlayerVehicleInfo[i][veh][pvTicket]));
+							PlayerTextDrawSetString(p, _crTickets[p], str);
+							if (gettime() >= (GetPVarInt(p, "_lastTicketWarning") + 10))
+							{
+								SetPVarInt(p, "_lastTicketWarning", gettime());
+								PlayerPlaySound(p, 4202, 0.0, 0.0, 0.0);
+							}
+						}
+					}
+					if((cveh = IsDynamicCrateVehicle(targetVehicle)) != -1) {
+						if(ValidGroup(CrateVehicle[cveh][cvGroupID]) && CrateVehicle[cveh][cvTickets] > 0) {
+							format(str, sizeof(str), "Tickets: ~r~$%s", number_format(CrateVehicle[cveh][cvTickets]));
 							PlayerTextDrawSetString(p, _crTickets[p], str);
 							if (gettime() >= (GetPVarInt(p, "_lastTicketWarning") + 10))
 							{
@@ -2492,30 +2504,3 @@ stock WindowStatusForChat(sendid, receiveid)
 	}
 	return 1;
 }*/
-
-stock ResetCreateData(vehicleid) {
-	if(vehicleid != INVALID_VEHICLE_ID) {
-		if(IsValidDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]))
-		{
-			DestroyDynamicObject(CrateVehicleLoad[vehicleid][vForkObject]);
-			CrateVehicleLoad[vehicleid][vForkObject] = -1;
-		}
-		CrateVehicleLoad[vehicleid][vForkLoaded] = 0;
-		for(new i = 0; i < sizeof(CrateInfo); i++)
-		{
-			if(CrateInfo[i][InVehicle] == vehicleid)
-			{
-				CrateInfo[i][crActive] = 0;
-				CrateInfo[i][InVehicle] = INVALID_VEHICLE_ID;
-				if(IsValidDynamicObject(CrateInfo[i][crObject])) DestroyDynamicObject(CrateInfo[i][crObject]);
-				CrateInfo[i][crObject] = -1;
-				CrateInfo[i][crX] = 0;
-				CrateInfo[i][crY] = 0;
-				CrateInfo[i][crZ] = 0;
-				break;
-			}
-		}
-		//if(IsValidDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject])) DestroyDynamicObject(arrGCrateData[CrateVehicleLoad[vehicleid][vCrateID][0]][gcr_iObject]);
-	}
-	return 1;
-}

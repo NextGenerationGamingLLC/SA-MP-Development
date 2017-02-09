@@ -423,7 +423,7 @@ new briefcaselimit[] = { 500000, 100, 100, 50000 };
 
 //new limits[][] = {{250000, 20, 15, 0}, {250000, 20, 15, 25000}, {500000, 200, 200, 75000}, {500000, 100, 100, 50000}};
 
-new servernumber;
+new servernumber, betaserver;
 new textdrawscount;
 
 new hour, minuite, second;
@@ -494,7 +494,6 @@ new TempNumber[MAX_PLAYERS];
 new Carrier[17];
 
 new CrateLoad[2];
-new MAXCRATES;
 new AdminWarning;
 
 new Price[MAX_ITEMS];
@@ -505,9 +504,16 @@ new AmountSold[MAX_ITEMS], AmountMade[MAX_ITEMS], GarageVW;
 
 new PumpkinStock, HalloweenShop;
 
-new CrateVehicleLoad[MAX_VEHICLES][cVehicleLoad];
+/*
+new CrateVehicleLoad[MAX_VEHICLES][cVehicleLoad];*/
+new LockerWep[MAX_GROUPS][lockerWeapons];
+new CrateOrder[MAX_GROUPS][crateOrders];
+new CrateBox[MAX_CRATES][crateInfo];
+new CrateVehicle[MAX_CRATE_VEHCILES][CrateVehInfo];
+new CrateFacility[MAX_CRATE_FACILITY][crateFacInfo];
 
-new CrateInfo[MAX_CRATES][crateInfo];
+// Vehicle Properties (Replicate from the crate vehicle).
+new VehInfo[MAX_VEHICLES][vehProp];
 
 //new IslandThreatElimTimer;
 
@@ -729,7 +735,6 @@ new GunStorageID[MAX_PLAYERS];
 new GunId[MAX_PLAYERS];
 new GunMats[MAX_PLAYERS];
 new CraftOffer[MAX_PLAYERS];
-new TRCrateShutDown = 0;
 new CraftId[MAX_PLAYERS];
 new CraftMats[MAX_PLAYERS];
 new CraftName[MAX_PLAYERS][50];
@@ -785,7 +790,6 @@ new TruckerVehicles[37];
 new PizzaVehicles[12];
 new VIPVehicles[50];
 new FamedVehicles[39];
-new LoadForkliftStatus;
 new Homes[MAX_PLAYERS];
 new Locator[MAX_PLAYERS];
 new Mobile[MAX_PLAYERS];
@@ -2705,8 +2709,7 @@ new PlayerText:phone_PTextDraw[MAX_PLAYERS][24];
 
 
 /* AC */
-new iLastDialogID[MAX_PLAYERS],
-	bool:ac_ACToggle[AC_MAX];
+new iLastDialogID[MAX_PLAYERS];
 
 /* Areas */
 new iVehEnterAreaID[MAX_VEHICLES];
@@ -2767,3 +2770,8 @@ new ROB_MAX_PERCENTAGE = 30,
 
 /* IRC/Slack */
 new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], IRC_CHANNEL_SERVERERRORS[32], IRC_CHANNEL_ADMWARNINGS[32], BotID[MAX_BOTS], BotGroupID;
+
+// Crate System.
+new 
+	CarryCrate[MAX_PLAYERS],
+	BeingMoved[MAX_CRATES];

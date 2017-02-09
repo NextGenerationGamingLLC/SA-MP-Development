@@ -57,12 +57,16 @@ CMD:getmats(playerid, params[])
 	if(DynPoints[point][poAmount][vip] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is no material amount set up for %s for this point!", drank);
 	if(DynPoints[point][poPos2][0] == 0.0 || DynPoints[point][poPos2][1] == 0.0) return SendClientMessageEx(playerid, COLOR_GRAD1, "The end delivery point hasn't been setup yet!");
 	if(DynPoints[point][poBoat] && !IsABoat(GetPlayerVehicleID(playerid))) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be in a boat!");
-	if(GetPlayerCash(playerid) < (500 * vip)) return SendClientMessageEx(playerid, COLOR_RED, "You cannot afford the $%s for the materials packages!", number_format((500 * vip)));
-
-	GivePlayerCash(playerid, -(500 * vip));
+	if(vip == 0) {
+		if(GetPlayerCash(playerid) < 500) return SendClientMessageEx(playerid, COLOR_RED, "You cannot afford the $500 for the materials packages!");
+		GivePlayerCash(playerid, -500);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %s materials packages for $500", number_format(DynPoints[point][poAmount][vip]));
+	} else {
+		if(GetPlayerCash(playerid) < (500 * vip)) return SendClientMessageEx(playerid, COLOR_RED, "You cannot afford the $%s for the materials packages!", number_format((500 * vip)));
+		GivePlayerCash(playerid, -(500 * vip));
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %s materials packages for $%s", number_format(DynPoints[point][poAmount][vip]), number_format((500 * vip)));
+	}
 	MatsAmount[playerid] = DynPoints[point][poAmount][vip];
-
-	SendClientMessageEx(playerid, COLOR_WHITE, "You have purchased %s materials packages for $%s", number_format(DynPoints[point][poAmount][vip]), number_format((500 * vip)));
 	if(vip > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "VIP: You have recieved more materials packages because of your %s.", drank);
 	MatDeliver[playerid] = point;
 	SetPVarInt(playerid, "tpMatRunTimer", 10);
@@ -87,9 +91,7 @@ CMD:getdrugs(playerid, params[]) {
 		case 3: drank = "Gold VIP";
 		case 4: drank = "Platinum VIP";
 	}
-
 	FetchPoint(playerid, point, (IsABoat(GetPlayerVehicleID(playerid)) ? 15.0 : 3.0));
-	
 	if(point == -1) return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not at a drug point!");
 	if(DynPoints[point][poType] < 1 || DynPoints[point][poType] > 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "This point doesn't offer any drug runs! (TYPE: %d)", DynPoints[point][poType]);
 	if(DynPoints[point][poAmount][vip] < 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "There is no material amount set up for %s for this point!", drank);

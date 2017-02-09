@@ -43,7 +43,6 @@ public OnVehicleSpawn(vehicleid) {
 	}
     TruckContents{vehicleid} = 0;
 	Vehicle_ResetData(vehicleid);
-	ResetCreateData(vehicleid);
 	new
 		v;
 
@@ -2633,7 +2632,6 @@ public OnVehicleDeath(vehicleid) {
 	new Float:XB, Float:YB, Float:ZB;
 	VehicleStatus{vehicleid} = 1;
 	TruckContents{vehicleid} = 0;
-	ResetCreateData(vehicleid);
 	foreach(new i: Player)
 	{
 		if(TruckUsed[i] == vehicleid)
@@ -4247,18 +4245,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	    new vehicleid = GetPlayerVehicleID(playerid);
 		new Float: pX, Float: pY, Float: pZ;
 		GetPlayerPos(playerid, pX, pY, pZ);
-		if(GetVehicleModel(vehicleid) == 530)
-		{
-		    if(CrateVehicleLoad[vehicleid][vForkLoaded])
-		    {
-				SetPVarFloat(playerid, "tpForkliftX", pX);
-		 		SetPVarFloat(playerid, "tpForkliftY", pY);
-		  		SetPVarFloat(playerid, "tpForkliftZ", pZ);
-				SetPVarInt(playerid, "tpForkliftTimer", 80);
-				SetPVarInt(playerid, "tpForkliftID", GetPlayerVehicleID(playerid));
-				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_CRATETIMER);
-		    }
-		}
 		if(GetPVarType(playerid, "IsInArena")) {
 
 			for(new i = 0; i < MAX_ARENAS; i++)
@@ -4557,17 +4543,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		new
 			newcar = GetPlayerVehicleID(playerid),
 			engine, lights, alarm, doors, bonnet, boot, objective, v;
-
-		if(DynVeh[newcar] != -1)
-		{
-			if(PlayerInfo[playerid][pMember] == DynVehicleInfo[DynVeh[newcar]][gv_igID] || PlayerInfo[playerid][pLeader] == DynVehicleInfo[DynVeh[newcar]][gv_igID])
-			{
-				if(PlayerInfo[playerid][pDivision] == DynVehicleInfo[DynVeh[newcar]][gv_igDivID] || DynVehicleInfo[DynVeh[newcar]][gv_igDivID] == -1)
-				{
-					format(CrateVehicleLoad[newcar][vLastDriver], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
-				}
-			}
-		}
 
 		gLastCar[playerid] = newcar;
 		if(GetPVarInt(playerid, "EventToken") == 1) {
@@ -4923,7 +4898,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
 		return 0;
 	}
-
+/*
 	arrAntiCheat[playerid][ac_iCommandCount]++;
 	switch(arrAntiCheat[playerid][ac_iCommandCount]) {
 		case 0 .. 6: {}
@@ -4931,7 +4906,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 			AC_Process(playerid, AC_CMDSPAM, arrAntiCheat[playerid][ac_iCommandCount]);
 			return 0;
 		}
-	}
+	}*/
 
 	playerLastTyped[playerid] = 0;
 	printf("[zcmd] [%s]: %s", GetPlayerNameEx(playerid), (strfind(cmdtext, "/changepass", true) == 0 ? ("/changepass") : cmdtext));

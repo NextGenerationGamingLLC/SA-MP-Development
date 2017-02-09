@@ -211,3 +211,4 @@ CMD:defend(playerid, params[])
 	}
 	return 1;
 }
+

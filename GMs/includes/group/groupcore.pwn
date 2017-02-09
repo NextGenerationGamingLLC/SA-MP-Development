@@ -686,11 +686,27 @@ Group_DisplayDialog(iPlayerID, iGroupID) {
 	return ShowPlayerDialogEx(iPlayerID, DIALOG_EDITGROUP, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 }
 
+stock CrateLog(groupid, string[])
+{
+	new month, day, year, file[32];
+	getdate(year, month, day);
+	format(file, sizeof(file), "cratelogs/%d/%d-%02d-%02d.log", groupid, year, month, day);
+	return Log(file, string);
+}
+
 stock GroupLog(groupid, string[])
 {
 	new month, day, year, file[32];
 	getdate(year, month, day);
 	format(file, sizeof(file), "grouplogs/%d/%d-%02d-%02d.log", groupid, year, month, day);
+	return Log(file, string);
+}
+
+stock GroupPayLog(groupid, string[])
+{
+	new month, day, year, file[32];
+	getdate(year, month, day);
+	format(file, sizeof(file), "grouppay/%d/%d-%02d-%02d.log", groupid, year, month, day);
 	return Log(file, string);
 }
 
@@ -781,12 +797,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 						SetArmour(playerid, 100);
 						arrGroupData[iGroupID][g_iLockerStock] -= 1;
-						new str[128], file[32];
+						new str[128];
 						format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
+						GroupPayLog(iGroupID, str);
 					}
 					else if(arrGroupData[iGroupID][g_iLockerCostType] != 0) SetArmour(playerid, 100.0);
 					else {
@@ -830,7 +843,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 
 			if (strcmp("Weapons", inputtext) == 0) {
-				if(IsACriminal(playerid) || IsARacer(playerid)) return ShowGroupWeapons(playerid, iGroupID);
+				//if(IsACriminal(playerid) || IsARacer(playerid)) return ShowGroupWeapons(playerid, iGroupID);
+				return ShowGroupWeapons(playerid, iGroupID);
+			}
+			if (strcmp("Crate Transfer", inputtext) == 0) {
+				//if(IsACriminal(playerid) || IsARacer(playerid)) return ShowGroupWeapons(playerid, iGroupID);
+				return CrateTransferOption(playerid, iGroupID);
 			}
 
 			if (strcmp("Drugs", inputtext) == 0) {
@@ -878,24 +896,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
 					SetPVarInt(playerid, "MedVestKit", 1);
 					arrGroupData[iGroupID][g_iLockerStock] -= 1;
-					new str[128], file[32];
+					new str[128];
 					format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-					new month, day, year;
-					getdate(year,month,day);
-					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-					Log(file, str);
+					GroupPayLog(iGroupID, str);
 				}
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 1) {
 					if(arrGroupData[iGroupID][g_iBudget] > 3000) {
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
 						SetPVarInt(playerid, "MedVestKit", 1);
 						arrGroupData[iGroupID][g_iBudget] -= 3000;
-						new str[128], file[32];
+						new str[128];
 						format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a cost of $3,000 to the budget fund.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
+						GroupPayLog(iGroupID, str);
 					}
 					else return SendClientMessageEx(playerid, COLOR_GRAD2, " Your agency cannot afford the vest. ($3,000)");
 				}
@@ -905,12 +917,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						SendClientMessageEx(playerid, COLOR_GRAD1, "You are now carrying a med kit.  /placekit to store it in your backpack/vehicle.");
 						SetPVarInt(playerid, "MedVestKit", 1);
 						GivePlayerCash(playerid, -3000);
-						new str[128], file[32];
+						new str[128];
 						format(str, sizeof(str), "%s took a med kit & vest out of the %s locker at a personal cost of $3,000.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
+						GroupPayLog(iGroupID, str);
 					}
 					else return SendClientMessageEx(playerid, COLOR_GRAD2, " You cannot afford the vest. ($3,000)");
 				}
@@ -929,24 +938,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetArmour(playerid, 100);
 					SetHealth(playerid, 100.0);
 					arrGroupData[iGroupID][g_iLockerStock] -= 1;
-					new str[128], file[32];
+					new str[128];
 					format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-					new month, day, year;
-					getdate(year,month,day);
-					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-					Log(file, str);
+					GroupPayLog(iGroupID, str);
 				}
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 1) {
 					if(arrGroupData[iGroupID][g_iBudget] > 2500) {
 						SetArmour(playerid, 100);
 						SetHealth(playerid, 100.0);
 						arrGroupData[iGroupID][g_iBudget] -= 2500;
-						new str[128], file[32];
+						new str[128];
 						format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
+						GroupPayLog(iGroupID, str);
 					}
 					else return SendClientMessageEx(playerid, COLOR_GRAD2, " Your agency cannot afford the vest. ($2,500)");
 				}
@@ -955,12 +958,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						SetArmour(playerid, 100);
 						SetHealth(playerid, 100.0);
 						GivePlayerCash(playerid, -2500);
-						new str[128], file[32];
+						new str[128];
 						format(str, sizeof(str), "%s took a vest out of the %s locker at a personal cost of $2,500.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
+						GroupPayLog(iGroupID, str);
 					}
 					else return SendClientMessageEx(playerid, COLOR_GRAD2, " You cannot afford the vest. ($2,500)");
 				}
@@ -1018,12 +1018,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(arrGroupData[iGroupID][g_iLockerStock] >= arrGroupData[iGroupID][g_iLockerCost][listitem])
 					{
 						arrGroupData[iGroupID][g_iLockerStock] -= arrGroupData[iGroupID][g_iLockerCost][listitem];
-						new str[128], file[32];
+						new str[128];
 						format(str, sizeof(str), "%s took a %s out of the %s locker at a cost of %d HG Materials.", GetPlayerNameEx(playerid), GetWeaponNameEx(iGunID), arrGroupData[iGroupID][g_szGroupName], arrGroupData[iGroupID][g_iLockerCost][listitem]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
+						GroupPayLog(iGroupID, str);
 					}
 					else
 					{
@@ -1042,12 +1039,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					else
 					{
 						arrGroupData[iGroupID][g_iBudget] -= arrGroupData[iGroupID][g_iLockerCost][listitem];
-						new str[128], file[32];
+						new str[128];
 						format(str, sizeof(str), "%s took a %s out of the %s locker at a cost of $%d.", GetPlayerNameEx(playerid), GetWeaponNameEx(iGunID), arrGroupData[iGroupID][g_szGroupName], arrGroupData[iGroupID][g_iLockerCost][listitem]);
-						new month, day, year;
-						getdate(year,month,day);
-						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-						Log(file, str);
+						GroupPayLog(iGroupID, str);
 					}
 				}
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 2)
@@ -2825,6 +2819,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 
 		case DIALOG_WEAPONSAFE_WITHDRAW_T: {
+			/*
 			new
 				iWepID = GetPVarInt(playerid, "GLGunTake"),
 				iCrateID = strval(inputtext);
@@ -2837,7 +2832,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!IsValidDynamicObject(arrGCrateData[iCrateID][gcr_iObject])) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid crate ID.");
 
 			if(CanTransferToCrate(iWepID)) TransferItemToCrate(playerid, ReturnSlotForCrate(iWepID), 1, iCrateID);
-			else return SendClientMessageEx(playerid, COLOR_WHITE, "This item cannot be transfered to crates");
+			else return SendClientMessageEx(playerid, COLOR_WHITE, "This item cannot be transfered to crates");*/
+			return SendClientMessageEx(playerid, COLOR_WHITE, "This has been disabled due to a re-work!");
 		}
 
 		case DIALOG_GROUP_WEAPONSAFE_DEPOSIT: {
@@ -3359,12 +3355,9 @@ CMD:gwithdraw(playerid, params[])
 	if( arrGroupData[iGroupID][g_iBudget] > amount )
 	{
 		arrGroupData[iGroupID][g_iBudget] -= amount;
-    	new str[128], file[32];
+    	new str[128];
         format(str, sizeof(str), "%s has withdrawn $%d from %s's Budget Fund - reason: %s", GetPlayerNameEx(playerid), amount, arrGroupData[iGroupID][g_szGroupName], reason);
-        new month, day, year;
-		getdate(year,month,day);
-		format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-		Log(file, str);
+		GroupPayLog(iGroupID, str);
         Misc_Save();
         SaveGroup(iGroupID);
 		GivePlayerCash( playerid, amount );
@@ -3404,12 +3397,9 @@ CMD:gdonate(playerid, params[])
 			}
 			GivePlayerCash(playerid, -moneys);
 			arrGroupData[iGroupID][g_iBudget] += moneys;
-			new str[128], file[32];
+			new str[128];
             format(str, sizeof(str), "%s has donated $%s to %s budget fund.", GetPlayerNameEx(playerid), number_format(moneys), arrGroupData[iGroupID][g_szGroupName]);
-            new month, day, year;
-			getdate(year,month,day);
-			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-			Log(file, str);
+			GroupPayLog(iGroupID, str);
 			SaveGroup(iGroupID);
 			OnPlayerStatsUpdate(playerid);
 			format(string, sizeof(string), "%s, you have donated $%s to your agency's budget.",GetPlayerNameEx(playerid), number_format(moneys));
@@ -3512,12 +3502,9 @@ CMD:gvbuyback(playerid, params[])
 								DynVeh_Spawn(iDvSlotID);
 								format(string, sizeof(string), "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 								SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-								new str[128], file[32];
+								new str[128];
 								format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
-								new month, day, year;
-								getdate(year,month,day);
-								format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-								Log(file, str);
+								GroupPayLog(iGroupID, str);
 							}
 							else
 							{
@@ -3545,12 +3532,9 @@ CMD:gvbuyback(playerid, params[])
 					DynVeh_Spawn(iDvSlotID);
 					format(string, sizeof(string), "You have bought back your %s with ID %d for $%d", VehicleName[DynVehicleInfo[iDvSlotID][gv_iModel]-400], iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2));
 					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
-					new str[128], file[32];
+					new str[128];
 					format(str, sizeof(str), "Vehicle Slot ID %d buyback fee cost $%d to %s's budget fund.",iDvSlotID, floatround(DynVehicleInfo[iDvSlotID][gv_iUpkeep] * 2), arrGroupData[iGroupID][g_szGroupName]);
-					new month, day, year;
-					getdate(year,month,day);
-					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-					Log(file, str);
+					GroupPayLog(iGroupID, str);
 					return 1;
 				}
 				else
@@ -5610,7 +5594,7 @@ CMD:locker(playerid, params[]) {
 					    }
 					    if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_CRIMINAL /*|| arrGroupData[iGroupID][g_iGroupType] == GROUP_CRIMINAL_TYPE_RACE*/)
 					    {
-					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nDrugs\nMaterials (%i)\nVault ($%s)",
+					    	format(szDialog, sizeof(szDialog), "Clothes\nWeapons\nCrate Transfer\nDrugs\nMaterials (%i)\nVault ($%s)",
 					    		arrGroupData[iGroupID][g_iMaterials],
 					    		number_format(arrGroupData[iGroupID][g_iBudget])
 					    	);
@@ -5632,14 +5616,14 @@ CMD:locker(playerid, params[]) {
 
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)) // name-change point in faction lockers for free namechange factions
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
 						}
 						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) {
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
+							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
 						}
 						else
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nEquipment\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
 						ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;
@@ -6025,7 +6009,7 @@ CMD:invite(playerid, params[]) {
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
 	return 1;
 }
-
+/*
 CMD:lastdriver(playerid, params[])
 {
 	new vehid, string[128];
@@ -6055,7 +6039,7 @@ CMD:lastdriver(playerid, params[])
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid Vehicle ID");
 	return 1;
-}
+}*/
 
 CMD:togbr(playerid, params[])
 {
@@ -6324,48 +6308,13 @@ public OnMemberCount(groupID)
 	arrGroupData[groupID][g_iMemberCount] = cache_get_row_count(MainPipeline);
 }
 
-/*ShowGroupWeapons(playerid, iGroupID, iPage = 1) {
-
-	szMiscArray[0] = 0;
-
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gWeapons` WHERE `Group_ID` = '%d'", iGroupID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnShowGroupWeapons", "iii", playerid, iGroupID, iPage);
-	return 1;
-}
-
-forward OnShowGroupWeapons(playerid, iGroupID);
-public OnShowGroupWeapons(playerid, iGroupID) {
-
-	szMiscArray[0] = 0;
-
-	new
-		iRows,
-		iFields,
-		iCount = GetPVarInt(playerid, "GRW_Count"),
-		iTemp,
-		iTemp2;
-
-	cache_get_data(iRows, iFields, MainPipeline);
-	while(iCount < iRows) {
-		if(iTemp2 <= 30) {
-			iTemp = cache_get_field_content_int(iCount, "Weapon_ID", MainPipeline);
-       		format(szMiscArray, sizeof(szMiscArray), "%s\n%s (%d)", szMiscArray, Weapon_ReturnName(iTemp), iTemp);
-        }
-        else break;
-        iCount++;
-        iTemp2++;
-    }
-	strcat(szMiscArray, "\nDeposit Weapon\nNext Page");
-	ShowPlayerDialogEx(playerid, DIALOG_GROUP_WEAPONSAFE, DIALOG_STYLE_LIST, "Gang Weapon Safe", szMiscArray, "Select", "Cancel");
-	return 1;
-}*/
-
+/*
 ShowGroupWeapons(playerid, iGroupID) {
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gWeaponsNew` WHERE `Group_ID` = '%d'", iGroupID+1);
 	mysql_function_query(MainPipeline, szMiscArray, true, "OnShowGroupWeapons", "ii", playerid, iGroupID+1);
 	return 1;
-}
+}*/
 
 forward OnShowGroupWeapons(playerid, iGroupID);
 public OnShowGroupWeapons(playerid, iGroupID) {
@@ -6488,41 +6437,31 @@ Weapons(4)
 Ammo(5)
 */
 
-CanTransferToCrate(WepID) {
-	switch(WepID) {
-		case WEAPON_COLT45: return 1;
-		case WEAPON_SILENCED: return 1;
-		case WEAPON_DEAGLE: return 1;
-		case WEAPON_UZI: return 1;
-		case WEAPON_TEC9: return 1;
-		case WEAPON_MP5: return 1;
-		case WEAPON_M4: return 1;
-		case WEAPON_AK47: return 1;
-		case WEAPON_RIFLE: return 1;
-		case WEAPON_SNIPER: return 1;
-		case WEAPON_SHOTGUN: return 1;
-		case WEAPON_SAWEDOFF: return 1;
-		case WEAPON_SHOTGSPA: return 1;
-		default: return 0;
-	}
-	return 0;
+forward ValidGroup(groupid);
+public ValidGroup(groupid) {
+	if((0 <= groupid < MAX_GROUPS)) return 1;
+	else return 0;
 }
 
-ReturnSlotForCrate(WepID) {
-	switch(WepID) {
-		case WEAPON_COLT45: return 0;
-		case WEAPON_SILENCED: return 1;
-		case WEAPON_DEAGLE: return 2;
-		case WEAPON_UZI: return 3;
-		case WEAPON_TEC9: return 4;
-		case WEAPON_MP5: return 5;
-		case WEAPON_M4: return 6;
-		case WEAPON_AK47: return 7;
-		case WEAPON_RIFLE: return 8;
-		case WEAPON_SNIPER: return 9;
-		case WEAPON_SHOTGUN: return 10;
-		case WEAPON_SAWEDOFF: return 11;
-		case WEAPON_SHOTGSPA: return 12;
+forward IsGroupLeader(playerid);
+public IsGroupLeader(playerid) {
+	if(ValidGroup(PlayerInfo[playerid][pMember]) && PlayerInfo[playerid][pMember] == PlayerInfo[playerid][pLeader]) return 1;
+	else return 0;
+}
+
+// Remove Money: SetGroupBudget(groupid, -amount).
+forward SetGroupBudget(groupid, amount);
+public SetGroupBudget(groupid, amount) {
+	if(ValidGroup(groupid)) {
+		arrGroupData[groupid][g_iBudget] += floatround(amount);
+	}
+	return 1;
+}
+
+forward GetGroupBudget(groupid);
+public GetGroupBudget(groupid) {
+	if(ValidGroup(groupid)) {
+		return arrGroupData[groupid][g_iBudget];
 	}
 	return 0;
 }

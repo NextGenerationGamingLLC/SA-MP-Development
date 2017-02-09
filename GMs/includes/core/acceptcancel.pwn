@@ -48,6 +48,7 @@ CMD:accept(playerid, params[])
         if(isnull(params)) {
             SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /accept [name]");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Sex, Mats, Crack, Cannabis, Weapon, Craft, Repair, Lawyer, Bodyguard, Job, Live, Refill");
+            SendClientMessageEx(playerid, COLOR_GREY, "Available names: Firework, Group, Boxing, Medic, Mechanic, Ticket, Car, Death, Backpack");
             SendClientMessageEx(playerid, COLOR_GREY, "Available names: Business, Item, Offer, Heroin, Rawopium, Syringes, Rimkit, Voucher, Kiss, RenderAid, Frisk");
             return 1;
         }
@@ -1002,12 +1003,9 @@ CMD:accept(playerid, params[])
                             Tax += money;
                             arrGroupData[iGroupID][g_iBudget] += money;
                             GetPVarString(playerid, "ticketreason", szMiscArray, sizeof(szMiscArray));
-                            new str[128], file[32];
+                            new str[128];
 			                format(str, sizeof(str), "%s has paid %s's ticket of $%d [Reason: %s] and $%d has been sent to %s's budget fund.", GetPlayerNameEx(playerid), GetPlayerNameEx(TicketOffer[playerid]), TicketMoney[playerid], szMiscArray, money, arrGroupData[iGroupID][g_szGroupName]);
-			                new month, day, year;
-							getdate(year,month,day);
-							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
-							Log(file, str);
+							GroupPayLog(iGroupID, str);
                             TicketOffer[playerid] = INVALID_PLAYER_ID;
                             TicketMoney[playerid] = 0;
                             DeletePVar(playerid, "ticketreason");
