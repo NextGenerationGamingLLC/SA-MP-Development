@@ -143,7 +143,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		GetArmour(damagedid, armour);
 
 		// Ignore godmode. - Admins / Advisors (for health only)
-		if(!GetPVarInt(damagedid, "pGodMode") && !GetPVarInt(playerid, "eventStaff")) {
+		if(!GetPVarInt(damagedid, "pGodMode") && !GetPVarInt(damagedid, "eventStaff")) {
 			if(health < 0.1) SetHealth(damagedid, 0.1), GetHealth(damagedid, health); // just set to this as they'll be killed either way.
 			if(health > 150.0) SetHealth(damagedid, 150.0), GetHealth(damagedid, health);
 			if(armour < 0.0) SetArmour(damagedid, 0.0), GetArmour(damagedid, armour);

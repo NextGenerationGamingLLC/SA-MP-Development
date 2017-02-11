@@ -385,6 +385,14 @@ task SyncTime[60000]()
 					}
 				}
 				SaveGroup(iGroupID);
+				for(new cratebox = 0; cratebox < MAX_CRATES; cratebox++) {
+					if(CrateBox[cratebox][cbActive]) {
+						SaveCrate(cratebox);
+					}
+				}
+
+
+
 			}
 		}
 

@@ -99,8 +99,8 @@ hook OnPlayerStateChange(playerid, newstate, oldstate) {
 					return RemovePlayerFromVehicle(playerid);
 				}
 			}
+			if(CreateCount(carid) > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* There are %d crate(s) stored in this vehicle.", CreateCount(carid));
 		}
-		if(CreateCount(carid) > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* There are %d crate(s) stored in this vehicle.", CreateCount(carid));
 	}
 	return 1;
 }
@@ -593,7 +593,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 							CrateVehicle[carid][cvSpawnID] = INVALID_VEHICLE_ID;
 						}
 						CrateVehicle[carid][cvImpound] = 1;
-						CrateVehCheck(veh);
+						CrateVehCheck(carid);
 						SaveCrateVehicle(carid);
 						format(szMiscArray, sizeof(szMiscArray), "* Your %s has been impounded by an admin you can recover it from your garage. (( /cvstorage ))", VehicleName[CrateVehicle[carid][cvModel] - 400]);
 						foreach(new i: Player) {
@@ -658,7 +658,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 							CrateVehicle[carid][cvSpawnID] = INVALID_VEHICLE_ID;
 						}
 						CrateVehicle[carid][cvDisabled] = 1;
-						CrateVehCheck(veh);
+						CrateVehCheck(carid);
 						SaveCrateVehicle(carid);
 						if(ValidGroup(CrateVehicle[carid][cvGroupID])) {
 							format(szMiscArray, sizeof(szMiscArray), "* Your %s has been disabled by an admin you'll be unable to use the vehicle.", VehicleName[CrateVehicle[carid][cvModel] - 400]);
@@ -667,7 +667,7 @@ Dialog:veh_options(playerid, response, listitem, inputtext[]) {
 									ChatTrafficProcess(i, arrGroupData[CrateVehicle[carid][cvGroupID]][g_hRadioColour] * 256 + 255, szMiscArray, 12);
 								}
 							}
-							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have impounded %s's %s.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[carid][cvModel] - 400]);
+							SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have disabled %s's %s.", arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[carid][cvModel] - 400]);
 							format(szMiscArray, sizeof(szMiscArray), "%s has disabled vehicle %s (Veh id: %d | Owner: %s)", GetPlayerNameEx(playerid), VehicleName[CrateVehicle[carid][cvModel] - 400], CrateVehicle[carid][cvModel], arrGroupData[CrateVehicle[carid][cvGroupID]][g_szGroupName]);
 						}
 						else SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* You have disabled the %s. (Not owned by any group).", VehicleName[CrateVehicle[carid][cvModel] - 400]), format(szMiscArray, sizeof(szMiscArray), "%s has re-enabled vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), VehicleName[CrateVehicle[carid][cvModel] - 400], CrateVehicle[carid][cvModel]);
@@ -792,7 +792,7 @@ CMD:cvedit(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
 		szMiscArray[0] = 0;
 		new choice[32], vehid, value, cveh;
-		if(sscanf(params, "is[32]d", vehid, choice, value))
+		if(sscanf(params, "is[32]D(-1)", vehid, choice, value))
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /crate [vehid] [name] [value]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Names: model, col1, col2, groupid, rank, maxhealth, loadmax, disable, delete");

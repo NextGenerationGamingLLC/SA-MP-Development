@@ -268,7 +268,7 @@ ShowTutorialDialog(playerid, stage)
 				szMiscArray = "{FFFFFF}___________________________________________________________________________________________\n\n\n";
 				strcat(szMiscArray, "{7091B8}Welcome to Next Generation Gaming Beta Server!{FFFFFF}\n\n");
 				strcat(szMiscArray, "You are not required to sit through the tutorial, please just press \"Got it\" at the bottom.\n");
-				strcat(szMiscArray, "You'll be taken stright to the chracter creation screen.\n\n");
+				strcat(szMiscArray, "You'll be taken stright to the character creation screen.\n\n");
 				strcat(szMiscArray, "\n\n\n{FFFFFF}_______________________________________________________________________________");
 				ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP Beta Server - Welcome", szMiscArray, "Got It", "");
 			}

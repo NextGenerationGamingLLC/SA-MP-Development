@@ -545,6 +545,7 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 	{
 		DeletePVar(playerid, "LoadForkliftTime");
 		CrateBeingProcessed[facility] = 0;
+		CrateBox[boxid][cbFacility] = -1;
 		TogglePlayerControllable(playerid, 1);
 		if(!ValidGroup(PlayerInfo[playerid][pMember])) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to load the crate. You're no longer apart of a group!");
@@ -793,7 +794,7 @@ CMD:facility(playerid, params[]) {
 		new choice[32], fac, value;
 		if(sscanf(params, "s[32]iD(-1)", choice, fac, value))
 		{
-			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /facility [id] [name]");
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /facility [name] [id]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Names: sync goto, raidable, info");
 			SendClientMessageEx(playerid, COLOR_GREY, "EXTRA: There is only /editcf if you want to edit a facility.");
 			return 1;
@@ -869,11 +870,12 @@ CMD:crate(playerid, params[]) {
 	if(sscanf(params, "s[32]D(-1)", choice, crate))
 	{
 		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /crate [name]");
-		SendClientMessageEx(playerid, COLOR_GREY, "(On-Foot): Carry, Take, Contents");
+		SendClientMessageEx(playerid, COLOR_GREY, "(On-Foot): Carry, Take, Contents, Seize");
 		SendClientMessageEx(playerid, COLOR_GREY, "(Forklift): Load, Drop, Store");
 		if(PlayerInfo[playerid][pAdmin] > 3) SendClientMessageEx(playerid, COLOR_GREY, "Administrator: Destroy, Spawn");
 		return 1;
 	}
+	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
 	if(strcmp(choice, "carry", true) == 0) {
 		GetCrateBox(playerid, box, 2.0);
 		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes to pickup!");
@@ -923,6 +925,7 @@ CMD:crate(playerid, params[]) {
 			for(new c = 0; c < MAX_CRATES; c++) {
 				if(CrateBox[c][cbFacility] == -1) {
 					CrateBeingProcessed[facility] = 1;
+					CrateBox[c][cbFacility] = facility;
 					SetPVarInt(playerid, "LoadForkliftTime", 5);
 					SetTimerEx("LoadForklift", 1000, 0, "iiii", playerid, facility, c, veh);
 					GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~5 seconds left", 1100, 3);
@@ -950,8 +953,8 @@ CMD:crate(playerid, params[]) {
 		
 		for(new i = 0; i < MAX_CRATE_VEHCILES; i++) {
 			if(CrateVehicle[i][cvSpawnID] != INVALID_VEHICLE_ID) {
-				GetPosBehindVehicle(CrateVehicle[i][cvSpawnID], vPos[0], vPos[1], vPos[2], (IsAPlane(CrateVehicle[i][cvSpawnID]) ? -8 : -2));
-				if(IsPlayerInRangeOfPoint(playerid, 6, vPos[0], vPos[1], vPos[2])) {
+				GetPosBehindVehicle(CrateVehicle[i][cvSpawnID], vPos[0], vPos[1], vPos[2], (IsAPlane(CrateVehicle[i][cvSpawnID]) ? -8 : 0));
+				if(IsPlayerInRangeOfPoint(playerid, (IsAPlane(CrateVehicle[i][cvSpawnID]) ? 6 : 2), vPos[0], vPos[1], vPos[2])) {
 					if(CrateVehicle[i][cvSpawnID] != inveh) {
 						VehFound = i; // Do not use the vehicle ID as we store the array ID for the validation since vehicles do not store "spawn id".
 						break;
@@ -998,8 +1001,8 @@ CMD:crate(playerid, params[]) {
 		
 		for(new i = 0; i < MAX_CRATE_VEHCILES; i++) {
 			if(CrateVehicle[i][cvSpawnID] != INVALID_VEHICLE_ID) {
-				GetPosBehindVehicle(CrateVehicle[i][cvSpawnID], vPos[0], vPos[1], vPos[2], (IsAPlane(CrateVehicle[i][cvSpawnID]) ? -8 : -2));
-				if(IsPlayerInRangeOfPoint(playerid, 6, vPos[0], vPos[1], vPos[2])) {
+				GetPosBehindVehicle(CrateVehicle[i][cvSpawnID], vPos[0], vPos[1], vPos[2], (IsAPlane(CrateVehicle[i][cvSpawnID]) ? -8 : 0));
+				if(IsPlayerInRangeOfPoint(playerid, (IsAPlane(CrateVehicle[i][cvSpawnID]) ? 6 : 2), vPos[0], vPos[1], vPos[2])) {
 					if(CrateVehicle[i][cvSpawnID] != inveh) {
 						VehFound = i; // Do not use the vehicle ID as we store the array ID for the validation since vehicles do not store "spawn id".
 						break;
@@ -1160,6 +1163,17 @@ CMD:crate(playerid, params[]) {
 		}
 		if(strlen(szMiscArray) == 51) return SendClientMessageEx(playerid, COLOR_LIGHTRED, "%s: There are no crate orders pending!", CrateFacility[fac][cfName]);
 		Dialog_Show(playerid, -1, DIALOG_STYLE_TABLIST_HEADERS, "Crate Orders", szMiscArray, "Close", "");
+	}
+	else if(strcmp(choice, "seize", true) == 0) {
+		new fac;
+		GetCrateBox(playerid, box, 2.0);
+		GetFacility(PlayerInfo[playerid][pMember], fac);
+		if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "Your group doesn't own a facility!");
+		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes to seize!");
+		if(CrateBox[box][cbFacility] != fac) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't seize a crate that doesn't belong to your facility!");
+		DestroyCrate(box);
+		format(szMiscArray, sizeof(szMiscArray), "* %s has seized a crate box!", GetPlayerNameEx(playerid));
+		ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	}
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "Unknown choice selected!");
 	return 1;

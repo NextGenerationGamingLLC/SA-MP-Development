@@ -2504,3 +2504,15 @@ stock WindowStatusForChat(sendid, receiveid)
 	}
 	return 1;
 }*/
+
+stock PlayerBusy(target) {
+	if(GetPVarType(target, "PlayerCuffed") ||
+		GetPVarInt(target, "pBagged") >= 1 ||
+		GetPVarType(target, "Injured") ||
+		GetPVarType(target, "IsFrozen") ||
+		PlayerInfo[target][pHospital] > 0 ||
+		GetPVarType(target, "IsInArena") ||
+		GetPVarInt(target, "EventToken") != 0)
+	return 1;
+	else return 0;
+}

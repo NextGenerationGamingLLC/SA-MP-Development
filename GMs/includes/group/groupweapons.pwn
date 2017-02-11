@@ -341,10 +341,10 @@ Dialog:crate_tran_deposit(playerid, response, listitem, inputtext[]) {
 		new box = CarryCrate[playerid];
 		if(box == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're no longer carrying a crate to deposit!");
 		if(CrateBox[box][cbGroup] == -1 && CrateFacility[CrateBox[box][cbFacility]][cfGroup] == PlayerInfo[playerid][pMember] && !CrateBox[box][cbPaid]) {
-			format(szMiscArray, sizeof(szMiscArray), "{F69500}WARNING: You are required to purcahse this crate!{FFFFFF}\n\n");
+			format(szMiscArray, sizeof(szMiscArray), "{F69500}WARNING: You are required to purchase this crate!{FFFFFF}\n\n");
 			format(szMiscArray, sizeof(szMiscArray), "%sThis crate was manufactured at your facility (%s) but it hasn't been paid for.\n\n", szMiscArray, CrateFacility[CrateBox[box][cbFacility]][cfName]);
-			format(szMiscArray, sizeof(szMiscArray), "%sThis crate will cost your group {F69500}$%s{FFFFFF} to deposit into your locker would like to purcahse this crate?", szMiscArray, number_format(CrateFacility[CrateBox[box][cbFacility]][cfProdCost]));
-			Dialog_Show(playerid, purcahse_own_crate, DIALOG_STYLE_MSGBOX, "Purcahse Crate?", szMiscArray, "Confirm", "Cancel");
+			format(szMiscArray, sizeof(szMiscArray), "%sThis crate will cost your group {F69500}$%s{FFFFFF} to deposit into your locker would like to purchase this crate?", szMiscArray, number_format(CrateFacility[CrateBox[box][cbFacility]][cfProdCost]));
+			Dialog_Show(playerid, purcahse_own_crate, DIALOG_STYLE_MSGBOX, "purchase Crate?", szMiscArray, "Confirm", "Cancel");
 		} else {
 			format(clog, sizeof(clog), "%s has deposited a crate into the locker.", GetPlayerNameEx(playerid));
 			CrateLog(PlayerInfo[playerid][pMember], clog);
