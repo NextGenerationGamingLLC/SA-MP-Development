@@ -135,6 +135,7 @@ Dialog:weapon_deposit(playerid, response, listitem, inputtext[]) {
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have deposited a %s into the locker.", Weapon_ReturnName(id));
 		format(szMiscArray, sizeof(szMiscArray), "%s has deposited a %s into the locker.", GetPlayerNameEx(playerid), Weapon_ReturnName(id));
 		GroupLog(PlayerInfo[playerid][pMember], szMiscArray);
+		SaveWeapons(PlayerInfo[playerid][pMember]);
 		DepositMenu(playerid, PlayerInfo[playerid][pMember]);
 	} else {
 		ShowGroupWeapons(playerid, PlayerInfo[playerid][pMember]);

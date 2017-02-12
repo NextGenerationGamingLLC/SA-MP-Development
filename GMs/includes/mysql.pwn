@@ -5221,7 +5221,7 @@ public Group_QueryFinish(iType, iExtraID) {
 		case GROUP_QUERY_GWEAPONS: while(iIndex < iRows) {
 
 			if (!(0 <= iIndex < MAX_GROUPS)) break;
-			LockerWep[iIndex][lwGroup] = cache_get_field_content_int(iIndex, "Group_ID", MainPipeline);
+			LockerWep[iIndex][lwGroup] = cache_get_field_content_int(iIndex, "id", MainPipeline);
 
 			for(new w = 0; w < 46; w++) {
 				format(number, sizeof(number), "%d", w+1);

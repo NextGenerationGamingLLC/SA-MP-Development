@@ -44,7 +44,7 @@ new
 
 
 //Status | | Max | Rarity (1 - Common, 2 - Less Common, 3 - Rare, 4 - Super Rare)
-new WepAmount[46][3] = {
+new GangWeapons[46][3] = {
 	{0, 0, 4}, // Brass Knuckle
 	{1, 3, 1}, // Golf Club
 	{1, 5, 1}, // Nitestick
@@ -91,6 +91,56 @@ new WepAmount[46][3] = {
 	{0, 0, 4}, // Night Vision
 	{0, 0, 4}, // Thermal Goggles
 	{1, 1, 2} // Parachute
+};
+
+//Status | | Max | Rarity (1 - Common, 2 - Less Common, 3 - Rare, 4 - Super Rare)
+new GroupWeapons[46][3] = {
+	{1, 1, 1}, // Brass Knuckle
+	{0, 3, 1}, // Golf Club
+	{1, 5, 1}, // Nitestick
+	{0, 0, 4}, // Knife
+	{0, 3, 2}, // Bat
+	{0, 2, 2}, // Shovel
+	{0, 1, 1}, // Pool Cue
+	{0, 0, 4}, // Katana Sword
+	{0, 0, 4}, // Chain Saw
+	{0, 0, 4}, // Dildo (Purple)
+	{0, 0, 4}, // Dildo
+	{0, 0, 4}, // Vibrator
+	{0, 0, 4}, // Silver Vibrator
+	{0, 0, 4}, // Flower
+	{0, 0, 4}, // Cane
+	{0, 0, 4}, // Grenade
+	{1, 1, 3}, // Tear Gas
+	{0, 0, 4}, // Molotov
+	{0, 0, 4}, // ? 
+	{0, 0, 4}, // ?
+	{0, 0, 4}, // Jet Pack
+	{1, 5, 1}, // 9MM
+	{1, 5, 1}, // Silenced 9mm
+	{1, 4, 2}, // Desert Eagle
+	{1, 3, 2}, // Pump Shotgun
+	{0, 1, 4}, // Sawnoff Shotgun
+	{1, 2, 3}, // Combat Shotgun
+	{1, 3, 2}, // Micro SMG
+	{1, 5, 1}, // MP5 
+	{1, 7, 3}, // AK-47
+	{1, 7, 3}, // M4
+	{1, 2, 2}, // Tec9
+	{1, 3, 3}, // Rifle
+	{0, 2, 4}, // Sniper Rifle
+	{0, 0, 4}, // Rocket Launcher
+	{0, 0, 4}, // Heat Seeker
+	{0, 0, 4}, // Flame Thrower
+	{0, 0, 4}, // Mini-Gun
+	{0, 0, 4}, // Satchel
+	{0, 0, 4}, // Bomb Detonator
+	{1, 3, 2}, // Spray Can
+	{1, 1, 2}, // Fire Extinguisher
+	{1, 1, 2}, // Camera
+	{1, 2, 3}, // Night Vision
+	{1, 2, 3}, // Thermal Goggles
+	{1, 1, 1} // Parachute
 };
 
 hook OnGameModeInit() {
@@ -612,20 +662,40 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 		CrateBox[boxid][cbOnVeh] = vehicle;
 		CrateBox[boxid][cbPrice] = CrateFacility[facility][cfProdCost];
 
-		for(new w = 0; w < sizeof(WepAmount); w++) {
-			new num = random(2564), amount = (WepAmount[w][1] == 1) ? 1 : Random(1, WepAmount[w][1]);
-			if(WepAmount[w][0]) {
-				if(num < 82 && WepAmount[w][2] == 4) {
-					CrateBox[boxid][cbWep][w] = amount;
+		if(IsACriminal(playerid)) {
+			for(new w = 0; w < sizeof(GangWeapons); w++) {
+				new num = random(2564), amount = (GangWeapons[w][1] == 1) ? 1 : Random(1, GangWeapons[w][1]);
+				if(GangWeapons[w][0]) {
+					if(num < 82 && GangWeapons[w][2] == 4) {
+						CrateBox[boxid][cbWep][w] = amount;
+					}
+					else if(num < 312 && GangWeapons[w][2] == 3) {
+						CrateBox[boxid][cbWep][w] = amount;
+					}
+					else if(num < 1524 && GangWeapons[w][2] == 2) {
+						CrateBox[boxid][cbWep][w] = amount;
+					}
+					else if(num <= 2564 && GangWeapons[w][2] == 1) {
+						CrateBox[boxid][cbWep][w] = amount;
+					}
 				}
-				else if(num < 312 && WepAmount[w][2] == 3) {
-					CrateBox[boxid][cbWep][w] = amount;
-				}
-				else if(num < 1524 && WepAmount[w][2] == 2) {
-					CrateBox[boxid][cbWep][w] = amount;
-				}
-				else if(num <= 2564 && WepAmount[w][2] == 1) {
-					CrateBox[boxid][cbWep][w] = amount;
+			}
+		} else {
+			for(new w = 0; w < sizeof(GroupWeapons); w++) {
+				new num = random(2564), amount = (GroupWeapons[w][1] == 1) ? 1 : Random(1, GroupWeapons[w][1]);
+				if(GroupWeapons[w][0]) {
+					if(num < 312 && GroupWeapons[w][2] == 4) {
+						CrateBox[boxid][cbWep][w] = amount;
+					}
+					else if(num < 664 && GroupWeapons[w][2] == 3) {
+						CrateBox[boxid][cbWep][w] = amount;
+					}
+					else if(num < 1956 && GroupWeapons[w][2] == 2) {
+						CrateBox[boxid][cbWep][w] = amount;
+					}
+					else if(num <= 2564 && GroupWeapons[w][2] == 1) {
+						CrateBox[boxid][cbWep][w] = amount;
+					}
 				}
 			}
 		}
@@ -1105,19 +1175,19 @@ CMD:crate(playerid, params[]) {
 							CrateBox[c][cbGroup] = -1;
 							CrateBox[c][cbTransfer] = 0;
 							CrateBox[c][cbPrice] = 0;
-							for(new w = 0; w < sizeof(WepAmount); w++) {
-								new num = random(2564), amount = (WepAmount[w][1] == 1) ? 1 : Random(1, WepAmount[w][1]);
-								if(WepAmount[w][0]) {
-									if(num < 82 && WepAmount[w][2] == 4) {
+							for(new w = 0; w < sizeof(GroupWeapons); w++) {
+								new num = random(2564), amount = (GroupWeapons[w][1] == 1) ? 1 : Random(1, GroupWeapons[w][1]);
+								if(GroupWeapons[w][0]) {
+									if(num < 82 && GroupWeapons[w][2] == 4) {
 										CrateBox[c][cbWep][w] = amount;
 									}
-									else if(num < 312 && WepAmount[w][2] == 3) {
+									else if(num < 312 && GroupWeapons[w][2] == 3) {
 										CrateBox[c][cbWep][w] = amount;
 									}
-									else if(num < 1524 && WepAmount[w][2] == 2) {
+									else if(num < 1524 && GroupWeapons[w][2] == 2) {
 										CrateBox[c][cbWep][w] = amount;
 									}
-									else if(num <= 2564 && WepAmount[w][2] == 1) {
+									else if(num <= 2564 && GroupWeapons[w][2] == 1) {
 										CrateBox[c][cbWep][w] = amount;
 									}
 								}
@@ -1157,7 +1227,7 @@ CMD:crate(playerid, params[]) {
 		if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "Your group doesn't own a facility!");
 		format(szMiscArray, sizeof(szMiscArray), "Group\tCrates (Total Cost)\tDelivered (Money Earned)\n");
 		for(new o = 0; o < MAX_GROUPS; o++) {
-			if(CrateOrder[o][coFacility] == fac) {
+			if(CrateOrder[o][coFacility] == fac && CrateOrder[o][coStatus] > 0) {
 				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%d ($%s)\t%d ($%s)\n", szMiscArray, arrGroupData[o][g_szGroupName], CrateOrder[o][coCrates], number_format((CrateOrder[o][coCrates] * CrateOrder[o][coPerCrate])), CrateOrder[o][coDelivered], number_format((CrateOrder[o][coDelivered] * CrateOrder[o][coPerCrate])));
 			}
 		}
@@ -1439,7 +1509,7 @@ stock DeleteOrder(facility, reason[]) {
 		if(CrateOrder[g][coFacility] == facility) {
 			new refund = ((CrateOrder[g][coCrates] - CrateOrder[g][coDelivered]) * CrateOrder[g][coPerCrate]);
 			foreach(new p: Player) {
-				if(PlayerInfo[p][pMember] == CrateOrder[g][coFacility]) {
+				if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[g][coFacility]][cfGroup]) {
 					SendClientMessageEx(p, COLOR_LIGHTRED, "%s order was auto canceled; %d/%d crates were delivered earning: $%s.", arrGroupData[g][g_szGroupName], CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
 					SendClientMessageEx(p, COLOR_LIGHTRED, "Reason: %s", reason);
 				}
@@ -1455,8 +1525,8 @@ stock DeleteOrder(facility, reason[]) {
 			SetGroupBudget(g, refund);
 			format(szMiscArray, sizeof(szMiscArray), "%s order was auto canceled; %d/%d crates were delivered adding: $%s.", arrGroupData[g][g_szGroupName], CrateOrder[g][coDelivered], CrateOrder[g][coCrates], number_format(CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]), number_format(refund));
 			format(szMiscArray, sizeof(szMiscArray), "%sReason: %s", szMiscArray, reason);
-			GroupPayLog(CrateOrder[g][coFacility], szMiscArray);
-			SetGroupBudget(CrateOrder[g][coFacility], (CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
+			GroupPayLog(CrateFacility[CrateOrder[g][coFacility]][cfGroup], szMiscArray);
+			SetGroupBudget(CrateFacility[CrateOrder[g][coFacility]][cfGroup], (CrateOrder[g][coDelivered] * CrateOrder[g][coPerCrate]));
 			ResetOrder(g);
 			SaveGroup(g);
 		}
@@ -1508,7 +1578,7 @@ Dialog:order_refund(playerid, response, listitem, inputtext[]) {
 		new refund = ((CrateOrder[group][coCrates] - CrateOrder[group][coDelivered]) * CrateOrder[group][coPerCrate]);
 
 		foreach(new p: Player) {
-			if(PlayerInfo[p][pMember] == CrateOrder[group][coFacility]) {
+			if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[group][coFacility]][cfGroup]) {
 				SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their order; %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 			}
 			if(PlayerInfo[p][pLeader] == group) {
@@ -1520,8 +1590,8 @@ Dialog:order_refund(playerid, response, listitem, inputtext[]) {
 		GroupPayLog(group, szMiscArray);
 		SetGroupBudget(group, refund);
 		format(szMiscArray, sizeof(szMiscArray), "%s has canceled their crate order; %d/%d crates were delivered adding: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
-		GroupPayLog(CrateOrder[group][coFacility], szMiscArray);
-		SetGroupBudget(CrateOrder[group][coFacility], (CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+		GroupPayLog(CrateFacility[CrateOrder[group][coFacility]][cfGroup], szMiscArray);
+		SetGroupBudget(CrateFacility[CrateOrder[group][coFacility]][cfGroup], (CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 		ResetOrder(group);
 		SaveGroup(group);
 	}
@@ -1586,7 +1656,7 @@ Dialog:place_order(playerid, response, listitem, inputtext[]) {
 				if(GetGroupBudget(group) < cost) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: Your group can't afford that many crates!"), PrepOrder(playerid, group);
 				if(ValidGroup(CrateOrder[group][coFacility])) {
 					foreach(new p: Player) {
-						if(PlayerInfo[p][pMember] == CrateOrder[group][coFacility]) {
+						if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[group][coFacility]][cfGroup]) {
 							SendClientMessageEx(p, COLOR_LIGHTRED, "%s has placed an order for %d crates! (( /crate orders ))", arrGroupData[group][g_szGroupName], CrateOrder[group][coCrates]);
 						}
 						if(PlayerInfo[p][pLeader] == group) {
@@ -1759,7 +1829,7 @@ public DeliverCrate(playerid, fac, veh, point, crates) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates, You're no longer in the vehicle that you were delivering from!");
 			return 1;
 		}
-		if(PlayerInfo[playerid][pMember] != fac) {
+		if(PlayerInfo[playerid][pMember] != CrateFacility[fac][cfGroup]) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "You failed to deliver any crates, Your group no longer owns the facility!");
 			return 1;
 		}
@@ -1782,20 +1852,20 @@ public DeliverCrate(playerid, fac, veh, point, crates) {
 	    }
 		if(CrateOrder[point][coDelivered] >= CrateOrder[point][coCrates]) {
 			foreach(new p: Player) {
-				if(PlayerInfo[p][pMember] == CrateOrder[point][coFacility]) {
+				if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[point][coFacility]][cfGroup]) {
 					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's crate order has been completed; %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
 				}
 				if(PlayerInfo[p][pLeader] == point) {
 					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order; You can now submit a new order.", CrateFacility[fac][cfName]);
 				}
 			}
-			SetGroupBudget(CrateOrder[point][coFacility], (CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+			SetGroupBudget(CrateFacility[CrateOrder[point][coFacility]][cfGroup], (CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
 			format(szMiscArray, sizeof(szMiscArray), "%s's crate order was sucesfully completed %d crates were delivered adding: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
-			GroupPayLog(CrateOrder[point][coFacility], szMiscArray);
-			ResetOrder(point);
+			GroupPayLog(CrateFacility[CrateOrder[point][coFacility]][cfGroup], szMiscArray);
 			format(szMiscArray, sizeof(szMiscArray), "%s facility has successfully delivered all %d crates to your locker.", CrateFacility[fac][cfName], CrateOrder[point][coCrates]);
 			CrateLog(point, szMiscArray);
-			SaveGroup(CrateOrder[point][coFacility]);
+			SaveGroup(CrateFacility[CrateOrder[point][coFacility]][cfGroup]);
+			ResetOrder(point);
 		} else {
 			SendClientMessageEx(playerid, COLOR_LIGHTRED, "* You have delivered %d crates to %s; Total delivered: %d/%d", crates, arrGroupData[point][g_szGroupName], CrateOrder[point][coDelivered], CrateOrder[point][coCrates]);
 		}
