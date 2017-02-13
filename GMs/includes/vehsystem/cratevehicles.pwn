@@ -344,7 +344,7 @@ public IsDynamicCrateVehicle(vehicleid) {
 CMD:cvcreate(playerid, params[]) {
 	szMiscArray[0] = 0;
 	new iVehicle, iColors[2], Float:vpos[4];
-	if(PlayerInfo[playerid][pAdmin] < 3 && PlayerInfo[playerid][pFactionModerator] < 0) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
+	if(PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pFactionModerator] < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
 	if(CrateVehTotal >= MAX_CRATE_VEHCILES) return SendClientMessageEx(playerid, COLOR_GREY, "Your unable to create anymore crate vehicles the limit has been reached! (Max: %d)", MAX_CRATE_VEHCILES);
 	if(sscanf(params, "dD(0)D(0)", iVehicle, iColors[0], iColors[1])) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cvcreate [model ID] [color 1] [color 2]");
 	if(!(400 <= iVehicle < 612)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid vehicle model ID specified!");

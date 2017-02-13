@@ -620,7 +620,7 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 					if(GetGroupBudget(PlayerInfo[playerid][pMember]) < CrateFacility[facility][cfProdCost]) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your group doesn't have $%s to purcahse this crate!", number_format(CrateFacility[facility][cfProdCost]));
 					SetGroupBudget(PlayerInfo[playerid][pMember], -CrateFacility[facility][cfProdCost]);
 					CrateBox[boxid][cbPaid] = 1;
-					format(string, sizeof(string), "%s has purchased a crate from from the %s facility costing %s.", GetPlayerNameEx(playerid), CrateFacility[facility][cfName], number_format(CrateFacility[facility][cfProdCost]));
+					format(string, sizeof(string), "%s has purchased a crate from the %s facility costing %s.", GetPlayerNameEx(playerid), CrateFacility[facility][cfName], number_format(CrateFacility[facility][cfProdCost]));
 					GroupPayLog(PlayerInfo[playerid][pMember], string);
 					if(CrateFacility[facility][cfGroup] == -1) {
 						if(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) {
@@ -914,17 +914,24 @@ CMD:facility(playerid, params[]) {
 			return 1;
 		}
 		else if(strcmp(choice, "info", true) == 0) {
-			new crates = 0;
+			new crates = 0, group[32];
 			for(new c = 0; c < MAX_CRATES; c++) {
 				if(CrateBox[c][cbFacility] == fac) {
 					++crates;
 				}
+			}
+
+			if(CrateFacility[fac][cfGroup] != -1 && ValidGroup(CrateFacility[fac][cfGroup])) {
+				format(group, sizeof(group), "%s", arrGroupData[CrateFacility[fac][cfGroup]][g_szGroupName]);
+			} else {
+				format(group, sizeof(group), "--");
 			}
 			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Facility Info (ID: %d) ___________|", fac);
 			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | Int: %d | VW: %d | Active: %s", CrateFacility[fac][cfPos][0], CrateFacility[fac][cfPos][1], CrateFacility[fac][cfPos][2], CrateFacility[fac][cfInt], CrateFacility[fac][cfVw], (CrateFacility[fac][cfActive]) ? ("Yes") : ("No"));
 			SendClientMessageEx(playerid, COLOR_WHITE, "Next Raid: %s | Max Crates: %d | Crates in use: %d", date(CrateFacility[fac][cfCooldown], 1), CrateFacility[fac][cfProdMax], crates);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Crates Ready: %d | Crates in production: %d", CrateFacility[fac][cfProdReady], CrateFacility[fac][cfProdPrep]);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Cost Per Crate: %s | Production status: %s", number_format(CrateFacility[fac][cfProdCost]), (CrateFacility[fac][cfProdStatus]) ? ("Active") : ("Paused"));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Owner: %s", group);
 			return 1;
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid name selected!");
@@ -1672,7 +1679,7 @@ Dialog:place_order(playerid, response, listitem, inputtext[]) {
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have placed an order for %d crates at %s costing $%s", CrateOrder[group][coCrates], CrateFacility[CrateOrder[group][coFacility]][cfName], number_format(cost));
 				SendClientMessageEx(playerid, COLOR_WHITE, "$%s has been deducted from your group vault in preparation for the order.", number_format(cost));
 				SendClientMessageEx(playerid, COLOR_YELLOW, "INFO: You can manage your order via the /ordercrates again.");
-				format(szMiscArray, sizeof(szMiscArray), "%s %s has placed order for %d crates at %s costing $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], CrateOrder[group][coCrates], CrateFacility[CrateOrder[group][coFacility]][cfName], number_format(cost));
+				format(szMiscArray, sizeof(szMiscArray), "%s %s has placed order for %d crates at %s costing $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coCrates], CrateFacility[CrateOrder[group][coFacility]][cfName], number_format(cost));
 				GroupPayLog(group, szMiscArray);
 			}
 		}

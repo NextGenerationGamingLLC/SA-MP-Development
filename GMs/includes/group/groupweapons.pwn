@@ -74,9 +74,11 @@ stock DepositMenu(playerid, group) {
 }
 
 Dialog:wep_option(playerid, response, listitem, inputtext[]) {
+	if(!ValidGroup(PlayerInfo[playerid][pMember])) return 1;
 	if(response) {
 		switch(listitem) {
 			case 0: {
+				if(PlayerInfo[playerid][pRank] < arrGroupData[PlayerInfo[playerid][pMember]][g_iWithdrawRank][3]) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw weapons from the locker!"), ShowGroupWeapons(playerid, PlayerInfo[playerid][pMember]);
 				WeaponMenu(playerid, PlayerInfo[playerid][pMember]);
 			}
 			case 1: {
@@ -380,7 +382,7 @@ Dialog:purcahse_own_crate(playerid, response, listitem, inputtext[]) {
 		} else {
 			Tax += CrateFacility[CrateBox[box][cbFacility]][cfProdCost];
 			format(szMiscArray, sizeof(szMiscArray), "%s has purchased a crate from their own facility adding $%s", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName], number_format(CrateFacility[CrateBox[box][cbFacility]][cfProdCost]));
-			GroupPayLog(8, szMiscArray);
+			GroupPayLog(5, szMiscArray);
 		}
 		format(clog, sizeof(clog), "%s has deposited a crate into the locker.", GetPlayerNameEx(playerid));
 		CrateLog(PlayerInfo[playerid][pMember], clog);
