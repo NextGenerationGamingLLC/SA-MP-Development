@@ -2774,4 +2774,5 @@ new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWO
 // Crate System.
 new 
 	CarryCrate[MAX_PLAYERS],
-	BeingMoved[MAX_CRATES];
+	BeingMoved[MAX_CRATES],
+	AdminOpened[MAX_CRATE_FACILITY];

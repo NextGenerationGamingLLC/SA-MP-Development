@@ -918,3 +918,106 @@ CMD:cvpark(playerid, params[]) {
 	else SendClientMessageEx(playerid, COLOR_GRAD2, "You can't park vehicles that doesn't belong to your group!");
 	return 1;
 }
+
+CMD:cvcheck(playerid, params[]) {
+	if(ValidGroup(PlayerInfo[playerid][pMember]) || PlayerInfo[playerid][pAdmin] > 1) {
+		new Float:vPos[3], VehFound = -1;
+		for(new i = 0; i < MAX_CRATE_VEHCILES; i++) {
+			if(CrateVehicle[i][cvSpawnID] != INVALID_VEHICLE_ID) {
+				GetPosBehindVehicle(CrateVehicle[i][cvSpawnID], vPos[0], vPos[1], vPos[2], (IsAPlane(CrateVehicle[i][cvSpawnID]) ? -8 : 0));
+				if(IsPlayerInRangeOfPoint(playerid, (IsAPlane(CrateVehicle[i][cvSpawnID]) ? 6 : 2), vPos[0], vPos[1], vPos[2])) {
+					VehFound = i; // Do not use the vehicle ID as we store the array ID for the validation since vehicles do not store "spawn id".
+					break;
+				}
+			}
+		}
+		if(VehFound == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You're not near any designated vehicles that can store crates.");
+		if(CrateVehicle[VehFound][cvCrateMax] < 1) return SendClientMessageEx(playerid, COLOR_GRAD3, "The vehicle \"%s\" can't contain any crates.", VehicleName[CrateVehicle[VehFound][cvModel] - 400]);
+		if(VehDelivering[VehFound]) return SendClientMessageEx(playerid, COLOR_GRAD3, "This vehicle is currently unloading crates - Please Wait!");
+		if(!CreateCount(VehFound)) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* There is no crates stored in the %s", VehicleName[CrateVehicle[VehFound][cvModel] - 400]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* The %s is currently carrying %d crates.", VehicleName[CrateVehicle[VehFound][cvModel] - 400], CreateCount(VehFound));
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "You must be apart of a group to use this command!"); 
+	return 1;
+}
+
+CMD:cvstatus(playerid, params[]) {
+	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
+		new vehicleid, veh;
+		if(sscanf(params, "i", vehicleid)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cvstatus [vehicleid]");
+		if((veh = IsDynamicCrateVehicle(vehicleid)) != -1) {
+			new string[128], Float:vHealth;
+			GetVehicleHealth(vehicleid, vHealth);
+			format(string,sizeof(string),"|___________ Crate Vehicle Status (ID: %d | Slot ID: %d) ___________|", vehicleid, veh);
+			SendClientMessageEx(playerid, COLOR_GREEN, string);
+			format(string, sizeof(string), "X: %f | Y: %f | Z: %f | VW: %d | Int: %d | Model: %d  Maxhealth: %.1f", CrateVehicle[veh][cvPos][0], CrateVehicle[veh][cvPos][1], CrateVehicle[veh][cvPos][2], CrateVehicle[veh][cvVw], CrateVehicle[veh][cvInt], CrateVehicle[veh][cvModel], CrateVehicle[veh][cvMaxHealth]);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			if(ValidGroup(CrateVehicle[veh][cvGroupID])) {
+				format(string, sizeof(string), "Group: %s (%d) | Rank: %d | Tickets: $%s | LoadMax: %d", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], CrateVehicle[veh][cvGroupID], CrateVehicle[veh][cvRank], number_format(CrateVehicle[veh][cvTickets]), CrateVehicle[veh][cvCrateMax]);
+			} else {
+				format(string, sizeof(string), "Group: -- | Rank: -- | Tickets: -- | LoadMax: %d", CrateVehicle[veh][cvCrateMax]);
+			}
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+			format(string, sizeof(string), "Crates: %d | Health: %.1f | Fuel: %.1f percent", CreateCount(veh), vHealth, VehicleFuel[vehicleid]);
+			SendClientMessageEx(playerid, COLOR_WHITE, string);
+		}
+		else {
+			SendClientMessageEx(playerid, COLOR_GREY, "The selected vehicle isn't a crate vehicle!");
+		}
+	} else {
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command!");
+	}
+	return 1;
+}
+
+CMD:cvrespawn(playerid, params[]) {
+	szMiscArray[0] = 0;
+	if(PlayerInfo[playerid][pAdmin] > 3 || PlayerInfo[playerid][pASM] > 0 || PlayerInfo[playerid][pFactionModerator] > 0) {
+		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "Usage: /cvrespawn [Group/All]");
+		if(strcmp(params, "all", true) == 0) {
+			for(new v = 0; v < MAX_CRATE_VEHCILES; v++) {
+				if(CrateVehicle[v][cvSpawnID] != INVALID_VEHICLE_ID) {
+					if(!IsVehicleOccupied(CrateVehicle[v][cvSpawnID]) && !CreateCount(v)) {
+						SpawnCrateVeh(v);
+					}
+				}
+			}
+			format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has respawned all dynamic crate vehicles loaded on the server.", GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+			format(szMiscArray, sizeof(szMiscArray), "Administrator %s has respawned all dynamic crate vehicles loaded on the server.", GetPlayerNameEx(playerid));
+			Log("logs/admin.log", szMiscArray);
+		} else {
+			if(strval(params) != -1) {
+				if(!IsNumeric(params)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid input, please ensure it's a number!");
+				if(!ValidGroup(strval(params))) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid group ID (0 - %d only)", MAX_GROUPS);
+				format(szMiscArray, sizeof(szMiscArray), "** Respawning all dynamic group crate vehicles...");
+				foreach(new i: Player) {
+					if(PlayerInfo[i][pMember] == strval(params)) {
+						SendClientMessageEx(i, arrGroupData[strval(params)][g_hRadioColour] * 256 + 255, szMiscArray);
+					}
+				}
+			}
+			for(new v = 0; v < MAX_CRATE_VEHCILES; v++) {
+				if(CrateVehicle[v][cvSpawnID] != INVALID_VEHICLE_ID && CrateVehicle[v][cvGroupID] == strval(params)) {
+					if(!IsVehicleOccupied(CrateVehicle[v][cvSpawnID]) && !CreateCount(v)) {
+						SpawnCrateVeh(v);
+					}
+				}
+			}
+			if(strval(params) != -1) {
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has respawned %s's dynamic crate vehicles.", GetPlayerNameEx(playerid), arrGroupData[strval(params)][g_szGroupName]);
+				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+				format(szMiscArray, sizeof(szMiscArray), "Administrator %s has respawned %s's (%d) dynamic crate vehicles.", GetPlayerNameEx(playerid), arrGroupData[strval(params)][g_szGroupName], strval(params));
+				Log("logs/admin.log", szMiscArray);
+			}
+			else {
+				format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has respawned unowned dynamic crate vehicles.", GetPlayerNameEx(playerid));
+				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+				format(szMiscArray, sizeof(szMiscArray), "Administrator %s has respawned unowned (-1) dynamic crate vehicles.", GetPlayerNameEx(playerid));
+				Log("logs/admin.log", szMiscArray);
+			}
+		}
+
+	}
+	return 1;
+}

@@ -397,7 +397,8 @@ enum vehProp
 enum lockerWeapons
 {
 	lwGroup,
-	lwWep[46]
+	lwWep[46],
+	lwRank[16]
 }
 
 enum crateOrders
@@ -423,7 +424,9 @@ enum crateInfo
 	cbOnVeh,
 	cbInt,
 	cbVw,
-	cbWep[46],
+	cbWep[16],
+	cbWepAmount[16],
+	cbMats,
 	cbPlacedBy[MAX_PLAYER_NAME],
 	cbLifespan,
 	cbTransfer,
@@ -451,8 +454,10 @@ enum crateFacInfo
 	cfProdTimer,
 	cfProdStatus,
 	cfProdCost,
+	cfProdMulti,
 	cfRaidTimer,
 	cfCooldown,
+	cfRaidable,
 	cfActive,
 	cfTimer
 }
@@ -1521,7 +1526,8 @@ enum gInfo
 	gTModel,
 	gTTXD[64],
 	gTTexture[64],
-	gTColor
+	gTColor,
+	gFacility
 };
 
 enum ePoints

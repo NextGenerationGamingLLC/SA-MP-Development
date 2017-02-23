@@ -292,7 +292,11 @@ PayDay(i) {
 						if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 						{
 							new str[128];
-							format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue));
+							if(PlayerInfo[i][pDonateRank] < 4) {
+								format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue));
+							} else {
+								format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax));
+							}
 							GroupPayLog(iGroupID, str);
 						}
 					}
@@ -304,7 +308,11 @@ PayDay(i) {
 						if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 						{
 							new str[128];
-							format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue));
+							if(PlayerInfo[i][pDonateRank] < 4) {
+								format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue));
+							} else {
+								format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax));
+							}
 							GroupPayLog(iGroupID, str);
 						}
 					}

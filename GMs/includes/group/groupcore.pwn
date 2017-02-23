@@ -759,7 +759,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 	if(arrAntiCheat[playerid][ac_iFlags][AC_DIALOGSPOOFING] > 0) return 1;
 	new sendername[MAX_PLAYER_NAME];
-	new string[128];
+	new string[128], Float:parmor;
 	szMiscArray[0] = 0;
 
 	switch(dialogid)
@@ -935,7 +935,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if (strcmp("First Aid & Kevlar", inputtext) == 0) {
 				if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0) {
-					SetArmour(playerid, 100);
+					GetArmour(playerid, parmor);
+					if(parmor < 100) SetArmour(playerid, 100);
 					SetHealth(playerid, 100.0);
 					arrGroupData[iGroupID][g_iLockerStock] -= 1;
 					new str[128];
@@ -944,7 +945,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 1) {
 					if(arrGroupData[iGroupID][g_iBudget] > 2500) {
-						SetArmour(playerid, 100);
+						GetArmour(playerid, parmor);
+						if(parmor < 100) SetArmour(playerid, 100);
 						SetHealth(playerid, 100.0);
 						arrGroupData[iGroupID][g_iBudget] -= 2500;
 						new str[128];
@@ -955,7 +957,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 2) {
 					if(GetPlayerCash(playerid) > 2500) {
-						SetArmour(playerid, 100);
+						GetArmour(playerid, parmor);
+						if(parmor < 100) SetArmour(playerid, 100);
 						SetHealth(playerid, 100.0);
 						GivePlayerCash(playerid, -2500);
 						new str[128];
@@ -969,6 +972,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
 					SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
 					return 1;
+				}
+			}
+
+			if(strcmp("High Grade Armour", inputtext) == 0) {
+				if(arrGroupData[iGroupID][g_iLockerStock] > 5) {
+					GetArmour(playerid, parmor);
+					if(parmor > 149) return SendClientMessageEx(playerid, COLOR_RED, "You already have high grade armour equipped!");
+					arrGroupData[iGroupID][g_iLockerStock] -= 5;
+					SetArmour(playerid, 150);
+					new str[128];
+					format(str, sizeof(str), "%s took a high grade vest out of the %s locker at a cost of 5 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+					GroupPayLog(iGroupID, str);
+					SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your armor has been boosted to 150 as it's high grade.");
+				} else {
+					SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
+					SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
 				}
 			}
 
@@ -3257,7 +3276,7 @@ CMD:viewbudget(playerid, params[])
 {
 	new i = PlayerInfo[playerid][pMember];
 	new string[128];
-	if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[i][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[i][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[i][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[i][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TOWING)
+	if(arrGroupData[i][g_iGroupType] == GROUP_TYPE_GOV ||arrGroupData[i][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[i][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[i][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[i][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[i][g_iGroupType] == GROUP_TYPE_CONTRACT || arrGroupData[i][g_iGroupType] == GROUP_TYPE_TOWING)
 	{
 	    SendClientMessage(playerid, 0x008EFC00, "            BALANCE SHEET            ");
 		if(arrGroupData[i][g_szGroupName][0] && arrGroupData[i][g_hDutyColour] != 0) format(string, sizeof(string), "{%6x}%s {AFAFAF} [Balance: $%s] [Hourly Payments: $%s]| ", arrGroupData[i][g_hDutyColour], arrGroupData[i][g_szGroupName], number_format(arrGroupData[i][g_iBudget]), number_format(arrGroupData[i][g_iBudgetPayment]));
@@ -5616,14 +5635,14 @@ CMD:locker(playerid, params[]) {
 
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)) // name-change point in faction lockers for free namechange factions
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nHigh Grade Armour\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
 						}
 						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) {
 							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
 						}
 						else
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nHigh Grade Armour\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
 						ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;

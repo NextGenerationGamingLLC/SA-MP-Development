@@ -46,6 +46,7 @@ hook OnPlayerConnect(playerid) {
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
 	new string[128];
     if(playerid != INVALID_PLAYER_ID) {
+    	if(IsPlayerPaused(playerid)) return 0;
     	if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena")) {
 		    if(weaponid > 0 && GetPlayerWeapon(playerid) == weaponid) {
 				if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid) {
@@ -96,11 +97,11 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	szMiscArray[0] = 0;
+	if(IsPlayerPaused(playerid)) return 1;
 	if(PlayerIsDead[damagedid]) return 1;
 	//if(!HitStatus[damagedid]) return 1;
 	new Float:realdam = amount;
 	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID) {
-
 	    if(amount < 0.0) amount = 0.0;
 	    if(amount > 150.0) amount = 150.0;
 	    // First define our base damage.
@@ -408,6 +409,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			return 1;
 		}
 		if(issuerid != 65535) {
+			if(IsPlayerPaused(issuerid)) return 1;
 			if(GetPVarInt(playerid, "AttemptingLockPick") == 1) {
 				DeletePVar(playerid, "AttemptingLockPick");
 				DeletePVar(playerid, "LockPickCountdown");

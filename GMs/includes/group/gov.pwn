@@ -179,8 +179,10 @@ CMD:taxdeposit(playerid, params[])
 		Tax += amount;
 		Misc_Save();
 		GivePlayerCash(playerid, -amount);
-		format( string, sizeof( string ), "You have deposited $%s into the vault.", number_format(amount) );
+		format( string, sizeof( string ), "You have deposited $%s into the SA vault.", number_format(amount) );
 		SendClientMessageEx( playerid, COLOR_WHITE, string );
+		format(string,sizeof(string),"%s has deposited $%s into the SA tax vault.",GetPlayerNameEx(playerid), number_format(amount));
+		GroupPayLog(PlayerInfo[playerid][pLeader], string);
 	}
 	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 2)
 	{
@@ -208,7 +210,7 @@ CMD:taxdeposit(playerid, params[])
 		GivePlayerCash(playerid, -amount);
 		format( string, sizeof( string ), "You have deposited $%s into the NE vault.", number_format(amount) );
 		SendClientMessageEx( playerid, COLOR_WHITE, string );
-		format(string,sizeof(string),"%s has deposited $%s into the SA tax vault.",GetPlayerNameEx(playerid), number_format(amount));
+		format(string,sizeof(string),"%s has deposited $%s into the NE tax vault.",GetPlayerNameEx(playerid), number_format(amount));
 		GroupPayLog(PlayerInfo[playerid][pLeader], string);
 	}
 	return 1;

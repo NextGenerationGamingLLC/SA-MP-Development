@@ -3890,6 +3890,7 @@ public LoadDynamicGroups()
 	mysql_function_query(MainPipeline, "SELECT * FROM `lockers`", true, "Group_QueryFinish", "ii", GROUP_QUERY_LOCKERS, 0);
 	mysql_function_query(MainPipeline, "SELECT * FROM `jurisdictions`", true, "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
 	mysql_function_query(MainPipeline, "SELECT * FROM `gweaponsnew`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
+	mysql_function_query(MainPipeline, "SELECT * FROM `locker_restrict`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS_RANK, 0);
 	//mysql_function_query(MainPipeline, "SELECT * FROM `gWeapons`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
 	return ;
 }
@@ -5226,6 +5227,16 @@ public Group_QueryFinish(iType, iExtraID) {
 			for(new w = 0; w < 46; w++) {
 				format(number, sizeof(number), "%d", w+1);
 				LockerWep[iIndex][lwWep][w] = cache_get_field_content_int(iIndex, number, MainPipeline);
+			}
+			iIndex++;
+		}
+		case GROUP_QUERY_GWEAPONS_RANK: while(iIndex < iRows) {
+
+			if (!(0 <= iIndex < MAX_GROUPS)) break;
+
+			for(new w = 0; w < 16; w++) {
+				format(number, sizeof(number), "%d", w+1);
+				LockerWep[iIndex][lwRank][w] = cache_get_field_content_int(iIndex, number, MainPipeline);
 			}
 			iIndex++;
 		}

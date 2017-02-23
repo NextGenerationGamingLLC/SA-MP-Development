@@ -39,109 +39,7 @@
 
 new 
 	CrateBeingProcessed[MAX_CRATE_FACILITY],
-	CrateBeingDelivered[MAX_GROUPS],
-	AdminOpened[MAX_CRATE_FACILITY];
-
-
-//Status | | Max | Rarity (1 - Common, 2 - Less Common, 3 - Rare, 4 - Super Rare)
-new GangWeapons[46][3] = {
-	{0, 0, 4}, // Brass Knuckle
-	{1, 3, 1}, // Golf Club
-	{1, 5, 1}, // Nitestick
-	{0, 0, 4}, // Knife
-	{1, 3, 2}, // Bat
-	{1, 2, 2}, // Shovel
-	{1, 1, 1}, // Pool Cue
-	{0, 0, 4}, // Katana Sword
-	{0, 0, 4}, // Chain Saw
-	{0, 0, 4}, // Dildo (Purple)
-	{0, 0, 4}, // Dildo
-	{0, 0, 4}, // Vibrator
-	{0, 0, 4}, // Silver Vibrator
-	{0, 0, 4}, // Flower
-	{0, 0, 4}, // Cane
-	{0, 0, 4}, // Grenade
-	{0, 0, 4}, // Tear Gas
-	{0, 0, 4}, // Molotov
-	{0, 0, 4}, // ? 
-	{0, 0, 4}, // ?
-	{0, 0, 4}, // Jet Pack
-	{1, 5, 1}, // 9MM
-	{1, 5, 1}, // Silenced 9mm
-	{1, 3, 2}, // Desert Eagle
-	{1, 3, 2}, // Pump Shotgun
-	{0, 1, 4}, // Sawnoff Shotgun
-	{1, 2, 3}, // Combat Shotgun
-	{1, 3, 2}, // Micro SMG
-	{1, 5, 1}, // MP5 
-	{1, 5, 3}, // AK-47
-	{1, 5, 4}, // M4
-	{1, 1, 2}, // Tec9
-	{1, 1, 3}, // Rifle
-	{0, 1, 4}, // Sniper Rifle
-	{0, 0, 4}, // Rocket Launcher
-	{0, 0, 4}, // Heat Seeker
-	{0, 0, 4}, // Flame Thrower
-	{0, 0, 4}, // Mini-Gun
-	{0, 0, 4}, // Satchel
-	{0, 0, 4}, // Bomb Detonator
-	{0, 0, 4}, // Spray Can
-	{0, 0, 4}, // Fire Extinguisher
-	{0, 0, 4}, // Camera
-	{0, 0, 4}, // Night Vision
-	{0, 0, 4}, // Thermal Goggles
-	{1, 1, 2} // Parachute
-};
-
-//Status | | Max | Rarity (1 - Common, 2 - Less Common, 3 - Rare, 4 - Super Rare)
-new GroupWeapons[46][3] = {
-	{1, 1, 1}, // Brass Knuckle
-	{0, 3, 1}, // Golf Club
-	{1, 5, 1}, // Nitestick
-	{0, 0, 4}, // Knife
-	{0, 3, 2}, // Bat
-	{0, 2, 2}, // Shovel
-	{0, 1, 1}, // Pool Cue
-	{0, 0, 4}, // Katana Sword
-	{0, 0, 4}, // Chain Saw
-	{0, 0, 4}, // Dildo (Purple)
-	{0, 0, 4}, // Dildo
-	{0, 0, 4}, // Vibrator
-	{0, 0, 4}, // Silver Vibrator
-	{0, 0, 4}, // Flower
-	{0, 0, 4}, // Cane
-	{0, 0, 4}, // Grenade
-	{1, 1, 3}, // Tear Gas
-	{0, 0, 4}, // Molotov
-	{0, 0, 4}, // ? 
-	{0, 0, 4}, // ?
-	{0, 0, 4}, // Jet Pack
-	{1, 5, 1}, // 9MM
-	{1, 5, 1}, // Silenced 9mm
-	{1, 4, 2}, // Desert Eagle
-	{1, 3, 2}, // Pump Shotgun
-	{0, 1, 4}, // Sawnoff Shotgun
-	{1, 2, 3}, // Combat Shotgun
-	{1, 3, 2}, // Micro SMG
-	{1, 5, 1}, // MP5 
-	{1, 7, 3}, // AK-47
-	{1, 7, 3}, // M4
-	{1, 2, 2}, // Tec9
-	{1, 3, 3}, // Rifle
-	{0, 2, 4}, // Sniper Rifle
-	{0, 0, 4}, // Rocket Launcher
-	{0, 0, 4}, // Heat Seeker
-	{0, 0, 4}, // Flame Thrower
-	{0, 0, 4}, // Mini-Gun
-	{0, 0, 4}, // Satchel
-	{0, 0, 4}, // Bomb Detonator
-	{1, 3, 2}, // Spray Can
-	{1, 1, 2}, // Fire Extinguisher
-	{1, 1, 2}, // Camera
-	{1, 2, 3}, // Night Vision
-	{1, 2, 3}, // Thermal Goggles
-	{1, 1, 1} // Parachute
-};
+	CrateBeingDelivered[MAX_GROUPS];
 
 hook OnGameModeInit() {
 	for(new i = 0; i < MAX_CRATE_FACILITY; i++) {
@@ -253,7 +151,7 @@ stock LoadCrateBoxes()
 forward OnLoadCrateBoxes();
 public OnLoadCrateBoxes()
 {
-	new i, rows, fields, number[12];
+	new i, rows, fields, number[16];
 	cache_get_data(rows, fields, MainPipeline);
 
 	while(i < rows)
@@ -267,9 +165,12 @@ public OnLoadCrateBoxes()
 		CrateBox[i][cbInVeh] = cache_get_field_content_int(i, "InVehicle", MainPipeline);
 		CrateBox[i][cbOnVeh] = cache_get_field_content_int(i, "OnVehicle", MainPipeline);
 		CrateBox[i][cbVw] = cache_get_field_content_int(i, "VW", MainPipeline);
-		for(new w = 0; w < 46; w++) {
-			format(number, sizeof(number), "%d", w+1);
+		CrateBox[i][cbMats] = cache_get_field_content_int(i, "Materials", MainPipeline);
+		for(new w = 0; w < 16; w++) {
+			format(number, sizeof(number), "Gun%d", w+1);
 			CrateBox[i][cbWep][w] = cache_get_field_content_int(i, number, MainPipeline);
+			format(number, sizeof(number), "GunAmount%d", w+1);
+			CrateBox[i][cbWepAmount][w] = cache_get_field_content_int(i, number, MainPipeline);
 		}
 		cache_get_field_content(i,  "PlacedBy", CrateBox[i][cbPlacedBy], MainPipeline, MAX_PLAYER_NAME);
 		CrateBox[i][cbLifespan] = cache_get_field_content_int(i, "Lifespan", MainPipeline);
@@ -320,7 +221,7 @@ stock UpdateCrateBox(id)
 }
 
 stock SaveCrate(i) {
-	new query[2048], wep[12];
+	new query[2048], wep[16];
 
 	format(query, 2048, "UPDATE `crates` SET ");
 	SaveInteger(query, "crates", i+1, "Facility", CrateBox[i][cbFacility]);
@@ -332,9 +233,12 @@ stock SaveCrate(i) {
 	SaveInteger(query, "crates", i+1, "InVehicle", CrateBox[i][cbInVeh]);
 	SaveInteger(query, "crates", i+1, "OnVehicle", CrateBox[i][cbOnVeh]);
 	SaveInteger(query, "crates", i+1, "VW", CrateBox[i][cbVw]);
-	for(new w = 0; w < 46; w++) {
-		format(wep, sizeof(wep), "%d", w+1);
+	SaveInteger(query, "crates", i+1, "Materials", CrateBox[i][cbMats]);
+	for(new w = 0; w < 16; w++) {
+		format(wep, sizeof(wep), "Gun%d", w+1);
 		SaveInteger(query, "crates", i+1, wep, CrateBox[i][cbWep][w]);
+		format(wep, sizeof(wep), "GunAmount%d", w+1);
+		SaveInteger(query, "crates", i+1, wep, CrateBox[i][cbWepAmount][w]);
 	}
 	SaveString(query, "crates", i+1, "PlacedBy", CrateBox[i][cbPlacedBy]);
 	SaveInteger(query, "crates", i+1, "Lifespan", CrateBox[i][cbLifespan]);
@@ -377,11 +281,14 @@ public OnLoadCrateFacilities()
 		CrateFacility[i][cfProdTimer] = cache_get_field_content_int(i, "ProdTimer", MainPipeline);
 		CrateFacility[i][cfProdStatus] = cache_get_field_content_int(i, "ProdStatus", MainPipeline);
 		CrateFacility[i][cfProdCost] = cache_get_field_content_int(i, "ProdCost", MainPipeline);
+		CrateFacility[i][cfProdMulti] = cache_get_field_content_int(i, "ProdMulti", MainPipeline);
 		CrateFacility[i][cfRaidTimer] = cache_get_field_content_int(i, "RaidTimer", MainPipeline);
 		CrateFacility[i][cfCooldown] = cache_get_field_content_int(i, "Cooldown", MainPipeline);
+		CrateFacility[i][cfRaidable] = cache_get_field_content_int(i, "Raidable", MainPipeline);
 		CrateFacility[i][cfActive] = cache_get_field_content_int(i, "Active", MainPipeline);
 		CrateFacility[i][cfTimer] = cache_get_field_content_int(i, "Timer", MainPipeline);
 		UpdateFacility(i);
+		if(CrateFacility[i][cfRaidTimer] > 0) TriggerGates(i);
 		i++;
 	}
 	if(i > 0) printf("[Dynamic Crate Facility] %d dynamic Crate Facilities have been loaded.", i);
@@ -424,8 +331,10 @@ stock SaveFacility(i) {
 	SaveInteger(query, "crate_facility", i+1, "ProdTimer", CrateFacility[i][cfProdTimer]);
 	SaveInteger(query, "crate_facility", i+1, "ProdStatus", CrateFacility[i][cfProdStatus]);
 	SaveInteger(query, "crate_facility", i+1, "ProdCost", CrateFacility[i][cfProdCost]);
+	SaveInteger(query, "crate_facility", i+1, "ProdMulti", CrateFacility[i][cfProdMulti]);
 	SaveInteger(query, "crate_facility", i+1, "RaidTimer", CrateFacility[i][cfRaidTimer]);
 	SaveInteger(query, "crate_facility", i+1, "Cooldown", CrateFacility[i][cfCooldown]);
+	SaveInteger(query, "crate_facility", i+1, "Raidable", CrateFacility[i][cfRaidable]);
 	SaveInteger(query, "crate_facility", i+1, "Active", CrateFacility[i][cfActive]);
 	SaveInteger(query, "crate_facility", i+1, "Timer", CrateFacility[i][cfTimer]);
 	SQLUpdateFinish(query, "crate_facility", i+1);
@@ -448,25 +357,47 @@ task UpdateFacilityCrates[1000]()
 					}
 				}
 			}
-			if(CrateFacility[i][cfCooldown] < gettime()) {
-				new time = Random(21600, 28800); // 6 - 8 hours for next raid.
-				CrateFacility[i][cfCooldown] = gettime()+time;
-				CrateFacility[i][cfRaidTimer] = gettime()+3600; // 1 hour.
-				SaveFacility(i);
-				foreach(new g: Player) {
-					if(IsACriminal(g) && PlayerInfo[g][pMember] == PlayerInfo[g][pLeader]) {
-						SendClientMessageEx(g, COLOR_YELLOW, "SMS: Word on the street is that %s facility is processing crates!, Sender: Unknown.", CrateFacility[i][cfName]);
-						SendClientMessageEx(g, COLOR_YELLOW, "** You have 1 hour to raid the facility before it goes onto a cooldown. **");
+			if(CrateFacility[i][cfRaidable]) {
+				if((CrateFacility[i][cfCooldown] - 300) == gettime() && CrateFacility[i][cfRaidTimer] == 0) {
+					foreach(new g: Player) {
+						if(PlayerInfo[g][pMember] == CrateFacility[i][cfGroup]) {
+							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: We're about to go into production mode be advised.", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** You have 5 minutes to prepare for a facility raid. **");
+						}
 					}
 				}
-			}
-			if(CrateFacility[i][cfRaidTimer] < gettime() && CrateFacility[i][cfRaidTimer] != 0) {
-				CrateFacility[i][cfRaidTimer] = 0;
-				SaveFacility(i);
-				foreach(new g: Player) {
-					if(IsACriminal(g) && PlayerInfo[g][pMember] == PlayerInfo[g][pLeader]) {
-						SendClientMessageEx(g, COLOR_YELLOW, "SMS: %s facility is now on lockdown. (( Cooldown Period )), Sender: Unknown.", CrateFacility[i][cfName]);
-						SendClientMessageEx(g, COLOR_YELLOW, "** You can no longer raid the facility, it'll be on cooldown for a random time period. **", CrateFacility[i][cfName]);
+				if(CrateFacility[i][cfCooldown] < gettime() && CrateFacility[i][cfRaidTimer] == 0) {
+					CrateFacility[i][cfRaidTimer] = gettime()+5400; // 1 hour 30 minutes
+					SaveFacility(i);
+					TriggerGates(i);
+					foreach(new g: Player) {
+						if(IsACriminal(g)) {
+							SendClientMessageEx(g, COLOR_YELLOW, "SMS: Word on the street is that %s facility is processing crates!, Sender: Unknown.", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** You have 1 hour 30 minutes to raid the facility before it goes into a cooldown. **");
+						}
+						if(PlayerInfo[g][pMember] == CrateFacility[i][cfGroup]) {
+							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: We're now processing crates!", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** You have 1 hour 30 minutes to protect the facility before it goes into a cooldown. **");
+						}
+					}
+				}
+				if((CrateFacility[i][cfRaidTimer] - 300) == gettime() && CrateFacility[i][cfRaidTimer] != 0) {
+					foreach(new g: Player) {
+						if(IsACriminal(g)) {
+							SendClientMessageEx(g, COLOR_YELLOW, "** You have 5 minutes remaining before all gates are closed! **", CrateFacility[i][cfName]);
+						}
+					}
+				}
+				if(CrateFacility[i][cfRaidTimer] < gettime() && CrateFacility[i][cfRaidTimer] != 0) {
+					CrateFacility[i][cfCooldown] = gettime()+10800; // 3 hours
+					CrateFacility[i][cfRaidTimer] = 0;
+					SaveFacility(i);
+					TriggerGates(i, 0);
+					foreach(new g: Player) {
+						if(IsACriminal(g)) {
+							SendClientMessageEx(g, COLOR_YELLOW, "SMS: %s facility is now on lockdown. (( Cooldown Period )), Sender: Unknown.", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** You can no longer raid the facility, it'll be on cooldown for a random time period. **", CrateFacility[i][cfName]);
+						}
 					}
 				}
 			}
@@ -508,7 +439,7 @@ forward CrateBoxUpdate(id);
 public CrateBoxUpdate(id) {
 	new string[256];
 	if(IsValidDynamic3DTextLabel(CrateBox[id][cbTextID])) {
-		format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Time Remaining: {FF8000}%s\n{FFFF00}Placed By: {FF8000}%s", CrateFacility[CrateBox[id][cbFacility]][cfName], id, TimeConvert(CrateBox[id][cbLifespan]), CrateBox[id][cbPlacedBy]);
+		format(string, sizeof(string), "{FFFF00}%s (ID: {FF8000}%d{FFFF00})\n{FFFF00}Time Remaining: {FF8000}%s\n{FFFF00}Placed By: {FF8000}%s\n{FFFF00}Materials: {FF8000}%d/50", CrateFacility[CrateBox[id][cbFacility]][cfName], id, TimeConvert(CrateBox[id][cbLifespan]), CrateBox[id][cbPlacedBy], CrateBox[id][cbMats]);
 		//format(string, sizeof(string), "{FFFF00}ID: {FF8000}%d\n{FFFF00}Time Remaining: {FF8000}%s\n{FFFF00}Placed By: {FF8000}%s", id, TimeConvert(CrateBox[id][cbLifespan]), CrateBox[id][cbPlacedBy]);
 		UpdateDynamic3DTextLabelText(CrateBox[id][cbTextID], COLOR_ORANGE, string);
 	}
@@ -644,7 +575,7 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 				}
 			}
 			SaveGroup(PlayerInfo[playerid][pMember]);
-        	format(string, sizeof(string), "%s %s has purchased a crate at %s facility.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateFacility[facility][cfName]);
+        	format(string, sizeof(string), "%s %s has manufactured a crate at %s facility.", arrGroupRanks[PlayerInfo[playerid][pMember]][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateFacility[facility][cfName]);
           	GroupLog(PlayerInfo[playerid][pMember], string);
           	ABroadCast(COLOR_LIGHTRED, string, 2);
           	if(ValidGroup(CrateFacility[facility][cfGroup])) {
@@ -661,44 +592,7 @@ public LoadForklift(playerid, facility, boxid, vehicle) {
 		CrateBox[boxid][cbTransfer] = 1;
 		CrateBox[boxid][cbOnVeh] = vehicle;
 		CrateBox[boxid][cbPrice] = CrateFacility[facility][cfProdCost];
-
-		if(IsACriminal(playerid)) {
-			for(new w = 0; w < sizeof(GangWeapons); w++) {
-				new num = random(2564), amount = (GangWeapons[w][1] == 1) ? 1 : Random(1, GangWeapons[w][1]);
-				if(GangWeapons[w][0]) {
-					if(num < 82 && GangWeapons[w][2] == 4) {
-						CrateBox[boxid][cbWep][w] = amount;
-					}
-					else if(num < 312 && GangWeapons[w][2] == 3) {
-						CrateBox[boxid][cbWep][w] = amount;
-					}
-					else if(num < 1524 && GangWeapons[w][2] == 2) {
-						CrateBox[boxid][cbWep][w] = amount;
-					}
-					else if(num <= 2564 && GangWeapons[w][2] == 1) {
-						CrateBox[boxid][cbWep][w] = amount;
-					}
-				}
-			}
-		} else {
-			for(new w = 0; w < sizeof(GroupWeapons); w++) {
-				new num = random(2564), amount = (GroupWeapons[w][1] == 1) ? 1 : Random(1, GroupWeapons[w][1]);
-				if(GroupWeapons[w][0]) {
-					if(num < 312 && GroupWeapons[w][2] == 4) {
-						CrateBox[boxid][cbWep][w] = amount;
-					}
-					else if(num < 664 && GroupWeapons[w][2] == 3) {
-						CrateBox[boxid][cbWep][w] = amount;
-					}
-					else if(num < 1956 && GroupWeapons[w][2] == 2) {
-						CrateBox[boxid][cbWep][w] = amount;
-					}
-					else if(num <= 2564 && GroupWeapons[w][2] == 1) {
-						CrateBox[boxid][cbWep][w] = amount;
-					}
-				}
-			}
-		}
+		CrateBox[boxid][cbMats] = 50;
 		CrateBox[boxid][cbActive] = 1;
 		CrateVehicle[vehicle][cvForkObject] = CreateDynamicObject(964,-1077.59997559,4274.39990234,3.40000010,0.00000000,0.00000000,0.00000000);
 		AttachDynamicObjectToVehicle(CrateVehicle[vehicle][cvForkObject], CrateVehicle[vehicle][cvSpawnID], 0, 0.9, -0.2, 0, 0, 0);
@@ -837,8 +731,10 @@ stock DestroyCrate(box) {
 	CrateBox[box][cbInVeh] = -1;
 	CrateBox[box][cbOnVeh] = -1;
 	CrateBox[box][cbVw] = 0;
-	for(new w = 0; w < 46; w++) {
+	CrateBox[box][cbMats] = 0;
+	for(new w = 0; w < 16; w++) {
 		CrateBox[box][cbWep][w] = 0;
+		CrateBox[box][cbWepAmount][w] = 0;
 	}
 	format(CrateBox[box][cbPlacedBy], MAX_PLAYER_NAME, "Unknown");
 	CrateBox[box][cbLifespan] = 0;
@@ -866,7 +762,7 @@ CMD:facility(playerid, params[]) {
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /facility [name] [id]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Names: sync goto, raidable, info");
-			SendClientMessageEx(playerid, COLOR_GREY, "EXTRA: There is only /editcf if you want to edit a facility.");
+			SendClientMessageEx(playerid, COLOR_GREY, "EXTRA: There is only /cfedit if you want to edit a facility.");
 			return 1;
 		}
 		if(!(0 <= fac < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Facility ID. (0 - %d)", MAX_CRATE_FACILITY-1);
@@ -901,11 +797,13 @@ CMD:facility(playerid, params[]) {
 		else if(strcmp(choice, "raidable", true) == 0) {
 			if(!CrateFacility[fac][cfActive]) return SendClientMessageEx(playerid, COLOR_GREY, "That crate facility is not active!");
 			if(AdminOpened[fac]) {
+				if(CrateFacility[fac][cfRaidTimer] == 0) TriggerGates(fac, 0);
 	    		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has made %s facility unable to be raided freely. (ID: %d)", GetPlayerNameEx(playerid), CrateFacility[fac][cfName], fac);
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have made %s facility unable to be raided freely.", CrateFacility[fac][cfName]);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
 				AdminOpened[fac] = 0;
 			} else {
+				TriggerGates(fac);
 	    		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s has made %s facility able to be raided freely. (ID: %d)", GetPlayerNameEx(playerid), CrateFacility[fac][cfName], fac);
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have made %s facility able to be raided freely.", CrateFacility[fac][cfName]);
 				ABroadCast(COLOR_YELLOW, szMiscArray, 2);
@@ -928,10 +826,10 @@ CMD:facility(playerid, params[]) {
 			}
 			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Facility Info (ID: %d) ___________|", fac);
 			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | Int: %d | VW: %d | Active: %s", CrateFacility[fac][cfPos][0], CrateFacility[fac][cfPos][1], CrateFacility[fac][cfPos][2], CrateFacility[fac][cfInt], CrateFacility[fac][cfVw], (CrateFacility[fac][cfActive]) ? ("Yes") : ("No"));
-			SendClientMessageEx(playerid, COLOR_WHITE, "Next Raid: %s | Max Crates: %d | Crates in use: %d", date(CrateFacility[fac][cfCooldown], 1), CrateFacility[fac][cfProdMax], crates);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Next Raid: %s | Raidable: %s | Max Crates: %d | Crates in use: %d", date(CrateFacility[fac][cfCooldown], 1), (CrateFacility[fac][cfRaidable]) ? ("Active") : ("Disabled"), CrateFacility[fac][cfProdMax], crates);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Crates Ready: %d | Crates in production: %d", CrateFacility[fac][cfProdReady], CrateFacility[fac][cfProdPrep]);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Cost Per Crate: %s | Production status: %s", number_format(CrateFacility[fac][cfProdCost]), (CrateFacility[fac][cfProdStatus]) ? ("Active") : ("Paused"));
-			SendClientMessageEx(playerid, COLOR_WHITE, "Owner: %s", group);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Owner: %s | Deliver Multiplier: %d", group, CrateFacility[fac][cfProdMulti]);
 			return 1;
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "Invalid name selected!");
@@ -965,12 +863,13 @@ CMD:crate(playerid, params[]) {
 		new weaponname[32], title[24];
 		GetCrateBox(playerid, box, 2.0);
 		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not in range of any crate boxes!");
+		if(CrateBox[box][cbGroup] == -1) return SendClientMessageEx(playerid, COLOR_GREY, "This crate is not a transfer crate, use /cgun instead!");
 		format(title, sizeof(title), "Crate Contents (ID: %d)", box);
 		format(szMiscArray, sizeof(szMiscArray), "Weapon\tQuantity\n");
-		for(new w = 0; w < 46; w++) {
+		for(new w = 0; w < 16; w++) {
 			if(CrateBox[box][cbWep][w] > 0) {
-				GetWeaponName(w+1, weaponname, sizeof(weaponname));
-				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, weaponname, number_format(CrateBox[box][cbWep][w]));
+				GetWeaponName(CrateBox[box][cbWep][w], weaponname, sizeof(weaponname));
+				format(szMiscArray, sizeof(szMiscArray), "%s%s\t%s\n", szMiscArray, weaponname, number_format(CrateBox[box][cbWepAmount][w]));
 			}
 		}
 		if(strlen(szMiscArray) == 16) format(szMiscArray, sizeof(szMiscArray), "%sThere are no weapons in this crate.", szMiscArray);
@@ -997,6 +896,7 @@ CMD:crate(playerid, params[]) {
 		        return SendClientMessageEx(playerid, COLOR_GRAD2, " You've not played long enough in order to load crates!");
 		    }
 			if(IsACriminal(playerid)) {
+				if(!CrateFacility[facility][cfRaidable]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This facility can't be raided!");
 				if(!AdminOpened[facility] && !CrateFacility[facility][cfRaidTimer]) return SendClientMessageEx(playerid, COLOR_GRAD1, "This facility is currently on cooldown from raids.");
 			}
 			for(new c = 0; c < MAX_CRATES; c++) {
@@ -1182,23 +1082,7 @@ CMD:crate(playerid, params[]) {
 							CrateBox[c][cbGroup] = -1;
 							CrateBox[c][cbTransfer] = 0;
 							CrateBox[c][cbPrice] = 0;
-							for(new w = 0; w < sizeof(GroupWeapons); w++) {
-								new num = random(2564), amount = (GroupWeapons[w][1] == 1) ? 1 : Random(1, GroupWeapons[w][1]);
-								if(GroupWeapons[w][0]) {
-									if(num < 82 && GroupWeapons[w][2] == 4) {
-										CrateBox[c][cbWep][w] = amount;
-									}
-									else if(num < 312 && GroupWeapons[w][2] == 3) {
-										CrateBox[c][cbWep][w] = amount;
-									}
-									else if(num < 1524 && GroupWeapons[w][2] == 2) {
-										CrateBox[c][cbWep][w] = amount;
-									}
-									else if(num <= 2564 && GroupWeapons[w][2] == 1) {
-										CrateBox[c][cbWep][w] = amount;
-									}
-								}
-							}
+							CrateBox[c][cbMats] = 50;
 							CrateBox[c][cbActive] = 1;
 							--CrateFacility[crate][cfProdReady];
 							CrateBox[c][cbPos][0] = pcbPos[0];
@@ -1366,7 +1250,7 @@ CMD:cfedit(playerid, params[]) {
 		if(sscanf(params, "s[32]iD(-1)", name, id, value)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /cfedit [name] [id] [value]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Names: pos, crates, timer, prodstatus, cost, active");
-			SendClientMessageEx(playerid, COLOR_GREY, "Names: owner, delete");
+			SendClientMessageEx(playerid, COLOR_GREY, "Names: owner, raidable, multiplier, delete");
 			return 1;
 		}
 		if(!(0 <= id < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid facility ID.");
@@ -1381,8 +1265,7 @@ CMD:cfedit(playerid, params[]) {
 			CrateFacility[id][cfInt] = GetPlayerInterior(playerid);
 			CrateFacility[id][cfVw] = GetPlayerVirtualWorld(playerid);
 			if(CrateFacility[id][cfCooldown] == 0) {
-				new time = Random(21600, 28800); // 6 - 8 hours for next raid.
-				CrateFacility[id][cfCooldown] = gettime()+time;
+				CrateFacility[id][cfCooldown] = gettime()+10800;
 			}
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have moved %d crate facility to your location!", id);
 			SaveFacility(id);
@@ -1442,6 +1325,42 @@ CMD:cfedit(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d status to %s.", id, (value) ? ("Active") : ("Disabled"));
 			return 1;
 		}
+		else if(strcmp(name, "cooldown", true) == 0) {
+			if(CrateFacility[id][cfRaidTimer] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: There is a raid on-going, try again after %s.", date(CrateFacility[id][cfRaidTimer], 1));
+			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the cooldown lower than 1 second!");
+			CrateFacility[id][cfCooldown] = gettime()+value;
+			SaveFacility(id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d cooldown to %d.", id, value);
+			return 1;
+		}
+		else if(strcmp(name, "raid", true) == 0) {
+			if(CrateFacility[id][cfRaidTimer] == 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "There is no raid on-going.");
+			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the raid timer lower than 1 second!");
+			CrateFacility[id][cfRaidTimer] = gettime()+value;
+			SaveFacility(id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d raid timer to %d.", id, value);
+			return 1;
+		}
+		else if(strcmp(name, "multiplier", true) == 0) {
+			if(value < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't set the crate multiplier lower than 1!");
+			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility crate delivery multiplier from %d to %d.", GetPlayerNameEx(playerid), id, CrateFacility[id][cfProdMulti], value);
+			Log("logs/cfedit.log", szMiscArray);
+			CrateFacility[id][cfProdMulti] = value;
+			SaveFacility(id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d delivery multiplier to %d.", id, value);
+			return 1;
+		}
+		else if(strcmp(name, "raidable", true) == 0) {
+			if(!(0 <= value < 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only choose the following: 0 - Disable | 1 - Active");
+			if(CrateFacility[id][cfRaidTimer] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: There is a raid on-going, try again after %s.", date(CrateFacility[id][cfRaidTimer], 1));
+			if(value && !CrateFacility[id][cfRaidable]) CrateFacility[id][cfCooldown] = gettime()+10800;
+			format(szMiscArray, sizeof(szMiscArray), "%s has set %d facility raidable status from %s to %s.", GetPlayerNameEx(playerid), id, (CrateFacility[id][cfRaidable]) ? ("Active") : ("Disabled"), (value) ? ("Active") : ("Disabled"));
+			Log("logs/cfedit.log", szMiscArray);
+			CrateFacility[id][cfRaidable] = value;
+			SaveFacility(id);
+			SendClientMessageEx(playerid, COLOR_WHITE, "You have set crate facility %d raid status to %s.", id, (value) ? ("Active") : ("Disabled"));
+			return 1;
+		}
 		else if(strcmp(name, "owner", true) == 0) {
 			new fac;
 			GetFacility(value, fac);
@@ -1477,6 +1396,12 @@ CMD:cfedit(playerid, params[]) {
 					DestroyCrate(c);
 				}
 			}
+			for(new g = 0; g < MAX_GATES; g++) {
+				if(GateInfo[g][gFacility] == id) {
+					GateInfo[g][gFacility] = -1;
+					SaveGate(g);
+				}
+			}
 			AdminOpened[id] = 0; // Disable by default.
 			CrateBeingProcessed[id] = 0;
 			format(CrateFacility[id][cfName], 4, "----");
@@ -1493,8 +1418,10 @@ CMD:cfedit(playerid, params[]) {
 			CrateFacility[id][cfProdTimer] = 0;
 			CrateFacility[id][cfProdStatus] = 0;
 			CrateFacility[id][cfProdCost] = 0;
+			CrateFacility[id][cfProdMulti] = 1;
 			CrateFacility[id][cfRaidTimer] = 0;
 			CrateFacility[id][cfCooldown] = 0;
+			CrateFacility[id][cfRaidable] = 1;
 			CrateFacility[id][cfActive] = 0;
 			CrateFacility[id][cfTimer] = 0;
 			UpdateFacility(id);
@@ -1582,23 +1509,40 @@ Dialog:order_refund(playerid, response, listitem, inputtext[]) {
 	new group = PlayerInfo[playerid][pMember];
 	if(response) {
 		if(!CrateOrder[group][coStatus]) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: You don't have any crate orders pending!");
-		new refund = ((CrateOrder[group][coCrates] - CrateOrder[group][coDelivered]) * CrateOrder[group][coPerCrate]);
-
-		foreach(new p: Player) {
-			if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[group][coFacility]][cfGroup]) {
-				SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their order; %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+		new refund = ((CrateOrder[group][coCrates] - CrateOrder[group][coDelivered]) * CrateOrder[group][coPerCrate]), type = (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) ? 8 : 5;
+		if(CrateFacility[CrateOrder[group][coFacility]][cfGroup] == PlayerInfo[playerid][pMember]) {
+			foreach(new p: Player) {
+				if(PlayerInfo[p][pMember] == type) {
+					SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their own order; %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+				}
+				if(PlayerInfo[p][pLeader] == group) {
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s has canceled the crate order; %d/%d crates were delivered costing: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* $%s was refunded back into the vault for undelivered crates.", number_format(refund));
+				}
 			}
-			if(PlayerInfo[p][pLeader] == group) {
-				SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s has canceled the crate order; %d/%d crates were delivered costing: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
-				SendClientMessageEx(p, COLOR_LIGHTRED, "* $%s was refunded back into the vault for undelivered crates.", number_format(refund));
+			format(szMiscArray, sizeof(szMiscArray), "%s %s has canceled the crate order; %d/%d crates were delivered costing: $%s ($%s was refunded)", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
+			GroupPayLog(group, szMiscArray);
+			SetGroupBudget(group, refund);
+			format(szMiscArray, sizeof(szMiscArray), "%s has canceled their crate order; %d/%d crates were delivered adding: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
+			GroupPayLog(type, szMiscArray);
+			SetGroupBudget(type, (CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+		} else {
+			foreach(new p: Player) {
+				if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[group][coFacility]][cfGroup]) {
+					SendClientMessageEx(p, COLOR_LIGHTRED, "%s has canceled their order; %d/%d crates were delivered earning: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+				}
+				if(PlayerInfo[p][pLeader] == group) {
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s %s has canceled the crate order; %d/%d crates were delivered costing: $%s", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
+					SendClientMessageEx(p, COLOR_LIGHTRED, "* $%s was refunded back into the vault for undelivered crates.", number_format(refund));
+				}
 			}
+			format(szMiscArray, sizeof(szMiscArray), "%s %s has canceled the crate order; %d/%d crates were delivered costing: $%s ($%s was refunded)", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
+			GroupPayLog(group, szMiscArray);
+			SetGroupBudget(group, refund);
+			format(szMiscArray, sizeof(szMiscArray), "%s has canceled their crate order; %d/%d crates were delivered adding: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
+			GroupPayLog(CrateFacility[CrateOrder[group][coFacility]][cfGroup], szMiscArray);
+			SetGroupBudget(CrateFacility[CrateOrder[group][coFacility]][cfGroup], (CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 		}
-		format(szMiscArray, sizeof(szMiscArray), "%s %s has canceled the crate order; %d/%d crates were delivered costing: $%s ($%s was refunded)", arrGroupRanks[group][PlayerInfo[playerid][pRank]], GetPlayerNameEx(playerid), CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
-		GroupPayLog(group, szMiscArray);
-		SetGroupBudget(group, refund);
-		format(szMiscArray, sizeof(szMiscArray), "%s has canceled their crate order; %d/%d crates were delivered adding: $%s.", arrGroupData[group][g_szGroupName], CrateOrder[group][coDelivered], CrateOrder[group][coCrates], number_format(CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]), number_format(refund));
-		GroupPayLog(CrateFacility[CrateOrder[group][coFacility]][cfGroup], szMiscArray);
-		SetGroupBudget(CrateFacility[CrateOrder[group][coFacility]][cfGroup], (CrateOrder[group][coDelivered] * CrateOrder[group][coPerCrate]));
 		ResetOrder(group);
 		SaveGroup(group);
 	}
@@ -1658,7 +1602,7 @@ Dialog:place_order(playerid, response, listitem, inputtext[]) {
 				if(CrateOrder[group][coCrates] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: You must select how many crates you'd like!"), PrepOrder(playerid, group);
 				if(!CrateFacility[CrateOrder[group][coFacility]][cfActive] || CrateFacility[CrateOrder[group][coFacility]][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The selected facility is unaviliable to take orders!"), PrepOrder(playerid, group);
 				if(CrateFacility[CrateOrder[group][coFacility]][cfProdCost] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The facility your trying to select hasn't got a production cost setup!"), PrepOrder(playerid, group);
-				if(CrateFacility[CrateOrder[group][coFacility]][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility; You can deliver them manually."), PrepOrder(playerid, group);
+				//if(CrateFacility[CrateOrder[group][coFacility]][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility; You can deliver them manually."), PrepOrder(playerid, group);
 				new cost = (CrateOrder[group][coCrates] * CrateOrder[group][coPerCrate]);
 				if(GetGroupBudget(group) < cost) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: Your group can't afford that many crates!"), PrepOrder(playerid, group);
 				if(ValidGroup(CrateOrder[group][coFacility])) {
@@ -1704,7 +1648,7 @@ Dialog:select_facility(playerid, response, listitem, inputtext[]) {
 		if(!(0 <= listitem < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_RED, "ERROR - Something went wrong; Please try again!"), ListFacility(playerid);
 		if(!CrateFacility[listitem][cfActive] || CrateFacility[listitem][cfGroup] == -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The facility your trying to select isn't available to take orders!"), ListFacility(playerid);
 		if(CrateFacility[listitem][cfProdCost] < 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "The facility your trying to select hasn't got a production cost setup!"), ListFacility(playerid);
-		if(CrateFacility[listitem][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility; You can deliver them manually."), ListFacility(playerid);
+		//if(CrateFacility[listitem][cfGroup] == group) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't order from your own facility; You can deliver them manually."), ListFacility(playerid);
 		CrateOrder[group][coFacility] = listitem;
 		CrateOrder[group][coCrates] = 0;
 		CrateOrder[group][coPerCrate] = 0;
@@ -1858,33 +1802,48 @@ public DeliverCrate(playerid, fac, veh, point, crates) {
 	    	CrateOrder[point][coDelivered] = CrateOrder[point][coCrates];
 	    }
 		if(CrateOrder[point][coDelivered] >= CrateOrder[point][coCrates]) {
-			foreach(new p: Player) {
-				if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[point][coFacility]][cfGroup]) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's crate order has been completed; %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+			if(point == PlayerInfo[playerid][pMember]) {
+				new type = (arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance] == 2) ? 8 : 5; 
+				foreach(new p: Player) {
+					if(PlayerInfo[p][pMember] == type) {
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's own crate order has been completed; %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+					}
+					if(PlayerInfo[p][pLeader] == point) {
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order; You can now submit a new order.", CrateFacility[fac][cfName]);
+					}
 				}
-				if(PlayerInfo[p][pLeader] == point) {
-					SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order; You can now submit a new order.", CrateFacility[fac][cfName]);
+				SetGroupBudget(type, (CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+				format(szMiscArray, sizeof(szMiscArray), "%s's own crate order was sucesfully completed %d crates were delivered adding: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+				GroupPayLog(type, szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%s facility has successfully delivered all %d crates to your locker.", CrateFacility[fac][cfName], CrateOrder[point][coCrates]);
+				CrateLog(point, szMiscArray);
+			} else {
+				foreach(new p: Player) {
+					if(PlayerInfo[p][pMember] == CrateFacility[CrateOrder[point][coFacility]][cfGroup]) {
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s's crate order has been completed; %d crates were delivered earning: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+					}
+					if(PlayerInfo[p][pLeader] == point) {
+						SendClientMessageEx(p, COLOR_LIGHTRED, "* %s facility has completed your crate order; You can now submit a new order.", CrateFacility[fac][cfName]);
+					}
 				}
+				SetGroupBudget(CrateFacility[CrateOrder[point][coFacility]][cfGroup], (CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+				format(szMiscArray, sizeof(szMiscArray), "%s's crate order was sucesfully completed %d crates were delivered adding: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
+				GroupPayLog(CrateFacility[CrateOrder[point][coFacility]][cfGroup], szMiscArray);
+				format(szMiscArray, sizeof(szMiscArray), "%s facility has successfully delivered all %d crates to your locker.", CrateFacility[fac][cfName], CrateOrder[point][coCrates]);
+				CrateLog(point, szMiscArray);
 			}
-			SetGroupBudget(CrateFacility[CrateOrder[point][coFacility]][cfGroup], (CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
-			format(szMiscArray, sizeof(szMiscArray), "%s's crate order was sucesfully completed %d crates were delivered adding: $%s.", arrGroupData[point][g_szGroupName], CrateOrder[point][coCrates], number_format(CrateOrder[point][coCrates] * CrateOrder[point][coPerCrate]));
-			GroupPayLog(CrateFacility[CrateOrder[point][coFacility]][cfGroup], szMiscArray);
-			format(szMiscArray, sizeof(szMiscArray), "%s facility has successfully delivered all %d crates to your locker.", CrateFacility[fac][cfName], CrateOrder[point][coCrates]);
-			CrateLog(point, szMiscArray);
 			SaveGroup(CrateFacility[CrateOrder[point][coFacility]][cfGroup]);
 			ResetOrder(point);
 		} else {
+			format(szMiscArray, sizeof(szMiscArray), "%s has delivered %d crates to %s (Total delivered: %d/%d)", GetPlayerNameEx(playerid), crates, arrGroupData[point][g_szGroupName], CrateOrder[point][coDelivered], CrateOrder[point][coCrates]);
+			CrateLog(CrateFacility[CrateOrder[point][coFacility]][cfGroup], szMiscArray);
 			SendClientMessageEx(playerid, COLOR_LIGHTRED, "* You have delivered %d crates to %s; Total delivered: %d/%d", crates, arrGroupData[point][g_szGroupName], CrateOrder[point][coDelivered], CrateOrder[point][coCrates]);
 		}
 		SaveOrder(point);
 	    for(new c = 0; c < MAX_CRATES; c++) {
 	    	if(CrateBox[c][cbFacility] == fac && CrateBox[c][cbInVeh] == veh) {
 	    		if(crates > 0) {
-					for(new w = 0; w < 46; w++) {
-						if(CrateBox[c][cbWep][w] > 0) {
-							LockerWep[point][lwWep][w] += CrateBox[c][cbWep][w];
-						}
-					}
+					arrGroupData[point][g_iLockerStock] += floatround(CrateBox[c][cbMats] * CrateFacility[CrateBox[c][cbFacility]][cfProdMulti]);
 	    			DestroyCrate(c);
 	    			--crates;
 	    		}
@@ -1892,6 +1851,73 @@ public DeliverCrate(playerid, fac, veh, point, crates) {
 	    }
 	    SaveWeapons(point);
 	    if(CreateCount(veh) > 0) SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "You have %d crate(s) remaining that wasn't used for the delivery.", CreateCount(veh));
+	}
+	return 1;
+}
+
+CMD:cgun(playerid, params[]) {
+	szMiscArray[0] = 0;
+	new box, title[32];
+	if(!ValidGroup(PlayerInfo[playerid][pMember])) return SendClientMessageEx(playerid, COLOR_GRAD1, "You need to be apart of a group to use this command!");
+	if(PlayerInfo[playerid][pAccountRestricted] != 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "Your account is restricted!");
+	if(PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD1, "You can't take weapons out as you're currently weapon restricted!");
+	if(PlayerBusy(playerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't do that right now.");
+	GetCrateBox(playerid, box, 2.0);
+	if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes.");
+	if(CrateBox[box][cbGroup] != -1) return SendClientMessageEx(playerid, COLOR_GREY, "This is a transfer crate use \"/crate contents\" instead!");
+	SetPVarInt(playerid, "Cgunbox", box);
+	format(title, sizeof(title), "Crate Box Withdraw - Mats: %d", CrateBox[box][cbMats]);
+	format(szMiscArray, sizeof(szMiscArray), "Weapon\tCost\n");
+	for(new i = 0; i != MAX_GROUP_WEAPONS; ++i) {
+		if(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerGuns][i]) {
+			format(szMiscArray, sizeof szMiscArray, "%s\n%s\t%d", szMiscArray, Weapon_ReturnName(arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerGuns][i]), arrGroupData[PlayerInfo[playerid][pMember]][g_iLockerCost][i]);
+		}
+		else strcat(szMiscArray, "\nEmpty\t--");
+	}
+	Dialog_Show(playerid, cgun_take, DIALOG_STYLE_TABLIST_HEADERS, title, szMiscArray, "Select", "Go Back");
+	return 1;
+}
+
+Dialog:cgun_take(playerid, response, listitem, inputtext[]) {
+	szMiscArray[0] = 0;
+	if(!ValidGroup(PlayerInfo[playerid][pMember])) return 1;
+	if(!GetPVarType(playerid, "Cgunbox")) return 1;
+	new group = PlayerInfo[playerid][pMember], box;
+	if(response) {
+		GetCrateBox(playerid, box, 2.0); // Did someone pick it up? or did the player move?
+		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "Crate box went out of reach - Please stay close to the crate box.");
+		if(box != GetPVarInt(playerid, "Cgunbox")) return SendClientMessageEx(playerid, COLOR_RED, "ERROR: Box ID differs from accessed crate, please try again.");
+		new GunID = arrGroupData[group][g_iLockerGuns][listitem];
+		if(!GunID) return SendClientMessageEx(playerid, COLOR_WHITE, "Theres no weapon assigned to that slot!");
+		if(CrateBox[box][cbMats] < arrGroupData[group][g_iLockerCost][listitem]) return SendClientMessageEx(playerid, COLOR_GRAD2, "There isn't enough materials in the crate for that weapon!");
+		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(GunID)] != GunID) {
+			GivePlayerValidWeapon(playerid, GunID);
+			CrateBox[box][cbMats] -= arrGroupData[group][g_iLockerCost][listitem];
+			format(szMiscArray, sizeof(szMiscArray), "* %s reaches into the weapon crate box and takes out a %s.", GetPlayerNameEx(playerid), Weapon_ReturnName(GunID));
+			ProxDetector(25.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			SaveCrate(box);
+			CrateBoxUpdate(box);
+			if(CrateBox[box][cbMats] < 1) DestroyCrate(box);
+		} else {
+			SendClientMessageEx(playerid, COLOR_RED, "You already have a %s on you!", Weapon_ReturnName(GunID));
+		}
+	}
+	DeletePVar(playerid, "Cgunbox");
+	return 1;
+}
+
+// Ignore gate status incase someone is opening a gate at the time of the gate timer.
+stock TriggerGates(fac, status = 1) {
+	for(new g = 0; g < MAX_GATES; g++) {
+		if(GateInfo[g][gFacility] == fac) {
+			if(status) {
+				MoveDynamicObject(GateInfo[g][gGATE], GateInfo[g][gPosXM], GateInfo[g][gPosYM], GateInfo[g][gPosZM], GateInfo[g][gSpeed], GateInfo[g][gRotXM], GateInfo[g][gRotYM], GateInfo[g][gRotZM]);
+				GateInfo[g][gStatus] = 1;
+			} else {
+				MoveDynamicObject(GateInfo[g][gGATE], GateInfo[g][gPosX], GateInfo[g][gPosY], GateInfo[g][gPosZ], GateInfo[g][gSpeed], GateInfo[g][gRotX], GateInfo[g][gRotY], GateInfo[g][gRotZ]);
+				GateInfo[g][gStatus] = 0;
+			}
+		}
 	}
 	return 1;
 }

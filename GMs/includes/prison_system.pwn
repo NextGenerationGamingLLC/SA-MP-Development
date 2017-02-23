@@ -1742,7 +1742,7 @@ CMD:prisonhelp(playerid, params[])
 
 CMD:beanbag(playerid, params[])
 {
-    if(!IsADocGuard(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard to use this command.");
+    if(!IsADocGuard(playerid) || !IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard / Law enforcement to use this command.");
 
     if(GetPlayerWeapon(playerid) == 25)
     {

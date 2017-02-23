@@ -237,6 +237,7 @@ native IsValidVehicle(vehicleid);
 #define         GROUP_QUERY_LOCKERS     	7
 #define         GROUP_QUERY_JURISDICTIONS   8
 #define 		GROUP_QUERY_GWEAPONS		9
+#define 		GROUP_QUERY_GWEAPONS_RANK	10
 
 // group ID defines
 #define			GROUP_TYPE_LEA				1
