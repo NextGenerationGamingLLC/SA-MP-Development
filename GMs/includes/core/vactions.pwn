@@ -28,7 +28,7 @@
 forward ClearAnims(playerid);
 public ClearAnims(playerid)
 {
-	ClearAnimations(playerid);
+	ClearAnimationsEx(playerid);
 }
 
 PlayAnim(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync)
@@ -55,6 +55,7 @@ PlayAnimEx(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, fr
 {
 	if(!IsPlayerIdle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You must stop your current animation!");
 	gPlayerUsingLoopingAnim[playerid] = 1;
+	IsDoingAnim[playerid] = 1;
 	ApplyAnimation(playerid, animlib, animname, fDelta, loop, lockx, locky, freeze, time, forcesync);
 	if(!GetPVarType(playerid, "togAnimHelper")) TextDrawShowForPlayer(playerid,txtAnimHelper);
 	return 1;
@@ -144,7 +145,7 @@ public StopaniTimer(playerid)
 	    return 1;
 	}
 	SendClientMessageEx (playerid, COLOR_YELLOW, "Your animations were cleared!");
-	ClearAnimations(playerid);
+	ClearAnimationsEx(playerid);
 	SetPlayerSkin(playerid, GetPlayerSkin(playerid));
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 
@@ -320,7 +321,7 @@ CMD:oanimhelp(playerid, params[])
 		SendClientMessage(playerid, COLOR_GRAD2, "This command requires you to be outside a vehicle.");
 		return 1;
 	}
-	ClearAnimations(playerid);
+	ClearAnimationsEx(playerid);
 	SetPlayerSkin(playerid, GetPlayerSkin(playerid));
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 	return 1;
@@ -386,6 +387,7 @@ CMD:handsup(playerid, params[])
 {
 	if(!IsAblePedAnimation(playerid)) return 1;
     SetPlayerSpecialAction(playerid,SPECIAL_ACTION_HANDSUP);
+    IsDoingAnim[playerid] = 1;
 	return 1;
 }
 
@@ -393,6 +395,7 @@ CMD:piss(playerid, params[])
 {
 	if(!IsAblePedAnimation(playerid)) return 1;
    	SetPlayerSpecialAction(playerid, 68);
+   	IsDoingAnim[playerid] = 1;
 	return 1;
 }
 
@@ -981,10 +984,10 @@ CMD:dance(playerid, params[])
 	if(!IsAblePedAnimation(playerid)) return 1;
 	switch(strval(params))
 	{
-	case 1: SetPlayerSpecialAction(playerid, 5);
-	case 2: SetPlayerSpecialAction(playerid, 6);
-	case 3: SetPlayerSpecialAction(playerid, 7);
-	case 4: SetPlayerSpecialAction(playerid, 8);
+	case 1: SetPlayerSpecialAction(playerid, 5), IsDoingAnim[playerid] = 1;
+	case 2: SetPlayerSpecialAction(playerid, 6), IsDoingAnim[playerid] = 1;
+	case 3: SetPlayerSpecialAction(playerid, 7), IsDoingAnim[playerid] = 1;
+	case 4: SetPlayerSpecialAction(playerid, 8), IsDoingAnim[playerid] = 1;
 	default: SendClientMessage(playerid, COLOR_WHITE, "USAGE: /dance [1-4]");
 	}
 	return 1;

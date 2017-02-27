@@ -334,7 +334,7 @@ PrisonPlayer(playerid, giveplayerid, reason[], time=0, silent=0, custom=0)
 
 	if(GetPVarInt(giveplayerid, "Injured") == 1) {
 		KillEMSQueue(giveplayerid);
-		ClearAnimations(giveplayerid);
+		ClearAnimationsEx(giveplayerid);
 	}
 
 	if(GetPVarType(giveplayerid, "IsInArena")) LeavePaintballArena(giveplayerid, GetPVarInt(giveplayerid, "IsInArena"));

@@ -5070,7 +5070,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPlayerWantedLevel(suspect, 0);
 					WantLawyer[suspect] = 1;
 					TogglePlayerControllable(suspect, 1);
-					ClearAnimations(suspect);
+					ClearAnimationsEx(suspect);
 					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
 					PlayerCuffed[suspect] = 0;
 					DeletePVar(suspect, "PlayerCuffed");
@@ -5144,7 +5144,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPlayerWantedLevel(suspect, 0);
 					WantLawyer[suspect] = 1;
 					TogglePlayerControllable(suspect, 1);
-					ClearAnimations(suspect);
+					ClearAnimationsEx(suspect);
 					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
 					PlayerCuffed[suspect] = 0;
 					DeletePVar(suspect, "PlayerCuffed");

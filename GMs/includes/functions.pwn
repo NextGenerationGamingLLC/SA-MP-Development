@@ -238,14 +238,13 @@ GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance)
     x += (distance * floatsin(-a, degrees));
     y += (distance * floatcos(-a, degrees));
 }*/
-/*
-//Unused
+
 IsInRangeOfPoint(Float: fPosX, Float: fPosY, Float: fPosZ, Float: fPosX2, Float: fPosY2, Float: fPosZ2, Float: fDist) {
     fPosX -= fPosX2;
 	fPosY -= fPosY2;
     fPosZ -= fPosZ2;
     return ((fPosX * fPosX) + (fPosY * fPosY) + (fPosZ * fPosZ)) < (fDist * fDist);
-}*/
+}
 
 /*PreloadAnimLib(playerid, animlib[])
 {

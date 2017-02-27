@@ -2776,3 +2776,7 @@ new
 	CarryCrate[MAX_PLAYERS],
 	BeingMoved[MAX_CRATES],
 	AdminOpened[MAX_CRATE_FACILITY];
+
+new
+	IsDoingAnim[MAX_PLAYERS],
+	GhostHacker[MAX_PLAYERS][7];

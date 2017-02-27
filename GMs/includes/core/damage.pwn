@@ -36,6 +36,50 @@
 */
 #include <YSI\y_hooks>
 
+static Float:WeaponRange[] = {
+
+	1.6, // 0 - Fist
+	1.6, // 1 - Brass knuckles
+	1.6, // 2 - Golf club
+	1.6, // 3 - Nitestick
+	1.6, // 4 - Knife
+	1.6, // 5 - Bat
+	1.6, // 6 - Shovel
+	1.6, // 7 - Pool cue
+	1.6, // 8 - Katana
+	1.6, // 9 - Chainsaw
+	1.6, // 10 - Dildo
+	1.6, // 11 - Dildo 2
+	1.6, // 12 - Vibrator
+	1.6, // 13 - Vibrator 2
+	1.6, // 14 - Flowers
+	1.6, // 15 - Cane
+	40.0, // 16 - Grenade
+	40.0, // 17 - Teargas
+	40.0, // 18 - Molotov
+	90.0, // 19 - Vehicle M4 (custom)
+	75.0, // 20 - Vehicle minigun (custom)
+	0.0, // 21
+	35.0, // 22 - Colt 45
+	35.0, // 23 - Silenced
+	35.0, // 24 - Deagle
+	40.0, // 25 - Shotgun
+	35.0, // 26 - Sawed-off
+	40.0, // 27 - Spas
+	35.0, // 28 - UZI
+	45.0, // 29 - MP5
+	70.0, // 30 - AK47
+	90.0, // 31 - M4
+	35.0, // 32 - Tec9
+	100.0, // 33 - Cuntgun
+	320.0, // 34 - Sniper
+	55.0, // 35 - Rocket launcher
+	55.0, // 36 - Heatseeker
+	5.1, // 37 - Flamethrower
+	75.0  // 38 - Minigun
+};
+
+
 new HitStatus[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid) {
@@ -43,16 +87,40 @@ hook OnPlayerConnect(playerid) {
 	return 1;
 }
 
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+	if((newkeys & KEY_SPRINT) || (newkeys & KEY_SECONDARY_ATTACK)) {
+		if(IsDoingAnim[playerid]) ClearAnimationsEx(playerid);
+	}
+	return 1;
+}
+
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ) {
 	new string[128];
+	//SendClientMessageEx(playerid, COLOR_WHITE, "Weapon %i fired. hittype: %i   hitid: %i   pos: %f, %f, %f", weaponid, hittype, hitid, fX, fY, fZ);
+	if(GhostHacker[playerid][5] < gettime()) {
+		GhostHacker[playerid][3] = 0;
+		GhostHacker[playerid][5] = gettime()+9;
+	}
     if(playerid != INVALID_PLAYER_ID) {
-    	if(IsPlayerPaused(playerid)) return 0;
     	if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena")) {
 		    if(weaponid > 0 && GetPlayerWeapon(playerid) == weaponid) {
 				if(PlayerInfo[playerid][pGuns][GetWeaponSlot(weaponid)] != weaponid) {
 					ExecuteHackerAction(playerid, weaponid);
 					RemovePlayerWeapon(playerid, weaponid);
 					return 0;
+				}
+			}
+		}
+		if(hittype == BULLET_HIT_TYPE_PLAYER) {
+			if(hitid != INVALID_PLAYER_ID) {
+				if(weaponid != 9 || weaponid != 37 || weaponid != 38 || weaponid != 41 || weaponid != 42) {
+					//if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena")) {
+						GhostHacker[playerid][2]++;
+						if(!GhostHacker[playerid][4]) {
+							GhostHacker[playerid][4] = 1;
+							SetTimerEx("CheckBulletAmount", 1000, 0, "ii", playerid);
+						}
+					//}
 				}
 			}
 		}
@@ -94,14 +162,116 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	return 1;
 }
 
+forward CheckBulletAmount(playerid);
+public CheckBulletAmount(playerid) {
+	new szMessage[128];
+	if(GhostHacker[playerid][2] > 8) {
+		if(++GhostHacker[playerid][3] > 2) {
+			format(szMessage, sizeof(szMessage), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) may possibly be using aim assist.", GetPlayerNameEx(playerid), playerid);
+			ABroadCast(COLOR_YELLOW, szMessage, 2);
+		}
+	}
+	GhostHacker[playerid][2] = 0;
+	GhostHacker[playerid][4] = 0;
+	return 1;
+}
+
+// Required as aiming with a single weapon wont update the anim index so we need to force clear.
+stock IsAimingColt(playerid) {
+
+	if(GetPlayerCameraMode(playerid) == 53) {
+		if(GetPlayerWeapon(playerid) == 22 || GetPlayerWeapon(playerid) == 26 || GetPlayerWeapon(playerid) == 28 || GetPlayerWeapon(playerid) == 32) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+stock IsInvalidGunAnim(playerid)
+{
+	switch(GetPlayerAnimationIndex(playerid))
+	{
+		case
+			320,
+			471,
+			1164,
+			1183,
+			1188,
+			1189, // PED: IDLE_STANCE
+			1196, // PED: JUMP_LAND
+			1198, // PED: JUMP_LAUNCH_R
+			1223, // PED: RUN_ARMED
+			1231, // PED: RUN_PLAYER
+			1197, // PED: JUMP_LAUNCH
+			1195, // PED: JUMP_GLIDE
+			1266, // PED: WALK_PLAYER
+			1246, // PED: SPRINT_CIVI
+			1066, // PED: PED CLIMB_STAND
+			1067, // PED: CLIMB_STAND_FINISH
+			224, // BUDDY: BUDDY_RELOAD
+			1234, // PED: RUN_STOP
+			1132, // PED: FALL_GLIDE
+			1133, // PED: FALL_LAND
+			1130, // PED: FALL_FALL
+			1129, // PED: PED FALL_COLLAPSE
+			1207, // PED: KO_SHOT_STOM
+			1274, // PED: WEAPON_CROUCH
+			1235, // PED: RUN_STOPR
+			1233, // PED: RUN_ROCKET
+			1225, // PED: RUN_CSAW
+			1062, // PED: CLIMB_JUMP
+			1065, // PED: CLIMB_PULL
+			1159, // PED: GUNCROUCHFWD
+			1269, // PED: WALK_START
+			1180, // PED: HIT_WALL
+			1069, // PED: CROUCH_ROLL_L
+			1070: // PED: CROUCH_ROLL_R
+			return 1;
+	}
+	return 0;
+}
+
+
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	szMiscArray[0] = 0;
-	if(IsPlayerPaused(playerid)) return 1;
+	if((0 <= bodypart < 2)) return 1;
+	if(IsAimingColt(playerid) && IsInvalidGunAnim(playerid)) {
+		ClearAnimations(playerid, 1);
+		return 1;
+	}
+	
+    new animlib[32];
+    new animname[32];
+    GetAnimationName(GetPlayerAnimationIndex(playerid),animlib,32,animname,32);
+    if(!IsInvalidGunAnim(playerid)) SendClientMessageEx(playerid, COLOR_WHITE, "Anim: %d | Name: %s %s", GetPlayerAnimationIndex(playerid), animlib, animname);
 	if(PlayerIsDead[damagedid]) return 1;
 	//if(!HitStatus[damagedid]) return 1;
 	new Float:realdam = amount;
 	if(damagedid != INVALID_PLAYER_ID && playerid != INVALID_PLAYER_ID) {
+		if(GhostHacker[playerid][0] > 0 && GhostHacker[playerid][6] < gettime()) GhostHacker[playerid][6] = gettime()+6, GhostHacker[playerid][0] = 0;
+		if(IsPlayerPaused(playerid) || IsDoingAnim[playerid] || IsInvalidGunAnim(playerid)) {
+			if(GhostHacker[playerid][1] < gettime()) {
+				if(++GhostHacker[playerid][0] > 1) {
+					format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s may possibly be Ghost Hacking, damage was denied.", GetPlayerNameEx(playerid));
+					ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+					GhostHacker[playerid][1] = gettime()+3;
+					format(szMiscArray, sizeof(szMiscArray), "%s may possibly be Ghost Hacking.", GetPlayerNameEx(playerid));
+					Log("logs/hack.log", szMiscArray);
+				}
+			}
+			foreach(Player, i)
+			{
+				if(IsPlayerConnected(i))
+				{
+					if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
+						format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Dmgd: %s (%d) | Wp: %s | CSDmg: %.2f | SSDmg: Denied | %s (GIVE)", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid), damagedid, GetWeaponNameEx(weaponid), amount, ReturnBoneName(bodypart));
+						SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+					}
+				}
+			}
+			return 1;
+		}
 	    if(amount < 0.0) amount = 0.0;
 	    if(amount > 150.0) amount = 150.0;
 	    // First define our base damage.
@@ -152,6 +322,27 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		}
 
 		if(!IsPlayerStreamedIn(playerid, damagedid) || !IsPlayerStreamedIn(damagedid, playerid)) return 1;
+
+		new Float:fOriginX, Float:fOriginY, Float:fOriginZ, Float:fHitPosX, Float:fHitPosY, Float:fHitPosZ,
+			Float:x, Float:y, Float:z;
+
+		GetPlayerPos(playerid, x, y, z);
+		GetPlayerLastShotVectors(playerid, fOriginX, fOriginY, fOriginZ, fHitPosX, fHitPosY, fHitPosZ);
+
+		new Float:fDistance = VectorSize(fOriginX - fHitPosX, fOriginY - fHitPosY, fOriginZ - fHitPosZ),
+			Float:origin_dist = VectorSize(fOriginX - x, fOriginY - y, fOriginZ - z);
+
+		if(origin_dist > 15.0) {
+			new iVehCheck = IsPlayerInAnyVehicle(damagedid) || GetPlayerSurfingVehicleID(playerid);
+			if((!iVehCheck && GetPlayerSurfingVehicleID(playerid) == INVALID_VEHICLE_ID) || origin_dist > 50.0) {
+				return 1;
+			}
+		}
+		if(fDistance > WeaponRange[weaponid]) return 1;
+		new Float:fHitDist = GetPlayerDistanceFromPoint(damagedid, fHitPosX, fHitPosY, fHitPosZ),
+		iVehCheck = IsPlayerInAnyVehicle(damagedid);
+		if ((!iVehCheck && fHitDist > 20.0) || fHitDist > 50.0) return 1;
+
 		new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
 		if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1)
 		{
@@ -245,6 +436,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				format(szMiscArray, sizeof(szMiscArray), "* %s fires their tazer at %s, stunning them.", GetPlayerNameEx(playerid), GetPlayerNameEx(damagedid));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				//GameTextForPlayer(damagedid, "~r~Tazed", 3500, 3);
+				ClearAnimationsEx(damagedid);
 				TogglePlayerControllable(damagedid, 0);
 				ApplyAnimation(damagedid,"CRACK","crckdeth2",4.1,0,1,1,1,1,1);
 				PlayerPlaySound(damagedid, 1085, X, Y, Z);
@@ -276,7 +468,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 				GetArmour(damagedid, fArmour);
 				SetHealth(damagedid, fHealth);
 				SetArmour(damagedid, fArmour);
-
+				ClearAnimationsEx(damagedid);
 	    		TogglePlayerControllable(damagedid, FALSE);
      			ApplyAnimation(damagedid,"PED","KO_shot_stom",4.1,0,1,1,1,1,1);
 	    		SetTimerEx("_UnbeanbagTimer", 20000, false, "d", damagedid);
@@ -364,6 +556,7 @@ timer DeathScreen[4000](playerid) {
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	szMiscArray[0] = 0;
+	if((0 <= bodypart < 2)) return 1;
 	if(PlayerIsDead[playerid]) return 1;
 	new Float:realdam = amount;
 	if(playerid != 65535) 
@@ -374,7 +567,8 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		switch(weaponid)
 		{
 			// Take into account drug effects (needs to be 150 for fall damage etc..)
-			case 50: { ClearAnimations(playerid); if(amount > 150.0) amount = 150.0; }
+			case 50: { ClearAnimationsEx(playerid); if(amount > 150.0) amount = 150.0; }
+			case 41: amount = 0.0;
 			default: if(amount > 150.0) amount = 150.0;
 		}
 
@@ -403,13 +597,36 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		if(weaponid == WEAPON_COLLISION && (1061 <= GetPlayerAnimationIndex(playerid) <= 1067)) // Climb Bug
 		{
 			new Float:hp;
-			ClearAnimations(playerid);
+			ClearAnimationsEx(playerid);
 			GetHealth(playerid, hp);
 			SetHealth(playerid, hp);
 			return 1;
 		}
 		if(issuerid != 65535) {
 			if(IsPlayerPaused(issuerid)) return 1;
+			if(GhostHacker[issuerid][0] > 0 && GhostHacker[issuerid][6] < gettime()) GhostHacker[issuerid][6] = gettime()+6, GhostHacker[issuerid][0] = 0;
+			if(IsPlayerPaused(issuerid) || IsDoingAnim[issuerid] || IsInvalidGunAnim(issuerid)) {
+				if(GhostHacker[issuerid][1] < gettime()) {
+					if(++GhostHacker[issuerid][0] > 1) {
+						format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s may possibly be Ghost Hacking, damage was denied.", GetPlayerNameEx(issuerid));
+						ABroadCast(COLOR_YELLOW, szMiscArray, 2);
+						GhostHacker[issuerid][1] = gettime()+3;
+						format(szMiscArray, sizeof(szMiscArray), "%s may possibly be Ghost Hacking.", GetPlayerNameEx(issuerid));
+						Log("logs/hack.log", szMiscArray);
+					}
+				}
+				foreach(Player, i)
+				{
+					if(IsPlayerConnected(i))
+					{
+						if(PlayerInfo[i][pAdmin] >= 2 && GetPVarType(i, "_dCheck") && GetPVarInt(i, "_dCheck") == playerid) {
+							format(szMiscArray, sizeof(szMiscArray), "[Dmgcheck] %s: Issuer: %s (%d) | Wp: %s (%d) | CSDmg: %.2f | SSDmg: Denied | %s (TAKE)", GetPlayerNameEx(playerid), GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid), weaponid, amount, ReturnBoneName(bodypart));
+							SendClientMessageEx(i, COLOR_WHITE, szMiscArray);
+						}
+					}
+				}
+				return 1;
+			}
 			if(GetPVarInt(playerid, "AttemptingLockPick") == 1) {
 				DeletePVar(playerid, "AttemptingLockPick");
 				DeletePVar(playerid, "LockPickCountdown");
@@ -436,13 +653,13 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 				SendClientMessageEx(playerid, COLOR_RED, "(( You failed to pick lock this vehicle because you took damage. ))");
 				SendClientMessageEx(playerid, COLOR_RED, szMiscArray);
 				SendClientMessageEx(playerid, COLOR_RED, "(( If this was DM, visit ng-gaming.net and make a Player Complaint. ))");
-				ClearAnimations(playerid, 1);
+				ClearAnimationsEx(playerid, 1);
 			}
 			if(GetPVarType(playerid, "AttemptingCrackTrunk")) {
 				DeletePVar(playerid, "AttemptingCrackTrunk");
 				DeletePVar(playerid, "CrackTrunkCountdown");
 				DestroyVLPTextDraws(playerid);
-				ClearAnimations(playerid, 1);
+				ClearAnimationsEx(playerid, 1);
 				format(szMiscArray, sizeof(szMiscArray), "(( You took damage from %s(%d) using %s.))", GetPlayerNameEx(issuerid), issuerid, GetWeaponNameEx(weaponid));
 				SendClientMessageEx(playerid, COLOR_RED, "(( You failed to crack this vehicle's trunk because you took damage. ))");
 				SendClientMessageEx(playerid, COLOR_RED, szMiscArray);

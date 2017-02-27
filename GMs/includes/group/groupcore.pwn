@@ -2873,7 +2873,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) return 1;
 			new closestCar = GetClosestCar(playerid, .fRange = 8.0);
 			if(closestCar == INVALID_VEHICLE_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near any vehicle!");
-			ClearAnimations(playerid);
+			ClearAnimationsEx(playerid);
 			if(listitem == 0)
 			{
 				if(IsACop(playerid) && IsACopCar(closestCar)) SetPlayerSkin(playerid, 285); // SWAT
@@ -5585,7 +5585,7 @@ CMD:locker(playerid, params[]) {
 	new
 		iGroupID = PlayerInfo[playerid][pMember],
 		szTitle[18 + GROUP_MAX_NAME_LEN],
-		szDialog[128];
+		szDialog[172];
 
 	if(PlayerInfo[playerid][pWRestricted] != 0 || PlayerInfo[playerid][pConnectHours] < 2) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot use this command while having a weapon restriction.");
 	if(HungerPlayerInfo[playerid][hgInEvent] != 0) return SendClientMessageEx(playerid, COLOR_GREY, "   You cannot do this while being in the Hunger Games Event!");
@@ -6143,46 +6143,29 @@ CMD:adjustwithdrawrank(playerid, params[])
 		Weapons(4)
 		Ammo(5)
 	*/
-	if(arrGroupData[iGroupID][g_iCrimeType] == GROUP_CRIMINAL_TYPE_RACE) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
+	if(arrGroupData[iGroupID][g_iGroupType] != GROUP_TYPE_CRIMINAL && arrGroupData[iGroupID][g_iCrimeType] != GROUP_CRIMINAL_TYPE_RACE) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command.");
 	if(PlayerInfo[playerid][pLeader] == iGroupID)
 	{
-		if(IsACriminal(playerid)) {
-			new iRank,
-				iChoice;
-			if(sscanf(params, "dd", iChoice, iRank)) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /adjustwithdrawrank [choice] [rank]");
-				SendClientMessageEx(playerid, COLOR_GREY, "Choice: Money - 0 | Materials - 1 | Drugs - 2 | Weapons - 3");
-				format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs (Rank: %d) | Weapons(Rank: %d)",
-					arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2],
-					arrGroupData[iGroupID][g_iWithdrawRank][3]);
-				return SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-			}
-			if(!(0 <= iChoice <= 3)) {
-				return SendClientMessageEx(playerid, COLOR_GREY, "Specify a valid choice!");
-			}
-			else
+		new iRank,
+			iChoice;
+		if(sscanf(params, "dd", iChoice, iRank)) {
+			SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /adjustwithdrawrank [choice] [rank]");
+			SendClientMessageEx(playerid, COLOR_GREY, "Choice: Money - 0 | Materials - 1 | Drugs - 2");
+			format(szMiscArray, sizeof(szMiscArray), "CURRENTLY: Money (Rank: %d) | Materials (Rank: %d) | Drugs (Rank: %d)",
+				arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2]);
+			return SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+		}
+		if(!(0 <= iChoice <= 2)) {
+			return SendClientMessageEx(playerid, COLOR_GREY, "Specify a valid choice!");
+		}
+		else
+		{
+			if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK)
 			{
-				if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK)
-				{
-					arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
-					format(szMiscArray, sizeof(szMiscArray), "You have adjusted the withdraw rank to %i.", iRank);
-					SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-					format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank for item %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
-					GroupLog(iGroupID, szMiscArray);
-				}
-				else SendClientMessage(playerid, COLOR_GREY, "Please specify a valid rank");
-			}
-		} else {
-			new iRank;
-			if(sscanf(params, "d", iRank)) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /adjustwithdrawrank [rank]");
-				return SendClientMessageEx(playerid, COLOR_GREY, "Rank: %d", arrGroupData[iGroupID][g_iWithdrawRank][3]);
-			}
-			if(0 <= iRank <= MAX_GROUP_RANKS-1 || iRank == INVALID_RANK) {
-				arrGroupData[iGroupID][g_iWithdrawRank][3] = iRank;
+				arrGroupData[iGroupID][g_iWithdrawRank][iChoice] = iRank;
 				format(szMiscArray, sizeof(szMiscArray), "You have adjusted the withdraw rank to %i.", iRank);
 				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank for weapons to %i.", GetPlayerNameEx(playerid), iRank);
+				format(szMiscArray, sizeof(szMiscArray), "%s has adjusted the withdraw rank for item %d to %i.", GetPlayerNameEx(playerid), iChoice, iRank);
 				GroupLog(iGroupID, szMiscArray);
 			}
 			else SendClientMessage(playerid, COLOR_GREY, "Please specify a valid rank");

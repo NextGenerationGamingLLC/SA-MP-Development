@@ -355,6 +355,19 @@ OnPlayerChangeWeapon(playerid, newweapon)
 
 		if(newweapon == WEAPON_PARACHUTE) PlayerInfo[playerid][pGuns][11] = 46;
 
+		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(newweapon)] != newweapon) {
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM]: Client weapon detected. Admins were notified: refrain from doing it again.");
+			ExecuteHackerAction(playerid, newweapon);
+			SetPlayerWeaponsEx(playerid);
+			new iWarnings = GetPVarInt(playerid, "WpnHack_Warnings");
+			if(iWarnings > 3) {
+				DeletePVar(playerid, "WpnHack_Warnings");
+				KickEx(playerid);
+			}
+			else SetPVarInt(playerid, "WpnHack_Warnings", iWarnings+1);
+		}
+
+		/*
 		if( PlayerInfo[playerid][pGuns][GetWeaponSlot(newweapon)] != newweapon) {
 			new iWarnings = GetPVarInt(playerid, "WpnHack_Warnings");
 			if(iWarnings > 3) {
@@ -362,7 +375,7 @@ OnPlayerChangeWeapon(playerid, newweapon)
 				DeletePVar(playerid, "WpnHack_Warnings");
 			}
 			else SetPVarInt(playerid, "WpnHack_Warnings", iWarnings+1);
-		}
+		}*/
 	}
 
 	if(GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)

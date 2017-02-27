@@ -89,8 +89,8 @@ stock CuffTacklee(playerid, giveplayerid)
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 	TogglePlayerControllable(giveplayerid, 0);
-	ClearAnimations(giveplayerid);
-	ClearAnimations(playerid);
+	ClearAnimationsEx(giveplayerid);
+	ClearAnimationsEx(playerid);
 	GetHealth(giveplayerid, health);
 	GetArmour(giveplayerid, armor);
 	SetPVarFloat(giveplayerid, "cuffhealth",health);
@@ -147,7 +147,7 @@ public DragPlayer(dragger, dragee)
 		SetPlayerPos(dragee, dX, dY-1, dZ);
 		SetPlayerInterior(dragee, GetPlayerInterior(dragger));
 		SetPlayerVirtualWorld(dragee, GetPlayerVirtualWorld(dragger));
-		ClearAnimations(dragee);
+		ClearAnimationsEx(dragee);
 		ApplyAnimation(dragee, "ped","cower",1,1,0,0,0,0,1);
         SetTimerEx("DragPlayer", 1000, 0, "ii", dragger, dragee);
 	}
@@ -1907,7 +1907,7 @@ CMD:cuff(playerid, params[])
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 					TogglePlayerControllable(giveplayerid, 0);
-					ClearAnimations(giveplayerid);
+					ClearAnimationsEx(giveplayerid);
 					GetHealth(giveplayerid, health);
 					GetArmour(giveplayerid, armor);
 					SetPVarFloat(giveplayerid, "cuffhealth",health);
@@ -1981,7 +1981,7 @@ CMD:uncuff(playerid, params[])
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
 					TogglePlayerControllable(giveplayerid, 1);
-					ClearAnimations(giveplayerid);
+					ClearAnimationsEx(giveplayerid);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 					PlayerCuffed[giveplayerid] = 0;
                     PlayerCuffedTime[giveplayerid] = 0;
@@ -2001,7 +2001,7 @@ CMD:uncuff(playerid, params[])
 					format(string, sizeof(string), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
-					ClearAnimations(giveplayerid);
+					ClearAnimationsEx(giveplayerid);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 					DeletePVar(giveplayerid, "jailcuffs");
 				}
@@ -2082,7 +2082,7 @@ CMD:detain(playerid, params[])
 						format(string, sizeof(string), "* %s throws %s in the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						GameTextForPlayer(giveplayerid, "~r~Detained", 2500, 3);
-						ClearAnimations(giveplayerid);
+						ClearAnimationsEx(giveplayerid);
 						TogglePlayerControllable(giveplayerid, false);
 						IsPlayerEntering{giveplayerid} = true;
 						PutPlayerInVehicle(giveplayerid, carid, seat);

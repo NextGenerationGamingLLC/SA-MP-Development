@@ -402,7 +402,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			}
 			else 
 			{ 
-				return ClearAnimations(playerid); 
+				return ClearAnimationsEx(playerid); 
 			}
 		}
 		case DIALOG_ROBBERY_SAFE:
@@ -415,7 +415,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						str[200], 
 						iTypeID = SafeData[iSafeID][g_iTypeID];
 					GameTextForPlayer(playerid, "~g~Safe breached!~n~~n~~w~Press ~g~'F' ~w~to start collecting.", 4000, 3);
-					ClearAnimations(playerid);
+					ClearAnimationsEx(playerid);
 					SafeData[iSafeID][g_iRobbed] = 1;
 					SafeData[iSafeID][g_tRobbedTime] = gettime();
 					switch(SafeData[iSafeID][g_iType])
@@ -463,7 +463,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 	if(GetPVarInt(playerid, "_RobbingSafe") && newkeys == KEY_SECONDARY_ATTACK)
 	{
-		ClearAnimations(playerid);
+		ClearAnimationsEx(playerid);
 		stopCollectMoney(playerid);
 		return 1;
 	}
@@ -590,7 +590,7 @@ public collectMoney(playerid, iSafeID)
 	if(collected > SafeData[iSafeID][g_iInitialMoney] * ROB_MAX_PERCENTAGE / 100)
 	{
 		stopCollectMoney(playerid);
-		ClearAnimations(playerid);
+		ClearAnimationsEx(playerid);
 		return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "The safe is empty.");
 	}
 	new robberid = GetPVarInt(playerid, "_RobberID");

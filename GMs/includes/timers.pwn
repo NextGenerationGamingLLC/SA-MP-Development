@@ -1308,7 +1308,7 @@ foreach(new i: Player)
 						DeletePVar(i, "AttemptingLockPick");
 						DeletePVar(i, "LockPickCountdown");
 						DeletePVar(i, "LockPickTotalTime");
-						ClearAnimations(i, 1);
+						ClearAnimationsEx(i, 1);
 
 						if(PlayerInfo[i][pDoubleEXP] > 0) {
 							format(szMiscArray, sizeof(szMiscArray), "You have gained 2 Vehicle Lock Picking skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
@@ -1345,7 +1345,7 @@ foreach(new i: Player)
 						DeletePVar(i, "LockPickVehicle");
 						DeletePVar(i, "LockPickPlayer");
 						DestroyVLPTextDraws(i);
-						ClearAnimations(i, 1);
+						ClearAnimationsEx(i, 1);
 					}
 				}
 				else {
@@ -1367,7 +1367,7 @@ foreach(new i: Player)
 					DeletePVar(i, "LockPickVehicle");
 					DeletePVar(i, "LockPickPlayer");
 					DestroyVLPTextDraws(i);
-					ClearAnimations(i, 1);
+					ClearAnimationsEx(i, 1);
 				}
 			}
 			if(GetPVarType(i, "AttemptingCrackTrunk") && GetPVarType(i, "CrackTrunkCountdown")) {
@@ -1387,7 +1387,7 @@ foreach(new i: Player)
 						new engine, lights, alarm, doors, bonnet, boot, objective;
 						GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 						SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,VEHICLE_PARAMS_ON,objective);
-						ClearAnimations(i, 1);
+						ClearAnimationsEx(i, 1);
 						SetPlayerSkin(i, GetPlayerSkin(i));
 						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
 						if(GetPVarType(i, "LockPickVehicleSQLId")) {
@@ -1422,7 +1422,7 @@ foreach(new i: Player)
 						SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
 						DeletePVar(i, "AttemptingCrackTrunk");
 						DeletePVar(i, "CrackTrunkCountdown");
-						ClearAnimations(i, 1);
+						ClearAnimationsEx(i, 1);
 					}
 				}
 				else {
@@ -1430,7 +1430,7 @@ foreach(new i: Player)
 					SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
 					DeletePVar(i, "AttemptingCrackTrunk");
 					DeletePVar(i, "CrackTrunkCountdown");
-					ClearAnimations(i, 1);
+					ClearAnimationsEx(i, 1);
 				}
 			}
 			if(GetPVarType(i, "TrackVehicleBurglary")) {
@@ -2030,7 +2030,7 @@ foreach(new i: Player)
 					PlayerCuffed[i] = 0;
 					DeletePVar(i, "PlayerCuffed");
 					PlayerCuffedTime[i] = 0;
-					ClearAnimations(i);
+					ClearAnimationsEx(i);
 					new Float:X, Float:Y, Float:Z;
 					GetPlayerPos(i, X, Y, Z);
 					SetPlayerPos(i, X, Y, Z);
@@ -2073,7 +2073,7 @@ foreach(new i: Player)
 						//DeletePVar(i, "PlayerCuffed");
 						PlayerCuffedTime[i] = 180;
 						//SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-						//ClearAnimations(i);
+						//ClearAnimationsEx(i);
 					}
 					else
 					{
@@ -2123,7 +2123,7 @@ foreach(new i: Player)
 						DeletePVar(i, "PlayerCuffed");
 						PlayerCuffedTime[i] = 0;
 						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-						ClearAnimations(i);
+						ClearAnimationsEx(i);
 					}
 				}
 				else
@@ -2296,7 +2296,7 @@ foreach(new i: Player)
 			if (GetPVarInt(i, "Injured") == 1)
 			{
 				KillEMSQueue(i);
-				ClearAnimations(i);
+				ClearAnimationsEx(i);
 				new biz = InBusiness(i);
 
 				if (Businesses[biz][bGymBoxingArena1][0] == i || Businesses[biz][bGymBoxingArena1][1] == i) // first arena
@@ -2767,7 +2767,7 @@ ptask EMSUpdate[5000](i) {
 		if(zombieevent == 1 && GetPVarType(i, "pZombieBit"))
 		{
 			KillEMSQueue(i);
-			ClearAnimations(i);
+			ClearAnimationsEx(i);
 			MakeZombie(i);
 		}
 		#endif
@@ -2785,7 +2785,7 @@ ptask EMSUpdate[5000](i) {
 			else SetHealth(i, health-1);
 			if(GetPVarInt(i, "EMSAttempt") == -1)
 			{
-				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), PlayDeathAnimation(i);
+				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimationsEx(i), PlayDeathAnimation(i);
 				if(!GetPVarType(i, "StreamPrep") && !IsPlayerInRangeOfPoint(i, 3.0, GetPVarFloat(i,"MedicX"), GetPVarFloat(i,"MedicY"), GetPVarFloat(i,"MedicZ")) && !GetPVarInt(i, "OnStretcher"))
 				{
 					SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");
@@ -2796,7 +2796,7 @@ ptask EMSUpdate[5000](i) {
 			}
 			if(GetPVarInt(i, "EMSAttempt") == 1)
 			{
-				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), PlayDeathAnimation(i);
+				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimationsEx(i), PlayDeathAnimation(i);
 				if(!GetPVarType(i, "StreamPrep") && !IsPlayerInRangeOfPoint(i, 3.0, GetPVarFloat(i,"MedicX"), GetPVarFloat(i,"MedicY"), GetPVarFloat(i,"MedicZ")) && !GetPVarInt(i, "OnStretcher"))
 				{
 					SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");

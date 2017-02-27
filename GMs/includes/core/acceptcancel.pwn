@@ -186,8 +186,8 @@ CMD:accept(playerid, params[])
 				DeletePVar(targetid, "kissvalstyle");
 				return 1;
 			}
-			ClearAnimations(playerid);
-			ClearAnimations(targetid);
+			ClearAnimationsEx(playerid);
+			ClearAnimationsEx(targetid);
 			PlayerFacePlayer( playerid, targetid );
 			switch(GetPVarInt(targetid,"kissvalstyle")) {
 				case 1:

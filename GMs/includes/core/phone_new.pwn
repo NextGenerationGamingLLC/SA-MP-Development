@@ -1223,7 +1223,7 @@ Phone_Main(playerid) {
 		Phone_ShowWallPaper(playerid, PlayerInfo[playerid][pWallpaper]);
 	}
 	else {
-		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) ClearAnimations(playerid);
+		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) ClearAnimationsEx(playerid);
 		Bit_Off(arrPlayerBits[playerid], phone_bitState);
 		// if(click) CancelSelectTextDraw(playerid);
 		DeletePVar(playerid, "PMenuItem");
@@ -1347,7 +1347,7 @@ CMD:selfie(playerid, params[]) {
 	{
 		DeletePVar(playerid, "Flt");
 		Bit_Off(arrPlayerBits[playerid], phone_bitCamState);
-		ClearAnimations(playerid, 1);
+		ClearAnimationsEx(playerid, 1);
 		TogglePlayerControllable(playerid, true);
 		SetCameraBehindPlayer(playerid);
 	}

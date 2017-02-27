@@ -1680,7 +1680,7 @@ CMD:jailcuff(playerid, params[])
 					format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
-					ClearAnimations(giveplayerid);
+					ClearAnimationsEx(giveplayerid);
 					TogglePlayerControllable(giveplayerid, 0);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
 					TogglePlayerControllable(giveplayerid, 1);
@@ -1742,7 +1742,7 @@ CMD:prisonhelp(playerid, params[])
 
 CMD:beanbag(playerid, params[])
 {
-    if(!IsADocGuard(playerid) || !IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard / Law enforcement to use this command.");
+    if(!IsADocGuard(playerid) && !IsACop(playerid)) return SendClientMessageEx(playerid, COLOR_GREY, "You must be a DOC Guard / Law enforcement to use this command.");
 
     if(GetPlayerWeapon(playerid) == 25)
     {
@@ -2439,14 +2439,14 @@ public _UnbeanbagTimer(playerid)
 {
 	if(GetPVarInt(playerid, "pBagged") >= 1)
 	{
-		ClearAnimations(playerid);
+		ClearAnimationsEx(playerid);
 		TogglePlayerControllable(playerid, TRUE);
 		DeletePVar(playerid, "IsFrozen");
 
 		SetPlayerDrunkLevel(playerid, 0);
 		DeletePVar(playerid, "pBagged");
 
-		ClearAnimations(playerid);
+		ClearAnimationsEx(playerid);
 	}
 	else
 	{
@@ -2463,7 +2463,7 @@ public _ShowerTimer(playerid)
 
 	SetHealth(playerid, 150.0);
 
-	ClearAnimations(playerid);
+	ClearAnimationsEx(playerid);
 
 	switch(GetPVarInt(playerid, "pPrisonShowerStage"))
 	{
@@ -2499,7 +2499,7 @@ public _DrinkWineTimer(playerid)
 	SetTimerEx("_DrinkWineTimer2", 60000, false, "d", playerid);
 
 	SetPlayerDrunkLevel(playerid, 1000);
-	ClearAnimations(playerid);
+	ClearAnimationsEx(playerid);
 	return 1;
 }
 
@@ -2513,7 +2513,7 @@ public _DrinkWineTimer2(playerid)
 	DeletePVar(playerid, "pWineConsumed");
 
 	SetPlayerDrunkLevel(playerid, 0);
-	ClearAnimations(playerid);
+	ClearAnimationsEx(playerid);
 	return 1;
 }
 
@@ -2529,7 +2529,7 @@ public _KitchenTimer(playerid)
 	RandomMaterialChance(playerid);
 	DeletePVar(playerid, "IsFrozen");
 
-	ClearAnimations(playerid);
+	ClearAnimationsEx(playerid);
 	return 1;
 }
 

@@ -257,7 +257,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate) {
 
 stock Vehicle_Enter(playerid, i) {
 
-	ClearAnimations(playerid);
+	ClearAnimationsEx(playerid);
 
 	switch(GetVehicleModel(i)) {
 

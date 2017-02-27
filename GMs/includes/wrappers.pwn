@@ -68,6 +68,12 @@ Internal_SetPlayerArmour(playerid, Float:armour) {
 }
 */
 
+ClearAnimationsEx(playerid, forcesync = 0) {
+	IsDoingAnim[playerid] = 0;
+	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+	return ClearAnimations(playerid, forcesync);
+}
+
 ShowPlayerDialogEx(playerid, dialogid, style, caption[], info[], button1[], button2[]) {
 
 	iLastDialogID[playerid] = dialogid;

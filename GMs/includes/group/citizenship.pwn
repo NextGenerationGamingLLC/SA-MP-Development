@@ -313,7 +313,7 @@ CMD:deport(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
 			DeletePVar(giveplayerid, "IsFrozen");
 			TogglePlayerControllable(giveplayerid, 1);
-			ClearAnimations(giveplayerid);
+			ClearAnimationsEx(giveplayerid);
 			SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 			PlayerCuffed[giveplayerid] = 0;
 			DeletePVar(giveplayerid, "PlayerCuffed");

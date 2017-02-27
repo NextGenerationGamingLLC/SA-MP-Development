@@ -57,7 +57,7 @@ stock SpawnZombie(playerid)
 	}
 	SetPlayerPos(playerid, ZombieSpawns[tpto][0], ZombieSpawns[tpto][1], ZombieSpawns[tpto][2]);
 	SetPlayerFacingAngle(playerid, ZombieSpawns[tpto][3]);
-	ClearAnimations(playerid);
+	ClearAnimationsEx(playerid);
 	return 1;
 }
 

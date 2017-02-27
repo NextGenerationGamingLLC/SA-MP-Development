@@ -340,6 +340,7 @@ public OnPlayerUpdate(playerid)
 		pCurrentWeapon{playerid} = pCurWeap;
     }
 
+    /*
     switch(pCurWeap) {
     	case 9, 16, 17, 18, 35, 36, 37, 38: {
     		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(pCurWeap)] != pCurWeap) {
@@ -353,7 +354,7 @@ public OnPlayerUpdate(playerid)
 				SetPlayerWeaponsEx(playerid);
 			}
     	}
-    }
+    }*/
 
     new drunknew = GetPlayerDrunkLevel(playerid);
     if(drunknew < 100) { // go back up, keep cycling.
@@ -1048,7 +1049,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	{
 		if(response)
 		{
-			ClearAnimations(playerid);
+			ClearAnimationsEx(playerid);
 			if(PlayerInfo[playerid][pDonateRank] >= 2)
 			{
 				if (PlayerInfo[playerid][pModel] == modelid)
@@ -1529,7 +1530,14 @@ public OnPlayerConnect(playerid)
 	PlayerInfo[playerid][pGroupToy][8] = 1.0;
 
 	PlayerInfo[playerid][pHolsteredWeapon] = 0;
-
+	IsDoingAnim[playerid] = 0;
+	GhostHacker[playerid][0] = 0;
+	GhostHacker[playerid][1] = gettime();
+	GhostHacker[playerid][2] = 0;
+	GhostHacker[playerid][3] = 0;
+	GhostHacker[playerid][4] = 0;
+	GhostHacker[playerid][5] = gettime();
+	GhostHacker[playerid][6] = gettime();
 	foreach(new x: Player)
 	{
 	    ShotPlayer[playerid][x] = 0;
@@ -3821,7 +3829,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	// If the client clicked the fire key and is currently injured
 	else if((newkeys && KEY_FIRE) && GetPVarInt(playerid, "Injured") == 1)
 	{
-		ClearAnimations(playerid);
+		ClearAnimationsEx(playerid);
 		return 1;
 	}
 	else if((newkeys & KEY_FIRE) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerWeapon(playerid) == SPEEDGUN && GetPVarType(playerid, "SpeedRadar"))
@@ -3851,7 +3859,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 	else if((newkeys & 16) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && PlayerCuffed[playerid] == 0 && PlayerInfo[playerid][pBeingSentenced] == 0 && GetPVarType(playerid,"UsingAnim") && !GetPVarType(playerid, "IsFrozen"))
 	{
-		ClearAnimations(playerid);
+		ClearAnimationsEx(playerid);
 		DeletePVar(playerid,"UsingAnim");
 	}
 	else if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DRINK_BEER && (newkeys & KEY_FIRE))
@@ -4121,7 +4129,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			SetPlayerPos(GetPVarInt(playerid, "DraggingPlayer"), dX, dY, dZ);
 			SetPlayerInterior(GetPVarInt(playerid, "DraggingPlayer"), GetPlayerInterior(playerid));
 			SetPlayerVirtualWorld(GetPVarInt(playerid, "DraggingPlayer"), GetPlayerVirtualWorld(playerid));
-			ClearAnimations(GetPVarInt(playerid, "DraggingPlayer"));
+			ClearAnimationsEx(GetPVarInt(playerid, "DraggingPlayer"));
 			ApplyAnimation(GetPVarInt(playerid, "DraggingPlayer"), "ped","cower",1,1,0,0,0,0,1);
             DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
             format(string, sizeof(string), "* You have stopped dragging %s.", GetPlayerNameEx(GetPVarInt(playerid, "DraggingPlayer")));

@@ -2539,7 +2539,7 @@ CMD:hospital(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pHospital] > 0)
 			{
-				ClearAnimations(playerid);
+				ClearAnimationsEx(playerid);
 				SetPVarInt(playerid, "_SpawningAtHospital", 2);
 				return SendClientMessageEx(playerid, COLOR_GREY, "You have released yourself from the hospital.");
 			}
@@ -2554,7 +2554,7 @@ CMD:hospital(playerid, params[])
 					format(string, sizeof(string), " You have forced %s out of the hospital.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been forced out of the hospital by an Admin.");
-					ClearAnimations(giveplayerid);
+					ClearAnimationsEx(giveplayerid);
 					SetPVarInt(giveplayerid, "_SpawningAtHospital", 2);
 				}
 				else SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not in the hospital!");
@@ -2584,7 +2584,7 @@ CMD:revive(playerid, params[])
 				DBLog(playerid, giveplayerid, "Admin", "revived");
 
 				KillEMSQueue(giveplayerid);
-   				ClearAnimations(giveplayerid);
+   				ClearAnimationsEx(giveplayerid);
    				SetHealth(giveplayerid, 100);
 			}
 			else
@@ -2623,7 +2623,7 @@ CMD:revivenear(playerid, params[])
 					count++;
 					SendClientMessageEx(i, COLOR_WHITE, "You have been revived by an Admin.");
 					KillEMSQueue(i);
-					ClearAnimations(i);
+					ClearAnimationsEx(i);
 					SetHealth(i, 100);
 					format(string, sizeof(string), "AdmCmd: %s(%d) has been revived by %s", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);

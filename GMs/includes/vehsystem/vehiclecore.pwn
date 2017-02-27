@@ -1577,11 +1577,11 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	if(ispassenger) {
 		if(GetPVarType(playerid, "Injured")) {
 			SetPlayerPos(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"));
-			ClearAnimations(playerid);
+			ClearAnimationsEx(playerid);
 			PlayDeathAnimation(playerid);
 		}
 		else if(PlayerCuffed[playerid] != 0) {
-			ClearAnimations(playerid);
+			ClearAnimationsEx(playerid);
 			ApplyAnimation(playerid,"ped","cower",1,1,0,0,0,0,1);
 			TogglePlayerControllable(playerid, false);
 		}
@@ -1831,7 +1831,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		}
 	}
 	else if(!IsPlayerInRangeOfVehicle(playerid, vehicleid, 7.5) || (LockStatus{vehicleid} >= 1)) { // G-bugging fix
-		ClearAnimations(playerid);
+		ClearAnimationsEx(playerid);
 	}
 
 	return 1;

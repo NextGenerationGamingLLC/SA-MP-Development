@@ -47,7 +47,7 @@ public Player_StreamPrep(iPlayer, Float: fPosX, Float: fPosY, Float: fPosZ, iTim
 				SetPlayerPos(iPlayer, fPosX, fPosY, fPosZ);
 
 			if(GetPVarType(iPlayer, "MedicCall")) {
-				ClearAnimations(iPlayer);
+				ClearAnimationsEx(iPlayer);
 				PlayDeathAnimation(iPlayer);
 			}
 			DeletePVar(iPlayer, "StreamPrep");

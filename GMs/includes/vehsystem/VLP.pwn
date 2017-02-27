@@ -344,7 +344,7 @@ CMD:stoplockpick(playerid, params[])
 		DeletePVar(playerid, "LockPickVehicle");
 		DeletePVar(playerid, "LockPickPlayer");
 		DestroyVLPTextDraws(playerid);
-		ClearAnimations(playerid, 1);
+		ClearAnimationsEx(playerid, 1);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully prevented yourself from this lock pick.");
 	}
 	return 1;
@@ -356,7 +356,7 @@ CMD:stopcracking(playerid, params[])
 		DeletePVar(playerid, "AttemptingCrackTrunk");
 		DeletePVar(playerid, "CrackTrunkCountdown");
 		DestroyVLPTextDraws(playerid);
-		ClearAnimations(playerid, 1);
+		ClearAnimationsEx(playerid, 1);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have successfully prevented yourself from this lock pick.");
 	}
 	return 1;

@@ -181,7 +181,7 @@ CMD:tie(playerid, params[])
 				format(szMiscArray, sizeof(szMiscArray), "* %s has used some rope to tie %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(id));
 				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
-				ClearAnimations(id);
+				ClearAnimationsEx(id);
 				SetPlayerSpecialAction(id,SPECIAL_ACTION_NONE);
 				SetPlayerSpecialAction(id,SPECIAL_ACTION_CUFFED);
 
