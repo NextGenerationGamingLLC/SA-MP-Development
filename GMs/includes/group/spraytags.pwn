@@ -221,7 +221,7 @@ public SprayWall(gangtag, playerid)
 		KillTimer(GangTags[gangtag][gt_Timer]);
 		DeletePVar(playerid, "gt_Spraying");
 		DeletePVar(playerid, "gt_Spray");
-		ClearAnimationsEx(playerid);
+		ClearAnimations(playerid);
 		return 1;
 	}
 	if(!GetPVarType(playerid, "gt_Spraying"))
@@ -231,7 +231,7 @@ public SprayWall(gangtag, playerid)
 		KillTimer(GangTags[gangtag][gt_Timer]);
 		DeletePVar(playerid, "gt_Spraying");
 		DeletePVar(playerid, "gt_Spray");
-		ClearAnimationsEx(playerid);
+		ClearAnimations(playerid);
 		return 1;
 	}
 	if(playerTabbed[playerid] != 0)
@@ -241,7 +241,7 @@ public SprayWall(gangtag, playerid)
 		KillTimer(GangTags[gangtag][gt_Timer]);
 		DeletePVar(playerid, "gt_Spraying");
 		DeletePVar(playerid, "gt_Spray");
-		ClearAnimationsEx(playerid);
+		ClearAnimations(playerid);
 		return 1;
    	}
 	GangTags[gangtag][gt_TimeLeft]--;
@@ -256,7 +256,7 @@ public SprayWall(gangtag, playerid)
 		format(string, sizeof(string), "{FF8000}** {C2A2DA}%s successfully sprayed their family tag on the wall.", GetPlayerNameEx(playerid));
 		ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		DeletePVar(playerid, "gt_Spraying");
-		ClearAnimationsEx(playerid);
+		ClearAnimations(playerid);
 		SaveGangTag(gangtag);
 		KillTimer(GangTags[gangtag][gt_Timer]);
 	}

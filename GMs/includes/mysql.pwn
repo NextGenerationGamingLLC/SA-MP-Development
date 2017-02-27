@@ -123,7 +123,6 @@ stock g_mysql_Init()
 		if(ini_GetValue(fileString, "SUSER", SQL_SUSER, sizeof(SQL_SUSER))) continue;
 		if(ini_GetValue(fileString, "SPASS", SQL_SPASS, sizeof(SQL_SPASS))) continue;
 		if(ini_GetInt(fileString, "SERVER", servernumber)) continue;
-		if(ini_GetInt(fileString, "BETASERVER", betaserver)) continue;
 		if(ini_GetInt(fileString, "DEBUG", SQL_DEBUG)) continue;
 		if(ini_GetInt(fileString, "DEBUGLOG", SQL_DEBUGLOG)) continue;
 	}
@@ -398,6 +397,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pCheckCash]				= cache_get_field_content_int(row,  "CheckCash", MainPipeline);
 					PlayerInfo[extraid][pChecks]				= cache_get_field_content_int(row,  "Checks", MainPipeline);
 					PlayerInfo[extraid][pGunLic]				= cache_get_field_content_int(row,  "GunLic", MainPipeline);
+					PlayerInfo[extraid][pRobberySkill]			= cache_get_field_content_int(row,  "RobberySkill", MainPipeline);
 
 					for(new i = 0; i < 12; i++)
 					{
@@ -620,6 +620,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 					PlayerInfo[extraid][pLockPickVehCount]		= cache_get_field_content_int(row,  "LockPickVehCount", MainPipeline);
 					PlayerInfo[extraid][pLockPickTime]			= cache_get_field_content_int(row,  "LockPickTime", MainPipeline);
 					PlayerInfo[extraid][pSEC]					= cache_get_field_content_int(row,  "SEC", MainPipeline);
+					//cache_get_field_content(row,  "SEC", szResult, MainPipeline); PlayerInfo[extraid][pSEC] = strval(szResult);
 					PlayerInfo[extraid][pBM]					= cache_get_field_content_int(row,  "BM", MainPipeline);
 					PlayerInfo[extraid][pASM]					= cache_get_field_content_int(row,  "ASM", MainPipeline);
 					PlayerInfo[extraid][pIsolated]				= cache_get_field_content_int(row,  "Isolated", MainPipeline);
@@ -786,7 +787,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 						OnPlayerStatsUpdate(i);
 					}
 				}
-				ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 2);
+				ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Account saving finished!", 1);
 				print("Account Saving Complete");
 				foreach(new i: Player)
 				{
@@ -1066,6 +1067,43 @@ public OnQueryFinish(resultid, extraid, handleid)
 			{
 			    g_mysql_AccountAuthCheck(extraid);
 			}
+		}
+		case LOADCRATE_THREAD:
+		{
+		    for(new i; i < rows; i++)
+		    {
+				new crateid;
+				szMiscArray[0] = 0;
+				crateid = cache_get_field_content_int(i, "id", MainPipeline);
+				if(crateid < MAX_CRATES)
+		        {
+					CrateInfo[crateid][crActive] = cache_get_field_content_int(i, "Active", MainPipeline);
+					CrateInfo[crateid][crX] = cache_get_field_content_float(i, "CrateX", MainPipeline);
+					CrateInfo[crateid][crY] = cache_get_field_content_float(i, "CrateY", MainPipeline);
+					CrateInfo[crateid][crZ] = cache_get_field_content_float(i, "CrateZ", MainPipeline);
+					CrateInfo[crateid][crInt] = cache_get_field_content_int(i, "Int", MainPipeline);
+					CrateInfo[crateid][crVW] = cache_get_field_content_int(i, "VW", MainPipeline);
+					cache_get_field_content(i, "PlacedBy", CrateInfo[crateid][crPlacedBy], MainPipeline);
+					CrateInfo[crateid][GunQuantity] = cache_get_field_content_int(i, "GunQuantity", MainPipeline);
+					CrateInfo[crateid][InVehicle] = cache_get_field_content_int(i, "InVehicle", MainPipeline);
+					if(CrateInfo[crateid][InVehicle] != INVALID_VEHICLE_ID)
+					{
+					    CrateInfo[crateid][crActive] = 0;
+					    CrateInfo[crateid][InVehicle] = INVALID_VEHICLE_ID;
+					}
+					if(CrateInfo[crateid][crActive])
+					{
+						if(CrateInfo[crateid][crX] != 0.0)
+						{
+							CrateInfo[crateid][InVehicle] = INVALID_VEHICLE_ID;
+							CrateInfo[crateid][crObject] = CreateDynamicObject(964,CrateInfo[crateid][crX],CrateInfo[crateid][crY],CrateInfo[crateid][crZ],0.00000000,0.00000000,0.00000000,CrateInfo[i][crVW], CrateInfo[i][crInt]);
+							format(szMiscArray, sizeof(szMiscArray), "Serial Number: #%d\n High Grade Materials: %d/50\n (( Dropped by: %s ))", i, CrateInfo[crateid][GunQuantity], CrateInfo[crateid][crPlacedBy]);
+							CrateInfo[crateid][crLabel] = CreateDynamic3DTextLabel(szMiscArray, COLOR_ORANGE, CrateInfo[crateid][crX],CrateInfo[crateid][crY],CrateInfo[crateid][crZ]+1, 10.0, _, _, 1, CrateInfo[crateid][crVW], CrateInfo[crateid][crInt], _, 20.0);
+						}
+					}
+				}
+		    }
+		    print("[LoadCrates] Loading Crates Finished");
 		}
 		case MAIN_REFERRAL_THREAD:
 		{
@@ -1645,6 +1683,34 @@ stock g_mysql_SaveMOTD()
 }
 // g_mysql_LoadMOTD()
 // Description: Loads the Crates from the MySQL Database.
+stock mysql_LoadCrates()
+{
+	mysql_function_query(MainPipeline, "SELECT * FROM `crates`", true, "OnQueryFinish", "iii", LOADCRATE_THREAD, INVALID_PLAYER_ID, -1);
+    print("[LoadCrates] Load Query Sent");
+}
+
+stock mysql_SaveCrates()
+{
+	new query[1024];
+	for(new i; i < MAX_CRATES; i++)
+	{
+		printf("Saving Crate %d", i);
+		format(query, sizeof(query), "UPDATE `crates` SET ");
+
+		format(query, sizeof(query), "%s `Active` = '%d',", query, CrateInfo[i][crActive]);
+		format(query, sizeof(query), "%s `CrateX` = '%.2f',", query, CrateInfo[i][crX]);
+		format(query, sizeof(query), "%s `CrateY` = '%.2f',", query, CrateInfo[i][crY]);
+		format(query, sizeof(query), "%s `CrateZ` = '%.2f',", query, CrateInfo[i][crZ]);
+		format(query, sizeof(query), "%s `GunQuantity` = '%d',", query, CrateInfo[i][GunQuantity]);
+		format(query, sizeof(query), "%s `InVehicle` = '%d',", query, CrateInfo[i][InVehicle]);
+		format(query, sizeof(query), "%s `Int` = '%d',", query, CrateInfo[i][crInt]);
+		format(query, sizeof(query), "%s `VW` = '%d',", query, CrateInfo[i][crVW]);
+		format(query, sizeof(query), "%s `PlacedBy` = '%s'", query, g_mysql_ReturnEscaped(CrateInfo[i][crPlacedBy], MainPipeline));
+		format(query, sizeof(query), "%s WHERE id = %d", query, i);
+
+		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	}
+}
 
 /*stock RemoveBan(Player, Ip[])
 {
@@ -2223,6 +2289,7 @@ stock g_mysql_SaveAccount(playerid)
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "TruckSkill", PlayerInfo[playerid][pTruckSkill]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "DrugSmuggler", PlayerInfo[playerid][pDrugSmuggler]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "ArmsSkill", PlayerInfo[playerid][pArmsSkill]);
+    SavePlayerInteger(query, GetPlayerSQLId(playerid), "RobberySkill", PlayerInfo[playerid][pRobberySkill]);    
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "FishSkill", PlayerInfo[playerid][pFishSkill]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "CheckCash", PlayerInfo[playerid][pCheckCash]);
 
@@ -2341,6 +2408,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPM", PlayerInfo[playerid][pVIPM]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPMO", PlayerInfo[playerid][pVIPMO]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPExpire", PlayerInfo[playerid][pVIPExpire]);
+
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "GVip", PlayerInfo[playerid][pGVip]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "Watchdog", PlayerInfo[playerid][pWatchdog]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "VIPSold", PlayerInfo[playerid][pVIPSold]);
@@ -3889,8 +3957,6 @@ public LoadDynamicGroups()
     mysql_function_query(MainPipeline, "SELECT * FROM `groups`", true, "Group_QueryFinish", "ii", GROUP_QUERY_LOAD, 0);
 	mysql_function_query(MainPipeline, "SELECT * FROM `lockers`", true, "Group_QueryFinish", "ii", GROUP_QUERY_LOCKERS, 0);
 	mysql_function_query(MainPipeline, "SELECT * FROM `jurisdictions`", true, "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
-	mysql_function_query(MainPipeline, "SELECT * FROM `gweaponsnew`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
-	mysql_function_query(MainPipeline, "SELECT * FROM `locker_restrict`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS_RANK, 0);
 	//mysql_function_query(MainPipeline, "SELECT * FROM `gWeapons`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
 	return ;
 }
@@ -5193,8 +5259,7 @@ public Group_QueryFinish(iType, iExtraID) {
 		iRows,
 		iIndex,
 		i = 0,
-		szResult[128],
-		number[12];
+		szResult[128];
 
 	cache_get_data(iRows, iFields, MainPipeline);
 
@@ -5221,23 +5286,16 @@ public Group_QueryFinish(iType, iExtraID) {
 		}
 		case GROUP_QUERY_GWEAPONS: while(iIndex < iRows) {
 
-			if (!(0 <= iIndex < MAX_GROUPS)) break;
-			LockerWep[iIndex][lwGroup] = cache_get_field_content_int(iIndex, "id", MainPipeline);
+			new iGroupID = cache_get_field_content_int(iIndex, "Group_ID", MainPipeline);
+			new j = 0;
 
-			for(new w = 0; w < 46; w++) {
-				format(number, sizeof(number), "%d", w+1);
-				LockerWep[iIndex][lwWep][w] = cache_get_field_content_int(iIndex, number, MainPipeline);
+			while(arrGroupData[iGroupID][g_iWeapons][j] != 0 && j < 50)
+			{
+				j++;
 			}
-			iIndex++;
-		}
-		case GROUP_QUERY_GWEAPONS_RANK: while(iIndex < iRows) {
 
-			if (!(0 <= iIndex < MAX_GROUPS)) break;
-
-			for(new w = 0; w < 16; w++) {
-				format(number, sizeof(number), "%d", w+1);
-				LockerWep[iIndex][lwRank][w] = cache_get_field_content_int(iIndex, number, MainPipeline);
-			}
+			cache_get_field_content(iIndex, "Weapon_ID", szResult, MainPipeline);
+			arrGroupData[iGroupID][g_iWeapons][j] = strval(szResult);
 			iIndex++;
 		}
 		case GROUP_QUERY_LOCKERS: while(iIndex < iRows) {
@@ -5502,7 +5560,6 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			if (arrGroupData[iIndex][g_szGroupName][0] && arrGroupData[iIndex][g_fCratePos][0] != 0.0)
 			{
-				/*
 				if(arrGroupData[iIndex][g_iGroupType] == GROUP_TYPE_CRIMINAL)
 				{
 					format(szResult, sizeof szResult, "%s Shipment Delivery Point\n{1FBDFF}/gdelivercrate", arrGroupData[iIndex][g_szGroupName]);
@@ -5510,8 +5567,7 @@ public Group_QueryFinish(iType, iExtraID) {
 				else
 				{
 					format(szResult, sizeof szResult, "%s Crate Delivery Point\n{1FBDFF}/delivercrate", arrGroupData[iIndex][g_szGroupName]);
-				}*/
-				format(szResult, sizeof szResult, "%s Crate Delivery Point\n{1FBDFF}/delivercrate", arrGroupData[iIndex][g_szGroupName]);
+				}
 				arrGroupData[iIndex][g_tCrate3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iIndex][g_hDutyColour] * 256 + 0xFF, arrGroupData[iIndex][g_fCratePos][0], arrGroupData[iIndex][g_fCratePos][1], arrGroupData[iIndex][g_fCratePos][2], 10.0, .testlos = 1, .streamdistance = 20.0);
 			}
 			iIndex++;

@@ -178,7 +178,7 @@ PayDay(i) {
 		month,
 		day;
 		
-	getdate(year, month, day);
+	getdate(year, month, day);	
 	
  	if(PlayerInfo[i][pLevel] > 0 && (PlayerInfo[i][pTogReports] == 1 || PlayerInfo[i][pAdmin] < 2)) {
 		if(GetPVarType(i, "debtMsg")) {
@@ -291,13 +291,10 @@ PayDay(i) {
 					{
 						if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 						{
-							new str[128];
-							if(PlayerInfo[i][pDonateRank] < 4) {
-								format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue));
-							} else {
-								format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax));
-							}
-							GroupPayLog(iGroupID, str);
+							new str[128], file[32];
+							format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue));
+							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+							Log(file, str);
 						}
 					}
 				}
@@ -307,13 +304,10 @@ PayDay(i) {
 					{
 						if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV)
 						{
-							new str[128];
-							if(PlayerInfo[i][pDonateRank] < 4) {
-								format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TRTaxValue));
-							} else {
-								format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * pVIPTax));
-							}
-							GroupPayLog(iGroupID, str);
+							new str[128], file[32];
+							format(str, sizeof(str), "%s has paid $%s in tax.", GetPlayerNameEx(i), number_format((PlayerInfo[i][pPayCheck] / 100) * TaxValue));
+							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+							Log(file, str);
 						}
 					}
 				}
@@ -364,7 +358,7 @@ PayDay(i) {
 					PlayerInfo[i][pFallIntoFun] = 0;
 				}
 			}*/
-			PayGroupMember(i);
+			PayGroupMember(i, month, day, year);
    			if (PlayerInfo[i][pBusiness] != INVALID_BUSINESS_ID) {
 				if (Businesses[PlayerInfo[i][pBusiness]][bAutoPay] && PlayerInfo[i][pBusinessRank] >= 0 && PlayerInfo[i][pBusinessRank] < 5) {
 				    if (Businesses[PlayerInfo[i][pBusiness]][bSafeBalance] < Businesses[PlayerInfo[i][pBusiness]][bRankPay][PlayerInfo[i][pBusinessRank]]) {

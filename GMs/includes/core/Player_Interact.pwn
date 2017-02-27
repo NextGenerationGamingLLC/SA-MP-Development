@@ -824,7 +824,7 @@ Interact_CuffPlayer(playerid, giveplayerid) {
 	ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 	TogglePlayerControllable(giveplayerid, 0);
-	ClearAnimationsEx(giveplayerid);
+	ClearAnimations(giveplayerid);
 	GetHealth(giveplayerid, health);
 	GetArmour(giveplayerid, armor);
 	SetPVarFloat(giveplayerid, "cuffhealth",health);
@@ -859,7 +859,7 @@ Interact_UncuffPlayer(playerid, giveplayerid) {
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
 		TogglePlayerControllable(giveplayerid, 1);
-		ClearAnimationsEx(giveplayerid);
+		ClearAnimations(giveplayerid);
 		SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 		PlayerCuffed[giveplayerid] = 0;
         PlayerCuffedTime[giveplayerid] = 0;
@@ -878,7 +878,7 @@ Interact_UncuffPlayer(playerid, giveplayerid) {
 		format(szMiscArray, sizeof(szMiscArray), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
-		ClearAnimationsEx(giveplayerid);
+		ClearAnimations(giveplayerid);
 		SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 		DeletePVar(giveplayerid, "jailcuffs");
 	}
@@ -1089,7 +1089,7 @@ Interact_DetainPlayer(playerid, giveplayerid, seatid = -1) {
 		format(szMiscArray, sizeof(szMiscArray), "* %s throws %s in the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		GameTextForPlayer(giveplayerid, "~r~Detained", 2500, 3);
-		ClearAnimationsEx(giveplayerid);
+		ClearAnimations(giveplayerid);
 		TogglePlayerControllable(giveplayerid, false);
 		IsPlayerEntering{giveplayerid} = true;
 		PutPlayerInVehicle(giveplayerid, carid, seatid);
@@ -1145,7 +1145,7 @@ Interact_LoadPatient(playerid, giveplayerid, seatid = -1) {
 		format(szMiscArray, sizeof(szMiscArray), "* %s loads %s in the %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetVehicleName(carid));
 		ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		SetPVarInt(giveplayerid, "EMSAttempt", 3);
-		ClearAnimationsEx(giveplayerid);
+		ClearAnimations(giveplayerid);
 		IsPlayerEntering{giveplayerid} = true;
 		PutPlayerInVehicle(giveplayerid,carid,seatid);
 		TogglePlayerControllable(giveplayerid, false);

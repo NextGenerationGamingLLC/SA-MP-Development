@@ -26,7 +26,7 @@ PlayerEditGroupPay(playerid)
 	return ShowPlayerDialogEx(playerid, DIALOG_GROUP_PLISTPAY, DIALOG_STYLE_TABLIST, szTitle, szMiscArray, "Edit", "Cancel");
 }
 
-PayGroupMember(i)
+PayGroupMember(i, month, day, year)
 {
 	new
 		iGroupID = PlayerInfo[i][pMember],
@@ -39,8 +39,10 @@ PayGroupMember(i)
 			GivePlayerCashEx(i, TYPE_BANK, arrGroupData[iGroupID][g_iPaycheck][iRank]);
 			format(szMiscArray,sizeof(szMiscArray)," {%s}%s {FFFFFF}paycheck: $%s", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName], number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]));
 			SendClientMessageEx(i, COLOR_GRAD2, szMiscArray);
+			new file[32];
 			format(szMiscArray, sizeof(szMiscArray), "%s has been paid $%s from %s's budget.", GetPlayerNameEx(i), number_format(arrGroupData[iGroupID][g_iPaycheck][iRank]), arrGroupData[iGroupID][g_szGroupName]);
-			GroupPayLog(iGroupID, szMiscArray);
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+			Log(file, szMiscArray);
 		}
 		else SendClientMessageEx(i, COLOR_RED, "Your group is in debt; no money is available for pay.");
 	}

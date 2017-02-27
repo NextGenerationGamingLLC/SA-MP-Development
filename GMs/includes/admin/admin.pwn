@@ -76,15 +76,8 @@ stock ShopTechBroadCast(color,string[])
 }
 
 stock Player_KillCheckPoint(playerid) {
-	if(PlayerInfo[playerid][pTut] != -1) {
-		SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
-		SendClientMessageEx(playerid, COLOR_WHITE, "You have canceled the objectives tutorial. Welcome to Next Generation Gaming!");
-		SendClientMessageEx(playerid, COLOR_GREY, "-----------------------------");
-		PlayerInfo[playerid][pTut] = -1;
-	}
 	gPlayerCheckpointStatus[playerid] = CHECKPOINT_NOTHING;
 	ClearCheckpoint(playerid);
-	DisablePlayerCheckpoint(playerid);
 	SendClientMessageEx(playerid,COLOR_WHITE, "All current checkpoints, trackers and accepted fares have been reset.");
 }
 
@@ -1083,7 +1076,7 @@ CMD:savechars(playerid, params[])
 {
     if (PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1) {
         SaveEventPoints();
-        //mysql_SaveCrates();
+        mysql_SaveCrates();
         SendClientMessageEx(playerid, COLOR_YELLOW, "All Crates Saved successfully.");
         SaveAllAccountsUpdate();
 		//g_mysql_DumpAccounts();
@@ -2539,7 +2532,7 @@ CMD:hospital(playerid, params[])
 		{
 			if(PlayerInfo[playerid][pHospital] > 0)
 			{
-				ClearAnimationsEx(playerid);
+				ClearAnimations(playerid);
 				SetPVarInt(playerid, "_SpawningAtHospital", 2);
 				return SendClientMessageEx(playerid, COLOR_GREY, "You have released yourself from the hospital.");
 			}
@@ -2554,7 +2547,7 @@ CMD:hospital(playerid, params[])
 					format(string, sizeof(string), " You have forced %s out of the hospital.", GetPlayerNameEx(giveplayerid));
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					SendClientMessageEx(giveplayerid, COLOR_WHITE, "You have been forced out of the hospital by an Admin.");
-					ClearAnimationsEx(giveplayerid);
+					ClearAnimations(giveplayerid);
 					SetPVarInt(giveplayerid, "_SpawningAtHospital", 2);
 				}
 				else SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not in the hospital!");
@@ -2584,7 +2577,7 @@ CMD:revive(playerid, params[])
 				DBLog(playerid, giveplayerid, "Admin", "revived");
 
 				KillEMSQueue(giveplayerid);
-   				ClearAnimationsEx(giveplayerid);
+   				ClearAnimations(giveplayerid);
    				SetHealth(giveplayerid, 100);
 			}
 			else
@@ -2623,7 +2616,7 @@ CMD:revivenear(playerid, params[])
 					count++;
 					SendClientMessageEx(i, COLOR_WHITE, "You have been revived by an Admin.");
 					KillEMSQueue(i);
-					ClearAnimationsEx(i);
+					ClearAnimations(i);
 					SetHealth(i, 100);
 					format(string, sizeof(string), "AdmCmd: %s(%d) has been revived by %s", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerNameEx(playerid));
 					Log("logs/admin.log", string);
@@ -3665,7 +3658,7 @@ CMD:setstat(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
 			SendClientMessageEx(playerid, COLOR_GRAD1, "|49 Heroin |50 RawOpium |51 Syringes |52 Hunger |53 Fitness |54 Event Tokens |55 Modkit");
-			SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Jack Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time |59 Tool Box |60 Crowbar");
+			SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Jack Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time |59 Robbery |60 Tool Box |61 Crowbar");
 			return 1;
 		}
 		if(PlayerInfo[giveplayerid][pLevel] == 1 && PlayerInfo[giveplayerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_RED, "You can't use /setstat on level 1's");
@@ -3977,10 +3970,15 @@ CMD:setstat(playerid, params[])
 				}
 				case 59:
 				{
+					PlayerInfo[giveplayerid][pRobberySkill] = amount;
+					format(string, sizeof(string), "   %s's Robbery Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+				}
+				case 60:
+				{
 					PlayerInfo[giveplayerid][pToolBox] = amount;
 					format(string, sizeof(string), "   %s's(%d) Tool Box usages have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
 				}
-				case 60:
+				case 61:
 				{
 					PlayerInfo[giveplayerid][pCrowBar] = amount;
 					format(string, sizeof(string), "   %s's(%d) Crowbar usages have been set to %i.", GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), amount);
@@ -4016,7 +4014,7 @@ CMD:setmystat(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_GRAD1, "|33 Age |34 Gender |35 NMute |36 AdMute |37 Faction |38 Restricted Weapon Time |39 Gang Warns |40 RMute |41 Reward Hours");
 				SendClientMessageEx(playerid, COLOR_GRAD1, "|42 Playing Hours |43 Gold Box Tokens |44 Computer Drawings |45 Papers |46 Business |47 BusinessRank | 48 Spraycan");
 				SendClientMessageEx(playerid, COLOR_GRAD1, "|49 Heroin |50 RawOpium |51 Syringes |52 Hunger |53 Fitness |54 Event Tokens |55 Modkit");
-				SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Lock Pick Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time");
+				SendClientMessageEx(playerid, COLOR_GRAD2, "|56 Car Lock Pick Skill |57 Lock Pick Vehicle Count |58 Lock Pick Vehicle Time |59 Robbery");
 				return 1;
 			}
 			else if (PlayerInfo[playerid][pUndercover] >= 1) {
@@ -4336,10 +4334,15 @@ CMD:setmystat(playerid, params[])
 			}
 		case 59:
 			{
+				PlayerInfo[giveplayerid][pRobberySkill] = amount;
+				format(string, sizeof(string), "   %s's Robbery Skill has been set to %d.", GetPlayerNameEx(giveplayerid), amount);
+			}
+		case 60:
+			{
 				PlayerInfo[playerid][pToolBox] = amount;
 				format(string, sizeof(string), "   %s's Tool Box usages have been set to %i.", GetPlayerNameEx(playerid), amount);
 			}
-		case 60:
+		case 61:
 			{
 				PlayerInfo[playerid][pCrowBar] = amount;
 				format(string, sizeof(string), "   %s's Crowbar usages have been set to %i.", GetPlayerNameEx(playerid), amount);
@@ -5985,64 +5988,58 @@ CMD:checkwdcount(playerid, params[])
 }*/
 
 CMD:aimpound(playerid, params[]) {
-	if(PlayerInfo[playerid][pAdmin] >= 3) {
-		new iVehTowed, szMessage[128], veh = -1;
-		if(sscanf(params, "d", iVehTowed)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /aimpound [carid]");
-		if(!GetVehicleModel(iVehTowed)) return SendClientMessageEx(playerid, COLOR_GREY, "The vehicle your trying to impound has been desynced and therefore cannot be impounded.");
-		foreach(new i: Player) {
-			if((veh = GetPlayerVehicle(i, iVehTowed)) != -1) {
-				--PlayerCars;
-				VehicleSpawned[i]--;
-				PlayerVehicleInfo[i][veh][pvImpounded] = 1;
-				PlayerVehicleInfo[i][veh][pvSpawned] = 0;
-				PlayerVehicleInfo[i][veh][pvFuel] = VehicleFuel[iVehTowed];
-				GetVehicleHealth(PlayerVehicleInfo[i][veh][pvId], PlayerVehicleInfo[i][veh][pvHealth]);
-				DetachTrailerFromVehicle(iVehTowed);
-				DestroyVehicle(iVehTowed);
-				if(IsValidDynamicArea(iVehEnterAreaID[iVehTowed])) DestroyDynamicArea(iVehEnterAreaID[iVehTowed]);
-				PlayerVehicleInfo[i][veh][pvId] = INVALID_PLAYER_VEHICLE_ID;
-				g_mysql_SaveVehicle(playerid, veh);
+    if (PlayerInfo[playerid][pAdmin] >= 3)
+	{
+		new
+			iVehType,
+			iVehIndex,
+			iTargetOwner,
+			iVehTowed;
+        if(sscanf(params, "d", iVehTowed)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /aimpound [carid]");
 
-				format(szMessage, sizeof(szMessage),"* You have impounded %s's %s.", GetPlayerNameEx(i), VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
-
-				format(szMessage, sizeof(szMessage), "Your %s has been impounded by an admin. You may release it at the DMV in Dillimore.", VehicleName[PlayerVehicleInfo[i][veh][pvModelId] - 400]);
-				SendClientMessageEx(i, COLOR_LIGHTBLUE, szMessage);
+		foreach(new i: Player)
+		{
+			iVehIndex = GetPlayerVehicle(i, iVehTowed);
+			if(iVehIndex != -1) {
+				iVehType = 1;
+				iTargetOwner = i;
 				break;
 			}
 		}
-		if((veh = IsDynamicCrateVehicle(iVehTowed)) != -1) {
-			if(ValidGroup(CrateVehicle[veh][cvGroupID])) {
-				new Float:vHealth;
-				GetVehicleHealth(CrateVehicle[veh][cvSpawnID], vHealth);
-				CrateVehicle[veh][cvHealth] = vHealth;
-				CrateVehicle[veh][cvFuel] = VehicleFuel[CrateVehicle[veh][cvSpawnID]];
-				CrateVehicle[veh][cvImpound] = 1;
-				DetachTrailerFromVehicle(iVehTowed);
-				if(CreateCount(veh) > 0) AnnounceRespawn(CrateVehicle[veh][cvGroupID], "impounded by an admin", veh, CreateCount(veh));
-				DestroyVehicle(CrateVehicle[veh][cvSpawnID]);
-				CrateVehicle[veh][cvSpawned] = 0;
-				CrateVehicle[veh][cvSpawnID] = INVALID_VEHICLE_ID;
-				CrateVehCheck(veh); // Ensure we check for crates!
-				SaveCrateVehicle(veh);
-
-				format(szMessage, sizeof(szMessage), "* Your %s has been impounded by an admin you can recover it from your garage. (( /cvstorage ))", VehicleName[CrateVehicle[veh][cvModel] - 400]);
-				foreach(new i: Player) {
-					if(PlayerInfo[i][pLeader] == CrateVehicle[veh][cvGroupID]) {
-						ChatTrafficProcess(i, arrGroupData[CrateVehicle[veh][cvGroupID]][g_hRadioColour] * 256 + 255, szMessage, 12);
-					}
-				}
-				format(szMessage, sizeof(szMessage),"* You have impounded %s's %s.", arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400]);
-				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+		switch(iVehType) {
+			case 0, 2: {
+				SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot impound this vehicle, it has been respawned instead.");
+				DetachTrailerFromVehicle(GetPlayerVehicleID(playerid));
+				SetVehicleToRespawn(iVehTowed);
 			}
-			else veh = -1;
+			case 1: {
+
+				PlayerVehicleInfo[iTargetOwner][iVehIndex][pvImpounded] = 1;
+				PlayerVehicleInfo[iTargetOwner][iVehIndex][pvSpawned] = 0;
+				GetVehicleHealth(PlayerVehicleInfo[iTargetOwner][iVehIndex][pvId], PlayerVehicleInfo[iTargetOwner][iVehIndex][pvHealth]);
+				PlayerVehicleInfo[iTargetOwner][iVehIndex][pvId] = INVALID_PLAYER_VEHICLE_ID;
+				DestroyVehicle(iVehTowed);
+                g_mysql_SaveVehicle(iTargetOwner, iVehIndex);
+				VehicleSpawned[iTargetOwner]--;
+				--PlayerCars;
+
+				new
+					szMessage[96];
+
+				format(szMessage, sizeof(szMessage),"* You have impounded %s's %s.",GetPlayerNameEx(iTargetOwner), VehicleName[PlayerVehicleInfo[iTargetOwner][iVehIndex][pvModelId] - 400]);
+				SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
+
+				format(szMessage, sizeof(szMessage), "Your %s has been impounded by an admin. You may release it at the DMV in Dillimore.", VehicleName[PlayerVehicleInfo[iTargetOwner][iVehIndex][pvModelId] - 400]);
+				SendClientMessageEx(iTargetOwner, COLOR_LIGHTBLUE, szMessage);
+
+			}
 		}
-		if(veh == -1) {
-			SendClientMessageEx(playerid, COLOR_GRAD1, "This vehicle can't be impounded it's been respawned instead.");
-			SetVehicleToRespawn(iVehTowed);
-		}
+		arr_Towing[playerid] = INVALID_VEHICLE_ID;
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	}
 	return 1;
 }
 
@@ -6224,22 +6221,5 @@ CMD:resetpgifts(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_CYAN, "You have reset everyones received gift they'll be able to get gifts upon login.");
 	format(szMiscArray, sizeof(szMiscArray), "%s has reset everyones received gift to 0. (Login Event Gifts)", GetPlayerNameEx(playerid));
 	Log("logs/admin.log", szMiscArray);
-	return 1;
-}
-
-CMD:cutter(playerid, params[])
-{
-	for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
-	{
-		if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
-		{
-			SendClientMessageEx(playerid, COLOR_GREEN, "You have successfully installed rims.");
-			PlayerInfo[playerid][pRimMod]--;
-
-			AddVehicleComponent(GetPlayerVehicleID(playerid), 1079);
-			UpdatePlayerVehicleMods(playerid, d);
-			return 1;
-		}
-	}
 	return 1;
 }

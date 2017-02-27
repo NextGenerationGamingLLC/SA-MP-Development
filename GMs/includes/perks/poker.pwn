@@ -910,7 +910,7 @@ public PokerExit(playerid)
 {
 	SetCameraBehindPlayer(playerid);
 	TogglePlayerControllable(playerid, 1);
-	ClearAnimationsEx(playerid);
+	ClearAnimations(playerid);
 	CancelSelectTextDraw(playerid);
 }
 

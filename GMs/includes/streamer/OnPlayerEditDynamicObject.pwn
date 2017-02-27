@@ -53,6 +53,32 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	}
 	*/
 
+	if(GetPVarType(playerid, "aEdit") == 1)
+	{
+		CreateATM(GetPVarInt(playerid, "EditingATMID"));
+		DeletePVar(playerid, "aEdit");
+		DeletePVar(playerid, "EditingATMID");
+		SendClientMessage(playerid, COLOR_WHITE, "You have stopped yourself from editing the ATM.");
+	}
+	if(GetPVarInt(playerid, "aEdit") == 1)
+	{
+		szMiscArray[0] = 0;
+		if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
+		new atmid = GetPVarInt(playerid, "EditingATMID");
+		Atm[atmid][aPosX] = x;
+		Atm[atmid][aPosY] = y;
+		Atm[atmid][aPosZ] = z;
+		Atm[atmid][aPosRX] = rx;
+		Atm[atmid][aPosRY] = ry;
+		Atm[atmid][aPosRZ] = rz;
+		CreateATM(atmid);
+		format(szMiscArray, sizeof(szMiscArray), "You have edited the postion of this ATM. (%d)", atmid);
+		SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "%s has edited the position of ATM Id: %d.", GetPlayerNameEx(playerid), atmid);
+		Log("Logs/atmedit.log", szMiscArray;
+		DeletePVar(playerid, "EditingATMID");
+		DeletePVar(playerid, "aEdit");
+	}
 	if(GetPVarType(playerid, "DeployingTapeID"))
 	{
 	    new tid = GetPVarInt(playerid, "DeployingTapeID"), valid = 0;
@@ -203,6 +229,40 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		}
 	}
 	
+	//ATM's
+	if(response == EDIT_RESPONSE_FINAL)
+	{
+		szMiscArray[0] = 0;
+		if(GetPVarInt(playerid, "aEdit") == 1)
+		{
+			if(PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to perform this action!");
+			new atmid = GetPVarInt(playerid, "EditingATMID");
+			Atm[atmid][aPosX] = x;
+			Atm[atmid][aPosY] = y;
+			Atm[atmid][aPosZ] = z;
+			Atm[atmid][aPosRX] = rx;
+			Atm[atmid][aPosRY] = ry;
+			Atm[atmid][aPosRZ] = rz;
+			CreateATM(atmid);
+			format(szMiscArray, sizeof(szMiscArray), "You have edited the postion of this ATM. (%d)", atmid);
+			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
+			format(szMiscArray, sizeof(szMiscArray), "%s has edited the position of ATM Id: %d.", GetPlayerNameEx(playerid), atmid);
+			Log("Logs/aedit.log", szMiscArray);
+			DeletePVar(playerid, "EditingATMID");
+			DeletePVar(playerid, "aEdit");
+		}
+	}
+	if(response == EDIT_RESPONSE_CANCEL)
+	{
+		if(GetPVarType(playerid, "aEdit") == 1)
+		{
+			CreateATM(GetPVarInt(playerid, "EditingATMID"));
+			DeletePVar(playerid, "aEdit");
+			DeletePVar(playerid, "EditingATMID");
+			SendClientMessage(playerid, COLOR_WHITE, "You have stopped yourself from editing the ATM.");
+		}
+	}
+
 	// Gates
 	if(response == EDIT_RESPONSE_FINAL)
 	{

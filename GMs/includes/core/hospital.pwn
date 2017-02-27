@@ -293,7 +293,9 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 	{
 		arrHospitalBedData[iHospital][iCountDown][iBed] = 0;
 	}
-	new string[128];
+	new string[128],
+	file[32], month, day, year;
+	getdate(year,month,day);
 	
 	if(--arrHospitalBedData[iHospital][iCountDown][iBed] <= 0)
 	{
@@ -339,18 +341,19 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospital][0]);
 
 		switch(iHospital) {
+
 			case 3, 17: {
 				TRTax += HospitalSpawnInfo[iHospital][1]; // NE Hospitals
 				format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
-				GroupPayLog(8, string);
+				format(file, sizeof(file), "grouppay/8/%d-%d-%d.log", month, day, year);
 			}
 			default: {
-				Tax += (HospitalSpawnInfo[iHospital][1] / 2); // SA Hospitals
-				arrGroupData[9][g_iBudget] += (HospitalSpawnInfo[iHospital][1] / 2);
-				format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), (HospitalSpawnInfo[iHospital][0] / 2));
-				GroupPayLog(9, string);
+				Tax += HospitalSpawnInfo[iHospital][1]; // SA Hospitals
+				format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
+				format(file, sizeof(file), "grouppay/5/%d-%d-%d.log", month, day, year);
 			}
 		}		
+		Log(file, string);
 		if(!GetPVarType(playerid, "HealthCareActive")) SetHealth(playerid, 50);
 		else SetHealth(playerid, 100), DeletePVar(playerid, "HealthCareActive");
 		PlayerInfo[playerid][pHydration] = 100;
@@ -376,6 +379,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 				PlayerInfo[playerid][pInt] = 1;
 				SetPlayerVirtualWorld(playerid, iHospital);
 				PlayerInfo[playerid][pVW] = iHospital;
+
 			}
 		}
 		format(string, sizeof(string), "Time Left: ~r~%d ~w~seconds", arrHospitalBedData[iHospital][iCountDown][iBed]);
@@ -519,8 +523,14 @@ HospHeal(playerid)
 CMD:buyinsurance(playerid, params[])
 {
 	new string[128],
-		iHospitalVW = GetPlayerVirtualWorld(playerid);
+		iHospitalVW = GetPlayerVirtualWorld(playerid),
+		file[32], 
+		month, 
+		day, 
+		year;
 		
+	getdate(year,month,day);
+	
 	if(IsPlayerInRangeOfPoint(playerid, 2.00, 2383.0728,2662.0520,8001.1479)) // all regular hospital points
 	{
 		if(iHospitalVW >= MAX_HOSPITALS) return SendClientMessageEx(playerid, -1, "No hospital has been setup for this Virtual World!");
@@ -536,7 +546,8 @@ CMD:buyinsurance(playerid, params[])
 			default: Tax += HospitalSpawnInfo[iHospitalVW][1]; // SA Hospitals
 		}
 		format(string, sizeof(string), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
-		GroupPayLog(9, string);
+		format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+		Log(file, string);
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 2.00, 564.54, 1437.02, 6000.47)) // doc hospital purchase point
 	{
@@ -547,7 +558,8 @@ CMD:buyinsurance(playerid, params[])
 		GivePlayerCash(playerid, - HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 		Tax += HospitalSpawnInfo[HOSPITAL_DOCJAIL][1];
 		format(string, sizeof(string), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
-		GroupPayLog(9, string);
+		format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+		Log(file, string);
 	}
 	else SendClientMessageEx(playerid, COLOR_GREY, "ERROR: You are not in range of a hospital counter.");
 	return 1;
@@ -655,7 +667,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				case 4: // buy insurance
 				{
-					new iHospitalVW = GetPlayerVirtualWorld(playerid);
+					new iHospitalVW = GetPlayerVirtualWorld(playerid),
+						file[32], 
+						month, 
+						day, 
+						year;
+						
+					getdate(year,month,day);
 					
 					if(IsPlayerInRangeOfPoint(playerid, 2.00, 2383.0728,2662.0520,8001.1479)) // all regular hospital points
 					{
@@ -672,7 +690,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							default: Tax += HospitalSpawnInfo[iHospitalVW][1]; // SA Hospitals
 						}
 						format(szMiscArray, sizeof(szMiscArray), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
-						GroupPayLog(9, szMiscArray);
+						format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+						Log(file, szMiscArray);
 					}
 					else if(IsPlayerInRangeOfPoint(playerid, 2.00, 564.54, 1437.02, 6000.47)) // doc hospital purchase point
 					{
@@ -683,7 +702,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						GivePlayerCash(playerid, - HospitalSpawnInfo[HOSPITAL_DOCJAIL][1]);
 						Tax += HospitalSpawnInfo[HOSPITAL_DOCJAIL][1];
 						format(szMiscArray, sizeof(szMiscArray), "%s has purchased their medical insurance for $%d", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospitalVW][0]);
-						GroupPayLog(9, szMiscArray);
+						format(file, sizeof(file), "grouppay/0/%d-%d-%d.log", month, day, year);
+						Log(file, szMiscArray);
 					}
 				}
 			}

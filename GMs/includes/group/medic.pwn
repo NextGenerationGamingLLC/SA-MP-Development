@@ -80,7 +80,7 @@ public MoveEMS(playerid)
 	SetPlayerInterior(iTargetPlayerID, GetPlayerVirtualWorld(playerid));
 	SetPlayerVirtualWorld(iTargetPlayerID, GetPlayerVirtualWorld(playerid));
 
-	ClearAnimationsEx(iTargetPlayerID);
+	ClearAnimations(iTargetPlayerID);
 	if(!IsPlayerInAnyVehicle(iTargetPlayerID)) ApplyAnimation(iTargetPlayerID, "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
 
 	DeletePVar(iTargetPlayerID, "OnStretcher");
@@ -118,7 +118,7 @@ public SendEMSQueue(playerid,type)
 	if(zombieevent == 1 && GetPVarType(playerid, "pZombieBit"))
 	{
  		KillEMSQueue(playerid);
-		ClearAnimationsEx(playerid);
+		ClearAnimations(playerid);
 		MakeZombie(playerid);
 		return 1;
 	}
@@ -136,7 +136,7 @@ public SendEMSQueue(playerid,type)
 
 			if(GetPlayerInterior(playerid) > 0) Player_StreamPrep(playerid, GetPVarFloat(playerid,"MedicX"), GetPVarFloat(playerid,"MedicY"), GetPVarFloat(playerid,"MedicZ"), FREEZE_TIME);
 			GameTextForPlayer(playerid, "~r~Injured~n~~w~/accept death or /service ems", 5000, 3);
-			ClearAnimationsEx(playerid);
+			ClearAnimations(playerid);
 			PlayDeathAnimation(playerid);
 			SetHealth(playerid, 100);
 			RemoveArmor(playerid);
@@ -149,7 +149,7 @@ public SendEMSQueue(playerid,type)
 		case 2:
 		{
 		    SetPVarInt(playerid,"EMSAttempt", 2);
-			ClearAnimationsEx(playerid);
+			ClearAnimations(playerid);
 		 	if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid, "SWAT", "gnstwall_injurd", 4.0, 0, 1, 1, 1, 0, 1);
 			SetHealth(playerid, 50); // Set to 50.
 			RemoveArmor(playerid);
@@ -330,7 +330,7 @@ CMD:loadpt(playerid, params[])
 							format(string, sizeof(string), "* %s loads %s in the %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetVehicleName(carid));
 							ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 							SetPVarInt(giveplayerid, "EMSAttempt", 3);
-							ClearAnimationsEx(giveplayerid);
+							ClearAnimations(giveplayerid);
 							IsPlayerEntering{giveplayerid} = true;
 							PutPlayerInVehicle(giveplayerid,carid,seat);
 							TogglePlayerControllable(giveplayerid, false);

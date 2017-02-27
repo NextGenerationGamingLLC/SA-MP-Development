@@ -89,8 +89,8 @@ stock CuffTacklee(playerid, giveplayerid)
 	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 	GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 	TogglePlayerControllable(giveplayerid, 0);
-	ClearAnimationsEx(giveplayerid);
-	ClearAnimationsEx(playerid);
+	ClearAnimations(giveplayerid);
+	ClearAnimations(playerid);
 	GetHealth(giveplayerid, health);
 	GetArmour(giveplayerid, armor);
 	SetPVarFloat(giveplayerid, "cuffhealth",health);
@@ -147,7 +147,7 @@ public DragPlayer(dragger, dragee)
 		SetPlayerPos(dragee, dX, dY-1, dZ);
 		SetPlayerInterior(dragee, GetPlayerInterior(dragger));
 		SetPlayerVirtualWorld(dragee, GetPlayerVirtualWorld(dragger));
-		ClearAnimationsEx(dragee);
+		ClearAnimations(dragee);
 		ApplyAnimation(dragee, "ped","cower",1,1,0,0,0,0,1);
         SetTimerEx("DragPlayer", 1000, 0, "ii", dragger, dragee);
 	}
@@ -397,7 +397,6 @@ public HidePlayerBeaconForCops(playerid)
 	return 1;
 }
 
-
 CMD:placekit(playerid, params[]) {
 	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{
@@ -426,7 +425,7 @@ CMD:placekit(playerid, params[]) {
 						return 1;
 					}
 				}
-				if(VehInfo[vehicleid][vCarVestKit] == 2)
+				if(CrateVehicleLoad[vehicleid][vCarVestKit] == 2)
 				{
 					return SendClientMessageEx(playerid, COLOR_GRAD1, "This vehicle already has two kits loaded.");
 				}
@@ -434,7 +433,7 @@ CMD:placekit(playerid, params[]) {
 				SendClientMessageEx(playerid, COLOR_WHITE, "You have loaded the Med Kit in to the Vehicle Trunk. /usekit to use it.");
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				SetPVarInt(playerid, "MedVestKit", 0);
-				VehInfo[vehicleid][vCarVestKit] += 1;
+				CrateVehicleLoad[vehicleid][vCarVestKit] += 1;
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "You are not near any vehicle.");
 		}
@@ -517,7 +516,7 @@ CMD:usekit(playerid, params[]) {
 		new vehicleid = GetClosestCar(playerid, INVALID_VEHICLE_ID, 10.0);
 		if(vehicleid != INVALID_VEHICLE_ID && GetDistanceToCar(playerid, vehicleid) < 10)
 		{
-		    if(VehInfo[vehicleid][vCarVestKit] > 0)
+		    if(CrateVehicleLoad[vehicleid][vCarVestKit] > 0)
 		    {
 		    	if(!IsABike(vehicleid) && !IsAPlane(vehicleid)) {
 					new engine,lights,alarm,doors,bonnet,boot,objective;
@@ -533,7 +532,7 @@ CMD:usekit(playerid, params[]) {
             	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				SetHealth(playerid, 100);
 				SetArmour(playerid, 100);
-            	VehInfo[vehicleid][vCarVestKit] -= 1;
+            	CrateVehicleLoad[vehicleid][vCarVestKit] -= 1;
 				return 1;
 		    }
 			else return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no med kits available in this vehicle."); 
@@ -598,7 +597,7 @@ CMD:searchcar(playerid, params[])
 			}
 			if(!isnull(string)) {
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				if(VehInfo[closestcar][vCarVestKit]) {
+				if(CrateVehicleLoad[closestcar][vCarVestKit]) {
 					SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains:");
 					SendClientMessageEx(playerid, COLOR_WHITE, "* Kevlar Vest.");
 					SendClientMessageEx(playerid, COLOR_WHITE, "* First Aid Kit.");
@@ -609,19 +608,18 @@ CMD:searchcar(playerid, params[])
 		}
 	}
     if(isnull(string)) {
-        if(VehInfo[closestcar][vCarVestKit] > 0) {
+        if(CrateVehicleLoad[closestcar][vCarVestKit] > 0) {
             new str[84];
             SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains:");
-            format(str, sizeof(str), "* Kevlar Vest (x%d).", VehInfo[closestcar][vCarVestKit]);
+            format(str, sizeof(str), "* Kevlar Vest (x%d).", CrateVehicleLoad[closestcar][vCarVestKit]);
             SendClientMessageEx(playerid, COLOR_WHITE, str);
-            format(str, sizeof(str), "* First Aid Kit(x%d).", VehInfo[closestcar][vCarVestKit]);
+            format(str, sizeof(str), "* First Aid Kit(x%d).", CrateVehicleLoad[closestcar][vCarVestKit]);
             SendClientMessageEx(playerid, COLOR_WHITE, str);
 		}
 		else SendClientMessageEx(playerid, COLOR_WHITE, "* Trunk contains: nothing.");
     }
     return 1;
 }
-
 
 CMD:takecarweapons(playerid, params[])
 {
@@ -968,39 +966,42 @@ CMD:vmdc(playerid, params[])
 
 CMD:vticket(playerid, params[])
 {
-	if(IsACop(playerid) || IsATowman(playerid)) {
-		new vehid, amount;
-		if(sscanf(params, "ii", vehid, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vticket [registration] [amount]");
-		if(PlayerInfo[playerid][pTicketTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait within a minute in order to use this command again!");
-		if(amount > 50000) return SendClientMessageEx(playerid, COLOR_GREY, "The maximum vehicle ticket amount is $50,000.");
-		if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can't ticket any vehicle below $1.");
-		new Float: x, Float: y, Float: z, veh = -1;
-		GetVehiclePos(vehid, x, y, z);
-		if(IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z)) {
-			foreach(new i: Player) {
-				if((veh = GetPlayerVehicle(i, vehid)) != -1) {
-					PlayerVehicleInfo[i][veh][pvTicket] += amount;
-					PlayerInfo[playerid][pTicketTime] = 60;
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have issued a $%s ticket on %s's %s.", number_format(amount), GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][veh][pvId]));
-					break;
-				}
-			}
-			if((veh = IsDynamicCrateVehicle(vehid)) != -1) {
-				if(ValidGroup(CrateVehicle[veh][cvGroupID])) {
-					if(PlayerInfo[playerid][pMember] == CrateVehicle[veh][cvGroupID]) return SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "* Your group owns this vehicle you can't put a ticket on it!");
-					CrateVehicle[veh][cvTickets] += amount;
-					PlayerInfo[playerid][pTicketTime] = 60;
-					SendClientMessageEx(playerid, COLOR_WHITE, "You have issued a $%s ticket on the %s.", number_format(amount), VehicleName[CrateVehicle[veh][cvModel] - 400]);
-					SaveCrateVehicle(veh);
-				} else veh = -1;
-			}
-			if(veh == -1) {
-				SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle does not have any registration!");
-			}
-		}
-		else SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be near such vehicle!");
-	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be near such vehicle!");
+    if(IsACop(playerid) || IsATowman(playerid))
+    {
+        new amount, registration[64];
+		if(sscanf(params, "s[64]d", registration, amount)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vticket [registration] [amount]");
+
+        if(PlayerInfo[playerid][pTicketTime] != 0)
+		{
+            SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait within a minute in order to use this command again!");
+            return 1;
+        }
+        if(amount > 50000) return SendClientMessageEx(playerid, COLOR_GREY, "The maximum vehicle ticket amount is $50000.");
+        if(amount < 0) return SendClientMessageEx(playerid, COLOR_GREY, "You can't ticket negative amounts.");
+        new Float: x, Float: y, Float: z, vehicleid = strval(registration);
+        GetVehiclePos(vehicleid, x, y, z);
+        if(IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z))
+		{
+            if(vehicleid != INVALID_VEHICLE_ID)
+			{
+                foreach(new i: Player)
+				{
+					new v = GetPlayerVehicle(i, vehicleid);
+					if(v != -1)
+					{
+						new string[62 + MAX_PLAYER_NAME];
+						PlayerVehicleInfo[i][v][pvTicket] += amount;
+						PlayerInfo[playerid][pTicketTime] = 60;
+						format(string, sizeof(string), "You have issued a $%d ticket on %s's %s.", amount, GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][v][pvId]));
+						SendClientMessageEx(playerid, COLOR_WHITE, string);
+						return 1;
+					}
+				}	
+                SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle does not have any registration!");
+            }
+        }
+        else return SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be near such vehicle!");
+    }
     return 1;
 }
 
@@ -1011,7 +1012,6 @@ CMD:vlookup(playerid, params[]) {
         if(isnull(params)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /vlookup [vehicle registration]");
         new carid = strval(params);
         new dynveh = DynVeh[carid];
-        new cveh = IsDynamicCrateVehicle(carid);
 		foreach(new i: Player)
 		{
 			new v = GetPlayerVehicle(i, carid);
@@ -1041,12 +1041,6 @@ CMD:vlookup(playerid, params[]) {
 				return 1;
 			}
         }
-        if(cveh != -1) {
-        	if(ValidGroup(CrateVehicle[cveh][cvGroupID])) {
-        		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Tickets: $%s", carid, GetVehicleName(carid), arrGroupData[CrateVehicle[cveh][cvGroupID]][g_szGroupName], number_format(CrateVehicle[cveh][cvTickets]));
-        		return 1;
-        	}
-        }
         SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not owned by anyone!");
     }
     return 1;
@@ -1062,7 +1056,6 @@ CMD:vcheck(playerid, params[])
 		{
             new carbeingtowed = GetVehicleTrailer(carid);
             new dynveh = DynVeh[carbeingtowed];
-            new cveh = IsDynamicCrateVehicle(carbeingtowed);
 			foreach(new i: Player)
 			{
 				new v = GetPlayerVehicle(i, carbeingtowed);
@@ -1092,17 +1085,11 @@ CMD:vcheck(playerid, params[])
 					return 1;
 				}
             }
-            if(cveh != -1) {
-            	if(ValidGroup(CrateVehicle[cveh][cvGroupID])) {
-            		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s", closestcar, GetVehicleName(closestcar), arrGroupData[CrateVehicle[cveh][cvGroupID]][g_szGroupName], number_format(CrateVehicle[cveh][cvTickets]));
-        			return 1;
-        		}
-            }
             SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not owned by anyone!");
         }
         else if(IsPlayerInRangeOfVehicle(playerid, closestcar, 9.0) && !IsTrailerAttachedToVehicle(carid) && (GetVehicleVirtualWorld(closestcar) == GetPlayerVirtualWorld(playerid)))
 		{
-		    new dynveh = DynVeh[closestcar], szClamp[16], cveh = IsDynamicCrateVehicle(closestcar);
+		    new dynveh = DynVeh[closestcar], szClamp[16];
 		    if(WheelClamp{closestcar}) {
 		    	format(szClamp, sizeof(szClamp), "| Wheelclamp: Yes");
 		    }
@@ -1134,12 +1121,6 @@ CMD:vcheck(playerid, params[])
                     SendClientMessageEx(playerid, COLOR_WHITE, string);
                     return 1;
 				}
-            }
-            if(cveh != -1) {
-            	if(ValidGroup(CrateVehicle[cveh][cvGroupID])) {
-            		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle registration: %d | Name: %s | Owner: %s | Ticket: $%s %s", closestcar, GetVehicleName(closestcar), arrGroupData[CrateVehicle[cveh][cvGroupID]][g_szGroupName], number_format(CrateVehicle[cveh][cvTickets]), szClamp);
-        			return 1;
-        		}
             }
             SendClientMessageEx(playerid, COLOR_GRAD2, "This vehicle is not owned by anyone!");
         }
@@ -1907,7 +1888,7 @@ CMD:cuff(playerid, params[])
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
 					TogglePlayerControllable(giveplayerid, 0);
-					ClearAnimationsEx(giveplayerid);
+					ClearAnimations(giveplayerid);
 					GetHealth(giveplayerid, health);
 					GetArmour(giveplayerid, armor);
 					SetPVarFloat(giveplayerid, "cuffhealth",health);
@@ -1981,7 +1962,7 @@ CMD:uncuff(playerid, params[])
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
 					TogglePlayerControllable(giveplayerid, 1);
-					ClearAnimationsEx(giveplayerid);
+					ClearAnimations(giveplayerid);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 					PlayerCuffed[giveplayerid] = 0;
                     PlayerCuffedTime[giveplayerid] = 0;
@@ -2001,7 +1982,7 @@ CMD:uncuff(playerid, params[])
 					format(string, sizeof(string), "* %s has uncuffed %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~g~Uncuffed", 2500, 3);
-					ClearAnimationsEx(giveplayerid);
+					ClearAnimations(giveplayerid);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_NONE);
 					DeletePVar(giveplayerid, "jailcuffs");
 				}
@@ -2082,7 +2063,7 @@ CMD:detain(playerid, params[])
 						format(string, sizeof(string), "* %s throws %s in the vehicle.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 						ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 						GameTextForPlayer(giveplayerid, "~r~Detained", 2500, 3);
-						ClearAnimationsEx(giveplayerid);
+						ClearAnimations(giveplayerid);
 						TogglePlayerControllable(giveplayerid, false);
 						IsPlayerEntering{giveplayerid} = true;
 						PutPlayerInVehicle(giveplayerid, carid, seat);

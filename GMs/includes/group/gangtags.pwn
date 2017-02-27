@@ -29,9 +29,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		case DIALOG_GANGTAGS_INPUT:
 		{
-			if(!response) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, 1), 1;
+			if(!response) return ClearAnimations(playerid), TogglePlayerControllable(playerid, 1), 1;
 			if(strlen(inputtext) > MAX_GANGTAGS_LEN) {
-				ClearAnimationsEx(playerid);
+				ClearAnimations(playerid);
 				DeletePVar(playerid, PVAR_GANGTAGID);
 				return SendClientMessage(playerid, COLOR_GRAD1, "Your text is too long.");
 			}
@@ -49,7 +49,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 		case DIALOG_GANGTAGS_FONT:
 		{
-			if(!response) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, 1), 1;
+			if(!response) return ClearAnimations(playerid), TogglePlayerControllable(playerid, 1), 1;
 			SendClientMessage(playerid, COLOR_GREEN, "[Gang Tags] {DDDDDD}Spraying... Use /tag again to stop tagging.");
 			GangTag_InitSeconds(playerid, GANGTAG_TIME, listitem);
 		}
@@ -70,7 +70,7 @@ forward GangTag_InitSeconds(playerid, time, fontid);
 public GangTag_InitSeconds(playerid, time, fontid)
 {
 	szMiscArray[0] = 0;
-	if(!GetPVarType(playerid, PVAR_GANGTAGTEXT)) return ClearAnimationsEx(playerid), TogglePlayerControllable(playerid, 1), 1;
+	if(!GetPVarType(playerid, PVAR_GANGTAGTEXT)) return ClearAnimations(playerid), TogglePlayerControllable(playerid, 1), 1;
 	time -= 1000;
 	new timesec = time/1000;
 	format(szMiscArray, sizeof(szMiscArray), "~g~ Spraying... ~w~ %d", timesec);
@@ -86,7 +86,7 @@ GangTag_FinishTag(playerid, fontid)
 	GetPVarString(playerid, PVAR_GANGTAGTEXT, szMiscArray, sizeof(szMiscArray));
 	GangTag_Save(playerid, GetPVarInt(playerid, PVAR_GANGTAGID), szMiscArray, fontid);
 	DeletePVar(playerid, PVAR_GANGTAGTEXT);
-	ClearAnimationsEx(playerid);
+	ClearAnimations(playerid);
 	TogglePlayerControllable(playerid, 1);
 	GameTextForPlayer(playerid, "~g~Tagged!", 5000, 3);
 
@@ -254,7 +254,7 @@ forward GangTag_OnCleanTag(iPlayerID, i);
 public GangTag_OnCleanTag(iPlayerID, i)
 {
 	TogglePlayerControllable(iPlayerID, 1);
-	ClearAnimationsEx(iPlayerID);
+	ClearAnimations(iPlayerID);
 	GameTextForPlayer(iPlayerID, "~g~Cleaned!", 3000, 3);
 	GangTag_Save(iPlayerID, i, "-", 0);
 	return 1;
@@ -332,7 +332,7 @@ CMD:tag(playerid, params[])
 	if(GetPVarType(playerid, PVAR_GANGTAGTEXT))
 	{
 		DeletePVar(playerid, PVAR_GANGTAGTEXT);
-		ClearAnimationsEx(playerid);
+		ClearAnimations(playerid);
 		TogglePlayerControllable(playerid, 1);
 		GameTextForPlayer(playerid, "~r~Cancelled!", 5000, 3);
 		return 1;

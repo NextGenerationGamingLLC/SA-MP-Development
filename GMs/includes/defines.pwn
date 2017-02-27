@@ -83,7 +83,12 @@ native IsValidVehicle(vehicleid);
 #define 		TYPE_CRATETIMER 			15
 #define 		TYPE_DELIVERVEHICLE			16
 
-			/*  ---------------- MISC ----------------- */
+
+/*  ---------------- ATM System ----------------- */
+#define 		MAX_ATM						(500)
+#define 		INVALID_ATM					-1
+
+  /*  ---------------- MISC ----------------- */
 #define 		RED_FLAG_OBJ 				1580
 #define 		BLUE_FLAG_OBJ 				1579
 #define 		HILL_OBJ 					1578
@@ -204,15 +209,11 @@ native IsValidVehicle(vehicleid);
 #define			GROUP_MAX_DIV_LEN			16
 #define			GROUP_MAX_MOTD_LEN   		128
 
-// Crates Stuff
-#define         MAX_CRATE_FACILITY			10
-#define         MAX_CRATES             		500
-#define         MAX_CRATE_VEHCILES          350
-
 // General constants.
 #define			MAX_GROUP_ALLEGIANCES		3
 #define			MAX_GROUP_TYPES             11
 #define         MAX_LOCKER_STOCK        	10000
+#define         MAX_CRATES             		50
 #define 		MAX_SPIKES 					10
 #define 		MAX_CONES 					25
 #define 		MAX_FLARES 					10
@@ -237,7 +238,6 @@ native IsValidVehicle(vehicleid);
 #define         GROUP_QUERY_LOCKERS     	7
 #define         GROUP_QUERY_JURISDICTIONS   8
 #define 		GROUP_QUERY_GWEAPONS		9
-#define 		GROUP_QUERY_GWEAPONS_RANK	10
 
 // group ID defines
 #define			GROUP_TYPE_LEA				1

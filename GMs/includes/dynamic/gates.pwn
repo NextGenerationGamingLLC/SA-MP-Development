@@ -344,8 +344,6 @@ CMD:gstatus(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		format(string, sizeof(string), "Range: %.3f | Speed: %.3f | Timer: %d second(s) | Stream: %d | Automated: %d | Locked: %d | Pass: %s", GateInfo[gateid][gRange], GateInfo[gateid][gSpeed], timertxt, distancetxt, GateInfo[gateid][gAutomate], GateInfo[gateid][gLocked], GateInfo[gateid][gPass]);
 		SendClientMessageEx(playerid, COLOR_WHITE, string);
-		format(string, sizeof(string), "Assigned Facility: %d", GateInfo[gateid][gFacility]);
-		SendClientMessageEx(playerid, COLOR_WHITE, string);
 		if(GateInfo[gateid][gTModel] != INVALID_OBJECT_ID)
 		{
 			format(string, sizeof(string), "Texture Replacement - Index: %d | Model: %d | TXD File: %s | Texture: %s | Color: %x", GateInfo[gateid][gTIndex], GateInfo[gateid][gTModel], GateInfo[gateid][gTTXD], GateInfo[gateid][gTTexture], GateInfo[gateid][gTColor]);
@@ -451,7 +449,7 @@ CMD:gedit(playerid, params[])
 		{
 			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /gedit [name] [gateid] [value]");
 			SendClientMessageEx(playerid, COLOR_GREY, "Available names: HID, Model, VW, Int, Open, Closed, PosX(M), PosY(M), PosZ(M), RotX(M), RotZ(M), ToMe(M)");
-			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Range, Speed, Allegiance, GroupType, GroupID, Stream, Timer, Facility");
+			SendClientMessageEx(playerid, COLOR_GREY, "Available names: Range, Speed, Allegiance, GroupType, GroupID, Stream, Timer");
 			return 1;
 		}
 
@@ -757,17 +755,6 @@ CMD:gedit(playerid, params[])
 		    format(string, sizeof(string), "%s has edited GateID %d's timer to %d.", GetPlayerNameEx(playerid), gateid, value);
 		    Log("logs/gedit.log", string);
 		}
-		else if(strcmp(x_job, "facility", true) == 0)
-		{
-			new value = floatround(ofloat, floatround_round);
-			if(!(0 <= value < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid facility ID.");
-		    GateInfo[gateid][gFacility] = value;
-		    format(string, sizeof(string), "Facility %d assigned to Gate %d", value, gateid);
-		    SendClientMessageEx(playerid, COLOR_WHITE, string);
-		    SaveGate(gateid);
-		    format(string, sizeof(string), "%s has edited GateID %d's assigned facility to %d.", GetPlayerNameEx(playerid), gateid, value);
-		    Log("logs/gedit.log", string);
-		}
 	}
 	else
 	{
@@ -1021,7 +1008,6 @@ public OnLoadGates()
 		cache_get_field_content(i, "TTXD", GateInfo[i][gTTXD], MainPipeline, 64);
 		cache_get_field_content(i, "TTexture", GateInfo[i][gTTexture], MainPipeline, 64);
 		GateInfo[i][gTColor] = cache_get_field_content_int(i, "TColor", MainPipeline);
-		GateInfo[i][gFacility] = cache_get_field_content_int(i, "Facility", MainPipeline);
 		if(GateInfo[i][gPosX] != 0.0) CreateGate(i);
 		i++;
 	}
@@ -1060,8 +1046,7 @@ stock SaveGate(id) {
 		`TModel`=%d, \
 		`TTXD`='%s', \
 		`TTexture`='%s', \
-		`TColor`=%d, \
-		`Facility`=%d \
+		`TColor`=%d \
 		WHERE `ID` = %d",
 		GateInfo[id][gHID],
 		GateInfo[id][gSpeed],
@@ -1094,7 +1079,6 @@ stock SaveGate(id) {
 		g_mysql_ReturnEscaped(GateInfo[id][gTTXD], MainPipeline),
 		g_mysql_ReturnEscaped(GateInfo[id][gTTexture], MainPipeline),
 		GateInfo[id][gTColor],
-		GateInfo[id][gFacility],
 		id+1
 	);
 	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
@@ -1115,10 +1099,6 @@ public MoveTimerGate(gateid)
 {
 	if(GateInfo[gateid][gTimer] != 0)
 	{
-		if((0 <= GateInfo[gateid][gFacility] < MAX_CRATE_FACILITY)) {
-			if(AdminOpened[GateInfo[gateid][gFacility]] || CrateFacility[GateInfo[gateid][gFacility]][cfRaidable] && CrateFacility[GateInfo[gateid][gFacility]][cfRaidTimer] > 0)
-				return 1;
-		}
 		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
 		GateInfo[gateid][gStatus] = 0;
 	}
@@ -1148,17 +1128,12 @@ stock MoveGate(playerid, gateid)
 	}
 	else if(GateInfo[gateid][gStatus] == 1 && GateInfo[gateid][gTimer] == 0)
 	{
-		if((0 <= GateInfo[gateid][gFacility] < MAX_CRATE_FACILITY)) {
-			if(AdminOpened[GateInfo[gateid][gFacility]] || CrateFacility[GateInfo[gateid][gFacility]][cfRaidable] && CrateFacility[GateInfo[gateid][gFacility]][cfRaidTimer] > 0)
-				return SendClientMessageEx(playerid, COLOR_GRAD2, "Unable to close the gate it's currently being prevented by the facility!");
-		}
 		format(string, sizeof(string), "* %s uses their remote to close the gates.", GetPlayerNameEx(playerid));
 		// ProxDetector(GateInfo[gateid][gRange], playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 		ProxChatBubble(playerid, string);
 		MoveDynamicObject(GateInfo[gateid][gGATE], GateInfo[gateid][gPosX], GateInfo[gateid][gPosY], GateInfo[gateid][gPosZ], GateInfo[gateid][gSpeed], GateInfo[gateid][gRotX], GateInfo[gateid][gRotY], GateInfo[gateid][gRotZ]);
 		GateInfo[gateid][gStatus] = 0;
 	}
-	return 1;
 }
 
 stock MoveAutomaticGate(playerid, gateid)
@@ -1269,7 +1244,6 @@ public DeleteGate(gateid, adminid)
 	GateInfo[gateid][gTimer] = 0;
 	GateInfo[gateid][gAutomate] = 0;
 	GateInfo[gateid][gLocked] = 0;
-	GateInfo[gateid][gFacility] = -1;
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "%s has deleted gate id %d", adminid != INVALID_PLAYER_ID ? GetPlayerNameEx(adminid) : ("(Inactive Player Resource System)"), gateid);
 	Log("logs/gedit.log", szMiscArray);

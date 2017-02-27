@@ -559,7 +559,7 @@ CMD:jarrest(playerid, params[])
 				SetPlayerWantedLevel(suspect, 0);
 				WantLawyer[suspect] = 1;
 				TogglePlayerControllable(suspect, 1);
-				ClearAnimationsEx(suspect);
+				ClearAnimations(suspect);
 				if(PlayerCuffed[suspect] == 2)
 				{
 					SetHealth(suspect, GetPVarFloat(suspect, "cuffhealth"));
@@ -605,7 +605,7 @@ CMD:deliver(playerid, params[])
 			format(string, sizeof(string), "* %s brought you to the Department of Corrections.", GetPlayerNameEx(playerid));
 			SendClientMessageEx(giveplayerid, COLOR_LIGHTBLUE, string);
 			GameTextForPlayer(giveplayerid, "~w~Welcome to ~n~~r~the Department of Corrections", 5000, 3);
-			ClearAnimationsEx(giveplayerid);
+			ClearAnimations(giveplayerid);
 			PlayerCuffed[giveplayerid] = 0;
 			DeletePVar(giveplayerid, "PlayerCuffed");
 			format(PlayerInfo[giveplayerid][pPrisonedBy], 24, "%s", GetPlayerNameEx(playerid));
@@ -752,7 +752,7 @@ CMD:warrantarrest(playerid, params[])
 				SetPlayerToTeamColor(suspect);
 				SetPlayerWantedLevel(suspect, 0);
 				WantLawyer[suspect] = 1;
-				ClearAnimationsEx(suspect);
+				ClearAnimations(suspect);
 				PlayerInfo[suspect][pBeingSentenced] = 60;
 				SetPlayerColor(suspect, SHITTY_JUDICIALSHITHOTCH);
 				SendClientMessageEx(suspect, COLOR_LIGHTBLUE, "You have been arrested for a pending warrant on you, you'll be attended by a judge soon.");

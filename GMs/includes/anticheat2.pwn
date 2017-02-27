@@ -376,7 +376,7 @@ timer AC_RevivePlayer[5000](playerid) {
 	format(szMiscArray, sizeof(szMiscArray), "SYSTEM: %s(%d) has been revived by [SYSTEM]", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(playerid));
 	Log("logs/system.log", szMiscArray);
 	KillEMSQueue(playerid);
-	ClearAnimationsEx(playerid);
+	ClearAnimations(playerid);
 	SetHealth(playerid, 100);
 }
 
@@ -394,7 +394,7 @@ timer AC_ResetPVars[2000](playerid, processid) {
 }
 
 timer AC_ResetAnim[2000](playerid) {
-	ClearAnimationsEx(playerid, 1);
+	ClearAnimations(playerid, 1);
 }
 
 hook OnGameModeInit() {
@@ -1421,7 +1421,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 				new w, a;
 				GetPlayerWeaponData(playerid, 0, w, a);
 
-				ClearAnimationsEx(playerid, 1);
+				ClearAnimations(playerid, 1);
 				ApplyAnimation(playerid, "PED", "IDLE_stance", 4.1, 0, 0, 0, 0, 0, 1);
 				defer AC_ResetAnim(playerid);
 				GivePlayerWeapon(playerid, w, 0);

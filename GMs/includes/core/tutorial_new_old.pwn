@@ -1121,7 +1121,7 @@ public Register_Plane(playerid)
 			StopAudioStreamForPlayer(playerid);
 			PlayAudioStreamForPlayer(playerid, "http://sampweb.ng-gaming.net/dom/plane_part1.mp3", 0.0, 0.0, 0.0, 10.0, 0);
 			CreateExplosion(0.6985, 27.5042+10.0, 1199.5938-10.0, 2, 0.1);
-			ClearAnimationsEx(playerid);
+			ClearAnimations(playerid);
 			ClearChatbox(playerid);
 			SendClientMessage(playerid, COLOR_RED,"** ALARMS ARE RINGING **!");
 			SendClientMessage(playerid, COLOR_YELLOW,"[INTERCOM] Dear passenger,");

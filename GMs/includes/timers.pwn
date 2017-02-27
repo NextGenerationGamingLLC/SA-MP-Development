@@ -231,6 +231,7 @@ task TurfWarsUpdate[1000]()
 task SyncTime[60000]()
 {
 	PlantTimer();
+	AtmTimer();
 
 	new reports, priority;
 	for(new i=0;i<MAX_REPORTS;i++) { if(Reports[i][BeingUsed] == 1) reports++; if(Reports[i][ReportPriority] <= 2 && Reports[i][BeingUsed] == 1) priority++; }
@@ -279,6 +280,7 @@ task SyncTime[60000]()
 				mysql_function_query(MainPipeline, "UPDATE `accounts` SET `ReceivedPrize` = 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}*/
 		}
+	    SaveATMs();
 	    if(tmphour == 3 || tmphour == 6 || tmphour == 9 || tmphour == 12 || tmphour == 15 || tmphour == 18 || tmphour == 21 || tmphour == 0) PrepareLotto();
 		else
 		{
@@ -298,18 +300,30 @@ task SyncTime[60000]()
 			MemberCount(iGroupID);
 			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 1)
 			{
+				new file[32];
 				format(szMiscArray, sizeof(szMiscArray), "The tax vault is at $%s", number_format(Tax));
-				GroupPayLog(iGroupID, szMiscArray);
+				new month, day, year;
+				getdate(year,month,day);
+				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+				Log(file, szMiscArray);
 			}
 			else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 2)
 			{
+				new file[32];
 				format(szMiscArray, sizeof(szMiscArray), "The tax vault is at $%s", number_format(TRTax));
-				GroupPayLog(iGroupID, szMiscArray);
+				new month, day, year;
+				getdate(year,month,day);
+				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+				Log(file, szMiscArray);
 			}
 			else
 			{
+				new file[32];
 				format(szMiscArray, sizeof(szMiscArray), "The faction vault is at $%s.", number_format(arrGroupData[iGroupID][g_iBudget]));
-				GroupPayLog(iGroupID, szMiscArray);
+				new month, day, year;
+				getdate(year, month, day);
+				format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+				Log(file, szMiscArray);
 			}
 			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
 			{
@@ -319,8 +333,12 @@ task SyncTime[60000]()
 					{
 						Tax -= arrGroupData[iGroupID][g_iBudgetPayment];
 						arrGroupData[iGroupID][g_iBudget] += arrGroupData[iGroupID][g_iBudgetPayment];
+						new file[32];
 						format(szMiscArray, sizeof(szMiscArray), "SA Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-						GroupPayLog(iGroupID, szMiscArray);
+						new month, day, year;
+						getdate(year,month,day);
+						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+						Log(file, szMiscArray);
 						Misc_Save();
 						SaveGroup(iGroupID);
 						for(new z; z < MAX_GROUPS; z++)
@@ -330,7 +348,8 @@ task SyncTime[60000]()
 								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									format(szMiscArray, sizeof(szMiscArray), "SA Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-									GroupPayLog(z, szMiscArray);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, szMiscArray);
 									break;
 								}
 							}
@@ -340,8 +359,12 @@ task SyncTime[60000]()
 					{
 						TRTax -= arrGroupData[iGroupID][g_iBudgetPayment];
 						arrGroupData[iGroupID][g_iBudget] += arrGroupData[iGroupID][g_iBudgetPayment];
+						new file[32];
 						format(szMiscArray, sizeof(szMiscArray), "NE Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-						GroupPayLog(iGroupID, szMiscArray);
+						new month, day, year;
+						getdate(year,month,day);
+						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+						Log(file, szMiscArray);
 						Misc_Save();
 						SaveGroup(iGroupID);
 						for(new z; z < MAX_GROUPS; z++)
@@ -351,7 +374,8 @@ task SyncTime[60000]()
 								if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 								{
 									format(szMiscArray, sizeof(szMiscArray), "NE Gov Paid $%s to %s budget fund.", number_format(arrGroupData[iGroupID][g_iBudgetPayment]), arrGroupData[iGroupID][g_szGroupName]);
-									GroupPayLog(z, szMiscArray);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, szMiscArray);
 									break;
 								}
 							}
@@ -372,8 +396,12 @@ task SyncTime[60000]()
 							if(arrGroupData[iGroupID][g_iBudget] >= DynVehicleInfo[iDvSlotID][gv_iUpkeep])
 							{
 								arrGroupData[iGroupID][g_iBudget] -= DynVehicleInfo[iDvSlotID][gv_iUpkeep];
+								new file[32];
 								format(szMiscArray, sizeof(szMiscArray), "Vehicle ID %d (Slot ID %d) Maintainence fee cost $%s to %s's budget fund.",DynVehicleInfo[iDvSlotID][gv_iSpawnedID], iDvSlotID, number_format(DynVehicleInfo[iDvSlotID][gv_iUpkeep]), arrGroupData[iGroupID][g_szGroupName]);
-								GroupPayLog(iGroupID, szMiscArray);
+								new month, day, year;
+								getdate(year,month,day);
+								format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+								Log(file, szMiscArray);
 							}
 							else
 							{
@@ -385,14 +413,6 @@ task SyncTime[60000]()
 					}
 				}
 				SaveGroup(iGroupID);
-				for(new cratebox = 0; cratebox < MAX_CRATES; cratebox++) {
-					if(CrateBox[cratebox][cbActive]) {
-						SaveCrate(cratebox);
-					}
-				}
-
-
-
 			}
 		}
 
@@ -567,8 +587,7 @@ task ProductionUpdate[300000]()
 			SendClientMessageEx(i, COLOR_LIGHTBLUE, "Need help? The Advisors are here to help you. (/requesthelp to get help)");
 		}
 		if(PlayerInfo[i][pConnectHours] < 2) {
-			SendClientMessageEx(i, COLOR_LIGHTRED, "Due to an increase in new playing accounts being created for Death Matching.");
-			SendClientMessageEx(i, COLOR_LIGHTRED, "Weapons for new players are restricted for the first two hours of game play.");
+			SendClientMessageEx(i, COLOR_LIGHTRED, "Due to an increase in new playing accounts being created for Death Matching, weapons for new players are restricted for the first two hours of game play.");
 		}
 
 		/*if(PlayerInfo[i][pFishes] >= 5) {
@@ -1308,7 +1327,7 @@ foreach(new i: Player)
 						DeletePVar(i, "AttemptingLockPick");
 						DeletePVar(i, "LockPickCountdown");
 						DeletePVar(i, "LockPickTotalTime");
-						ClearAnimationsEx(i, 1);
+						ClearAnimations(i, 1);
 
 						if(PlayerInfo[i][pDoubleEXP] > 0) {
 							format(szMiscArray, sizeof(szMiscArray), "You have gained 2 Vehicle Lock Picking skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[i][pDoubleEXP]);
@@ -1345,7 +1364,7 @@ foreach(new i: Player)
 						DeletePVar(i, "LockPickVehicle");
 						DeletePVar(i, "LockPickPlayer");
 						DestroyVLPTextDraws(i);
-						ClearAnimationsEx(i, 1);
+						ClearAnimations(i, 1);
 					}
 				}
 				else {
@@ -1367,7 +1386,7 @@ foreach(new i: Player)
 					DeletePVar(i, "LockPickVehicle");
 					DeletePVar(i, "LockPickPlayer");
 					DestroyVLPTextDraws(i);
-					ClearAnimationsEx(i, 1);
+					ClearAnimations(i, 1);
 				}
 			}
 			if(GetPVarType(i, "AttemptingCrackTrunk") && GetPVarType(i, "CrackTrunkCountdown")) {
@@ -1387,7 +1406,7 @@ foreach(new i: Player)
 						new engine, lights, alarm, doors, bonnet, boot, objective;
 						GetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,boot,objective);
 						SetVehicleParamsEx(vehicleid,engine,lights,alarm,doors,bonnet,VEHICLE_PARAMS_ON,objective);
-						ClearAnimationsEx(i, 1);
+						ClearAnimations(i, 1);
 						SetPlayerSkin(i, GetPlayerSkin(i));
 						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
 						if(GetPVarType(i, "LockPickVehicleSQLId")) {
@@ -1422,7 +1441,7 @@ foreach(new i: Player)
 						SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
 						DeletePVar(i, "AttemptingCrackTrunk");
 						DeletePVar(i, "CrackTrunkCountdown");
-						ClearAnimationsEx(i, 1);
+						ClearAnimations(i, 1);
 					}
 				}
 				else {
@@ -1430,7 +1449,7 @@ foreach(new i: Player)
 					SendClientMessageEx(i, COLOR_YELLOW, "Warning{FFFFFF}: You have moved from your current position therefore you have failed this lock pick.");
 					DeletePVar(i, "AttemptingCrackTrunk");
 					DeletePVar(i, "CrackTrunkCountdown");
-					ClearAnimationsEx(i, 1);
+					ClearAnimations(i, 1);
 				}
 			}
 			if(GetPVarType(i, "TrackVehicleBurglary")) {
@@ -2030,7 +2049,7 @@ foreach(new i: Player)
 					PlayerCuffed[i] = 0;
 					DeletePVar(i, "PlayerCuffed");
 					PlayerCuffedTime[i] = 0;
-					ClearAnimationsEx(i);
+					ClearAnimations(i);
 					new Float:X, Float:Y, Float:Z;
 					GetPlayerPos(i, X, Y, Z);
 					SetPlayerPos(i, X, Y, Z);
@@ -2073,7 +2092,7 @@ foreach(new i: Player)
 						//DeletePVar(i, "PlayerCuffed");
 						PlayerCuffedTime[i] = 180;
 						//SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-						//ClearAnimationsEx(i);
+						//ClearAnimations(i);
 					}
 					else
 					{
@@ -2123,7 +2142,7 @@ foreach(new i: Player)
 						DeletePVar(i, "PlayerCuffed");
 						PlayerCuffedTime[i] = 0;
 						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
-						ClearAnimationsEx(i);
+						ClearAnimations(i);
 					}
 				}
 				else
@@ -2296,7 +2315,7 @@ foreach(new i: Player)
 			if (GetPVarInt(i, "Injured") == 1)
 			{
 				KillEMSQueue(i);
-				ClearAnimationsEx(i);
+				ClearAnimations(i);
 				new biz = InBusiness(i);
 
 				if (Businesses[biz][bGymBoxingArena1][0] == i || Businesses[biz][bGymBoxingArena1][1] == i) // first arena
@@ -2560,15 +2579,11 @@ ptask AFKUpdate[10000](i)
 
 // Timer Name: SaveAccountsUpdate()
 // TickRate: 5 Minutes.
-task SaveAccountsUpdate[900000]()
+ptask SaveAccountsUpdate[900000](i)
 {
-	foreach(new i: Player)
-	{
-		if(gPlayerLogged{i}) {
-			SetPVarInt(i, "AccountSaving", 1);
-			OnPlayerStatsUpdate(i);
-			break; // We only need to save one person at a time.
-		}
+	if(gPlayerLogged{i}) {
+		SetPVarInt(i, "AccountSaving", 1);
+		OnPlayerStatsUpdate(i);
 	}
 }
 
@@ -2767,7 +2782,7 @@ ptask EMSUpdate[5000](i) {
 		if(zombieevent == 1 && GetPVarType(i, "pZombieBit"))
 		{
 			KillEMSQueue(i);
-			ClearAnimationsEx(i);
+			ClearAnimations(i);
 			MakeZombie(i);
 		}
 		#endif
@@ -2785,7 +2800,7 @@ ptask EMSUpdate[5000](i) {
 			else SetHealth(i, health-1);
 			if(GetPVarInt(i, "EMSAttempt") == -1)
 			{
-				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimationsEx(i), PlayDeathAnimation(i);
+				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), PlayDeathAnimation(i);
 				if(!GetPVarType(i, "StreamPrep") && !IsPlayerInRangeOfPoint(i, 3.0, GetPVarFloat(i,"MedicX"), GetPVarFloat(i,"MedicY"), GetPVarFloat(i,"MedicZ")) && !GetPVarInt(i, "OnStretcher"))
 				{
 					SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");
@@ -2796,7 +2811,7 @@ ptask EMSUpdate[5000](i) {
 			}
 			if(GetPVarInt(i, "EMSAttempt") == 1)
 			{
-				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimationsEx(i), PlayDeathAnimation(i);
+				// if(GetPlayerAnimationIndex(i) != 746) ClearAnimations(i), PlayDeathAnimation(i);
 				if(!GetPVarType(i, "StreamPrep") && !IsPlayerInRangeOfPoint(i, 3.0, GetPVarFloat(i,"MedicX"), GetPVarFloat(i,"MedicY"), GetPVarFloat(i,"MedicZ")) && !GetPVarInt(i, "OnStretcher"))
 				{
 					SendClientMessageEx(i, COLOR_WHITE, "You fell unconscious, you were immediately sent to the hospital.");

@@ -278,7 +278,7 @@ forward InjectHeroin(playerid);
 public InjectHeroin(playerid)
 {
     KillEMSQueue(playerid);
-	ClearAnimationsEx(playerid);
+	ClearAnimations(playerid);
 	SetHealth(playerid, 30);
 	SetPVarInt(playerid, "HeroinEffect", SetTimerEx("HeroinEffect", 1000, 1, "i", playerid));
 

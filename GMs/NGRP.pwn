@@ -1,4 +1,4 @@
-/*
+ /*
     	 		 /$$   /$$  /$$$$$$          /$$$$$$$  /$$$$$$$
 				| $$$ | $$ /$$__  $$        | $$__  $$| $$__  $$
 				| $$$$| $$| $$  \__/        | $$  \ $$| $$  \ $$
@@ -18,9 +18,9 @@
 								    Shane
 
 								**  Development Staff:
-									Miguel (s0nic)
-									Farva
 									Connolly
+									Farva
+									Miguel (s0nic)
 				Past Developers:
 								*** Director of SA:MP Development:
 									Dom
@@ -36,6 +36,7 @@
 									Donuts
 									Mo Cena
 									Calgon
+									Winterfield
 
 								** 	Developers:
 									AlexR
@@ -48,6 +49,7 @@
 									Sew Sumi
 									Razbit
 									Behemoth
+									Rothschild
 									Connor
 									Jingles
 									Westen
@@ -80,7 +82,7 @@
 /*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
-#define SERVER_GM_TEXT "NG:RP v3.0.416"
+#define SERVER_GM_TEXT "NG:RP v3.0.410"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
@@ -227,6 +229,7 @@
 #include "./includes/dynamic/parking.pwn"
 #include "./includes/dynamic/MetalDetectors.pwn"
 #include "./includes/dynamic/points.pwn"
+#include "./includes/dynamic/dynatm.pwn"
 
 //vehicle system includes
 #include "./includes/vehsystem/vehiclecore.pwn"
@@ -238,7 +241,6 @@
 #include "./includes/vehsystem/helmet.pwn"
 #include "./includes/vehsystem/groupvehs.pwn"
 #include "./includes/vehsystem/playervehs.pwn"
-#include "./includes/vehsystem/cratevehicles.pwn"
 
 //event kernels includes
 //#include "./includes/events/bday.pwn"
@@ -275,7 +277,7 @@
 #include "./includes/group/cratesystem.pwn"
 #include "./includes/group/callsystem.pwn"
 //#include "./includes/group/gangshipment.pwn"
-//#include "./includes/group/gangcrates.pwn"
+#include "./includes/group/gangcrates.pwn"
 //#include "./includes/group/gangrobbery.pwn"
 #include "./includes/group/GovArms.pwn"
 #include "./includes/group/grouppay.pwn"
@@ -284,7 +286,6 @@
 //#include "./includes/group/URLrace.pwn"
 #include "./includes/group/sanews.pwn"
 #include "./includes/group/casefile.pwn"
-#include "./includes/group/groupweapons.pwn"
 
 //job system includes
 #include "./includes/jobs/bartender.pwn"
@@ -336,7 +337,7 @@
 
 // Jingles WIP
 #include "./includes/core/minigame.pwn"
-//#include "./includes/anticheat2.pwn"
+#include "./includes/anticheat2.pwn"
 #include "./includes/furnituretextures.pwn"
 #include "./includes/furniture.pwn"
 #include "./includes/group/elections.pwn"

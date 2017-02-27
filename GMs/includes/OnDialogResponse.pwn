@@ -34,11 +34,16 @@
 
 // This is the first hooked OnDialogResponse. It's used to check dialog spoofing.
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-	if(dialogid != iLastDialogID[playerid]) {
-		if(dialogid != DIALOG_FS_ELEVATOR1 && dialogid != DIALOG_FS_ELEVATOR2) { // For dialogs called from filterscripts.
-			if(PlayerInfo[playerid][pAdmin] == 99999 || dialogid == 32700) return 1;
-	    	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM] Please delete your dialog CLEO.");
-	    	SetTimerEx("KickEx", 1000, 0, "i", playerid);
+
+	if(ac_ACToggle[AC_DIALOGSPOOFING]) {
+		if(dialogid != iLastDialogID[playerid]) {
+	    	if(dialogid == DIALOG_FS_ELEVATOR1 || dialogid == DIALOG_FS_ELEVATOR2) { }// For dialogs called from filterscripts.
+	    	else {
+	    		if(PlayerInfo[playerid][pAdmin] == 99999 || dialogid == 32700) return 1;
+		    	AC_Process(playerid, AC_DIALOGSPOOFING, dialogid);
+		    	SendClientMessageEx(playerid, COLOR_LIGHTRED, "[SYSTEM] Please delete your dialog CLEO.");
+		    	SetTimerEx("KickEx", 1000, 0, "i", playerid);
+		    }
 	    }
 	}
     iLastDialogID[playerid] = -1;
@@ -2479,6 +2484,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					format(vstring, sizeof(vstring), "You have stored your %s. The vehicle has been despawned.", VehicleName[PlayerVehicleInfo[playerid][listitem][pvModelId] - 400]);
 					SendClientMessageEx(playerid, COLOR_WHITE, vstring);
 					CheckPlayerVehiclesForDesync(playerid);
+					ResetCreateData(iVehicleID);
 				}
 			}
 			else SendClientMessageEx(playerid, COLOR_WHITE, "This vehicle is currently occupied - it cannot be despawned right now.");
@@ -2519,6 +2525,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				new
 					iVeh = CreateVehicle(PlayerVehicleInfo[playerid][listitem][pvModelId], PlayerVehicleInfo[playerid][listitem][pvPosX], PlayerVehicleInfo[playerid][listitem][pvPosY], (PlayerVehicleInfo[playerid][listitem][pvModelId] == 460) ? PlayerVehicleInfo[playerid][listitem][pvPosZ]+5 : PlayerVehicleInfo[playerid][listitem][pvPosZ], PlayerVehicleInfo[playerid][listitem][pvPosAngle],PlayerVehicleInfo[playerid][listitem][pvColor1], PlayerVehicleInfo[playerid][listitem][pvColor2], -1);
+
+				ResetCreateData(iVeh);
 
 				SetVehicleVirtualWorld(iVeh, PlayerVehicleInfo[playerid][listitem][pvVW]);
 				LinkVehicleToInterior(iVeh, PlayerVehicleInfo[playerid][listitem][pvInt]);
@@ -4226,9 +4234,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 						{
-							new str[128];
+							new str[128], file[32], month, day, year;
+							getdate(year,month,day);
 							format(str, sizeof(str), "%s has paid some vehicle tickets adding $%s to the vault.", GetPlayerNameEx(playerid), number_format((PlayerVehicleInfo[playerid][listitem][pvTicket] / 100) * 30));
-							GroupPayLog(z, str);
+							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+							Log(file, str);
 							break;
 						}
 					}
@@ -4261,9 +4271,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					{
 						if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 						{
-							new str[128];
+							new str[128], file[32], month, day, year;
+							getdate(year,month,day);
 							format(str, sizeof(str), "%s has paid some vehicle tickets adding $%s to the vault.", GetPlayerNameEx(playerid), number_format((iCost / 100) * 30));
-							GroupPayLog(z, str);
+							format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+							Log(file, str);
 							break;
 						}
 					}
@@ -4951,11 +4963,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Tax += Gov;
 			arrGroupData[PlayerInfo[playerid][pMember]][g_iBudget] += Judicial;
 			arrGroupData[iGroupID][g_iBudget] += Group;
-			new str[128];
+			new str[128], file[32];
+			new month, day, year;
+			getdate(year,month,day);
 			format(str, sizeof(str), "%s has been fined by $%s by Judge %s.  $%s has been sent to the %s Vault.",GetPlayerNameEx(giveplayerid), number_format(judgefine), GetPlayerNameEx(playerid), number_format(Judicial), arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
-			GroupPayLog(PlayerInfo[playerid][pMember], str);
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", PlayerInfo[playerid][pMember], month, day, year);
+			Log(file, str);
 			format(str, sizeof(str), "%s has been fined by $%s by Judge %s.  $%s has been sent to the %s Vault.",GetPlayerNameEx(giveplayerid), number_format(judgefine), GetPlayerNameEx(playerid), number_format(Group), arrGroupData[iGroupID][g_szGroupName]);
-			GroupPayLog(iGroupID, str);
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+			Log(file, str);
 			for(new z; z < MAX_GROUPS; z++)
 			{
 				if(arrGroupData[z][g_iAllegiance] == 1)
@@ -4963,7 +4979,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(arrGroupData[z][g_iGroupType] == GROUP_TYPE_GOV)
 					{
 						format(str, sizeof(str), "%s has been fined by $%s by Judge %s.  $%s has been sent to the SA Government Vault.",GetPlayerNameEx(giveplayerid), number_format(judgefine), GetPlayerNameEx(playerid), number_format(Gov));
-						GroupPayLog(z, str);
+						format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+						Log(file, str);
 						break;
 					}
 				}
@@ -5004,9 +5021,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GivePlayerCash(suspect, -moneys);
 					new money = floatround(moneys / 3), iGroupID = PlayerInfo[playerid][pMember];
 					arrGroupData[iGroupID][g_iBudget] += money;
-					new str[164];
+					new str[164], file[32];
 					format(str, sizeof(str), "%s has been arrested by %s for %d minutes and fined $%d. $%d has been sent to %s's budget fund.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid),time, moneys, money, arrGroupData[iGroupID][g_szGroupName]);
-					GroupPayLog(iGroupID, str);
+					new month, day, year;
+					getdate(year,month,day);
+					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+					Log(file, str);
 					for(new z; z < MAX_GROUPS; z++)
 					{
 						if(arrGroupData[iGroupID][g_iAllegiance] == 1)
@@ -5017,7 +5037,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								{
 									Tax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the SA Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
-									GroupPayLog(z, str);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
 									break;
 								}
 							}
@@ -5030,7 +5051,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								{
 									TRTax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the NE Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
-									GroupPayLog(z, str);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
 									break;
 								}
 							}
@@ -5070,7 +5092,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPlayerWantedLevel(suspect, 0);
 					WantLawyer[suspect] = 1;
 					TogglePlayerControllable(suspect, 1);
-					ClearAnimationsEx(suspect);
+					ClearAnimations(suspect);
 					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
 					PlayerCuffed[suspect] = 0;
 					DeletePVar(suspect, "PlayerCuffed");
@@ -5090,9 +5112,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GivePlayerCash(suspect, -moneys);
 					new money = floatround(moneys / 3), iGroupID = PlayerInfo[playerid][pMember];
 					arrGroupData[iGroupID][g_iBudget] += money;
-					new str[164];
+					new str[164], file[32];
 					format(str, sizeof(str), "%s has been arrested by %s for %d minutes and fined $%d. $%d has been sent to %s's budget fund.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid),time, moneys, money, arrGroupData[iGroupID][g_szGroupName]);
-					GroupPayLog(iGroupID, str);
+					new month, day, year;
+					getdate(year,month,day);
+					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+					Log(file, str);
 					for(new z; z < MAX_GROUPS; z++)
 					{
 						if(arrGroupData[iGroupID][g_iAllegiance] == 1)
@@ -5103,7 +5128,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								{
 									Tax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the SA Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
-									GroupPayLog(z, str);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
 									break;
 								}
 							}
@@ -5116,7 +5142,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								{
 									TRTax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the NE Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
-									GroupPayLog(z, str);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
 									break;
 								}
 							}
@@ -5144,7 +5171,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPlayerWantedLevel(suspect, 0);
 					WantLawyer[suspect] = 1;
 					TogglePlayerControllable(suspect, 1);
-					ClearAnimationsEx(suspect);
+					ClearAnimations(suspect);
 					SetPlayerSpecialAction(suspect, SPECIAL_ACTION_NONE);
 					PlayerCuffed[suspect] = 0;
 					DeletePVar(suspect, "PlayerCuffed");
@@ -5167,9 +5194,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GivePlayerCash(suspect, -moneys);
 					new money = floatround(moneys / 3), iGroupID = PlayerInfo[playerid][pMember];
 					arrGroupData[iGroupID][g_iBudget] += money;
-					new str[164];
+					new str[164], file[32];
 					format(str, sizeof(str), "%s has been arrested by %s for %d minutes and fined $%d. $%d has been sent to %s's budget fund.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid),time, moneys, money, arrGroupData[iGroupID][g_szGroupName]);
-					GroupPayLog(iGroupID, str);
+					new month, day, year;
+					getdate(year,month,day);
+					format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+					Log(file, str);
 					for(new z; z < MAX_GROUPS; z++)
 					{
 						if(arrGroupData[iGroupID][g_iAllegiance] == 1)
@@ -5180,7 +5210,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								{
 									Tax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the SA Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
-									GroupPayLog(z, str);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
 									break;
 								}
 							}
@@ -5193,7 +5224,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 								{
 									TRTax += money;
 									format(str, sizeof(str), "%s has been arrested by %s and fined $%d. $%d has been sent to the NE Government Vault.",GetPlayerNameEx(suspect), GetPlayerNameEx(playerid), moneys, money);
-									GroupPayLog(z, str);
+									format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", z, month, day, year);
+									Log(file, str);
 									break;
 								}
 							}
@@ -6681,6 +6713,181 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "Autoanswer: Thank you for calling our land line.");
 				SendClientMessageEx(playerid, TEAM_CYAN_COLOR, "We will be with you shortly.");
 			}
+		}
+	}
+	else if(dialogid == DIALOG_GDELIVER_CRATE)
+	{
+		if(response)
+		{
+			new CrateID = GetPVarInt(playerid, "CrateGuns_CID");
+			switch(listitem)
+			{
+				case 0: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_DEAGLE, 13); // deagle
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 1: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_SHOTGSPA, 5); //spas
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 2: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_MP5, 10);//mp5
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 3: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_M4, 5); //m4
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 4: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_AK47, 10);//ak47
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 5: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_SNIPER, 5);//sniper
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 6: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_SHOTGUN, 17);//shotgun
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+				case 7: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] == 50)
+					{
+						AddGroupSafeWeapon(INVALID_PLAYER_ID, PlayerInfo[playerid][pMember], WEAPON_COLT45, 50);//shotgun
+						CrateInfo[CrateID][GunQuantity] = 0;
+					}
+				}
+			}
+			CrateVehicleLoad[GetPlayerVehicleID(playerid)][vForkLoaded] = 0;
+		    CrateVehicleLoad[GetPlayerVehicleID(playerid)][vCrateID][0] = -1;
+			CrateInfo[CrateID][crActive] = 0;
+		    CrateInfo[CrateID][InVehicle] = INVALID_VEHICLE_ID;
+		    CrateInfo[CrateID][crX] = 0;
+		    CrateInfo[CrateID][crY] = 0;
+		    CrateInfo[CrateID][crZ] = 0;
+			DeleteGCrate(playerid, CrateID);
+			mysql_SaveCrates();
+			Streamer_Update(playerid);
+			format(szMiscArray, sizeof(szMiscArray), "%s has just delivered weapon crates to your gang locker!", GetPlayerNameEx(playerid));
+			foreach(new i: Player)
+			{
+
+				if(PlayerInfo[playerid][pMember] == PlayerInfo[i][pMember]) return SendClientMessage(i, -1, szMiscArray);
+			}
+		}
+	}
+	else if(dialogid == CRATE_GUNMENU)
+	{
+		if(response)
+		{
+			if(PlayerInfo[playerid][pConnectHours] < 2 || PlayerInfo[playerid][pWRestricted] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this as you are currently restricted from possessing weapons!");
+			new CrateID = GetPVarInt(playerid, "CrateGuns_CID");
+			switch(listitem)
+			{ //Desert Eagle\nSPAS-12\nMP5\nM4A1\nAK-47\nSniper Rifle\nShotgun
+				/*
+				Deagle - 4
+				Spas - 8
+				AK-47 - 5
+				M4    - 6
+				Sniper Rifle - 5
+				MP5 - 5
+				*/
+				case 0: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] >= 4)
+					{
+						GivePlayerValidWeapon(playerid, 24); // deagle
+						CrateInfo[CrateID][GunQuantity] -= 4;
+					}
+				}
+				case 1: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] >= 10)
+					{
+						GivePlayerValidWeapon(playerid, 27); //spas
+						CrateInfo[CrateID][GunQuantity] -= 10;
+					}
+				}
+				case 2: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] >= 5)
+					{
+						GivePlayerValidWeapon(playerid, 29);//mp5
+						CrateInfo[CrateID][GunQuantity] -= 5;
+					}
+				}
+				case 3: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] >= 10)
+					{
+						GivePlayerValidWeapon(playerid, 31); //m4
+						CrateInfo[CrateID][GunQuantity] -= 10;
+					}
+				}
+				case 4: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] >= 5)
+					{
+						GivePlayerValidWeapon(playerid, 30); //ak47
+						CrateInfo[CrateID][GunQuantity] -= 5;
+					}
+				}
+				case 5: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] >= 10)
+					{
+						GivePlayerValidWeapon(playerid, 34);//sniper
+						CrateInfo[CrateID][GunQuantity] -= 10;
+					}
+				}
+				case 6: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] >= 3)
+					{
+						GivePlayerValidWeapon(playerid, 25);//shotgun
+						CrateInfo[CrateID][GunQuantity] -= 3;
+					}
+				}
+				case 7: // CRATE GUNS
+				{
+					if(CrateInfo[CrateID][GunQuantity] >= 1)
+					{
+						GivePlayerValidWeapon(playerid, 22);//shotgun
+						CrateInfo[CrateID][GunQuantity] -= 1;
+					}
+				}
+			}
+			format(string, sizeof(string), "Serial Number: #%d\n High Grade Materials: %d/50\n (( Dropped by: %s ))", CrateID, CrateInfo[CrateID][GunQuantity], CrateInfo[CrateID][crPlacedBy]);
+			UpdateDynamic3DTextLabelText(CrateInfo[CrateID][crLabel], COLOR_ORANGE, string);
 		}
 	}
 	else if(dialogid == DIALOG_SUSPECTMENU)
@@ -12591,6 +12798,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						return SendClientMessageEx(playerid, COLOR_GREY, "Your skill level of this job is already the highest one.");
 					PlayerInfo[playerid][pCarLockPickSkill] = 350;
 					SendClientMessageEx(playerid, COLOR_YELLOW, "Your Lock Picking skill level has been set to 5.");
+				}
+				case 11:
+				{
+					if(PlayerInfo[playerid][pRobberySkill] >= 401)
+					{
+						SendClientMessageEx(playerid, COLOR_GREY, "Your skill level of this job is already the highest one.");
+						return 1;
+					}
+					PlayerInfo[playerid][pRobberySkill] = 401;
+					SendClientMessageEx(playerid, COLOR_YELLOW, "Your Robbery skill level has been set to 5.");
 				}
 			}
 			PlayerInfo[playerid][pVIPJob] = 0;
