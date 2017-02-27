@@ -1587,8 +1587,7 @@ stock ShowInventory(playerid,targetid)
 		Cigars: %s\n\
 		Sprunk Cans: %s\n\
 		Spraycans: %s\n\
-		%s\n\
-		Crowbar: %d",
+		%s",
 		number_format(totalwealth),
 		number_format(GetPlayerCash(targetid)),
 		number_format(PlayerInfo[targetid][pAccount]),
@@ -1603,8 +1602,7 @@ stock ShowInventory(playerid,targetid)
 		number_format(PlayerInfo[targetid][pCigar]),
 		number_format(PlayerInfo[targetid][pSprunk]),
 		number_format(PlayerInfo[targetid][pSpraycan]),
-		toolboxstring,
-		PlayerInfo[targetid][pCrowBar]);
+		toolboxstring;
 		ShowPlayerDialogEx(playerid, DISPLAY_INV, DIALOG_STYLE_MSGBOX, header, resultline, "Next Page", "Close");
 	}
 	return 1;
@@ -1649,7 +1647,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					Rim Kits: %d\n\
 					Checks: %s\n\
 					Additional Vehicle Slots: %s\n\
-					Additional Toy Slots: %s",
+					Additional Toy Slots: %s\n\
+					Crowbar: %d\n\
+					KeyCards: %d\n\
+					Card Swiper: %d\n\
+					Gloves: %d",
 					PlayerInfo[targetid][pLock],
 					PlayerInfo[targetid][pFirstaid],
 					PlayerInfo[targetid][pReceiver],
@@ -1661,7 +1663,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					PlayerInfo[targetid][pRimMod],
 					number_format(PlayerInfo[targetid][pChecks]),
 					number_format(PlayerInfo[targetid][pVehicleSlot]),
-					number_format(PlayerInfo[targetid][pToySlot]));
+					number_format(PlayerInfo[targetid][pToySlot])),
+					PlayerInfo[targetid][pCrowBar]),
+					PlayerInfo[targetid][pKeyCards],
+					PlayerInfo[targetid][pCards],
+					PlayerInfo[targetid][pGloves];
 					if(zombieevent) format(resultline, sizeof(resultline), "%s\nCure Vials: %d\nScrap Metal: %d\nAntibiotic Injections: %d\n.50 Cals: %d\nSurvivor Kits: %d\nFuel Can: %d%% Fuel", resultline, PlayerInfo[targetid][pVials], PlayerInfo[targetid][mInventory][16], PlayerInfo[targetid][mInventory][17], PlayerInfo[targetid][mPurchaseCount][18], PlayerInfo[targetid][mInventory][19], PlayerInfo[targetid][zFuelCan]);
 					ShowPlayerDialogEx(playerid, DISPLAY_INV2, DIALOG_STYLE_MSGBOX, header, resultline, "First Page", "Close");
 				}

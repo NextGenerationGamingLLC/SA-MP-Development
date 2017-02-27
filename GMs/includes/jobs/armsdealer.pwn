@@ -56,11 +56,11 @@ CMD:sellgun(playerid, params[])
 		if(PlayerInfo[playerid][pHospital]) return SendClientMessageEx(playerid, COLOR_GREY, "You cannot do this at this time.");
 
 		szMiscArray[0] = 0;
-		new id, weapon[16];
+		new id;
 		if(sscanf(params, "us[16]", id, weapon)) 
 		{
 			SendClientMessageEx(playerid, COLOR_WHITE, "-------------------------------------");
-			switch(PlayerInfo[playerid][pArmsSkill])
+			switch(PlayerInfo[playerid][pRobberySkill])
 			{
 				case 0 .. 49: // level 1
 				{

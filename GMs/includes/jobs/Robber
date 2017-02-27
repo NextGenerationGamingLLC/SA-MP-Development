@@ -1,0 +1,65 @@
+/*
+
+	 /$$   /$$  /$$$$$$          /$$$$$$$  /$$$$$$$
+	| $$$ | $$ /$$__  $$        | $$__  $$| $$__  $$
+	| $$$$| $$| $$  \__/        | $$  \ $$| $$  \ $$
+	| $$ $$ $$| $$ /$$$$ /$$$$$$| $$$$$$$/| $$$$$$$/
+	| $$  $$$$| $$|_  $$|______/| $$__  $$| $$____/
+	| $$\  $$$| $$  \ $$        | $$  \ $$| $$
+	| $$ \  $$|  $$$$$$/        | $$  | $$| $$
+	|__/  \__/ \______/         |__/  |__/|__/
+
+							Robbery Revision
+								Connolly
+
+				Next Generation Gaming, LLC
+	(created by Next Generation Gaming Development Team)
+					
+	* Copyright (c) 2016, Next Generation Gaming, LLC
+	*
+	* All rights reserved.
+	*
+	* Redistribution and use in source and binary forms, with or without modification,
+	* are not permitted in any case.
+	*
+	*
+	* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	* A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+	* CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+	* EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+	* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+	* PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+	* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+CMD:checkatm(playerid, params[]) {
+
+	new atmid, check, hacked, prints, p;
+	if(IsACop(playerid))
+	{
+		CheckATM(playerid, atmid, check, hacked, prints, p);
+
+		if(atmid == INVALID_ATM) return SendClientMessageEx(playerid, COLOR_GREY, "You are not near a ATM.");
+		if(check > 0) return SendClientMessageEx(playerid, COLOR_GREY, "This ATM has already been checked! - You must wait till the next cycle before you can check again.");
+		Atm[atmid][aCheck] = 1;
+		if(Atm[atmid][aHacked] < 1)
+		{
+			ATMCheck(playerid, 0, 0, atmid);
+			return 1;
+		}
+		else
+		{
+			ATMCheck(playerid, 0, 1, atmid);
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GREY, "You do not have permission to use this command.");
+	}
+	return 1;
+}
+

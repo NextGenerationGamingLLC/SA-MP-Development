@@ -15,17 +15,12 @@
 
 #define 		ENTRANCE_SHORTCUT		KEY_NO
 
-new iNewEnterSystem, DoorTimer[MAX_PLAYERS];
+new iNewEnterSystem;
 
 /*
 new g_iEntranceID[MAX_PLAYERS],
 	g_iEntranceAID[MAX_PLAYERS];
 */
-
-hook OnPlayerConnect(playerid) {
-	DoorTimer[playerid] = gettime();
-	return 1;
-}
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
@@ -257,7 +252,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate) {
 
 stock Vehicle_Enter(playerid, i) {
 
-	ClearAnimationsEx(playerid);
+	ClearAnimations(playerid);
 
 	switch(GetVehicleModel(i)) {
 
@@ -336,8 +331,6 @@ stock Vehicle_Exit(playerid) {
 
 DDoor_Enter(playerid, i)
 {
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to enter this door.", DoorTimer[playerid]-gettime());
 	if(DDoorsInfo[i][ddVIP] > 0 && PlayerInfo[playerid][pDonateRank] < DDoorsInfo[i][ddVIP]) 
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a high enough VIP level.");
@@ -446,14 +439,11 @@ DDoor_Enter(playerid, i)
 		SetCameraBehindPlayer(playerid);
 	}
 	if(DDoorsInfo[i][ddCustomInterior]) Player_StreamPrep(playerid, DDoorsInfo[i][ddInteriorX],DDoorsInfo[i][ddInteriorY],DDoorsInfo[i][ddInteriorZ], FREEZE_TIME);
-	DoorTimer[playerid] = gettime()+2;
 	return 1;
 }
 
 DDoor_Exit(playerid, i)
 {
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
 	if(DDoorsInfo[i][ddVIP] > 0 && PlayerInfo[playerid][pDonateRank] < DDoorsInfo[i][ddVIP]) 
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD2, "You can not enter, you are not a high enough VIP level.");
@@ -557,15 +547,13 @@ DDoor_Exit(playerid, i)
 	}
 	if(DDoorsInfo[i][ddCustomExterior]) Player_StreamPrep(playerid, DDoorsInfo[i][ddExteriorX],DDoorsInfo[i][ddExteriorY],DDoorsInfo[i][ddExteriorZ], FREEZE_TIME);
 	if(GetPVarType(playerid, "BusinessesID")) DeletePVar(playerid, "BusinessesID");
-	DoorTimer[playerid] = gettime()+2;
 	return 1;
 }
 
 House_Enter(playerid, i) {
 
 	if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i || HouseInfo[i][hLock] == 0 || PlayerInfo[playerid][pRenting] == i) {
-		if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to enter this door.", DoorTimer[playerid]-gettime());
-		if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
+
 		House_VistorCheck(i);
 		SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
 		PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
@@ -577,7 +565,6 @@ House_Enter(playerid, i) {
 		GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
 		if(HouseInfo[i][h_iLights] == 1) TextDrawShowForPlayer(playerid, g_tHouseLights);
 		if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
-		DoorTimer[playerid] = gettime()+2;
 	}
 	else GameTextForPlayer(playerid, "~r~Locked", 5000, 1);
 	return 1;
@@ -585,8 +572,6 @@ House_Enter(playerid, i) {
 
 House_Exit(playerid, i) {
 
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
 	if(GetPVarType(playerid, PVAR_FURNITURE)) cmd_furniture(playerid, "");
 	House_VistorCheck(i);
 	SetPlayerInterior(playerid,0);
@@ -600,7 +585,6 @@ House_Exit(playerid, i) {
 	SetPlayerInterior(playerid, HouseInfo[i][hExtIW]);
 	TextDrawHideForPlayer(playerid, g_tHouseLights);
 	if(HouseInfo[i][hCustomExterior]) Player_StreamPrep(playerid, HouseInfo[i][hExteriorX],HouseInfo[i][hExteriorY],HouseInfo[i][hExteriorZ], FREEZE_TIME);
-	DoorTimer[playerid] = gettime()+2;
 	return 1;	
 }
 
@@ -608,8 +592,6 @@ Business_Enter(playerid, i)
 {
 	if(Businesses[i][bExtPos][1] == 0.0) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot enter this business.");
 	if(Businesses[i][bStatus]) {
-		if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-		if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
 		if (Businesses[i][bType] == BUSINESS_TYPE_GYM)
 		{
 			if (Businesses[i][bGymEntryFee] > 0 && PlayerInfo[playerid][pCash] < Businesses[i][bGymEntryFee])
@@ -649,7 +631,6 @@ Business_Enter(playerid, i)
 				SendClientMessageEx(playerid, COLOR_WHITE, "Type /beginparkour to begin the bike parkour track.");
 			}
 		}
-		DoorTimer[playerid] = gettime()+2;
 	}
 	else GameTextForPlayer(playerid, "~r~Closed", 5000, 1);
 	return 1;
@@ -657,8 +638,6 @@ Business_Enter(playerid, i)
 
 Business_Exit(playerid, i)
 {
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
 	SetPlayerInterior(playerid, 0);
 	SetPlayerVirtualWorld(playerid, 0);
 	SetPlayerPos(playerid,Businesses[i][bExtPos][0],Businesses[i][bExtPos][1],Businesses[i][bExtPos][2]);
@@ -668,15 +647,12 @@ Business_Exit(playerid, i)
 	PlayerInfo[playerid][pVW] = 0;
 	DeletePVar(playerid, "BusinessesID");
 	if(Businesses[i][bCustomExterior]) Player_StreamPrep(playerid, Businesses[i][bExtPos][0], Businesses[i][bExtPos][1], Businesses[i][bExtPos][2], FREEZE_TIME);
-	DoorTimer[playerid] = gettime()+2;
 	return 1;
 }
 
 Garage_Enter(playerid, i) {
 
 	if(GarageInfo[i][gar_Locked] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "This garage is currently locked.");
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to enter this door.", DoorTimer[playerid]-gettime());
 	PlayerInfo[playerid][pVW] = GarageInfo[i][gar_InteriorVW];
 	SetPlayerVirtualWorld(playerid, GarageInfo[i][gar_InteriorVW]);
 	SetPlayerInterior(playerid, 1);
@@ -730,13 +706,10 @@ Garage_Enter(playerid, i) {
 		SetCameraBehindPlayer(playerid);
 	}
 	Player_StreamPrep(playerid, GarageInfo[i][gar_InteriorX], GarageInfo[i][gar_InteriorY], GarageInfo[i][gar_InteriorZ], FREEZE_TIME);
-	DoorTimer[playerid] = gettime()+2;
 	return 1;
 }
 
 Garage_Exit(playerid, i) {
-	if(GetPVarType(playerid, "StreamPrep")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this right now. Wait for streaming to finish.");
-	if(gettime() < DoorTimer[playerid]) return SendClientMessageEx(playerid, COLOR_GREY, "You must wait %d seconds before being able to exit this door.", DoorTimer[playerid]-gettime());
 	SetPlayerInterior(playerid, GarageInfo[i][gar_ExteriorInt]);
 	PlayerInfo[playerid][pInt] = GarageInfo[i][gar_ExteriorInt];
 	SetPlayerVirtualWorld(playerid, GarageInfo[i][gar_ExteriorVW]);
@@ -790,6 +763,5 @@ Garage_Exit(playerid, i) {
 		SetCameraBehindPlayer(playerid);
 	}
 	if(GarageInfo[i][gar_CustomExterior]) Player_StreamPrep(playerid, GarageInfo[i][gar_ExteriorX], GarageInfo[i][gar_ExteriorY], GarageInfo[i][gar_ExteriorZ], FREEZE_TIME);
-	DoorTimer[playerid] = gettime()+2;
 	return 1;
 }

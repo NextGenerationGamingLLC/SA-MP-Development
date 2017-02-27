@@ -423,7 +423,7 @@ new briefcaselimit[] = { 500000, 100, 100, 50000 };
 
 //new limits[][] = {{250000, 20, 15, 0}, {250000, 20, 15, 25000}, {500000, 200, 200, 75000}, {500000, 100, 100, 50000}};
 
-new servernumber, betaserver;
+new servernumber;
 new textdrawscount;
 
 new hour, minuite, second;
@@ -494,6 +494,7 @@ new TempNumber[MAX_PLAYERS];
 new Carrier[17];
 
 new CrateLoad[2];
+new MAXCRATES;
 new AdminWarning;
 
 new Price[MAX_ITEMS];
@@ -504,16 +505,9 @@ new AmountSold[MAX_ITEMS], AmountMade[MAX_ITEMS], GarageVW;
 
 new PumpkinStock, HalloweenShop;
 
-/*
-new CrateVehicleLoad[MAX_VEHICLES][cVehicleLoad];*/
-new LockerWep[MAX_GROUPS][lockerWeapons];
-new CrateOrder[MAX_GROUPS][crateOrders];
-new CrateBox[MAX_CRATES][crateInfo];
-new CrateVehicle[MAX_CRATE_VEHCILES][CrateVehInfo];
-new CrateFacility[MAX_CRATE_FACILITY][crateFacInfo];
+new CrateVehicleLoad[MAX_VEHICLES][cVehicleLoad];
 
-// Vehicle Properties (Replicate from the crate vehicle).
-new VehInfo[MAX_VEHICLES][vehProp];
+new CrateInfo[MAX_CRATES][crateInfo];
 
 //new IslandThreatElimTimer;
 
@@ -607,6 +601,9 @@ new MatsHolding[MAX_PLAYERS];
 new MatDeliver[MAX_PLAYERS];
 new MatDeliver2[MAX_PLAYERS];
 new NewbieTimer[MAX_PLAYERS];
+new ATMHackTimer[MAX_PLAYERS];
+new Atm[MAX_ATM][aAtm];
+new Atmfails[MAX_PLAYERS];
 new HelperTimer[MAX_PLAYERS];
 new HlKickTimer[MAX_PLAYERS];
 new JustReported[MAX_PLAYERS];
@@ -735,6 +732,7 @@ new GunStorageID[MAX_PLAYERS];
 new GunId[MAX_PLAYERS];
 new GunMats[MAX_PLAYERS];
 new CraftOffer[MAX_PLAYERS];
+new TRCrateShutDown = 0;
 new CraftId[MAX_PLAYERS];
 new CraftMats[MAX_PLAYERS];
 new CraftName[MAX_PLAYERS][50];
@@ -790,6 +788,7 @@ new TruckerVehicles[37];
 new PizzaVehicles[12];
 new VIPVehicles[50];
 new FamedVehicles[39];
+new LoadForkliftStatus;
 new Homes[MAX_PLAYERS];
 new Locator[MAX_PLAYERS];
 new Mobile[MAX_PLAYERS];
@@ -1231,7 +1230,7 @@ new freeweekend,
 
 new PlayerHoldingObject[MAX_PLAYERS][10];
 
-new turfWarsRadar[MAX_PLAYERS] = 0;
+new turfWarsRadar[MAX_PLAYERS] = 1;
 new turfWarsMiniMap[MAX_PLAYERS] = 0;
 
 // Dynamic Gift Box Stuff
@@ -2709,7 +2708,8 @@ new PlayerText:phone_PTextDraw[MAX_PLAYERS][24];
 
 
 /* AC */
-new iLastDialogID[MAX_PLAYERS];
+new iLastDialogID[MAX_PLAYERS],
+	bool:ac_ACToggle[AC_MAX];
 
 /* Areas */
 new iVehEnterAreaID[MAX_VEHICLES];
@@ -2770,13 +2770,3 @@ new ROB_MAX_PERCENTAGE = 30,
 
 /* IRC/Slack */
 new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], IRC_CHANNEL_SERVERERRORS[32], IRC_CHANNEL_ADMWARNINGS[32], BotID[MAX_BOTS], BotGroupID;
-
-// Crate System.
-new 
-	CarryCrate[MAX_PLAYERS],
-	BeingMoved[MAX_CRATES],
-	AdminOpened[MAX_CRATE_FACILITY];
-
-new
-	IsDoingAnim[MAX_PLAYERS],
-	GhostHacker[MAX_PLAYERS][7];

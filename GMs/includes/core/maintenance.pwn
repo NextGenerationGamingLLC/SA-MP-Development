@@ -230,6 +230,8 @@ public FinishMaintenance()
 	SavePaintballArenas();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Server Configuration", 1);
     Misc_Save();
+    ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving ATMs...", 1);
+	SaveATMs();
     ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Office Elevator...", 1);
 	SaveElevatorStuff();
 	ABroadCast(COLOR_YELLOW, "{AA3333}Maintenance{FFFF00}: Force Saving Mail Boxes...", 1);

@@ -9,7 +9,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 	szMiscArray[0] = 0;
 
 	if((newkeys & KEY_YES) && vehicleid != INVALID_VEHICLE_ID && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
-		//if(!AC_KeySpamCheck(playerid)) return 1;
+		if(!AC_KeySpamCheck(playerid)) return 1;
 		new engine,lights,alarm,doors,bonnet,boot,objective;
 		if(GetVehicleModel(vehicleid) == 481 || GetVehicleModel(vehicleid) == 509 || GetVehicleModel(vehicleid) == 510 || DynVeh[vehicleid] != -1 && DynVehicleInfo[DynVeh[vehicleid]][gv_iType] == 1 && GetVehicleModel(vehicleid) == 592) return SendClientMessageEx(playerid,COLOR_WHITE,"This command can't be used in this vehicle.");
 		if(WheelClamp{vehicleid}) return SendClientMessageEx(playerid,COLOR_WHITE,"(( This vehicle has a wheel camp on its front tire, you will not be able to drive away with it. ))");

@@ -28,7 +28,7 @@
 forward ClearAnims(playerid);
 public ClearAnims(playerid)
 {
-	ClearAnimationsEx(playerid);
+	ClearAnimations(playerid);
 }
 
 PlayAnim(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, freeze, time, forcesync)
@@ -55,7 +55,6 @@ PlayAnimEx(playerid, animlib[], animname[], Float:fDelta, loop, lockx, locky, fr
 {
 	if(!IsPlayerIdle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You must stop your current animation!");
 	gPlayerUsingLoopingAnim[playerid] = 1;
-	IsDoingAnim[playerid] = 1;
 	ApplyAnimation(playerid, animlib, animname, fDelta, loop, lockx, locky, freeze, time, forcesync);
 	if(!GetPVarType(playerid, "togAnimHelper")) TextDrawShowForPlayer(playerid,txtAnimHelper);
 	return 1;
@@ -74,7 +73,7 @@ PreloadAnimLib(playerid, animlib[])
 
 IsAblePedAnimation(playerid)
 {
-    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]!= 0 || GetPVarType(playerid, "IsLive") || GetPVarInt(playerid, "jailcuffs") == 1 || GetPVarType(playerid, "FixVehicleTimer") || CarryCrate[playerid] != -1) {
+    if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "Injured") || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital]!= 0 || GetPVarType(playerid, "IsLive") || GetPVarInt(playerid, "jailcuffs") == 1 || GetPVarType(playerid, "FixVehicleTimer")) {
    		SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
    		return 0;
 	}
@@ -145,7 +144,7 @@ public StopaniTimer(playerid)
 	    return 1;
 	}
 	SendClientMessageEx (playerid, COLOR_YELLOW, "Your animations were cleared!");
-	ClearAnimationsEx(playerid);
+	ClearAnimations(playerid);
 	SetPlayerSkin(playerid, GetPlayerSkin(playerid));
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 
@@ -321,7 +320,7 @@ CMD:oanimhelp(playerid, params[])
 		SendClientMessage(playerid, COLOR_GRAD2, "This command requires you to be outside a vehicle.");
 		return 1;
 	}
-	ClearAnimationsEx(playerid);
+	ClearAnimations(playerid);
 	SetPlayerSkin(playerid, GetPlayerSkin(playerid));
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 	return 1;
@@ -387,7 +386,6 @@ CMD:handsup(playerid, params[])
 {
 	if(!IsAblePedAnimation(playerid)) return 1;
     SetPlayerSpecialAction(playerid,SPECIAL_ACTION_HANDSUP);
-    IsDoingAnim[playerid] = 1;
 	return 1;
 }
 
@@ -395,7 +393,6 @@ CMD:piss(playerid, params[])
 {
 	if(!IsAblePedAnimation(playerid)) return 1;
    	SetPlayerSpecialAction(playerid, 68);
-   	IsDoingAnim[playerid] = 1;
 	return 1;
 }
 
@@ -984,10 +981,10 @@ CMD:dance(playerid, params[])
 	if(!IsAblePedAnimation(playerid)) return 1;
 	switch(strval(params))
 	{
-	case 1: SetPlayerSpecialAction(playerid, 5), IsDoingAnim[playerid] = 1;
-	case 2: SetPlayerSpecialAction(playerid, 6), IsDoingAnim[playerid] = 1;
-	case 3: SetPlayerSpecialAction(playerid, 7), IsDoingAnim[playerid] = 1;
-	case 4: SetPlayerSpecialAction(playerid, 8), IsDoingAnim[playerid] = 1;
+	case 1: SetPlayerSpecialAction(playerid, 5);
+	case 2: SetPlayerSpecialAction(playerid, 6);
+	case 3: SetPlayerSpecialAction(playerid, 7);
+	case 4: SetPlayerSpecialAction(playerid, 8);
 	default: SendClientMessage(playerid, COLOR_WHITE, "USAGE: /dance [1-4]");
 	}
 	return 1;

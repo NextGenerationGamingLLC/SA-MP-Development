@@ -77,6 +77,34 @@ new const Drugs[][] = {
 	"Heroin"
 };
 
+enum aAtm
+{
+	//aId,
+	Float:aPosX,
+	Float:aPosY,
+	Float:aPosZ,
+	Float:aPosRX,
+	Float:aPosRY,
+	Float:aPosRZ,
+	Text3D: aTextID,
+	aInt,
+	aVW,
+	aSpawned,
+	aDestroyed,
+	aMoney,
+	aFee,
+	aPid,
+	aFails,
+	aHacked,
+	aPrints,
+	aCooldown,
+	aUses,
+	aSeize,
+	aCheck,
+	aSucSwipes,
+	aFailSwipes
+};
+
 enum eGroupData {
 	g_iGroupType,
 	g_szGroupName[GROUP_MAX_NAME_LEN],
@@ -383,107 +411,34 @@ enum ShopItem
 	//sMade,
 }
 
-enum vehProp
+enum cVehicleLoad
 {
+	vCrateAmt,
+	vCrateID[6],
+	vForkLoaded,
+	vForkObject,
 	vCarVestKit,
 	vCarWindow0,
 	vCarWindow1,
 	vCarWindow2,
 	vCarWindow3,
 	vCarWindows,
-	vLastDriver[MAX_PLAYER_NAME]
-}
-
-enum lockerWeapons
-{
-	lwGroup,
-	lwWep[46],
-	lwRank[16]
-}
-
-enum crateOrders
-{
-	coGroup,
-	coFacility,
-	coCrates,
-	coPerCrate,
-	coOrderBy[MAX_PLAYER_NAME],
-	coDelivered,
-	coStatus,
-	coTime
+	vLastDriver[MAX_PLAYER_NAME],
 }
 
 enum crateInfo
 {
-	cbObject,
-	Text3D: cbTextID,
-	cbFacility,
-	cbGroup,
-	Float:cbPos[3],
-	cbInVeh,
-	cbOnVeh,
-	cbInt,
-	cbVw,
-	cbWep[16],
-	cbWepAmount[16],
-	cbMats,
-	cbPlacedBy[MAX_PLAYER_NAME],
-	cbLifespan,
-	cbTransfer,
-	cbDoor,
-	cbDoorType,
-	cbPrice,
-	cbPaid,
-	cbActive
-}
-
-enum crateFacInfo
-{
-	Text3D: cfTextID,
-	cfPickupID,
-	cfMapIcon,
-	cfId,
-	cfName[32],
-	cfGroup,
-	Float: cfPos[4],
-	cfInt,
-	cfVw,
-	cfProdMax,
-	cfProdPrep,
-	cfProdReady,
-	cfProdTimer,
-	cfProdStatus,
-	cfProdCost,
-	cfProdMulti,
-	cfRaidTimer,
-	cfCooldown,
-	cfRaidable,
-	cfActive,
-	cfTimer
-}
-
-enum CrateVehInfo {
-	cvSpawnID,
-	cvId,
-	cvModel,
-	cvColor[2],
-	cvGroupID,
-	cvRank,
-	cvSpawned,
-	cvDisabled,
-	cvImpound,
-	cvTickets,
-	Float:cvMaxHealth,
-	Float:cvHealth,
-	Float:cvFuel,
-	cvType,
-	Float:cvPos[4],
-	cvInt,
-	cvVw,
-	cvCrateMax,
-	cvForkObject,
-	cvCrate,
-	cvCrateLoad
+	crActive,
+	crObject,
+	crInt,
+	crVW,
+	crPlacedBy[MAX_PLAYER_NAME],
+	Float: crX,
+	Float: crY,
+	Float: crZ,
+	GunQuantity,
+	InVehicle,
+	Text3D: crLabel,
 }
 
 enum Auction
@@ -1152,6 +1107,7 @@ enum pInfo
 	pMailbox,
 	pBusiness,
 	pBusinessRank,
+	pRobberySkill,
 	pTreasureSkill,
 	pMetalDetector,
 	pHelpedBefore,
@@ -1165,6 +1121,9 @@ enum pInfo
 	pRawOpium,
 	pHeroin,
 	pSyringes,
+	pKeyCards,
+	pCards,
+	pGloves,
 	pSkins,
 	pForcePasswordChange,
 	pCredits,
@@ -1526,8 +1485,7 @@ enum gInfo
 	gTModel,
 	gTTXD[64],
 	gTTexture[64],
-	gTColor,
-	gFacility
+	gTColor
 };
 
 enum ePoints
@@ -1844,6 +1802,13 @@ enum FallIntoFun
 	FIFHours,
 	FIFChances
 }
+
+enum eGCrateData {
+	gcr_iObject = INVALID_OBJECT_ID,
+	Text3D:gcr_iLabel,
+	gcr_isLoaded,
+}
+new arrGCrateData[MAX_GANG_CRATES][eGCrateData];
 
 enum ParkingMeterInfo
 {

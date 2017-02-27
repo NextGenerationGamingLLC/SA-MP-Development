@@ -43,6 +43,7 @@ public OnVehicleSpawn(vehicleid) {
 	}
     TruckContents{vehicleid} = 0;
 	Vehicle_ResetData(vehicleid);
+	ResetCreateData(vehicleid);
 	new
 		v;
 
@@ -340,7 +341,6 @@ public OnPlayerUpdate(playerid)
 		pCurrentWeapon{playerid} = pCurWeap;
     }
 
-    /*
     switch(pCurWeap) {
     	case 9, 16, 17, 18, 35, 36, 37, 38: {
     		if(PlayerInfo[playerid][pGuns][GetWeaponSlot(pCurWeap)] != pCurWeap) {
@@ -354,7 +354,7 @@ public OnPlayerUpdate(playerid)
 				SetPlayerWeaponsEx(playerid);
 			}
     	}
-    }*/
+    }
 
     new drunknew = GetPlayerDrunkLevel(playerid);
     if(drunknew < 100) { // go back up, keep cycling.
@@ -1049,7 +1049,7 @@ public OnPlayerModelSelection(playerid, response, listid, modelid)
 	{
 		if(response)
 		{
-			ClearAnimationsEx(playerid);
+			ClearAnimations(playerid);
 			if(PlayerInfo[playerid][pDonateRank] >= 2)
 			{
 				if (PlayerInfo[playerid][pModel] == modelid)
@@ -1530,14 +1530,7 @@ public OnPlayerConnect(playerid)
 	PlayerInfo[playerid][pGroupToy][8] = 1.0;
 
 	PlayerInfo[playerid][pHolsteredWeapon] = 0;
-	IsDoingAnim[playerid] = 0;
-	GhostHacker[playerid][0] = 0;
-	GhostHacker[playerid][1] = gettime();
-	GhostHacker[playerid][2] = 0;
-	GhostHacker[playerid][3] = 0;
-	GhostHacker[playerid][4] = 0;
-	GhostHacker[playerid][5] = gettime();
-	GhostHacker[playerid][6] = gettime();
+
 	foreach(new x: Player)
 	{
 	    ShotPlayer[playerid][x] = 0;
@@ -2247,7 +2240,6 @@ public OnPlayerDisconnect(playerid, reason)
 				break;
 			}
 		}
-		if(GetPVarType(playerid, "IsInArena")) LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"), 1);
 		/*
 		if(GetPVarType(playerid, "IsInArena"))
 		{
@@ -2315,6 +2307,7 @@ public OnPlayerDisconnect(playerid, reason)
 			gBikeRenting[playerid] = 0;
 			KillTimer(GetPVarInt(playerid, "RentTime"));
 		}
+		if(GetPVarType(playerid, "IsInArena")) LeavePaintballArena(playerid, GetPVarInt(playerid, "IsInArena"), 1);
 
 		if(GetPVarInt(playerid, "gpsonoff") == 1) TextDrawDestroy(GPS[playerid]);
 
@@ -2640,6 +2633,7 @@ public OnVehicleDeath(vehicleid) {
 	new Float:XB, Float:YB, Float:ZB;
 	VehicleStatus{vehicleid} = 1;
 	TruckContents{vehicleid} = 0;
+	ResetCreateData(vehicleid);
 	foreach(new i: Player)
 	{
 		if(TruckUsed[i] == vehicleid)
@@ -3829,7 +3823,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	// If the client clicked the fire key and is currently injured
 	else if((newkeys && KEY_FIRE) && GetPVarInt(playerid, "Injured") == 1)
 	{
-		ClearAnimationsEx(playerid);
+		ClearAnimations(playerid);
 		return 1;
 	}
 	else if((newkeys & KEY_FIRE) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && GetPlayerWeapon(playerid) == SPEEDGUN && GetPVarType(playerid, "SpeedRadar"))
@@ -3859,7 +3853,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 	else if((newkeys & 16) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && PlayerCuffed[playerid] == 0 && PlayerInfo[playerid][pBeingSentenced] == 0 && GetPVarType(playerid,"UsingAnim") && !GetPVarType(playerid, "IsFrozen"))
 	{
-		ClearAnimationsEx(playerid);
+		ClearAnimations(playerid);
 		DeletePVar(playerid,"UsingAnim");
 	}
 	else if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DRINK_BEER && (newkeys & KEY_FIRE))
@@ -4129,7 +4123,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			SetPlayerPos(GetPVarInt(playerid, "DraggingPlayer"), dX, dY, dZ);
 			SetPlayerInterior(GetPVarInt(playerid, "DraggingPlayer"), GetPlayerInterior(playerid));
 			SetPlayerVirtualWorld(GetPVarInt(playerid, "DraggingPlayer"), GetPlayerVirtualWorld(playerid));
-			ClearAnimationsEx(GetPVarInt(playerid, "DraggingPlayer"));
+			ClearAnimations(GetPVarInt(playerid, "DraggingPlayer"));
 			ApplyAnimation(GetPVarInt(playerid, "DraggingPlayer"), "ped","cower",1,1,0,0,0,0,1);
             DeletePVar(GetPVarInt(playerid, "DraggingPlayer"), "BeingDragged");
             format(string, sizeof(string), "* You have stopped dragging %s.", GetPlayerNameEx(GetPVarInt(playerid, "DraggingPlayer")));
@@ -4253,6 +4247,18 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	    new vehicleid = GetPlayerVehicleID(playerid);
 		new Float: pX, Float: pY, Float: pZ;
 		GetPlayerPos(playerid, pX, pY, pZ);
+		if(GetVehicleModel(vehicleid) == 530)
+		{
+		    if(CrateVehicleLoad[vehicleid][vForkLoaded])
+		    {
+				SetPVarFloat(playerid, "tpForkliftX", pX);
+		 		SetPVarFloat(playerid, "tpForkliftY", pY);
+		  		SetPVarFloat(playerid, "tpForkliftZ", pZ);
+				SetPVarInt(playerid, "tpForkliftTimer", 80);
+				SetPVarInt(playerid, "tpForkliftID", GetPlayerVehicleID(playerid));
+				SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_CRATETIMER);
+		    }
+		}
 		if(GetPVarType(playerid, "IsInArena")) {
 
 			for(new i = 0; i < MAX_ARENAS; i++)
@@ -4551,6 +4557,17 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		new
 			newcar = GetPlayerVehicleID(playerid),
 			engine, lights, alarm, doors, bonnet, boot, objective, v;
+
+		if(DynVeh[newcar] != -1)
+		{
+			if(PlayerInfo[playerid][pMember] == DynVehicleInfo[DynVeh[newcar]][gv_igID] || PlayerInfo[playerid][pLeader] == DynVehicleInfo[DynVeh[newcar]][gv_igID])
+			{
+				if(PlayerInfo[playerid][pDivision] == DynVehicleInfo[DynVeh[newcar]][gv_igDivID] || DynVehicleInfo[DynVeh[newcar]][gv_igDivID] == -1)
+				{
+					format(CrateVehicleLoad[newcar][vLastDriver], MAX_PLAYER_NAME, "%s", GetPlayerNameEx(playerid));
+				}
+			}
+		}
 
 		gLastCar[playerid] = newcar;
 		if(GetPVarInt(playerid, "EventToken") == 1) {
@@ -4906,7 +4923,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 		SendClientMessageEx(playerid, COLOR_RED, "You are not logged in.");
 		return 0;
 	}
-/*
+
 	arrAntiCheat[playerid][ac_iCommandCount]++;
 	switch(arrAntiCheat[playerid][ac_iCommandCount]) {
 		case 0 .. 6: {}
@@ -4914,7 +4931,7 @@ public OnPlayerCommandReceived(playerid, cmdtext[]) {
 			AC_Process(playerid, AC_CMDSPAM, arrAntiCheat[playerid][ac_iCommandCount]);
 			return 0;
 		}
-	}*/
+	}
 
 	playerLastTyped[playerid] = 0;
 	printf("[zcmd] [%s]: %s", GetPlayerNameEx(playerid), (strfind(cmdtext, "/changepass", true) == 0 ? ("/changepass") : cmdtext));

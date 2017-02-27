@@ -630,7 +630,7 @@ public DropCrateUnfreeze(playerid)
 {
     TogglePlayerControllable(playerid, true);
     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
-    ClearAnimationsEx(playerid);
+    ClearAnimations(playerid);
     return 1;
 }
 

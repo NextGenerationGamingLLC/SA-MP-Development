@@ -1525,6 +1525,7 @@ CMD:ohelp(playerid, params[])
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
 		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
 		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza*");
+		case 23: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /robatm /make");
 		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}
 	switch(PlayerInfo[playerid][pJob2])
@@ -1546,6 +1547,7 @@ CMD:ohelp(playerid, params[])
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
 		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
 		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
+		case 23: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /robatm /make");
 		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}
 	switch(PlayerInfo[playerid][pJob3])
@@ -1567,6 +1569,7 @@ CMD:ohelp(playerid, params[])
 		case 19: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /selldrink");
 		case 20: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /loadshipment /checkcargo /hijackcargo");
 		case 21: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /getpizza");
+		case 23: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /robatm /make");
 		case 27: SendClientMessageEx(playerid,COLOR_WHITE,"*** JOB *** /garbagerun");
 	}
 	new iGroupID = PlayerInfo[playerid][pMember];
@@ -1578,7 +1581,7 @@ CMD:ohelp(playerid, params[])
 			{
 			    format(string, sizeof(string), "*** %s *** (/r)adio /dept (/m)egaphone (/su)spect /locker /mdc /detain /arrest /warrantarrest /wanted /cuff /tazer", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);
-				format(string, sizeof(string), "*** %s ***  /frisk /take /ticket (/gov)ernment /clothes /ram /invite /giverank /deploy /destroy", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
+				format(string, sizeof(string), "*** %s ***  /frisk /take /ticket (/gov)ernment /clothes /ram /invite /giverank /deploy /destroy /checkatm", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
                 SendClientMessageEx(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "*** %s ***  /spikes /revokelicense /vcheck /vmdc /vticket /tow /untow /impound /gdonate /togradio /togdept", arrGroupData[PlayerInfo[playerid][pMember]][g_szGroupName]);
 				SendClientMessageEx(playerid, COLOR_WHITE, string);

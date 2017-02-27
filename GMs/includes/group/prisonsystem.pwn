@@ -1508,7 +1508,7 @@ CMD:jailcuff(playerid, params[])
 					format(string, sizeof(string), "* %s handcuffs %s, tightening the cuffs securely.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
 					ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 					GameTextForPlayer(giveplayerid, "~r~Cuffed", 2500, 3);
-					ClearAnimationsEx(giveplayerid);
+					ClearAnimations(giveplayerid);
 					TogglePlayerControllable(giveplayerid, 0);
 					SetPlayerSpecialAction(giveplayerid, SPECIAL_ACTION_CUFFED);
 					TogglePlayerControllable(giveplayerid, 1);

@@ -163,6 +163,15 @@ stock GetJobLevel(playerid, job)
 			else if(skilllevel >= 300 && skilllevel <= 599) jlevel = 4;
 			else if(skilllevel >= 600) jlevel = 5;
 		}
+		case 23:
+		{
+			new skilllevel = PlayerInfo[playerid][pRobberySkill];
+			if(skilllevel >= 0 && skilllevel <= 49) jlevel = 1;
+			else if(skilllevel >= 50 && skilllevel <= 99) jlevel = 2;
+			else if(skilllevel >= 100 && skilllevel <= 199) jlevel = 3;
+			else if(skilllevel >= 200 && skilllevel <= 399) jlevel = 4;
+			else if(skilllevel >= 400) jlevel = 5;
+		}
 	}
 	return jlevel;
 }

@@ -55,9 +55,11 @@ stock TaxSale(amount)
 	{
 		if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV && arrGroupData[iGroupID][g_iAllegiance] == 1)
 		{
-			new str[128];
+			new str[128], file[32], month, day, year;
+			getdate(year,month,day);
 			format(str, sizeof(str), "A Business has paid $%s in sales tax.", number_format(iTaxAmount));
-			GroupPayLog(iGroupID, str);
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+			Log(file, str);
 		}
 	}
 	Misc_Save();
@@ -381,16 +383,16 @@ stock StopRefueling(playerid, iBusinessID, iPumpID)
 	    DynVehicleInfo[DynVeh[iVehicleID]][gv_fFuel] = VehicleFuel[iVehicleID];
 	    DynVeh_Save(DynVeh[iVehicleID]);
 	}
-	if(IsDynamicCrateVehicle(iVehicleID) != -1) {
-		SaveCrateVehicle(IsDynamicCrateVehicle(iVehicleID));
-	}
 	if (DynVeh[iVehicleID] != -1 && DynVehicleInfo[DynVeh[iVehicleID]][gv_igID] != INVALID_GROUP_ID)
  	{
  		new iGroupID = DynVehicleInfo[DynVeh[iVehicleID]][gv_igID];
 		arrGroupData[iGroupID][g_iBudget] -= iCost;
-		new str[128];
+		new str[128], file[32];
         format(str, sizeof(str), "%s has refueled vehicle %d at a cost of $%d to %s's budget fund.", GetPlayerNameEx(playerid), iVehicleID, iCost, arrGroupData[iGroupID][g_szGroupName]);
-		GroupPayLog(iGroupID, str);
+		new month, day, year;
+		getdate(year,month,day);
+		format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", iGroupID, month, day, year);
+		Log(file, str);
  		SendClientMessageEx(playerid, COLOR_GREY, "This is a group vehicle and the refueling cost has been paid by the government.");
 	}
 	else GivePlayerCash(playerid, -iCost);

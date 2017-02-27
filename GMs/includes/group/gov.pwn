@@ -75,7 +75,7 @@ CMD:taxwithdraw(playerid, params[])
 		return 1;
 	}
 
-	new string[128], amount, reason[64], str[128];
+	new string[128], amount, reason[64];
 	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 1)
 	{
 		if(sscanf(params, "ds[64]", amount, reason))
@@ -102,8 +102,13 @@ CMD:taxwithdraw(playerid, params[])
 			ABroadCast( COLOR_YELLOW, string, 2);
 			format(string,sizeof(string),"AdmWarning: %s(%d) has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(amount),reason);
 			Log("logs/rpspecial.log", string);
+
+			new file[32], day, month, year;
+			getdate(year,month,day);
+
 			format(string,sizeof(string),"%s has withdrawn $%s of the SA tax money from the vault, reason: %s.",GetPlayerNameEx(playerid), number_format(amount),reason);
-			GroupPayLog(PlayerInfo[playerid][pLeader], str);
+			format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", PlayerInfo[playerid][pLeader], month, day, year);
+			Log(file, string);
 		}
 		else
 		{
@@ -179,10 +184,8 @@ CMD:taxdeposit(playerid, params[])
 		Tax += amount;
 		Misc_Save();
 		GivePlayerCash(playerid, -amount);
-		format( string, sizeof( string ), "You have deposited $%s into the SA vault.", number_format(amount) );
+		format( string, sizeof( string ), "You have deposited $%s into the vault.", number_format(amount) );
 		SendClientMessageEx( playerid, COLOR_WHITE, string );
-		format(string,sizeof(string),"%s has deposited $%s into the SA tax vault.",GetPlayerNameEx(playerid), number_format(amount));
-		GroupPayLog(PlayerInfo[playerid][pLeader], string);
 	}
 	if(arrGroupData[PlayerInfo[playerid][pLeader]][g_iAllegiance] == 2)
 	{
@@ -210,8 +213,13 @@ CMD:taxdeposit(playerid, params[])
 		GivePlayerCash(playerid, -amount);
 		format( string, sizeof( string ), "You have deposited $%s into the NE vault.", number_format(amount) );
 		SendClientMessageEx( playerid, COLOR_WHITE, string );
-		format(string,sizeof(string),"%s has deposited $%s into the NE tax vault.",GetPlayerNameEx(playerid), number_format(amount));
-		GroupPayLog(PlayerInfo[playerid][pLeader], string);
+
+		new file[32], day, month, year;
+		getdate(year,month,day);
+
+		format(string,sizeof(string),"%s has deposited $%s into the SA tax vault.",GetPlayerNameEx(playerid), number_format(amount));
+		format(file, sizeof(file), "grouppay/%d/%d-%d-%d.log", PlayerInfo[playerid][pLeader], month, day, year);
+		Log(file, string);
 	}
 	return 1;
 }

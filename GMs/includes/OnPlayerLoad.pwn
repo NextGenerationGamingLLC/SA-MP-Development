@@ -326,6 +326,8 @@ public OnPlayerLoad(playerid)
 		PlayerInfo[playerid][pFamed] = 0;
 		PlayerInfo[playerid][pFMuted] = 0;
 		PlayerInfo[playerid][pDefendTime] = 0;
+		PlayerInfo[playerid][pGloves] = 0;
+		PlayerInfo[playerid][pRobberySkill] = 0;
 		PlayerInfo[playerid][pVehicleSlot] = 0;
 		PlayerInfo[playerid][pToySlot] = 0;
 		PlayerInfo[playerid][pVehVoucher] = 0;
