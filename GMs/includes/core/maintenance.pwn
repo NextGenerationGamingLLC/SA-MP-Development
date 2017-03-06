@@ -4,7 +4,7 @@ new SystemUpdate, SystemTimer;
 new Text:UpdateIn[2];
 
 hook OnGameModeInit() {
-	UpdateIn[0] = TextDrawCreate(451.049072, 430.333709, "Server_shutdown_in:");
+	UpdateIn[0] = TextDrawCreate(451.049072, 430.333709, "Server_update_in:");
 	TextDrawLetterSize(UpdateIn[0], 0.400000, 1.600000);
 	TextDrawAlignment(UpdateIn[0], 1);
 	TextDrawColor(UpdateIn[0], -1);

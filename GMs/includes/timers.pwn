@@ -390,9 +390,11 @@ task SyncTime[60000]()
 						SaveCrate(cratebox);
 					}
 				}
-
-
-
+				for(new facility = 0; facility < MAX_CRATE_FACILITY; facility++) {
+					if(CrateFacility[facility][cfActive]) {
+						SyncFacility(facility);
+					}
+				}
 			}
 		}
 

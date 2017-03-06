@@ -38,22 +38,22 @@
 
 static Float:WeaponRange[] = {
 
-	1.6, // 0 - Fist
-	1.6, // 1 - Brass knuckles
-	1.6, // 2 - Golf club
-	1.6, // 3 - Nitestick
-	1.6, // 4 - Knife
-	1.6, // 5 - Bat
-	1.6, // 6 - Shovel
-	1.6, // 7 - Pool cue
-	1.6, // 8 - Katana
-	1.6, // 9 - Chainsaw
-	1.6, // 10 - Dildo
-	1.6, // 11 - Dildo 2
-	1.6, // 12 - Vibrator
-	1.6, // 13 - Vibrator 2
-	1.6, // 14 - Flowers
-	1.6, // 15 - Cane
+	10.0, // 0 - Fist
+	10.0, // 1 - Brass knuckles
+	10.0, // 2 - Golf club
+	10.0, // 3 - Nitestick
+	10.0, // 4 - Knife
+	10.0, // 5 - Bat
+	10.0, // 6 - Shovel
+	10.0, // 7 - Pool cue
+	10.0, // 8 - Katana
+	10.0, // 9 - Chainsaw
+	10.0, // 10 - Dildo
+	10.0, // 11 - Dildo 2
+	10.0, // 12 - Vibrator
+	10.0, // 13 - Vibrator 2
+	10.0, // 14 - Flowers
+	10.0, // 15 - Cane
 	40.0, // 16 - Grenade
 	40.0, // 17 - Teargas
 	40.0, // 18 - Molotov
@@ -240,11 +240,11 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		ClearAnimations(playerid, 1);
 		return 1;
 	}
-	
+	/*
     new animlib[32];
     new animname[32];
     GetAnimationName(GetPlayerAnimationIndex(playerid),animlib,32,animname,32);
-    if(!IsInvalidGunAnim(playerid)) SendClientMessageEx(playerid, COLOR_WHITE, "Anim: %d | Name: %s %s", GetPlayerAnimationIndex(playerid), animlib, animname);
+    if(!IsInvalidGunAnim(playerid)) SendClientMessageEx(playerid, COLOR_WHITE, "Anim: %d | Name: %s %s", GetPlayerAnimationIndex(playerid), animlib, animname);*/
 	if(PlayerIsDead[damagedid]) return 1;
 	//if(!HitStatus[damagedid]) return 1;
 	new Float:realdam = amount;

@@ -39,7 +39,8 @@
 
 new 
 	CrateBeingProcessed[MAX_CRATE_FACILITY],
-	CrateBeingDelivered[MAX_GROUPS];
+	CrateBeingDelivered[MAX_GROUPS],
+	CrateFacilityRaid[MAX_CRATE_FACILITY];
 
 hook OnGameModeInit() {
 	for(new i = 0; i < MAX_CRATE_FACILITY; i++) {
@@ -48,6 +49,7 @@ hook OnGameModeInit() {
 		CrateFacility[i][cfTextID] = Text3D: -1;
 		CrateFacility[i][cfPickupID] = -1;
 		CrateFacility[i][cfMapIcon] = -1;
+		CrateFacilityRaid[i] = 0;
 	}
 	for(new c = 0; c < MAX_CRATES; c++) {
 		BeingMoved[c] = INVALID_PLAYER_ID;
@@ -359,6 +361,7 @@ task UpdateFacilityCrates[1000]()
 			}
 			if(CrateFacility[i][cfRaidable]) {
 				if((CrateFacility[i][cfCooldown] - 300) == gettime() && CrateFacility[i][cfRaidTimer] == 0) {
+					CrateFacilityRaid[i] = 1;
 					foreach(new g: Player) {
 						if(PlayerInfo[g][pMember] == CrateFacility[i][cfGroup]) {
 							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: We're about to go into production mode be advised.", CrateFacility[i][cfName]);
@@ -368,6 +371,7 @@ task UpdateFacilityCrates[1000]()
 				}
 				if(CrateFacility[i][cfCooldown] < gettime() && CrateFacility[i][cfRaidTimer] == 0) {
 					CrateFacility[i][cfRaidTimer] = gettime()+5400; // 1 hour 30 minutes
+					CrateFacilityRaid[i] = 1; // Just incase an admin sets the raid time lower than 5 min interval
 					SaveFacility(i);
 					TriggerGates(i);
 					foreach(new g: Player) {
@@ -391,6 +395,7 @@ task UpdateFacilityCrates[1000]()
 				if(CrateFacility[i][cfRaidTimer] < gettime() && CrateFacility[i][cfRaidTimer] != 0) {
 					CrateFacility[i][cfCooldown] = gettime()+10800; // 3 hours
 					CrateFacility[i][cfRaidTimer] = 0;
+					CrateFacilityRaid[i] = 0;
 					SaveFacility(i);
 					TriggerGates(i, 0);
 					foreach(new g: Player) {
@@ -767,20 +772,9 @@ CMD:facility(playerid, params[]) {
 		}
 		if(!(0 <= fac < MAX_CRATE_FACILITY)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid Facility ID. (0 - %d)", MAX_CRATE_FACILITY-1);
 		if(strcmp(choice, "sync", true) == 0) {
-			new total = 0;
 			if(!CrateFacility[fac][cfActive]) return SendClientMessageEx(playerid, COLOR_GREY, "That crate facility is not active!");
-			for(new c = 0; c < MAX_CRATES; c++) {
-				if(CrateBox[c][cbFacility] == fac) {
-					++total;
-				}
-			}
-			new ready = ((CrateFacility[fac][cfProdReady] + CrateFacility[fac][cfProdPrep]) + total);
-			if(ready < 0) ready = CrateFacility[fac][cfProdMax];
-			if(CrateFacility[fac][cfProdMax] != ready) {
-				CrateFacility[fac][cfProdPrep] = (CrateFacility[fac][cfProdMax] - ready);
-			}
+			SyncFacility(fac);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have sycned the %s facility, if boxes are missing they'll be put into production.", CrateFacility[fac][cfName]);
-			SaveFacility(fac);
 			return 1;
 		}
 		else if(strcmp(choice, "goto", true) == 0) {
@@ -826,8 +820,8 @@ CMD:facility(playerid, params[]) {
 			}
 			SendClientMessageEx(playerid, COLOR_GREEN, "|___________ Facility Info (ID: %d) ___________|", fac);
 			SendClientMessageEx(playerid, COLOR_WHITE, "X: %f | Y: %f | Z: %f | Int: %d | VW: %d | Active: %s", CrateFacility[fac][cfPos][0], CrateFacility[fac][cfPos][1], CrateFacility[fac][cfPos][2], CrateFacility[fac][cfInt], CrateFacility[fac][cfVw], (CrateFacility[fac][cfActive]) ? ("Yes") : ("No"));
-			SendClientMessageEx(playerid, COLOR_WHITE, "Next Raid: %s | Raidable: %s | Max Crates: %d | Crates in use: %d", date(CrateFacility[fac][cfCooldown], 1), (CrateFacility[fac][cfRaidable]) ? ("Active") : ("Disabled"), CrateFacility[fac][cfProdMax], crates);
-			SendClientMessageEx(playerid, COLOR_WHITE, "Crates Ready: %d | Crates in production: %d", CrateFacility[fac][cfProdReady], CrateFacility[fac][cfProdPrep]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "Next Raid: %s | Raid Progress: %s | Raidable Status: %s", date(CrateFacility[fac][cfCooldown], 1), (CrateFacilityRaid[fac]) ? ("Active") : ("Not Ready"), (CrateFacility[fac][cfRaidable]) ? ("Active") : ("Disabled"));
+			SendClientMessageEx(playerid, COLOR_WHITE, "Crates Ready: %d | Crates in production: %d | Crates in use: %d | Max Crates: %d", CrateFacility[fac][cfProdReady], CrateFacility[fac][cfProdPrep], crates, CrateFacility[fac][cfProdMax]);
 			SendClientMessageEx(playerid, COLOR_WHITE, "Cost Per Crate: %s | Production status: %s", number_format(CrateFacility[fac][cfProdCost]), (CrateFacility[fac][cfProdStatus]) ? ("Active") : ("Paused"));
 			SendClientMessageEx(playerid, COLOR_WHITE, "Owner: %s | Deliver Multiplier: %d", group, CrateFacility[fac][cfProdMulti]);
 			return 1;
@@ -836,6 +830,22 @@ CMD:facility(playerid, params[]) {
 	} else {
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
 	}
+	return 1;
+}
+
+stock SyncFacility(id) {
+	new total = 0;
+	for(new c = 0; c < MAX_CRATES; c++) {
+		if(CrateBox[c][cbFacility] == id) {
+			++total;
+		}
+	}
+	new ready = ((CrateFacility[id][cfProdReady] + CrateFacility[id][cfProdPrep]) + total);
+	if(ready < 0) ready = CrateFacility[id][cfProdMax];
+	if(CrateFacility[id][cfProdMax] != ready) {
+		CrateFacility[id][cfProdPrep] = (CrateFacility[id][cfProdMax] - ready);
+	}
+	SaveFacility(id);
 	return 1;
 }
 
@@ -1130,6 +1140,7 @@ CMD:crate(playerid, params[]) {
 		GetCrateBox(playerid, box, 2.0);
 		GetFacility(PlayerInfo[playerid][pMember], fac);
 		if(fac == -1) return SendClientMessage(playerid, COLOR_GRAD2, "Your group doesn't own a facility!");
+		if(CrateFacilityRaid[fac]) return SendClientMessage(playerid, COLOR_GRAD2, "Error: You can't use this command during a raid session.");
 		if(box == -1) return SendClientMessageEx(playerid, COLOR_GREY, "You're not near any crate boxes to seize!");
 		if(CrateBox[box][cbFacility] != fac) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't seize a crate that doesn't belong to your facility!");
 		DestroyCrate(box);
@@ -1424,6 +1435,7 @@ CMD:cfedit(playerid, params[]) {
 			CrateFacility[id][cfRaidable] = 1;
 			CrateFacility[id][cfActive] = 0;
 			CrateFacility[id][cfTimer] = 0;
+			CrateFacilityRaid[id] = 0;
 			UpdateFacility(id);
 			SaveFacility(id);
 			SendClientMessageEx(playerid, COLOR_WHITE, "You have deleted crate facility %d", id);
