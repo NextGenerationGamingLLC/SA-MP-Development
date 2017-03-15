@@ -311,7 +311,7 @@ task SyncTime[60000]()
 				format(szMiscArray, sizeof(szMiscArray), "The faction vault is at $%s.", number_format(arrGroupData[iGroupID][g_iBudget]));
 				GroupPayLog(iGroupID, szMiscArray);
 			}
-			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI)
+			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_JUDICIAL || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TAXI || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING)
 			{
 				if(arrGroupData[iGroupID][g_iBudgetPayment] > 0)
 				{
