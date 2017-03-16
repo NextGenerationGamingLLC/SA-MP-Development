@@ -290,7 +290,8 @@ stock IsALawyer(playerid)
 
 stock IsATaxiDriver(playerid)
 {
-	if((0 < PlayerInfo[playerid][pJob] < 50) && (PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || PlayerInfo[playerid][pTaxiLicense] == 1) || TransportDuty[playerid] > 0) return 1;
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] == GROUP_TYPE_TAXI) && TransportDuty[playerid] > 0) return 1;
+	if(PlayerInfo[playerid][pJob] == 17 || PlayerInfo[playerid][pJob2] == 17 || PlayerInfo[playerid][pJob3] == 17 || PlayerInfo[playerid][pTaxiLicense] == 1 && TransportDuty[playerid] > 0) return 1;
 	return 0;
 }
 
@@ -6028,17 +6029,18 @@ CMD:invite(playerid, params[]) {
 	else SendClientMessageEx(playerid, COLOR_GRAD1, "Only group leaders may use this command.");
 	return 1;
 }
+
 /*
 CMD:lastdriver(playerid, params[])
 {
 	new vehid, string[128];
 	if(sscanf(params, "d", vehid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /lastdriver [vehicle id]");
-	if(!CrateVehicleLoad[vehid][vLastDriver][0]) format(CrateVehicleLoad[vehid][vLastDriver], MAX_PLAYER_NAME, "{AA3333}Unoccupied");
+	if(!VehInfo[GetPlayerVehicleID(playerid)][vLastDriver][0]) format(VehInfo[GetPlayerVehicleID(playerid)][vLastDriver], MAX_PLAYER_NAME, "{AA3333}Unoccupied");
 	if(GetVehicleModel(vehid) != 0)
 	{
 		if(PlayerInfo[playerid][pAdmin] > 1)
 		{
-			format(string, sizeof(string), "Vehicle %d's last known driver was %s", vehid, CrateVehicleLoad[vehid][vLastDriver]);
+			format(string, sizeof(string), "Vehicle %d's last known driver was %s", vehid, VehInfo[GetPlayerVehicleID(playerid)][vLastDriver]);
 			SendClientMessage(playerid, COLOR_YELLOW, string);
 		}
 		else if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID)
@@ -6047,7 +6049,7 @@ CMD:lastdriver(playerid, params[])
 			{
 				if(DynVehicleInfo[DynVeh[vehid]][gv_igID] == PlayerInfo[playerid][pLeader])
 				{
-					format(string, sizeof(string), "Vehicle %d's last known driver was %s", vehid, CrateVehicleLoad[vehid][vLastDriver]);
+					format(string, sizeof(string), "Vehicle %d's last known driver was %s", vehid, VehInfo[GetPlayerVehicleID(playerid)][vLastDriver]);
 					SendClientMessage(playerid, COLOR_YELLOW, string);
 				}
 			}
@@ -6058,7 +6060,8 @@ CMD:lastdriver(playerid, params[])
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid Vehicle ID");
 	return 1;
-}*/
+}
+*/
 
 CMD:togbr(playerid, params[])
 {

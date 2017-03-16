@@ -95,7 +95,7 @@ new Float:gpsZones[][4] = {
 	{2034.3092,-1402.3984,17.2961,339.7592}, // County Hospital
 	{1172.1243,-1323.2010,15.4027,99.1248}, // All Saints
 	{1241.3552,326.6962,19.7555,154.6608}, // Montgomery Hospital -- Dialog 4 End -- (22)
-	{-2492.3062,2234.6753,4.9844,273.1860}, // Bayside Hospital
+	{-560.008483, -1020.256652, 24.084102}, // Flint Hospital
 	{-2413.4434,2251.3003,4.8138,267.8773}, // Bayside Appts.
 	{-2436.0908,2305.2141,4.9844,132.8512}, // Bayside VIP 
 	{-2544.1807,2346.4771,4.9844,44.3360}, // TR Capitol Building
@@ -148,7 +148,7 @@ new gpsZoneName[50][] = {
 	"County Hospital",
 	"All Saints Hospital",
 	"Montgomery Hospital",
-	"Bayside Hospital",
+	"Flint Hospital",
 	"Bayside Apartments",
 	"Bayside VIP",
 	"TR Capitol",
@@ -424,7 +424,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						}
 						case 4:
 						{
-							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "New Robada", "Bayside Hospital\nBayside Apartments\nBayside VIP\nCapitol\nTRES HQ\n\
+							ShowPlayerDialogEx(playerid, DIALOG_GPS_GEN, DIALOG_STYLE_LIST, "New Robada", "Flint Hospital\nBayside Apartments\nBayside VIP\nCapitol\nTRES HQ\n\
 								TRAF HQ\nTRES Recruitment\nEl Quebrados Hospital\nLas Barranca Bank\nFort Carsonal Hospital", "Okay", "Cancel");
 						}
 						case 5: 

@@ -1520,7 +1520,7 @@ native IsValidVehicle(vehicleid);
 #define		MAX_HOSPITALS				(18)
 #define		MAX_HOSPITALBEDS			(10)
 #define		MAX_DOCHOSPITALBEDS			(3)
-#define		MAX_DELIVERY_POINTS			(21)
+#define		MAX_DELIVERY_POINTS			(22)
 
 // hospital location definitions
 #define		HOSPITAL_ALLSAINTS			(0)
@@ -1531,7 +1531,7 @@ native IsValidVehicle(vehicleid);
 #define 	HOSPITAL_LASVENTURAS		(5)
 #define		HOSPITAL_FORTCARSON			(6)
 #define		HOSPITAL_ANGELPINE			(7)
-#define		HOSPITAL_BAYSIDE			(8)
+#define		HOSPITAL_FLINT				(8)
 #define		HOSPITAL_DEMORGAN			(9)
 #define 	HOSPITAL_DOCJAIL			(10)
 #define		HOSPITAL_LSVIP				(11)

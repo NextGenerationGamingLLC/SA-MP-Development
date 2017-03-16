@@ -266,7 +266,7 @@ GetHospitalName(iHospital)
 		case HOSPITAL_LASVENTURAS: string = "Las Venturas";
 		case HOSPITAL_FORTCARSON: string = "Fort Carson";
 		case HOSPITAL_ANGELPINE: string = "Angel Pine";
-		case HOSPITAL_BAYSIDE: string = "Bayside";
+		case HOSPITAL_FLINT: string = "Flint County";
 		case HOSPITAL_DEMORGAN: string = "DeMorgan";
 		case HOSPITAL_DOCJAIL: string = "DOC Jail";
 		case HOSPITAL_LSVIP: string = "LS VIP";
@@ -339,7 +339,7 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospital][0]);
 
 		switch(iHospital) {
-			case 3, 17: {
+			case 3, 4, 7, 8, 16: {
 				TRTax += HospitalSpawnInfo[iHospital][1]; // NE Hospitals
 				format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
 				GroupPayLog(8, string);
@@ -434,7 +434,7 @@ ReturnDeliveryPoint(iDPID)
 		case 8: iPoint = HOSPITAL_SANFIERRO;
 		case 9: iPoint = HOSPITAL_SANFIERRO;
 		case 10: iPoint = HOSPITAL_ELQUEBRADOS;
-		case 11: iPoint = HOSPITAL_BAYSIDE;
+		case 11: iPoint = HOSPITAL_FLINT;
 		case 12: iPoint = HOSPITAL_DEMORGAN;
 		case 13: iPoint = HOSPITAL_LASVENTURAS;
 		case 14: iPoint = HOSPITAL_ANGELPINE;
@@ -444,6 +444,7 @@ ReturnDeliveryPoint(iDPID)
 		case 18: iPoint = HOSPITAL_PALOMINO;
 		case 19: iPoint = HOSPITAL_PALOMINO; 
 		case 20: iPoint = HOSPITAL_LASVENTURAS;
+		case 21: iPoint = HOSPITAL_FLINT;
 	}
 	
 	return iPoint;

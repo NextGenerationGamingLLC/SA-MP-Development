@@ -303,7 +303,7 @@ CMD:travel(playerid, params[])
 			if(isnull(params))
 			{
 				SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /travel [location]");
-				SendClientMessageEx(playerid, COLOR_GRAD1, "Locations: LS, SF, RC, LSVIP, SFVIP, LVVIP, FC, BAYSIDE");
+				SendClientMessageEx(playerid, COLOR_GRAD1, "Locations: LS, SF, RC, LSVIP, SFVIP, LVVIP, APVIP, FC, BAYSIDE, FLINT");
 				return 1;
 			}
 
@@ -414,6 +414,29 @@ CMD:travel(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
 				}
 			}
+			if(strcmp(params,"apvip",true) == 0)
+			{
+				if (GetPlayerState(playerid) == 2)
+				{
+					new tmpcar = GetPlayerVehicleID(playerid);
+					SetVehiclePos(tmpcar, -2106.056396, -2403.133056, 31.089097);
+					SetVehicleZAngle(tmpcar, 232.05); // Sets the direction in which the vehicle faces
+					if(GetPVarInt(playerid, "tpDeliverVehTimer") > 0)
+						SetPVarInt(playerid, "tpJustEntered", 1);
+					SetPlayerFacingAngle(playerid, 232.05);
+					fVehSpeed[playerid] = 0.0;
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to the VIP Lounge with your vehicle.");
+					SetPlayerInterior(playerid,0);
+					PlayerInfo[playerid][pInt] = 0;
+					SetPlayerVirtualWorld(playerid, 0);
+					PlayerInfo[playerid][pVW] = 0;
+
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+				}
+			}
 			if(strcmp(params,"lvvip",true) == 0)
 			{
 				if (GetPlayerState(playerid) == 2)
@@ -479,6 +502,29 @@ CMD:travel(playerid, params[])
 					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
 				}
 			}
+			if(strcmp(params,"flint",true) == 0)
+			{
+				if (GetPlayerState(playerid) == 2)
+				{
+					new tmpcar = GetPlayerVehicleID(playerid);
+					SetVehiclePos(tmpcar, -79.608451, -1192.061157, 1.463104);
+					SetVehicleZAngle(tmpcar, 73.97);
+					if(GetPVarInt(playerid, "tpDeliverVehTimer") > 0)
+						SetPVarInt(playerid, "tpJustEntered", 1);
+					SetPlayerFacingAngle(playerid, 73.97);
+					fVehSpeed[playerid] = 0.0;
+					SendClientMessageEx(playerid, COLOR_YELLOW, "VIP: You have traveled to Flint County with your vehicle.");
+					SetPlayerInterior(playerid,0);
+					PlayerInfo[playerid][pInt] = 0;
+					SetPlayerVirtualWorld(playerid, 0);
+					PlayerInfo[playerid][pVW] = 0;
+
+				}
+				else
+				{
+					SendClientMessageEx(playerid, COLOR_GRAD1, "   You are not in a vehicle!");
+				}
+			}			
 		}
 	}
 	return 1;

@@ -15,12 +15,12 @@
 
 				Current Developers:
 								*** Director of SA:MP Development:
-								    Shane
+								    Vacant
 
 								**  Development Staff:
+									Connolly
 									Miguel (s0nic)
 									Farva
-									Connolly
 				Past Developers:
 								*** Director of SA:MP Development:
 									Dom
@@ -36,6 +36,7 @@
 									Donuts
 									Mo Cena
 									Calgon
+									Shane
 
 								** 	Developers:
 									AlexR
@@ -80,7 +81,7 @@
 /*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
-#define SERVER_GM_TEXT "NG:RP v3.0.417"
+#define SERVER_GM_TEXT "NG:RP v3.0.419"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
