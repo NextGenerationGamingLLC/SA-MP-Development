@@ -5450,6 +5450,8 @@ CMD:nrn(playerid, params[])
 			if((PlayerInfo[playerid][pSMod] == 1 || PlayerInfo[playerid][pWatchdog] >= 2) && (PlayerInfo[giveplayerid][pSMod] == 1 || PlayerInfo[giveplayerid][pWatchdog] >= 2)) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot use this command on this person!");
 
 			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has offered %s a free name change because their name is non-RP.", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid));
+			format(szMiscArray, sizeof(szMiscArray), "%s (SQL ID: %d) has offered %s (SQL ID: %d) a free name change because their name is non-RP.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid));
+			Log("logs/nrnlog.log", szMiscArray);
 			foreach(new i: Player)
 			{
 				if(PlayerInfo[i][pSMod] == 1 || PlayerInfo[i][pWatchdog] >= 2)

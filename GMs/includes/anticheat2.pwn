@@ -771,12 +771,13 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 		++PlayerSniperShots[playerid];	
 	}
-	if(GetPVarInt(playerid, "FireStart") == 1) {
+/*	if(GetPVarInt(playerid, "FireStart") == 1) {
 		if(fX != 0 && fY != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE) {
 
 			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
 		}
 	}
+*/
 	
 	
 	#if defined AC_DEBUG

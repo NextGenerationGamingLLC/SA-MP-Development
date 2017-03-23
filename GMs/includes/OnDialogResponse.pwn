@@ -12217,7 +12217,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			{
 				if(!gNews[i] && InsideMainMenu{i} != 1 && InsideTut{i} != 1 && ActiveChatbox[i] != 0) SendClientMessage(i, TEAM_GROVE_COLOR, advert);
 			}
-			format(advert, sizeof(advert), "%s -- (%d)", advert, GetPlayerSQLId(reportid));
+			format(advert, sizeof(advert), "%s -- (SQLID: %d) | Accepted by: %s -- (SQLID: %d)", advert, GetPlayerSQLId(reportid), GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 			Log("logs/pads.log", advert);
 
 			/*if(Homes[reportid] > 0 && AdvertType[reportid] == 1 && !PlayerInfo[playerid][pShopNotice])

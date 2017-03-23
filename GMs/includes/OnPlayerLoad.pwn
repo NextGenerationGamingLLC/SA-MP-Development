@@ -630,7 +630,6 @@ public OnPlayerLoad(playerid)
 		Log("logs/security.log", string);
 		PlayerInfo[playerid][pAdmin] = 0;
 	}
-	DayDedicatedPlayer(playerid);
 	if (PlayerInfo[playerid][pAdmin] > 0)
 	{
 		if(PlayerInfo[playerid][pAdmin] == 1)
@@ -870,6 +869,7 @@ public OnPlayerLoad(playerid)
 			DeletePVar(playerid, "pBirthday");
 		}
 	}
+	DayDedicatedPlayer(playerid);
 	if(GetPVarInt(playerid, "pBirthday") == 1)
 	{
 		if(PlayerInfo[playerid][pReceivedBGift] != 1)

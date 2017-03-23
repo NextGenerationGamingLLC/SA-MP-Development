@@ -124,6 +124,7 @@ DayDedicatedPlayer(playerid)
 	{
 		GiftPlayer(MAX_PLAYERS, playerid);
 		format(PlayerInfo[playerid][pDedicatedTimestamp], 11, "%d-%02d-%02d", thedate[0], thedate[1], thedate[2]);
+		PlayerInfo[playerid][pGiftTime] = 0;
 	} 
 	/*
 	else if(thedate[2] == 1 && thedate[1] != tdate[1])

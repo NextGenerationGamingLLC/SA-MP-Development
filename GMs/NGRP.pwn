@@ -15,10 +15,9 @@
 
 				Current Developers:
 								*** Director of SA:MP Development:
-								    Vacant
+								    Connolly
 
 								**  Development Staff:
-									Connolly
 									Miguel (s0nic)
 									Farva
 				Past Developers:
@@ -81,7 +80,7 @@
 /*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
-#define SERVER_GM_TEXT "NG:RP v3.0.419"
+#define SERVER_GM_TEXT "NG:RP v3.0.420"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
@@ -261,7 +260,7 @@
 #include "./includes/group/citizenship.pwn"
 //#include "./includes/group/contract.pwn"
 #include "./includes/group/hitman.pwn"
-#include "./includes/group/fires.pwn"
+//#include "./includes/group/fires.pwn"
 #include "./includes/group/gov.pwn"
 #include "./includes/group/groupcore.pwn"
 #include "./includes/group/judicial.pwn"

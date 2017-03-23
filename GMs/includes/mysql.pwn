@@ -5318,6 +5318,9 @@ public Group_QueryFinish(iType, iExtraID) {
 			cache_get_field_content(iIndex, "GovAnnouncement", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iGovAccess] = strval(szResult);
 
+			cache_get_field_content(iIndex, "TreasuryAccess", szResult, MainPipeline);
+			arrGroupData[iIndex][g_iTreasuryAccess] = strval(szResult);
+
 			cache_get_field_content(iIndex, "FreeNameChange", szResult, MainPipeline);
 			arrGroupData[iIndex][g_iFreeNameChange] = strval(szResult);
 

@@ -555,7 +555,7 @@ CMD:deliverpt(playerid, params[])
 						GivePlayerCash(playerid, 20000);
 
 						//SendClientMessageEx(giveplayerid, TEAM_CYAN_COLOR, "Doc: Your medical bill comes in at $1000. Have a nice day!");
-                        format(string,sizeof(string),"You received $10000 for successfully delivering the patient!");
+                        format(string,sizeof(string),"You received $20,000 for successfully delivering the patient!");
                         SendClientMessageEx(playerid, TEAM_CYAN_COLOR, string);
 						
                         KillEMSQueue(giveplayerid);

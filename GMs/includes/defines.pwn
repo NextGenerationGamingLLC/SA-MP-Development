@@ -162,8 +162,10 @@ native IsValidVehicle(vehicleid);
 #define			BODY_PART_RIGHT_LEG	8
 #define			BODY_PART_HEAD		9
 
+/*
 #define			MAX_STRUCTURE_FIRES			100
 #define			MAX_FIRE_HEALTH				1000
+*/
 
 // strcpy - Simon / Y_LESS
 /*#define strcpy(%0,%1,%2) \
@@ -646,6 +648,7 @@ native IsValidVehicle(vehicleid);
 #define 		DIALOG_GROUP_INTRADIOACC	(3374)
 #define 		DIALOG_GROUP_BUGACC			(3375)
 #define 		DIALOG_GROUP_GOVACC			(3376)
+#define 		DIALOG_GROUP_TRESACC		(3399)
 #define 		DIALOG_GROUP_FREENC			(3377)
 #define 		DIALOG_GROUP_FREEDIVNC		(3378)
 #define 		DIALOG_GROUP_SPIKES			(3379)

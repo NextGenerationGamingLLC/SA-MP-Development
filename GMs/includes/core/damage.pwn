@@ -35,7 +35,7 @@
 	* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <YSI\y_hooks>
-
+/*
 static Float:WeaponRange[] = {
 
 	10.0, // 0 - Fist
@@ -77,7 +77,7 @@ static Float:WeaponRange[] = {
 	55.0, // 36 - Heatseeker
 	5.1, // 37 - Flamethrower
 	75.0  // 38 - Minigun
-};
+};*/
 
 
 new HitStatus[MAX_PLAYERS];
@@ -143,11 +143,13 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			}
 		}
 	}
+/*
 	if(GetPVarInt(playerid, "FireStart") == 1) {
 		if(fX != 0 && fY != 0 && hittype != BULLET_HIT_TYPE_PLAYER && hittype != BULLET_HIT_TYPE_VEHICLE) {
 			if(gettime() > GetPVarInt(playerid, "fCooldown")) CreateStructureFire(fX, fY, fZ, GetPlayerVirtualWorld(playerid));
 		}
 	}
+*/
  	if(hittype != BULLET_HIT_TYPE_NONE ) // Bullet Crashing uses just this hittype
     {
         if(!(-1000.0 <= fX <= 1000.0) || !(-1000.0 <= fY <= 1000.0) || !(-1000.0 <= fZ <= 1000.0)) // a valid offset, it's impossible that a offset bigger than 1000 is legit (also less than -1000.0 is impossible, not used by this hack, but still, let's check for it, just for the future, who knows what hacks will appear). The object with biggest offset is having ~700-800 radius.
@@ -322,7 +324,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		}
 
 		if(!IsPlayerStreamedIn(playerid, damagedid) || !IsPlayerStreamedIn(damagedid, playerid)) return 1;
-
+		/*
 		new Float:fOriginX, Float:fOriginY, Float:fOriginZ, Float:fHitPosX, Float:fHitPosY, Float:fHitPosZ,
 			Float:x, Float:y, Float:z;
 
@@ -341,7 +343,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		if(fDistance > WeaponRange[weaponid]) return 1;
 		new Float:fHitDist = GetPlayerDistanceFromPoint(damagedid, fHitPosX, fHitPosY, fHitPosZ),
 		iVehCheck = IsPlayerInAnyVehicle(damagedid);
-		if ((!iVehCheck && fHitDist > 20.0) || fHitDist > 50.0) return 1;
+		if ((!iVehCheck && fHitDist > 20.0) || fHitDist > 50.0) return 1;*/
 
 		new vehmodel = GetVehicleModel(GetPlayerVehicleID(playerid));
 		if(GetPVarInt(playerid, "EventToken") == 0 && !GetPVarType(playerid, "IsInArena") && (vehmodel != 425 && vehmodel != 432 && vehmodel != 447 && vehmodel != 464 && vehmodel != 476 && vehmodel != 520) && GetWeaponSlot(weaponid) != -1)
@@ -460,8 +462,9 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	    	else if(GetPlayerState(damagedid) == PLAYER_STATE_ONFOOT)
 			{
 				if(GetPlayerCameraMode(damagedid) == 53 || GetPlayerCameraMode(damagedid) == 7 || GetPlayerCameraMode(damagedid) == 8 || GetPlayerCameraMode(damagedid) == 51) return SendClientMessageEx(playerid, COLOR_WHITE, "You cannot bag players that are actively aiming.");
-				if(HelpingNewbie[damagedid] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot taze an advisor while they are helping someone.");
-				if(PlayerInfo[damagedid][pHospital] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Players in hospital cannot be tazed!");
+				if((PlayerInfo[damagedid][pAdmin] >= 2 || PlayerInfo[damagedid][pWatchdog] >= 2) && PlayerInfo[damagedid][pTogReports] != 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Admins can not be bagged!");
+				if(HelpingNewbie[damagedid] != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot bag an advisor while they are helping someone.");
+				if(PlayerInfo[damagedid][pHospital] == 1) return SendClientMessageEx(playerid, COLOR_GRAD2, "Players in hospital cannot be bagged!");
 				new Float:fHealth, Float:fArmour;
 
 				GetHealth(damagedid, fHealth);

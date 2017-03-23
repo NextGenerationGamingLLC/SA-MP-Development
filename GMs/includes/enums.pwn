@@ -89,6 +89,7 @@ enum eGroupData {
 	g_iDeptRadioAccess,
 	g_iIntRadioAccess,
 	g_iGovAccess,
+	g_iTreasuryAccess,
 	g_hDutyColour,
 	g_hRadioColour,
 	g_iLockerStock,
@@ -1823,16 +1824,6 @@ enum garInfo
 	gar_AreaID_int,
 };
 
-
-enum eStructureFires {
-	Float:fire_fPos[3],
-	fire_iObjectID,
-	fire_iAreaID,
-	Text3D:fire_iTextID,
-	fire_iHealth,
-	fire_iTypeID
-}
-
 enum eHospitalBedData {
 	bool:bBedOccupied[MAX_HOSPITALBEDS],
 	iCountDown[MAX_HOSPITALBEDS],
@@ -1882,6 +1873,18 @@ enum e_JobData {
 	jAreaID
 }
 new JobData[MAX_JOBPOINTS][e_JobData];
+
+/*
+enum e_FireData {
+	Float: fPos[3],
+	fObjectID,
+	fAreaID,
+	Text3D: fTextID,
+	fHealth,
+	fTypeID
+}
+new FireData[MAX_FIRES][e_FireData];
+*/
 
 /*enum e_JobVehData {
 	jveh_iTypeID,
