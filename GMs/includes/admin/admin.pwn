@@ -48,17 +48,18 @@ stock IsAdminLevel(playerid, level, warning = 1) {
 	return 0;
 }
 
-stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: IRC = true)
+stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: Discord = true)
 {
 	foreach(new i: Player) {
 		if(PlayerInfo[i][pAdmin] >= iLevel && (bUndercover || !PlayerInfo[i][pTogReports])) {
 			SendClientMessageEx(i, hColor, szMessage);
 		}
 	}
-	if(!IRC && iLevel <= 2) IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
-	if(strfind(szMessage, "AdmWarning", false) != -1) {
+	if(!Discord && iLevel <= 2) SendDiscordMessage(0, szMessage);
+	if(strfind(szMessage, "AdmWarning", false) != -1)
+	{
 		StripColorEmbedding(szMessage);
-		IRC_Say(BotID[0], IRC_CHANNEL_ADMWARNINGS, szMessage); // Route AdmWarnings to IRC.
+		SendDiscordMessage(1, szMessage); // Route AdmWarnings to Discord
 	}
 	return 1;
 }
@@ -1918,7 +1919,7 @@ CMD:admin(playerid, params[])  {
 			}
 
 			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-			IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
+			SendDiscordMessage(0, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/a)dmin [admin chat]");
 	}
@@ -1946,7 +1947,7 @@ CMD:headadmin(playerid, params[])  {
 			}
 
 			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-			IRC_Say(BotID[0], IRC_CHANNEL_HEADADMIN, szMessage);
+			SendDiscordMessage(2, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/ha)eadmin [Head admin+ chat]");
 	}

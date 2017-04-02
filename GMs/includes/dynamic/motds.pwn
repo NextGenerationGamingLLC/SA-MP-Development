@@ -61,7 +61,7 @@ CMD:amotd(playerid, params[])
 		ABroadCast( COLOR_LIGHTRED, string, 4);
 		SendClientMessageEx(playerid, COLOR_WHITE, "You've adjusted the Admin MOTD.");
 		g_mysql_SaveMOTD();
-		IRC_SetChannelTopic(BotID[0], IRC_CHANNEL_ADMIN, AdminMOTD);
+		//IRC_SetChannelTopic(BotID[0], IRC_CHANNEL_ADMIN, AdminMOTD);
 	}
 	return 1;
 }

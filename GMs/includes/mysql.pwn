@@ -1342,9 +1342,9 @@ public OnQueryError(errorid, error[], callback[], query[], connectionHandle) {
 		format(szMiscArray, sizeof(szMiscArray), "MYSQL [%d]: %d, %s, in callback: %s.", iErrorID, errorid, error, callback);
 	}
 	else format(szMiscArray, sizeof(szMiscArray), "MYSQL (THREADED) [%d]: %d, %s, in callback: %s.", iErrorID, errorid, error, callback);
-	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szMiscArray);
+	SendDiscordMessage(3, szMiscArray);
 	format(szMiscArray, sizeof(szMiscArray), "     Query: %s", query);
-	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szMiscArray);
+	SendDiscordMessage(3, szMiscArray);
 	iErrorID++;
 }
 

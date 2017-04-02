@@ -97,7 +97,7 @@
 #include <YSI\y_utils>
 #include <mSelection>
 #include <gvar>
-#include <irc>
+#include <discord-connector>
 #include <geo_ip>
 #include <easyDialog>
 #include <callbacks>
@@ -120,7 +120,7 @@
 #include "./includes/textdraws.pwn"
 #include "./includes/streamer.pwn"
 #include "./includes/OnDialogResponse.pwn"
-#include "./includes/irc.pwn"
+#include "./includes/discord.pwn"
 #include "./includes/walkstyle.pwn"
 
 #if defined AREA_DEBUG
