@@ -1196,6 +1196,7 @@ CMD:bopen(playerid, params[])
 {
 	if(PlayerInfo[playerid][pBackpack] > 0)
 	{
+		if(dr_iPlayerTimeStamp[playerid] > gettime() - 60) return SendClientMessageEx(playerid, COLOR_GRAD1, "You have been injured in the last minute");
 		if(!IsBackpackAvailable(playerid)) {
 			SendClientMessageEx(playerid, COLOR_GREY, "You cannot use your backpack at this moment.");
 			return 1;

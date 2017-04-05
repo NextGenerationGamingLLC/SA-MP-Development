@@ -279,7 +279,7 @@ hook OnPlayerUpdate(playerid) {
 					if(IsPlayerAimingAt(playerid, arrFires[n][fire_fPos][0], arrFires[n][fire_fPos][1], arrFires[n][fire_fPos][2], 3) \
 					&& IsPlayerInRangeOfPoint(playerid, 20, arrFires[n][fire_fPos][0], arrFires[n][fire_fPos][1], arrFires[n][fire_fPos][2])) {
 
-						arrFires[n][fire_iHealth] -=2;
+						arrFires[n][fire_iHealth] -=5;
 						format(szMiscArray, sizeof(szMiscArray), "%d/%d\nID%d", arrFires[n][fire_iHealth], MAX_FIRE_HEALTH, n);
 						UpdateDynamic3DTextLabelText(arrFires[n][fire_iTextID], 0xFFFFFFFF, szMiscArray);
 						if(arrFires[n][fire_iHealth] <=0)
@@ -315,8 +315,10 @@ hook OnPlayerLeaveDynamicArea(playerid, areaid) {
 forward OnEnterFire(i, fireid);
 public OnEnterFire(i, fireid) {
 
+	new
+		Float:oX, Float:oY, Float:oZ;
+		
 	if(GetPVarType(i, "pGodMode")) return 1;
-	if(GetPVarType(i, "pBoomBox")) return 1;
 	if(IsValidStructureFire(fireid)) {
 
 		if(!GetPVarType(i, "pInFire")) SetTimerEx("Fire_HealthTimer", 1000, false, "i", i);

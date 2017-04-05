@@ -2771,7 +2771,8 @@ new ROB_MAX_PERCENTAGE = 30,
 
 //new Text3D:PlayerLabel[MAX_PLAYERS];
 
-new DCC_Channel:g_AdminChannelId, DCC_Channel:g_AdminWarningsChannelId, DCC_Channel:g_HeadAdminChannelId, DCC_Channel:g_ServerErrorsChannelId;
+/* IRC/Slack */
+new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], IRC_CHANNEL_SERVERERRORS[32], IRC_CHANNEL_ADMWARNINGS[32], BotID[MAX_BOTS], BotGroupID;
 
 // Crate System.
 new 

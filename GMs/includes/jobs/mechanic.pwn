@@ -125,7 +125,6 @@ public FixVehicle(playerid, vehicleid)
 	TogglePlayerControllable(playerid, 1);
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0, 1);
 	ClearAnimationsEx(playerid);
-	SetPlayerSkin(playerid, GetPlayerSkin(playerid));
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 	PlayerInfo[playerid][pMechTime] = gettime()+60;
 	SetVehicleHealth(vehicleid, 1000.0);
