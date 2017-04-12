@@ -128,8 +128,8 @@ CMD:buylevel(playerid, params[])
 					        {
 					            PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
@@ -139,8 +139,8 @@ CMD:buylevel(playerid, params[])
 					        {
 	            				PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL*5;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*5);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 500 credits.", GetPlayerNameEx(playerid));
@@ -150,8 +150,8 @@ CMD:buylevel(playerid, params[])
 					        {
 					            PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
@@ -161,8 +161,8 @@ CMD:buylevel(playerid, params[])
 							{
 							    PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL*10;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*10);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 1000 credits.", GetPlayerNameEx(playerid));
@@ -172,8 +172,8 @@ CMD:buylevel(playerid, params[])
 					        {
 					            PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
@@ -183,8 +183,8 @@ CMD:buylevel(playerid, params[])
 							{
 							    PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL*15;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*15);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 1500 credits.", GetPlayerNameEx(playerid));
@@ -194,8 +194,8 @@ CMD:buylevel(playerid, params[])
 					        {
 					            PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
@@ -205,8 +205,8 @@ CMD:buylevel(playerid, params[])
 							{
 							    PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL*20;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*20);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 2000 credits.", GetPlayerNameEx(playerid));
@@ -216,8 +216,8 @@ CMD:buylevel(playerid, params[])
 					        {
 					            PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 100 credits.", GetPlayerNameEx(playerid));
@@ -227,8 +227,8 @@ CMD:buylevel(playerid, params[])
 							{
 							    PlayerInfo[szReferrer][pCredits] += CREDITS_AMOUNT_REFERRAL*25;
 	            				PlayerInfo[szReferrer][pRefers] ++;
-								format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
-								mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[szReferrer][pCredits], GetPlayerNameExt(szReferrer));
+								mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(szReferrer), GetPlayerSQLId(szReferrer), CREDITS_AMOUNT_REFERRAL*25);
 								Log("logs/referral.log", szString);
 				        		format(string, sizeof(string), "Your friend '%s' that you referred to the server has reached level 3. Therefore you have received 2500 credits.", GetPlayerNameEx(playerid));
@@ -236,8 +236,8 @@ CMD:buylevel(playerid, params[])
 							}
 					    }
 					    else {
-					        format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `PendingRefReward`=1 WHERE `Username`='%s'", PlayerInfo[playerid][pReferredBy]);
-					        mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", REWARD_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
+					        mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `PendingRefReward`=1 WHERE `Username`='%s'", PlayerInfo[playerid][pReferredBy]);
+					        mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", REWARD_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
 						}
 					}
 				}

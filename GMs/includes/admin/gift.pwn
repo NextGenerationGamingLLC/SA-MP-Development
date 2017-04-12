@@ -3590,7 +3590,7 @@ CMD:setcode(playerid, params[])
 		format(GiftCode, 32, code);
 		GiftCodeBypass = bypass;
         g_mysql_SaveMOTD();
-		mysql_function_query(MainPipeline, "UPDATE `accounts` SET `GiftCode` = 0;", false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, "UPDATE `accounts` SET `GiftCode` = 0;", "OnQueryFinish", "i", SENDDATA_THREAD);
 		foreach(new i : Player)
 		{
 			if(PlayerInfo[i][pGiftCode] == 1)

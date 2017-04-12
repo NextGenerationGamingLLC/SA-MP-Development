@@ -50,7 +50,7 @@ task Inactive_ResourceCheck[60000 * 60]() { // Every 1 hour.
 
 Inactive_CheckHouses() {
 
-	mysql_function_query(MainPipeline, "SELECT id FROM houses WHERE `Inactive` = 0 AND `Expire` < UNIX_TIMESTAMP(NOW()) AND `Ignore` = 0", true, "Inactive_OnCheckHouses", "");
+	mysql_tquery(MainPipeline, "SELECT id FROM houses WHERE `Inactive` = 0 AND `Expire` < UNIX_TIMESTAMP(NOW()) AND `Ignore` = 0", true, "Inactive_OnCheckHouses", "");
 }
 */
 
@@ -89,7 +89,7 @@ Inactive_ProcessProperty(i, type) {
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Apartment` = '-1', `Apartment2` = '-1', `Apartment3` = '-1' WHERE `id` = '%d'", HouseInfo[i][hOwnerID]);
 		}
 	}
-	mysql_function_query(MainPipeline, szMiscArray, false, "Inactive_OnProcessProperty", "iii", i, type, iOwnerID);
+	mysql_tquery(MainPipeline, szMiscArray, false, "Inactive_OnProcessProperty", "iii", i, type, iOwnerID);
 }
 
 forward Inactive_OnProcessProperty(i, type, iOwnerID);

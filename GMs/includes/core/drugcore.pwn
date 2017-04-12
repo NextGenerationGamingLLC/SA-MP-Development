@@ -483,33 +483,31 @@ Character_Actor(playerid, choice)
 
 stock LoadPlants() {
 	printf("[LoadPlants] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `plants`", true, "PlantsLoadQuery", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `plants`", "PlantsLoadQuery", "");
 }
 
 forward PlantsLoadQuery();
 public PlantsLoadQuery() {
 
 	new
-		iFields,
 		iRows,
-		iIndex,
-		szResult[128];
+		iIndex;
 
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 
 	while((iIndex < iRows))
 	{
-		cache_get_field_content(iIndex, "Owner", szResult, MainPipeline); Plants[iIndex][pOwner] = strval(szResult);
-		cache_get_field_content(iIndex, "Object", szResult, MainPipeline); Plants[iIndex][pObject] = strval(szResult);
-		cache_get_field_content(iIndex, "PlantType", szResult, MainPipeline); Plants[iIndex][pPlantType] = strval(szResult);
-		cache_get_field_content(iIndex, "PositionX", szResult, MainPipeline); Plants[iIndex][pPos][0] = floatstr(szResult);
-		cache_get_field_content(iIndex, "PositionY", szResult, MainPipeline); Plants[iIndex][pPos][1] = floatstr(szResult);
-		cache_get_field_content(iIndex, "PositionZ", szResult, MainPipeline); Plants[iIndex][pPos][2] = floatstr(szResult);
-		cache_get_field_content(iIndex, "Virtual", szResult, MainPipeline); Plants[iIndex][pVirtual] = strval(szResult);
-		cache_get_field_content(iIndex, "Interior", szResult, MainPipeline); Plants[iIndex][pInterior] = strval(szResult);
-		cache_get_field_content(iIndex, "Growth", szResult, MainPipeline); Plants[iIndex][pGrowth] = strval(szResult);
-		cache_get_field_content(iIndex, "Expires", szResult, MainPipeline); Plants[iIndex][pExpires] = strval(szResult);
-		cache_get_field_content(iIndex, "DrugsSkill", szResult, MainPipeline); Plants[iIndex][pDrugsSkill] = strval(szResult);
+		cache_get_value_name_int(iIndex, "Owner", Plants[iIndex][pOwner]);
+		cache_get_value_name_int(iIndex, "Object", Plants[iIndex][pObject]);
+		cache_get_value_name_int(iIndex, "PlantType", Plants[iIndex][pPlantType]);
+		cache_get_value_name_float(iIndex, "PositionX", Plants[iIndex][pPos][0]);
+		cache_get_value_name_float(iIndex, "PositionY", Plants[iIndex][pPos][1]);
+		cache_get_value_name_float(iIndex, "PositionZ", Plants[iIndex][pPos][2]);
+		cache_get_value_name_int(iIndex, "Virtual", Plants[iIndex][pVirtual]);
+		cache_get_value_name_int(iIndex, "Interior", Plants[iIndex][pInterior]);
+		cache_get_value_name_int(iIndex, "Growth", Plants[iIndex][pGrowth]);
+		cache_get_value_name_int(iIndex, "Expires", Plants[iIndex][pExpires]);
+		cache_get_value_name_int(iIndex, "DrugsSkill", Plants[iIndex][pDrugsSkill]);
 
 		if(Plants[iIndex][pOwner] != 0)
 		{
@@ -525,10 +523,10 @@ public PlantsLoadQuery() {
 stock SavePlant(plant)
 {
 	new query[300];
-	format(query, sizeof(query), "UPDATE `plants` SET `Owner` = %d, `Object` = %d, `PlantType` = %d, `PositionX` = %f, `PositionY` = %f, `PositionZ` = %f, `Virtual` = %d, \
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `plants` SET `Owner` = %d, `Object` = %d, `PlantType` = %d, `PositionX` = %f, `PositionY` = %f, `PositionZ` = %f, `Virtual` = %d, \
 	`Interior` = %d, `Growth` = %d, `Expires` = %d, `DrugsSkill` = %d WHERE `PlantID` = %d",Plants[plant][pOwner], Plants[plant][pObject], Plants[plant][pPlantType], Plants[plant][pPos][0], Plants[plant][pPos][1], Plants[plant][pPos][2],
 	Plants[plant][pVirtual], Plants[plant][pInterior], Plants[plant][pGrowth], Plants[plant][pExpires], Plants[plant][pDrugsSkill], plant+1);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 

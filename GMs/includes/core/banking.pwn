@@ -45,7 +45,7 @@ task Bank_VaultCheck[60000 * 15]() {
 
 Bank_LoadBank() {
 	// Current Main Server vault: 216.000.000.000. Above 32-bit int limit. Divide by 1000 from bigint column to get a readable number for SA:MP.
-	mysql_function_query(MainPipeline, "SELECT money / 1000 FROM `bank` WHERE `id` = '1'", true, "Bank_OnLoadBank", "");
+	mysql_tquery(MainPipeline, "SELECT money / 1000 FROM `bank` WHERE `id` = '1'", true, "Bank_OnLoadBank", "");
 }
 
 forward Bank_OnLoadBank();
@@ -63,18 +63,16 @@ public Bank_OnLoadBank() {
 
 Bank_UpdateBank(iAmount) {
 	
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `bank` SET `money` = money + %d WHERE `money` > 0", iAmount);
-	mysql_function_query(MainPipeline, szMiscArray, true, "Bank_OnUpdateBank", "i", iAmount);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `bank` SET `money` = money + %d WHERE `money` > 0", iAmount);
+	mysql_tquery(MainPipeline, szMiscArray, "Bank_OnUpdateBank", "i", iAmount);
 }
 
 forward Bank_OnUpdateBank(iAmount);
 public Bank_OnUpdateBank(iAmount) {
 
-	new iRows,
-		iFields;
+	new iRows;
+	cache_get_row_count(iRows);
 
-	cache_get_data(iRows, iFields, MainPipeline);
-	iRows = cache_affected_rows(MainPipeline);
 	if(iRows) {
 		
 		format(szMiscArray, sizeof(szMiscArray), "[LS BANK] Processed $%s", iAmount);
@@ -90,14 +88,15 @@ forward Bank_FetchData(playerid);
 public Bank_FetchData(playerid) {
 
 	new iRows,
-		iFields,
 		szMoney[16];
+	cache_get_row_count(iRows);
+	
+	if(iRows) {
+		cache_get_value_name(0, "money", szMoney, sizeof(szMoney));
 
-	cache_get_data(iRows, iFields, MainPipeline);
-	cache_get_field_content(0, "money", szMoney, MainPipeline, sizeof(szMoney));
-
-	format(szMiscArray, sizeof(szMiscArray), "[BANK]: Vault: {CCCCCC}$%s", szMoney);
-	SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+		format(szMiscArray, sizeof(szMiscArray), "[BANK]: Vault: {CCCCCC}$%s", szMoney);
+		SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
+	}
 	return 1;
 }
 
@@ -142,13 +141,13 @@ Bank_ProcessMoney(iAmount) {
 CMD:bankvault(playerid, params[]) {
 
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
-	mysql_function_query(MainPipeline, "SELECT `money` FROM `bank` WHERE `id` = '1'", true, "Bank_FetchData", "i", playerid);
+	mysql_tquery(MainPipeline, "SELECT `money` FROM `bank` WHERE `id` = '1'", "Bank_FetchData", "i", playerid);
 	return 1;
 }
 
 CMD:resetbank(playerid, params[]) {
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
-	mysql_function_query(MainPipeline, "UPDATE `bank` SET `money` = (SELECT SUM(`money`) FROM `accounts`) WHERE `id` = 1", false, "Bank_ResetVault", "i", playerid);
+	mysql_tquery(MainPipeline, "UPDATE `bank` SET `money` = (SELECT SUM(`money`) FROM `accounts`) WHERE `id` = 1", "Bank_ResetVault", "i", playerid);
 	return 1;
 }
 
@@ -156,7 +155,7 @@ forward Bank_ResetVault(playerid);
 public Bank_ResetVault(playerid) {
 
 	if(mysql_errno(MainPipeline)) SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong.");
-	mysql_function_query(MainPipeline, "SELECT `money` FROM `bank` WHERE `id` = '1'", true, "Bank_FetchData", "i", playerid);
+	mysql_tquery(MainPipeline, "SELECT `money` FROM `bank` WHERE `id` = '1'", "Bank_FetchData", "i", playerid);
 }
 
 /*

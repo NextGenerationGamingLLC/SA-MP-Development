@@ -91,11 +91,11 @@ CMD:staffban(playerid, params[])
 
 		if(iDays == 0) iExpireDate = 2147483640;
 
-		format(szMiscArray, sizeof szMiscArray, "INSERT INTO `staffbans` (`details`, `issuer`, `playerid`, `expiredate`, `created`) VALUES('%s', %d, %d, %d, %d)",
-			g_mysql_ReturnEscaped(szReason, MainPipeline),  GetPlayerSQLId(playerid), GetPlayerSQLId(iTarget), iExpireDate, iCreationDate);
+		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "INSERT INTO `staffbans` (`details`, `issuer`, `playerid`, `expiredate`, `created`) VALUES('%e', %d, %d, %d, %d)",
+			szReason,  GetPlayerSQLId(playerid), GetPlayerSQLId(iTarget), iExpireDate, iCreationDate);
 
 		// We have to make sure the query goes through before they can be staff banned.
-		mysql_function_query(MainPipeline, szMiscArray, true, "OnlineStaffBan", "ddsdd", playerid, iTarget, szReason, iCreationDate, iDays);
+		mysql_tquery(MainPipeline, szMiscArray, "OnlineStaffBan", "ddsdd", playerid, iTarget, szReason, iCreationDate, iDays);
 	}
 	else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
 
@@ -113,8 +113,8 @@ CMD:unstaffban(playerid, params[])
 
 		if(!PlayerInfo[iTarget][pStaffBanned]) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not staff banned.");
 
-		format(szMiscArray, sizeof szMiscArray, "UPDATE `staffbans` SET `status`=2 WHERE `playerid`=%d AND `status`=1", GetPlayerSQLId(iTarget));
-		mysql_function_query(MainPipeline, szMiscArray, true, "RemoveStaffBan", "dds", playerid, iTarget, szReason);
+		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `staffbans` SET `status`=2 WHERE `playerid`=%d AND `status`=1", GetPlayerSQLId(iTarget));
+		mysql_tquery(MainPipeline, szMiscArray, "RemoveStaffBan", "dds", playerid, iTarget, szReason);
 	}
 	else SendClientMessage(playerid, COLOR_GRAD2, "You're not authorised to use this command.");
 	return 1;
@@ -131,10 +131,10 @@ CMD:ostaffban(playerid, params[])
 
 		if(iDays < 0 || iDays > 7810) return SendClientMessage(playerid, COLOR_GRAD2, "You have specified an invalid amount of days. Days must be between 0 and 7,810.");
 
-		format(szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `AdminLevel` = 0, `HR` = 0, `AP` = 0, `Security` = 0, `ShopTech` = 0, `FactionModerator` = 0, `GangModerator` = 0, \
+		mysql_format(MainPipeline, szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `AdminLevel` = 0, `HR` = 0, `AP` = 0, `Security` = 0, `ShopTech` = 0, `FactionModerator` = 0, `GangModerator` = 0, \
 			`Undercover` = 0, `BanAppealer` = 0, `Helper` = 0, `pVIPMod` = 0, `SecureIP` = '0.0.0.0', `SeniorModerator` = 0, `BanAppealer` = 0, `ShopTech` = 0, `StaffBanned` = 1 WHERE `Username`= '%s' AND `AdminLevel` < %d AND `StaffBanned` = 0", szTarget, PlayerInfo[playerid][pAdmin]);
 
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineStaffBan", "dssd", playerid, szTarget, szReason, iDays);
+		mysql_tquery(MainPipeline, szMiscArray, "OfflineStaffBan", "dssd", playerid, szTarget, szReason, iDays);
 
 		for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szTarget[i] == '_') szTarget[i] = ' '; // Remove the underscore, looks nicer for the person using the command.
 
@@ -154,9 +154,9 @@ CMD:ounstaffban(playerid, params[])
 
 		if(IsPlayerConnected(ReturnUser(szTarget))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /unstaffban.");
 
-		format(szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `StaffBanned`=0 WHERE `Username`= '%s' AND `StaffBanned` = 1", szTarget, PlayerInfo[playerid][pAdmin]);
+		mysql_format(MainPipeline, szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `StaffBanned`=0 WHERE `Username`= '%s' AND `StaffBanned` = 1", szTarget, PlayerInfo[playerid][pAdmin]);
 
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineRemoveStaffBan", "ds", playerid, szTarget);
+		mysql_tquery(MainPipeline, szMiscArray, "OfflineRemoveStaffBan", "ds", playerid, szTarget);
 
 		for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szTarget[i] == '_') szTarget[i] = ' '; // Remove the underscore, looks nicer for the person using the command.
 
@@ -178,8 +178,8 @@ CMD:staffbans(playerid, params[])
 		{
 			if(PlayerInfo[i][pStaffBanned] == 1) 
 			{
-				format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `staffbans` WHERE `playerid`=%d", GetPlayerSQLId(i));
-				mysql_function_query(MainPipeline, szMiscArray, true, "DisplayStaffBan", "dd", playerid, i);
+				mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "SELECT * FROM `staffbans` WHERE `playerid`=%d", GetPlayerSQLId(i));
+				mysql_tquery(MainPipeline, szMiscArray, "DisplayStaffBan", "dd", playerid, i);
 			}
 		}
 
@@ -193,21 +193,21 @@ forward DisplayStaffBan(iPlayer, iBanned);
 public DisplayStaffBan(iPlayer, iBanned)
 {
 	new szReason[128], iIssuedBy, iCreated, iExpire;
-	new rows, fields;
-	cache_get_data(rows, fields);
+	new rows;
+	cache_get_row_count(rows);
 
 	if(rows > 0)
 	{
 		for(new row = 0; row < rows; row++)
 		{
-			cache_get_field_content(row, "details", szReason, MainPipeline, 128);
-			iIssuedBy = cache_get_field_content_int(row, "issuer", MainPipeline);
-			iCreated = cache_get_field_content_int(row, "created", MainPipeline);
-			iExpire = cache_get_field_content_int(row, "expiredate", MainPipeline);
+			cache_get_value_name(row, "details", szReason, 128);
+			cache_get_value_name_int(row, "issuer", iIssuedBy);
+			cache_get_value_name_int(row, "created", iCreated);
+			cache_get_value_name_int(row, "expiredate", iExpire);
 		}
 
-		format(szMiscArray, sizeof szMiscArray, "SELECT `Username` FROM `accounts` WHERE `id`=%d", iIssuedBy);
-		mysql_function_query(MainPipeline, szMiscArray, true, "FetchIssuer", "ddsddd", iPlayer, iBanned, szReason, iIssuedBy, iCreated, iExpire);
+		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "SELECT `Username` FROM `accounts` WHERE `id`=%d", iIssuedBy);
+		mysql_tquery(MainPipeline, szMiscArray, "FetchIssuer", "ddsddd", iPlayer, iBanned, szReason, iIssuedBy, iCreated, iExpire);
 	}
 	return 1;
 }
@@ -215,15 +215,15 @@ public DisplayStaffBan(iPlayer, iBanned)
 forward FetchIssuer(iPlayer, iBanned, szReason[], iIssuedBy, iCreated, iExpire);
 public FetchIssuer(iPlayer, iBanned, szReason[], iIssuedBy, iCreated, iExpire)
 {
-	new rows, fields;
-	cache_get_data(rows, fields);
+	new rows;
+	cache_get_row_count(rows);
 	if(rows > 0)
 	{
 		new szUsername[MAX_PLAYER_NAME];
 
 		for(new row = 0; row < rows; row++)
 		{
-			cache_get_field_content(row, "Username", szUsername, MainPipeline, MAX_PLAYER_NAME);
+			cache_get_value_name(row, "Username", szUsername, MAX_PLAYER_NAME);
 		}
 
 		format(szMiscArray, sizeof szMiscArray, "%s (ID: %d) banned by %s, reason: %s - expire date: %s", GetPlayerNameEx(iBanned), iBanned, szUsername, szReason, date(iExpire, 1));
@@ -235,10 +235,10 @@ public FetchIssuer(iPlayer, iBanned, szReason[], iIssuedBy, iCreated, iExpire)
 forward OfflineRemoveStaffBan(iIssuer, szTarget[]);
 public OfflineRemoveStaffBan(iIssuer, szTarget[])
 {
-	if(!mysql_affected_rows(MainPipeline)) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error removing the staff ban from that account.");
+	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error removing the staff ban from that account.");
 
-	format(szMiscArray, sizeof szMiscArray, "SELECT `Username`, `id` FROM `accounts` WHERE `Username`='%s'", szTarget);
-	mysql_function_query(MainPipeline, szMiscArray, true, "RetrieveTargetIDUnban", "ds", iIssuer, szTarget);
+	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "SELECT `Username`, `id` FROM `accounts` WHERE `Username`='%s'", szTarget);
+	mysql_tquery(MainPipeline, szMiscArray, "RetrieveTargetIDUnban", "ds", iIssuer, szTarget);
 	return 1;
 }
 
@@ -247,18 +247,18 @@ public RetrieveTargetIDUnban(iIssuer, szTarget[])
 {
 	new szUsername[MAX_PLAYER_NAME], iSQLID;
 
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows;
+	cache_get_row_count(rows);
 	if(rows > 0)
 	{
 		for(new row = 0; row < rows; row++)
 		{
-			cache_get_field_content(row, "Username", szUsername, MainPipeline, MAX_PLAYER_NAME);
-			iSQLID = cache_get_field_content_int(row, "id", MainPipeline);
+			cache_get_value_name(row, "Username", szUsername, MAX_PLAYER_NAME);
+			cache_get_value_name_int(row, "id", iSQLID);
 		}
 
-		format(szMiscArray, sizeof szMiscArray, "UPDATE `staffbans` SET `status`=2 WHERE `playerid`=%d AND `status`=1", iSQLID);
-		mysql_function_query(MainPipeline, szMiscArray, true, "ProcessOfflineUnStaffBan", "dsd", iIssuer, szTarget, iSQLID);
+		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `staffbans` SET `status`=2 WHERE `playerid`=%d AND `status`=1", iSQLID);
+		mysql_tquery(MainPipeline, szMiscArray, "ProcessOfflineUnStaffBan", "dsd", iIssuer, szTarget, iSQLID);
 	}
 	else // Because we don't have their SQL ID we shouldn't log it, because we can't track who the staff ban belongs to.
 	{
@@ -271,7 +271,7 @@ public RetrieveTargetIDUnban(iIssuer, szTarget[])
 forward ProcessOfflineUnStaffBan(iIssuer, szTarget[], iSQLID);
 public ProcessOfflineUnStaffBan(iIssuer, szTarget[], iSQLID)
 {
-	if(!mysql_affected_rows(MainPipeline))
+	if(!cache_affected_rows())
 	{
 		format(szMiscArray, sizeof szMiscArray, "%s was un-staff banned but the row could not be deleted from `staffbans`.", szTarget);
 		Log("logs/staffban.log", szMiscArray);
@@ -296,10 +296,10 @@ public ProcessOfflineUnStaffBan(iIssuer, szTarget[], iSQLID)
 forward OfflineStaffBan(iIssuer, szTarget[], szReason[], iDays);
 public OfflineStaffBan(iIssuer, szTarget[], szReason[], iDays)
 {
-	if(!mysql_affected_rows(MainPipeline)) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error offline staff banning that account.");
+	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error offline staff banning that account.");
 
-	format(szMiscArray, sizeof szMiscArray, "SELECT `Username`, `id` FROM `accounts` WHERE `Username`='%s'", szTarget);
-	mysql_function_query(MainPipeline, szMiscArray, true, "RetrieveTargetID", "dssd", iIssuer, szTarget, szReason, iDays);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `Username`, `id` FROM `accounts` WHERE `Username`='%s'", szTarget);
+	mysql_tquery(MainPipeline, szMiscArray, "RetrieveTargetID", "dssd", iIssuer, szTarget, szReason, iDays);
 	return 1;
 }
 
@@ -308,14 +308,14 @@ public RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays)
 {
 	new szUsername[MAX_PLAYER_NAME], iSQLID;
 
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows;
+	cache_get_row_count(rows);
 	if(rows > 0)
 	{
 		for(new row = 0; row < rows; row++)
 		{
-			cache_get_field_content(row, "Username", szUsername, MainPipeline, MAX_PLAYER_NAME);
-			iSQLID = cache_get_field_content_int(row, "id", MainPipeline);
+			cache_get_value_name(row, "Username", szUsername, MAX_PLAYER_NAME);
+			cache_get_value_name_int(row, "id", iSQLID);
 		}
 
 		// Now we have their SQL ID we can insert into the table.
@@ -324,10 +324,10 @@ public RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays)
 
 		if(iDays == 0) iExpireDate = 2147483640;
 
-		format(szMiscArray, sizeof szMiscArray, "INSERT INTO `staffbans` (`details`, `issuer`, `playerid`, `expiredate`, `created`) VALUES('%s', %d, %d, %d, %d)",
-			g_mysql_ReturnEscaped(szReason, MainPipeline),  GetPlayerSQLId(iIssuer), iSQLID, iExpireDate, iCreationDate);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `staffbans` (`details`, `issuer`, `playerid`, `expiredate`, `created`) VALUES('%e', %d, %d, %d, %d)",
+			szReason,  GetPlayerSQLId(iIssuer), iSQLID, iExpireDate, iCreationDate);
 
-		mysql_function_query(MainPipeline, szMiscArray, true, "ProcessOfflineStaffBan", "dssdd", iIssuer, szTarget, szReason, iDays, iSQLID);
+		mysql_tquery(MainPipeline, szMiscArray, "ProcessOfflineStaffBan", "dssdd", iIssuer, szTarget, szReason, iDays, iSQLID);
 	}
 	else // Because we don't have their SQL ID we shouldn't log it, because we can't track who the staff ban belongs to.
 	{
@@ -340,7 +340,7 @@ public RetrieveTargetID(iIssuer, szTarget[], szReason[], iDays)
 forward ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID);
 public ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID)
 {
-	if(!mysql_affected_rows(MainPipeline))
+	if(!cache_affected_rows())
 	{
 		format(szMiscArray, sizeof szMiscArray, "%s was staff banned but a row could not be added to `staffbans`.", szTarget);
 		Log("logs/staffban.log", szMiscArray);
@@ -387,7 +387,7 @@ public ProcessOfflineStaffBan(iIssuer, szTarget[], szReason[], iDays, iSQLID)
 forward RemoveStaffBan(iIssuer, iTarget, szReason[]);
 public RemoveStaffBan(iIssuer, iTarget, szReason[])
 {
-	if(!mysql_affected_rows(MainPipeline)) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error removing the staff ban from that account.");
+	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error removing the staff ban from that account.");
 
 	PlayerInfo[iTarget][pStaffBanned] = 0;
 
@@ -414,7 +414,7 @@ public RemoveStaffBan(iIssuer, iTarget, szReason[])
 forward OnlineStaffBan(iIssuer, iTarget, szReason[], iCreationDate, iDays);
 public OnlineStaffBan(iIssuer, iTarget, szReason[], iCreationDate, iDays)
 {
-	if(!mysql_affected_rows(MainPipeline)) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error staff banning that account.");
+	if(!cache_affected_rows()) return SendClientMessage(iIssuer, COLOR_GRAD2, "There was an error staff banning that account.");
 	
 	// Main staff variables.
 	PlayerInfo[iTarget][pAdmin] = 0;

@@ -979,49 +979,49 @@ CreateGate(gateid) {
 stock LoadGates()
 {
 	printf("[LoadGates] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `gates`", true, "OnLoadGates", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `gates`", "OnLoadGates", "");
 }
 
 forward OnLoadGates();
 public OnLoadGates()
 {
-	new i, rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows;
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		GateInfo[i][gHID] = cache_get_field_content_int(i, "HID", MainPipeline);
-		GateInfo[i][gSpeed] = cache_get_field_content_float(i, "Speed", MainPipeline);
-		GateInfo[i][gRange] = cache_get_field_content_float(i, "Range", MainPipeline);
-		GateInfo[i][gModel] = cache_get_field_content_int(i, "Model", MainPipeline);
-		GateInfo[i][gVW] = cache_get_field_content_int(i, "VW", MainPipeline);
-		GateInfo[i][gInt] = cache_get_field_content_int(i, "Int", MainPipeline);
-		cache_get_field_content(i, "Pass", GateInfo[i][gPass], MainPipeline, 24);
-		GateInfo[i][gPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
-		GateInfo[i][gPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
-		GateInfo[i][gPosZ] = cache_get_field_content_float(i, "PosZ", MainPipeline);
-		GateInfo[i][gRotX] = cache_get_field_content_float(i, "RotX", MainPipeline);
-		GateInfo[i][gRotY] = cache_get_field_content_float(i, "RotY", MainPipeline);
-		GateInfo[i][gRotZ] = cache_get_field_content_float(i, "RotZ", MainPipeline);
-		GateInfo[i][gPosXM] = cache_get_field_content_float(i, "PosXM", MainPipeline);
-		GateInfo[i][gPosYM] = cache_get_field_content_float(i, "PosYM", MainPipeline);
-		GateInfo[i][gPosZM] = cache_get_field_content_float(i, "PosZM", MainPipeline);
-		GateInfo[i][gRotXM] = cache_get_field_content_float(i, "RotXM", MainPipeline);
-		GateInfo[i][gRotYM] = cache_get_field_content_float(i, "RotYM", MainPipeline);
-		GateInfo[i][gRotZM] = cache_get_field_content_float(i, "RotZM", MainPipeline);
-		GateInfo[i][gAllegiance] = cache_get_field_content_int(i, "Allegiance", MainPipeline);
-		GateInfo[i][gGroupType] = cache_get_field_content_int(i, "GroupType", MainPipeline);
-		GateInfo[i][gGroupID] = cache_get_field_content_int(i, "GroupID", MainPipeline);
-		GateInfo[i][gRenderHQ] = cache_get_field_content_int(i, "RenderHQ",  MainPipeline);
-		GateInfo[i][gTimer] = cache_get_field_content_int(i, "Timer", MainPipeline);
-		GateInfo[i][gAutomate] = cache_get_field_content_int(i, "Automate", MainPipeline);
-		GateInfo[i][gLocked] = cache_get_field_content_int(i, "Locked", MainPipeline);
-		GateInfo[i][gTIndex] = cache_get_field_content_int(i, "TIndex", MainPipeline);
-		GateInfo[i][gTModel] = cache_get_field_content_int(i, "TModel", MainPipeline);
-		cache_get_field_content(i, "TTXD", GateInfo[i][gTTXD], MainPipeline, 64);
-		cache_get_field_content(i, "TTexture", GateInfo[i][gTTexture], MainPipeline, 64);
-		GateInfo[i][gTColor] = cache_get_field_content_int(i, "TColor", MainPipeline);
-		GateInfo[i][gFacility] = cache_get_field_content_int(i, "Facility", MainPipeline);
+		cache_get_value_name_int(i, "HID", GateInfo[i][gHID]);
+		cache_get_value_name_float(i, "Speed", GateInfo[i][gSpeed]);
+		cache_get_value_name_float(i, "Range", GateInfo[i][gRange]);
+		cache_get_value_name_int(i, "Model", GateInfo[i][gModel]);
+		cache_get_value_name_int(i, "VW", GateInfo[i][gVW]);
+		cache_get_value_name_int(i, "Int", GateInfo[i][gInt]);
+		cache_get_value_name(i, "Pass", GateInfo[i][gPass], 24);
+		cache_get_value_name_float(i, "PosX", GateInfo[i][gPosX]);
+		cache_get_value_name_float(i, "PosY", GateInfo[i][gPosY]);
+		cache_get_value_name_float(i, "PosZ", GateInfo[i][gPosZ]);
+		cache_get_value_name_float(i, "RotX", GateInfo[i][gRotX]);
+		cache_get_value_name_float(i, "RotY", GateInfo[i][gRotY]);
+		cache_get_value_name_float(i, "RotZ", GateInfo[i][gRotZ]);
+		cache_get_value_name_float(i, "PosXM", GateInfo[i][gPosXM]);
+		cache_get_value_name_float(i, "PosYM", GateInfo[i][gPosYM]);
+		cache_get_value_name_float(i, "PosZM", GateInfo[i][gPosZM]);
+		cache_get_value_name_float(i, "RotXM", GateInfo[i][gRotXM]);
+		cache_get_value_name_float(i, "RotYM", GateInfo[i][gRotYM]);
+		cache_get_value_name_float(i, "RotZM", GateInfo[i][gRotZM]);
+		cache_get_value_name_int(i, "Allegiance", GateInfo[i][gAllegiance]);
+		cache_get_value_name_int(i, "GroupType", GateInfo[i][gGroupType]);
+		cache_get_value_name_int(i, "GroupID", GateInfo[i][gGroupID]);
+		cache_get_value_name_int(i, "RenderHQ",  GateInfo[i][gRenderHQ]);
+		cache_get_value_name_int(i, "Timer", GateInfo[i][gTimer]);
+		cache_get_value_name_int(i, "Automate", GateInfo[i][gAutomate]);
+		cache_get_value_name_int(i, "Locked", GateInfo[i][gLocked]);
+		cache_get_value_name_int(i, "TIndex", GateInfo[i][gTIndex]);
+		cache_get_value_name_int(i, "TModel", GateInfo[i][gTModel]);
+		cache_get_value_name(i, "TTXD", GateInfo[i][gTTXD], 64);
+		cache_get_value_name(i, "TTexture", GateInfo[i][gTTexture], 64);
+		cache_get_value_name_int(i, "TColor", GateInfo[i][gTColor]);
+		cache_get_value_name_int(i, "Facility", GateInfo[i][gFacility]);
 		if(GateInfo[i][gPosX] != 0.0) CreateGate(i);
 		i++;
 	}
@@ -1029,14 +1029,14 @@ public OnLoadGates()
 
 stock SaveGate(id) {
 
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gates` SET \
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gates` SET \
 		`HID`=%d, \
 		`Speed`=%f, \
 		`Range`=%f, \
 		`Model`=%d, \
 		`VW`=%d, \
 		`Int`=%d, \
-		`Pass`='%s', \
+		`Pass`='%e', \
 		`PosX`=%f, \
 		`PosY`=%f, \
 		`PosZ`=%f, \
@@ -1058,8 +1058,8 @@ stock SaveGate(id) {
 		`Locked`=%d, \
 		`TIndex`=%d, \
 		`TModel`=%d, \
-		`TTXD`='%s', \
-		`TTexture`='%s', \
+		`TTXD`='%e', \
+		`TTexture`='%e', \
 		`TColor`=%d, \
 		`Facility`=%d \
 		WHERE `ID` = %d",
@@ -1069,7 +1069,7 @@ stock SaveGate(id) {
 		GateInfo[id][gModel],
 		GateInfo[id][gVW],
 		GateInfo[id][gInt],
-		g_mysql_ReturnEscaped(GateInfo[id][gPass], MainPipeline),
+		GateInfo[id][gPass],
 		GateInfo[id][gPosX],
 		GateInfo[id][gPosY],
 		GateInfo[id][gPosZ],
@@ -1091,13 +1091,13 @@ stock SaveGate(id) {
 		GateInfo[id][gLocked],
 		GateInfo[id][gTIndex],
 		GateInfo[id][gTModel],
-		g_mysql_ReturnEscaped(GateInfo[id][gTTXD], MainPipeline),
-		g_mysql_ReturnEscaped(GateInfo[id][gTTexture], MainPipeline),
+		GateInfo[id][gTTXD],
+		GateInfo[id][gTTexture],
 		GateInfo[id][gTColor],
 		GateInfo[id][gFacility],
 		id+1
 	);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 0;
 }
 

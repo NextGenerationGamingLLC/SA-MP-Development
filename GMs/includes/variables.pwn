@@ -34,8 +34,8 @@
 
 
 //MySQL Connection Variable
-new MainPipeline;
-new ShopPipeline;
+new MySQL: MainPipeline;
+new MySQL: ShopPipeline;
 new ShopToggle = 0;
 
 #if defined zombiemode

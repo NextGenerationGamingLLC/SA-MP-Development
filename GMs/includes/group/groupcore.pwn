@@ -81,8 +81,8 @@ Group_DisbandGroup(iGroupID) {
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `1` = '0'");
 	for(new x = 2; x < 47; x++) format(szMiscArray, sizeof(szMiscArray), "%s, `%d` = '0'", szMiscArray, x);
-	format(szMiscArray, sizeof(szMiscArray), "%s WHERE `id` = '%d'", szMiscArray, iGroupID + 1);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s WHERE `id` = '%d'", szMiscArray, iGroupID + 1);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID);
 
 
 	DestroyDynamic3DTextLabel(arrGroupData[iGroupID][g_tCrate3DLabel]);
@@ -147,11 +147,11 @@ Group_DisbandGroup(iGroupID) {
 	}
 
 
-	format(szQuery, sizeof szQuery, "DELETE FROM `groupbans` WHERE `GroupBan` = %i", iGroupID);
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID+1);
+	mysql_format(MainPipeline, szQuery, sizeof szQuery, "DELETE FROM `groupbans` WHERE `GroupBan` = %i", iGroupID);
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID+1);
 
-	format(szQuery, sizeof szQuery, "UPDATE `accounts` SET `Member` = "#INVALID_GROUP_ID", `Leader` = "#INVALID_GROUP_ID", `Division` = "#INVALID_DIVISION", `Rank` = "#INVALID_RANK" WHERE `Member` = %i OR `Leader` = %i", iGroupID, iGroupID);
-	return mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID);
+	mysql_format(MainPipeline, szQuery, sizeof szQuery, "UPDATE `accounts` SET `Member` = "#INVALID_GROUP_ID", `Leader` = "#INVALID_GROUP_ID", `Division` = "#INVALID_DIVISION", `Rank` = "#INVALID_RANK" WHERE `Member` = %i OR `Leader` = %i", iGroupID, iGroupID);
+	return mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID);
 }
 
 SaveGroup(iGroupID) {
@@ -170,15 +170,15 @@ SaveGroup(iGroupID) {
 		i = 0;
 		//iIndex = 0;
 
-	format(szMiscArray, sizeof szMiscArray, "UPDATE `groups` SET \
-		`Type` = %i, `Name` = '%s', `MOTD` = '%s', `MOTD2` = '%s', `MOTD3` = '%s', `Allegiance` = %i, `Bug` = %i, `Find` = %i, \
+	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `groups` SET \
+		`Type` = %i, `Name` = '%e', `MOTD` = '%e', `MOTD2` = '%e', `MOTD3` = '%e', `Allegiance` = %i, `Bug` = %i, `Find` = %i, \
 		`Radio` = %i, `DeptRadio` = %i, `IntRadio` = %i, `GovAnnouncement` = %i, `TreasuryAccess` = %i, `FreeNameChange` = %i, `FreeNameChangeDiv` = %i, \
 		`DutyColour` = %i, `RadioColour` = %i, ",
-		arrGroupData[iGroupID][g_iGroupType], g_mysql_ReturnEscaped(arrGroupData[iGroupID][g_szGroupName], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][0], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][1], MainPipeline), g_mysql_ReturnEscaped(gMOTD[iGroupID][2], MainPipeline), arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess], arrGroupData[iGroupID][g_iFindAccess],
+		arrGroupData[iGroupID][g_iGroupType], arrGroupData[iGroupID][g_szGroupName], gMOTD[iGroupID][0], gMOTD[iGroupID][1], gMOTD[iGroupID][2], arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess], arrGroupData[iGroupID][g_iFindAccess],
 		arrGroupData[iGroupID][g_iRadioAccess], arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupData[iGroupID][g_iGovAccess], arrGroupData[iGroupID][g_iTreasuryAccess], arrGroupData[iGroupID][g_iFreeNameChange], arrGroupData[iGroupID][g_iFreeNameChangeDiv],
 		arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_hRadioColour]
 	);
-	format(szMiscArray, sizeof szMiscArray, "%s\
+	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s\
 		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
 		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, `Ladders` = %i, `Tapes` = %i, \
 		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
@@ -190,7 +190,7 @@ SaveGroup(iGroupID) {
 		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess], arrGroupData[iGroupID][g_iMedicAccess], arrGroupData[iGroupID][g_iDMVAccess]
 	);
 
-	format(szMiscArray, sizeof(szMiscArray), "%s\
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s\
 		`TempNum` = '%d', `LEOArrest` = '%d', `OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Ecstasy` = '%i', `Meth` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i', `GroupToyID` = '%i', `TurfTax` = '%i'",
 		szMiscArray,
 		arrGroupData[iGroupID][gTempNum], arrGroupData[iGroupID][gLEOArrest], arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iDrugs][0], arrGroupData[iGroupID][g_iDrugs][1], arrGroupData[iGroupID][g_iDrugs][4], arrGroupData[iGroupID][g_iSyringes],
@@ -199,18 +199,18 @@ SaveGroup(iGroupID) {
 		arrGroupData[iGroupID][g_iGroupToyID], arrGroupData[iGroupID][g_iTurfTax]
 	);
 
-	for(i = 0; i != MAX_GROUP_RIVALS; ++i) format(szMiscArray, sizeof(szMiscArray), "%s, `gRival%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iRivals][i]);
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%s'", szMiscArray, i, g_mysql_ReturnEscaped(arrGroupRanks[iGroupID][i], MainPipeline));
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
-	for(i = 0; i != MAX_GROUP_DIVS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Div%i` = '%s'", szMiscArray, i+1, g_mysql_ReturnEscaped(arrGroupDivisions[iGroupID][i], MainPipeline));
-	for(i = 0; i != MAX_GROUP_WEAPONS; ++i) format(szMiscArray, sizeof szMiscArray, "%s, `Gun%i` = %i, `Cost%i` = %i", szMiscArray, i+1, arrGroupData[iGroupID][g_iLockerGuns][i], i+1, arrGroupData[iGroupID][g_iLockerCost][i]);
-	format(szMiscArray, sizeof szMiscArray, "%s WHERE `id` = %i", szMiscArray, iGroupID+1);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+	for(i = 0; i != MAX_GROUP_RIVALS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s, `gRival%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iRivals][i]);
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%e'", szMiscArray, i, arrGroupRanks[iGroupID][i]);
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
+	for(i = 0; i != MAX_GROUP_DIVS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `Div%i` = '%e'", szMiscArray, i+1, arrGroupDivisions[iGroupID][i]);
+	for(i = 0; i != MAX_GROUP_WEAPONS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `Gun%i` = %i, `Cost%i` = %i", szMiscArray, i+1, arrGroupData[iGroupID][g_iLockerGuns][i], i+1, arrGroupData[iGroupID][g_iLockerCost][i]);
+	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s WHERE `id` = %i", szMiscArray, iGroupID+1);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 
 	for (i = 0; i < MAX_GROUP_LOCKERS; i++)	{
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `lockers` SET `LockerX` = '%.2f', `LockerY` = '%.2f', `LockerZ` = '%.2f', `LockerVW` = %d, `LockerShare` = %d WHERE `Id` = %d", arrGroupLockers[iGroupID][i][g_fLockerPos][0], arrGroupLockers[iGroupID][i][g_fLockerPos][1], arrGroupLockers[iGroupID][i][g_fLockerPos][2], arrGroupLockers[iGroupID][i][g_iLockerVW], arrGroupLockers[iGroupID][i][g_iLockerShare], arrGroupLockers[iGroupID][i][g_iLockerSQLId]);
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `lockers` SET `LockerX` = '%.2f', `LockerY` = '%.2f', `LockerZ` = '%.2f', `LockerVW` = %d, `LockerShare` = %d WHERE `Id` = %d", arrGroupLockers[iGroupID][i][g_fLockerPos][0], arrGroupLockers[iGroupID][i][g_fLockerPos][1], arrGroupLockers[iGroupID][i][g_fLockerPos][2], arrGroupLockers[iGroupID][i][g_iLockerVW], arrGroupLockers[iGroupID][i][g_iLockerShare], arrGroupLockers[iGroupID][i][g_iLockerSQLId]);
+		mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 	}
 
 	return 1;
@@ -1546,9 +1546,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response)
 			{
 				new jurisdictionid = GetPVarInt(playerid, "JurisdictionRemoval");
-				format(string, sizeof(string), "DELETE FROM `jurisdictions` WHERE `id` = %i", arrGroupJurisdictions[iGroupID][jurisdictionid][g_iJurisdictionSQLId]);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-				mysql_function_query(MainPipeline, "SELECT * FROM `jurisdictions`", true, "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
+				mysql_format(MainPipeline, string, sizeof(string), "DELETE FROM `jurisdictions` WHERE `id` = %i", arrGroupJurisdictions[iGroupID][jurisdictionid][g_iJurisdictionSQLId]);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_tquery(MainPipeline, "SELECT * FROM `jurisdictions`", "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
 				format(string, sizeof(string), "You have successfully removed %s from %s.", arrGroupJurisdictions[iGroupID][jurisdictionid][g_iAreaName], arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "%s has removed %s from group %d's jurisdictions.", GetPlayerNameEx(playerid), arrGroupJurisdictions[iGroupID][jurisdictionid][g_iAreaName], iGroupID+1);
@@ -2278,9 +2278,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response)
 			{
 				new query[256];
-				format(query, sizeof(query), "INSERT INTO `jurisdictions` (`id`, `GroupID`, `JurisdictionID`, `AreaName`) VALUES (NULL, %d, %d, '%s')", iGroupID, listitem,AreaName[listitem]);
-				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-				mysql_function_query(MainPipeline, "SELECT * FROM `jurisdictions`", true, "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
+				mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `jurisdictions` (`id`, `GroupID`, `JurisdictionID`, `AreaName`) VALUES (NULL, %d, %d, '%s')", iGroupID, listitem,AreaName[listitem]);
+				mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_tquery(MainPipeline, "SELECT * FROM `jurisdictions`", "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
 				format(string, sizeof(string), "You have successfully assigned %s to %s.", AreaName[listitem], arrGroupData[iGroupID][g_szGroupName]);
 				SendClientMessage(playerid, COLOR_WHITE, string);
 				format(string, sizeof(string), "%s has assigned %s to %s", GetPlayerNameEx(playerid), AreaName[listitem], arrGroupData[iGroupID][g_szGroupName]);
@@ -2767,7 +2767,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									DeletePVar(playerid, "GSafe_Opt");
 
 									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Ingredients_GetSQLName(iIngredientID), arrGroupData[iGroupID][g_iIngredients][iIngredientID], iGroupID + 1);
-									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+									mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 									cmd_locker(playerid, "");
 								}
@@ -2787,7 +2787,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 									DeletePVar(playerid, "GSafe_Opt");
 
 									format(szMiscArray, sizeof(szMiscArray), "UPDATE `groups` SET `%s` = '%d' WHERE `id` = '%d'", DS_Ingredients_GetSQLName(iIngredientID), arrGroupData[iGroupID][g_iIngredients][iIngredientID], iGroupID + 1);
-									mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+									mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 									cmd_locker(playerid, "");
 								}
@@ -3206,8 +3206,8 @@ CMD:clearbugs(playerid, params[])
 				}
 			}
 			new query[256];
-			format(query, sizeof(query), "UPDATE accounts SET `Bugged` = %d WHERE `Bugged` > %d AND `Online` = 0", INVALID_GROUP_ID, INVALID_GROUP_ID);
-			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, query, sizeof(query), "UPDATE accounts SET `Bugged` = %d WHERE `Bugged` > %d AND `Online` = 0", INVALID_GROUP_ID, INVALID_GROUP_ID);
+			mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 			return 1;
 		}
 	}
@@ -3228,8 +3228,8 @@ CMD:listbugs(playerid, params[])
 				}
 			}
 			new query[256];
-			format(query, sizeof(query), "SELECT `Username`, `Bugged` FROM `accounts`  WHERE `Bugged` = %d AND `Online` = 0", PlayerInfo[playerid][pMember]);
-			mysql_function_query(MainPipeline, query, true, "OnQueryFinish", "iii", BUG_LIST_THREAD, playerid, g_arrQueryHandle{playerid});
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username`, `Bugged` FROM `accounts`  WHERE `Bugged` = %d AND `Online` = 0", PlayerInfo[playerid][pMember]);
+			mysql_tquery(MainPipeline, query, "OnQueryFinish", "iii", BUG_LIST_THREAD, playerid, g_arrQueryHandle{playerid});
 			return 1;
 		}
 	}
@@ -3758,7 +3758,7 @@ CMD:dvcreate(playerid, params[])
 		else if(!(0 <= iColors[0] <= 255 && 0 <= iColors[1] <= 255)) {
 			SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid color specified (IDs start at 0, and end at 255).");
 		}
-		mysql_function_query(MainPipeline, "SELECT id from `groupvehs` WHERE vModel = 0 LIMIT 1;", true, "DynVeh_CreateDVQuery", "iiii", playerid, iVehicle, iColors[0], iColors[1]);
+		mysql_tquery(MainPipeline, "SELECT id from `groupvehs` WHERE vModel = 0 LIMIT 1;", "DynVeh_CreateDVQuery", "iiii", playerid, iVehicle, iColors[0], iColors[1]);
 		format(string, sizeof(string), "%s has created a dynamic vehicle.", GetPlayerNameEx(playerid));
 		Log("logs/dv.log", string);
 	}
@@ -5061,8 +5061,8 @@ CMD:groupunban(playerid, params[])
 			new string[256];
 			SetPVarInt(playerid, "GroupUnBanningPlayer", giveplayerid);
 			SetPVarInt(playerid, "GroupUnBanningGroup", group);
-			format(string,sizeof(string),"DELETE FROM `groupbans` WHERE  `PlayerID` = %d AND `GroupBan` = %d", GetPlayerSQLId(giveplayerid), group);
-			mysql_function_query(MainPipeline, string, false, "Group_QueryFinish", "ii", GROUP_QUERY_UNBAN, playerid);
+			mysql_format(MainPipeline, string,sizeof(string),"DELETE FROM `groupbans` WHERE  `PlayerID` = %d AND `GroupBan` = %d", GetPlayerSQLId(giveplayerid), group);
+			mysql_tquery(MainPipeline, string, "Group_QueryFinish", "ii", GROUP_QUERY_UNBAN, playerid);
 			format(string, sizeof(string), "Attempting to unban %s from group %d...", GetPlayerNameEx(giveplayerid), group);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 		}
@@ -5117,8 +5117,8 @@ CMD:groupban(playerid, params[])
 				SetPVarInt(playerid, "GroupBanningPlayer", giveplayerid);
 				SetPVarInt(playerid, "GroupBanningGroup", group);
 				new string[256];
-				format(string,sizeof(string),"INSERT INTO `groupbans` (`PlayerID`, `GroupBan`, `BanReason`, `BanDate`) VALUES (%d, %d, '%s', NOW())", GetPlayerSQLId(giveplayerid), group, g_mysql_ReturnEscaped(reason, MainPipeline));
-				mysql_function_query(MainPipeline, string, false, "Group_QueryFinish", "ii", GROUP_QUERY_ADDBAN, playerid);
+				mysql_format(MainPipeline, string,sizeof(string),"INSERT INTO `groupbans` (`PlayerID`, `GroupBan`, `BanReason`, `BanDate`) VALUES (%d, %d, '%e', NOW())", GetPlayerSQLId(giveplayerid), group, reason);
+				mysql_tquery(MainPipeline, string, "Group_QueryFinish", "ii", GROUP_QUERY_ADDBAN, playerid);
 				format(string, sizeof(string), "Attempting to ban %s from group %d...", GetPlayerNameEx(giveplayerid), group);
 			    SendClientMessageEx(playerid, COLOR_WHITE, string);
 			}
@@ -5781,8 +5781,8 @@ CMD:ouninvite(playerid, params[]) {
 				iPos;
 
 			mysql_escape_string(params, szName);
-			format(szQuery, sizeof szQuery, "SELECT `Member`, `Rank`, `id` FROM `accounts` WHERE `Username` = '%s'", szName);
-			mysql_function_query(MainPipeline, szQuery, true, "Group_QueryFinish", "ii", GROUP_QUERY_UNCHECK, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof szQuery, "SELECT `Member`, `Rank`, `id` FROM `accounts` WHERE `Username` = '%s'", szName);
+			mysql_tquery(MainPipeline, szQuery, "Group_QueryFinish", "ii", GROUP_QUERY_UNCHECK, playerid);
 
 			while((iPos = strfind(szName, "_", false, iPos)) != -1) szName[iPos] = ' ';
 			SetPVarString(playerid, "Group_Uninv", szName);
@@ -6051,8 +6051,8 @@ CMD:invite(playerid, params[]) {
 						szQuery[128],
 						iGroupID = PlayerInfo[playerid][pLeader];
 
-					format(szQuery, sizeof szQuery, "SELECT `TypeBan` FROM `groupbans` WHERE `PlayerID` = %i AND (`TypeBan` = %i OR `GroupBan` = %i)", GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_iGroupType], iGroupID);
-					mysql_function_query(MainPipeline, szQuery, true, "Group_QueryFinish", "ii", GROUP_QUERY_INVITE, playerid);
+					mysql_format(MainPipeline, szQuery, sizeof szQuery, "SELECT `TypeBan` FROM `groupbans` WHERE `PlayerID` = %i AND (`TypeBan` = %i OR `GroupBan` = %i)", GetPlayerSQLId(iTargetID), arrGroupData[iGroupID][g_iGroupType], iGroupID);
+					mysql_tquery(MainPipeline, szQuery, "Group_QueryFinish", "ii", GROUP_QUERY_INVITE, playerid);
 
 					SendClientMessage(playerid, COLOR_WHITE, "Checking group ban list, please wait...");
 					SetPVarInt(playerid, "Group_Invited", iTargetID);
@@ -6356,21 +6356,22 @@ CMD:turnout(playerid, params[])
 MemberCount(groupID)
 {
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "SELECT NULL FROM accounts WHERE Member = %d", groupID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnMemberCount", "i", groupID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT NULL FROM accounts WHERE Member = %d", groupID);
+	mysql_tquery(MainPipeline, szMiscArray, "OnMemberCount", "i", groupID);
 }
 
 forward OnMemberCount(groupID);
 public OnMemberCount(groupID)
 {
-	arrGroupData[groupID][g_iMemberCount] = cache_get_row_count(MainPipeline);
+	new rows;
+	arrGroupData[groupID][g_iMemberCount] = cache_get_row_count(rows);
 }
 
 /*
 ShowGroupWeapons(playerid, iGroupID) {
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gWeaponsNew` WHERE `Group_ID` = '%d'", iGroupID+1);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnShowGroupWeapons", "ii", playerid, iGroupID+1);
+	mysql_tquery(MainPipeline, szMiscArray, true, "OnShowGroupWeapons", "ii", playerid, iGroupID+1);
 	return 1;
 }*/
 
@@ -6385,13 +6386,13 @@ public OnShowGroupWeapons(playerid, iGroupID) {
 
 	for(new i = 1; i <= 18; i++) {
 		valstr(tempWep, i);
-		iCount = cache_get_field_content_int(0, tempWep, MainPipeline);
+		cache_get_value_name_int(0, tempWep, iCount);
 		format(szMiscArray, sizeof(szMiscArray), "%s\n[%d]%s (%d)", szMiscArray, i, Weapon_ReturnName(i), iCount);
 	}
 
 	for(new i = 22; i <= 46; i++) {
 		valstr(tempWep, i);
-		iCount = cache_get_field_content_int(0, tempWep, MainPipeline);
+		cache_get_value_name_int(0, tempWep, iCount);
 		format(szMiscArray, sizeof(szMiscArray), "%s\n[%d]%s (%d)",szMiscArray, i, Weapon_ReturnName(i), iCount);
 	}
 
@@ -6407,10 +6408,10 @@ WithdrawGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 
 	if(PlayerInfo[playerid][pRank] < arrGroupData[iGroupID][g_iWithdrawRank][3] && playerid != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to withdraw weapons from the locker!");
 
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` - %d WHERE `id` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` - %d WHERE `id` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
 
 	//format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `gWeapons` WHERE `Group_ID` = '%d' AND `Weapon_ID` = '%d' LIMIT 1", iGroupID, iWeaponID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnWithdrawGroupWeapons", "iiii", playerid, iGroupID+1, iWeaponID, iAmount);
+	mysql_tquery(MainPipeline, szMiscArray, "OnWithdrawGroupWeapons", "iiii", playerid, iGroupID+1, iWeaponID, iAmount);
 	return 1;
 }
 
@@ -6446,9 +6447,9 @@ AddGroupSafeWeapon(playerid, iGroupID, iWeaponID, iAmount = 1) {
 
 	if(playerid != INVALID_PLAYER_ID && PlayerInfo[playerid][pGuns][GetWeaponSlot(iWeaponID)] == 0) return 1;
 
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` + %d WHERE `id` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
-	//format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `gWeapons` (`Group_ID`, `Weapon_ID`) VALUES ('%d', '%d') ", iGroupID, iWeaponID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnAddGroupSafeWeapon", "iiii", playerid, iGroupID+1, iWeaponID, iAmount);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gWeaponsNew` SET `%d` = `%d` + %d WHERE `id` = '%d'", iWeaponID, iWeaponID, iAmount, iGroupID+1);
+	//mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `gWeapons` (`Group_ID`, `Weapon_ID`) VALUES ('%d', '%d') ", iGroupID, iWeaponID);
+	mysql_tquery(MainPipeline, szMiscArray, "OnAddGroupSafeWeapon", "iiii", playerid, iGroupID+1, iWeaponID, iAmount);
 	return 1;
 }
 

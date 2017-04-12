@@ -440,8 +440,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
@@ -451,8 +451,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*5*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*5*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 500 credits.");
@@ -462,8 +462,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
@@ -473,8 +473,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*10*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*10*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 1000 credits.");
@@ -484,8 +484,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
@@ -495,8 +495,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*15*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*15*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 1500 credits.");
@@ -506,8 +506,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
@@ -517,8 +517,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*20*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*20*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 2000 credits.");
@@ -528,8 +528,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 100 credits.");
@@ -539,8 +539,8 @@ public OnPlayerLoad(playerid)
 		    PlayerInfo[playerid][pCredits] += CREDITS_AMOUNT_REFERRAL*25*PlayerInfo[playerid][pPendingRefReward];
 			PlayerInfo[playerid][pPendingRefReward] = 0;
 			PlayerInfo[playerid][pRefers]++;
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pCredits], GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			format(szString, sizeof(szString), "%s(%d) has received %d credits for referring a player (The player reached level 3)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), CREDITS_AMOUNT_REFERRAL*25*PlayerInfo[playerid][pPendingRefReward]);
 			Log("logs/referral.log", szString);
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "Your friend that you referred to the server has reached level 3, therefore you have received 2500 credits.");
@@ -568,8 +568,8 @@ public OnPlayerLoad(playerid)
 			SaveBusiness(Business);
 			RefreshBusinessPickup(Business);
 
-			format(string, sizeof(string), "UPDATE `accounts` SET `Business` = "#INVALID_BUSINESS_ID", `BusinessRank` = 0 WHERE `Business` = '%d'", Business);
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Business` = "#INVALID_BUSINESS_ID", `BusinessRank` = 0 WHERE `Business` = '%d'", Business);
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 	        SendClientMessageEx(playerid, COLOR_RED, "Your business has been removed as it has expired.");
 	        format(string, sizeof(string), "[BUSINESS EXPIRED] %s(%d) business id %i has been removed as it has expired.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), Business);
@@ -661,8 +661,8 @@ public OnPlayerLoad(playerid)
 			FixHour(tmphour);
 			getdate(year, month, day);	
 			format(string, sizeof(string), "SERVER: You are logged in as a %s{FFFFFF}.", GetStaffRank(playerid));
-			format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
-			mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "is", playerid, string);
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
+			mysql_tquery(MainPipeline, query, "GetShiftInfo", "is", playerid, string);
 			format(string, sizeof(string), "SERVER: %s has logged in as a %s{FFFFFF}.", GetPlayerNameEx(playerid), GetStaffRank(playerid));
 		}
 
@@ -806,8 +806,8 @@ public OnPlayerLoad(playerid)
 	    CountTickets(playerid);
 	    LoadTickets(playerid);
 	}
-	format(string, sizeof(string), "SELECT * FROM `rentedcars` WHERE `sqlid` = '%d'", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, string, true, "LoadRentedCar", "i", playerid);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `rentedcars` WHERE `sqlid` = '%d'", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, string, "LoadRentedCar", "i", playerid);
 
 	if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS)
 	{
@@ -860,8 +860,8 @@ public OnPlayerLoad(playerid)
 			{
 				SetPVarInt(playerid, "pBirthday", 1);
 				PlayerInfo[playerid][pLastBirthday] = gettime();
-				format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `LastBirthday`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pLastBirthday], GetPlayerNameExt(playerid));
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `LastBirthday`=%d WHERE `Username` = '%s'", PlayerInfo[playerid][pLastBirthday], GetPlayerNameExt(playerid));
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			}
 		}
 		else
@@ -938,8 +938,8 @@ public OnPlayerLoad(playerid)
     #if defined zombiemode
    	if(zombieevent == 1)
 	{
-		format(string, sizeof(string), "SELECT `id` FROM `zombie` WHERE `id` = '%d'", GetPlayerSQLId(playerid));
-		mysql_function_query(MainPipeline, string, true, "OnZombieCheck", "i", playerid);
+		mysql_format(MainPipeline, string, sizeof(string), "SELECT `id` FROM `zombie` WHERE `id` = '%d'", GetPlayerSQLId(playerid));
+		mysql_tquery(MainPipeline, string, "OnZombieCheck", "i", playerid);
 	}
 	#endif
 
@@ -1056,13 +1056,13 @@ public OnPlayerLoad(playerid)
 	if(PlayerInfo[playerid][pMember] != INVALID_GROUP_ID) SetPVarInt(playerid, "fLvl", PlayerInfo[playerid][pMember]);
 	
 	new szQuery[128];
-	format(szQuery, sizeof(szQuery), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d' AND `active` = '1'", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, szQuery, true, "CheckClientWatchlist", "i", playerid);
-	format(szQuery, sizeof(szQuery), "SELECT `id`, `Subject` FROM `bugs` WHERE `status` = 6 AND `Userid` = %d", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, szQuery, true, "CheckPendingBugReports", "i", playerid);
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d' AND `active` = '1'", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, szQuery, "CheckClientWatchlist", "i", playerid);
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `id`, `Subject` FROM `bugs` WHERE `status` = 6 AND `Userid` = %d", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, szQuery, "CheckPendingBugReports", "i", playerid);
 	defer CheckVehiclesLeftSpawned(playerid);
-	format(szQuery, sizeof(szQuery), "SELECT COUNT(*) as aFlagCount FROM `flags` WHERE id=%d AND type = 2", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, szQuery, true, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, 4);
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT COUNT(*) as aFlagCount FROM `flags` WHERE id=%d AND type = 2", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, szQuery, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, 4);
 
 	if(PlayerInfo[playerid][mPurchaseCount][1] && PlayerInfo[playerid][mCooldown][1]) format(string, sizeof(string), "You currently have a active Job Boost for the %s job for another %d minute(s).", GetJobName(PlayerInfo[playerid][mBoost][0]), PlayerInfo[playerid][mCooldown][1]), SendClientMessageEx(playerid, -1, string);
 	if(PlayerInfo[playerid][mCooldown][4] && PlayerInfo[playerid][mCooldown][4]) format(string, sizeof(string), "You currently have a active Energy Bar for another %d minute(s).", PlayerInfo[playerid][mCooldown][4]), SendClientMessageEx(playerid, -1, string);

@@ -217,7 +217,7 @@ CheckNatDisZone(playerid, iTypeID, iZoneTypeID, iZoneID, iStatus)
 	}
 	if(iStatus == 0 || iStatus == 5) return DeleteNatDisZone(playerid, id);
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `natdiszones` WHERE `id` = %d", id+1);
-	return mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckNatDisZone", "iiiiii", playerid, id, iTypeID, iZoneTypeID, iZoneID, iStatus);
+	return mysql_tquery(MainPipeline, szMiscArray, true, "OnCheckNatDisZone", "iiiiii", playerid, id, iTypeID, iZoneTypeID, iZoneID, iStatus);
 }
 
 forward OnCheckNatDisZone(playerid, id, iTypeID, iZoneTypeID, iZoneID, iStatus);
@@ -244,7 +244,7 @@ CreateNatDisZone(playerid, iTypeID, iZoneTypeID, iZoneID, iStatus) {
 				iZoneID,
 				iStatus,
 				i+1);
-			return mysql_function_query(MainPipeline, szMiscArray, true, "OnCreateNatDisZone", "iiiiii", playerid, i, iTypeID, iZoneTypeID, iZoneID, iStatus);
+			return mysql_tquery(MainPipeline, szMiscArray, true, "OnCreateNatDisZone", "iiiiii", playerid, i, iTypeID, iZoneTypeID, iZoneID, iStatus);
 		}
 	}
 	SendClientMessage(playerid, COLOR_GRAD1, "There are no more natural disaster zones available. Please try again at a later moment.");
@@ -275,7 +275,7 @@ public OnCreateNatDisZone(playerid, i, iTypeID, iZoneTypeID, iZoneID, iStatus)
 
 DeleteNatDisZone(playerid, id) {
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `natdiszones` SET `zonestatus` = WHERE `id` = %d", id);
-	return mysql_function_query(MainPipeline, szMiscArray, true, "OnDeleteNatDisZone", "ii", playerid, id);
+	return mysql_tquery(MainPipeline, szMiscArray, true, "OnDeleteNatDisZone", "ii", playerid, id);
 }
 
 forward OnDeleteNatDisZone(playerid, id);
@@ -295,7 +295,7 @@ public OnDeleteNatDisZone(playerid, id)
 
 LoadNatDisZones() {
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `natdiszones`");
-	return mysql_function_query(MainPipeline, szMiscArray, true, "OnLoadNatDisZones", "");
+	return mysql_tquery(MainPipeline, szMiscArray, true, "OnLoadNatDisZones", "");
 }
 
 forward OnLoadNatDisZones();
@@ -321,7 +321,7 @@ public OnLoadNatDisZones() {
 UpdateNatDisZone(playerid, i, iTypeID, iZoneTypeID, iZoneID, iStatus) {
 	szMiscArray[0] = 0;
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `natdiszones` SET `type` = %d, `zonetype` = %d, `zoneid` = %d, `zonestatus` = %d WHERE id = %d", iTypeID, iZoneTypeID, iZoneID, iStatus, i+1);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	format(szMiscArray, sizeof(szMiscArray), "Updated ID: %d | TypeID: %d, ZoneID: %d, Status: %d", i, iTypeID, iZoneID, iStatus);
 	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
 	GangZoneDestroy(NatDis[i][nat_iGZID]);

@@ -2900,8 +2900,8 @@ RentVehicleTimer(i)
 				SendClientMessageEx(i, COLOR_CYAN, "Your rented vehicle has expired.");
 				DestroyVehicle(GetPVarInt(i, "RentedVehicle"));
 
-				format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `rentedcars` WHERE `sqlid`= '%d'", GetPlayerSQLId(i));
-				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `rentedcars` WHERE `sqlid`= '%d'", GetPlayerSQLId(i));
+				mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 				DeletePVar(i, "RentedHours");
 				DeletePVar(i, "RentedVehicle");
@@ -2911,8 +2911,8 @@ RentVehicleTimer(i)
 				format(szMiscArray, sizeof(szMiscArray), "%d minutes(s) remaining on your rented vehicle.", GetPVarInt(i, "RentedHours"));
 				SendClientMessageEx(i, COLOR_CYAN, szMiscArray);
 			}
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `rentedcars` SET `hours` = '%d' WHERE `sqlid` = '%d'",GetPVarInt(i, "RentedHours"), GetPlayerSQLId(i));
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `rentedcars` SET `hours` = '%d' WHERE `sqlid` = '%d'",GetPVarInt(i, "RentedHours"), GetPlayerSQLId(i));
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 	}
 }

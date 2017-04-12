@@ -3,7 +3,7 @@
 LoadParkingMeters()
 {
 	print("[LoadParkingMeters] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM parking_meters", true, "OnLoadParkingMeters", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM parking_meters", "OnLoadParkingMeters", "");
 	return 1;
 }
 
@@ -30,7 +30,7 @@ RemoveVehicleFromMeter(vehicleid)
 SaveParkingMeter(meterid)
 {
 	new string[1500];
-	format(string, sizeof(string), "UPDATE `parking_meters` SET `MeterActive`=%d, `MeterRate`=%d, `MeterRange`=%f, \
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `parking_meters` SET `MeterActive`=%d, `MeterRate`=%d, `MeterRange`=%f, \
 	`MeterPosition0`=%f, `MeterPosition1`=%f, `MeterPosition2`=%f, `MeterPosition3`=%f, `MeterPosition4`=%f, `MeterPosition5`=%f, \
 	`ParkedPosition0`=%f, `ParkedPosition1`=%f, `ParkedPosition2`=%f, `ParkedPosition3`=%f WHERE `MeterID`=%d",
 	ParkingMeterInformation[meterid][MeterActive], ParkingMeterInformation[meterid][MeterRate], ParkingMeterInformation[meterid][MeterRange],
@@ -38,7 +38,7 @@ SaveParkingMeter(meterid)
 	ParkingMeterInformation[meterid][MeterPosition][3], ParkingMeterInformation[meterid][MeterPosition][4], ParkingMeterInformation[meterid][MeterPosition][5],
 	ParkingMeterInformation[meterid][ParkedPosition][0], ParkingMeterInformation[meterid][ParkedPosition][1],
 	ParkingMeterInformation[meterid][ParkedPosition][2], ParkingMeterInformation[meterid][ParkedPosition][3], meterid+1);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -132,20 +132,20 @@ forward OnLoadParkingMeters();
 public OnLoadParkingMeters()
 {
 	new rows, index, string[32];
-	rows = cache_get_row_count(MainPipeline);
+	cache_get_row_count(rows);
 	while(index < rows)
 	{
-		ParkingMeterInformation[index][MeterActive] = cache_get_field_content_int(index, "MeterActive", MainPipeline);
-		ParkingMeterInformation[index][MeterRate] = cache_get_field_content_int(index, "MeterRate", MainPipeline); 
-		ParkingMeterInformation[index][MeterRange] = cache_get_field_content_float(index, "MeterRange", MainPipeline); 
+		cache_get_value_name_int(index, "MeterActive", ParkingMeterInformation[index][MeterActive]);
+		cache_get_value_name_int(index, "MeterRate", ParkingMeterInformation[index][MeterRate]); 
+		cache_get_value_name_float(index, "MeterRange", ParkingMeterInformation[index][MeterRange]); 
 		for(new i = 0; i < 6; i ++)
 		{
 			format(string, sizeof(string), "MeterPosition%d", i);
-			ParkingMeterInformation[index][MeterPosition][i] = cache_get_field_content_float(index, string, MainPipeline);
+			cache_get_value_name_float(index, string, ParkingMeterInformation[index][MeterPosition][i]);
 			if(i < 4)
 			{
 				format(string, sizeof(string), "ParkedPosition%d", i);
-				ParkingMeterInformation[index][ParkedPosition][i] = cache_get_field_content_float(index, string, MainPipeline);
+				cache_get_value_name_float(index, string, ParkingMeterInformation[index][ParkedPosition][i]);
 			}
 		}
 		if(ParkingMeterInformation[index][MeterActive] == 1) RebuildParkingMeter(index);

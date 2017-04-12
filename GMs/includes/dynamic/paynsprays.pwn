@@ -302,7 +302,7 @@ CMD:repaircar(playerid, params[])
 stock SavePayNSpray(id)
 {
 	new string[1024];
-	format(string, sizeof(string), "UPDATE `paynsprays` SET \
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `paynsprays` SET \
 		`Status`=%d, \
 		`PosX`=%f, \
 		`PosY`=%f, \
@@ -322,7 +322,7 @@ stock SavePayNSpray(id)
 		id
 	);
 
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock SavePayNSprays()
@@ -365,33 +365,33 @@ stock LoadPayNSpray(id)
 {
 	new string[128];
 	format(string, sizeof(string), "SELECT * FROM `paynsprays` WHERE `id`=%d", id);
-	mysql_function_query(MainPipeline, string, true, "OnLoadPayNSprays", "i", id);
+	mysql_tquery(MainPipeline, string, "OnLoadPayNSprays", "i", id);
 }
 
 stock LoadPayNSprays()
 {
 	printf("[LoadPayNSprays] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `paynsprays`", true, "OnLoadPayNSprays", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `paynsprays`", "OnLoadPayNSprays", "");
 }
 
 forward OnLoadPayNSpray(index);
 public OnLoadPayNSpray(index)
 {
-	new rows, fields;
+	new rows;
 	szMiscArray[0] = 0;
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
 
 	for(new row; row < rows; row++)
 	{
-		PayNSprays[index][pnsSQLId] = cache_get_field_content_int(row, "id", MainPipeline);  
-		PayNSprays[index][pnsStatus] = cache_get_field_content_int(row, "Status", MainPipeline); 
-		PayNSprays[index][pnsPosX] = cache_get_field_content_float(row, "PosX", MainPipeline);
-		PayNSprays[index][pnsPosY] = cache_get_field_content_float(row, "PosY", MainPipeline);
-		PayNSprays[index][pnsPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
-		PayNSprays[index][pnsVW] = cache_get_field_content_int(row, "VW", MainPipeline); 
-		PayNSprays[index][pnsInt] = cache_get_field_content_int(row, "Int", MainPipeline); 
-		PayNSprays[index][pnsGroupCost] = cache_get_field_content_int(row, "GroupCost", MainPipeline); 
-		PayNSprays[index][pnsRegCost] = cache_get_field_content_int(row, "RegCost", MainPipeline); 
+		cache_get_value_name_int(row, "id", PayNSprays[index][pnsSQLId]);  
+		cache_get_value_name_int(row, "Status", PayNSprays[index][pnsStatus]); 
+		cache_get_value_name_float(row, "PosX", PayNSprays[index][pnsPosX]);
+		cache_get_value_name_float(row, "PosY", PayNSprays[index][pnsPosY]);
+		cache_get_value_name_float(row, "PosZ", PayNSprays[index][pnsPosZ]);
+		cache_get_value_name_int(row, "VW", PayNSprays[index][pnsVW]); 
+		cache_get_value_name_int(row, "Int", PayNSprays[index][pnsInt]); 
+		cache_get_value_name_int(row, "GroupCost", PayNSprays[index][pnsGroupCost]); 
+		cache_get_value_name_int(row, "RegCost", PayNSprays[index][pnsRegCost]); 
 		if(PayNSprays[index][pnsStatus] > 0)
 		{
 			format(szMiscArray, sizeof(szMiscArray), "/repaircar\nRepair Cost -- Regular: $%s | Faction: $%s\nID: %d", number_format(PayNSprays[index][pnsRegCost]), number_format(PayNSprays[index][pnsGroupCost]), index);
@@ -406,13 +406,13 @@ public OnLoadPayNSpray(index)
 forward OnLoadPayNSprays();
 public OnLoadPayNSprays()
 {
-	new i, rows, fields;
+	new i, rows;
 	szMiscArray[0] = 0;
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		PayNSprays[i][pnsSQLId] = cache_get_field_content_int(i, "id", MainPipeline);
+		/*PayNSprays[i][pnsSQLId] = cache_get_field_content_int(i, "id", MainPipeline);
 		PayNSprays[i][pnsStatus] = cache_get_field_content_int(i, "Status", MainPipeline); 
 		PayNSprays[i][pnsPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
 		PayNSprays[i][pnsPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
@@ -430,7 +430,8 @@ public OnLoadPayNSprays()
 				PayNSprays[i][pnsPickupID] = CreateDynamicPickup(1239, 23, PayNSprays[i][pnsPosX], PayNSprays[i][pnsPosY], PayNSprays[i][pnsPosZ], PayNSprays[i][pnsVW]);
 				PayNSprays[i][pnsMapIconID] = CreateDynamicMapIcon(PayNSprays[i][pnsPosX], PayNSprays[i][pnsPosY], PayNSprays[i][pnsPosZ], 63, 0, PayNSprays[i][pnsVW], PayNSprays[i][pnsInt], -1, 500.0);
 			}
-		}
+		}*/
+		LoadPayNSpray(i);
 		i++;
 	}
 }

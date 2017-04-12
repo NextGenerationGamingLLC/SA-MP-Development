@@ -79,8 +79,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						GetPVarString(playerid, "CasefileName", CasefileName, sizeof(CasefileName));
 						GetPVarString(playerid, "CasefileInfo", CasefileInfo, sizeof(CasefileInfo));
 
-						format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `casefiles` (`suspect`, `issuer`, `information`, `group`, `active`) VALUES (`%s`, `%s`, `%s`, `%d`, `1`)", CasefileName, GetPlayerNameEx(playerid), CasefileInfo, PlayerInfo[playerid][pMember]);
-						mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+						mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `casefiles` (`suspect`, `issuer`, `information`, `group`, `active`) VALUES (`%s`, `%s`, `%s`, `%d`, `1`)", CasefileName, GetPlayerNameEx(playerid), CasefileInfo, PlayerInfo[playerid][pMember]);
+						mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 					}	
 				}
 			}
@@ -97,10 +97,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				szMiscArray[0] = 0;
 
-				SetPVarString(playerid, "CasefileName", g_mysql_ReturnEscaped(inputtext, MainPipeline));
+				new escapeName[MAX_PLAYER_NAME];
+				mysql_escape_string(inputtext, escapeName);
+				SetPVarString(playerid, "CasefileName", escapeName);
 
-				format(szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", g_mysql_ReturnEscaped(inputtext, MainPipeline));
-				mysql_function_query(MainPipeline, szMiscArray, true, "OnCasefileName", "i", playerid);
+				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `Username` = '%e'", inputtext);
+				mysql_tquery(MainPipeline, szMiscArray, "OnCasefileName", "i", playerid);
 			}
 		}
 		case DIALOG_CASEFILE_INFO:
@@ -115,7 +117,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else if(strlen(inputtext) < 257)
 				{
-					SetPVarString(playerid, "CasefileInfo", g_mysql_ReturnEscaped(inputtext, MainPipeline));
+					new escapeName[MAX_PLAYER_NAME];
+					mysql_escape_string(inputtext, escapeName);
+					SetPVarString(playerid, "CasefileInfo", escapeName);
 					ShowCasefileDialog(playerid);
 				}
 			}
@@ -153,8 +157,8 @@ ListCasefiles(playerid, group)
 {
 	szMiscArray[0] = 0;
 
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `casefiles` WHERE `active` = 1 AND `group` = '%d'", group);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCasefileList", "i", playerid);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `casefiles` WHERE `active` = 1 AND `group` = '%d'", group);
+	mysql_tquery(MainPipeline, szMiscArray, "OnCasefileList", "i", playerid);
 	return 1;
 }
 
@@ -163,8 +167,8 @@ public OnCasefileName(playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows) return ShowCasefileDialog(playerid);
 		else 
 		{
@@ -181,16 +185,16 @@ public OnCasefileList(playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows) 
 		{
 			new PlayerName[MAX_PLAYER_NAME], suspect[MAX_PLAYER_NAME], issuer[MAX_PLAYER_NAME], information[256];
 			for(new i; i < rows; i++)
 			{
-				cache_get_field_content(i, "suspect", suspect, MainPipeline);
-				cache_get_field_content(i, "issuer", issuer, MainPipeline);
-				cache_get_field_content(i, "information", information, MainPipeline);
+				cache_get_value_name(i, "suspect", suspect);
+				cache_get_value_name(i, "issuer", issuer);
+				cache_get_value_name(i, "information", information);
 
 				foreach(new d: Player)
 				{
@@ -204,9 +208,9 @@ public OnCasefileList(playerid)
 			}
 			for(new i; i < rows; i++)
 			{
-				cache_get_field_content(i, "suspect", suspect, MainPipeline);
-				cache_get_field_content(i, "issuer", issuer, MainPipeline);
-				cache_get_field_content(i, "information", information, MainPipeline);
+				cache_get_value_name(i, "suspect", suspect);
+				cache_get_value_name(i, "issuer", issuer);
+				cache_get_value_name(i, "information", information);
 
 				format(szMiscArray, sizeof szMiscArray, "%s | Issuer: %s | Information: %s",suspect, issuer, information);
 				SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);

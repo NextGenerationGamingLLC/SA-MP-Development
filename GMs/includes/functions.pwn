@@ -329,8 +329,8 @@ public killPlayer(playerid)
 	new query[128];
 	if(GetPVarInt(playerid, "commitSuicide") == 1) 
 	{
-		format(query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '/kill')", GetPlayerSQLId(playerid), GetPlayerSQLId(playerid));
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '/kill')", GetPlayerSQLId(playerid), GetPlayerSQLId(playerid));
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 		SetPVarInt(playerid, "commitSuicide", 0);
 		SetHealth(playerid, 0);
 	}

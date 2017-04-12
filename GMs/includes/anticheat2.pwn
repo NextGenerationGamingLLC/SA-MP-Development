@@ -1403,7 +1403,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 
 				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
 					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_tquery(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				return 1;
 
 			}
@@ -1445,7 +1445,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 
 					format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
 						PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
-					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_tquery(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				}
 				*/
 
@@ -1467,7 +1467,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 
 				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
 					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_tquery(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 
 				if(arrAntiCheat[playerid][ac_iFlags][processid] > 15) {
@@ -1490,7 +1490,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 
 				format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
 					PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, arrWeaponDataAC[playerid][ac_iBulletsFired][iExtraID], arrWeaponDataAC[playerid][ac_iBulletsHit][iExtraID], iRelevantMiss, iTotalMiss, fRatio);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_tquery(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				return 1;
 			}
 			case AC_SPEEDHACKS: format(szMiscArray, sizeof(szMiscArray), "{AA3333}[SYSTEM]: {FFFF00}%s is using speed hacks (B2, B5)", GetPlayerNameEx(playerid));
@@ -1550,7 +1550,7 @@ AC_Process(playerid, processid, iExtraID = INVALID_PLAYER_ID, iExtraID2 = -1, iE
 		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 		format(szQuery, sizeof(szQuery), "INSERT INTO `ac` (`DBID`, `timestamp`, `type`, `flags`, `extraid`, `totalfired`, `hits`, `rmisses`, `tmisses`, `ratio`) VALUES (%d, NOW(), %d, %d, %d, %d, %d, %d, %d, %.1f)",
 			PlayerInfo[playerid][pId], processid, arrAntiCheat[playerid][ac_iFlags][processid], iExtraID, -1, -1, -1, -1, 0.0);
-		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
 	return 1;
 }
@@ -1995,7 +1995,7 @@ stock AC_BayesianNetwork(playerid, iTargetID) {
 		iSpeed[1],
 		fDistanceToTarget,
 		fDeltaAimAccuracy);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -2124,7 +2124,7 @@ stock AC_Probability(playerid, iTargetID) {
 		iSpeed[1],
 		fDistanceToTarget,
 		fDeltaAimAccuracy);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -2198,7 +2198,7 @@ CMD:settraining(playerid, params[]) {
 CMD:acresults(playerid, params[]) {
 
 	if(!IsAdminLevel(playerid, ADMIN_SENIOR, 1)) return 1;
-	mysql_function_query(MainPipeline, "SELECT * FROM `aimbot` WHERE `accuracy` = '3'", true, "OnACQueryResult", "i", 3);
+	mysql_tquery(MainPipeline, "SELECT * FROM `aimbot` WHERE `accuracy` = '3'", true, "OnACQueryResult", "i", 3);
 	return 1;
 }
 
@@ -2228,7 +2228,7 @@ public OnACQueryResult(i) {
 	if(i < 0) return SendClientMessageToAll(-1, "done");
 	else {
 		format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `aimbot` WHERE `accuracy` = '%d'", i);
-		mysql_function_query(MainPipeline, szMiscArray, true, "OnACQueryResult", "i", i);
+		mysql_tquery(MainPipeline, szMiscArray, true, "OnACQueryResult", "i", i);
 	}
 	return 1;
 }
@@ -2242,7 +2242,7 @@ public OnACQueryResult2(i, iRows) {
 		(%0.1f, %d, %d, %d, %d, %d, %d, %d)",
 
 		floatdiv(iFrequency, iRows) * 100, iACCountTracker[0], i, iACCountTracker[1], iACCountTracker[2], iACCountTracker[3], iACCountTracker[4], iACCountTracker[5]);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	ACTrackCount++;
 }
 
@@ -2253,7 +2253,7 @@ stock ACSQLQuery(i, iRows) {
 			AND `aimingdirection` = '%d' AND `playerspeed` = '%d' AND `targetspeed` = '%d' AND `distance` = '%d' AND `deltaaim` = '%d'",
 			i, iACCountTracker[0], iACCountTracker[1], iACCountTracker[2], iACCountTracker[3], iACCountTracker[4], iACCountTracker[5]);
 
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnACQueryResult2", "ii", i, iRows);
+	mysql_tquery(MainPipeline, szMiscArray, true, "OnACQueryResult2", "ii", i, iRows);
 }
 */
 

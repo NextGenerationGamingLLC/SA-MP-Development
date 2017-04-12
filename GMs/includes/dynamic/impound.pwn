@@ -175,7 +175,7 @@ stock IsAtImpoundingPoint(playerid)
 stock SaveImpoundPoint(id)
 {
 	new string[1024];
-	format(string, sizeof(string), "UPDATE `impoundpoints` SET \
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `impoundpoints` SET \
 		`PosX`=%f, \
 		`PosY`=%f, \
 		`PosZ`=%f, \
@@ -189,7 +189,7 @@ stock SaveImpoundPoint(id)
 		id
 	);
 
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock SaveImpoundPoints()
@@ -227,30 +227,30 @@ stock LoadImpoundPoint(id)
 {
 	new string[128];
 	format(string, sizeof(string), "SELECT * FROM `impoundpoints` WHERE `id`=%d", id);
-	mysql_function_query(MainPipeline, string, true, "OnLoadImpoundPoints", "i", id);
+	mysql_tquery(MainPipeline, string, "OnLoadImpoundPoints", "i", id);
 }
 
 stock LoadImpoundPoints()
 {
 	printf("[LoadImpoundPoints] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `impoundpoints`", true, "OnLoadImpoundPoints", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `impoundpoints`", "OnLoadImpoundPoints", "");
 }
 
 forward OnLoadImpoundPoint(index);
 public OnLoadImpoundPoint(index)
 {
-	new rows, fields;
+	new rows;
 	szMiscArray[0] = 0;
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
 
 	for(new row; row < rows; row++)
 	{
-		ImpoundPoints[index][impoundSQLId] = cache_get_field_content_int(row, "id", MainPipeline);
-		ImpoundPoints[index][impoundPosX] = cache_get_field_content_float(row, "PosX", MainPipeline);
-		ImpoundPoints[index][impoundPosY] = cache_get_field_content_float(row, "PosY", MainPipeline);
-		ImpoundPoints[index][impoundPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
-		ImpoundPoints[index][impoundVW] = cache_get_field_content_int(row, "VW", MainPipeline);
-		ImpoundPoints[index][impoundInt] = cache_get_field_content_int(row, "Int", MainPipeline);
+		cache_get_value_name_int(row, "id", ImpoundPoints[index][impoundSQLId]);
+		cache_get_value_name_float(row, "PosX", ImpoundPoints[index][impoundPosX]);
+		cache_get_value_name_float(row, "PosY", ImpoundPoints[index][impoundPosY]);
+		cache_get_value_name_float(row, "PosZ", ImpoundPoints[index][impoundPosZ]);
+		cache_get_value_name_int(row, "VW", ImpoundPoints[index][impoundVW]);
+		cache_get_value_name_int(row, "Int", ImpoundPoints[index][impoundInt]);
 		if(ImpoundPoints[index][impoundPosX] != 0)
 		{
 			format(szMiscArray, sizeof(szMiscArray), "Impound Yard #%d\nType /impound to impound a vehicle", index);
@@ -263,13 +263,13 @@ public OnLoadImpoundPoint(index)
 forward OnLoadImpoundPoints();
 public OnLoadImpoundPoints()
 {
-	new i, rows, fields;
+	new i, rows;
 	szMiscArray[0] = 0;
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		ImpoundPoints[i][impoundSQLId] = cache_get_field_content_int(i, "id", MainPipeline); 
+		/*ImpoundPoints[i][impoundSQLId] = cache_get_field_content_int(i, "id", MainPipeline); 
 		ImpoundPoints[i][impoundPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
 		ImpoundPoints[i][impoundPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
 		ImpoundPoints[i][impoundPosZ] = cache_get_field_content_float(i, "PosZ", MainPipeline);
@@ -279,7 +279,8 @@ public OnLoadImpoundPoints()
 		{
 			format(szMiscArray, sizeof(szMiscArray), "Impound Yard #%d\nType /impound to impound a vehicle", i);
 			ImpoundPoints[i][impoundTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, ImpoundPoints[i][impoundPosX], ImpoundPoints[i][impoundPosY], ImpoundPoints[i][impoundPosZ]+0.6, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1, ImpoundPoints[i][impoundVW], ImpoundPoints[i][impoundInt], -1);
-		}
+		}*/
+		LoadImpoundPoint(i);
 		i++;
 	}
 }

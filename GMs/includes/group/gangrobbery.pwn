@@ -520,7 +520,7 @@ safeDelete(playerid, params[])
 			return SendClientMessageEx(playerid, 0xFFFFFFFF, "The specified safe ID has not been used.");
 		    
 		format(str, sizeof str, "DELETE FROM `safes` WHERE `safeDBID` = %i", SafeData[iSafeID][g_iDBID]);
-		mysql_function_query(MainPipeline, str, false, "OnQueryFinish", "i", NO_THREAD);
+		mysql_tquery(MainPipeline, str, false, "OnQueryFinish", "i", NO_THREAD);
 		
 		if(IsValidDynamicObject(SafeData[iSafeID][g_iObjectID])) 
 			destroySafe(iSafeID);
@@ -662,12 +662,12 @@ saveSafe(iSafeID) {
 		SafeData[iSafeID][g_tRobbedTime],
 		SafeData[iSafeID][g_iDBID]
     );
-    return mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", NO_THREAD);
+    return mysql_tquery(MainPipeline, szQuery, false, "OnQueryFinish", "i", NO_THREAD);
 }
 
 loadSafes() {
 	printf("[LoadSafes] Loading Safes from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `safes`", true, "onloadSafes", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `safes`", true, "onloadSafes", "");
 }
 
 forward onloadSafes();
@@ -709,7 +709,7 @@ forward onCreateSafe(iExtraID, iSafeID);
 public onCreateSafe(iExtraID, iSafeID)
 {
 	new
-	    iDBID = cache_insert_id(MainPipeline);
+	    iDBID = cache_insert_id();
 	    
 	SafeData[iSafeID][g_iDBID] = iDBID;
 	
@@ -843,7 +843,7 @@ safeCreate(playerid)
 				SafeData[i][g_iRobbed],
 				SafeData[i][g_tRobbedTime]
 			);
-			return mysql_function_query(MainPipeline, szQuery, true, "onCreateSafe", "ii", playerid, i);
+			return mysql_tquery(MainPipeline, szQuery, true, "onCreateSafe", "ii", playerid, i);
 		}
 		SendClientMessageEx(playerid, 0xFFFFFFFF, "There are no more safe slots available.");
 	}

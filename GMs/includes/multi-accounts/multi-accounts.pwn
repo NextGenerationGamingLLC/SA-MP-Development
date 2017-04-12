@@ -9,7 +9,7 @@ new p_iLoginActors[MAX_MULTIPLE_CHARACTERS];
 Login_FetchAccountsData(playerid)
 {
 	format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `Model` FROM `accounts` WHERE '%d' IN (`LinkedAccount0`, `LinkedAccount1`, `LinkedAccount2`) LIMIT 3", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, szMiscArray, true, "Login_OnFetchAccountsData", "i", playerid);
+	mysql_tquery(MainPipeline, szMiscArray, true, "Login_OnFetchAccountsData", "i", playerid);
 }
 
 forward Login_OnFetchAccountsData(playerid);
@@ -85,7 +85,7 @@ Login_LoadCharacter(playerid, choice)
 	g_mysql_SaveAccount(playerid);
 	OnPlayerDisconnect(playerid, 1);
 	format(szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `id` = %d LIMIT 1", PlayerInfo[playerid][pAccountIDs][choice]);
-	mysql_function_query(MainPipeline, szMiscArray, true, "Login_OnLoadCharacter", "i", playerid);
+	mysql_tquery(MainPipeline, szMiscArray, true, "Login_OnLoadCharacter", "i", playerid);
 }
 
 forward Login_OnLoadCharacter(playerid);

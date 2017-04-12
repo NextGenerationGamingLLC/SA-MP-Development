@@ -783,8 +783,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
 		{
 			new string[128];
-			format(string, sizeof(string), "INSERT INTO humankills (id, num, name) VALUES (%d,1, '%s') ON DUPLICATE KEY UPDATE num = num + 1", PlayerInfo[killerid][pId], GetPlayerNameEx(killerid));
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, killerid);
+			mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO humankills (id, num, name) VALUES (%d,1, '%s') ON DUPLICATE KEY UPDATE num = num + 1", PlayerInfo[killerid][pId], GetPlayerNameEx(killerid));
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, killerid);
 		}
 
 		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
@@ -908,9 +908,9 @@ public OnPlayerDeath(playerid, killerid, reason)
 		GetWeaponName(reason, weaponname, sizeof(weaponname));
 
 		new query[256];
-		format(query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '%s')", GetPlayerSQLId(killerid), GetPlayerSQLId(playerid), weaponname);
+		mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '%e')", GetPlayerSQLId(killerid), GetPlayerSQLId(playerid), weaponname);
 		PlayerKills[killerid]++;
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 		if(GetPVarType(killerid, "IsInArena")) PlayerInfo[killerid][pDMKills]++;
 		if(GetPVarType(playerid, "FixVehicleTimer")) KillTimer(GetPVarInt(playerid, "FixVehicleTimer")), DeletePVar(playerid, "FixVehicleTimer");

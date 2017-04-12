@@ -315,8 +315,8 @@ CMD:osetfamed(playerid, params[])
 			SetPVarInt(playerid, "Offline_Famed", level);
 			SetPVarString(playerid, "Offline_Name", szPlayerName);
 			
-            format(szQuery, sizeof(szQuery), "SELECT `Famed` FROM `accounts` WHERE `Username` = '%s'", szPlayerName);
- 			mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", OFFLINE_FAMED_THREAD, playerid, g_arrQueryHandle{playerid});
+            mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `Famed` FROM `accounts` WHERE `Username` = '%s'", szPlayerName);
+ 			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", OFFLINE_FAMED_THREAD, playerid, g_arrQueryHandle{playerid});
  			
  			format(string, sizeof(string), "Attempting to offline set %s account to level %d famed.", szPlayerName, level);
  			SendClientMessageEx(playerid, COLOR_WHITE, string);

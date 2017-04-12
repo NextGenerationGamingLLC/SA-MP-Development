@@ -350,8 +350,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			if(!response) return 1;
 			PlayerInfo[playerid][pGroupToyBone] = listitem;
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `GroupToyBone` = %d WHERE `id` = %d", listitem, GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `GroupToyBone` = %d WHERE `id` = %d", listitem, GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(szMiscArray, sizeof(szMiscArray), "[Group Toy]: Attached to %s", HoldingBones[listitem]);
 			SendClientMessageEx(playerid, COLOR_GRAD1, szMiscArray);

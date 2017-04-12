@@ -40,8 +40,8 @@
 SaveTurfWar(turfid)
 {
 	new string[128];
-	format(string, sizeof(string), "UPDATE `turfs` SET data='%s|%d|%d|%d|%d|%f|%f|%f|%f' WHERE id = %d",
-	g_mysql_ReturnEscaped(TurfWars[turfid][twName], MainPipeline),
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `turfs` SET data='%e|%d|%d|%d|%d|%f|%f|%f|%f' WHERE id = %d",
+	TurfWars[turfid][twName],
 	TurfWars[turfid][twOwnerId],
 	TurfWars[turfid][twLocked],
 	TurfWars[turfid][twSpecial],
@@ -51,7 +51,7 @@ SaveTurfWar(turfid)
 	TurfWars[turfid][twMaxX],
 	TurfWars[turfid][twMaxY],
 	turfid + 1);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -66,11 +66,11 @@ SaveTurfWars()
 forward OnLoadTurfWars();
 public OnLoadTurfWars()
 {
-	new i, rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows, tmp[128];
+	cache_get_row_count(rows);
 	while(i < rows)
 	{
-		cache_get_field_content(i, "data", tmp, MainPipeline);
+		cache_get_value_name(i, "data", tmp);
 		if(!sscanf(tmp, "p<|>s[64]iiiiffff",
 			TurfWars[i][twName],
 			TurfWars[i][twOwnerId],
@@ -91,7 +91,7 @@ public OnLoadTurfWars()
 stock LoadTurfWars()
 {
 	printf("[Turf Wars] Loading turfs from the database, please wait...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `turfs`", true, "OnLoadTurfWars", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `turfs`", "OnLoadTurfWars", "");
 }
 
 InitTurfWars()

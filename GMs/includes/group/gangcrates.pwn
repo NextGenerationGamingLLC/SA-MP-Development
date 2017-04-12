@@ -59,7 +59,7 @@ CreateGCrate(playerid, iGroupID) {
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `gCrates` SET `iGroupID` = %d, `9mm` = '0', `sdpistol` = '0', `deagle` = '0', `uzi` = '0', `tec9` = '0', \
 				`mp5` = '0', `m4` = '0', `ak47` = '0', `rifle` = '0', `sniper` = '0', `shotty` = '0', `sawnoff` = '0', `spas` = '0', \
 				`pot` = '0', `crack` = '0', `meth` = '0', `ecstasy` = '0', `heroin` = '0' WHERE `iCrateID` = %d", iGroupID, i+1);
-			return mysql_function_query(MainPipeline, szMiscArray, true, "OnCreateGCrate", "iii", playerid, iGroupID, i);
+			return mysql_tquery(MainPipeline, szMiscArray, true, "OnCreateGCrate", "iii", playerid, iGroupID, i);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GRAD1, "There are no more crate slots available. Please try again at a later moment.");
@@ -102,7 +102,7 @@ public OnCreateGCrate(playerid, iGroupID, iCrateID) {
 
 DeleteGCrate(playerid, iCrateID) {
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gCrates` SET `iGroupID` = '255' WHERE `iCrateID` = %i", iCrateID+1);
-	return mysql_function_query(MainPipeline, szMiscArray, false, "OnDeleteGCrate", "ii", playerid, iCrateID);
+	return mysql_tquery(MainPipeline, szMiscArray, false, "OnDeleteGCrate", "ii", playerid, iCrateID);
 }
 
 forward OnDeleteGCrate(playerid, iCrateID);
@@ -123,7 +123,7 @@ public OnDeleteGCrate(playerid, iCrateID)
 
 LoadGCrates() {
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gCrates`");
-	return mysql_function_query(MainPipeline, szMiscArray, true, "OnLoadGCrates", "");
+	return mysql_tquery(MainPipeline, szMiscArray, true, "OnLoadGCrates", "");
 }
 
 forward OnLoadGCrates();
@@ -152,7 +152,7 @@ public OnLoadGCrates() {
 
 SaveGCrate(iCrateID, iGroupID) {
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gCrates` SET `iGroupID` = %d WHERE `iCrateID` = %d", iGroupID, iCrateID+1);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -162,7 +162,7 @@ ShowGCrateItems(iPlayerID, iCrateID, itemid = -1) {
 	szMiscArray[0] = 0;
 	
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gCrates` WHERE `iCrateID` = '%d' LIMIT 1", iCrateID+1);
-	return mysql_function_query(MainPipeline, szMiscArray, true, "OnShowGCrateItems", "iii", iPlayerID, iCrateID, itemid);
+	return mysql_tquery(MainPipeline, szMiscArray, true, "OnShowGCrateItems", "iii", iPlayerID, iCrateID, itemid);
 }
 
 forward OnShowGCrateItems(iPlayerID, iCrateID, itemid);
@@ -278,7 +278,7 @@ public OnCheckGCrateItems(iPlayerID, iCrateID, itemid, szGCItem[], iAmount) {
 		iAmount, 
 		iCrateID+1
 	);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnTransferItemFromCrate", "iiii", iPlayerID, itemid, iAmount, iCrateID);
+	mysql_tquery(MainPipeline, szMiscArray, true, "OnTransferItemFromCrate", "iiii", iPlayerID, itemid, iAmount, iCrateID);
 	return 1;
 }
 
@@ -288,7 +288,7 @@ CountLockerGuns(iGroupID, iWeaponID) {
 	szMiscArray[0] = 0;
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gWeaponsNew` WHERE `Group_ID` = '%d' AND `Weapon_ID` = '%d'", iGroupID, iWeaponID);
-	return mysql_function_query(MainPipeline, szMiscArray, true, "OnCountLockerGuns", "ii", iGroupID, iWeaponID);
+	return mysql_tquery(MainPipeline, szMiscArray, true, "OnCountLockerGuns", "ii", iGroupID, iWeaponID);
 }
 
 forward OnCountLockerGuns(iGroupID, iWeaponID);
@@ -319,7 +319,7 @@ public OnPlayerCountLockerGuns(iPlayerID, iGroupID, iWeaponID, iAmount, itemid, 
 	else {
 		
 		format(szMiscArray, sizeof(szMiscArray), "SELECT `%s` FROM `gCrates` WHERE `iCrateID` = '%d'", GetGCItemSQLFldName(itemid), iCrateID+1);
-		mysql_function_query(MainPipeline, szMiscArray, true, "OnTransferItemToCrate", "iiii", iPlayerID, itemid, iAmount, iCrateID);
+		mysql_tquery(MainPipeline, szMiscArray, true, "OnTransferItemToCrate", "iiii", iPlayerID, itemid, iAmount, iCrateID);
 	}
 	return 1;
 }
@@ -329,7 +329,7 @@ ShowGCrates(iPlayerID) {
 	szMiscArray[0] = 0;
 	
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gCrates` WHERE `iGroupID` != 255");
-	return mysql_function_query(MainPipeline, szMiscArray, true, "OnShowGCrates", "i", iPlayerID);
+	return mysql_tquery(MainPipeline, szMiscArray, true, "OnShowGCrates", "i", iPlayerID);
 }
 
 forward OnShowGCrates(iPlayerID);
@@ -489,7 +489,7 @@ TransferItemFromCrate(playerid, itemid, iAmount, iCrateID) {
 	szGCItem = GetGCItemSQLFldName(itemid);
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT `%s` FROM `gCrates` WHERE `iCrateID` = '%d'", szGCItem, iCrateID+1);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckGCrateItems", "iiisi", playerid, iCrateID, itemid, szGCItem, iAmount);
+	mysql_tquery(MainPipeline, szMiscArray, true, "OnCheckGCrateItems", "iiisi", playerid, iCrateID, itemid, szGCItem, iAmount);
 	return 1;
 }
 
@@ -535,7 +535,7 @@ TransferItemToCrate(playerid, itemid, iAmount, iCrateID) {
 
 			SetGVarInt("GCrateLoad", iLoad+1, iCrateID);
 			format(szMiscArray, sizeof(szMiscArray), "SELECT `%d` FROM `gWeaponsNew` WHERE `Group_ID` = '%d'", iWeaponID, iGroupID+1);
-			mysql_function_query(MainPipeline, szMiscArray, true, "OnPlayerCountLockerGuns", "iiiiii", playerid, iGroupID, iWeaponID, iAmount, itemid, iCrateID);
+			mysql_tquery(MainPipeline, szMiscArray, true, "OnPlayerCountLockerGuns", "iiiiii", playerid, iGroupID, iWeaponID, iAmount, itemid, iCrateID);
 		}
 		case 13: { // Pot
 			if(0 < arrGroupData[iGroupID][g_iDrugs][0] < iAmount) return SendClientMessageEx(playerid, COLOR_GRAD2, "You are trying to transfer more than there is!");
@@ -557,7 +557,7 @@ TransferItemToCrate(playerid, itemid, iAmount, iCrateID) {
 	if(itemid > 12) {
 
 		format(szMiscArray, sizeof(szMiscArray), "SELECT `%s` FROM `gCrates` WHERE `iCrateID` = '%d'", GetGCItemSQLFldName(itemid), iCrateID+1);
-		mysql_function_query(MainPipeline, szMiscArray, true, "OnTransferItemToCrate", "iiii", playerid, itemid, iAmount, iCrateID);
+		mysql_tquery(MainPipeline, szMiscArray, true, "OnTransferItemToCrate", "iiii", playerid, itemid, iAmount, iCrateID);
 	}
 	return 1;
 }
@@ -584,7 +584,7 @@ public OnTransferItemToCrate(playerid, itemid, iAmount,  iCrateID) {
 	}
 
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gCrates` SET `%s` = '%d' WHERE `iCrateID` = '%d'", szMiscArray, iTemp + iAmount, iCrateID+1);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnFinalizeItemTransfer", "iiii", playerid, itemid, iAmount, iCrateID);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnFinalizeItemTransfer", "iiii", playerid, itemid, iAmount, iCrateID);
 	return 1;
 }
 
@@ -611,7 +611,7 @@ DeliverGCCrate(playerid, iGroupID, iCrateID) {
 	szMiscArray[0] = 0;
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gCrates` WHERE `iCrateID` = '%d'", iCrateID+1);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnDeliverGCCrate", "iii", playerid, iGroupID, iCrateID);
+	mysql_tquery(MainPipeline, szMiscArray, true, "OnDeliverGCCrate", "iii", playerid, iGroupID, iCrateID);
 
 	return 1;
 }
@@ -737,7 +737,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response) {
 				if(arrGroupData[iGroupID][g_iBudget] < 150000) return SendClientMessageEx(playerid, COLOR_GRAD2, "Your group does not have sufficient funds to create a crate!");
 				format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gCrates` WHERE `iGroupID` = %d", iGroupID);
-				mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckGCrates", "ii", playerid, iGroupID);	
+				mysql_tquery(MainPipeline, szMiscArray, true, "OnCheckGCrates", "ii", playerid, iGroupID);	
 			}
 			
 		}

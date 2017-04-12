@@ -42,8 +42,8 @@ CMD:nextwatch(playerid, params[])
 	{
 		if(GetPVarInt(playerid, "StartedWatching") == 0) return cmd_startwatch(playerid, params);
 		
-		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
-		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
+		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", "WatchWatchlist", "i", playerid);
+		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", "WatchWatchlist", "i", playerid);
 		else
 		{
 			new string[60];
@@ -87,8 +87,8 @@ CMD:startwatch(playerid, params[])
 	if(PlayerInfo[playerid][pWatchdog] >= 1)
 	{
 		if(GetPVarInt(playerid, "StartedWatching") == 1) return SendClientMessageEx(playerid, COLOR_GRAD1, "WATCHDOG: You already started watching.");
-		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
-		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", true, "WatchWatchlist", "i", playerid);
+		if(gettime() >= GetPVarInt(playerid, "NextWatch")) return mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", "WatchWatchlist", "i", playerid);
+		else if(PlayerInfo[playerid][pWatchdog] >= 2) return mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' ORDER BY `point` DESC", "WatchWatchlist", "i", playerid);
 		else
 		{
 			new string[60];
@@ -460,12 +460,12 @@ CMD:wdwhitelist(playerid, params[])
 		}
 
 		new tmpName[24], tmpIP[16];
-		mysql_escape_string(giveplayer, tmpName, MainPipeline);
-		mysql_escape_string(ip, tmpIP, MainPipeline);
+		mysql_escape_string(giveplayer, tmpName);
+		mysql_escape_string(ip, tmpIP);
 		SetPVarString(playerid, "OnWDWhitelist", tmpName);
 
-		format(query, sizeof(query), "UPDATE `accounts` SET `SecureIP`='%s' WHERE `Username`='%s' AND `Watchdog` <= %d", tmpIP, tmpName, PlayerInfo[playerid][pWatchdog]);
-		mysql_function_query(MainPipeline, query, false, "OnWDWhitelist", "i", playerid);
+		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `SecureIP`='%s' WHERE `Username`='%s' AND `Watchdog` <= %d", tmpIP, tmpName, PlayerInfo[playerid][pWatchdog]);
+		mysql_tquery(MainPipeline, query, "OnWDWhitelist", "i", playerid);
 
 		format(string, sizeof(string), "Attempting to whitelist %s on %s's account...", tmpIP, tmpName);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -480,7 +480,7 @@ CMD:watchlist(playerid, params[])
 	{
 		if(FetchingWatchlist == 1) return SendClientMessageEx(playerid, COLOR_RED, "Please try again later, someone is already fetching the watchlist.");
 		PublicSQLString = "";
-		mysql_function_query(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' AND `manual` = '1' ORDER BY `point` DESC", true, "FetchWatchlist", "i", playerid);
+		mysql_tquery(MainPipeline, "SELECT * FROM `nonrppoints` WHERE `active` = '1' AND `manual` = '1' ORDER BY `point` DESC", "FetchWatchlist", "i", playerid);
 		
 		SendClientMessageEx(playerid, COLOR_CYAN, "Fetching the watchlist...");
 		FetchingWatchlist = 1;

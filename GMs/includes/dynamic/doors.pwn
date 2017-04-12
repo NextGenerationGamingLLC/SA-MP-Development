@@ -147,9 +147,9 @@ stock SaveDynamicDoor(doorid)
 {
 	new string[1024];
 	format(string, sizeof(string), "UPDATE `ddoors` SET \
-		`Description`='%s', \
+		`Description`='%e', \
 		`Owner`=%d, \
-		`OwnerName`='%s', \
+		`OwnerName`='%e', \
 		`CustomInterior`=%d, \
 		`ExteriorVW`=%d, \
 		`ExteriorInt`=%d, \
@@ -163,9 +163,9 @@ stock SaveDynamicDoor(doorid)
 		`InteriorY`=%f, \
 		`InteriorZ`=%f, \
 		`InteriorA`=%f,",
-		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddDescription], MainPipeline),
+		DDoorsInfo[doorid][ddDescription],
 		DDoorsInfo[doorid][ddOwner],
-		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddOwnerName], MainPipeline),
+		DDoorsInfo[doorid][ddOwnerName],
 		DDoorsInfo[doorid][ddCustomInterior],
 		DDoorsInfo[doorid][ddExteriorVW],
 		DDoorsInfo[doorid][ddExteriorInt],
@@ -196,7 +196,7 @@ stock SaveDynamicDoor(doorid)
 		`VehicleAble`=%d, \
 		`Color`=%d, \
 		`PickupModel`=%d, \
-		`Pass`='%s', \
+		`Pass`='%e', \
 		`Locked`=%d, \
 		`LastLogin`=%d, \
 		`Expire`=%d, \
@@ -219,7 +219,7 @@ stock SaveDynamicDoor(doorid)
 		DDoorsInfo[doorid][ddVehicleAble],
 		DDoorsInfo[doorid][ddColor],
 		DDoorsInfo[doorid][ddPickupModel],
-		g_mysql_ReturnEscaped(DDoorsInfo[doorid][ddPass], MainPipeline),
+		DDoorsInfo[doorid][ddPass],
 		DDoorsInfo[doorid][ddLocked],
 		DDoorsInfo[doorid][ddLastLogin],
 		DDoorsInfo[doorid][ddExpire],
@@ -229,68 +229,68 @@ stock SaveDynamicDoor(doorid)
 		doorid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock LoadDynamicDoor(doorid)
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `ddoors` WHERE `id`=%d", doorid+1); // Array starts at zero, MySQL starts at 1.
-	mysql_function_query(MainPipeline, string, true, "OnLoadDynamicDoor", "i", doorid);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `ddoors` WHERE `id`=%d", doorid+1); // Array starts at zero, MySQL starts at 1.
+	mysql_tquery(MainPipeline, string, "OnLoadDynamicDoor", "i", doorid);
 }
 
 stock LoadDynamicDoors()
 {
 	printf("[LoadDynamicDoors] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `ddoors`", true, "OnLoadDynamicDoors", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `ddoors`", "OnLoadDynamicDoors", "");
 }
 
 forward OnLoadDynamicDoor(index);
 public OnLoadDynamicDoor(index)
 {
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows;
+	cache_get_row_count(rows);
 
 	for(new row; row < rows; row++)
 	{
-		DDoorsInfo[index][ddSQLId] = cache_get_field_content_int(row, "id", MainPipeline);
-		cache_get_field_content(row, "Description", DDoorsInfo[index][ddDescription], MainPipeline, 128);
-	 	DDoorsInfo[index][ddOwner] = cache_get_field_content_int(row, "Owner", MainPipeline);
-		cache_get_field_content(row, "OwnerName", DDoorsInfo[index][ddOwnerName], MainPipeline, 42);
-		DDoorsInfo[index][ddCustomExterior] = cache_get_field_content_int(row, "CustomExterior", MainPipeline);
-		DDoorsInfo[index][ddCustomInterior] = cache_get_field_content_int(row, "CustomInterior", MainPipeline);
-		DDoorsInfo[index][ddExteriorVW] = cache_get_field_content_int(row, "ExteriorVW", MainPipeline); 
-		DDoorsInfo[index][ddExteriorInt] = cache_get_field_content_int(row, "ExteriorInt", MainPipeline); 
-		DDoorsInfo[index][ddInteriorVW] = cache_get_field_content_int(row, "InteriorVW", MainPipeline); 
-		DDoorsInfo[index][ddInteriorInt] = cache_get_field_content_int(row, "InteriorInt", MainPipeline);
-		DDoorsInfo[index][ddExteriorX] = cache_get_field_content_float(row, "ExteriorX", MainPipeline);
-		DDoorsInfo[index][ddExteriorY] = cache_get_field_content_float(row, "ExteriorY", MainPipeline);
-		DDoorsInfo[index][ddExteriorZ] = cache_get_field_content_float(row, "ExteriorZ", MainPipeline);
-		DDoorsInfo[index][ddExteriorA] = cache_get_field_content_float(row, "ExteriorA", MainPipeline);
-		DDoorsInfo[index][ddInteriorX] = cache_get_field_content_float(row, "InteriorX", MainPipeline);
-		DDoorsInfo[index][ddInteriorY] = cache_get_field_content_float(row, "InteriorY", MainPipeline);
-		DDoorsInfo[index][ddInteriorZ] = cache_get_field_content_float(row, "InteriorZ", MainPipeline);
-		DDoorsInfo[index][ddInteriorA] = cache_get_field_content_float(row, "InteriorA", MainPipeline);
-		DDoorsInfo[index][ddType] = cache_get_field_content_int(row, "Type", MainPipeline); 
-		DDoorsInfo[index][ddRank] = cache_get_field_content_int(row, "Rank", MainPipeline); 
-		DDoorsInfo[index][ddVIP] = cache_get_field_content_int(row, "VIP", MainPipeline); 
-		DDoorsInfo[index][ddFamed] = cache_get_field_content_int(row, "Famed", MainPipeline); 
-		DDoorsInfo[index][ddDPC] = cache_get_field_content_int(row, "DPC", MainPipeline); 
-		DDoorsInfo[index][ddAllegiance] = cache_get_field_content_int(row, "Allegiance", MainPipeline);
-		DDoorsInfo[index][ddGroupType] = cache_get_field_content_int(row, "GroupType", MainPipeline); 
-		DDoorsInfo[index][ddFaction] = cache_get_field_content_int(row, "Faction", MainPipeline); 
-		DDoorsInfo[index][ddAdmin] = cache_get_field_content_int(row, "Admin", MainPipeline); 
-		DDoorsInfo[index][ddWanted]	= cache_get_field_content_int(row, "Wanted", MainPipeline); 
-		DDoorsInfo[index][ddVehicleAble] = cache_get_field_content_int(row, "VehicleAble", MainPipeline); 
-		DDoorsInfo[index][ddColor] = cache_get_field_content_int(row, "Color", MainPipeline); 
-		DDoorsInfo[index][ddPickupModel] = cache_get_field_content_int(row, "PickupModel", MainPipeline); 
-		cache_get_field_content(row, "Pass", DDoorsInfo[index][ddPass], MainPipeline, 24);
-		DDoorsInfo[index][ddLocked] = cache_get_field_content_int(row, "Locked", MainPipeline); 
-		DDoorsInfo[index][ddLastLogin] = cache_get_field_content_int(row, "LastLogin", MainPipeline);
-		DDoorsInfo[index][ddExpire] = cache_get_field_content_int(row, "Expire", MainPipeline);
-		DDoorsInfo[index][ddInactive] = cache_get_field_content_int(row, "Inactive", MainPipeline);
-		DDoorsInfo[index][ddIgnore] = cache_get_field_content_int(row, "Ignore", MainPipeline);
-		DDoorsInfo[index][ddCounter] = cache_get_field_content_int(row, "Counter", MainPipeline);
+		cache_get_value_name_int(row, "id", DDoorsInfo[index][ddSQLId]);
+		cache_get_value_name(row, "Description", DDoorsInfo[index][ddDescription], 128);
+	 	cache_get_value_name_int(row, "Owner", DDoorsInfo[index][ddOwner]);
+		cache_get_value_name(row, "OwnerName", DDoorsInfo[index][ddOwnerName], 42);
+		cache_get_value_name_int(row, "CustomExterior", DDoorsInfo[index][ddCustomExterior]);
+		cache_get_value_name_int(row, "CustomInterior", DDoorsInfo[index][ddCustomInterior]);
+		cache_get_value_name_int(row, "ExteriorVW", DDoorsInfo[index][ddExteriorVW]); 
+		cache_get_value_name_int(row, "ExteriorInt", DDoorsInfo[index][ddExteriorInt]); 
+		cache_get_value_name_int(row, "InteriorVW", DDoorsInfo[index][ddInteriorVW]); 
+		cache_get_value_name_int(row, "InteriorInt", DDoorsInfo[index][ddInteriorInt]);
+		cache_get_value_name_float(row, "ExteriorX", DDoorsInfo[index][ddExteriorX]);
+		cache_get_value_name_float(row, "ExteriorY", DDoorsInfo[index][ddExteriorY]);
+		cache_get_value_name_float(row, "ExteriorZ", DDoorsInfo[index][ddExteriorZ]);
+		cache_get_value_name_float(row, "ExteriorA", DDoorsInfo[index][ddExteriorA]);
+		cache_get_value_name_float(row, "InteriorX", DDoorsInfo[index][ddInteriorX]);
+		cache_get_value_name_float(row, "InteriorY", DDoorsInfo[index][ddInteriorY]);
+		cache_get_value_name_float(row, "InteriorZ", DDoorsInfo[index][ddInteriorZ]);
+		cache_get_value_name_float(row, "InteriorA", DDoorsInfo[index][ddInteriorA]);
+		cache_get_value_name_int(row, "Type", DDoorsInfo[index][ddType]); 
+		cache_get_value_name_int(row, "Rank", DDoorsInfo[index][ddRank]); 
+		cache_get_value_name_int(row, "VIP", DDoorsInfo[index][ddVIP]); 
+		cache_get_value_name_int(row, "Famed", DDoorsInfo[index][ddFamed]); 
+		cache_get_value_name_int(row, "DPC", DDoorsInfo[index][ddDPC]); 
+		cache_get_value_name_int(row, "Allegiance", DDoorsInfo[index][ddAllegiance]);
+		cache_get_value_name_int(row, "GroupType", DDoorsInfo[index][ddGroupType]); 
+		cache_get_value_name_int(row, "Faction", DDoorsInfo[index][ddFaction]); 
+		cache_get_value_name_int(row, "Admin", DDoorsInfo[index][ddAdmin]); 
+		cache_get_value_name_int(row, "Wanted", DDoorsInfo[index][ddWanted]); 
+		cache_get_value_name_int(row, "VehicleAble", DDoorsInfo[index][ddVehicleAble]); 
+		cache_get_value_name_int(row, "Color", DDoorsInfo[index][ddColor]); 
+		cache_get_value_name_int(row, "PickupModel", DDoorsInfo[index][ddPickupModel]); 
+		cache_get_value_name(row, "Pass", DDoorsInfo[index][ddPass], 24);
+		cache_get_value_name_int(row, "Locked", DDoorsInfo[index][ddLocked]); 
+		cache_get_value_name_int(row, "LastLogin", DDoorsInfo[index][ddLastLogin]);
+		cache_get_value_name_int(row, "Expire", DDoorsInfo[index][ddExpire]);
+		cache_get_value_name_int(row, "Inactive", DDoorsInfo[index][ddInactive]);
+		cache_get_value_name_int(row, "Ignore", DDoorsInfo[index][ddIgnore]);
+		cache_get_value_name_int(row, "Counter", DDoorsInfo[index][ddCounter]);
 		if(DDoorsInfo[index][ddExteriorX] != 0.0) CreateDynamicDoor(index);
 	}
 	return 1;
@@ -300,12 +300,12 @@ public OnLoadDynamicDoor(index)
 forward OnLoadDynamicDoors();
 public OnLoadDynamicDoors()
 {
-	new i, rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows;
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		DDoorsInfo[i][ddSQLId] = cache_get_field_content_int(i, "id", MainPipeline); 
+		/*DDoorsInfo[i][ddSQLId] = cache_get_field_content_int(i, "id", MainPipeline); 
 		cache_get_field_content(i, "Description", DDoorsInfo[i][ddDescription], MainPipeline, 128);
 		DDoorsInfo[i][ddOwner] = cache_get_field_content_int(i, "Owner", MainPipeline); 
 		cache_get_field_content(i, "OwnerName", DDoorsInfo[i][ddOwnerName], MainPipeline, 42);
@@ -343,7 +343,8 @@ public OnLoadDynamicDoors()
 		DDoorsInfo[i][ddInactive] = cache_get_field_content_int(i, "Inactive", MainPipeline);
 		DDoorsInfo[i][ddIgnore] = cache_get_field_content_int(i, "Ignore", MainPipeline);
 		DDoorsInfo[i][ddCounter] = cache_get_field_content_int(i, "Counter", MainPipeline);
-		if(DDoorsInfo[i][ddExteriorX] != 0.0) CreateDynamicDoor(i);
+		if(DDoorsInfo[i][ddExteriorX] != 0.0) CreateDynamicDoor(i);*/
+		LoadDynamicDoor(i);
 		i++;
 	}
 	if(i > 0) printf("[LoadDynamicDoors] %d doors rehashed/loaded.", i);
@@ -410,16 +411,15 @@ public OnSetDDOwner(playerid, doorid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-	    new rows, fields;
-	    new string[128], sqlid[5], playername[MAX_PLAYER_NAME], id;
-    	cache_get_data(rows, fields, MainPipeline);
+	    new rows;
+	    new string[128], playername[MAX_PLAYER_NAME];
+    	cache_get_row_count(rows);
 
     	if(rows)
     	{
-			cache_get_field_content(0, "id", sqlid, MainPipeline); id = strval(sqlid);
-			cache_get_field_content(0, "Username", playername, MainPipeline, MAX_PLAYER_NAME);
+			cache_get_value_name_int(0, "id", DDoorsInfo[doorid][ddOwner]);
+			cache_get_value_name(0, "Username", playername, MAX_PLAYER_NAME);
 			strcat((DDoorsInfo[doorid][ddOwnerName][0] = 0, DDoorsInfo[doorid][ddOwnerName]), playername, MAX_PLAYER_NAME);
-			DDoorsInfo[doorid][ddOwner] = id;
 
 			format(string, sizeof(string), "Successfully set the owner to %s.", playername);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -428,7 +428,7 @@ public OnSetDDOwner(playerid, doorid)
 			if(IsValidDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID])) DestroyDynamic3DTextLabel(DDoorsInfo[doorid][ddTextID]);
 			CreateDynamicDoor(doorid);
 			SaveDynamicDoor(doorid);
-			format(string, sizeof(string), "%s has edited door ID %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), doorid, playername, id);
+			format(string, sizeof(string), "%s has edited door ID %d's owner to %s (SQL ID: %d).", GetPlayerNameEx(playerid), doorid, playername, DDoorsInfo[doorid][ddOwner]);
 			Log("logs/ddedit.log", string);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "That account name does not appear to exist.");
@@ -747,8 +747,8 @@ CMD:ddowner(playerid, params[])
 			new query[128], tmpName[24];
 
 			mysql_escape_string(playername, tmpName);
-			format(query,sizeof(query), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s'", tmpName);
-			mysql_function_query(MainPipeline, query, true, "OnSetDDOwner", "ii", playerid, doorid);
+			mysql_format(MainPipeline, query,sizeof(query), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s'", tmpName);
+			mysql_tquery(MainPipeline, query, "OnSetDDOwner", "ii", playerid, doorid);
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");

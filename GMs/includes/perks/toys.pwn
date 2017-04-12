@@ -122,8 +122,8 @@ stock CompleteToyTrade(playerid)
 				PlayerToyInfo[playerid][i][ptScaleZ] = 0.0;
 			}
 			// Seller
-			format(string, sizeof(string), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptID]);
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, sellerid);
+			mysql_format(MainPipeline, string, sizeof(string), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[sellerid][GetPVarInt(sellerid, "ttToySlot")][ptID]);
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, sellerid);
 
 			g_mysql_NewToy(playerid, i);
 			break;

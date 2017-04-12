@@ -290,8 +290,8 @@ CMD:checkapps(playerid, params[])
 	{
 		switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 		{
-			case 1: mysql_function_query(MainPipeline, "SELECT `playerid`, `name`, `date` FROM `nation_queue` WHERE `nation` = 0 AND `status` = 1 ORDER BY `id` ASC", true, "NationQueueQueryFinish", "iii", playerid, 0, AppQueue);
-			case 2: mysql_function_query(MainPipeline, "SELECT `playerid`, `name`, `date` FROM `nation_queue` WHERE `nation` = 1 AND `status` = 1 ORDER BY `id` ASC", true, "NationQueueQueryFinish", "iii", playerid, 1, AppQueue);
+			case 1: mysql_tquery(MainPipeline, "SELECT `playerid`, `name`, `date` FROM `nation_queue` WHERE `nation` = 0 AND `status` = 1 ORDER BY `id` ASC", "NationQueueQueryFinish", "iii", playerid, 0, AppQueue);
+			case 2: mysql_tquery(MainPipeline, "SELECT `playerid`, `name`, `date` FROM `nation_queue` WHERE `nation` = 1 AND `status` = 1 ORDER BY `id` ASC", "NationQueueQueryFinish", "iii", playerid, 1, AppQueue);
 		}
 	}
 	else SendClientMessage(playerid, COLOR_GREY, "You are not the leader of a Government agency.");

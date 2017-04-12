@@ -212,9 +212,9 @@ CMD:buddyinvite(playerid, params[])
 	{
 		PlayerInfo[playerid][pVIPInviteDay] = gettime();
 	}
-	format(string, sizeof(string), "UPDATE `accounts` SET `VIPInviteDay` = %d, `BuddyInvites` = %d WHERE `id` = '%d'",
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `VIPInviteDay` = %d, `BuddyInvites` = %d WHERE `id` = '%d'",
 	PlayerInfo[playerid][pVIPInviteDay], PlayerInfo[playerid][pBuddyInvites], GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	return 1;
 }
 
@@ -1221,8 +1221,8 @@ CMD:ovmute(playerid, params[])
 	mysql_escape_string(params, tmpName);
 	SetPVarString(playerid, "OnSetVMute", tmpName);
 
-	format(query,sizeof(query),"UPDATE `accounts` SET `VIPMuted` = 1 WHERE `Username`= '%s' AND `AdminLevel` < 4", tmpName);
-	mysql_function_query(MainPipeline, query, false, "OnSetVMute", "ii", playerid, 1);
+	mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `VIPMuted` = 1 WHERE `Username`= '%s' AND `AdminLevel` < 4", tmpName);
+	mysql_tquery(MainPipeline, query, "OnSetVMute", "ii", playerid, 1);
 
 	format(query, sizeof(query), "Attempting to vip mute %s's account.", tmpName);
 	SendClientMessageEx(playerid, COLOR_YELLOW, query);
@@ -1240,8 +1240,8 @@ CMD:ovunmute(playerid, params[])
 	mysql_escape_string(params, tmpName);
 	SetPVarString(playerid, "OnSetVMute", tmpName);
 
-	format(query,sizeof(query),"UPDATE `accounts` SET `VIPMuted` = 0 WHERE `Username`= '%s' AND `AdminLevel` < 4", tmpName);
-	mysql_function_query(MainPipeline, query, false, "OnSetVMute", "ii", playerid, 2);
+	mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `VIPMuted` = 0 WHERE `Username`= '%s' AND `AdminLevel` < 4", tmpName);
+	mysql_tquery(MainPipeline, query, "OnSetVMute", "ii", playerid, 2);
 
 	format(query, sizeof(query), "Attempting to vip unmute %s's account.", tmpName);
 	SendClientMessageEx(playerid, COLOR_YELLOW, query);

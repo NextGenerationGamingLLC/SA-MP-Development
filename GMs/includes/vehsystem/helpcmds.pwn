@@ -307,7 +307,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 stock LoadHelp()
 {
 	printf("[LoadHelp] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `help` ORDER BY `Type` ASC, `Subtype` ASC, `Name` ASC", true, "OnLoadHelp", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `help` ORDER BY `Type` ASC, `Subtype` ASC, `Name` ASC", true, "OnLoadHelp", "");
 }
 
 stock RehashHelp()

@@ -369,8 +369,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		DespawnSpeedCamera(id);
 		SpeedCameras[id][_scActive] = false;
 		new query[256];
-		format(query, sizeof(query), "DELETE FROM speed_cameras WHERE id=%i", SpeedCameras[id][_scDatabase]);
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_format(MainPipeline, query, sizeof(query), "DELETE FROM speed_cameras WHERE id=%i", SpeedCameras[id][_scDatabase]);
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 		//SaveSpeedCamera(id); dafuq is this doing here
 		SendClientMessageEx(playerid, COLOR_RED, "Speed camera deleted.");
 		DeletePVar(playerid, "_scCacheDeleteId");
@@ -515,35 +515,35 @@ stock SaveSpeedCamera(i)
 		return;
 
 	new query[1024];
-	format(query, sizeof(query), "UPDATE speed_cameras SET pos_x=%f, pos_y=%f, pos_z=%f, rotation=%f, `range`=%f, speed_limit=%f WHERE id=%i",
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE speed_cameras SET pos_x=%f, pos_y=%f, pos_z=%f, rotation=%f, `range`=%f, speed_limit=%f WHERE id=%i",
 		SpeedCameras[i][_scPosX], SpeedCameras[i][_scPosY], SpeedCameras[i][_scPosZ], SpeedCameras[i][_scRotation], SpeedCameras[i][_scRange], SpeedCameras[i][_scLimit],
 		SpeedCameras[i][_scDatabase]);
 
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock LoadSpeedCameras()
 {
 	printf("[SpeedCameras] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM speed_cameras", true, "OnLoadSpeedCameras", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM speed_cameras", "OnLoadSpeedCameras", "");
 	return 1;
 }
 
 forward OnLoadSpeedCameras();
 public OnLoadSpeedCameras()
 {
-	new fields, rows, index;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows, index;
+	cache_get_row_count(rows);
 
-	while ((index < rows))
+	while((index < rows))
 	{
-		SpeedCameras[index][_scDatabase] = cache_get_field_content_int(index, "id", MainPipeline);
-		SpeedCameras[index][_scPosX] = cache_get_field_content_float(index, "pos_x", MainPipeline);
-		SpeedCameras[index][_scPosY] = cache_get_field_content_float(index, "pos_y", MainPipeline);
-		SpeedCameras[index][_scPosZ] = cache_get_field_content_float(index, "pos_z", MainPipeline);
-		SpeedCameras[index][_scRotation] = cache_get_field_content_float(index, "rotation", MainPipeline); 
-		SpeedCameras[index][_scRange] = cache_get_field_content_float(index, "range", MainPipeline); 
-		SpeedCameras[index][_scLimit] = cache_get_field_content_float(index, "speed_limit", MainPipeline); 
+		cache_get_value_name_int(index, "id", SpeedCameras[index][_scDatabase]);
+		cache_get_value_name_float(index, "pos_x", SpeedCameras[index][_scPosX]);
+		cache_get_value_name_float(index, "pos_y", SpeedCameras[index][_scPosY]);
+		cache_get_value_name_float(index, "pos_z", SpeedCameras[index][_scPosZ]);
+		cache_get_value_name_float(index, "rotation", SpeedCameras[index][_scRotation]); 
+		cache_get_value_name_float(index, "range", SpeedCameras[index][_scRange]); 
+		cache_get_value_name_float(index, "speed_limit", SpeedCameras[index][_scLimit]); 
 
 		if(SpeedCameras[index][_scPosX] != 0.0)
 		{
@@ -565,17 +565,17 @@ public OnLoadSpeedCameras()
 stock StoreNewSpeedCameraInMySQL(index)
 {
 	new string[512];
-	format(string, sizeof(string), "INSERT INTO speed_cameras (pos_x, pos_y, pos_z, rotation, `range`, speed_limit) VALUES (%f, %f, %f, %f, %f, %f)",
+	mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO speed_cameras (pos_x, pos_y, pos_z, rotation, `range`, speed_limit) VALUES (%f, %f, %f, %f, %f, %f)",
 		SpeedCameras[index][_scPosX], SpeedCameras[index][_scPosY], SpeedCameras[index][_scPosZ], SpeedCameras[index][_scRotation], SpeedCameras[index][_scRange], SpeedCameras[index][_scLimit]);
 
-	mysql_function_query(MainPipeline, string, true, "OnNewSpeedCamera", "i", index);
+	mysql_tquery(MainPipeline, string, "OnNewSpeedCamera", "i", index);
 	return 1;
 }
 
 forward OnNewSpeedCamera(index);
 public OnNewSpeedCamera(index)
 {
-	new db = mysql_insert_id(MainPipeline);
+	new db = cache_insert_id();
 	SpeedCameras[index][_scDatabase] = db;
 }
 
@@ -604,7 +604,7 @@ stock UpdateSpeedCamerasForPlayer(p)
 							new string[155], Amount = floatround(125*(vehicleSpeed-speedLimit), floatround_round)+2000;
 							SetPVarInt(p, "VLPTickets", GetPVarInt(p, "VLPTickets")+Amount);
 							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvTicket` = '%d' WHERE `id` = '%d'", GetPVarInt(p, "VLPTickets"), GetPVarInt(p, "LockPickVehicleSQLId"));
-							mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, p);
+							mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, p);
 							PlayerInfo[p][pTicketTime] = 60;
 							format(string, sizeof(string), "You were caught speeding and have received a speeding ticket of $%s", number_format(Amount));
 							SendClientMessageEx(p, COLOR_WHITE, string);

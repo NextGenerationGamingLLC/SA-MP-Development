@@ -35,11 +35,11 @@ CreateBan(iBanCreator, iBanned, iPlayerID, szIPAddress[], szReason[], iLength, i
 
 	if(iLength > 5000) iLength = 5000;
 
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `ban` (`bannedid`, `creatorid`, `IP`, `reason`, `createdate`, `liftdate`, `active`) \
-		VALUES ('%d', '%d', '%s', '%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(DATE_ADD(CURDATE(),INTERVAL %d DAY)), 1)",
-		iBanned, iBanCreator == INVALID_PLAYER_ID ? INVALID_PLAYER_ID:PlayerInfo[iBanCreator][pId], szIPAddress, g_mysql_ReturnEscaped(szReason, MainPipeline), iLength);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `ban` (`bannedid`, `creatorid`, `IP`, `reason`, `createdate`, `liftdate`, `active`) \
+		VALUES ('%d', '%d', '%s', '%e', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(DATE_ADD(CURDATE(),INTERVAL %d DAY)), 1)",
+		iBanned, iBanCreator == INVALID_PLAYER_ID ? INVALID_PLAYER_ID:PlayerInfo[iBanCreator][pId], szIPAddress, szReason, iLength);
 
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnCreateBan", "iisisiii", iBanCreator, iPlayerID, szIPAddress, iBanned, szReason, iLength, iSilentBan, iPermBan);
+	mysql_tquery(MainPipeline, szMiscArray, "OnCreateBan", "iisisiii", iBanCreator, iPlayerID, szIPAddress, iBanned, szReason, iLength, iSilentBan, iPermBan);
 
 	return 1;
 }
@@ -100,13 +100,13 @@ public OnCreateBan(iBanCreator, iPlayerID, szIPAddress[], iBanned, szReason[], i
 RemoveBan(iRemover, iBanned, szIPAddress[]) {
 
 	if(iBanned != INVALID_PLAYER_ID) {
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `ban` SET `active` = 0 WHERE `bannedid` = '%d' OR `IP` = '%s'", iBanned, szIPAddress);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `ban` SET `active` = 0 WHERE `bannedid` = '%d' OR `IP` = '%s'", iBanned, szIPAddress);
 	}
 	else {
 		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `ban` SET `active` = 0 WHERE `IP` = '%e'", szIPAddress);
 	}
 
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnRemoveBan", "iis", iRemover, iBanned, szIPAddress);
+	mysql_tquery(MainPipeline, szMiscArray, "OnRemoveBan", "iis", iRemover, iBanned, szIPAddress);
 
 	return 1;
 
@@ -118,7 +118,7 @@ public OnRemoveBan(iRemover, iBanned, szIPAddress[]) {
 	if(iRemover == INVALID_PLAYER_ID) return 1;
 	if(!mysql_errno(MainPipeline)) {
 
-		new iRows = cache_affected_rows(MainPipeline);
+		new iRows = cache_affected_rows();
 
 		if(!iRows) return SendClientMessageEx(iRemover, COLOR_YELLOW, "No bans matching that criteria were found");
 		else {
@@ -153,15 +153,14 @@ public InitiateUnban(iRemover) {
 	new
 		szIPAddress[16],
 		id,
-		iRows,
-		iFields;
+		iRows;
 
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 
-	if(cache_get_row_count(MainPipeline)) {
+	if(iRows) {
 
-		id = cache_get_field_content_int(0, "id", MainPipeline);
-		cache_get_field_content(0, "IP", szIPAddress, MainPipeline);
+		cache_get_value_name_int(0, "id", id);
+		cache_get_value_name(0, "IP", szIPAddress);
 		return RemoveBan(iRemover, id, szIPAddress);
 	}
 	return 1;
@@ -172,12 +171,16 @@ public InitiateOfflineBan(iBanCreator, szReason[], iLength) {
 
 	new
 		szIPAddress[16],
-		id;
+		id,
+		iRows,
+		value;
+		
+	cache_get_row_count(iRows);
 
-	if(cache_get_row_count(MainPipeline)) {
-		id = cache_get_field_content_int(0, "id", MainPipeline);
-		cache_get_field_content(0, "IP", szIPAddress, MainPipeline);
-		if(cache_get_field_content_int(0, "AdminLevel", MainPipeline) > PlayerInfo[iBanCreator][pAdmin]) {
+	if(iRows) {
+		cache_get_value_name_int(0, "id", id);
+		cache_get_value_name(0, "IP", szIPAddress);
+		if(cache_get_value_name_int(0, "AdminLevel", value) > PlayerInfo[iBanCreator][pAdmin]) {
 			return SendClientMessageEx(iBanCreator, COLOR_GREY, "You cannot ban a player with a higher admin level than you.");
 		}
 		return CreateBan(iBanCreator, id, INVALID_PLAYER_ID, szIPAddress, szReason, iLength);
@@ -191,21 +194,22 @@ forward InitiateIPBan(iBanCreator, szReason[], iLength);
 public InitiateIPBan(iBanCreator, szReason[], iLength) {
 
 	new iRows,
-		iFields,
 		szIPAddress[16],
 		szName[MAX_PLAYER_NAME],
 		id,
-		iCount;
+		iCount,
+		value;
 
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
+
 	if(iRows) {
 		while(iCount < iRows) {
 
-			id = cache_get_field_content_int(iCount, "id", MainPipeline);
-			cache_get_field_content(iCount, "IP", szIPAddress, MainPipeline);
-			cache_get_field_content(iCount, "Username", szName, MainPipeline, MAX_PLAYER_NAME);
+			cache_get_value_name_int(iCount, "id", id);
+			cache_get_value_name(iCount, "IP", szIPAddress);
+			cache_get_value_name(iCount, "Username", szName, MAX_PLAYER_NAME);
 			SetPVarString(iBanCreator, "BanningName", szName);
-			if(cache_get_field_content_int(iCount, "AdminLevel", MainPipeline) > PlayerInfo[iBanCreator][pAdmin]) {
+			if(cache_get_value_name_int(iCount, "AdminLevel", value) > PlayerInfo[iBanCreator][pAdmin]) {
 				format(szMiscArray, sizeof(szMiscArray), "[SYSTEM]: Couldn't ban account ID %d (higher admin level than you).", id);
 				SendClientMessageEx(iBanCreator, COLOR_GREY, szMiscArray);
 			}
@@ -218,18 +222,20 @@ public InitiateIPBan(iBanCreator, szReason[], iLength) {
 
 CheckBan(iPlayerID) {
 
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `ban` WHERE `active` = '1' AND (`bannedid` = '%d' OR `IP` = '%s')", PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckBan", "i", iPlayerID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `ban` WHERE `active` = '1' AND (`bannedid` = '%d' OR `IP` = '%s')", PlayerInfo[iPlayerID][pId], PlayerInfo[iPlayerID][pIP]);
+	mysql_tquery(MainPipeline, szMiscArray, "OnCheckBan", "i", iPlayerID);
 	return 1;
 }
 
 forward OnCheckBan(iPlayerID);
-public OnCheckBan(iPlayerID) {
+public OnCheckBan(iPlayerID)
+{
+	new iRows, iDate;
+	cache_get_row_count(iRows);
+	if(iRows) {
 
-	if(cache_get_row_count(MainPipeline) > 0) {
-
-		cache_get_field_content(0, "reason", szMiscArray, MainPipeline);
-		new iDate = cache_get_field_content_int(0, "liftdate", MainPipeline);
+		cache_get_value_name(0, "reason", szMiscArray);
+		cache_get_value_name_int(0, "liftdate", iDate);
 		/*
 		SendClientMessageEx(iPlayerID, COLOR_RED, "This account/IP is currently banned.");
 		format(szMiscArray, sizeof(szMiscArray), "Reason: %s - Unban Time (Server Time): %s", szMiscArray, date(iDate, 1));
@@ -273,7 +279,7 @@ CMD:unban(playerid, params[]) {
 	SetPVarString(playerid, "UnbanName", params);
 
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`IP` FROM `accounts` WHERE `Username` = '%e' LIMIT 1", params);
-	mysql_function_query(MainPipeline, szMiscArray, false, "InitiateUnban", "i", playerid);
+	mysql_tquery(MainPipeline, szMiscArray, "InitiateUnban", "i", playerid);
 
 	return 1;
 }
@@ -394,8 +400,8 @@ CMD:moneyfarmban(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] < 99999) return 1;
 	new uPlayer;
 	if(sscanf(params, "u", uPlayer)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /moneyfarmban [playerid / name]");
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `Username`, `IP`, `Money`, `Bank`, `SPos_x`, `SPos_y`, `SPos_z` FROM `accounts` WHERE `IP` = '%s'", GetPlayerIpEx(uPlayer));
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCheckMoneyFarm", "is", playerid, GetPlayerIpEx(uPlayer));
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `Username`, `IP`, `Money`, `Bank`, `SPos_x`, `SPos_y`, `SPos_z` FROM `accounts` WHERE `IP` = '%s'", GetPlayerIpEx(uPlayer));
+	mysql_tquery(MainPipeline, szMiscArray, "OnCheckMoneyFarm", "is", playerid, GetPlayerIpEx(uPlayer));
 	return 1;
 }
 
@@ -404,24 +410,25 @@ public OnCheckMoneyFarm(playerid, szIP[]) {
 
 	szMiscArray[0] = 0;
 	new iRows,
-		iFields,
 		iCount,
+		Float:iFloat,
+		iValue,
 		szTitle[48],
 		szName[MAX_PLAYER_NAME],
 		szZone[MAX_ZONE_NAME];
 
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 	while(iCount < iRows) {
 
-		cache_get_field_content(iCount, "Username", szName, MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(iCount, "IP", szIP, MainPipeline, 16);
-		Get3DZone(cache_get_field_content_float(iCount, "SPos_x", MainPipeline),
-			cache_get_field_content_float(iCount, "SPos_y", MainPipeline),
-			cache_get_field_content_float(iCount, "SPos_z", MainPipeline),
+		cache_get_value_name(iCount, "Username", szName);
+		cache_get_value_name(iCount, "IP", szIP, 16);
+		Get3DZone(cache_get_value_name_float(iCount, "SPos_x", iFloat),
+			cache_get_value_name_float(iCount, "SPos_y", iFloat),
+			cache_get_value_name_float(iCount, "SPos_z", iFloat),
 			szZone, MAX_ZONE_NAME);
 		
 		format(szMiscArray, sizeof(szMiscArray), "%s\n%s - %s - Hand: $%s Bank: $%s - LastLocation: %s", szMiscArray, szName, szIP,
-			number_format(cache_get_field_content_int(iCount, "Money", MainPipeline)), number_format(cache_get_field_content_int(iCount, "Bank", MainPipeline)), szZone);
+			number_format(cache_get_value_name_int(iCount, "Money", iValue)), number_format(cache_get_value_name_int(iCount, "Bank", iValue)), szZone);
 		iCount++;
 	}
 	strcat(szMiscArray, "\n___________________\nBan All", sizeof(szMiscArray));
@@ -444,7 +451,7 @@ CMD:banip(playerid, params[]) {
 	if(IsPlayerConnected(ReturnUserFromIP(szIP))) return SendClientMessageEx(playerid, COLOR_GREY, "That player is currently connected, use /ban.");
 
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`AdminLevel`,`IP` FROM `accounts` WHERE `IP` = '%e'", szIP);
-	mysql_function_query(MainPipeline, szMiscArray, false, "InitiateIPBan","isi", playerid, szReason, iLength);
+	mysql_tquery(MainPipeline, szMiscArray, "InitiateIPBan","isi", playerid, szReason, iLength);
 
 	return 1;
 }
@@ -465,7 +472,7 @@ CMD:banaccount(playerid, params[]) {
 	SetPVarString(playerid, "BanningName", szName);
 
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`,`AdminLevel`,`IP` FROM `accounts` WHERE `Username` = '%e' LIMIT 1", szName);
-	mysql_function_query(MainPipeline, szMiscArray, false, "InitiateOfflineBan","isi", playerid, szReason, iLength);
+	mysql_tquery(MainPipeline, szMiscArray, "InitiateOfflineBan","isi", playerid, szReason, iLength);
 
 	return 1;
 }
@@ -477,16 +484,16 @@ CMD:oldunban(playerid, params[])
 		new string[128], query[256], tmpName[24];
 		if(isnull(params)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /oldunban [player name]");
 
-		mysql_escape_string(params, tmpName, MainPipeline);
+		mysql_escape_string(params, tmpName);
 		SetPVarString(playerid, "OnUnbanPlayer", tmpName);
 
-		format(query, sizeof(query), "UPDATE `accounts` SET `Band`=0, `Warnings`=0, `Disabled`=0 WHERE `Username`='%s' AND `PermBand` < 3", tmpName);
+		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Band`=0, `Warnings`=0, `Disabled`=0 WHERE `Username`='%s' AND `PermBand` < 3", tmpName);
 		format(string, sizeof(string), "Attempting to unban %s...", tmpName);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
-		mysql_function_query(MainPipeline, query, false, "OnUnbanPlayer", "i", playerid);
+		mysql_tquery(MainPipeline, query, "OnUnbanPlayer", "i", playerid);
 
-		format(query, sizeof(query), "SELECT `IP` FROM `accounts` WHERE `Username`='%s'", tmpName);
-		mysql_function_query(MainPipeline, query, true, "OnUnbanIP", "i", playerid);
+		mysql_format(MainPipeline, query, sizeof(query), "SELECT `IP` FROM `accounts` WHERE `Username`='%s'", tmpName);
+		mysql_tquery(MainPipeline, query, "OnUnbanIP", "i", playerid);
 	}
 	else
 	{

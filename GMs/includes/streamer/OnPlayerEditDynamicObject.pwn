@@ -177,9 +177,9 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				}
 				Streamer_SetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_EXTRA_ID, iHouseID);
 
-				format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' \
+				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' \
 					WHERE `houseid` = '%d' AND `slotid` = '%d'", x, y, z, rx, ry, rz, iHouseID, iSlotID);
-				mysql_function_query(MainPipeline, szMiscArray, false, "OnEditFurniture", "");
+				mysql_tquery(MainPipeline, szMiscArray, "OnEditFurniture", "");
 
 				foreach(new i : Player) Streamer_Update(i);
 

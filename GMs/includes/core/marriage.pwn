@@ -132,8 +132,8 @@ CMD:adivorce(playerid, params[])
 				{
 					if(PlayerInfo[i][pMarriedID] == GetPlayerSQLId(giveplayerid)) ClearMarriage(i);
 				}
-				format(string, sizeof(string), "UPDATE `accounts` SET `MarriedID` = -1 WHERE id = %d", PlayerInfo[giveplayerid][pMarriedID]);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `MarriedID` = -1 WHERE id = %d", PlayerInfo[giveplayerid][pMarriedID]);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			ClearMarriage(giveplayerid);
 			format(string, sizeof(string), "* You've admin divorced %s.", GetPlayerNameEx(giveplayerid));

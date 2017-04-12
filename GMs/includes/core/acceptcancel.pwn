@@ -523,11 +523,11 @@ CMD:accept(playerid, params[])
                                 PlayerVehicleInfo[playerid][playervehicleid][pvMods][m] = PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvMods][m];
                             }
 
-        					format(szMessage, sizeof(szMessage), "INSERT INTO `vehicles` (`sqlID`) VALUES ('%d')", GetPlayerSQLId(playerid));
-							mysql_function_query(MainPipeline, szMessage, true, "OnQueryCreateVehicle", "ii", playerid, playervehicleid);
+        					mysql_format(MainPipeline, szMessage, sizeof(szMessage), "INSERT INTO `vehicles` (`sqlID`) VALUES ('%d')", GetPlayerSQLId(playerid));
+							mysql_tquery(MainPipeline, szMessage, "OnQueryCreateVehicle", "ii", playerid, playervehicleid);
 
-							format(szMessage, sizeof(szMessage), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvSlotId]);
-							mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, VehicleOffer[playerid]);
+							mysql_format(MainPipeline, szMessage, sizeof(szMessage), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvSlotId]);
+							mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, VehicleOffer[playerid]);
 
 							PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvSlotId] = 0;
                             PlayerVehicleInfo[VehicleOffer[playerid]][VehicleId[playerid]][pvId] = 0;
@@ -2215,8 +2215,8 @@ CMD:accept(playerid, params[])
 								if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][vehicleslot][pvId]))
 								{
 									if(vehicleslot != -1) {
-										format(szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[vehicleid], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
-										mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+										mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[vehicleid], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
+										mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 									}
 								}
 							}
@@ -2624,8 +2624,8 @@ CMD:refill(playerid, params[])
 						if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][vehicleslot][pvId]))
 						{
 							if(vehicleslot != -1) {
-								format(string, sizeof(string), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[vehicleid], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
-								mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d'", VehicleFuel[vehicleid], PlayerVehicleInfo[playerid][vehicleslot][pvSlotId]);
+								mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 							}
 						}
 					}

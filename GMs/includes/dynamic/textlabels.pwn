@@ -295,8 +295,8 @@ stock RehashTxtLabels()
 stock SaveTxtLabel(labelid)
 {
 	new string[1024];
-	format(string, sizeof(string), "UPDATE `text_labels` SET \
-		`Text`='%s', \
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `text_labels` SET \
+		`Text`='%e', \
 		`PosX`=%f, \
 		`PosY`=%f, \
 		`PosZ`=%f, \
@@ -304,7 +304,7 @@ stock SaveTxtLabel(labelid)
 		`Int`=%d, \
 		`Color`=%d, \
 		`PickupModel`=%d WHERE `id`=%d",
-		g_mysql_ReturnEscaped(TxtLabels[labelid][tlText], MainPipeline),
+		TxtLabels[labelid][tlText],
 		TxtLabels[labelid][tlPosX],
 		TxtLabels[labelid][tlPosY],
 		TxtLabels[labelid][tlPosZ],
@@ -315,39 +315,39 @@ stock SaveTxtLabel(labelid)
 		labelid+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock LoadTxtLabel(labelid)
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `text_labels` WHERE `id`=%d", labelid+1); // Array starts at zero, MySQL starts at 1.
-	mysql_function_query(MainPipeline, string, true, "OnLoadTxtLabel", "i", labelid);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `text_labels` WHERE `id`=%d", labelid+1); // Array starts at zero, MySQL starts at 1.
+	mysql_tquery(MainPipeline, string, "OnLoadTxtLabel", "i", labelid);
 }
 
 stock LoadTxtLabels()
 {
 	printf("[LoadTxtLabels] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `text_labels`", true, "OnLoadTxtLabels", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `text_labels`", "OnLoadTxtLabels", "");
 }
 
 forward OnLoadTxtLabel(index);
 public OnLoadTxtLabel(index)
 {
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows;
+	cache_get_row_count(rows);
 
 	for(new row; row < rows; row++)
 	{
-		TxtLabels[index][tlSQLId] = cache_get_field_content_int(row, "id", MainPipeline);
-		cache_get_field_content(row, "Text", TxtLabels[index][tlText], MainPipeline, 128);
-		TxtLabels[index][tlPosX] = cache_get_field_content_float(row, "PosX", MainPipeline);
-		TxtLabels[index][tlPosY] = cache_get_field_content_float(row, "PosY", MainPipeline);
-		TxtLabels[index][tlPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
-		TxtLabels[index][tlVW] = cache_get_field_content_int(row, "VW", MainPipeline); 
-		TxtLabels[index][tlInt] = cache_get_field_content_int(row, "Int", MainPipeline); 
-		TxtLabels[index][tlColor] = cache_get_field_content_int(row, "Color", MainPipeline);
-		TxtLabels[index][tlPickupModel] = cache_get_field_content_int(row, "PickupModel", MainPipeline); 
+		cache_get_value_name_int(row, "id", TxtLabels[index][tlSQLId]);
+		cache_get_value_name(row, "Text", TxtLabels[index][tlText], 128);
+		cache_get_value_name_float(row, "PosX", TxtLabels[index][tlPosX]);
+		cache_get_value_name_float(row, "PosY", TxtLabels[index][tlPosY]);
+		cache_get_value_name_float(row, "PosZ", TxtLabels[index][tlPosZ]);
+		cache_get_value_name_int(row, "VW", TxtLabels[index][tlVW]); 
+		cache_get_value_name_int(row, "Int", TxtLabels[index][tlInt]); 
+		cache_get_value_name_int(row, "Color", TxtLabels[index][tlColor]);
+		cache_get_value_name_int(row, "PickupModel", TxtLabels[index][tlPickupModel]); 
 		if(TxtLabels[index][tlPosX] != 0.0) CreateTxtLabel(index);
 	}
 	return 1;
@@ -356,12 +356,12 @@ public OnLoadTxtLabel(index)
 forward OnLoadTxtLabels();
 public OnLoadTxtLabels()
 {
-	new i, rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows;
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		TxtLabels[i][tlSQLId] = cache_get_field_content_int(i, "id", MainPipeline);
+		/*TxtLabels[i][tlSQLId] = cache_get_field_content_int(i, "id", MainPipeline);
 		cache_get_field_content(i, "Text", TxtLabels[i][tlText], MainPipeline, 128);
 		TxtLabels[i][tlPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
 		TxtLabels[i][tlPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
@@ -370,7 +370,8 @@ public OnLoadTxtLabels()
 		TxtLabels[i][tlInt] = cache_get_field_content_int(i, "Int", MainPipeline); 
 		TxtLabels[i][tlColor] = cache_get_field_content_int(i, "Color", MainPipeline);
 		TxtLabels[i][tlPickupModel] = cache_get_field_content_int(i, "PickupModel", MainPipeline); 
-		if(TxtLabels[i][tlPosX] != 0.0) CreateTxtLabel(i);
+		if(TxtLabels[i][tlPosX] != 0.0) CreateTxtLabel(i);*/
+		LoadTxtLabel(i);
 		i++;
 	}
 }

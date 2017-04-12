@@ -33,9 +33,9 @@ public OnInvalidEmailCheck(playerid, response_code, data[])
 		{
 			szMiscArray[0] = 0;
 			GetPVarString(playerid, "pEmail", szMiscArray, 128);
-			strcpy(PlayerInfo[playerid][pEmail], g_mysql_ReturnEscaped(szMiscArray, MainPipeline), 128);
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Email` = '%s', `EmailConfirmed` = 0 WHERE `id` = %d", PlayerInfo[playerid][pEmail], PlayerInfo[playerid][pId]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_escape_string(szMiscArray, PlayerInfo[playerid][pEmail]);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Email` = '%s', `EmailConfirmed` = 0 WHERE `id` = %d", PlayerInfo[playerid][pEmail], PlayerInfo[playerid][pId]);
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 			format(szMiscArray, sizeof(szMiscArray), "A confirmation email will be sent to '%s' soon.\n\
 			This email will need to be confirmed within 7 days or you will be prompted to enter a new one.\n\
 			Please make an effort to confirm it as it will be used for important changes and notifications in regards to your account.", PlayerInfo[playerid][pEmail]);

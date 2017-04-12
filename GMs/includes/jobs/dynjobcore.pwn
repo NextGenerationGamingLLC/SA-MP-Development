@@ -42,20 +42,20 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 stock LoadJobNames()
 {
 	printf("[Dynamic Jobs Names] Loading Dynamic Job names from the database, please wait...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `jobs_types`", true, "OnLoadJobNames", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `jobs_types`", "OnLoadJobNames", "");
 }
 
 forward OnLoadJobNames();
 public OnLoadJobNames()
 {
 	szMiscArray[0] = 0;
-	new i, rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows;
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
 		if(i < MAX_JOBTYPES) {
-			cache_get_field_content(i, "name", JobName[i], MainPipeline, 32);
+			cache_get_value_name(i, "name", JobName[i], 32);
 		}
 		i++;
 	}
@@ -68,33 +68,33 @@ stock LoadJobPoints()
 {
 	LoadJobNames();
 	printf("[Dynamic Jobs] Loading Dynamic Jobs from the database, please wait...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `jobs`", true, "OnLoadJobPoints", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `jobs`", "OnLoadJobPoints", "");
 }
 
 forward OnLoadJobPoints();
 public OnLoadJobPoints()
 {
 	szMiscArray[0] = 0;
-	new i, rows, fields, sqlid;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows, sqlid;
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		JobData[i][jId] = cache_get_field_content_int(i, "id", MainPipeline);
+		cache_get_value_name_int(i, "id", JobData[i][jId]);
 		if(i < MAX_JOBPOINTS) {
-			JobData[i][jType] = cache_get_field_content_int(i, "type", MainPipeline);
-			JobData[i][jPos][0] = cache_get_field_content_float(i, "posx", MainPipeline);
-			JobData[i][jPos][1] = cache_get_field_content_float(i, "posy", MainPipeline);
-			JobData[i][jPos][2] = cache_get_field_content_float(i, "posz", MainPipeline);
-			JobData[i][jVw] = cache_get_field_content_int(i, "vw", MainPipeline);
-			JobData[i][jInt] = cache_get_field_content_int(i, "int", MainPipeline);
-			JobData[i][jMarkerID] = cache_get_field_content_int(i, "marker", MainPipeline);
-			JobData[i][jLevel] = cache_get_field_content_int(i, "level", MainPipeline);
+			cache_get_value_name_int(i, "type", JobData[i][jType]);
+			cache_get_value_name_float(i, "posx", JobData[i][jPos][0]);
+			cache_get_value_name_float(i, "posy", JobData[i][jPos][1]);
+			cache_get_value_name_float(i, "posz", JobData[i][jPos][2]);
+			cache_get_value_name_int(i, "vw", JobData[i][jVw]);
+			cache_get_value_name_int(i, "int", JobData[i][jInt]);
+			cache_get_value_name_int(i, "marker", JobData[i][jMarkerID]);
+			cache_get_value_name_int(i, "level", JobData[i][jLevel]);
 			UpdateJobPoint(i);
 			++JobCount;
 		} else {
-			format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `jobs` WHERE `id` = %d", sqlid);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `jobs` WHERE `id` = %d", sqlid);
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 		i++;
 	}
@@ -116,8 +116,6 @@ stock SaveJobPoint(i) {
 	SaveInteger(query, "jobs", i+1, "marker", JobData[i][jMarkerID]);
 	SaveInteger(query, "jobs", i+1, "level", JobData[i][jLevel]);
 	SQLUpdateFinish(query, "jobs", i+1);
-
-
 }
 
 forward UpdateJobPoint(id);
@@ -140,7 +138,7 @@ public UpdateJobPoint(id)
 }
 
 /*LoadJobVehicles() {
-	mysql_function_query(MainPipeline, "SELECT * FROM `jobs_vehicles`", true, "OnLoadJobVehicles", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `jobs_vehicles`", true, "OnLoadJobVehicles", "");
 }
 
 forward OnLoadJobVehicles();
@@ -328,7 +326,7 @@ Dialog:job_name_confirm(playerid, response, listitem, inputtext[]) {
 		SendClientMessageEx(playerid, COLOR_YELLOW, "You have changed job id: %d's name from %s to %s.", id, GetJobName(id), inputtext);
 		mysql_escape_string(inputtext, JobName[id]);
 		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `jobs_types` SET `name` = '%e' WHERE `id` = %d", JobName[id], id);
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 		for(new j; j < MAX_JOBPOINTS; j++) {
     		if(JobData[j][jType] == id) {
         		UpdateJobPoint(j);
@@ -623,7 +621,7 @@ Dialog:job_name2(playerid, response, listitem, inputtext[]) {
 Job_CreateJobType(iPlayerID, i, name[]) {
 	szMiscArray[0] = 0;
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `jobs_types` SET `name` = '%e' WHERE `id` = '%d'", name, i+1);
-	mysql_function_query(MainPipeline, szMiscArray, false, "Job_OnCreateJobType", "iis", iPlayerID, i, name);
+	mysql_tquery(MainPipeline, szMiscArray, false, "Job_OnCreateJobType", "iis", iPlayerID, i, name);
 }
 
 forward Job_OnCreateJobType(iPlayerID, i, name[]);
@@ -678,7 +676,7 @@ public Job_OnCreateJobType(iPlayerID, i, name[])
 }*/
 
 /*CJob_LoadJobVehicles() {
-	mysql_function_query(MainPipeline, "SELECT * FROM `jobs_vehicles`", true, "Job_OnLoadJobVehicles", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `jobs_vehicles`", true, "Job_OnLoadJobVehicles", "");
 }
 
 forward Job_OnLoadJobVehicles();
@@ -729,7 +727,7 @@ Job_CreateJobVehicle(iPlayerID, iTypeID, iVehID, color1, color2) {
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `jobs_vehicles` SET `typeid` = '%d', `vehid` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', \
 			`rotz` = '%f', `vw` = '%d', `int` = '%d', `col1` = '%d', `col2` = '%d' WHERE `id` = '%d'",
 			iTypeID, iVehID, fPos[0], fPos[1], fPos[2], fPos[3], GetPlayerVirtualWorld(iPlayerID), GetPlayerInterior(iPlayerID), color1, color2, i+1);
-		mysql_function_query(MainPipeline, szMiscArray, true, "Job_OnCreateJobVehicle", "iiiffffii", i, iTypeID, iVehID, fPos[0], fPos[1], fPos[2], fPos[3], color1, color2);
+		mysql_tquery(MainPipeline, szMiscArray, true, "Job_OnCreateJobVehicle", "iiiffffii", i, iTypeID, iVehID, fPos[0], fPos[1], fPos[2], fPos[3], color1, color2);
 	}
 	else SendClientMessageEx(iPlayerID, COLOR_GRAD1, "You exceeded the maximum job vehicle quotum.");
 	return 1;
@@ -740,7 +738,7 @@ Job_DeleteJobVehicle(iPlayerID, iVehID)
 	new i;
 	foreach(i : JobVehicle) if(arrJobVehData[i][jveh_iVehID] == iVehID) break;
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `jobs_vehicles` SET `posx` = '0', `posy` = '0', `posz` = '0' WHERE `id` = %d", i+1);
-	return mysql_function_query(MainPipeline, szMiscArray, false, "Job_OnDeleteJobVehicle", "ii", iPlayerID, i);
+	return mysql_tquery(MainPipeline, szMiscArray, false, "Job_OnDeleteJobVehicle", "ii", iPlayerID, i);
 }
 
 forward Job_OnDeleteJobVehicle(iPlayerID, i);

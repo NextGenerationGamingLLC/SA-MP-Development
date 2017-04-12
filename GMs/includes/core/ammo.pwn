@@ -59,7 +59,7 @@ ResetVIPAmmoCount()
 	{
 		PlayerInfo[i][pVIPGuncount] = 0;
 	}
-	mysql_function_query(MainPipeline, "UPDATE `accounts` SET `VIPGunsCount` = '0'", false, "", "");
+	mysql_tquery(MainPipeline, "UPDATE `accounts` SET `VIPGunsCount` = '0'", false, "", "");
 	return 1;
 }
 
@@ -627,7 +627,7 @@ CMD:oissuegunlicense(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Please wait...");
 		
 		format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerName);
- 		mysql_function_query(MainPipeline, szMiscArray, true, "OnOfflineGunLicense", "iis", playerid, 1, PlayerName);
+ 		mysql_tquery(MainPipeline, szMiscArray, true, "OnOfflineGunLicense", "iis", playerid, 1, PlayerName);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
 	return 1;
@@ -651,7 +651,7 @@ CMD:orevokegunlicense(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Please wait...");
 		
 		format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerName);
- 		mysql_function_query(MainPipeline, szMiscArray, true, "OnOfflineGunLicense", "iis", playerid, 0, PlayerName);
+ 		mysql_tquery(MainPipeline, szMiscArray, true, "OnOfflineGunLicense", "iis", playerid, 0, PlayerName);
 	}
 	else SendClientMessageEx(playerid, COLOR_WHITE, "You are not authorized to use this command!");
 	return 1;
@@ -664,7 +664,7 @@ public OnOfflineGunLicense(playerid, task, name[])
 		return SendClientMessageEx(playerid, COLOR_RED, "Error - This account does not exist.");
 
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `GunLic` = %d WHERE `Username` = '%s'", task, name);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 	format(szMiscArray, sizeof(szMiscArray), "%s has offline %s %s a gun license.", GetPlayerNameEx(playerid), task ? ("issued"):("revoked"), name);
 	foreach(new i : Player)

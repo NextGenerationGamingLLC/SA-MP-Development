@@ -197,8 +197,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 				format(PlayerInfo[playerid][pReferredBy], MAX_PLAYER_NAME, "%s", szEscape);
 
-				format(szQuery, sizeof(szQuery), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", szEscape);
-				mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", szEscape);
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
 			}
 			else {
 				PlayerInfo[playerid][pTut]++;
@@ -454,8 +454,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					DeletePVar(playerid, "vDel");
 
 					new query[128];
-					format(query, sizeof(query), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[playerid][i][pvSlotId]);
-					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+					mysql_format(MainPipeline, query, sizeof(query), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[playerid][i][pvSlotId]);
+					mysql_tquery(MainPipeline, query, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 					PlayerVehicleInfo[playerid][i][pvSlotId] = 0;
 
@@ -785,7 +785,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			LEFT JOIN betazorder_history h ON h.order_id = p.order_id AND h.order_history_id = (SELECT max(order_history_id) FROM betazorder_history WHERE p.order_id = order_id) \
 			LEFT JOIN betazorder o ON o.order_id = p.order_id \
 			WHERE p.order_id = %d", orderid);
-			mysql_function_query(ShopPipeline, query, true, "OnShopOrder", "i", playerid);
+			mysql_tquery(ShopPipeline, query, true, "OnShopOrder", "i", playerid);
 
 			SetPVarInt(playerid, "ShopOrderTimer", 60); SetTimerEx("OtherTimerEx", 1000, false, "ii", playerid, TYPE_SHOPORDERTIMER);
 		}
@@ -807,7 +807,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				LEFT JOIN betazorder_history h ON h.order_id = p.order_id AND h.order_history_id = (SELECT max(order_history_id) FROM betazorder_history WHERE p.order_id = order_id) \
 				LEFT JOIN betazorder o ON o.order_id = p.order_id \
 				WHERE p.order_id = %d", PlayerInfo[playerid][pOrder]);
-				mysql_function_query(ShopPipeline, query, true, "OnShopOrderEmailVer", "i", playerid);
+				mysql_tquery(ShopPipeline, query, true, "OnShopOrderEmailVer", "i", playerid);
 			}
 			else
 			{
@@ -824,7 +824,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			ShowNoticeGUIFrame(playerid, 6);
 			new query[256];
 			format(query, sizeof(query), "SELECT * FROM `shop` WHERE `order_id`=%d", PlayerInfo[playerid][pOrder]);
-			mysql_function_query(ShopPipeline, query, true, "OnShopOrder2", "ii", playerid, listitem);
+			mysql_tquery(ShopPipeline, query, true, "OnShopOrder2", "ii", playerid, listitem);
 		}
 	}
 
@@ -1695,8 +1695,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		}
 
 		new szQuery[128];
-		format(szQuery, sizeof(szQuery), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[playerid][listitem][ptID]);
-		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		mysql_format(MainPipeline, szQuery, sizeof(szQuery), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[playerid][listitem][ptID]);
+		mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		PlayerToyInfo[playerid][listitem][ptID] = 0;
 		PlayerToyInfo[playerid][listitem][ptModelID] = 0;
 		PlayerToyInfo[playerid][listitem][ptBone] = 0;
@@ -2196,8 +2196,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, "WantedPh", numberstr);
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
 					SetPVarInt(playerid, "PhChangeCost", iCheck);
-					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'", numberstr);
-					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 1);
+					mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'", numberstr);
+					mysql_tquery(MainPipeline, query, "OnPhoneNumberCheck", "ii", playerid, 1);
 					return 1;
 				}
 				else if(GetPlayerCash(playerid) >= 300000 && GetPlayerCash(playerid) < 1000000)
@@ -2205,8 +2205,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, "WantedPh", numberstr);
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
 					SetPVarInt(playerid, "PhChangeCost", 300000);
-					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
-					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 1);
+					mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
+					mysql_tquery(MainPipeline, query, "OnPhoneNumberCheck", "ii", playerid, 1);
 					return 1;
 				}
 				else
@@ -2228,8 +2228,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, "WantedPh", numberstr);
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
 					SetPVarInt(playerid, "PhChangeCost", iCheck);
-					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
-					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 1);
+					mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
+					mysql_tquery(MainPipeline, query, "OnPhoneNumberCheck", "ii", playerid, 1);
 					return 1;
 				}
 				else if(GetPlayerCash(playerid) >= 200000 && GetPlayerCash(playerid) < 1000000)
@@ -2237,8 +2237,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, "WantedPh", numberstr);
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
 					SetPVarInt(playerid, "PhChangeCost", 200000);
-					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
-					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 1);
+					mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
+					mysql_tquery(MainPipeline, query, "OnPhoneNumberCheck", "ii", playerid, 1);
 					return 1;
 				}
 				else
@@ -2260,8 +2260,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, "WantedPh", numberstr);
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
 					SetPVarInt(playerid, "PhChangeCost", iCheck);
-					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
-					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 1);
+					mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
+					mysql_tquery(MainPipeline, query, "OnPhoneNumberCheck", "ii", playerid, 1);
 					return 1;
 				}
 				else if(GetPlayerCash(playerid) >= 50000 && GetPlayerCash(playerid) < 500000)
@@ -2269,8 +2269,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, "WantedPh", numberstr);
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
 					SetPVarInt(playerid, "PhChangeCost", 50000);
-					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
-					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 1);
+					mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",numberstr);
+					mysql_tquery(MainPipeline, query, "OnPhoneNumberCheck", "ii", playerid, 1);
 					return 1;
 				}
 				else
@@ -2298,8 +2298,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerInfo[playerid][pPnumber] = GetPVarInt(playerid, "WantedPh");
 			new iCost = abs(GetPVarInt(playerid, "PhChangeCost"));
 			GivePlayerCash(playerid, -iCost);
-			format(string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[playerid][pPnumber], GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[playerid][pPnumber], GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			DeletePVar(playerid, "PhChangerId");
 			DeletePVar(playerid, "WantedPh");
 			DeletePVar(playerid, "PhChangeCost");
@@ -3073,8 +3073,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			randomString(salt);
 			format(szQuery, sizeof(szQuery), "%s%s", inputtext, salt);
 			WP_Hash(szBuffer, sizeof(szBuffer), szQuery);
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s', `Salt` = '%s' WHERE `id` = '%i'", szBuffer, salt, PlayerInfo[playerid][pId]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnPlayerChangePass", "i", playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s', `Salt` = '%s' WHERE `id` = '%i'", szBuffer, salt, PlayerInfo[playerid][pId]);
+			mysql_tquery(MainPipeline, szQuery, "OnPlayerChangePass", "i", playerid);
 			SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
 
 			if(strcmp(PlayerInfo[playerid][pBirthDate], "0000-00-00", true) == 0 && PlayerInfo[playerid][pTut] != 0) ShowLoginDialogs(playerid, 1);
@@ -3103,8 +3103,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(szQuery, sizeof(szQuery), "%s%s", inputtext, salt);
 			WP_Hash(szBuffer, sizeof(szBuffer), szQuery);
 
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s', `Salt` = '%s' WHERE `id` = '%i'", szBuffer, salt, PlayerInfo[playerid][pId]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnPlayerChangePass", "i", playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Key` = '%s', `Salt` = '%s' WHERE `id` = '%i'", szBuffer, salt, PlayerInfo[playerid][pId]);
+			mysql_tquery(MainPipeline, szQuery, "OnPlayerChangePass", "i", playerid);
 			SendClientMessageEx(playerid, COLOR_YELLOW, "Processing your request...");
 		}
 	}
@@ -3360,8 +3360,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					AmountMade[39] += ShopItems[39][sItemPrice];
 
 					new szQuery[128];
-					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold39` = '%d', `AmountMade39` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[39], AmountMade[39]);
-					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold39` = '%d', `AmountMade39` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[39], AmountMade[39]);
+					mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 					format(string, sizeof(string), "You have purchased a Deluxe Car Alarm for %s credits.", number_format(ShopItems[39][sItemPrice]));
 					SendClientMessageEx(playerid, COLOR_CYAN, string);
@@ -5225,8 +5225,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iAllegiance = arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance];
 			}
 			else iAllegiance = 1;
-			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `arrestreports` (`copid`, `suspectid`, `shortreport`, `origin`) VALUES ('%d', '%d', '%s', '%d')", GetPlayerSQLId(playerid), GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(inputtext, MainPipeline), iAllegiance);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `arrestreports` (`copid`, `suspectid`, `shortreport`, `origin`) VALUES ('%d', '%d', '%e', '%d')", GetPlayerSQLId(playerid), GetPlayerSQLId(suspect), inputtext, iAllegiance);
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 			format(szMiscArray, sizeof(szMiscArray), "You have arrested %s for %d minutes with a fine of $%s", GetPlayerNameEx(suspect), time, number_format(moneys));
 			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMiscArray);
 			PlayerInfo[suspect][pWantedJailFine] = 0;
@@ -6222,9 +6222,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			SetPVarInt(playerid, "_rRepID", giveplayerid);			format(string, sizeof(string), "You have successfully reported %s.", GetPlayerNameEx(giveplayerid));
 			SendClientMessage(playerid, COLOR_WHITE, string);
 
-			if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1) format(string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp,superwatch) VALUES (%d,%d,%d,1)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(playerid), gettime());
-			else format(string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp) VALUES (%d,%d,%d)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(playerid), gettime());
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			if(PlayerInfo[playerid][pAdmin] >= 2 || PlayerInfo[playerid][pSMod] == 1) mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp,superwatch) VALUES (%d,%d,%d,1)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(playerid), gettime());
+			else mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO dm_watchdog (id,reporter,timestamp) VALUES (%d,%d,%d)", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(playerid), gettime());
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 			format(string, sizeof(string), "%s(%i) Deathmatching (last shot: %i seconds ago)", GetPlayerNameEx(giveplayerid), giveplayerid, gettime() - ShotPlayer[giveplayerid][playerid]);
 			SendReportToQue(playerid, string, 2, 1);
@@ -6369,8 +6369,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			format(stringg, sizeof(stringg), "Admin %s has deleted your toy (obj model: %d) from slot %d.", GetPlayerNameEx(playerid), object, slot);
 			SendClientMessageEx(giveplayerid, COLOR_WHITE, stringg);
 			format(string, sizeof(string), "[TOYDELETE] %s deleted %s's(%d) object %d in slot %d", GetPlayerNameEx(playerid), GetPlayerNameEx(giveplayerid), GetPlayerSQLId(giveplayerid), object, slot);
-			format(szQuery, sizeof(szQuery), "DELETE FROM `toys` WHERE `id` = %d", PlayerToyInfo[giveplayerid][slot][ptID]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, giveplayerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "DELETE FROM `toys` WHERE `id` = %d", PlayerToyInfo[giveplayerid][slot][ptID]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, giveplayerid);
 			PlayerToyInfo[giveplayerid][slot][ptModelID] = 0;
 			PlayerToyInfo[giveplayerid][slot][ptBone] = 0;
 			PlayerToyInfo[giveplayerid][slot][ptSpecial] = 0;
@@ -6407,13 +6407,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					if(sscanf(inputtext, "u", target)) return ShowPlayerDialogEx(playerid, FLAG_LIST, DIALOG_STYLE_INPUT, "FLAG TRANSFER", "Who do you want to transfer the flag to?", "Select", "Cancel");
 					if(GetPVarInt(playerid, "viewingflags") == target) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: You cannot transfer to the same person!");
 					if(!IsPlayerConnected(target)) return ShowPlayerDialogEx(playerid, FLAG_LIST, DIALOG_STYLE_INPUT, "FLAG TRANSFER - ERROR", "Player is not connected!\nWho do you want to transfer the flag to?", "Select", "Cancel");
-					format(string, sizeof(string), "SELECT id, flag, issuer, time, type FROM `flags` WHERE `fid` = %i", GetPVarInt(playerid, "ManageFlagID"));
-					mysql_function_query(MainPipeline, string, true, "OnRequestTransferFlag", "iiii", playerid, GetPVarInt(playerid, "ManageFlagID"), target, GetPVarInt(playerid, "viewingflags"));
+					mysql_format(MainPipeline, string, sizeof(string), "SELECT id, flag, issuer, time, type FROM `flags` WHERE `fid` = %i", GetPVarInt(playerid, "ManageFlagID"));
+					mysql_tquery(MainPipeline, string, "OnRequestTransferFlag", "iiii", playerid, GetPVarInt(playerid, "ManageFlagID"), target, GetPVarInt(playerid, "viewingflags"));
 				}
 				if(listitem == 0)
 				{
-					format(string, sizeof(string), "SELECT fid, issuer, flag, time FROM `flags` WHERE fid = %d", GetPVarInt(playerid, "ManageFlagID"));
-					mysql_function_query(MainPipeline, string, true, "FlagQueryFinish", "iii", playerid, GetPVarInt(playerid, "viewingflags"), 0);
+					mysql_format(MainPipeline, string, sizeof(string), "SELECT fid, issuer, flag, time FROM `flags` WHERE fid = %d", GetPVarInt(playerid, "ManageFlagID"));
+					mysql_tquery(MainPipeline, string, "FlagQueryFinish", "iii", playerid, GetPVarInt(playerid, "viewingflags"), 0);
 				}
 				if(listitem == 1)
 				{
@@ -6421,8 +6421,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				if(listitem == 2)
 				{
-					format(string, sizeof(string), "SELECT flag, issuer, time, type FROM `flags` WHERE `fid` = %i", GetPVarInt(playerid, "ManageFlagID"));
-					mysql_function_query(MainPipeline, string, true, "OnRequestDeleteFlag", "ii", playerid, GetPVarInt(playerid, "ManageFlagID"));
+					mysql_format(MainPipeline, string, sizeof(string), "SELECT flag, issuer, time, type FROM `flags` WHERE `fid` = %i", GetPVarInt(playerid, "ManageFlagID"));
+					mysql_tquery(MainPipeline, string, "OnRequestDeleteFlag", "ii", playerid, GetPVarInt(playerid, "ManageFlagID"));
 				}
 			}
 		}
@@ -6434,8 +6434,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			new flagid;
 			if(sscanf(inputtext, "d", flagid)) return ShowPlayerDialogEx(playerid, FLAG_DELETE, DIALOG_STYLE_INPUT, "FLAG DELETION", "Which flag would you like to delete?", "Delete Flag", "Close");
 			new query[128];
-			format(query, sizeof(query), "SELECT flag, issuer, time, type FROM `flags` WHERE `fid` = %i", flagid);
-			mysql_function_query(MainPipeline, query, true, "OnRequestDeleteFlag", "ii", playerid, flagid);
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT flag, issuer, time, type FROM `flags` WHERE `fid` = %i", flagid);
+			mysql_tquery(MainPipeline, query, "OnRequestDeleteFlag", "ii", playerid, flagid);
 		}
 	}
 	else if(dialogid == FLAG_DELETE2)
@@ -6453,8 +6453,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			new query[128];
 			SetPVarInt(playerid, "closetchoiceid", listitem);
-			format(query, sizeof(query), "SELECT `skinid` FROM `house_closet` WHERE playerid = %d ORDER BY `skinid` ASC", GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, query, true, "SkinQueryFinish", "ii", playerid, Skin_Query_ID);
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT `skinid` FROM `house_closet` WHERE playerid = %d ORDER BY `skinid` ASC", GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, query, "SkinQueryFinish", "ii", playerid, Skin_Query_ID);
 		}
 	}
 	else if(dialogid == SKIN_CONFIRM)
@@ -6479,8 +6479,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			new query[128];
 			SetPVarInt(playerid, "closetchoiceid", listitem);
-			format(query, sizeof(query), "SELECT `id`, `skinid` FROM `house_closet` WHERE playerid = %d ORDER BY `skinid` ASC", GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, query, true, "SkinQueryFinish", "ii", playerid, Skin_Query_Delete_ID);
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT `id`, `skinid` FROM `house_closet` WHERE playerid = %d ORDER BY `skinid` ASC", GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, query, "SkinQueryFinish", "ii", playerid, Skin_Query_Delete_ID);
 		}
 	}
 	else if(dialogid == SKIN_DELETE2)
@@ -6513,16 +6513,16 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 			{
-				case 1: mysql_function_query(MainPipeline, "SELECT `id`, `playerid`, `name` FROM `nation_queue` WHERE `nation` = 0 AND `status` = 1 ORDER BY `id` ASC", true, "NationAppFinish", "ii", playerid, AcceptApp);
-				case 2: mysql_function_query(MainPipeline, "SELECT `id`, `playerid`, `name` FROM `nation_queue` WHERE `nation` = 1 AND `status` = 1 ORDER BY `id` ASC", true, "NationAppFinish", "ii", playerid, AcceptApp);
+				case 1: mysql_tquery(MainPipeline, "SELECT `id`, `playerid`, `name` FROM `nation_queue` WHERE `nation` = 0 AND `status` = 1 ORDER BY `id` ASC", "NationAppFinish", "ii", playerid, AcceptApp);
+				case 2: mysql_tquery(MainPipeline, "SELECT `id`, `playerid`, `name` FROM `nation_queue` WHERE `nation` = 1 AND `status` = 1 ORDER BY `id` ASC", "NationAppFinish", "ii", playerid, AcceptApp);
 			}
 		}
 		else
 		{
 			switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 			{
-				case 1: mysql_function_query(MainPipeline, "SELECT `id`, `playerid`, `name` FROM `nation_queue` WHERE `nation` = 0 AND `status` = 1 ORDER BY `id` ASC", true, "NationAppFinish", "ii", playerid, DenyApp);
-				case 2: mysql_function_query(MainPipeline, "SELECT `id`, `playerid`, `name` FROM `nation_queue` WHERE `nation` = 1 AND `status` = 1 ORDER BY `id` ASC", true, "NationAppFinish", "ii", playerid, DenyApp);
+				case 1: mysql_tquery(MainPipeline, "SELECT `id`, `playerid`, `name` FROM `nation_queue` WHERE `nation` = 0 AND `status` = 1 ORDER BY `id` ASC", "NationAppFinish", "ii", playerid, DenyApp);
+				case 2: mysql_tquery(MainPipeline, "SELECT `id`, `playerid`, `name` FROM `nation_queue` WHERE `nation` = 1 AND `status` = 1 ORDER BY `id` ASC", "NationAppFinish", "ii", playerid, DenyApp);
 			}
 		}
 	}
@@ -7583,8 +7583,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			mysql_escape_string(newname, tmpName);
 			SetPVarString(Player, "NewNameRequest", tmpName);
 
-			format(string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", tmpName);
-			mysql_function_query(MainPipeline, string, true, "OnApproveName", "ii", playerid, Player);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", tmpName);
+			mysql_tquery(MainPipeline, string, "OnApproveName", "ii", playerid, Player);
 
 		}
 		else
@@ -7614,10 +7614,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			new newname[25], tmpName[25], query[128];
 			GetPVarString(Player, "NewRFLName", newname, MAX_PLAYER_NAME);
-			mysql_real_escape_string(newname, tmpName);
+			mysql_escape_string(newname, tmpName);
 			SetPVarString(Player, "NewRFLName", tmpName);
-			format(query, sizeof(query), "SELECT `name` FROM `rflteams` WHERE `name` = '%s'", tmpName);
-			mysql_function_query(MainPipeline, query, true, "OnCheckRFLName", "ii", playerid, Player);
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT `name` FROM `rflteams` WHERE `name` = '%s'", tmpName);
+			mysql_tquery(MainPipeline, query, "OnCheckRFLName", "ii", playerid, Player);
 		}
 		else
 		{
@@ -7756,8 +7756,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(giveplayer == INVALID_PLAYER_ID)
 		{
 			new szQuery[256];
-			format(szQuery, sizeof(szQuery), "SELECT `id`, `AdminLevel`, `TogReports` FROM `accounts` WHERE `Username` = '%s'", g_mysql_ReturnEscaped(inputtext,MainPipeline));
-			mysql_function_query(MainPipeline, szQuery, true, "RecipientLookupFinish", "i", playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `id`, `AdminLevel`, `TogReports` FROM `accounts` WHERE `Username` = '%e'", inputtext);
+			mysql_tquery(MainPipeline, szQuery, "RecipientLookupFinish", "i", playerid);
 		}
 		else
 		{
@@ -7806,8 +7806,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Misc_Save();
 		}
 
-		format(query,sizeof(query),	"INSERT INTO `letters` (`Sender_Id`, `Receiver_Id`, `Date`, `Message`, `Delivery_Min`, `Notify`) VALUES (%d, %d, NOW(), '%s', %d, %d)", GetPlayerSQLId(playerid), GetPVarInt(playerid, "LetterRecipient"), g_mysql_ReturnEscaped(inputtext, MainPipeline), GetPVarInt(playerid, "LetterTime"), GetPVarInt(playerid, "LetterNotify"));
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		mysql_format(MainPipeline, query,sizeof(query),	"INSERT INTO `letters` (`Sender_Id`, `Receiver_Id`, `Date`, `Message`, `Delivery_Min`, `Notify`) VALUES (%d, %d, NOW(), '%e', %d, %d)", GetPlayerSQLId(playerid), GetPVarInt(playerid, "LetterRecipient"), inputtext, GetPVarInt(playerid, "LetterTime"), GetPVarInt(playerid, "LetterNotify"));
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 		GetPVarString(playerid, "LetterRecipientName", rec, MAX_PLAYER_NAME);
 		if (GetPVarInt(playerid, "LetterTime") == 0)
@@ -7860,8 +7860,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		else // Trash
 		{
 			new query[64];
-			format(query, sizeof(query), "DELETE FROM `letters` WHERE `ID` = %i", GetPVarInt(playerid, "ReadingMail"));
-			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, query, sizeof(query), "DELETE FROM `letters` WHERE `ID` = %i", GetPVarInt(playerid, "ReadingMail"));
+			mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 			ShowPlayerDialogEx(playerid, DIALOG_POTRASHED, DIALOG_STYLE_MSGBOX, "Info", "You've trashed your mail.", "Back", "Close");
 		}
 		DeletePVar(playerid, "ReadingMail");
@@ -9336,8 +9336,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			SetPVarString(playerid, "PinNumber", inputtext);
 
-			format(string, sizeof(string), "SELECT `Pin` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-			mysql_function_query(MainPipeline, string, true, "OnPinCheck2", "i", playerid);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT `Pin` FROM `accounts` WHERE `Username` = '%e'", GetPlayerNameExt(playerid));
+			mysql_tquery(MainPipeline, string, "OnPinCheck2", "i", playerid);
 
 		}
 	}
@@ -9369,17 +9369,17 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 	{
 		if(response)
 		{
-			format(string, sizeof(string), "SELECT * FROM `sales` WHERE `id` = '%d'", Selected[playerid][listitem]);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `sales` WHERE `id` = '%d'", Selected[playerid][listitem]);
 			SetPVarInt(playerid, "checkingsale", Selected[playerid][listitem]);
-			mysql_function_query(MainPipeline, string, true, "CheckSales2", "i", playerid);
+			mysql_tquery(MainPipeline, string, "CheckSales2", "i", playerid);
 		}
 	}
 	if(dialogid == DIALOG_VIEWSALE2)
 	{
 		if(response)
 		{
-			format(string, sizeof(string), "SELECT * FROM `sales` WHERE `id` = '%d'", GetPVarInt(playerid, "checkingsale"));
-			mysql_function_query(MainPipeline, string, true, "CheckSales3", "i", playerid);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `sales` WHERE `id` = '%d'", GetPVarInt(playerid, "checkingsale"));
+			mysql_tquery(MainPipeline, string, "CheckSales3", "i", playerid);
 		}
 	}
 	if(dialogid == DIALOG_CREATEPIN2)
@@ -9412,8 +9412,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				WP_Hash(passbuffer, sizeof(passbuffer), inputtext);
 
 				new query[256];
-				format(query, sizeof(query), "UPDATE `accounts` SET `Pin`='%s' WHERE `id` = %d", passbuffer, GetPlayerSQLId(playerid));
-				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+				mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Pin`='%s' WHERE `id` = %d", passbuffer, GetPlayerSQLId(playerid));
+				mysql_tquery(MainPipeline, query, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 				DeletePVar(playerid, "PinConfirm");
 				DeletePVar(playerid, "ChangePin");
 			}
@@ -9541,8 +9541,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				//ShopItems[6][sSold]++;
 				//ShopItems[6][sMade] += ShopItems[6][sItemPrice];
 				new szQuery[128];
-				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold6` = '%d', `AmountMade6` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[6], AmountMade[6]);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold6` = '%d', `AmountMade6` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[6], AmountMade[6]);
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 				GivePlayerCredits(playerid, -ShopItems[6][sItemPrice], 1);
 				printf("Price6: %d", 250);
@@ -9571,8 +9571,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				//ShopItems[7][sSold]++;
 				//ShopItems[7][sMade] += ShopItems[7][sItemPrice];
 				new szQuery[128];
-				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold7` = '%d', `AmountMade7` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[7], AmountMade[7]);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold7` = '%d', `AmountMade7` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[7], AmountMade[7]);
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 				GivePlayerCredits(playerid, -ShopItems[7][sItemPrice], 1);
 				printf("Price7: %d", ShopItems[7][sItemPrice]);
@@ -9596,8 +9596,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[8][sSold]++;
 			//ShopItems[8][sMade] += ShopItems[8][sItemPrice];
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold8` = '%d', `AmountMade8` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[8], AmountMade[8]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold8` = '%d', `AmountMade8` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[8], AmountMade[8]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			GivePlayerCredits(playerid, -ShopItems[8][sItemPrice], 1);
 			printf("Price8: %d", ShopItems[8][sItemPrice]);
@@ -9620,8 +9620,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[9][sSold]++;
 			//ShopItems[9][sMade] += ShopItems[9][sItemPrice];
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold9` = '%d', `AmountMade9` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[9], AmountMade[9]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold9` = '%d', `AmountMade9` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[9], AmountMade[9]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			GivePlayerCredits(playerid, -ShopItems[9][sItemPrice], 1);
 			printf("Price9: %d", ShopItems[9][sItemPrice]);
@@ -9644,8 +9644,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[10][sSold]++;
 			//ShopItems[10][sMade] += ShopItems[10][sItemPrice];
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold10` = '%d', `AmountMade10` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[10], AmountMade[10]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold10` = '%d', `AmountMade10` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[10], AmountMade[10]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			GivePlayerCredits(playerid, -ShopItems[10][sItemPrice], 1);
 			printf("Price10: %d", ShopItems[10][sItemPrice]);
@@ -9671,8 +9671,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[22][sSold]++;
 			//ShopItems[22][sMade] += ShopItems[22][sItemPrice];
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold22` = '%d', `AmountMade22` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[22], AmountMade[22]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold22` = '%d', `AmountMade22` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[22], AmountMade[22]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Custom License Plate (Credits)");
 			SendReportToQue(playerid, "Custom License Plate (Credits)", 2, 2);
@@ -9696,8 +9696,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold23` = '%d', `AmountMade23` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[23], AmountMade[23]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold23` = '%d', `AmountMade23` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[23], AmountMade[23]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(string, sizeof(string), "You have purchased a additional vehicle slot for %s credits.", number_format(ShopItems[23][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
@@ -9720,8 +9720,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold28` = '%d', `AmountMade28` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[28], AmountMade[28]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold28` = '%d', `AmountMade28` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[28], AmountMade[28]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(string, sizeof(string), "You have purchased a additional toy slot for %s credits.", number_format(ShopItems[28][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
@@ -9744,8 +9744,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold30` = '%d', `AmountMade30` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[30], AmountMade[30]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold30` = '%d', `AmountMade30` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[30], AmountMade[30]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(string, sizeof(string), "You have purchased a spawn at the Gold VIP+ room, you will be able to use it after your next death.", number_format(ShopItems[30][sItemPrice]));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
@@ -9768,8 +9768,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[31] += ShopItems[31][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold31` = '%d', `AmountMade31` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[31], AmountMade[31]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold31` = '%d', `AmountMade31` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[31], AmountMade[31]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Restricted Last Name (NEW) (Credits)");
 			format(string, sizeof(string), "You have purchased a Restricted Last Name (NEW) for %s credits.", number_format(ShopItems[31][sItemPrice]));
@@ -9791,8 +9791,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[32] += ShopItems[32][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold32` = '%d', `AmountMade32` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[32], AmountMade[32]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold32` = '%d', `AmountMade32` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[32], AmountMade[32]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Restricted Last Name (CHANGE) (Credits)");
 			format(string, sizeof(string), "You have purchased a Restricted Last Name (CHANGE) for %s credits.", number_format(ShopItems[32][sItemPrice]));
@@ -9814,8 +9814,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[33] += ShopItems[33][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold33` = '%d', `AmountMade33` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[33], AmountMade[33]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold33` = '%d', `AmountMade33` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[33], AmountMade[33]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Custom User Title (NEW) (Credits)");
 			format(string, sizeof(string), "You have purchased a Custom User Title (NEW) for %s credits.", number_format(ShopItems[33][sItemPrice]));
@@ -9837,8 +9837,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[34] += ShopItems[34][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold34` = '%d', `AmountMade34` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[34], AmountMade[34]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold34` = '%d', `AmountMade34` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[34], AmountMade[34]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Custom User Title (CHANGE) (Credits)");
 			format(string, sizeof(string), "You have purchased a Restricted Custom User Title (CHANGE) for %s credits.", number_format(ShopItems[34][sItemPrice]));
@@ -9860,8 +9860,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[35] += ShopItems[35][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold35` = '%d', `AmountMade35` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[35], AmountMade[35]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold35` = '%d', `AmountMade35` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[35], AmountMade[35]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased Teamspeak User Channel (Credits)");
 			format(string, sizeof(string), "You have purchased a Teamspeak User Channel for %s credits.", number_format(ShopItems[35][sItemPrice]));
@@ -9884,8 +9884,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[36] += ShopItems[36][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold36` = '%d', `AmountMade36` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[36], AmountMade[36]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold36` = '%d', `AmountMade36` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[36], AmountMade[36]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 			if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9))
 				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 			SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
@@ -9915,8 +9915,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[37] += ShopItems[37][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold37` = '%d', `AmountMade37` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[37], AmountMade[37]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold37` = '%d', `AmountMade37` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[37], AmountMade[37]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 			if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9))
 				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 			SetPlayerAttachedObject(playerid, 9, 371, 1, -0.002, -0.140999, -0.01, 8.69999, 88.8, -8.79993, 1.11, 0.963);
@@ -9946,8 +9946,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[38] += ShopItems[38][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold38` = '%d', `AmountMade38` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[38], AmountMade[38]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold38` = '%d', `AmountMade38` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[38], AmountMade[38]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 			if(PlayerHoldingObject[playerid][9] != 0 || IsPlayerAttachedObjectSlotUsed(playerid, 9))
 				RemovePlayerAttachedObject(playerid, 9), PlayerHoldingObject[playerid][9] = 0;
 			SetPlayerAttachedObject(playerid, 9, 3026, 1, -0.254999, -0.109, -0.022999, 10.6, -1.20002, 3.4, 1.265, 1.242, 1.062);
@@ -10008,8 +10008,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountSold[41]++;
 			AmountMade[41] += ShopItems[41][sItemPrice];
 
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `sales` SET `TotalSold41` = '%d', `AmountMade41` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[41], AmountMade[41]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `sales` SET `TotalSold41` = '%d', `AmountMade41` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[41], AmountMade[41]);
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 		else if(GetPVarInt(playerid, "MiscShop") == 20) // Furniture Bronze
 		{
@@ -10035,8 +10035,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountSold[42]++;
 			AmountMade[42] += ShopItems[42][sItemPrice];
 
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `sales` SET `TotalSold42` = '%d', `AmountMade42` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[42], AmountMade[42]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `sales` SET `TotalSold42` = '%d', `AmountMade42` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[42], AmountMade[42]);
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 		else if(GetPVarInt(playerid, "MiscShop") == 21) // Furniture Gold
 		{
@@ -10062,8 +10062,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountSold[43]++;
 			AmountMade[43] += ShopItems[43][sItemPrice];
 
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `sales` SET `TotalSold43` = '%d', `AmountMade43` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[43], AmountMade[43]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `sales` SET `TotalSold43` = '%d', `AmountMade43` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[43], AmountMade[43]);
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 	    DeletePVar(playerid, "MiscShop");
 	}
@@ -10216,20 +10216,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[20][sSold]++;
 			//ShopItems[20][sMade] += ShopItems[20][sItemPrice];
 
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold20` = '%d', `AmountMade20` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[20], AmountMade[20]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold20` = '%d', `AmountMade20` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[20], AmountMade[20]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			if(IsPlayerInRangeOfPoint(playerid, 4, 1102.8999, -1440.1669, 15.7969))
 			{
-				format(szQuery, sizeof(szQuery), "INSERT INTO `rentedcars` (`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`) VALUES ('%d', '%d', '%f', '%f', '%f', '%f', '1', '180')", GetPlayerSQLId(playerid), GetPVarInt(playerid, "VehicleID"), 1060.4927,-1474.9323,13.1905,345.2816);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "INSERT INTO `rentedcars` (`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`) VALUES ('%d', '%d', '%f', '%f', '%f', '%f', '1', '180')", GetPlayerSQLId(playerid), GetPVarInt(playerid, "VehicleID"), 1060.4927,-1474.9323,13.1905,345.2816);
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 				SetPVarInt(playerid, "RentedVehicle", CreateVehicle(GetPVarInt(playerid, "VehicleID"), 1060.4927, -1474.9323, 13.1905, 345.2816, random(128), random(128), 2000000));
 			}
 			else if(IsPlayerInRangeOfPoint(playerid, 4, 1796.0620, -1588.5571, 13.4951))
 			{
-				format(szQuery, sizeof(szQuery), "INSERT INTO `rentedcars` (`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`) VALUES ('%d', '%d', '%f', '%f', '%f', '%f', '1', '180')", GetPlayerSQLId(playerid), GetPVarInt(playerid, "VehicleID"), 1787.6924, -1605.8617,13.1750, 76.7439);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "INSERT INTO `rentedcars` (`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`) VALUES ('%d', '%d', '%f', '%f', '%f', '%f', '1', '180')", GetPlayerSQLId(playerid), GetPVarInt(playerid, "VehicleID"), 1787.6924, -1605.8617,13.1750, 76.7439);
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 				SetPVarInt(playerid, "RentedVehicle", CreateVehicle(GetPVarInt(playerid, "VehicleID"), 1787.6924, -1605.8617, 13.1750, 76.7439, random(128), random(128), 2000000));
 			}
@@ -10297,8 +10297,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					//ShopItems[5][sSold]++;
 					//ShopItems[5][sMade] += ShopItems[5][sItemPrice];
 					new szQuery[128];
-					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold5` = '%d', `AmountMade5` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[5], AmountMade[5]);
-					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold5` = '%d', `AmountMade5` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[5], AmountMade[5]);
+					mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 					new Float: arr_fPlayerPos[4];
 
@@ -10323,8 +10323,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					//ShopItems[5][sMade] += ShopItems[5][sItemPrice];
 
 					new szQuery[128];
-					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold5` = '%d', `AmountMade5` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[5], AmountMade[5]);
-					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold5` = '%d', `AmountMade5` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[5], AmountMade[5]);
+					mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 					new Float: arr_fPlayerPos[4], createdcar;
 
@@ -10789,7 +10789,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					AmountMade[11] += Prices;
 					//ShopItems[11][sSold]++;
 					//ShopItems[11][sMade] += Prices;
-					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold11` = '%d', `AmountMade11` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[11], AmountMade[11]);
+					mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold11` = '%d', `AmountMade11` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[11], AmountMade[11]);
 				}
 				case 2:
 				{
@@ -10797,7 +10797,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					AmountMade[12] += Prices;
 					//ShopItems[12][sSold]++;
 					//ShopItems[12][sMade] += Prices;
-					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold12` = '%d', `AmountMade12` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[12], AmountMade[12]);
+					mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold12` = '%d', `AmountMade12` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[12], AmountMade[12]);
 				}
 				case 3:
 				{
@@ -10805,11 +10805,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					AmountMade[13] += Prices;
 					//ShopItems[13][sSold]++;
 					//ShopItems[13][sMade] += Prices;
-					format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold13` = '%d', `AmountMade13` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[13], AmountMade[13]);
+					mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold13` = '%d', `AmountMade13` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[13], AmountMade[13]);
 				}
 			}
 
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			new Months = GetPVarInt(playerid, "BusinessMonths");
 			GivePlayerCredits(playerid, -Prices, 1);
@@ -10944,8 +10944,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[14][sSold]++;
 			//ShopItems[14][sMade] += ShopItems[14][sItemPrice];
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold14` = '%d', `AmountMade14` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[14], AmountMade[14]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold14` = '%d', `AmountMade14` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[14], AmountMade[14]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased House (Credits)");
 			SendReportToQue(playerid, "House (Credits)", 2, 2);
@@ -10971,8 +10971,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[15][sSold]++;
 			//ShopItems[15][sMade] += ShopItems[15][sItemPrice];
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold15` = '%d', `AmountMade15` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[15], AmountMade[15]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold15` = '%d', `AmountMade15` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[15], AmountMade[15]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased House Interior Change (Credits)");
 			SendReportToQue(playerid, "House Interior Change (Credits)", 2, 2);
@@ -10998,8 +10998,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[16][sSold]++;
 			//ShopItems[16][sMade] += ShopItems[16][sItemPrice];
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold16` = '%d', `AmountMade16` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[16], AmountMade[16]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold16` = '%d', `AmountMade16` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[16], AmountMade[16]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			AddFlag(playerid, INVALID_PLAYER_ID, "Purchased House Move (Credits)");
 			SendReportToQue(playerid, "House Move (Credits)", 2, 2);
@@ -11024,8 +11024,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[24] += ShopItems[24][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold24` = '%d', `AmountMade24` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[24], AmountMade[24]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold24` = '%d', `AmountMade24` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[24], AmountMade[24]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			GarageVW++;
 			g_mysql_SaveMOTD();
@@ -11054,8 +11054,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[25] += ShopItems[25][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold25` = '%d', `AmountMade25` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[25], AmountMade[25]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold25` = '%d', `AmountMade25` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[25], AmountMade[25]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			GarageVW++;
 			g_mysql_SaveMOTD();
@@ -11084,8 +11084,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[26] += ShopItems[26][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold26` = '%d', `AmountMade26` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[26], AmountMade[26]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold26` = '%d', `AmountMade26` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[26], AmountMade[26]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			GarageVW++;
 			g_mysql_SaveMOTD();
@@ -11114,8 +11114,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			AmountMade[27] += ShopItems[27][sItemPrice];
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold27` = '%d', `AmountMade27` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[27], AmountMade[27]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold27` = '%d', `AmountMade27` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[27], AmountMade[27]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			GarageVW++;
 			g_mysql_SaveMOTD();
@@ -11350,7 +11350,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				AmountMade[1] += GetPVarInt(playerid, "VIPPrice");
 				VIPType = "Gold";
 				//ShopItems[1][sMade] += GetPVarInt(playerid, "VIPPrice");
-				format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold1` = '%d', `AmountMade1` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[1], AmountMade[1]);
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold1` = '%d', `AmountMade1` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[1], AmountMade[1]);
 				DeletePVar(playerid, "GoldRenewal");
 			}
 			else
@@ -11363,7 +11363,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						AmountMade[3] += GetPVarInt(playerid, "VIPPrice");
 						//ShopItems[3][sSold]++;
 						//ShopItems[3][sMade] += GetPVarInt(playerid, "VIPPrice");
-						format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold3` = '%d', `AmountMade3` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[3], AmountMade[3]);
+						mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold3` = '%d', `AmountMade3` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[3], AmountMade[3]);
 					}
 					case 2:
 					{
@@ -11372,7 +11372,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						AmountMade[2] += GetPVarInt(playerid, "VIPPrice");
 						//ShopItems[2][sSold]++;
 						//ShopItems[2][sMade] += GetPVarInt(playerid, "VIPPrice");
-						format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold2` = '%d', `AmountMade2` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[2], AmountMade[2]);
+						mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold2` = '%d', `AmountMade2` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[2], AmountMade[2]);
 					}
 					case 3:
 					{
@@ -11381,12 +11381,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						AmountMade[0] += GetPVarInt(playerid, "VIPPrice");
 						//ShopItems[0][sSold]++;
 						//ShopItems[0][sMade] += GetPVarInt(playerid, "VIPPrice");
-						format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold0` = '%d', `AmountMade0` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[0], AmountMade[0]);
+						mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold0` = '%d', `AmountMade0` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[0], AmountMade[0]);
 					}
 				}
 			}
 
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(string, sizeof(string), "You have purchased %s VIP (%d Month(s)) for %s credits.", VIPType,GetPVarInt(playerid, "VIPMonths"), number_format(GetPVarInt(playerid, "VIPPrice")));
 			SendClientMessageEx(playerid, COLOR_CYAN, string);
@@ -11417,8 +11417,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[17][sSold]++;
 			//ShopItems[17][sMade] += ShopItems[17][sItemPrice];
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold17` = '%d', `AmountMade17` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[17], AmountMade[17]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold17` = '%d', `AmountMade17` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[17], AmountMade[17]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(string, sizeof(string), "[GIFTTIMERRESET] [User: %s(%i)] [IP: %s] [Credits: %s] [Gift Timer Reset] [Price: %s]",GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), number_format(ShopItems[17][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
@@ -11668,8 +11668,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[4][sSold]++;
 			//ShopItems[4][sMade] += ShopItems[4][sItemPrice];
 			new szQuery[1024];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold4` = '%d', `AmountMade4` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[4], AmountMade[4]);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSold4` = '%d', `AmountMade4` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[4], AmountMade[4]);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(string, sizeof(string), "[TOY %i] [User: %s(%i)] [IP: %s] [Credits: %s] [Toy: %s] [Price: %s]", AmountSold[4], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid), number_format(PlayerInfo[playerid][pCredits]), name, number_format(ShopItems[4][sItemPrice]));
 			Log("logs/credits.log", string), print(string);
@@ -11806,8 +11806,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			//ShopItems[21][sSold]++;
 			//ShopItems[21][sMade] += GetPVarInt(playerid, "CreditsFirstAmount")-GetPVarInt(playerid, "CreditsAmount");
 
-			format(szMessage, sizeof(szMessage), "UPDATE `sales` SET `TotalSold21` = '%d', `AmountMade21` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[21], AmountMade[21]);
-			mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `sales` SET `TotalSold21` = '%d', `AmountMade21` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[21], AmountMade[21]);
+			mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "i", SENDDATA_THREAD);
 			print(szMessage);
 
 			format(szMessage, sizeof(szMessage), "You have accepted the offer of %s credits for $%s from %s.", number_format(GetPVarInt(playerid, "CreditsAmount")), number_format(GetPVarInt(playerid, "CreditsOffer")), GetPlayerNameEx(GetPVarInt(playerid, "CreditsSeller")));
@@ -11942,8 +11942,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			PlayerInfo[playerid][pArmsSkill] = 1200;
 
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `TotalCredits`=%d WHERE `id` = %d", PlayerInfo[playerid][pTotalCredits], GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `TotalCredits`=%d WHERE `id` = %d", PlayerInfo[playerid][pTotalCredits], GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		}
 	}
 	if(dialogid == GIVETOY)
@@ -12605,8 +12605,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			return ShowPlayerDialogEx(playerid, DIALOG_WDREPORT, DIALOG_STYLE_INPUT, "Incident Report", string, "Submit", "");
 		}
 		new szQuery[256];
-		format(szQuery, sizeof(szQuery), "INSERT INTO `watchdog_reports` (reporter, report, reported, type, time) VALUES ('%d', '%s', '%d', '%d', UNIX_TIMESTAMP())", GetPlayerSQLId(playerid), g_mysql_ReturnEscaped(inputtext, MainPipeline), GetPlayerSQLId(GetPVarInt(playerid, "SpectatingWatch")), GetPVarInt(playerid, "WDReport"));
-		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		mysql_format(MainPipeline, szQuery, sizeof(szQuery), "INSERT INTO `watchdog_reports` (reporter, report, reported, type, time) VALUES ('%d', '%e', '%d', '%d', UNIX_TIMESTAMP())", GetPlayerSQLId(playerid), inputtext, GetPlayerSQLId(GetPVarInt(playerid, "SpectatingWatch")), GetPVarInt(playerid, "WDReport"));
+		mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		SendClientMessageEx(playerid, COLOR_GRAD4, inputtext);
 		SendClientMessageEx(playerid, COLOR_GRAD1, "Incident Report successfully submitted.");
 	}
@@ -13016,8 +13016,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(m != MAX_MICROITEMS-1) strcat(asString, "|"), strcat(amString, "|");
 			}
 			new szQuery[512];
-			format(szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSoldMicro` = '%s', `AmountMadeMicro` = '%s' WHERE `Month` > NOW() - INTERVAL 1 MONTH", asString, amString);
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `sales` SET `TotalSoldMicro` = '%s', `AmountMadeMicro` = '%s' WHERE `Month` > NOW() - INTERVAL 1 MONTH", asString, amString);
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			GivePlayerCredits(playerid, -MicroItems[item], 1);
 			printf("MicroPrice%d: %d", item, MicroItems[item]);
@@ -13244,9 +13244,10 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		if(!GetPVarType(Player, "hSignRequest")) return SendClientMessageEx(playerid, COLOR_GREY, "That person isn't requesting a namechange!");
 		if(response)
 		{
-			new desc[64];
+			new desc[64], escapeDesc[66];
 			GetPVarString(Player, "hSignRequestText", desc, 64);
-			format(HouseInfo[GetPVarInt(Player, "hSignRequest")][hSignDesc], 64, "%s", g_mysql_ReturnEscaped(desc, MainPipeline));
+			mysql_escape_string(desc, escapeDesc);
+			format(HouseInfo[GetPVarInt(Player, "hSignRequest")][hSignDesc], 64, "%s", escapeDesc);
 			SaveHouse(GetPVarInt(Player, "hSignRequest"));
 			SendClientMessageEx(Player, COLOR_YELLOW, "Your house sale sign text has been approved.");
 			format(string, sizeof(string), " You have approved %s's house sale sign text change on House ID: %d", GetPlayerNameEx(Player), GetPVarInt(Player, "hSignRequest"));
