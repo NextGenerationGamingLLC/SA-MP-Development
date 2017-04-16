@@ -280,7 +280,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		switch(weaponid)
 		{
 			case 0 .. 3, 5 .. 8, 10 .. 15, 28, 32: if(amount > 20.0) amount = 20.0;
-			case 4: if(amount > 150.0) amount = 150.0;
+			case 4: if(amount > 301.0) amount = 301.0;
 			case 9: if(amount > 30.0) amount = 30.0;
 			case 23: if(amount > 14.0) amount = 14.0;
 			case 24, 38: if(amount > 47.0) amount = 47.0;

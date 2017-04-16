@@ -64,6 +64,18 @@ stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: I
 	return 1;
 }
 
+stock SMBroadCast(hColor, szMessage[])
+{
+	foreach(new i: Player)
+	{
+		if((PlayerInfo[i][pAdmin] == 1 && PlayerInfo[i][pSMod] > 0) || PlayerInfo[i][pAdmin] == 1)
+		{
+			SendClientMessageEx(i, hColor, szMessage);
+		}
+	}
+	return 1;
+}
+
 stock ShopTechBroadCast(color,string[])
 {
 	foreach(new i: Player)
