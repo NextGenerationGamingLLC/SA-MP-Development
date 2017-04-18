@@ -253,7 +253,7 @@ public OnSaveHouse(i, thread) {
 stock LoadHouse(houseid)
 {
 	new string[128];
-	printf("[LoadHouse] Loading HouseID %d's data from database...", houseid);
+	//printf("[LoadHouse] Loading HouseID %d's data from database...", houseid);
 	mysql_format(MainPipeline, string, sizeof(string), "SELECT OwnerName.Username, h.* FROM houses h LEFT JOIN accounts OwnerName ON h.OwnerID = OwnerName.id WHERE h.id = %d", houseid+1); // Array starts at zero, MySQL starts at one.
 	mysql_tquery(MainPipeline, string, "OnLoadHouse", "i", houseid);
 }
