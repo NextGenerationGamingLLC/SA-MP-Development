@@ -390,6 +390,10 @@ task UpdateFacilityCrates[1000]()
 						if(IsACriminal(g)) {
 							SendClientMessageEx(g, COLOR_YELLOW, "** You have 5 minutes remaining before all gates are closed! **", CrateFacility[i][cfName]);
 						}
+						if(PlayerInfo[g][pMember] == CrateFacility[i][cfGroup]) {
+							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: Crate production is nearly complete!", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** You have 5 minutes remaining to protect the facility until the facility goes into lockdown. **");
+						}
 					}
 				}
 				if(CrateFacility[i][cfRaidTimer] < gettime() && CrateFacility[i][cfRaidTimer] != 0) {
@@ -402,6 +406,10 @@ task UpdateFacilityCrates[1000]()
 						if(IsACriminal(g)) {
 							SendClientMessageEx(g, COLOR_YELLOW, "SMS: %s facility is now on lockdown. (( Cooldown Period )), Sender: Unknown.", CrateFacility[i][cfName]);
 							SendClientMessageEx(g, COLOR_YELLOW, "** You can no longer raid the facility, it'll be on cooldown for a random time period. **", CrateFacility[i][cfName]);
+						}
+						if(PlayerInfo[g][pMember] == CrateFacility[i][cfGroup]) {
+							SendClientMessageEx(g, COLOR_LIGHTRED, "%s: Crate Production at this facility has finished!", CrateFacility[i][cfName]);
+							SendClientMessageEx(g, COLOR_YELLOW, "** This facility can no longer be raided, it'll be on a cooldown period for a random amount of time. **");
 						}
 					}
 				}

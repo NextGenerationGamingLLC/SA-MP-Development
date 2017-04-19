@@ -399,7 +399,7 @@ public HidePlayerBeaconForCops(playerid)
 
 
 CMD:placekit(playerid, params[]) {
-	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
+	if(IsACop(playerid) || IsAMedic(playerid) || IsAReporter(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{
 		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!");
 		if(GetPVarInt(playerid, "EMSAttempt") != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't use this command!");
@@ -508,7 +508,7 @@ CMD:givekit(playerid, params[])
 }
 
 CMD:usekit(playerid, params[]) {
-	if(IsACop(playerid) || IsAMedic(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
+	if(IsACop(playerid) || IsAMedic(playerid) || IsAReporter(playerid) || IsAGovernment(playerid) || IsATowman(playerid))
 	{
 		if(GetPVarType(playerid, "IsInArena")) return SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being in an arena!");
 		if(IsPlayerInAnyVehicle(playerid)) { SendClientMessageEx(playerid, COLOR_WHITE, "You can't do this while being inside the vehicle!"); return 1; }

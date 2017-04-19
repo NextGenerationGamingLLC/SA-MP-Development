@@ -300,13 +300,13 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		{
 			amount *= 1.65;
 		}
-		if(weaponid == WEAPON_SNIPER)
+		/*if(weaponid == WEAPON_SNIPER)
 		{
 			amount *= 1.30;
-		}
+		}*/
 		//heroin damage reduction
 		if (GetPVarInt(damagedid, "HeroinDamageResist") == 1) {
-			amount *= 0.25;
+			amount *= 0.45;
 		}
 
 		new Float:difference,
@@ -577,7 +577,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 
 		//heroin damage reduction
 		if (GetPVarInt(playerid, "HeroinDamageResist") == 1) {
-			amount *= 0.25;
+			amount *= 0.45;
 		}
 
 		new Float:difference,
@@ -703,7 +703,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			}
 			else SetHealth(playerid, difference);
 		}
-		if(issuerid != 65535 && (weaponid == 51 || weaponid == 38 || weaponid == 47 || weaponid == 37 || weaponid == 49 || weaponid == 31)) {
+		if(issuerid != 65535 && (weaponid == 51 || weaponid == 38 || weaponid == 47 || weaponid == 37 || weaponid == 49 || GetVehicleModel(GetPlayerVehicleID(issuerid)) == 447 && weaponid == 31)) {
 			if(armour < 0.1)
 			{
 				difference = health - amount;

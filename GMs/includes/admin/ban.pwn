@@ -293,10 +293,10 @@ CMD:ban(playerid, params[]) {
 		iSilentBan = 0;
 
 	if(PlayerInfo[playerid][pAdmin] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command");
-	if(sscanf(params, "uds[64]D(0)", iTargetID, iLength, szReason, iSilentBan)) {
+	if(sscanf(params, "udD(0)s[64]", iTargetID, iLength, iSilentBan, szReason)) {
 
-		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [playerid] [length in days] [reason] [silent(optional)]");
-		SendClientMessageEx(playerid, COLOR_GREY, "** Acceptable values for silent are 0=No and 1=Yes, Default is 0 **");
+		SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /ban [playerid] [length in days] [silent(1=yes 2=no)] [reason]");
+		SendClientMessageEx(playerid, COLOR_GREY, "** 1 = Yes, the ban will only broadcast to admins | 2 = No, the ban will be globally broadcasted **");
 		return 1;
 	}
 	if(!IsPlayerConnected(iTargetID)) return SendClientMessageEx(playerid, COLOR_GREY, "That player is not connected");

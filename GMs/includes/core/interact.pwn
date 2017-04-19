@@ -145,12 +145,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(listitem == 5 && IsAMedic(playerid))
 			{
 				format(szMiscArray, sizeof(szMiscArray), "Move Patient\nLoad Patient\nTriage\nHeal", szMiscArray);
-				ShowPlayerDialogEx(playerid, DIALOG_INTERACT_MEDIC, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_INTERACT_MEDIC, DIALOG_STYLE_LIST, "Interaction Menu - Medic", szMiscArray, "Select", "Cancel");
 			}
 			if(listitem == 5 && IsADocGuard(playerid))
 			{
 				format(szMiscArray, sizeof(szMiscArray), "(Un)cuff\nJailcuff\nDrag\nDetain\nConfiscate\nExtend Sentence\nReduce Sentence\nIsolate", szMiscArray);
-				ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GUARD, DIALOG_STYLE_LIST, "Interaction Menu - Cop", szMiscArray, "Select", "Cancel");
+				ShowPlayerDialogEx(playerid, DIALOG_INTERACT_GUARD, DIALOG_STYLE_LIST, "Interaction Menu - DoC", szMiscArray, "Select", "Cancel");
 			}
 		}
 		case DIALOG_INTERACT_PAY: 

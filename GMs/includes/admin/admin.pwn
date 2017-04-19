@@ -201,7 +201,7 @@ CMD:id(playerid, params[]) {
 		GetPlayerName(i, szPlayerName, sizeof szPlayerName);
 		if(strfind(szPlayerName, params, true) != -1) {
 			if(PlayerInfo[playerid][pAdmin] >= 2) format(szMessage, sizeof szMessage, "%s (ID: %d · Hours: %s · Ping: %d · FPS: %d · Packet Loss: %.2f)", GetPlayerNameEx(i), i, number_format(PlayerInfo[i][pConnectHours]), GetPlayerPing(i), GetPlayerFPS(i), GetPlayerPacketLoss(i));
-			else format(szMessage, sizeof szMessage, "%s (ID: %d · Level: %d · Ping: %d)", GetPlayerNameEx(i), i, PlayerInfo[i][pLevel], GetPlayerPing(i));
+			else format(szMessage, sizeof szMessage, "%s (ID: %d · Level: %d · Ping: %d)", GetPlayerNameEx(i), i, GetPlayerScore(i), GetPlayerPing(i));
 			SendClientMessageEx(playerid, COLOR_WHITE, szMessage);
 		}
 	}
