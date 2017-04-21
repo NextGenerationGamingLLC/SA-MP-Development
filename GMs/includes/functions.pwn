@@ -2515,3 +2515,15 @@ stock PlayerBusy(target) {
 	return 1;
 	else return 0;
 }
+
+stock TakePlayerMoney(playerid, amount) {
+	if(GetPlayerCash(playerid) > amount) {
+		GivePlayerCash(playerid, -amount);
+		return 1;
+	}
+	if(PlayerInfo[playerid][pAccount] > amount) {
+		PlayerInfo[playerid][pAccount] -= amount;
+		return 1;
+	}
+	return 0;
+}

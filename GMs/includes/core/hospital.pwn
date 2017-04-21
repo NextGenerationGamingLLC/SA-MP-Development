@@ -304,52 +304,50 @@ public ReleaseFromHospital(playerid, iHospital, iBed)
 		KillTimer(arrHospitalBedData[iHospital][iTimer][iBed]);
 		PlayerTextDrawHide(playerid, HospTime[playerid]);
 		
-		if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE && PlayerInfo[playerid][pWantedLevel] < 1) // if they have homecare, set them at home for free
-		{
-			// set them to their house entrance location....
-			// using house spawn system from previous insurance system
-			ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
-
-			/*for(new i = 0; i < sizeof(HouseInfo); i++)
+		if(TakePlayerMoney(playerid, HospitalSpawnInfo[iHospital][0])) {
+			if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE && PlayerInfo[playerid][pWantedLevel] < 1) // if they have homecare, set them at home for free
 			{
-				if(PlayerInfo[playerid][pPhousekey] == i || PlayerInfo[playerid][pPhousekey2] == i)
-				{
-					Streamer_UpdateEx(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
-					SetPlayerInterior(playerid,HouseInfo[i][hIntIW]);
-					SetPlayerPos(playerid,HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ]);
-					GameTextForPlayer(playerid, "~w~Welcome Home", 5000, 1);
-					PlayerInfo[playerid][pInt] = HouseInfo[i][hIntIW];
-					PlayerInfo[playerid][pVW] = HouseInfo[i][hIntVW];
-					SetPlayerVirtualWorld(playerid,HouseInfo[i][hIntVW]);
-					if(HouseInfo[i][hCustomInterior] == 1) Player_StreamPrep(playerid, HouseInfo[i][hInteriorX],HouseInfo[i][hInteriorY],HouseInfo[i][hInteriorZ], FREEZE_TIME);
-					break;
-				}
-			}*/
-			
-			format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
-			SendClientMessageEx(playerid, COLOR_RED, string);
-		}
-		else
-		{
-			format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
-			SendClientMessageEx(playerid, COLOR_RED, string);
-		}
-		
-		PlayerInfo[playerid][pHospital] = 0;
-		GivePlayerCash(playerid, - HospitalSpawnInfo[iHospital][0]);
+				// set them to their house entrance location....
+				// using house spawn system from previous insurance system
+				ShowPlayerDialogEx(playerid, SPAWNATHOME_CHOICE, DIALOG_STYLE_LIST, "Choose your house", "Home 1\nHome 2\nHome 3", "Spawn", "");
 
-		switch(iHospital) {
-			case 3, 4, 7, 8, 16: {
-				TRTax += HospitalSpawnInfo[iHospital][1]; // NE Hospitals
-				format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
-				GroupPayLog(8, string);
+				format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
+				SendClientMessageEx(playerid, COLOR_RED, string);
 			}
-			default: {
-				Tax += (HospitalSpawnInfo[iHospital][1] / 2); // SA Hospitals
-				arrGroupData[9][g_iBudget] += (HospitalSpawnInfo[iHospital][1] / 2);
-				format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), (HospitalSpawnInfo[iHospital][0] / 2));
-				GroupPayLog(9, string);
+			else
+			{
+				format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
+				SendClientMessageEx(playerid, COLOR_RED, string);
 			}
+			
+			PlayerInfo[playerid][pHospital] = 0;
+
+			switch(iHospital) {
+				case 3, 4, 7, 8, 16: {
+					TRTax += HospitalSpawnInfo[iHospital][1]; // NE Hospitals
+					format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), HospitalSpawnInfo[iHospital][0]);
+					GroupPayLog(8, string);
+				}
+				default: {
+					Tax += (HospitalSpawnInfo[iHospital][1] / 2); // SA Hospitals
+					arrGroupData[9][g_iBudget] += (HospitalSpawnInfo[iHospital][1] / 2);
+					format(string, sizeof(string), "%s has paid their medical fees, adding $%d to the vault.", GetPlayerNameEx(playerid), (HospitalSpawnInfo[iHospital][0] / 2));
+					GroupPayLog(9, string);
+				}
+			}
+		} else {
+			if(PlayerInfo[playerid][pInsurance] == HOSPITAL_HOMECARE && PlayerInfo[playerid][pWantedLevel] < 1) // if they have homecare, set them at home for free
+			{
+				format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill and transported to your home.", HospitalSpawnInfo[iHospital][0]);
+				SendClientMessageEx(playerid, COLOR_RED, string);
+			}
+			else
+			{
+				format(string, sizeof(string), "Medical: You have been charged $%d for your hospital bill at %s", HospitalSpawnInfo[iHospital][0], GetHospitalName(iHospital));
+				SendClientMessageEx(playerid, COLOR_RED, string);
+			}
+			PlayerInfo[playerid][pHospital] = 0;
+			GivePlayerCash(playerid, -HospitalSpawnInfo[iHospital][0]);
 		}		
 		if(!GetPVarType(playerid, "HealthCareActive")) SetHealth(playerid, 50);
 		else SetHealth(playerid, 100), DeletePVar(playerid, "HealthCareActive");
