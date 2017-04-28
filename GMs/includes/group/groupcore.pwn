@@ -743,22 +743,28 @@ ReturnCrimeGroupType(iType)
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
+	if(newkeys & KEY_YES) {
+		FindGroupLocker(playerid);
+	}
+	return 1;
+}
 
-	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid)) {
-
-		if(0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) {
-
-			new areaid[1];
-			GetPlayerDynamicAreas(playerid, areaid);
-			// new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
-
-			if(areaid[0] != INVALID_STREAMER_ID) {
-				for(new i; i < MAX_GROUP_LOCKERS; ++i) {
-					if(areaid[0] == arrGroupLockers[PlayerInfo[playerid][pMember]][i][g_iLockerAreaID]) cmd_locker(playerid, "");
+forward FindGroupLocker(playerid);
+public FindGroupLocker(playerid) {
+	if(ValidGroup(PlayerInfo[playerid][pMember])) {
+		for(new i; i < MAX_GROUPS; i++) {
+			for(new j; j < MAX_GROUP_LOCKERS; j++) {
+				if(IsPlayerInRangeOfPoint(playerid, 3.0, arrGroupLockers[i][j][g_fLockerPos][0], arrGroupLockers[i][j][g_fLockerPos][1], arrGroupLockers[i][j][g_fLockerPos][2]) && arrGroupLockers[i][j][g_iLockerVW] == GetPlayerVirtualWorld(playerid)) {
+					if(i == PlayerInfo[playerid][pMember] || (arrGroupData[i][g_iGroupType] == arrGroupData[PlayerInfo[playerid][pMember]][g_iGroupType] && arrGroupLockers[i][j][g_iLockerShare])) {
+						cmd_locker(playerid, "");
+					} else {
+						return SendClientMessageEx(playerid, COLOR_GREY, "You don't have permission to access this locker!");
+					}
 				}
 			}
-		}
+		}	
 	}
+	return 1;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
@@ -2076,11 +2082,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					GetPlayerPos(playerid, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2]);
 					arrGroupLockers[iGroupID][iLocker][g_iLockerVW] = GetPlayerVirtualWorld(playerid);
 					DestroyDynamic3DTextLabel(arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel]);
-					DestroyDynamicArea(arrGroupLockers[iGroupID][iLocker][g_iLockerAreaID]);
 
 					format(szMiscArray, sizeof szMiscArray, "%s Locker\n{1FBDFF}Press ~k~~CONVERSATION_YES~ {FFFF00} to use\n ID: %i", arrGroupData[iGroupID][g_szGroupName], arrGroupLockers[iGroupID][iLocker]);
 					arrGroupLockers[iGroupID][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szMiscArray, arrGroupData[iGroupID][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
-					arrGroupLockers[iGroupID][iLocker][g_iLockerAreaID] = CreateDynamicSphere(arrGroupLockers[iGroupID][iLocker][g_fLockerPos][0], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][1], arrGroupLockers[iGroupID][iLocker][g_fLockerPos][2], 3.0, .worldid = arrGroupLockers[iGroupID][iLocker][g_iLockerVW]);
 
 					// Streamer_SetIntData(STREAMER_TYPE_AREA, arrGroupLockers[iGroupID][iLocker][g_iLockerAreaID], E_STREAMER_EXTRA_ID, iLocker);
 				}
@@ -5618,7 +5622,8 @@ CMD:togfam(playerid, params[])
 	return 1;
 }
 
-CMD:locker(playerid, params[]) {
+CMD:locker(playerid, params[])
+{
 
 	new
 		iGroupID = PlayerInfo[playerid][pMember],

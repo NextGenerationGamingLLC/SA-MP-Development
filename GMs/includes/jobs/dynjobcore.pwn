@@ -25,18 +25,20 @@ hook OnGameModeInit() {
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
-    if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid)) {
-
-        new areaid[1];
-        GetPlayerDynamicAreas(playerid, areaid);
-        // new i = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid[0], E_STREAMER_EXTRA_ID);
-
-        if(areaid[0] != INVALID_STREAMER_ID) {
-            for(new i; i < MAX_JOBPOINTS; ++i) {
-                if(areaid[0] == JobData[i][jAreaID]) Job_GetJob(playerid, i);
-            }
-        }
+    if((newkeys & KEY_YES) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) {
+    	FindJobPoint(playerid);
     }
+    return 1;
+}
+
+forward FindJobPoint(playerid);
+public FindJobPoint(playerid) {
+	for(new i; i < MAX_JOBPOINTS; i++) {
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, JobData[i][jPos][0], JobData[i][jPos][1], JobData[i][jPos][2]) && JobData[i][jVw] == GetPlayerVirtualWorld(playerid)) {
+			return Job_GetJob(playerid, i);
+		} 
+	}
+	return 1;
 }
 
 stock LoadJobNames()
@@ -124,14 +126,12 @@ forward UpdateJobPoint(id);
 public UpdateJobPoint(id)
 {
 	szMiscArray[0] = 0;
-	if(IsValidDynamicArea(JobData[id][jAreaID])) DestroyDynamicArea(JobData[id][jAreaID]);
 	if(IsValidDynamicPickup(JobData[id][jPickupID])) DestroyDynamicPickup(JobData[id][jPickupID]);
 	if(IsValidDynamic3DTextLabel(JobData[id][jTextID])) DestroyDynamic3DTextLabel(JobData[id][jTextID]);
 	if(IsValidDynamicMapIcon(JobData[id][jMapMarker])) DestroyDynamicMapIcon(JobData[id][jMapMarker]);
 
 	if(JobData[id][jPos][0] == 0.0) return 1;
 	
-	JobData[id][jAreaID] = CreateDynamicSphere(JobData[id][jPos][0], JobData[id][jPos][1], JobData[id][jPos][2], 3.0, .worldid = JobData[id][jVw], .interiorid = JobData[id][jInt]);
 	JobData[id][jMapMarker] = CreateDynamicMapIcon(JobData[id][jPos][0], JobData[id][jPos][1], JobData[id][jPos][2], (JobData[id][jMarkerID] < 5 || JobData[id][jMarkerID] > 63) ? 56 : JobData[id][jMarkerID], 0, .streamdistance = 500.0, .style = MAPICON_GLOBAL);
 	JobData[id][jPickupID] = CreateDynamicPickup(1239, 23, JobData[id][jPos][0], JobData[id][jPos][1], JobData[id][jPos][2], .worldid = JobData[id][jVw], .interiorid = JobData[id][jInt], .streamdistance = 200.0);
 	format(szMiscArray, sizeof szMiscArray, "{FFFF00}Job Point ({FFFFFF}ID: %i{FFFF00})\n\nName: {FFFFFF}%s\n{FFFF00}Press {FFFFFF}~k~~CONVERSATION_YES~ {FFFF00}to obtain the job.", id, GetJobName(JobData[id][jType]));

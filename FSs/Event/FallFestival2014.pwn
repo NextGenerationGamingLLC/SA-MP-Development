@@ -7,6 +7,7 @@
 
 //new musicarea;
 new festivalarea;
+new mazearea;
 new piratearea;
 new startcount = 3;
 
@@ -17,6 +18,11 @@ enum posenum
 	Float:posz,
 	Float:rot
 }
+
+//Maze
+new
+	Text3D:mazetext,
+	mazecount = 0;
 
 //Pirate
 new Text3D:piratetext;
@@ -259,6 +265,7 @@ public OnFilterScriptInit()
 {
 	//musicarea = CreateDynamicSphere(592.84, -2085, 0, 330.0);
 	festivalarea = CreateDynamicPolygon(festival_vertices, .worldid = 0);
+	mazearea = CreateDynamicRectangle(1567, 1260, 1311, 1508, .worldid = 333);
 	piratearea = CreateDynamicRectangle(1323.112670, -183.252929, 1448.739501, -90.425178);
 	SetTimer("KartUpdateGlobal", 1000, true);
 	CreateDynamic3DTextLabel("{FFFF00}Type {FF0000}/bumpercars {FFFF00}to join in!", 0xFFFFFFF, gBumperOrigin[0], gBumperOrigin[1], gBumperOrigin[2], 10.0);
@@ -267,6 +274,7 @@ public OnFilterScriptInit()
 	dTowerText = CreateDynamic3DTextLabel("{FFFF00}Type {FF0000}/jointower {FFFF00}to join in!", 0xFFFFFFF, dTowerJoin[0], dTowerJoin[1], dTowerJoin[2], 15.0);
 	oTowerText = CreateDynamic3DTextLabel("{FFFF00}Type {FF0000}/otower {FFFF00}to join in!", 0xFFFFFFF, 1525.3893,-83.8848,23.2147, 15.0);
 	piratetext = CreateDynamic3DTextLabel("", 0xFFFFFFF, piratejoin[0], piratejoin[1], piratejoin[2], 15.0);
+	mazetext = CreateDynamic3DTextLabel("", 0xFFFFFFF, 1380.188598, -75.701736, 31.074687, 15.0);
 	new Float:gFerrisCageOffsets[10][3] = {
 	{0.0699, 0.0600, -11.7500},
 	{-6.9100, -0.0899, -9.5000},
@@ -328,6 +336,11 @@ public OnFilterScriptInit()
 	CreateDynamic3DTextLabel("Pizza\n/pizza", 0xFFFF00AA, 1477.4579,-70.6260,23.2188+0.6, 10.0);
 	CreateDynamicPickup(1239, 23, 1465.0697,-86.3609,23.2247);
 	CreateDynamic3DTextLabel("Fried Dough\n/frieddough", 0xFFFF00AA, 1465.0697,-86.3609,23.2247+0.6, 10.0);
+
+	//Maze Exit Point
+	CreateDynamicPickup(1318, 23, 1473.045898+0.1, 1429.182617+0.1, 11.050000, .worldid = 333);
+	CreateDynamic3DTextLabel("Maze Exit Point\n{FF0000}/exitmaze", 0xFFFF00AA, 1473.045898+0.06, 1429.182617+0.06, 11.050000+0.8, 10.0, .worldid = 333);
+
 }
 
 public OnFilterScriptExit()
@@ -420,7 +433,7 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 		StopAudioStreamForPlayer(playerid);
 		PlayAudioStreamForPlayer(playerid, "http://shoutcast.ng-gaming.net:8000/listen.pls?sid=1", 1431, -74, 0, 400, 1);
 	}*/
-	if(areaid == festivalarea)
+	if(areaid == festivalarea || areaid == mazearea)
 	{
 		ResetPlayerWeapons(playerid);
 		if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
@@ -437,7 +450,7 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 	{
 		StopAudioStreamForPlayer(playerid);
 	}*/
-	if(areaid == festivalarea) CallRemoteFunction("SetPlayerWeapons", "i", playerid);
+	if(areaid == festivalarea || areaid == mazearea) CallRemoteFunction("SetPlayerWeapons", "i", playerid);
 	if(areaid == piratearea && GetPVarType(playerid, "pPirate")) LeavePirateShip(playerid);
 	return 1;
 }
@@ -492,7 +505,7 @@ public OnPlayerEnterCheckpoint(playerid)
 	return 1;
 }
 
-public OnPlayerKeyStateChange(playerid, newkeys, oldkeys) if(IsPlayerInDynamicArea(playerid, festivalarea)) ResetPlayerWeapons(playerid);
+public OnPlayerKeyStateChange(playerid, newkeys, oldkeys) if(IsPlayerInDynamicArea(playerid, festivalarea) || IsPlayerInDynamicArea(playerid, mazearea)) ResetPlayerWeapons(playerid);
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
@@ -635,6 +648,80 @@ CMD:otower(playerid, params[])
 	if(oTowerInfo[0][status] == 0) oTowerInfo[0][status] = 1, oTowerInfo[0][starting] = 30, SetTimer("StartOTower", 1000, false);
 	UpdateTowerLabels();
 	return 1;
+}
+
+LeaveMaze(playerid)
+{
+	if(GetPVarInt(playerid, "pMaze"))
+	{
+		DeletePVar(playerid, "pMaze");
+		mazecount--;
+	}
+	SetPlayerPos(playerid, 1389.463012, -81.734130, 31.068840);
+	SetPlayerFacingAngle(playerid, 311.76);
+	SetPlayerVirtualWorld(playerid, 0);
+	SetPlayerInterior(playerid, 0);
+	CallRemoteFunction("Player_StreamPrep", "ifffi", playerid, 1389.463012, -81.734130, 31.068840, 2000);
+	if(GetPVarInt(playerid, "pOldHealth"))
+	{
+		SetPlayerHealth(playerid, GetPVarFloat(playerid, "pOldHealth"));
+		DeletePVar(playerid, "pOldHealth");
+	}
+}
+
+CMD:exitmaze(playerid, params[])
+{
+	if(GetPVarInt(playerid, "pMaze"))
+	{
+		return cmd_joinmaze(playerid, params);
+	}
+	else if(IsPlayerInRangeOfPoint(playerid, 10, 1473.045898, 1429.182617, 11.050000) || IsPlayerInRangeOfPoint(playerid, 10, 1546.592828, 1261.259155, 11.069601))
+	{
+		LeaveMaze(playerid);
+		return 1;
+	}
+	else
+	{
+		SendClientMessage(playerid, 0xFFFFFFFF, "You are not inside of the Maze!");
+	}
+	return 1;
+}
+
+CMD:joinmaze(playerid, params[])
+{
+	if(!GetPVarType(playerid, "pMaze"))
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 10.0, 1380.188598, -75.701736, 31.074687))
+		{
+			SetPVarInt(playerid, "pMaze", 1);
+			new Float:HP; GetPlayerHealth(playerid, HP);
+			SetPVarFloat(playerid, "pOldHealth", HP);
+			SetPlayerVirtualWorld(playerid, 333);
+			SetPlayerInterior(playerid, 1);
+			SetPlayerPos(playerid, 1546.592828, 1261.259155, 11.069601);
+			SetPlayerHealth(playerid, 1000.0);
+			SetPlayerFacingAngle(playerid, 0.39);
+			CallRemoteFunction("Player_StreamPrep", "ifffi", playerid, 1546.592828, 1261.259155, 11.069601, 2000);
+			SendClientMessage(playerid, 0xFFFFFFFF, "If you get lost type /exitmaze to leave, There may be a mystical giftbox hidden at the end of the maze.");
+			mazecount++;
+		}
+		else
+		{
+			SendClientMessage(playerid, 0xFFFFFFFF, "You are not at the Maze entrance");
+		}
+	}
+	else
+	{
+		LeaveMaze(playerid);
+	}
+	return 1;
+}
+
+stock UpdateMazeLabel()
+{
+	new string[256];
+	format(string, sizeof(string), "{FFFF00}Type {FF0000}/joinmaze {FFFF00}to join in!\nParticipants: {FF0000}%d", mazecount);
+	UpdateDynamic3DTextLabelText(mazetext, 0xFFFFFFFF, string);
 }
 
 forward StartOTower();
@@ -893,7 +980,7 @@ LeaveBumper(playerid)
 //Kart
 CMD:startcount(playerid, params[])
 {
-	if(GetPVarInt(playerid, "aLvl") < 1337) return 1;
+	if(!(GetPVarInt(playerid, "aLvl") >= 1337 || IsPlayerAdmin(playerid))) return 1;
 	new countt, string[22];
 	if(sscanf(params, "d", countt)) return SendClientMessage(playerid, -1, "USAGE: /startcount [count]");
 	startcount = countt;
@@ -1010,6 +1097,7 @@ public KartUpdate(playerid)
 forward KartUpdateGlobal();
 public KartUpdateGlobal()
 {
+	UpdateMazeLabel();
 	UpdatePirateLabel();
 	if(piratestep[5] == 0 && piratestep[6] > 0 && (piratestep[7]-gettime()) <= 0)
 	{

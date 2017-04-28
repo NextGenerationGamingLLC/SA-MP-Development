@@ -166,8 +166,7 @@ enum eLockerData {
 	Float: g_fLockerPos[3],
 	g_iLockerVW,
 	g_iLockerShare,
-	Text3D: g_tLocker3DLabel,
-	g_iLockerAreaID
+	Text3D: g_tLocker3DLabel
 }
 
 enum eJurisdictionData {
@@ -1869,8 +1868,7 @@ enum e_JobData {
 	Float:jPos[3],
 	jVw,
 	jInt,
-	jLevel,
-	jAreaID
+	jLevel
 }
 new JobData[MAX_JOBPOINTS][e_JobData];
 
