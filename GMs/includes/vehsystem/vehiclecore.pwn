@@ -1601,6 +1601,11 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		SetPVarInt(playerid, "DrinkCooledDown", 0);
 	}
 
+	if(GetPVarInt(playerid, "pBeanBag") >= 1)
+	{
+		DeletePVar(playerid, "pBeanBag");
+	}
+
     if(GetPVarType(playerid, "Pizza") && !(IsAPizzaCar(vehicleid)))
 	{
 	    new Float:slx, Float:sly, Float:slz;

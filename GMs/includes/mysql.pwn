@@ -2163,8 +2163,8 @@ stock g_mysql_SaveAccount(playerid)
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Money", GetPlayerCash(playerid));
 
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Bank", PlayerInfo[playerid][pAccount]);
-	if(PlayerInfo[playerid][pHealth] > 100) PlayerInfo[playerid][pHealth] = 100;
-	if(PlayerInfo[playerid][pArmor] > 100) PlayerInfo[playerid][pArmor] = 100;
+	if(PlayerInfo[playerid][pHealth] > 150) PlayerInfo[playerid][pHealth] = 150;
+	if(PlayerInfo[playerid][pArmor] > 150) PlayerInfo[playerid][pArmor] = 150;
     SavePlayerFloat(query, GetPlayerSQLId(playerid), "pHealth", PlayerInfo[playerid][pHealth]);
     SavePlayerFloat(query, GetPlayerSQLId(playerid), "pArmor", PlayerInfo[playerid][pArmor]);
     SavePlayerFloat(query, GetPlayerSQLId(playerid), "pSHealth", PlayerInfo[playerid][pSHealth]);

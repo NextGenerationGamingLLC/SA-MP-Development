@@ -880,6 +880,32 @@ CMD:prisoners(playerid, params[])
       	}
       	SendClientMessageEx(playerid, COLOR_WHITE, "----------------------------------------");
 	}
+	else if(IsADocGuard(playerid))
+	{
+		new Count;
+
+		SendClientMessageEx(playerid, COLOR_WHITE, "----------------------------------------");
+  		SendClientMessageEx(playerid, COLOR_WHITE, "Name | Arrested By | Time Left | Reason");
+
+  		foreach(new i: Player)
+  		{
+  			if(PlayerInfo[i][pJailTime] >= 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC] DMCF Arrest", true) != -1)
+  			{
+  				if(strlen(PlayerInfo[i][pPrisonReason]) >= 1 && strlen(PlayerInfo[i][pPrisonedBy]) >= 1)
+  				{
+  					Count ++;
+  					format(szMiscArray, sizeof(szMiscArray), "%s (%d) | %s | %s | %s", GetPlayerNameEx(i), i, PlayerInfo[i][pPrisonedBy], TimeConvert(PlayerInfo[i][pJailTime]), PlayerInfo[i][pPrisonReason]);
+  					SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+				}
+				else
+				{
+					format(szMiscArray, sizeof(szMiscArray), "%s (%d) | Unavailable | %s | Unavailable", GetPlayerNameEx(i), i, TimeConvert(PlayerInfo[i][pJailTime]));
+					SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
+				}
+  			}
+  		}
+  		SendClientMessageEx(playerid, COLOR_WHITE, "----------------------------------------");
+	}
 	return 1;
 }
 
