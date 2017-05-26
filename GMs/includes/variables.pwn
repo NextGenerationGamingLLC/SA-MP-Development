@@ -621,6 +621,7 @@ new TRTax = 0;
 new TRTaxValue = 0, SpeedingTickets;
 new nonewbie = 0;
 new novip = 0;
+new nohma = 0;
 new Jackpot, TicketsSold, NextDrawing, LottoNumbers[MAX_PLAYERS][5], SpecLotto, LottoPrize[64];
 new Float:Positions[14][3];
 new InRing = 0;

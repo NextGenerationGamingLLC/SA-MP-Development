@@ -40,8 +40,10 @@
 // The new proposed Hitman Agency system. Approved by Rizi & Chapman on 07/08/16.
 // Relevant Documentation: https://docs.google.com/document/d/1rJzSK7MiNKJQOVSdhtc6RXgUr_X5ixkMYaG6nDvgTFc/
 
-#define COLOR_HMARADIO			0x008BE8FF
-#define COLOR_HMAOOC			0x00FFFFFF
+#define COLOR_HMARADIO			0x003399cc
+#define COLOR_HMAOOC			0x008BE8FF
+/*#define COLOR_HMAICRADIO		0x003399cc
+#define COLOR_HMAOOCRADIO		0x008BE8FF*/
 
 //new Float:fHMASafe_Loc[3];
 //new iHMASafe_Val = 0;
@@ -416,7 +418,6 @@ CMD:givehit(playerid, params[])
 CMD:ranks(playerid, params[])
 {
 	if ((!IsAHitman(playerid)) && PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Member of the Hitman Agency!");
-	if(!IsAHitmanLeader(playerid)) return SendClientMessage(playerid, COLOR_GREY, "You cannot use this command.");
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Hitman Agency Online Members __________________|");
 
@@ -1841,4 +1842,90 @@ CMD:knife(playerid, params[])
         }
     }
     return 1;
+}
+
+CMD:nohma(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 3)
+	{
+		if (!nohma)
+		{
+			nohma = 1;
+			foreach(new p: Player) {
+				if(IsAHitman(p) || PlayerInfo[p][pAdmin] >= 1337) {
+					SendClientMessageEx(p, COLOR_HMAOOC, "** System: HMA chat has been disabled by an Admin!");
+				}
+			}
+		}
+		else
+		{
+			nohma = 0;
+			foreach(new p: Player) {
+				if(IsAHitman(p) || PlayerInfo[p][pAdmin] >= 1337) {
+					SendClientMessageEx(p, COLOR_HMAOOC, "** System: HMA chat has been enabled by an Admin!");
+				}
+			}
+		}
+	}
+	else
+	{
+		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+	}
+	return 1;
+}
+
+CMD:hr(playerid, params[]) {
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+
+	if(IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 1337) {
+		if(!isnull(params)){
+			if(nohma && PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "The HMA chat has been disabled by an administrator.");
+			new string[128];
+
+			format(string, sizeof(string), "(radio) %s", params);
+			SetPlayerChatBubble(playerid, string, COLOR_WHITE, 15.0, 5000);
+			format(string, sizeof(string), "** %s (%d) %s: %s **", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman], GetPlayerNameEx(playerid), params);
+
+			foreach(new i: Player) {
+				if(IsAHitman(i) && PlayerInfo[i][pAdmin] < 1337) {
+					ChatTrafficProcess(i, COLOR_HMARADIO * 256 + 255, string, 12);
+				}
+				if(PlayerInfo[i][pAdmin] >= 1337 && PlayerInfo[i][pTogReports] == 0) {
+					new AdminHMA[128];
+					format(AdminHMA, sizeof(AdminHMA), "(HMA Radio) %s", string);
+					ChatTrafficProcess(i, COLOR_HMARADIO * 256 + 255, AdminHMA, 12);
+				}
+			}
+		}
+		else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hr [HMA Radio Chat]");
+	}
+	return 1;
+}
+
+CMD:hg(playerid, params[]) {
+	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
+	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
+
+	if(IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 1337) {
+		if(!isnull(params)){
+			if(nohma && PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "The HMA chat has been disabled by an administrator.");
+			new string[128];
+
+			format(string, sizeof(string), "**[OOC] %s (%d) %s: %s **", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman], GetPlayerNameEx(playerid), params);
+
+			foreach(new i: Player) {
+				if(IsAHitman(i) && PlayerInfo[i][pAdmin] < 1337) {
+					ChatTrafficProcess(i, COLOR_HMAOOC * 256 + 255, string, 12);
+				}
+				if(PlayerInfo[i][pAdmin] >= 1337 && PlayerInfo[i][pTogReports] == 0) {
+					new AdminHMA[128];
+					format(AdminHMA, sizeof(AdminHMA), "(HMA Radio) %s", string);
+					ChatTrafficProcess(i, COLOR_HMAOOC * 256 + 255, AdminHMA, 12);
+				}
+			}
+		}
+		else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hg [HMA OOC Chat]");
+	}
+	return 1;
 }
