@@ -174,9 +174,29 @@ CMD:vipnum(playerid, params[])
 	return 1;
 }
 
+CMD:buddyinvites(playerid, params[])
+{
+	new string[128];
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pShopTech] > 2) {
+		if(BuddyInvite == true) {
+			BuddyInvite = false;
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has disabled the /buddyinvite command.", GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_YELLOW, string, 2);
+		} else {
+			BuddyInvite = true;
+			format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s has enabled the /buddyinvite command.", GetPlayerNameEx(playerid));
+			ABroadCast(COLOR_YELLOW, string, 2);
+		}
+	} else {
+		SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have permission to use this command.");
+	}
+	return 1;
+}
+
 CMD:buddyinvite(playerid, params[])
 {
 	if(PlayerInfo[playerid][pDonateRank] < 2) return SendClientMessageEx(playerid, COLOR_GREY, "You need to be Silver VIP+ to use this function!");
+	if(BuddyInvite == false) return SendClientMessageEx(playerid, COLOR_GREY, "Buddy invites has been disabled by an adminstrator."); 
 	new giveplayerid;
 	if(sscanf(params, "u", giveplayerid)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /buddyinvite [player]");
 	if(!IsPlayerConnected(giveplayerid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is not connected!");

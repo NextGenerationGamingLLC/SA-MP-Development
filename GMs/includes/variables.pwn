@@ -2784,3 +2784,6 @@ new
 new
 	IsDoingAnim[MAX_PLAYERS],
 	GhostHacker[MAX_PLAYERS][7];
+
+new
+	bool:BuddyInvite = true;
