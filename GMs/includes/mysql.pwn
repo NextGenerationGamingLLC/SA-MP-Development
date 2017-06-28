@@ -733,6 +733,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 						format(szMiscArray, sizeof(szMiscArray), "ChatTog%d", c);
 						PlayerInfo[extraid][pToggledChats][c] = cache_get_field_content_int(row, szMiscArray, MainPipeline);
 					}
+					PlayerInfo[extraid][pFlagCredits] = cache_get_field_content_int(row, "FlagCredits", MainPipeline);
+					PlayerInfo[extraid][pFlagClaimed] = cache_get_field_content_int(row, "FlagClaimed", MainPipeline);
 
 					/*cache_get_field_content(row,  "ChatboxSettings", szResult, MainPipeline);
 					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pChatbox]);*/
@@ -2614,7 +2616,8 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "DedicatedHours", PlayerInfo[playerid][pDedicatedHours]);
 	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WalkStyle", PlayerInfo[playerid][pWalkStyle]);
-
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FlagCredits", PlayerInfo[playerid][pFlagCredits]);
+	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FlagClaimed", PlayerInfo[playerid][pFlagClaimed]);
 
 	//for(new d; d < sizeof(Drugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), GetDrugName(d), PlayerInfo[playerid][pDrugs][d]);
 	//for(new d; d < sizeof(szIngredients); ++d) if(d != 9) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	

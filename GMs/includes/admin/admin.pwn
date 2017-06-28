@@ -6267,20 +6267,3 @@ CMD:resetpgifts(playerid, params[])
 	Log("logs/admin.log", szMiscArray);
 	return 1;
 }
-
-CMD:cutter(playerid, params[])
-{
-	for(new d = 0 ; d < MAX_PLAYERVEHICLES; d++)
-	{
-		if(IsPlayerInVehicle(playerid, PlayerVehicleInfo[playerid][d][pvId]))
-		{
-			SendClientMessageEx(playerid, COLOR_GREEN, "You have successfully installed rims.");
-			PlayerInfo[playerid][pRimMod]--;
-
-			AddVehicleComponent(GetPlayerVehicleID(playerid), 1079);
-			UpdatePlayerVehicleMods(playerid, d);
-			return 1;
-		}
-	}
-	return 1;
-}

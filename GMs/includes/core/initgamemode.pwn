@@ -81,6 +81,7 @@ InitiateGamemode()
 	LoadCASINOPoints();
 	LoadBanks();
 	LoadPayPhones();
+	LoadFindTheFlag();
 	
 	//LoadCarrier()
 	//SelectCharmPoint();

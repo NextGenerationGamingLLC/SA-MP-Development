@@ -1125,6 +1125,9 @@ House_VistorCheck(iHouseID) {
 	if(!HouseInfo[iHouseID][hFurnitureLoaded]) {
 
 		HouseInfo[iHouseID][hFurnitureLoaded] = 1;
+		for(new o = 0; o < MAX_FURNITURE_SLOTS; o++) {
+			HouseInfo[iHouseID][hFurniture][o] = -1;
+		}
 		format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
 		mysql_function_query(MainPipeline, szMiscArray, true, "OnLoadFurniture", "");
 
@@ -1268,6 +1271,7 @@ DestroyFurniture(iHouseID, iSlotID) {
 
 	if(IsValidFurniture(iHouseID, iSlotID, 1)) {
 		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID]);
+		HouseInfo[iHouseID][hFurniture][iSlotID] = -1;
 		format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `furniture` WHERE `houseid` = '%d' AND `slotid` = '%d'", iHouseID, iSlotID);
 		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}

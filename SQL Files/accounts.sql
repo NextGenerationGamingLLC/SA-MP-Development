@@ -19,7 +19,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- Table structure for accounts
 -- ----------------------------
 DROP TABLE IF EXISTS `accounts`;
-CREATE TABLE `accounts` (
+CREATE TABLE IF NOT EXISTS `accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Online` int(11) NOT NULL DEFAULT '0',
   `UpdateDate` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -45,6 +45,7 @@ CREATE TABLE `accounts` (
   `Disabled` int(11) NOT NULL DEFAULT '0',
   `Level` int(11) NOT NULL DEFAULT '1',
   `AdminLevel` int(11) NOT NULL DEFAULT '0',
+  `ASM` int(11) NOT NULL DEFAULT '0',
   `AdminType` int(1) NOT NULL DEFAULT '0',
   `SeniorModerator` int(11) NOT NULL DEFAULT '0',
   `Helper` int(11) NOT NULL DEFAULT '0',
@@ -355,7 +356,6 @@ CREATE TABLE `accounts` (
   `LockPickTime` int(11) NOT NULL DEFAULT '0',
   `SEC` int(11) NOT NULL DEFAULT '0',
   `BM` int(11) NOT NULL DEFAULT '0',
-  `ASM` int(1) NOT NULL,
   `Isolated` int(11) NOT NULL DEFAULT '0',
   `WantedJailTime` int(11) NOT NULL DEFAULT '0',
   `WantedJailFine` int(11) NOT NULL DEFAULT '0',
@@ -495,18 +495,24 @@ CREATE TABLE `accounts` (
   `EventPrizeClaim` int(11) NOT NULL,
   `DrugSmuggler` int(11) NOT NULL,
   `Pot` int(11) NOT NULL,
-  `HasVoted` varchar(256) NOT NULL,
-  `PollKeyA` varchar(256) NOT NULL,
-  `PollKeyB` varchar(256) NOT NULL,
-  `PollKeyC` varchar(256) NOT NULL,
   `StaffBanned` int(11) NOT NULL,
-  `Rags` int(11) NOT NULL,
+  `PollKeyA` varchar(24) NOT NULL DEFAULT 'Invalid Key',
+  `PollKeyB` varchar(24) NOT NULL DEFAULT 'Invalid Key',
+  `PollKeyC` varchar(24) NOT NULL DEFAULT 'Invalid Key',
   `FurnitureSlots` int(11) NOT NULL,
+  `Rags` int(11) NOT NULL,
   `Hitman` int(11) NOT NULL DEFAULT '-1',
   `HitmanLeader` int(11) NOT NULL DEFAULT '0',
   `HitmanBlacklisted` int(11) NOT NULL,
   `BlacklistReason` varchar(64) NOT NULL,
-  `CopKit` int(11) NOT NULL,
+  `CopKit` int(11) NOT NULL DEFAULT '0',
+  `DedicatedHours` int(11) NOT NULL DEFAULT '0',
+  `DedicatedTimestamp` date NOT NULL DEFAULT '0000-00-00',
+  `DedicatedDaymarker` date NOT NULL DEFAULT '0000-00-00',
+  `WalkStyle` int(11) NOT NULL DEFAULT '0',
+  `FlagCredits` int(11) NOT NULL DEFAULT '0',
+  `FlagClaimed` int(11) NOT NULL DEFAULT '0',
+  `TurfStatus` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `userid` (`id`) USING BTREE,
   KEY `username` (`Username`) USING BTREE,
@@ -516,5 +522,8 @@ CREATE TABLE `accounts` (
   KEY `phone` (`PhoneNr`) USING BTREE,
   KEY `helper` (`Helper`) USING BTREE,
   KEY `ips` (`IP`,`SecureIP`) USING BTREE,
-  KEY `permband` (`PermBand`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=163 DEFAULT CHARSET=utf8;
+  KEY `permband` (`PermBand`) USING BTREE,
+  KEY `business` (`Business`) USING BTREE,
+  KEY `famed` (`Famed`) USING BTREE,
+  KEY `dedicated` (`pDedicatedPlayer`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
