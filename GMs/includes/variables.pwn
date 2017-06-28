@@ -332,7 +332,7 @@ new Text:MainMenuTxtdraw[12];
 new Text:NoticeTxtdraw[8];
 new Text:TutTxtdraw[118];
 new Text:WristWatch;
-new Text:GPS[MAX_PLAYERS];
+new PlayerText:GPS[MAX_PLAYERS];
 new Text:BFText;
 new Text:PriorityReport[MAX_PLAYERS];
 new Text:TD_ServerError;

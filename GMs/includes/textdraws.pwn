@@ -2292,6 +2292,17 @@ stock HideFPSCounter(playerid)
 
 stock CreatePlayerTextDraws(playerid)
 {
+	//GPS text draw
+	GPS[playerid] = CreatePlayerTextDraw(playerid,95.000000, 319.000000, "Loading...");
+	PlayerTextDrawBackgroundColor(playerid, GPS[playerid], 255);
+	PlayerTextDrawAlignment(playerid, GPS[playerid], 2);
+	PlayerTextDrawFont(playerid, GPS[playerid], 2);
+	PlayerTextDrawLetterSize(playerid, GPS[playerid], 0.250000, 1.800000);
+	PlayerTextDrawColor(playerid, GPS[playerid], -1);
+	PlayerTextDrawSetOutline(playerid, GPS[playerid], 1);
+	PlayerTextDrawSetProportional(playerid, GPS[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, GPS[playerid], 0);
+
 	//Shop Notice Textdraw
 	ShopNotice[playerid] = CreatePlayerTextDraw(playerid,16.000000, 193.000000, "_");
 	PlayerTextDrawBackgroundColor(playerid, ShopNotice[playerid], 255);

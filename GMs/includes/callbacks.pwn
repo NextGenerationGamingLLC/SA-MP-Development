@@ -2316,7 +2316,8 @@ public OnPlayerDisconnect(playerid, reason)
 			KillTimer(GetPVarInt(playerid, "RentTime"));
 		}
 
-		if(GetPVarInt(playerid, "gpsonoff") == 1) TextDrawDestroy(GPS[playerid]);
+		//if(GetPVarInt(playerid, "gpsonoff") == 1) TextDrawDestroy(GPS[playerid]);
+		PlayerTextDrawDestroy(playerid, GPS[playerid]);
 
 		if(PlayerInfo[playerid][pAdmin] >= 2) TextDrawDestroy(PriorityReport[playerid]);
 

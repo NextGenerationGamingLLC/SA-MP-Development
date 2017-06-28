@@ -288,27 +288,17 @@ CMD:gps(playerid, params[])
 			format(string, sizeof(string), "* %s turns on their GPS.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			SetPVarInt(playerid, "gpsonoff", 1);
-			textdrawscount++;
-			GPS[playerid] = TextDrawCreate(95.000000, 319.000000, "Loading...");
-			TextDrawAlignment(GPS[playerid], 2);
-			TextDrawBackgroundColor(GPS[playerid], 255);
-			TextDrawFont(GPS[playerid], 2);
-			TextDrawLetterSize(GPS[playerid], 0.250000, 1.800000);
-			TextDrawColor(GPS[playerid], -1);
-			TextDrawSetOutline(GPS[playerid], 1);
-			TextDrawSetProportional(GPS[playerid], 1);
-			TextDrawShowForPlayer(playerid, GPS[playerid]);
+			PlayerTextDrawSetString(playerid, GPS[playerid], "Loading...");
+			PlayerTextDrawShow(playerid, GPS[playerid]);
 		}
 		else
 		{
 			format(string, sizeof(string), "* %s turns off their GPS.", GetPlayerNameEx(playerid));
 			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			DeletePVar(playerid, "gpsonoff");
-			TextDrawDestroy(GPS[playerid]);
-			textdrawscount--;
+			PlayerTextDrawHide(playerid, GPS[playerid]);
 		}
 	}
-
 	else
 	{
 		SendClientMessageEx(playerid, COLOR_GRAD1, "You don't have a GPS!");

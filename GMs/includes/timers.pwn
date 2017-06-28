@@ -1173,7 +1173,7 @@ foreach(new i: Player)
 			{
 				new zone[28];
 				GetPlayer3DZone(i, zone, MAX_ZONE_NAME);
-				TextDrawSetString(GPS[i], zone);
+				PlayerTextDrawSetString(i, GPS[i], zone);
 			}
 			if(GetPVarType(i, "Injured")) SetPlayerArmedWeapon(i, 0);
 			if(GetPVarType(i, "IsFrozen")) TogglePlayerControllable(i, 0);
@@ -2725,7 +2725,7 @@ ptask PlayerUpdate[1000](i) {
 		{
 			new zone[28];
 			GetPlayer3DZone(i, zone, MAX_ZONE_NAME);
-			TextDrawSetString(GPS[i], zone);
+			PlayerTextDrawSetString(i, GPS[i], zone);
 		}
 		if(GetPVarType(i, "Injured")) SetPlayerArmedWeapon(i, 0);
 		if(GetPVarType(i, "IsFrozen")) TogglePlayerControllable(i, 0);
