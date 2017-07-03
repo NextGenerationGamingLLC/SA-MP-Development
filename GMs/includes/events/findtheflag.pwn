@@ -57,7 +57,7 @@ enum FindFlag {
 }
 new FlagEvent[1][FindFlag];
 
-new Float:FlagSpawns[28][4] = {
+new Float:FlagSpawns[60][4] = {
 	{-78.84, -1187.78, 1.75}, // Flint Gas
 	{-47.71, -1613.97, 2.94}, // Old IRA Pier
 	{335.72, -1522.80, 35.10}, // FBI HQ
@@ -85,7 +85,39 @@ new Float:FlagSpawns[28][4] = {
 	{-734.01, 1546.48, 39.00}, // Los Barrancas Ruins
 	{-2232.64, -1737.78, 480.83}, // Mount Chilliad
 	{-1816.90, 1313.89, 59.73}, // San Fierro Parkade
-	{-2994.25, 472.65, 4.91} // San Fierro Pier
+	{-2994.25, 472.65, 4.91}, // San Fierro Pier
+	{1767.59, -1933.80, 13.56}, // Unity Station
+	{1673.79, -2304.51, -1.18}, // LS Airport Terminal
+	{1699.02, -2824.33, 12.60}, // DoC rear
+	{2874.48, -2124.49, 4.12}, // East LS Sewage Outlet
+	{1319.09, 1251.63, 14.26}, // LV Airport
+	{2068.94, 1917.27, 19.00}, // The Visage
+	{2579.08, 2382.47, 18.28}, // Rock Hotel
+	{2505.84, -705.37, 139.32}, // SF Radio Station
+	{2807.53, 1162.61, 20.31}, // SF Fountain
+	{-2135.37, 183.47, 42.09}, // SF Ruins
+	{-2293.89, -2449.00, 25.70}, // Angel Pine Shack
+	{-2046.21, -2344.45, 48.25}, // Angel Pine Factory
+	{-1845.79, -1707.18, 41.11}, // Whetstone
+	{-472.20, -2022.79, 47.60}, // NOOSE HQ
+	{-1259.69, -2085.82, 23.78}, // Whetstone Water  Tower
+	{1027.93, -2189.06, 39.11}, // Whitehouse
+	{-411.83, 1339.51, 13.22}, // Mine
+	{-329.04, 1860.81, 44.38}, // Regular Tom
+	{1415.56, -806.27, 85.03}, // Vinewood Sign
+	{-1476.86, 2627.37, 58.78}, // El Quebrados
+	{-1051.15, 1548.69, 33.43}, // Las Barrancas
+	{-506.90, 1587.98, 1.18}, // Bone County
+	{1625.20, 1318.23, 14.82}, // LV Airport Containers
+	{1097.75, 1403.19, 6.63}, // LV Stadium, Underpass
+	{1113.4, -1363.25, 33.80}, // Mall Appartments
+	{-40.38, -1155.19, 1.07}, // Flint PnS
+	{657.66, -648.87, 16.33}, // Dillimore Trash Can
+	{740.37, -1297.14, 13.56}, // LS Tennis Courts
+	{657.87, -816.50, 86.76}, // Hill overlooking Dill
+	{2032.55, -238.11, 0.87}, // Palomino Creek (Opposite Bank)
+	{1469.91, -1727.72, 6.84}, // Under LS City Hal
+	{1803.64, -1691.64, 28.45} // VIP billboard
 };
 
 hook OnGameModeInit() {
@@ -155,14 +187,14 @@ stock SaveFlag(i) {
 
 forward SetUpFlag(id);
 public SetUpFlag(id) {
-	new string[256], spawned = 0;
+	new string[256];
 	if(IsValidDynamicObject(FlagEvent[id][ftObject])) DestroyDynamicObject(FlagEvent[id][ftObject]), FlagEvent[id][ftObject] = -1;
 	if(IsValidDynamic3DTextLabel(FlagEvent[id][ftTextID])) DestroyDynamic3DTextLabel(FlagEvent[id][ftTextID]), FlagEvent[id][ftTextID] = Text3D: -1;
 
 	if(!FlagEvent[id][ftActive]) return 1;
 
 	// Check if the flag is at any of the spawns.
-	for(new s; s < sizeof(FlagSpawns); s++)
+	/*for(new s; s < sizeof(FlagSpawns); s++)
 	{
 		if(FlagEvent[id][ftPos][0] == FlagSpawns[s][0] && FlagEvent[id][ftPos][1] == FlagSpawns[s][1] && FlagEvent[id][ftPos][2] == FlagSpawns[s][2]) {
 			spawned = 1;
@@ -172,7 +204,7 @@ public SetUpFlag(id) {
 	if(!spawned) {
 		DestroyFlag(id);
 		return 1;
-	}
+	}*/
 
 	format(string, sizeof(string), "{FFFF00}Type {1FBDFF}/flagclaim{FFFF00} to tag this flag!\nTime Remaining: {1FBDFF}%s", TimeConvert(FlagEvent[id][ftTime]));
 
@@ -254,10 +286,13 @@ CMD:gotoflag(playerid, params[]) {
 
 CMD:flagmove(playerid, params[]) {
 	szMiscArray[0] = 0;
+	new value;
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pPR] > 1) {
+		if(sscanf(params, "D(0)", value)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /flagmove [0 - Silient | 1 - Global Message]");
+		if(!(0 <= value < 2)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /flagmove [0 - Silient | 1 - Global Message]");
 		if(!FlagActive) return SendClientMessageEx(playerid, COLOR_RED, "Find the Flag hasn't been loaded from the database!");
 		if(!FlagEvent[0][ftActive]) return SendClientMessageEx(playerid, COLOR_RED, "The flag is currently not active.");
-		MoveFlag(0, 1);
+		MoveFlag(0, value);
 		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s force moved the flag for the 'Find the Flag' event.", GetPlayerNameEx(playerid));
 		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
 		format(szMiscArray, sizeof(szMiscArray), "%s has forced the flag to move to a new location.", GetPlayerNameEx(playerid));
@@ -268,9 +303,34 @@ CMD:flagmove(playerid, params[]) {
 	return 1;
 }
 
+CMD:flaghere(playerid, params[]) {
+	szMiscArray[0] = 0;
+	new value;
+	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pPR] > 1) {
+		if(sscanf(params, "D(0)", value)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /flaghere [0 - Silient | 1 - Global Message]");
+		if(!(0 <= value < 2)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /flagmove [0 - Silient | 1 - Global Message]");
+		if(!FlagActive) return SendClientMessageEx(playerid, COLOR_RED, "Find the Flag hasn't been loaded from the database!");
+		if(!FlagEvent[0][ftActive]) return SendClientMessageEx(playerid, COLOR_RED, "The flag is currently not active.");
+		GetPlayerPos(playerid, FlagEvent[0][ftPos][0], FlagEvent[0][ftPos][1], FlagEvent[0][ftPos][2]);
+		FlagEvent[0][ftTagId] += 1;
+		FlagEvent[0][ftSpawnID] = -1;
+		FlagEvent[0][ftTime] = 3600;
+		SaveFlag(0);
+		if(value) SendClientMessageToAllEx(COLOR_LIGHTBLUE, "[Flag Event]: Time has expired and the flag has moved to a new location!");
+		SetUpFlag(0);
+		format(szMiscArray, sizeof(szMiscArray), "{AA3333}AdmWarning{FFFF00}: %s force moved the flag to their position for the 'Find the Flag' event.", GetPlayerNameEx(playerid));
+		ABroadCast(COLOR_LIGHTRED, szMiscArray, 2);
+		format(szMiscArray, sizeof(szMiscArray), "%s has forced moved the flag to their current position.", GetPlayerNameEx(playerid));
+		Log("logs/flagevent.log", szMiscArray);
+	} else {
+		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
+	}
+	return 1;
+}
+
 forward MoveFlag(id, type);
 public MoveFlag(id, type) {
-	new loc = Random(0, 27);
+	new loc = Random(0, 59);
 	if(FlagEvent[id][ftSpawnID] == loc) return MoveFlag(id, type);
 
 	FlagEvent[id][ftPos][0] = FlagSpawns[loc][0];
@@ -299,7 +359,7 @@ task UpdateFlagData[1000]() {
 	if(FlagActive) {
 		if(FlagEvent[0][ftActive]) {
 			if(FlagEvent[0][ftTime] > 0) FlagEvent[0][ftTime]--;
-			if(!FlagEvent[0][ftTime]) {
+			if(FlagEvent[0][ftTime] < 1) {
 				MoveFlag(0, 1);
 			}
 			FlagUpdate(0);
@@ -355,7 +415,7 @@ CMD:flagwins(playerid, params[]) {
 	if(PlayerInfo[playerid][pAdmin] >= 1337 || PlayerInfo[playerid][pAdmin] > 1 && PlayerInfo[playerid][pPR] > 1) {
 		if(sscanf(params, "u", target)) return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /flagwins [player]");
 		if(!IsPlayerConnected(target)) return SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
-		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "[Flag Event]: %s have tagged %d flag%s. | Flag Credits: %d", PlayerInfo[target][pFlagClaimed], (PlayerInfo[target][pFlagClaimed] == 1) ? ("") : ("s"), PlayerInfo[target][pFlagCredits]);
+		SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "[Flag Event]: %s have tagged %d flag%s. | Flag Credits: %d", GetPlayerNameEx(target), PlayerInfo[target][pFlagClaimed], (PlayerInfo[target][pFlagClaimed] == 1) ? ("") : ("s"), PlayerInfo[target][pFlagCredits]);
 
 	} else {
 		SendClientMessageEx(playerid, COLOR_GREY, "You are not authorized to use this command!");
