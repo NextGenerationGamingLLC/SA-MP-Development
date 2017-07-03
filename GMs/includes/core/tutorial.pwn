@@ -251,7 +251,7 @@ ShowTutorialDialog(playerid, stage)
 			if(betaserver == 0) {
 				szMiscArray = "{FFFFFF}_______________________________________________________________________________________________________________________________________________________\n\n\n";
 				strcat(szMiscArray, "{7091B8}Welcome to Next Generation Gaming!{FFFFFF}\n\n");
-				strcat(szMiscArray, "We are an english speaking community. At NG:RP, we speciale in Roleplay, the act of taking on the role of a character and acting as that character\n");
+				strcat(szMiscArray, "We are an english speaking community. At NG:RP, we specialize in Roleplay, the act of taking on the role of a character and acting as that character\n");
 				strcat(szMiscArray, "as you would in real life. Along the way your character learns new information and allows them to develop.\n\n");
 				strcat(szMiscArray, "As a community, we've been around since 2010 and have grown significantly since then.\n\n");
 				strcat(szMiscArray, "{FF0000}NG:RP Related Services{FFFFFF}:\n");

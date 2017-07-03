@@ -3182,7 +3182,7 @@ public OnPlayerEnterCheckpoint(playerid)
 				TransferStorage(playerid, -1, -1, -1, 4, MatsAmount[playerid], -1, 2);
 			}
 			if((1 <= DynPoints[MatDeliver[playerid]][poType] < 5)) {
-				SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered the packages an gained %sg of %s", number_format(MatsAmount[playerid]), drugname);
+				SendClientMessageEx(playerid, COLOR_WHITE, "You have delivered the packages and gained %sg of %s", number_format(MatsAmount[playerid]), drugname);
 				PlayerInfo[playerid][pDrugs][DynPoints[MatDeliver[playerid]][poType]-1] += MatsAmount[playerid];
 				IncreaseSmugglerLevel(playerid);
 			}

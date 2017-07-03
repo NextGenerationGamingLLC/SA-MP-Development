@@ -593,7 +593,7 @@ CMD:v(playerid, params[]) {
 			SendClientMessageEx(playerid, COLOR_GREY, szMessage);
 		}
 		else if(PlayerInfo[playerid][pToggledChats][9]) {
-		    SendClientMessageEx(playerid, COLOR_GREY, "You have VIP chat toggled - /togvip to enable it.");
+		    SendClientMessageEx(playerid, COLOR_GREY, "You have VIP chat toggled - /tog vip to enable it.");
 		}
 		else if(PlayerInfo[playerid][pVMuted] > 0) {
 			SendClientMessageEx(playerid, COLOR_GREY, "You are muted from the VIP chat channel.");

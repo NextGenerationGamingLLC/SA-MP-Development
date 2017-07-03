@@ -828,7 +828,7 @@ CMD:claimturf(playerid, params[])
         return 1;
     }
     if(rank < arrGroupData[family][g_iTurfCapRank]) {
-        SendClientMessageEx(playerid, COLOR_GRAD2, "You have cannot claim turfs due to your rank!");
+        SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot claim turfs due to your rank!");
         return 1;
     }
     if(tw != -1) {

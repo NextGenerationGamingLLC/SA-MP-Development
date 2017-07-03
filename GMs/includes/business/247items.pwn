@@ -251,6 +251,7 @@ CMD:blindfold(playerid, params[])
 
 						TextDrawShowForPlayer(id, BFText);
 				        SetPVarInt(id, "Blindfolded", 1);
+				        PlayerInfo[playerid][pRags]--;
 					}
 					default:
 					{
