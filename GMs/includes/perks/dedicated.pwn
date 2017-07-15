@@ -70,20 +70,6 @@ HourDedicatedPlayer(playerid)
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 2 Dedicated Player!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 2 Dedicated Player after playing 75 hours!", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);
-		if(PlayerInfo[playerid][pDonateRank] >= 1)
-		{
-			AddFlag(playerid, INVALID_PLAYER_ID, "1 Month Bronze VIP - Non Transferable");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been awarded a 1 Month Bronze VIP Flag");
-		}
-		else
-		{
-			SendClientMessageEx(playerid, COLOR_YELLOW, "CONGRATULATIONS: You have been awarded a 1 Month Bronze VIP");
-			PlayerInfo[playerid][pDonateRank] = 1;
-			PlayerInfo[playerid][pTempVIP] = 0;
-			PlayerInfo[playerid][pBuddyInvited] = 0;
-			PlayerInfo[playerid][pVIPSellable] = 0;
-			PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
-		}
 	} 
 	else if(PlayerInfo[playerid][pDedicatedHours] >= 90 && PlayerInfo[playerid][pDedicatedPlayer] == 2)
 	{
@@ -91,26 +77,6 @@ HourDedicatedPlayer(playerid)
 		SendClientMessageEx(playerid, COLOR_YELLOW, "Congratulations you are now a Tier 3 Dedicated Player!");
 		format(szMiscArray, sizeof(szMiscArray), "%s has ascended to Tier 3 Dedicated Player after playing 90 hours!.", GetPlayerNameEx(playerid));
 		SendClientMessageToAll(-1, szMiscArray);	
-		if(PlayerInfo[playerid][pGVip] == 0) {	
-			if(PlayerInfo[playerid][pDonateRank] >= 2)
-			{
-
-				AddFlag(playerid, INVALID_PLAYER_ID, "1 Month Silver VIP - Non Transferable");
-				SendClientMessageEx(playerid, COLOR_YELLOW, "You have been awarded a 1 Month Silver VIP Flag");
-			}
-			else
-			{
-				SendClientMessageEx(playerid, COLOR_YELLOW, "CONGRATULATIONS: You have been awarded a 1 Month Silver VIP");
-				PlayerInfo[playerid][pDonateRank] = 2;
-				PlayerInfo[playerid][pTempVIP] = 0;
-				PlayerInfo[playerid][pBuddyInvited] = 0;
-				PlayerInfo[playerid][pVIPSellable] = 0;
-				PlayerInfo[playerid][pVIPExpire] = gettime()+2592000*1;
-			}
-		} else {
-			AddFlag(playerid, INVALID_PLAYER_ID, "1 Month Renewable Gold VIP - Non Transferable");
-			SendClientMessageEx(playerid, COLOR_YELLOW, "You have been awarded a 1 Month Renewable Gold VIP Flag");
-		}
 	} 
 }
 
