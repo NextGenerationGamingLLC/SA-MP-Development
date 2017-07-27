@@ -198,9 +198,9 @@ stock ShowMainMenuGUI(playerid)
 	TextDrawShowForPlayer(playerid, MainMenuTxtdraw[10]);
 	TextDrawShowForPlayer(playerid, TD_LoginScreen);
 
-	SetPVarInt(playerid, "LoginScreen", Random(1,9));
+	//SetPVarInt(playerid, "LoginScreen", Random(1,9));
 	TogglePlayerSpectating(playerid, true);
-	SetTimerEx("loginCamera", 1000, false, "i", playerid);
+	//SetTimerEx("loginCamera", 1000, false, "i", playerid);
 }
 
 stock HideMainMenuGUI(playerid)
@@ -218,7 +218,7 @@ stock HideMainMenuGUI(playerid)
 	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[9]);
 	TextDrawHideForPlayer(playerid, MainMenuTxtdraw[10]);
 
-	DeletePVar(playerid, "LoginScreen");
+	//DeletePVar(playerid, "LoginScreen");
 	TogglePlayerSpectating(playerid, false);
 	StopAudioStreamForPlayer(playerid);
 }

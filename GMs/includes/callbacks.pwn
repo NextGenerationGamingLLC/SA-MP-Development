@@ -4878,7 +4878,7 @@ public OnPlayerRequestClass(playerid, classid)
 	else
 	{
 		TogglePlayerSpectating(playerid, 1);
-		SetPlayerJoinCamera(playerid);
+		//SetPlayerJoinCamera(playerid);
 	}
 
 	return 1;

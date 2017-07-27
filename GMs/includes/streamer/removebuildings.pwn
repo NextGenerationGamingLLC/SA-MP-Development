@@ -146,5 +146,10 @@ hook OnPlayerConnect(playerid) {
 	RemoveBuildingForPlayer(playerid, 1411, 347.1953, 1799.2656, 18.7578, 0.25);
 	RemoveBuildingForPlayer(playerid, 1411, 342.9375, 1796.2891, 18.7578, 0.25);
 	RemoveBuildingForPlayer(playerid, 16094, 191.1406, 1870.0391, 21.4766, 0.25);
+
+	//Blueberry trees - Mapping: FoxHound Sub HQ (Lynch) - weaponized Vehicles (Main base is located inside LS).
+	RemoveBuildingForPlayer(playerid, 785, -526.9063, 190.6641, 7.8125, 0.25);
+	RemoveBuildingForPlayer(playerid, 693, -506.0313, 94.5703, 31.7109, 0.25);
+	RemoveBuildingForPlayer(playerid, 791, -526.9063, 190.6641, 7.8125, 0.25);
 	return 1;
 }
