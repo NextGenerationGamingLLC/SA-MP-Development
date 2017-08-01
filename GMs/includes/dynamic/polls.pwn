@@ -178,6 +178,6 @@ SavePoll(id)
 	}
 
 	format(szMiscArray, sizeof szMiscArray, "%s WHERE `id` = %d", szMiscArray, id + 1);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }

@@ -40,10 +40,8 @@
 // The new proposed Hitman Agency system. Approved by Rizi & Chapman on 07/08/16.
 // Relevant Documentation: https://docs.google.com/document/d/1rJzSK7MiNKJQOVSdhtc6RXgUr_X5ixkMYaG6nDvgTFc/
 
-#define COLOR_HMARADIO			0x003399cc
-#define COLOR_HMAOOC			0x008BE8FF
-/*#define COLOR_HMAICRADIO		0x003399cc
-#define COLOR_HMAOOCRADIO		0x008BE8FF*/
+#define COLOR_HMARADIO			0x008BE8FF
+#define COLOR_HMAOOC			0x00FFFFFF
 
 //new Float:fHMASafe_Loc[3];
 //new iHMASafe_Val = 0;
@@ -418,6 +416,7 @@ CMD:givehit(playerid, params[])
 CMD:ranks(playerid, params[])
 {
 	if ((!IsAHitman(playerid)) && PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Member of the Hitman Agency!");
+	if(!IsAHitmanLeader(playerid)) return SendClientMessage(playerid, COLOR_GREY, "You cannot use this command.");
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Hitman Agency Online Members __________________|");
 
@@ -480,7 +479,7 @@ CMD:viewblacklist(playerid, params[])
 		SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
 		SendClientMessage(playerid, COLOR_GRAD1, "Hitman Agency Blacklist:");
 
-		mysql_function_query(MainPipeline, "SELECT `Username`, `BlacklistReason` FROM `accounts` WHERE `HitmanBlacklisted`=1", true, "ShowBlacklistedPlayers", "d", playerid);
+		mysql_tquery(MainPipeline, "SELECT `Username`, `BlacklistReason` FROM `accounts` WHERE `HitmanBlacklisted`=1", "ShowBlacklistedPlayers", "d", playerid);
 	}
 	else return 0;
 	return 1;
@@ -862,7 +861,7 @@ CMD:oblacklist(playerid, params[])
 		if(IsPlayerConnected(GetPlayerIDEx(szAccount))) return SendClientMessage(playerid, COLOR_GRAD2, "That player is connected, please use /blacklist instead.");
 
 		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(szAccount, MainPipeline));
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineBlacklistAccountFetch", "dss", playerid, szReason, szAccount);
+		mysql_tquery(MainPipeline, szMiscArray, true, "OfflineBlacklistAccountFetch", "dss", playerid, szReason, szAccount);
 	}
 	else return 0;
 	return 1;
@@ -878,7 +877,7 @@ CMD:ounblacklist(playerid, params[])
 		if(IsPlayerConnected(GetPlayerIDEx(szAccount))) return SendClientMessage(playerid, COLOR_GRAD2, "That player is connected, please use /unblacklist instead.");
 
 		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(szAccount, MainPipeline));
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineUnBlacklistAccountFetch", "ds", playerid, szAccount);
+		mysql_tquery(MainPipeline, szMiscArray, true, "OfflineUnBlacklistAccountFetch", "ds", playerid, szAccount);
 	}
 	else return 0;
 	return 1;
@@ -894,7 +893,7 @@ CMD:oremovehitman(playerid, params[])
 		if(IsPlayerConnected(GetPlayerIDEx(szAccount))) return SendClientMessage(playerid, COLOR_GRAD2, "That player is connected, please use /removehitman instead.");
 
 		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(szAccount, MainPipeline));
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineRemoveHitman", "ds", playerid, szAccount);
+		mysql_tquery(MainPipeline, szMiscArray, true, "OfflineRemoveHitman", "ds", playerid, szAccount);
 	}
 	else return 0;
 	return 1;
@@ -910,7 +909,7 @@ CMD:oremovehitmanleader(playerid, params[])
 		if(IsPlayerConnected(GetPlayerIDEx(szAccount))) return SendClientMessage(playerid, COLOR_GRAD2, "That player is connected, please use /removehitman instead.");
 
 		format(szMiscArray, sizeof szMiscArray, "SELECT * FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(szAccount, MainPipeline));
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineRemoveHitmanLeader", "ds", playerid, szAccount);
+		mysql_tquery(MainPipeline, szMiscArray, true, "OfflineRemoveHitmanLeader", "ds", playerid, szAccount);
 	}
 	else return 0;
 	return 1;
@@ -923,16 +922,17 @@ CMD:oremovehitmanleader(playerid, params[])
 forward ShowBlacklistedPlayers(playerid);
 public ShowBlacklistedPlayers(playerid)
 {
-	new rows, fields;
-	cache_get_data(rows, fields);
+	new rows;
+	cache_get_row_count(rows);
 
 	if(rows > 0)
 	{
 		new szName[MAX_PLAYER_NAME], szBlacklistReason[64];
 		for(new row = 0; row < rows; row++)
 		{
-			cache_get_field_content(row, "Username", szName, MainPipeline); for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szName[i] == '_') szName[i] = ' ';
-			cache_get_field_content(row, "BlacklistReason", szBlacklistReason, MainPipeline);
+			cache_get_value_name(row, "Username", szName);
+			for(new i = 0; i < MAX_PLAYER_NAME; i++) if(szName[i] == '_') szName[i] = ' ';
+			cache_get_value_name(row, "BlacklistReason", szBlacklistReason);
 
 			format(szMiscArray, sizeof szMiscArray, "{A9C4E4}Name: {FFFFFF}%s {A9C4E4}| Reason: {FFFFFF}%s", szName, szBlacklistReason);
 			SendClientMessage(playerid, COLOR_WHITE, szMiscArray);
@@ -946,25 +946,25 @@ public ShowBlacklistedPlayers(playerid)
 forward OfflineBlacklistAccountFetch(playerid, reason[], account[]);
 public OfflineBlacklistAccountFetch(playerid, reason[], account[])
 {
-	new rows, fields;
-	cache_get_data(rows, fields);
+	new rows;
+	cache_get_row_count(rows);
 	if(rows > 0)
 	{
 		new iHitman, iHitmanLeader, iBlacklisted, szBlacklistReason[64];
 		for(new row = 0; row < rows; row++)
 		{
-			iHitman = cache_get_field_content_int(row, "Hitman");
-			iHitmanLeader = cache_get_field_content_int(row, "HitmanLeader");
-			iBlacklisted = cache_get_field_content_int(row, "HitmanBlacklisted");
-			cache_get_field_content(row, "BlacklistReason", szBlacklistReason);
+			cache_get_value_name_int(row, "Hitman", iHitman);
+			cache_get_value_name_int(row, "HitmanLeader", iHitmanLeader);
+			cache_get_value_name_int(row, "HitmanBlacklisted", iBlacklisted);
+			cache_get_value_name(row, "BlacklistReason", szBlacklistReason);
 		}
 
 		if(iHitman == 1) return SendClientMessage(playerid, COLOR_GRAD2, "That player is in the Hitman Agency. Please use /oremovehitman first.");
 		if(iHitmanLeader == 1) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot blacklist Hitman Leadership.");
 		if(iBlacklisted == 1) return SendClientMessage(playerid, COLOR_GRAD2, "That player is already blacklisted. If you wish to unblacklist them, use /ounblacklist.");
 
-		format(szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `HitmanBlacklisted`=1, `BlacklistReason`='%s' WHERE `Username`='%s'", g_mysql_ReturnEscaped(reason, MainPipeline), account);
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineBlacklisted", "dss", playerid, reason, account);
+		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `HitmanBlacklisted`=1, `BlacklistReason`='%e' WHERE `Username`='%s'", reason, account);
+		mysql_tquery(MainPipeline, szMiscArray, "OfflineBlacklisted", "dss", playerid, reason, account);
 	}
 	else return SendClientMessage(playerid, COLOR_GRAD2, "That account does not exist.");
 	return 1;
@@ -987,26 +987,26 @@ public OfflineBlacklisted(playerid, reason[], account[])
 forward OfflineUnBlacklistAccountFetch(playerid, account[]);
 public OfflineUnBlacklistAccountFetch(playerid, account[])
 {
-	new rows, fields;
-	cache_get_data(rows, fields);
+	new rows;
+	cache_get_row_count(rows);
 
 	if(rows > 0)
 	{
 		new iHitman, iHitmanLeader, iBlacklisted, szBlacklistReason[64];
 		for(new row = 0; row < rows; row++)
 		{
-			iHitman = cache_get_field_content_int(row, "Hitman");
-			iHitmanLeader = cache_get_field_content_int(row, "HitmanLeader");
-			iBlacklisted = cache_get_field_content_int(row, "HitmanBlacklisted");
-			cache_get_field_content(row, "BlacklistReason", szBlacklistReason);
+			cache_get_value_name_int(row, "Hitman", iHitman);
+			cache_get_value_name_int(row, "HitmanLeader", iHitmanLeader);
+			cache_get_value_name_int(row, "HitmanBlacklisted", iBlacklisted);
+			cache_get_value_name(row, "BlacklistReason", szBlacklistReason);
 		}
 
 		if(iHitman == 1) return SendClientMessage(playerid, COLOR_GRAD2, "That player is in the Hitman Agency. Please use /oremovehitman first.");
 		if(iHitmanLeader == 1) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot blacklist Hitman Leadership.");
 		if(iBlacklisted == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not blacklisted. If you wish to blacklist them, use /oblacklist.");
 
-		format(szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `HitmanBlacklisted`=0, `BlacklistReason`='' WHERE `Username`='%s'", account);
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineUnBlacklisted", "ds", playerid, account);
+		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `HitmanBlacklisted`=0, `BlacklistReason`='' WHERE `Username`='%s'", account);
+		mysql_tquery(MainPipeline, szMiscArray, "OfflineUnBlacklisted", "ds", playerid, account);
 	}
 	else return SendClientMessage(playerid, COLOR_GRAD2, "That account does not exist.");
 	return 1;
@@ -1029,22 +1029,21 @@ public OfflineUnBlacklisted(playerid, account[])
 forward OfflineRemoveHitman(playerid, account[]);
 public OfflineRemoveHitman(playerid, account[])
 {
-	new rows, fields;
-	cache_get_data(rows, fields);
+	new rows;
+	cache_get_row_count(rows);
 
 	if(rows > 0)
 	{
 		new iHitman;
 		for(new row = 0; row < rows; row++)
 		{
-			iHitman = cache_get_field_content_int(row, "Hitman");
-
+			cache_get_value_name_int(row, "Hitman", iHitman);
 		}
 
 		if(iHitman == -1) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not a hitman.");
 
-		format(szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `Hitman`=-1, `HitmanLeader`=0 WHERE `Username`='%s'", account);
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineHitmanRemoved", "ds", playerid, account);
+		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `Hitman`=-1, `HitmanLeader`=0 WHERE `Username`='%s'", account);
+		mysql_tquery(MainPipeline, szMiscArray, "OfflineHitmanRemoved", "ds", playerid, account);
 	}
 	else return SendClientMessage(playerid, COLOR_GRAD2, "That account does not exist.");
 	return 1;
@@ -1067,23 +1066,23 @@ public OfflineHitmanRemoved(playerid, account[])
 forward OfflineRemoveHitmanLeader(playerid, account[]);
 public OfflineRemoveHitmanLeader(playerid, account[])
 {
-	new rows, fields;
-	cache_get_data(rows, fields);
+	new rows;
+	cache_get_row_count(rows);
 
 	if(rows > 0)
 	{
 		new iHitman, iHitmanLeader;
 		for(new row = 0; row < rows; row++)
 		{
-			iHitman = cache_get_field_content_int(row, "Hitman");
-			iHitmanLeader = cache_get_field_content_int(row, "HitmanLeader");
+			cache_get_value_name_int(row, "Hitman", iHitman);
+			cache_get_value_name_int(row, "HitmanLeader", iHitmanLeader);
 		}
 		if(iHitman > PlayerInfo[playerid][pHitman]) return SendClientMessage(playerid, COLOR_GRAD2, "You cannot remove a higher ranking hitman's leadership.");
 
 		if(iHitmanLeader == 0) return SendClientMessage(playerid, COLOR_GRAD2, "That player is not a hitman leader.");
 
-		format(szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `HitmanLeader`=0 WHERE `Username`='%s'", account);
-		mysql_function_query(MainPipeline, szMiscArray, true, "OfflineHitmanLeaderRemoved", "ds", playerid, account);
+		mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `accounts` SET `HitmanLeader`=0 WHERE `Username`='%s'", account);
+		mysql_tquery(MainPipeline, szMiscArray, "OfflineHitmanLeaderRemoved", "ds", playerid, account);
 	}
 	else return SendClientMessage(playerid, COLOR_GRAD2, "That account does not exist.");
 	return 1;
@@ -1842,90 +1841,4 @@ CMD:knife(playerid, params[])
         }
     }
     return 1;
-}
-
-CMD:nohma(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] >= 3)
-	{
-		if (!nohma)
-		{
-			nohma = 1;
-			foreach(new p: Player) {
-				if(IsAHitman(p) || PlayerInfo[p][pAdmin] >= 1337) {
-					SendClientMessageEx(p, COLOR_HMAOOC, "** System: HMA chat has been disabled by an Admin!");
-				}
-			}
-		}
-		else
-		{
-			nohma = 0;
-			foreach(new p: Player) {
-				if(IsAHitman(p) || PlayerInfo[p][pAdmin] >= 1337) {
-					SendClientMessageEx(p, COLOR_HMAOOC, "** System: HMA chat has been enabled by an Admin!");
-				}
-			}
-		}
-	}
-	else
-	{
-		SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
-	}
-	return 1;
-}
-
-CMD:hr(playerid, params[]) {
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-
-	if(IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 1337) {
-		if(!isnull(params)){
-			if(nohma && PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "The HMA chat has been disabled by an administrator.");
-			new string[128];
-
-			format(string, sizeof(string), "(radio) %s", params);
-			SetPlayerChatBubble(playerid, string, COLOR_WHITE, 15.0, 5000);
-			format(string, sizeof(string), "** %s (%d) %s: %s **", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman], GetPlayerNameEx(playerid), params);
-
-			foreach(new i: Player) {
-				if(IsAHitman(i) && PlayerInfo[i][pAdmin] < 1337) {
-					ChatTrafficProcess(i, COLOR_HMARADIO * 256 + 255, string, 12);
-				}
-				if(PlayerInfo[i][pAdmin] >= 1337 && PlayerInfo[i][pTogReports] == 0) {
-					new AdminHMA[128];
-					format(AdminHMA, sizeof(AdminHMA), "(HMA Radio) %s", string);
-					ChatTrafficProcess(i, COLOR_HMARADIO * 256 + 255, AdminHMA, 12);
-				}
-			}
-		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hr [HMA Radio Chat]");
-	}
-	return 1;
-}
-
-CMD:hg(playerid, params[]) {
-	if(PlayerTied[playerid] != 0 || PlayerCuffed[playerid] != 0 || PlayerInfo[playerid][pJailTime] > 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cannot do this at this time.");
-	if(PlayerInfo[playerid][pJailTime] && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1) return SendClientMessageEx(playerid, COLOR_GREY, "OOC prisoners are restricted to only speak in /b");
-
-	if(IsAHitman(playerid) || PlayerInfo[playerid][pAdmin] >= 1337) {
-		if(!isnull(params)){
-			if(nohma && PlayerInfo[playerid][pAdmin] < 1337) return SendClientMessageEx(playerid, COLOR_GREY, "The HMA chat has been disabled by an administrator.");
-			new string[128];
-
-			format(string, sizeof(string), "**[OOC] %s (%d) %s: %s **", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman], GetPlayerNameEx(playerid), params);
-
-			foreach(new i: Player) {
-				if(IsAHitman(i) && PlayerInfo[i][pAdmin] < 1337) {
-					ChatTrafficProcess(i, COLOR_HMAOOC * 256 + 255, string, 12);
-				}
-				if(PlayerInfo[i][pAdmin] >= 1337 && PlayerInfo[i][pTogReports] == 0) {
-					new AdminHMA[128];
-					format(AdminHMA, sizeof(AdminHMA), "(HMA Radio) %s", string);
-					ChatTrafficProcess(i, COLOR_HMAOOC * 256 + 255, AdminHMA, 12);
-				}
-			}
-		}
-		else return SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /hg [HMA OOC Chat]");
-	}
-	return 1;
 }

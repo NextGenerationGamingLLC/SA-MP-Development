@@ -2302,7 +2302,7 @@ stock CreatePlayerTextDraws(playerid)
 	PlayerTextDrawSetOutline(playerid, GPS[playerid], 1);
 	PlayerTextDrawSetProportional(playerid, GPS[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, GPS[playerid], 0);
-
+	
 	//Shop Notice Textdraw
 	ShopNotice[playerid] = CreatePlayerTextDraw(playerid,16.000000, 193.000000, "_");
 	PlayerTextDrawBackgroundColor(playerid, ShopNotice[playerid], 255);

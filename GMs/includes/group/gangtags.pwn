@@ -102,7 +102,7 @@ GangTag_Save(iPlayerID, i, text[], fontid)
 {
 	SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, text, OBJECT_MATERIAL_SIZE_512x512, szFonts[fontid], 1000 / strlen(text), 1, GangTag_IntColor(arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour]), 0, 1);
 	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gangtags` SET `gangid` = '%d', `text` = '%e', `fontid` = '%d', `pdbid` = '%d', `pname` = '%s', `color` = '%d' WHERE `id` = '%d'", PlayerInfo[iPlayerID][pMember], text, fontid, GetPlayerSQLId(iPlayerID), GetPlayerNameExt(iPlayerID), arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour], i);
-	mysql_function_query(MainPipeline, szMiscArray, false, "GangTag_OnSave", "iis", iPlayerID, i, text);
+	mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnSave", "iis", iPlayerID, i, text);
 	DeletePVar(iPlayerID, PVAR_GANGTAGID);
 }
 
@@ -117,28 +117,31 @@ public GangTag_OnSave(iPlayerID, i, text[])
 
 GangTag_Load()
 {
-	mysql_function_query(MainPipeline, "SELECT *FROM `gangtags` where 1", true, "GangTag_OnLoad", "");
+	mysql_tquery(MainPipeline, "SELECT *FROM `gangtags` where 1", "GangTag_OnLoad", "");
 }
 
 forward GangTag_OnLoad();
 public GangTag_OnLoad()
 {
-	new iRows = cache_get_row_count();
+	new iRows;
+	cache_get_row_count(iRows);
 	if(!iRows) return print("[Gang Tags] There are no gang tags in the database.");
 	new idx,
-		szResult[MAX_GANGTAGS_LEN];
+		szResult[MAX_GANGTAGS_LEN],
+		value,
+		Float:fValue;
 	while(idx < iRows)
 	{
-		cache_get_field_content(idx, "text", szResult, MainPipeline);
-		GangTag_AdmProcess(idx, cache_get_field_content_float(idx, "x", MainPipeline),
-			cache_get_field_content_float(idx, "y", MainPipeline),
-			cache_get_field_content_float(idx, "z", MainPipeline),
-			cache_get_field_content_float(idx, "rx", MainPipeline),
-			cache_get_field_content_float(idx, "ry", MainPipeline),
-			cache_get_field_content_float(idx, "rz", MainPipeline),
+		cache_get_value_name(idx, "text", szResult);
+		GangTag_AdmProcess(idx, cache_get_value_name_float(idx, "x", fValue),
+			cache_get_value_name_float(idx, "y", fValue),
+			cache_get_value_name_float(idx, "z", fValue),
+			cache_get_value_name_float(idx, "rx", fValue),
+			cache_get_value_name_float(idx, "ry", fValue),
+			cache_get_value_name_float(idx, "rz", fValue),
 			szResult,
-			cache_get_field_content_int(idx, "fontid", MainPipeline),
-			cache_get_field_content_int(idx, "color", MainPipeline));
+			cache_get_value_name_int(idx, "fontid", value),
+			cache_get_value_name_int(idx, "color", value));
 		idx++;
 	}
 	printf("[Gang Tags] Loaded %d gang tags.", idx);
@@ -154,8 +157,8 @@ GangTag_Create(iPlayerID)
 			new Float:X, Float:Y, Float:Z;
 			GetPlayerPos(iPlayerID, X, Y, Z);
 			SetPlayerPos(iPlayerID, X + 0.5, Y + 0.5, Z + 0.5);
-			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `gangtags` (`id`, `x`, `y`, `z`, `color`) VALUES ('%d', '%f', '%f', '%f', '%d')", i, X, Y, Z, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour]);
-			return mysql_function_query(MainPipeline, szMiscArray, true, "GangTag_OnCreate", "iifff", iPlayerID, i, X, Y, Z);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `gangtags` (`id`, `x`, `y`, `z`, `color`) VALUES ('%d', '%f', '%f', '%f', '%d')", i, X, Y, Z, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour]);
+			return mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnCreate", "iifff", iPlayerID, i, X, Y, Z);
 		}
 	}
 	SendClientMessage(iPlayerID, COLOR_GRAD1, "You cannot create any more gang tags.");
@@ -165,7 +168,8 @@ GangTag_Create(iPlayerID)
 forward GangTag_OnCreate(iPlayerID, i, Float:X, Float:Y, Float:Z);
 public GangTag_OnCreate(iPlayerID, i, Float:X, Float:Y, Float:Z)
 {
-	new iRows = cache_get_row_count();
+	new iRows;
+	cache_get_row_count(iRows);
 	if(!iRows)
 	{
 		GangTag_AdmProcess(i, X, Y, Z, 0.0, 0.0, 0.0, "/SETUP/", 0, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_hDutyColour]);
@@ -184,25 +188,28 @@ GangTag_AdmSave(iPlayerID, i)
 	if(IsValidDynamic3DTextLabel(arrGangTags[i][gt_iTextID])) DestroyDynamic3DTextLabel(arrGangTags[i][gt_iTextID]);
 	format(szMiscArray, sizeof(szMiscArray), "Gang Tag Point (ID %d)", i);
 	arrGangTags[i][gt_iTextID] = CreateDynamic3DTextLabel(szMiscArray, COLOR_YELLOW, gt_finPos[0], gt_finPos[1],  gt_finPos[2]+2.75, 4.0);
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gangtags` WHERE `id` = '%d'", i);
-	mysql_function_query(MainPipeline, szMiscArray, true, "GangTag_OnSetText", "i", i);
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `gangtags` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' WHERE `id` = '%d'",
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gangtags` WHERE `id` = '%d'", i);
+	mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnSetText", "i", i);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `gangtags` SET `x` = '%f', `y` = '%f', `z` = '%f', `rx` = '%f', `ry` = '%f', `rz` = '%f' WHERE `id` = '%d'",
 		gt_finPos[0], gt_finPos[1],  gt_finPos[2], gt_finPos[3], gt_finPos[4],  gt_finPos[5], i);
-	mysql_function_query(MainPipeline, szMiscArray, false, "GangTag_OnAdmSave", "ii", iPlayerID, i);
+	mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnAdmSave", "ii", iPlayerID, i);
 }
 
 forward GangTag_OnSetText(i);
 public GangTag_OnSetText(i)
 {
-	new iRows = cache_get_row_count(),
+	new iRows,
 		szResult[MAX_GANGTAGS_LEN],
-		iCount;
+		iCount,
+		color,
+		fontid;
+	cache_get_row_count(iRows);
 
 	while(iCount < iRows)
 	{
-		cache_get_field_content(iCount, "text", szResult, MainPipeline);
-		new color = cache_get_field_content_int(iCount, "color", MainPipeline),
-			fontid = cache_get_field_content_int(iCount, "fontid", MainPipeline);
+		cache_get_value_name(iCount, "text", szResult);
+		cache_get_value_name_int(iCount, "color", color);
+		cache_get_value_name_int(iCount, "fontid", fontid);
 		SetDynamicObjectMaterialText(arrGangTags[i][gt_iObjectID], 0, szResult, OBJECT_MATERIAL_SIZE_512x512, szFonts[fontid], 1000 / strlen(szResult), 1, GangTag_IntColor(color), 0, 1);
 		++iCount;
 	}
@@ -233,8 +240,8 @@ GangTag_AdmProcess(i, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, t
 GangTag_Delete(iPlayerID, i)
 {
 	if(!IsValidDynamicObject(arrGangTags[i][gt_iObjectID])) return SendClientMessage(iPlayerID, COLOR_GRAD1, "You specified an invalid gang tag ID.");
-	format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `gangtags` WHERE `id` = '%d'", i);
-	mysql_function_query(MainPipeline, szMiscArray, true, "GangTag_OnDelete", "ii", iPlayerID, i);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `gangtags` WHERE `id` = '%d'", i);
+	mysql_tquery(MainPipeline, szMiscArray, "GangTag_OnDelete", "ii", iPlayerID, i);
 	return 1;
 }
 
@@ -262,24 +269,26 @@ public GangTag_OnCleanTag(iPlayerID, i)
 
 stock GetGangTags(iPlayerID)
 {
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gangtags` WHERE 1");
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnGetGangTags", "i", iPlayerID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `gangtags` WHERE 1");
+	mysql_tquery(MainPipeline, szMiscArray, "OnGetGangTags", "i", iPlayerID);
 }
 
 forward OnGetGangTags(iPlayerID);
 public OnGetGangTags(iPlayerID)
 {
+	new iRows;
 	szMiscArray = "Group Name(ID)\tText\n";
-	new iRows = cache_get_row_count();
+	cache_get_row_count(iRows);
 	if(iRows > 0)
 	{
 		new idx,
+			i,
 			szResult[MAX_GANGTAGS_LEN];
 
 		while(idx < iRows)
 		{
-			cache_get_field_content(idx,  "text", szResult, MainPipeline);
-			new i = cache_get_field_content_int(idx, "gangid", MainPipeline);
+			cache_get_value_name(idx,  "text", szResult);
+			cache_get_value_name_int(idx, "gangid", i);
 			format(szMiscArray, sizeof(szMiscArray), "%s(%d) %s (%d)\t%s\n", szMiscArray, idx, arrGroupData[i][g_szGroupName], i, szResult);
 			idx++;
 		}

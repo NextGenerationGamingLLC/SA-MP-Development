@@ -41,7 +41,7 @@ stock LoadGangTags()
 {
 	new query[128];
 	format(query, sizeof(query), "SELECT * FROM `gangtags` LIMIT %d", MAX_GANGTAGS);
-	mysql_function_query(MainPipeline, query, true, "OnGangTagQueryFinish", "ii", LOAD_GANGTAGS, -1);
+	mysql_tquery(MainPipeline, query, true, "OnGangTagQueryFinish", "ii", LOAD_GANGTAGS, -1);
 }
 
 stock SaveGangTag(gangtag)
@@ -74,7 +74,7 @@ stock SaveGangTag(gangtag)
 		GangTags[gangtag][gt_Used],
 		GangTags[gangtag][gt_SQLID]
 	);
-	mysql_function_query(MainPipeline, query, false, "OnGangTagQueryFinish", "ii", SAVE_GANGTAG, gangtag);
+	mysql_tquery(MainPipeline, query, false, "OnGangTagQueryFinish", "ii", SAVE_GANGTAG, gangtag);
 }
 
 forward OnGangTagQueryFinish(threadid, extraid);

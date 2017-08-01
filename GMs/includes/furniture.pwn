@@ -675,8 +675,8 @@ timer Furniture_HousePosition[5000](playerid, iHouseID) {
 
 timer RehashHouseFurniture[10000](iHouseID) {
 
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnRehashHouseFurniture", "i", iHouseID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
+	mysql_tquery(MainPipeline, szMiscArray, "OnRehashHouseFurniture", "i", iHouseID);
 }
 
 
@@ -781,7 +781,7 @@ timer AnimateFurniturePreview[1000](playerid, rotation) {
 FurnitureListInit() {
 
 	// Loading from MySQL database.
-	mysql_function_query(MainPipeline, "SELECT * FROM `furniturecatalog`", true, "OnLoadFurnitureList", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `furniturecatalog`", "OnLoadFurnitureList", "");
 }
 
 forward OnLoadFurnitureList();
@@ -790,19 +790,17 @@ public OnLoadFurnitureList() {
 	szMiscArray[0] = 0;
 
 	new iRows,
-		iFields,
 		iCount;
 
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 	if(!iRows || mysql_errno(MainPipeline)) print("[Furniture System]: No catalog found in the database.");
 
 	while(iCount < iRows) {
-
-		arrFurnitureCatalog[iCount][fc_iTypeID] = cache_get_field_content_int(iCount, "type", MainPipeline);
-		arrFurnitureCatalog[iCount][fc_iModelID] = cache_get_field_content_int(iCount, "modelid", MainPipeline);
-		cache_get_field_content(iCount, "name", arrFurnitureCatalog[iCount][fc_szName], MainPipeline, 32);
-		arrFurnitureCatalog[iCount][fc_iPrice] = cache_get_field_content_int(iCount, "price", MainPipeline);
-		arrFurnitureCatalog[iCount][fc_iVIP] = cache_get_field_content_int(iCount, "vip", MainPipeline);
+		cache_get_value_name_int(iCount, "type", arrFurnitureCatalog[iCount][fc_iTypeID]);
+		cache_get_value_name_int(iCount, "modelid", arrFurnitureCatalog[iCount][fc_iModelID]);
+		cache_get_value_name(iCount, "name", arrFurnitureCatalog[iCount][fc_szName], 32);
+		cache_get_value_name_int(iCount, "price", arrFurnitureCatalog[iCount][fc_iPrice]);
+		cache_get_value_name_int(iCount, "vip", arrFurnitureCatalog[iCount][fc_iVIP]);
 		++iCount;
 	}
 	printf("[Furniture System] Loaded %d pieces of furniture from the catalog.", iCount);
@@ -1014,16 +1012,15 @@ GetDynamicObjectModel(iObjectID) {
 forward OnRevokeBuildPerms();
 public OnRevokeBuildPerms() {
 
-	new iRows = cache_get_row_count(MainPipeline);
+	new iRows;
+	cache_get_row_count(iRows);
 	if(!iRows) return 1;
 
-	new iFields;
-
-	cache_get_data(iRows, iFields, MainPipeline);
 	for(new row; row < iRows; ++row) {
-
-		format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `HouseBuilder` = '%d' WHERE `id` = '%d'", INVALID_HOUSE_ID, cache_get_field_content_int(row, "id", MainPipeline));
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		new value;
+		cache_get_value_name_int(row, "id", value);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `HouseBuilder` = '%d' WHERE `id` = '%d'", INVALID_HOUSE_ID, value);
+		mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
 	return 1;
 }
@@ -1049,37 +1046,37 @@ FurniturePermit(playerid) {
 
 stock LoadFurniture() {
 
-	mysql_function_query(MainPipeline, "SELECT * FROM `furniture`", true, "OnLoadFurniture", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `furniture`", "OnLoadFurniture", "");
 }
 
 forward OnLoadFurniture();
 public OnLoadFurniture() {
 
-	new iRows = cache_get_row_count(MainPipeline),
-		iCount;
+	new iRows, iCount, value, Float:fValue;
+	cache_get_row_count(iRows);
 
 	for(iCount = 0; iCount < iRows; ++iCount) {
 
 		ProcessFurniture(
-			cache_get_field_content_int(iCount, "houseid", MainPipeline),
-			cache_get_field_content_int(iCount, "slotid", MainPipeline), 
-			cache_get_field_content_int(iCount, "modelid", MainPipeline),
-			cache_get_field_content_float(iCount, "x", MainPipeline), 
-			cache_get_field_content_float(iCount, "y", MainPipeline),
-			cache_get_field_content_float(iCount, "z", MainPipeline),
-			cache_get_field_content_float(iCount, "rx", MainPipeline), 
-			cache_get_field_content_float(iCount, "ry", MainPipeline),
-			cache_get_field_content_float(iCount, "rz", MainPipeline),
-			cache_get_field_content_int(iCount, "text0", MainPipeline),
-			cache_get_field_content_int(iCount, "text1", MainPipeline),
-			cache_get_field_content_int(iCount, "text2", MainPipeline),
-			cache_get_field_content_int(iCount, "text3", MainPipeline),
-			cache_get_field_content_int(iCount, "text4", MainPipeline),
-			cache_get_field_content_int(iCount, "col0", MainPipeline),
-			cache_get_field_content_int(iCount, "col1", MainPipeline),
-			cache_get_field_content_int(iCount, "col2", MainPipeline),
-			cache_get_field_content_int(iCount, "col3", MainPipeline),
-			cache_get_field_content_int(iCount, "col4", MainPipeline));
+			cache_get_value_name_int(iCount, "houseid", value),
+			cache_get_value_name_int(iCount, "slotid", value), 
+			cache_get_value_name_int(iCount, "modelid", value),
+			cache_get_value_name_float(iCount, "x", fValue), 
+			cache_get_value_name_float(iCount, "y", fValue),
+			cache_get_value_name_float(iCount, "z", fValue),
+			cache_get_value_name_float(iCount, "rx", fValue), 
+			cache_get_value_name_float(iCount, "ry", fValue),
+			cache_get_value_name_float(iCount, "rz", fValue),
+			cache_get_value_name_int(iCount, "text0", value),
+			cache_get_value_name_int(iCount, "text1", value),
+			cache_get_value_name_int(iCount, "text2", value),
+			cache_get_value_name_int(iCount, "text3", value),
+			cache_get_value_name_int(iCount, "text4", value),
+			cache_get_value_name_int(iCount, "col0", value),
+			cache_get_value_name_int(iCount, "col1", value),
+			cache_get_value_name_int(iCount, "col2", value),
+			cache_get_value_name_int(iCount, "col3", value),
+			cache_get_value_name_int(iCount, "col4", value));
 	}
 	//return printf("[Furniture] Loaded %d pieces of furniture from the database.", iCount);
 	return 1;
@@ -1088,32 +1085,33 @@ public OnLoadFurniture() {
 forward OnRehashHouseFurniture(iHouseID);
 public OnRehashHouseFurniture(iHouseID) {
 
-	new iRows = cache_get_row_count(MainPipeline);
+	new iRows;
+	cache_get_row_count(iRows);
 	if(!iRows) return 1;
 
-	new iCount;
+	new iCount, value, Float:fValue;
 	for(iCount = 0; iCount < iRows; ++iCount) {
 
 		ProcessFurniture(
 			iHouseID,
-			cache_get_field_content_int(iCount, "slotid", MainPipeline), 
-			cache_get_field_content_int(iCount, "modelid", MainPipeline),
-			cache_get_field_content_float(iCount, "x", MainPipeline), 
-			cache_get_field_content_float(iCount, "y", MainPipeline),
-			cache_get_field_content_float(iCount, "z", MainPipeline),
-			cache_get_field_content_float(iCount, "rx", MainPipeline), 
-			cache_get_field_content_float(iCount, "ry", MainPipeline),
-			cache_get_field_content_float(iCount, "rz", MainPipeline),
-			cache_get_field_content_int(iCount, "text0", MainPipeline),
-			cache_get_field_content_int(iCount, "text1", MainPipeline),
-			cache_get_field_content_int(iCount, "text2", MainPipeline),
-			cache_get_field_content_int(iCount, "text3", MainPipeline),
-			cache_get_field_content_int(iCount, "text4", MainPipeline),
-			cache_get_field_content_int(iCount, "col0", MainPipeline),
-			cache_get_field_content_int(iCount, "col1", MainPipeline),
-			cache_get_field_content_int(iCount, "col2", MainPipeline),
-			cache_get_field_content_int(iCount, "col3", MainPipeline),
-			cache_get_field_content_int(iCount, "col4", MainPipeline));
+			cache_get_value_name_int(iCount, "slotid", value), 
+			cache_get_value_name_int(iCount, "modelid", value),
+			cache_get_value_name_float(iCount, "x", fValue), 
+			cache_get_value_name_float(iCount, "y", fValue),
+			cache_get_value_name_float(iCount, "z", fValue),
+			cache_get_value_name_float(iCount, "rx", fValue), 
+			cache_get_value_name_float(iCount, "ry", fValue),
+			cache_get_value_name_float(iCount, "rz", fValue),
+			cache_get_value_name_int(iCount, "text0", value),
+			cache_get_value_name_int(iCount, "text1", value),
+			cache_get_value_name_int(iCount, "text2", value),
+			cache_get_value_name_int(iCount, "text3", value),
+			cache_get_value_name_int(iCount, "text4", value),
+			cache_get_value_name_int(iCount, "col0", value),
+			cache_get_value_name_int(iCount, "col1", value),
+			cache_get_value_name_int(iCount, "col2", value),
+			cache_get_value_name_int(iCount, "col3", value),
+			cache_get_value_name_int(iCount, "col4", value));
 	}
 	return printf("[Furniture] Loaded %d pieces of furniture from the database.", iCount);
 }
@@ -1128,8 +1126,8 @@ House_VistorCheck(iHouseID) {
 		for(new o = 0; o < MAX_FURNITURE_SLOTS; o++) {
 			HouseInfo[iHouseID][hFurniture][o] = -1;
 		}
-		format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
-		mysql_function_query(MainPipeline, szMiscArray, true, "OnLoadFurniture", "");
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
+		mysql_tquery(MainPipeline, szMiscArray, "OnLoadFurniture", "");
 
 		/*
 		new iCount;
@@ -1148,7 +1146,7 @@ House_VistorCheck(iHouseID) {
 					
 					HouseInfo[iHouseID][hFurnitureLoaded] = 1;
 					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `furniture` WHERE `houseid` = '%d'", iHouseID);
-					mysql_function_query(MainPipeline, szMiscArray, true, "OnLoadFurniture", ""); // load the furniture
+					mysql_tquery(MainPipeline, szMiscArray, true, "OnLoadFurniture", ""); // load the furniture
 				}
 
 				
@@ -1165,9 +1163,9 @@ House_VistorCheck(iHouseID) {
 
 CreateFurniture(playerid, iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ) {
 
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `furniture` (`houseid`, `sqlid`, `modelid`, `slotid`, `x`,`y`,`z`, `rx`, `ry`, `rz`) \
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `furniture` (`houseid`, `sqlid`, `modelid`, `slotid`, `x`,`y`,`z`, `rx`, `ry`, `rz`) \
 		VALUES ('%d','%d','%d','%d','%f','%f','%f','%f','%f','%f')", iHouseID, PlayerInfo[playerid][pId], iModelID, iSlotID, X, Y, Z, RX, RY, RZ);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 ProcessFurniture(iHouseID, iSlotID, iModelID, Float:X, Float:Y, Float:Z, Float:RX, Float:RY, Float:RZ, text0 = -1, text1 = -1, text2 = -1, text3 = -1, text4 = -1, col0 = -1, col1 = -1, col2 = -1, col3 = -1, col4 = -1) {
@@ -1206,14 +1204,14 @@ ProcessFurnitureTexture(iHouseID, iSlotID, iObjectID, materialindex, input, colo
 
 		if(color == 0) {
 
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `text%d` = '%d' \
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `text%d` = '%d' \
 				WHERE `houseid` = '%d' AND `slotid` = '%d'", materialindex, input, iHouseID, iSlotID);
 		}
 		else {
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `col%d` = '%d' \
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `col%d` = '%d' \
 				WHERE `houseid` = '%d' AND `slotid` = '%d'", materialindex, color, iHouseID, iSlotID);
 		}
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
 	if(input > 0) SetDynamicObjectMaterial(iObjectID, materialindex, arrTextures[input][text_TModel], arrTextures[input][text_TXDName], arrTextures[input][text_TextureName], color);
 	else if(input == 0) { // Coloring objects.
@@ -1261,9 +1259,9 @@ ReloadFurniture(playerid) {
 		Streamer_SetArrayData(STREAMER_TYPE_AREA, iLocalDoorArea, E_STREAMER_EXTRA_ID, szData, sizeof(szData)); // Assign Object ID to Area.
 	}
 	Streamer_SetIntData(STREAMER_TYPE_OBJECT, HouseInfo[iHouseID][hFurniture][iSlotID], E_STREAMER_EXTRA_ID, iHouseID);
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `text0` = '-1', `text1` = '-1', `text2` = '-1', `text3` = '-1', \
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `text0` = '-1', `text1` = '-1', `text2` = '-1', `text3` = '-1', \
 			`col0` = '0', `col1` = '0', `col2` = '0', `col3` = '0', `col4` = '0' WHERE `houseid` = '%d' AND `slotid` = '%d'", iHouseID, iSlotID);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -1272,8 +1270,8 @@ DestroyFurniture(iHouseID, iSlotID) {
 	if(IsValidFurniture(iHouseID, iSlotID, 1)) {
 		DestroyDynamicObject(HouseInfo[iHouseID][hFurniture][iSlotID]);
 		HouseInfo[iHouseID][hFurniture][iSlotID] = -1;
-		format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `furniture` WHERE `houseid` = '%d' AND `slotid` = '%d'", iHouseID, iSlotID);
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `furniture` WHERE `houseid` = '%d' AND `slotid` = '%d'", iHouseID, iSlotID);
+		mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
 }
 
@@ -2228,8 +2226,8 @@ CMD:unfurnishhouse(playerid, params[]) {
 
 			SetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
 			SetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][i], fPos[3], fPos[4], fPos[5]);
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 	}
 	RehashHouse(iHouseID);
@@ -2299,8 +2297,8 @@ CMD:furnishhouse(playerid, params[]) {
 			//HouseInfo[iHouseID][hFurniture][i] = CreateDynamicObject(iModelID, fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], HouseInfo[iHouseID][hIntVW]);
 			SetDynamicObjectPos(HouseInfo[iHouseID][hFurniture][i], fPos[0], fPos[1], fPos[2]);
 			SetDynamicObjectRot(HouseInfo[iHouseID][hFurniture][i], fPos[3], fPos[4], fPos[5]);
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `furniture` SET `z` = '%f' WHERE `houseid` = '%d' AND `slotid` = '%d'", fPos[2], iHouseID, i);
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 	}
 	RehashHouse(iHouseID);
@@ -2392,8 +2390,8 @@ CMD:revokebuilders(playerid, params[]) {
 	}
 
 	foreach(new i : Player) if(PlayerInfo[playerid][pHouseBuilder] == iHouseID) PlayerInfo[playerid][pHouseBuilder] = INVALID_HOUSE_ID;
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `HouseBuilder` = '%d'", iHouseID);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnRevokeBuildPerms", "");
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id` FROM `accounts` WHERE `HouseBuilder` = '%d'", iHouseID);
+	mysql_tquery(MainPipeline, szMiscArray, "OnRevokeBuildPerms", "");
 	SendClientMessageEx(playerid, COLOR_YELLOW, "All builder's permissions have been revoked.");
 	return 1;
 }

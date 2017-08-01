@@ -71,8 +71,8 @@ stock HigherBid(playerid)
 			else
 			{
 	  			new query[128];
-	    		format(query, sizeof(query), "SELECT `Money` FROM `accounts` WHERE `id` = %d", Auctions[AuctionItem][Bidder]);
-	    		mysql_function_query(MainPipeline, query, true, "ReturnMoney", "i", playerid);
+	    		mysql_format(MainPipeline, query, sizeof(query), "SELECT `Money` FROM `accounts` WHERE `id` = %d", Auctions[AuctionItem][Bidder]);
+	    		mysql_tquery(MainPipeline, query, "ReturnMoney", "i", playerid);
 		   }
 		}
 		else

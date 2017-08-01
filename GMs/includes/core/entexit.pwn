@@ -258,7 +258,6 @@ hook OnPlayerStateChange(playerid, newstate, oldstate) {
 stock Vehicle_Enter(playerid, i) {
 
 	if(CarryCrate[playerid] != -1) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can't take crates into this type of interior!");
-
 	ClearAnimationsEx(playerid);
 
 	switch(GetVehicleModel(i)) {

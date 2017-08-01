@@ -51,9 +51,9 @@ MetDet_CreateMetDet(playerid)
 	{
 		if(!IsValidDynamicObject(arrMetalDetector[i][metdet_iObjectID]))
 		{
-			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `metaldetectors` (`id`, `posx`, `posy`, `posz`, `rotx`, `roty`, `rotz`, `vw`, `int`)\
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `metaldetectors` (`id`, `posx`, `posy`, `posz`, `rotx`, `roty`, `rotz`, `vw`, `int`)\
 			 VALUES (%d, %f, %f, %f, %f, %f, %f, %i, %i)", i, fPos[0], fPos[1], fPos[2], 0.0, 0.0, 0.0, iVW, iINT);
-			mysql_function_query(MainPipeline, szMiscArray, false, "MetDet_OnCreateMetDet", "iifffii", playerid, i, fPos[0], fPos[1], fPos[2], iVW, iINT);
+			mysql_tquery(MainPipeline, szMiscArray, "MetDet_OnCreateMetDet", "iifffii", playerid, i, fPos[0], fPos[1], fPos[2], iVW, iINT);
 			return 1;
 		}
 	}
@@ -72,8 +72,8 @@ public MetDet_OnCreateMetDet(playerid, i, Float:X, Float:Y, Float:Z, iVW, iINT)
 MetDet_DeleteMetDet(playerid, i)
 {
 	if(!IsValidDynamicObject(arrMetalDetector[i][metdet_iObjectID])) return SendClientMessageEx(playerid, COLOR_GRAD1, "This is an invalid metal detector ID.");
-	format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `metaldetectors` WHERE `id` = %d", i);
-	return mysql_function_query(MainPipeline, szMiscArray, false, "MetDet_OnDeleteMetDet", "ii", playerid, i);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `metaldetectors` WHERE `id` = %d", i);
+	return mysql_tquery(MainPipeline, szMiscArray, "MetDet_OnDeleteMetDet", "ii", playerid, i);
 }
 
 forward MetDet_OnDeleteMetDet(playerid, i);
@@ -88,22 +88,20 @@ public MetDet_OnDeleteMetDet(playerid, i)
 
 MetDet_CheckMetDets(playerid)
 {
-	return mysql_function_query(MainPipeline, "SELECT * FROM `metaldetectors` WHERE 1", true, "MetDet_OnCheckMetDets", "i", playerid);
+	return mysql_tquery(MainPipeline, "SELECT * FROM `metaldetectors` WHERE 1", "MetDet_OnCheckMetDets", "i", playerid);
 }
 
 forward MetDet_OnCheckMetDets(playerid);
 public MetDet_OnCheckMetDets(playerid)
 {
 	szMiscArray[0] = 0;
-	new iRows;
-
-
-	iRows = cache_get_row_count(MainPipeline);
+	new iRows, value;
+	cache_get_row_count(iRows);
 
 	if(!iRows) return SendClientMessageEx(playerid, COLOR_GRAD1, "There are no metaldetectors in the database.");
 	for(new row; row < iRows; ++row)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "%sMetal Detector ID: %d\n", szMiscArray, cache_get_field_content_int(row, "id", MainPipeline));
+		format(szMiscArray, sizeof(szMiscArray), "%sMetal Detector ID: %d\n", szMiscArray, cache_get_value_name_int(row, "id", value));
 	}
 	ShowPlayerDialogEx(playerid, DIALOG_METDET_LIST, DIALOG_STYLE_LIST, "Metal Detectors | Listing all", szMiscArray, "Select", "");
 	return 1;
@@ -111,23 +109,25 @@ public MetDet_OnCheckMetDets(playerid)
 
 MetDet_LoadMetDets()
 {
-	return mysql_function_query(MainPipeline, "SELECT * FROM `metaldetectors` WHERE 1", true, "MetDet_OnLoadMetDets", "");
+	return mysql_tquery(MainPipeline, "SELECT * FROM `metaldetectors` WHERE 1", "MetDet_OnLoadMetDets", "");
 }
 
 forward MetDet_OnLoadMetDets();
 public MetDet_OnLoadMetDets()
 {
 	new iRows,
-		iCount;
+		iCount,
+		value,
+		Float:fValue;
 	
-	iRows = cache_get_row_count();
+	cache_get_row_count(iRows);
 
 	if(!iRows) return print("[Metal Detectors] There are no metaldetectors in the database.");
 	while(iCount < iRows)
 	{
-		MetDet_Process(iCount, cache_get_field_content_float(iCount, "posx", MainPipeline), cache_get_field_content_float(iCount, "posy", MainPipeline), cache_get_field_content_float(iCount, "posz", MainPipeline),
-				cache_get_field_content_float(iCount, "rotx", MainPipeline), cache_get_field_content_float(iCount, "roty", MainPipeline), cache_get_field_content_float(iCount, "rotz", MainPipeline),
-				cache_get_field_content_int(iCount, "vw", MainPipeline), cache_get_field_content_int(iCount, "int", MainPipeline));
+		MetDet_Process(iCount, cache_get_value_name_float(iCount, "posx", fValue), cache_get_value_name_float(iCount, "posy", fValue), cache_get_value_name_float(iCount, "posz", fValue),
+				cache_get_value_name_float(iCount, "rotx", fValue), cache_get_value_name_float(iCount, "roty", fValue), cache_get_value_name_float(iCount, "rotz", fValue),
+				cache_get_value_name_int(iCount, "vw", value), cache_get_value_name_int(iCount, "int", value));
 		iCount++;
 	}
 	printf("[Metal Detectors] Successfully loaded %d metal detectors", iCount);
@@ -180,9 +180,9 @@ MetDet_SaveMetDet(id)
 	iAssignData[0] = Streamer_GetIntData(STREAMER_TYPE_OBJECT, arrMetalDetector[id][metdet_iObjectID], E_STREAMER_WORLD_ID);
 	iAssignData[1] = Streamer_GetIntData(STREAMER_TYPE_OBJECT, arrMetalDetector[id][metdet_iObjectID], E_STREAMER_INTERIOR_ID);
 
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `metaldetectors` SET `posx` = %f, `posy` = %f, `posz` = %f, `rotx` = %f, `roty` = %f, `rotz` = %f, `vw` = %d, `int` = %d WHERE id = %d",
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `metaldetectors` SET `posx` = %f, `posy` = %f, `posz` = %f, `rotx` = %f, `roty` = %f, `rotz` = %f, `vw` = %d, `int` = %d WHERE id = %d",
 			fPos[0], fPos[1], fPos[2], fPos[3], fPos[4], fPos[5], iAssignData[0], iAssignData[1], id);
-	mysql_function_query(MainPipeline, szMiscArray, false, "MetDet_OnSaveMetDets", "i", id);
+	mysql_tquery(MainPipeline, szMiscArray, "MetDet_OnSaveMetDets", "i", id);
 
 }
 

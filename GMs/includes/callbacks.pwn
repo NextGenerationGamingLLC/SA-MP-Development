@@ -1584,7 +1584,7 @@ public OnPlayerConnect(playerid)
 	ShowMainMenuGUI(playerid);
 	//SetPlayerJoinCamera(playerid);
 	ClearChatbox(playerid);
-	SetPlayerVirtualWorld(playerid, 0);
+	SetPlayerVirtualWorld(playerid, 1);
 
 	SetPlayerColor(playerid,TEAM_HIT_COLOR);
 	SendClientMessage( playerid, COLOR_WHITE, "SERVER: Welcome to Next Generation Roleplay." );
@@ -1814,8 +1814,8 @@ public OnPlayerDisconnect(playerid, reason)
 		if(GetPVarType(playerid, "DeliveringVehicleTime")) {
 			if(GetPVarType(playerid, "LockPickVehicleSQLId")) {
 				new szQuery[128];
-				format(szQuery, sizeof(szQuery), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")], GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")], GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			}
 			else {
 				new slot = GetPlayerVehicle(GetPVarInt(playerid, "LockPickPlayer"), GetPVarInt(playerid, "LockPickVehicle")),
@@ -2316,7 +2316,6 @@ public OnPlayerDisconnect(playerid, reason)
 			KillTimer(GetPVarInt(playerid, "RentTime"));
 		}
 
-		//if(GetPVarInt(playerid, "gpsonoff") == 1) TextDrawDestroy(GPS[playerid]);
 		PlayerTextDrawDestroy(playerid, GPS[playerid]);
 
 		if(PlayerInfo[playerid][pAdmin] >= 2) TextDrawDestroy(PriorityReport[playerid]);
@@ -2993,13 +2992,13 @@ public OnPlayerEnterCheckpoint(playerid)
 				new query[128];
 				if(PlayerInfo[playerid][pRFLTeam] != -1) {
 					RFLInfo[PlayerInfo[playerid][pRFLTeam]][RFLlaps] +=1;
-					format(query, sizeof(query), "UPDATE `rflteams` SET `laps` = %d WHERE `id` = %d;",
+					mysql_format(MainPipeline, query, sizeof(query), "UPDATE `rflteams` SET `laps` = %d WHERE `id` = %d;",
 					RFLInfo[PlayerInfo[playerid][pRFLTeam]][RFLlaps],
 					RFLInfo[PlayerInfo[playerid][pRFLTeam]][RFLsqlid]);
-					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 				}
-				format(query, sizeof(query), "UPDATE `accounts` SET `RacePlayerLaps` = %d WHERE `id` = %d;", PlayerInfo[playerid][pRacePlayerLaps], GetPlayerSQLId(playerid));
-				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `RacePlayerLaps` = %d WHERE `id` = %d;", PlayerInfo[playerid][pRacePlayerLaps], GetPlayerSQLId(playerid));
+				mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			new string[128];
 			if(PlayerInfo[playerid][pRFLTeam] != -1) {
@@ -3101,8 +3100,8 @@ public OnPlayerEnterCheckpoint(playerid)
 		new ip[MAX_PLAYER_NAME], ip2[MAX_PLAYER_NAME];
 		GetPlayerIp(playerid, ip, sizeof(ip));
 		if(GetPVarType(playerid, "LockPickVehicleSQLId")) {
-			format(szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")], GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
-			mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")], GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
+			mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			GetPVarString(playerid, "LockPickPlayerName", ip2, sizeof(ip2));
 			format(szMessage, sizeof(szMessage), "[LOCK PICK] %s(%d) (IP:%s) delivered a %s(VID:%d SQLId:%d) owned by %s(Offline SQLId %d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(GetPVarInt(playerid, "LockPickVehicle")), GetPVarInt(playerid, "LockPickVehicle"), GetPVarInt(playerid, "LockPickVehicleSQLId"), ip2, GetPVarInt(playerid, "LockPickPlayerSQLId"));
 			Log("logs/playervehicle.log", szMessage);
@@ -4880,7 +4879,6 @@ public OnPlayerRequestClass(playerid, classid)
 		TogglePlayerSpectating(playerid, 1);
 		//SetPlayerJoinCamera(playerid);
 	}
-
 	return 1;
 }
 
@@ -5131,17 +5129,21 @@ public OnPlayerText(playerid, text[])
 					}
 					if(GetPVarInt(playerid, "marriagelastname") == 2)
 					{
+						new escapedName[MAX_PLAYER_NAME];
 						format(string, sizeof(string), "%s_%s", GetFirstName(playerid), GetLastName(ProposedTo[playerid]));
-						SetPVarString(playerid, "NewNameRequest", g_mysql_ReturnEscaped(string, MainPipeline));
-						format(string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(string, MainPipeline));
-						mysql_function_query(MainPipeline, string, true, "OnApproveName", "ii", playerid, playerid);
+						mysql_escape_string(string, escapedName);
+						SetPVarString(playerid, "NewNameRequest", escapedName);
+						mysql_format(MainPipeline, string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username`='%e'", string);
+						mysql_tquery(MainPipeline, string, "OnApproveName", "ii", playerid, playerid);
 					}
 					if(GetPVarInt(ProposedTo[playerid], "marriagelastname") == 2)
 					{
+						new escapedName[MAX_PLAYER_NAME];
 						format(string, sizeof(string), "%s_%s", GetFirstName(ProposedTo[playerid]), GetLastName(playerid));
-						SetPVarString(ProposedTo[playerid], "NewNameRequest", g_mysql_ReturnEscaped(string, MainPipeline));
-						format(string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", g_mysql_ReturnEscaped(string, MainPipeline));
-						mysql_function_query(MainPipeline, string, true, "OnApproveName", "ii", ProposedTo[playerid], ProposedTo[playerid]);
+						mysql_escape_string(string, escapedName);
+						SetPVarString(ProposedTo[playerid], "NewNameRequest", escapedName);
+						mysql_format(MainPipeline, string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username`='%e'", string);
+						mysql_tquery(MainPipeline, string, "OnApproveName", "ii", ProposedTo[playerid], ProposedTo[playerid]);
 					}
 					//MarriageCeremoney[ProposedTo[playerid]] = 1;
 					MarriageCeremoney[ProposedTo[playerid]] = 0;

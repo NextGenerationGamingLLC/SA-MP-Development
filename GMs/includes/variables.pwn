@@ -34,8 +34,8 @@
 
 
 //MySQL Connection Variable
-new MainPipeline;
-new ShopPipeline;
+new MySQL: MainPipeline;
+new MySQL: ShopPipeline;
 new ShopToggle = 0;
 
 #if defined zombiemode
@@ -621,7 +621,6 @@ new TRTax = 0;
 new TRTaxValue = 0, SpeedingTickets;
 new nonewbie = 0;
 new novip = 0;
-new nohma = 0;
 new Jackpot, TicketsSold, NextDrawing, LottoNumbers[MAX_PLAYERS][5], SpecLotto, LottoPrize[64];
 new Float:Positions[14][3];
 new InRing = 0;
@@ -1244,17 +1243,6 @@ new bool: IsDynamicGiftBoxEnabled = false;
 new arrFires[MAX_STRUCTURE_FIRES][eStructureFires];
 new iServerFires = 0;
 */
-
-new Float:JoinCameraPosition[8][3] = {
-	{2211.1460, -1748.3909, 29.3744},
-	{1283.8524, -1385.5304, -10.0},
-	{1514.7783, -1700.2913, -10.0},
-	{655.5394, -1867.2231, -10.0},
-	{370.0804, -2087.8767, -10.0},
-	{1797.3397, -1578.3440, -10.0},
-	{1188.4574, -1309.2242, -10.0},
-	{1716.1129,-1880.0715,-10.0}
-};
 
 new HoldingObjectsShop[][HoldingEnumAll] = {
 {18647,0,	"RedNeonTube1"},
@@ -2772,8 +2760,7 @@ new ROB_MAX_PERCENTAGE = 30,
 
 //new Text3D:PlayerLabel[MAX_PLAYERS];
 
-/* IRC/Slack */
-new IRC_SERVER[32], IRC_PORT, bool:IRC_SSL, IRC_BOT_USERNAME[32], IRC_BOT_PASSWORD[64], IRC_BOT_MAIN_NICK[32], IRC_BOT_ALT_NICK[32], IRC_BOT_REALNAME[32], IRC_CHANNEL_ADMIN[32], IRC_CHANNEL_HEADADMIN[32], IRC_CHANNEL_SERVERERRORS[32], IRC_CHANNEL_ADMWARNINGS[32], BotID[MAX_BOTS], BotGroupID;
+new DCC_Channel:g_AdminChannelId, DCC_Channel:g_AdminWarningsChannelId, DCC_Channel:g_HeadAdminChannelId, DCC_Channel:g_ServerErrorsChannelId;
 
 // Crate System.
 new 

@@ -307,7 +307,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 stock LoadHelp()
 {
 	printf("[LoadHelp] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `help` ORDER BY `Type` ASC, `Subtype` ASC, `Name` ASC", true, "OnLoadHelp", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `help` ORDER BY `Type` ASC, `Subtype` ASC, `Name` ASC", "OnLoadHelp", "");
 }
 
 stock RehashHelp()
@@ -330,19 +330,19 @@ stock RehashHelp()
 forward OnLoadHelp();
 public OnLoadHelp()
 {
-	new i, rows, fields;
+	new i, rows;
 	szMiscArray[0] = 0;
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		Help[i][HelpID] = cache_get_field_content_int(i, "id", MainPipeline);
-		cache_get_field_content(i, "Name", Help[i][HelpName], MainPipeline, 128);
-		cache_get_field_content(i, "Parameters", Help[i][HelpParam], MainPipeline, 128);
-		cache_get_field_content(i, "Description", Help[i][HelpDesc], MainPipeline, 128);
-		Help[i][HelpType] = cache_get_field_content_int(i, "Type", MainPipeline);
-		Help[i][HelpSubtype] = cache_get_field_content_int(i, "Subtype", MainPipeline);
-		Help[i][HelpLevel] = cache_get_field_content_int(i, "Level", MainPipeline);
+		cache_get_value_name_int(i, "id", Help[i][HelpID]);
+		cache_get_value_name(i, "Name", Help[i][HelpName], 128);
+		cache_get_value_name(i, "Parameters", Help[i][HelpParam], 128);
+		cache_get_value_name(i, "Description", Help[i][HelpDesc], 128);
+		cache_get_value_name_int(i, "Type", Help[i][HelpType]);
+		cache_get_value_name_int(i, "Subtype", Help[i][HelpSubtype]);
+		cache_get_value_name_int(i, "Level", Help[i][HelpLevel]);
 		i++;
 	}
 	if(i > 0) printf("[LoadHelp] %d help entries rehashed/loaded.", i);

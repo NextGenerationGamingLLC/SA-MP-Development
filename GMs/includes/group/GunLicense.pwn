@@ -68,8 +68,8 @@ SubmitGunLicApp(iPlayerID) {
 
 	szMiscArray[0] = 0;
 
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `mdc` WHERE `id` = '%d' AND (`time` > DATE_SUB(NOW(), INTERVAL 21 DAY))", PlayerInfo[iPlayerID][pId]);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnSubmitGunLicApp", "i", iPlayerID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `mdc` WHERE `id` = '%d' AND (`time` > DATE_SUB(NOW(), INTERVAL 21 DAY))", PlayerInfo[iPlayerID][pId]);
+	mysql_tquery(MainPipeline, szMiscArray, "OnSubmitGunLicApp", "i", iPlayerID);
 
 	return 1;
 }
@@ -78,9 +78,8 @@ forward OnSubmitGunLicApp(iPlayerID);
 public OnSubmitGunLicApp(iPlayerID) {
 
 	szMiscArray[0] = 0;
-
-	new 
-		iRows = cache_get_row_count(MainPipeline);
+	new iRows;
+	cache_get_row_count(iRows);
 
 	if(iRows > 0)  {
 		ShowPlayerDialogEx(iPlayerID, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Gun License Application - Denied", 

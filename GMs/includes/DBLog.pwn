@@ -100,8 +100,8 @@ ChatDBLog(iPlayerID, szLogTable[], szLogText[]) {
 
 CasinoDBLog(iPlayerID, game[], amount, prize, num1, num2, num3) {
 
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `cp_casino_log` (`Timestamp`, `PlayerID`, `game`, `amount`,`prize`,`num1`,`num2`,`num3`,`PlayerIP`) VALUES ('%d','%d','%s','%d','%d','%d','%d','%d','%s')", gettime(), PlayerInfo[iPlayerID][pId], game, amount, prize, num1, num2, num3, PlayerInfo[iPlayerID][pIP]);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `cp_casino_log` (`Timestamp`, `PlayerID`, `game`, `amount`,`prize`,`num1`,`num2`,`num3`,`PlayerIP`) VALUES ('%d','%d','%s','%d','%d','%d','%d','%d','%s')", gettime(), PlayerInfo[iPlayerID][pId], game, amount, prize, num1, num2, num3, PlayerInfo[iPlayerID][pIP]);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 	//db_free_result(db_query(db_iHandle, szMiscArray));
 	printf("%s",szMiscArray);
 

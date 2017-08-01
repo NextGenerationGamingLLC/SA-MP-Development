@@ -104,13 +104,13 @@ CMD:oflag(playerid, params[])
 		else
 		{
 			new tmpReason[64], tmpName[24];
-			mysql_escape_string(reason, tmpReason, MainPipeline);
-			mysql_escape_string(name, tmpName, MainPipeline);
+			mysql_escape_string(reason, tmpReason);
+			mysql_escape_string(name, tmpName);
 			SetPVarString(playerid, "OnAddFlag", tmpName);
 			SetPVarString(playerid, "OnAddFlagReason", tmpReason);
 
-			format(query, sizeof(query), "SELECT id FROM `accounts` WHERE `Username`='%s'", tmpName);
-			mysql_function_query(MainPipeline, query, true, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, Flag_Query_Offline);
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT id FROM `accounts` WHERE `Username`='%s'", tmpName);
+			mysql_tquery(MainPipeline, query, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, Flag_Query_Offline);
 
 			format(string, sizeof(string), "Attempting to append %s's flag...", tmpName);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -153,8 +153,8 @@ CMD:transferflag(playerid, params[])
 	if(!IsPlayerConnected(from)) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: That player is not connected (from)");
 	if(to == from) return SendClientMessageEx(playerid, COLOR_GRAD2, "ERROR: You cannot transfer to the same person");
 	new query[128];
-	format(query, sizeof(query), "SELECT id, flag, issuer, time, type FROM `flags` WHERE `fid` = %i", flagid);
-	mysql_function_query(MainPipeline, query, true, "OnRequestTransferFlag", "iiii", playerid, flagid, to, from);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT id, flag, issuer, time, type FROM `flags` WHERE `fid` = %i", flagid);
+	mysql_tquery(MainPipeline, query, "OnRequestTransferFlag", "iiii", playerid, flagid, to, from);
 	return 1;
 }
 

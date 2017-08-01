@@ -131,7 +131,7 @@ CMD:ostaffban(playerid, params[])
 
 			format(szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `AdminLevel` = 0, `HR` = 0, `AP` = 0, `Security` = 0, `ShopTech` = 0, `FactionModerator` = 0, `GangModerator` = 0, \
 				`Undercover` = 0, `BanAppealer` = 0, `Helper` = 0, `pVIPMod` = 0, `SecureIP` = '0.0.0.0', `SeniorModerator` = 0, `BanAppealer` = 0, `ShopTech` = 0, `StaffBanned` = 1 WHERE `Username`= '%s' AND `AdminLevel` < %d AND `StaffBanned` = 0", username, PlayerInfo[playerid][pAdmin]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnStaffBan", "ii", playerid, 1);
+			mysql_tquery(MainPipeline, szMiscArray, false, "OnStaffBan", "ii", playerid, 1);
 
 			format(szMiscArray, sizeof(szMiscArray), "Attempting to staff ban %s's account.", username);
 			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
@@ -158,7 +158,7 @@ CMD:ounstaffban(playerid, params[])
 			SetPVarString(playerid, "OnStaffBan", username);
 
 			format(szMiscArray,sizeof(szMiscArray),"UPDATE `accounts` SET `StaffBanned` = 0 WHERE `Username`= '%s'", username, PlayerInfo[playerid][pAdmin]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnStaffBan", "ii", playerid, 0);
+			mysql_tquery(MainPipeline, szMiscArray, false, "OnStaffBan", "ii", playerid, 0);
 
 			format(szMiscArray, sizeof(szMiscArray), "Attempting to remove the staff ban from %s's account.", username);
 			SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);

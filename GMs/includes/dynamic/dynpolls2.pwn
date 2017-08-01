@@ -122,44 +122,40 @@ stock FIX_valstr(dest[], value, bool:pack = false)
 forward LoadPoll();
 public LoadPoll()
 {
-	new rows = cache_get_row_count(MainPipeline), fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows;
+	cache_get_row_count(rows);
 	for(new row; row < rows; row++)
 	{
-		PollInfo[row][poll_iID] = cache_get_field_content_int(row, "ID");
-		cache_get_field_content(row, "Title", PollInfo[row][poll_szTitle], MainPipeline, 64);
-		PollInfo[row][poll_iOptions] = cache_get_field_content_int(row, "Options");
+		cache_get_value_name_int(row, "ID", PollInfo[row][poll_iID]);
+		cache_get_value_name(row, "Title", PollInfo[row][poll_szTitle], 64);
+		cache_get_value_name_int(row, "Options", PollInfo[row][poll_iOptions]);
 
-		cache_get_field_content(row, "Option1", PollInfo[row][poll_szOption1], MainPipeline, 35);
-		cache_get_field_content(row, "Option2", PollInfo[row][poll_szOption2], MainPipeline, 35);
-		cache_get_field_content(row, "Option3", PollInfo[row][poll_szOption3], MainPipeline, 35);
-		cache_get_field_content(row, "Option4", PollInfo[row][poll_szOption4], MainPipeline, 35); 
-		cache_get_field_content(row, "Option5", PollInfo[row][poll_szOption5], MainPipeline, 35);
-		cache_get_field_content(row, "Option6", PollInfo[row][poll_szOption6], MainPipeline, 35);
+		cache_get_value_name(row, "Option1", PollInfo[row][poll_szOption1], 35);
+		cache_get_value_name(row, "Option2", PollInfo[row][poll_szOption2], 35);
+		cache_get_value_name(row, "Option3", PollInfo[row][poll_szOption3], 35);
+		cache_get_value_name(row, "Option4", PollInfo[row][poll_szOption4], 35); 
+		cache_get_value_name(row, "Option5", PollInfo[row][poll_szOption5], 35);
+		cache_get_value_name(row, "Option6", PollInfo[row][poll_szOption6], 35);
 
 		for(new i = 0; i < 6; i++) // Might work. Not too sure yet. Hoping it does?
 		{
 			format(szMiscArray, sizeof szMiscArray, "OptionResult%d", i + 1);
-			PollInfo[row][poll_iOptionResults][i] = cache_get_field_content_int(row, szMiscArray);
+			cache_get_value_name_int(row, szMiscArray, PollInfo[row][poll_iOptionResults][i]);
 		}
 
-		PollInfo[row][poll_iNation] = cache_get_field_content_int(row, "Nation");
-
-		cache_get_field_content(row, "PlacedBy", PollInfo[row][poll_szPlacedBy], MainPipeline, MAX_PLAYER_NAME);
-
-		PollInfo[row][poll_iInterior] = cache_get_field_content_int(row, "Interior");
-		PollInfo[row][poll_iVirtualWorld] = cache_get_field_content_int(row, "VirtualWorld");
-
-		PollInfo[row][poll_fLocation][0] = cache_get_field_content_float(row, "LocationX");
-		PollInfo[row][poll_fLocation][1] = cache_get_field_content_float(row, "LocationY");
-		PollInfo[row][poll_fLocation][2] = cache_get_field_content_float(row, "LocationZ");
-
-		PollInfo[row][poll_iCreationDate] = cache_get_field_content_int(row, "CreationDate");
-		PollInfo[row][poll_iExpirationDate] = cache_get_field_content_int(row, "ExpirationDate");
-		PollInfo[row][poll_iType] = cache_get_field_content_int(row, "Type");
-		PollInfo[row][poll_iTypeRank] = cache_get_field_content_int(row, "TypeRank");
-		PollInfo[row][poll_iTypeID] = cache_get_field_content_int(row, "TypeID");
-		cache_get_field_content(row, "UniqueKey", PollInfo[row][poll_szUniqueKey], MainPipeline, 128);
+		cache_get_value_name_int(row, "Nation", PollInfo[row][poll_iNation]);
+		cache_get_value_name(row, "PlacedBy", PollInfo[row][poll_szPlacedBy], MAX_PLAYER_NAME);
+		cache_get_value_name_int(row, "Interior", PollInfo[row][poll_iInterior]);
+		cache_get_value_name_int(row, "VirtualWorld", PollInfo[row][poll_iVirtualWorld]);
+		cache_get_value_name_float(row, "LocationX", PollInfo[row][poll_fLocation][0]);
+		cache_get_value_name_float(row, "LocationY", PollInfo[row][poll_fLocation][1]);
+		cache_get_value_name_float(row, "LocationZ", PollInfo[row][poll_fLocation][2]);
+		cache_get_value_name_int(row, "CreationDate", PollInfo[row][poll_iCreationDate]);
+		cache_get_value_name_int(row, "ExpirationDate", PollInfo[row][poll_iExpirationDate]);
+		cache_get_value_name_int(row, "Type", PollInfo[row][poll_iType]);
+		cache_get_value_name_int(row, "TypeRank", PollInfo[row][poll_iTypeRank]);
+		cache_get_value_name_int(row, "TypeID", PollInfo[row][poll_iTypeID]);
+		cache_get_value_name(row, "UniqueKey", PollInfo[row][poll_szUniqueKey], 128);
 
 		format(szMiscArray, sizeof szMiscArray, "Polling Station (ID: %d)\n{5EC7EB}%s\n{FFFF00}/vote", row, PollInfo[row][poll_szTitle]);
 		PollInfo[row][poll_textLabel] = CreateDynamic3DTextLabel(szMiscArray, 0xFFFF00FF, PollInfo[row][poll_fLocation][0], PollInfo[row][poll_fLocation][1], PollInfo[row][poll_fLocation][2], 10.00, INVALID_PLAYER_ID,INVALID_VEHICLE_ID, 0, PollInfo[row][poll_iVirtualWorld], PollInfo[row][poll_iInterior]);
@@ -176,7 +172,7 @@ forward poll_MySQL_Load();
 public poll_MySQL_Load()
 {
 	print("Dynamic Polling System Loading");
-	mysql_function_query(MainPipeline, "SELECT * FROM `polls`", true, "LoadPoll", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `polls`", "LoadPoll", "");
 	return 1;
 }
 
@@ -212,10 +208,10 @@ forward poll_MySQL_Save(i);
 public poll_MySQL_Save(i)
 {
 	// This is split into 2 queries to make it easier to handle.
-	format(szMiscArray, sizeof szMiscArray, "UPDATE `polls` SET `Title`='%s', `Options`=%d, `PlacedBy`='%s', `Interior`=%d, `VirtualWorld`=%d, `UniqueKey`='%s', `Type`=%d, `TypeRank`=%d, `TypeID`=%d, `CreationDate`=%d, `Nation`=%d, `ExpirationDate`=%d WHERE `ID`=%d",
-	 g_mysql_ReturnEscaped(PollInfo[i][poll_szTitle], MainPipeline),
+	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `polls` SET `Title`='%e', `Options`=%d, `PlacedBy`='%e', `Interior`=%d, `VirtualWorld`=%d, `UniqueKey`='%s', `Type`=%d, `TypeRank`=%d, `TypeID`=%d, `CreationDate`=%d, `Nation`=%d, `ExpirationDate`=%d WHERE `ID`=%d",
+	 PollInfo[i][poll_szTitle],
 	 PollInfo[i][poll_iOptions],
-	 g_mysql_ReturnEscaped(PollInfo[i][poll_szPlacedBy], MainPipeline),
+	 PollInfo[i][poll_szPlacedBy],
 	 PollInfo[i][poll_iInterior],
 	 PollInfo[i][poll_iVirtualWorld],
 	 PollInfo[i][poll_szUniqueKey],
@@ -227,16 +223,15 @@ public poll_MySQL_Save(i)
 	 PollInfo[i][poll_iExpirationDate],
 	 i + 1);
 
-	mysql_function_query(MainPipeline, szMiscArray, false, "PollSaved", "i", i);
+	mysql_tquery(MainPipeline, szMiscArray, "PollSaved", "i", i);
 
-	format(szMiscArray, sizeof szMiscArray, "UPDATE `polls` SET `Option1`='%s', `Option2`='%s', `Option3`='%s', `Option4`='%s', `Option5`='%s', `Option6`='%s', `OptionResult1`=%d, `OptionResult2`=%d, `OptionResult3`=%d, `OptionResult4`=%d, `OptionResult5`=%d, `OptionResult6`=%d WHERE `ID`=%d",
-	 g_mysql_ReturnEscaped(PollInfo[i][poll_szOption1], MainPipeline),
-	 g_mysql_ReturnEscaped(PollInfo[i][poll_szOption2], MainPipeline),
-	 g_mysql_ReturnEscaped(PollInfo[i][poll_szOption3], MainPipeline),
-	 g_mysql_ReturnEscaped(PollInfo[i][poll_szOption4], MainPipeline),
-	 g_mysql_ReturnEscaped(PollInfo[i][poll_szOption5], MainPipeline),
-	 g_mysql_ReturnEscaped(PollInfo[i][poll_szOption6], MainPipeline),
-
+	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `polls` SET `Option1`='%e', `Option2`='%e', `Option3`='%e', `Option4`='%e', `Option5`='%e', `Option6`='%e', `OptionResult1`=%d, `OptionResult2`=%d, `OptionResult3`=%d, `OptionResult4`=%d, `OptionResult5`=%d, `OptionResult6`=%d WHERE `ID`=%d",
+	 PollInfo[i][poll_szOption1],
+	 PollInfo[i][poll_szOption2],
+	 PollInfo[i][poll_szOption3],
+	 PollInfo[i][poll_szOption4],
+	 PollInfo[i][poll_szOption5],
+	 PollInfo[i][poll_szOption6],
 	 PollInfo[i][poll_iOptionResults][0],
 	 PollInfo[i][poll_iOptionResults][1],
 	 PollInfo[i][poll_iOptionResults][2],
@@ -245,13 +240,13 @@ public poll_MySQL_Save(i)
 	 PollInfo[i][poll_iOptionResults][5],
 	 i + 1);
 
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "");
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "");
 
 
-	format(szMiscArray, sizeof szMiscArray, "UPDATE `polls` SET `LocationX`=%f, `LocationY`=%f, `LocationZ`=%f WHERE `ID`=%d", 
+	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `polls` SET `LocationX`=%f, `LocationY`=%f, `LocationZ`=%f WHERE `ID`=%d", 
 	 PollInfo[i][poll_fLocation][0], PollInfo[i][poll_fLocation][1], PollInfo[i][poll_fLocation][2], i + 1);
 
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "");
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "");
 	szMiscArray[0] = 0;
 	return 1;
 }
@@ -729,23 +724,23 @@ CMD:createpoll(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, szMiscArray);
 			SendClientMessageEx(playerid, COLOR_WHITE, "It is set to expire automatically in 5 days.");
 			
-			format(szMiscArray, sizeof szMiscArray, "INSERT INTO `polls` VALUES(%d, '%s', %d, '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d, '%s', %d, %d, %f, %f, %f, '%s', %d, %d, %d, %d, %d, %d)",
+			mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "INSERT INTO `polls` VALUES(%d, '%e', %d, '%e', '%e', '%e', '%e', '%e', '%e', %d, %d, %d, %d, %d, %d, '%e', %d, %d, %f, %f, %f, '%s', %d, %d, %d, %d, %d, %d)",
 				iPollID + 1,
-				g_mysql_ReturnEscaped(PollInfo[iPollID][poll_szTitle], MainPipeline),
+				PollInfo[iPollID][poll_szTitle],
 				PollInfo[iPollID][poll_iOptions],
-				g_mysql_ReturnEscaped(PollInfo[iPollID][poll_szOption1], MainPipeline),
-				g_mysql_ReturnEscaped(PollInfo[iPollID][poll_szOption2], MainPipeline),
-				g_mysql_ReturnEscaped(PollInfo[iPollID][poll_szOption3], MainPipeline),
-				g_mysql_ReturnEscaped(PollInfo[iPollID][poll_szOption4], MainPipeline),
-				g_mysql_ReturnEscaped(PollInfo[iPollID][poll_szOption5], MainPipeline),
-				g_mysql_ReturnEscaped(PollInfo[iPollID][poll_szOption6], MainPipeline),
+				PollInfo[iPollID][poll_szOption1],
+				PollInfo[iPollID][poll_szOption2],
+				PollInfo[iPollID][poll_szOption3],
+				PollInfo[iPollID][poll_szOption4],
+				PollInfo[iPollID][poll_szOption5],
+				PollInfo[iPollID][poll_szOption6],
 				PollInfo[iPollID][poll_iOptionResults][0],
 				PollInfo[iPollID][poll_iOptionResults][1],
 				PollInfo[iPollID][poll_iOptionResults][2],
 				PollInfo[iPollID][poll_iOptionResults][3],
 				PollInfo[iPollID][poll_iOptionResults][4],
 				PollInfo[iPollID][poll_iOptionResults][5],
-				g_mysql_ReturnEscaped(PollInfo[iPollID][poll_szPlacedBy], MainPipeline),
+				PollInfo[iPollID][poll_szPlacedBy],
 				PollInfo[iPollID][poll_iInterior],
 				PollInfo[iPollID][poll_iVirtualWorld],
 				PollInfo[iPollID][poll_fLocation][0],
@@ -759,7 +754,7 @@ CMD:createpoll(playerid, params[])
 				PollInfo[iPollID][poll_iTypeID],
 				PollInfo[iPollID][poll_iNation]);
 
-			mysql_function_query(MainPipeline, szMiscArray, false, "NewPollCreated", "i", iPollID);
+			mysql_tquery(MainPipeline, szMiscArray, "NewPollCreated", "i", iPollID);
 			szMiscArray[0] = 0;
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "No more polls can be created.");
@@ -800,8 +795,8 @@ CMD:deletepoll(playerid, params[])
 
 				PollInfo[iPollID][poll_iNation] = -1;
 
-				format(szMiscArray, sizeof szMiscArray, "DELETE FROM `polls` WHERE `ID`=%d", iPollID + 1);
-				mysql_function_query(MainPipeline, szMiscArray, false, "PollDeleted", "i", iPollID);
+				mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "DELETE FROM `polls` WHERE `ID`=%d", iPollID + 1);
+				mysql_tquery(MainPipeline, szMiscArray, "PollDeleted", "i", iPollID);
 
 				DestroyDynamic3DTextLabel(PollInfo[iPollID][poll_textLabel]);
 				DestroyDynamicPickup(PollInfo[iPollID][poll_iPickupID]);

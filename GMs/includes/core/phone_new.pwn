@@ -310,15 +310,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				case 2:	{
 
-					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
-					mysql_function_query(MainPipeline, szMiscArray, true, "Phone_OnGetContacts", "i", playerid);
+					mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
+					mysql_tquery(MainPipeline, szMiscArray, "Phone_OnGetContacts", "i", playerid);
 				}
 				case 3: ShowPlayerDialogEx(playerid, DIALOG_PHONE_ADDCONTACT, DIALOG_STYLE_INPUT, "Phone | Add Contact", "Please enter the name of the contact you would like to add.\nExample: Sugar Daddy", "Add", "<<");
 				case 4: {
 
 					SetPVarInt(playerid, PVAR_PHONEDELCONTACT, 1);
-					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
-					mysql_function_query(MainPipeline, szMiscArray, true, "Phone_OnGetContacts", "i", playerid);
+					mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
+					mysql_tquery(MainPipeline, szMiscArray, "Phone_OnGetContacts", "i", playerid);
 				}
 			}
 		}
@@ -401,7 +401,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(!response) return Phone_Contacts(playerid);
 			SetPVarString(playerid, "PHN_CONTACT", inputtext);
 			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `phone_contacts` WHERE id = '%d'", GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, szMiscArray, true, "Phone_CheckContacts", "is", playerid, inputtext);
+			mysql_tquery(MainPipeline, szMiscArray, "Phone_CheckContacts", "is", playerid, inputtext);
 			DeletePVar(playerid, PVAR_PHONEDELCONTACT);
 		}
 		case DIALOG_PHONE_ADDCONTACT1: {
@@ -419,14 +419,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				return ShowPlayerDialogEx(playerid, DIALOG_PHONE_ADDCONTACT1, DIALOG_STYLE_INPUT, "Add Contact | Number", "Please enter the number of the contact you would like to add.", "Add", "Cancel");
 			}
 			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `phone_contacts` (id, `contactname`, `contactnr`) VALUES ('%d', '%e', '%d')", GetPlayerSQLId(playerid), szMiscArray, strval(inputtext));
-			mysql_function_query(MainPipeline, szMiscArray, false, "Phone_OnAddContactFinish", "i", playerid);
+			mysql_tquery(MainPipeline, szMiscArray, "Phone_OnAddContactFinish", "i", playerid);
 			return 1;
 		}
 		case DIALOG_PHONE_CONTACTLISTDEL:
 		{
 			if(!response) return DeletePVar(playerid, PVAR_PHONEDELCONTACT), Phone_Contacts(playerid), 1;
-			format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `phone_contacts` WHERE id = '%d' AND `contactnr` = '%d'", GetPlayerSQLId(playerid), ListItemTrackId[playerid][listitem]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "Phone_OnDeleteContact", "i", playerid);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `phone_contacts` WHERE id = '%d' AND `contactnr` = '%d'", GetPlayerSQLId(playerid), ListItemTrackId[playerid][listitem]);
+			mysql_tquery(MainPipeline, szMiscArray, "Phone_OnDeleteContact", "i", playerid);
 
 		}
 		case DIALOG_PHONE_CAMERA:
@@ -829,25 +829,22 @@ public Phone_Trace(playerid, i)
 forward Phone_OnGetContacts(iPlayerID);
 public Phone_OnGetContacts(iPlayerID)
 {
-	new iRows = cache_get_row_count();
+	new iRows;
+	cache_get_row_count(iRows);
 	if(!iRows) return SendClientMessage(iPlayerID, COLOR_GRAD1, "You do not have any contacts.");
 
-	new iFields,
-		idx,
+	new idx,
+		iNumber,
 		szResult[64];
-
-	cache_get_data(iRows, iFields, MainPipeline);
-
 	szMiscArray[0] = 0;
-
 	szMiscArray = "Name\tNumber";
 
 	while(idx < iRows)
 	{
-		new iNumber = cache_get_field_content_int(idx, "contactnr", MainPipeline);
+		cache_get_value_name_int(idx, "contactnr", iNumber);
 		if(iNumber != 0) {
 
-			cache_get_field_content(idx, "contactname", szResult, MainPipeline);
+			cache_get_value_name(idx, "contactname", szResult);
 			/*
 			foreach(new i : Player) {
 
@@ -887,7 +884,8 @@ public Phone_OnDeleteContact(iPlayerID)
 forward Phone_CheckContacts(iPlayerID, name[]);
 public Phone_CheckContacts(iPlayerID, name[])
 {
-	new iRows = cache_get_row_count(MainPipeline);
+	new iRows;
+	cache_get_row_count(iRows);
 
 	if(iRows > MAX_CONTACTS) {
 		SendClientMessage(iPlayerID, COLOR_GRAD1, "You cannot have more contacts stored in your phone.");

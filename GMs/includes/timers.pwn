@@ -276,7 +276,7 @@ task SyncTime[60000]()
 				{
 					PlayerInfo[i][pReceivedPrize] = 0;
 				}
-				mysql_function_query(MainPipeline, "UPDATE `accounts` SET `ReceivedPrize` = 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_tquery(MainPipeline, "UPDATE `accounts` SET `ReceivedPrize` = 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}*/
 		}
 	    if(tmphour == 3 || tmphour == 6 || tmphour == 9 || tmphour == 12 || tmphour == 15 || tmphour == 18 || tmphour == 21 || tmphour == 0) PrepareLotto();
@@ -430,8 +430,8 @@ task SyncTime[60000]()
 		format(szMiscArray, sizeof(szMiscArray), "The time is now %s. ((ST: %s))", ConvertToTwelveHour(ttTime), ConvertToTwelveHour(tmphour));
 		SendClientMessageToAllEx(COLOR_WHITE, szMiscArray);
 		new query[300];
-		format(query, sizeof(query), "SELECT b.shift, b.needs_%s, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' AND b.type = 1 GROUP BY b.shift, b.needs_%s", GetWeekday(), year, month, day, tmphour, GetWeekday());
-		mysql_function_query(MainPipeline, query, true, "GetShiftInfo", "is", INVALID_PLAYER_ID, szMiscArray);
+		mysql_format(MainPipeline, query, sizeof(query), "SELECT b.shift, b.needs_%e, COUNT(DISTINCT s.id) as ShiftCount FROM cp_shift_blocks b LEFT JOIN cp_shifts s ON b.shift_id = s.shift_id AND s.date = '%d-%02d-%02d' AND s.status >= 2 AND s.type = 1 WHERE b.time_start = '%02d:00:00' AND b.type = 1 GROUP BY b.shift, b.needs_%e", GetWeekday(), year, month, day, tmphour, GetWeekday());
+		mysql_tquery(MainPipeline, query, "GetShiftInfo", "is", INVALID_PLAYER_ID, szMiscArray);
 		foreach(new i: Player)
 		{
 			if(PlayerInfo[i][pAdmin] >= 2)
@@ -454,8 +454,8 @@ task SyncTime[60000]()
 					{
 						SetPVarInt(i, "pBirthday", 1);
 						PlayerInfo[i][pLastBirthday] = gettime();
-						format(query, sizeof(query), "UPDATE `accounts` SET `LastBirthday`=%d WHERE `Username` = '%s'", PlayerInfo[i][pLastBirthday], GetPlayerNameExt(i));
-						mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
+						mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `LastBirthday`=%d WHERE `Username` = '%e'", PlayerInfo[i][pLastBirthday], GetPlayerNameExt(i));
+						mysql_tquery(MainPipeline, query, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
 					}
 				}
 				else
@@ -545,8 +545,8 @@ task SyncTime[60000]()
 					if(PlayerInfo[i][pDedicatedPlayer] != 4) PlayerInfo[i][pDedicatedPlayer] = 0;
 				}
 			}
-			format(query, sizeof(query), "UPDATE `accounts` SET `pDedicatedPlayer` = 0, `DedicatedHours` = 0 WHERE `DedicatedHours` > 0 AND `pDedicatedPlayer` != 4");
-			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `pDedicatedPlayer` = 0, `DedicatedHours` = 0 WHERE `DedicatedHours` > 0 AND `pDedicatedPlayer` != 4");
+			mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 	}
 }
@@ -1249,7 +1249,7 @@ foreach(new i: Player)
 							vehicle_unlock_doors(vehicleid);
 							SetPVarInt(i, "VLPLocksLeft", GetPVarInt(i, "VLPLocksLeft")-1);
 							mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `vehicles` SET `pvLocksLeft` = '%d', `pvLastLockPickedBy` = '%e' WHERE `id` = '%d' AND `sqlID` = '%d'", GetPVarInt(i, "VLPLocksLeft"), GetPlayerNameExt(i), GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
-							mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
+							mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
 							new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME];
 							GetPlayerIp(i, ip, sizeof(ip)), GetPVarString(i, "LockPickPlayerName", ownername, sizeof(ownername));
 							format(szMiscArray, sizeof(szMiscArray), "[LOCK PICK] %s (IP:%s, SQLId: %d) successfully lock picked a %s(VID:%d SQLId %d) owned by %s(Offline, SQLId: %d)", GetPlayerNameEx(i), ip, GetPlayerSQLId(i), GetVehicleName(vehicleid), vehicleid, GetPVarInt(i, "LockPickVehicleSQLId"), ownername, GetPVarInt(i, "LockPickPlayerSQLId"));
@@ -1393,8 +1393,8 @@ foreach(new i: Player)
 						SetPlayerSkin(i, GetPlayerSkin(i));
 						SetPlayerSpecialAction(i, SPECIAL_ACTION_NONE);
 						if(GetPVarType(i, "LockPickVehicleSQLId")) {
-							format(szMiscArray, sizeof(szMiscArray), "SELECT `pvWeapon0`, `pvWeapon1`, `pvWeapon2` FROM `vehicles` WHERE `id` = '%d' AND `sqlID` = '%d'", GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
-							mysql_function_query(MainPipeline, szMiscArray, true, "CheckTrunkContents", "i", i);
+							mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `pvWeapon0`, `pvWeapon1`, `pvWeapon2` FROM `vehicles` WHERE `id` = '%d' AND `sqlID` = '%d'", GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+							mysql_tquery(MainPipeline, szMiscArray, "CheckTrunkContents", "i", i);
 						}
 						else {
 							new slot = GetPlayerVehicle(GetPVarInt(i, "LockPickPlayer"), GetPVarInt(i, "LockPickVehicle"));
@@ -2977,12 +2977,12 @@ ptask fpsCounterUpdate[500](i)
 ptask ShopItemQueue[60000](i)
 {
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `shop_orders` WHERE `user_id` = %d AND `status` = 0", GetPlayerSQLId(i));
-	mysql_function_query(MainPipeline, szMiscArray, true, "ExecuteShopQueue", "ii", i, 0);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `shop_orders` WHERE `user_id` = %d AND `status` = 0", GetPlayerSQLId(i));
+	mysql_tquery(MainPipeline, szMiscArray, "ExecuteShopQueue", "ii", i, 0);
 
 	if(ShopToggle == 1)
 	{
-		format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `order_delivery_status` WHERE `player_id` = %d AND `status` = 0", GetPlayerSQLId(i));
-		mysql_function_query(ShopPipeline, szMiscArray, true, "ExecuteShopQueue", "ii", i, 1);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `order_delivery_status` WHERE `player_id` = %d AND `status` = 0", GetPlayerSQLId(i));
+		mysql_tquery(ShopPipeline, szMiscArray, "ExecuteShopQueue", "ii", i, 1);
 	}
 }

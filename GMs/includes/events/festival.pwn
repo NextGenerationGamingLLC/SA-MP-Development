@@ -118,15 +118,6 @@ CMD:pizza(playerid, params[])
 	return 1;
 }
 
-/*CMD:exitmaze(playerid, params[])
-{
-	if(!IsPlayerInRangeOfPoint(playerid, 3.0, 1472.805908, 1429.322998, 11.050000)) return SendClientMessageEx(playerid, COLOR_GREY, "You are not at the maze exit point!");
-	SetPlayerPos(playerid, 1389.463012, -81.734130, 31.068840);
-	SetPlayerFacingAngle(playerid, 311.76);
-	Player_StreamPrep(playerid, 1389.463012, -81.734130, 31.068840, FREEZE_TIME);
-	return 1;
-}*/
-
 CMD:frieddough(playerid, params[])
 {
 	if(!IsPlayerInRangeOfPoint(playerid, 5.0, 1465.0697,-86.3609,23.2247)) return SendClientMessage(playerid, COLOR_GREY, "You are not at a fried dough stand.");

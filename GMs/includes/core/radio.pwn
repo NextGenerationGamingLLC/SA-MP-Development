@@ -235,7 +235,7 @@ public StationSelectHTTP(index, response_code, data[])
 stock ShowSetStation(playerid, title[] = "Radio Menu")
 {
 	new string[256];
-	format(string, sizeof(string), "Favorite Station\nGenres\nTop 50 Stations\nSearch\nK-LSR\nNick's Radio\nCustom Audio URL\n%sTurn radio off", ((!isnull(PlayerInfo[playerid][pFavStation])) ? ("Favorite Station Settings\n") : ("")));
+	format(string, sizeof(string), "Favorite Station\nGenres\nTop 50 Stations\nSearch\nK-LSR\nRadio New Robada\nNick's Radio\nCustom Audio URL\n%sTurn radio off", ((!isnull(PlayerInfo[playerid][pFavStation])) ? ("Favorite Station Settings\n") : ("")));
 	return ShowPlayerDialogEx(playerid, SETSTATION, DIALOG_STYLE_LIST, title, string, "Select", "Close");
 }
 
@@ -363,6 +363,37 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					foreach(new i: Player)
 					{
 						if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
+							PlayAudioStreamForPlayerEx(i, "https://radio.newrobada.com/radio/8000/autodj.mp3");
+						}
+					}	
+					format(stationidv[GetPlayerVehicleID(playerid)], 64, "%s", "https://radio.newrobada.com/radio/8000/autodj.mp3");
+					format(szMiscArray, sizeof(szMiscArray), "* %s changes the radio station.", GetPlayerNameEx(playerid), szMiscArray);
+					ProxDetector(10.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				}
+				else if(GetPVarType(playerid, "pBoomBox"))
+				{
+					foreach(new i: Player)
+					{
+						if(IsPlayerInDynamicArea(i, GetPVarInt(playerid, "pBoomBoxArea")))
+						{
+							PlayAudioStreamForPlayerEx(i, "https://radio.newrobada.com/radio/8000/autodj.mp3", GetPVarFloat(playerid, "pBoomBoxX"), GetPVarFloat(playerid, "pBoomBoxY"), GetPVarFloat(playerid, "pBoomBoxZ"), 30.0, 1);
+						}
+					}	
+					SetPVarString(playerid, "pBoomBoxStation", "https://radio.newrobada.com/radio/8000/autodj.mp3");
+				}
+				else
+				{
+					PlayAudioStreamForPlayerEx(playerid, "https://radio.newrobada.com/radio/8000/autodj.mp3");
+					SetPVarInt(playerid, "MusicIRadio", 1);
+				}
+			}
+			else if(listitem == 6)
+			{
+				if(IsPlayerInAnyVehicle(playerid))
+				{
+					foreach(new i: Player)
+					{
+						if(GetPlayerVehicleID(i) != 0 && GetPlayerVehicleID(i) == GetPlayerVehicleID(playerid)) {
 							PlayAudioStreamForPlayerEx(i, "http://nick.ng-gaming.net:8000/listen.pls");
 						}
 					}	
@@ -387,15 +418,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SetPVarInt(playerid, "MusicIRadio", 1);
 				}
 			}
-			else if(listitem == 6)
+			else if(listitem == 7)
 			{
 				ShowPlayerDialogEx(playerid, CUSTOM_URLCHOICE, DIALOG_STYLE_INPUT, "Custom URL", "Please insert a valid audio url stream.", "Enter", "Back");
 			}
-			else if(!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 7)
+			else if(!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 8)
 			{
 				ShowPlayerDialogEx(playerid, STATIONFAVSETTING, DIALOG_STYLE_LIST, "Favorite Station Settings", "Modify Station\nRemove Station", "Select", "Back");
 			}
-			else if((isnull(PlayerInfo[playerid][pFavStation]) && listitem == 7) || (!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 8))
+			else if((isnull(PlayerInfo[playerid][pFavStation]) && listitem == 8) || (!isnull(PlayerInfo[playerid][pFavStation]) && listitem == 9))
 			{
 				if(!IsPlayerInAnyVehicle(playerid))
 				{

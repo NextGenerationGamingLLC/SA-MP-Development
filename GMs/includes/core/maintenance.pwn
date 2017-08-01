@@ -4,8 +4,8 @@ new SystemUpdate, SystemTimer;
 new Text:UpdateIn[2];
 
 hook OnGameModeInit() {
-	UpdateIn[0] = TextDrawCreate(451.049072, 430.333709, "Server_update_in:");
-	TextDrawLetterSize(UpdateIn[0], 0.400000, 1.600000);
+	UpdateIn[0] = TextDrawCreate(483.999969, 431.007720, "Server_update_in:");
+	TextDrawLetterSize(UpdateIn[0], 0.424666, 1.612444);
 	TextDrawAlignment(UpdateIn[0], 1);
 	TextDrawColor(UpdateIn[0], -1);
 	TextDrawSetShadow(UpdateIn[0], 0);
@@ -15,8 +15,8 @@ hook OnGameModeInit() {
 	TextDrawSetProportional(UpdateIn[0], 1);
 	TextDrawSetShadow(UpdateIn[0], 0);
 
-	UpdateIn[1] = TextDrawCreate(593.232971, 430.333709, "00:00");
-	TextDrawLetterSize(UpdateIn[1], 0.400000, 1.600000);
+	UpdateIn[1] = TextDrawCreate(595.181335, 431.007720, "00:00");
+	TextDrawLetterSize(UpdateIn[1], 0.424666, 1.612444);
 	TextDrawAlignment(UpdateIn[1], 1);
 	TextDrawColor(UpdateIn[1], -1);
 	TextDrawSetShadow(UpdateIn[1], 0);

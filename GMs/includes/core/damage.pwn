@@ -237,6 +237,13 @@ stock IsInvalidGunAnim(playerid)
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	szMiscArray[0] = 0;
+	if(gPlayerLogged{playerid} == 0) {
+		format(szMiscArray, sizeof(szMiscArray), "%s(%d) [%s] has moved from the login screen position.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
+		Log("logs/security.log", szMiscArray);
+		SendClientMessage(playerid, COLOR_WHITE, "SERVER: You attempted to deal damage to someone when not logged in.");
+		SetTimerEx("KickEx", 1000, 0, "i", playerid);
+		return 1;
+	}
 	if((0 <= bodypart < 2)) return 1;
 	if(IsAimingColt(playerid) && IsInvalidGunAnim(playerid)) {
 		ClearAnimations(playerid, 1);
@@ -280,7 +287,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		switch(weaponid)
 		{
 			case 0 .. 3, 5 .. 8, 10 .. 15, 28, 32: if(amount > 20.0) amount = 20.0;
-			case 4: if(amount > 301.0) amount = 301.0;
+			case 4: if(amount > 150.0) amount = 150.0;
 			case 9: if(amount > 30.0) amount = 30.0;
 			case 23: if(amount > 14.0) amount = 14.0;
 			case 24, 38: if(amount > 47.0) amount = 47.0;
@@ -607,6 +614,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		}
 		if(issuerid != 65535) {
 			if(IsPlayerPaused(issuerid)) return 1;
+			/*
 			if(GhostHacker[issuerid][0] > 0 && GhostHacker[issuerid][6] < gettime()) GhostHacker[issuerid][6] = gettime()+6, GhostHacker[issuerid][0] = 0;
 			if(IsPlayerPaused(issuerid) || IsDoingAnim[issuerid] || IsInvalidGunAnim(issuerid)) {
 				if(GhostHacker[issuerid][1] < gettime()) {
@@ -629,7 +637,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 				return 1;
-			}
+			}*/
 			if(GetPVarInt(playerid, "AttemptingLockPick") == 1) {
 				DeletePVar(playerid, "AttemptingLockPick");
 				DeletePVar(playerid, "LockPickCountdown");
@@ -783,8 +791,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
 		{
 			new string[128];
-			format(string, sizeof(string), "INSERT INTO humankills (id, num, name) VALUES (%d,1, '%s') ON DUPLICATE KEY UPDATE num = num + 1", PlayerInfo[killerid][pId], GetPlayerNameEx(killerid));
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, killerid);
+			mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO humankills (id, num, name) VALUES (%d,1, '%s') ON DUPLICATE KEY UPDATE num = num + 1", PlayerInfo[killerid][pId], GetPlayerNameEx(killerid));
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, killerid);
 		}
 
 		if(zombieevent == 1 && GetPVarType(playerid, "pIsZombie"))
@@ -908,9 +916,9 @@ public OnPlayerDeath(playerid, killerid, reason)
 		GetWeaponName(reason, weaponname, sizeof(weaponname));
 
 		new query[256];
-		format(query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '%s')", GetPlayerSQLId(killerid), GetPlayerSQLId(playerid), weaponname);
+		mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `kills` (`id`, `killerid`, `killedid`, `date`, `weapon`) VALUES (NULL, %d, %d, NOW(), '%e')", GetPlayerSQLId(killerid), GetPlayerSQLId(playerid), weaponname);
 		PlayerKills[killerid]++;
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 		if(GetPVarType(killerid, "IsInArena")) PlayerInfo[killerid][pDMKills]++;
 		if(GetPVarType(playerid, "FixVehicleTimer")) KillTimer(GetPVarInt(playerid, "FixVehicleTimer")), DeletePVar(playerid, "FixVehicleTimer");

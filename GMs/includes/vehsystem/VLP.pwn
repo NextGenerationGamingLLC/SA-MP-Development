@@ -376,8 +376,8 @@ DeliverVehicleTimer(i)
 			SendClientMessageEx(i, COLOR_YELLOW, "You failed to deliver the vehicle, the vehicle has been restored.");
 			if(GetPVarType(i, "LockPickVehicleSQLId")) 
 			{
-				format(szMiscArray, sizeof(szMiscArray), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(i, "LockPickVehicle")], GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
-				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
+				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(i, "LockPickVehicle")], GetPVarInt(i, "LockPickVehicleSQLId"), GetPVarInt(i, "LockPickPlayerSQLId"));
+				mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, i);
 				DeletePVar(i, "LockPickVehicleSQLId");
 				DeletePVar(i, "LockPickPlayerSQLId");
 				DeletePVar(i, "LockPickPlayerName");

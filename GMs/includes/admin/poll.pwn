@@ -59,7 +59,7 @@ hook OnGameModeExit() {
 
 Poll_LoadPolls() {
 
- 	mysql_function_query(MainPipeline, "SELECT * FROM `polls` WHERE `active` = '1' LIMIT 1", true, "Poll_OnLoadPolls", "");
+ 	mysql_tquery(MainPipeline, "SELECT * FROM `polls` WHERE `active` = '1' LIMIT 1", true, "Poll_OnLoadPolls", "");
 	return 1;
 }
 
@@ -77,7 +77,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(strlen(inputtext) < 4) return SendClientMessageEx(playerid, COLOR_GRAD1, "You cannot vote this option.");
 			PlayerInfo[playerid][pLastPoll] = arrPolls[pol_iPollID];
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `polls` SET `OptionV%d` = OptionV%d + '1' WHERE `id` = '%d'", listitem-2, listitem-2, arrPolls[pol_iPollID]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "Poll_CastVote", "ii", playerid, listitem-2);
+			mysql_tquery(MainPipeline, szMiscArray, false, "Poll_CastVote", "ii", playerid, listitem-2);
 
 		}
 		case DIALOG_POLLS_EDIT: {
@@ -128,7 +128,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Log("logs/polls.log", szMiscArray);
 
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `polls` SET `Question` = '%s' WHERE `id` = '%d'", szPoll, arrPolls[pol_iPollID]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 		}
 		case DIALOG_POLLS_OPTIONS: {
@@ -155,7 +155,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 			format(szMiscArray, sizeof(szMiscArray), "Option%d", iPollOption);
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `polls` SET `%s` = '%s' WHERE `id` = '%d'", szMiscArray, szPoll, arrPolls[pol_iPollID]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 
 			DeletePVar(playerid, "EditPoll");
@@ -171,7 +171,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Log("logs/polls.log", szMiscArray);
 
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `polls` SET `Type` = '%d' WHERE `id` = '%d'", arrPolls[pol_iTypeID], arrPolls[pol_iPollID]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 		case DIALOG_POLLS_HOURS: {
 
@@ -183,7 +183,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			Log("logs/polls.log", szMiscArray);
 
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `polls` SET `Hours` = '%d' WHERE `id` = '%d'", arrPolls[pol_iHours], arrPolls[pol_iPollID]);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 	}
 	return 0;
@@ -243,18 +243,18 @@ Poll_TogglePoll(playerid, bool:bState) {
 	Log("logs/polls.log", szMiscArray);
 
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `polls` SET `Active` = '%d' WHERE `id` = '%d'", bState, arrPolls[pol_iPollID]);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 Poll_CreatePoll() {
 
-	mysql_function_query(MainPipeline, "INSERT INTO `polls` (`Active`) VALUES ('1')", true, "Poll_OnCreatePoll", "");
+	mysql_tquery(MainPipeline, "INSERT INTO `polls` (`Active`) VALUES ('1')", true, "Poll_OnCreatePoll", "");
 }
 
 forward Poll_OnCreatePoll();
 public Poll_OnCreatePoll() {
 
-	arrPolls[pol_iPollID] = cache_insert_id(MainPipeline);
+	arrPolls[pol_iPollID] = cache_insert_id();
 	arrPolls[pol_szQuestion][0] = 0;
 	arrPolls[pol_bFinished] = false;
 	arrPolls[pol_bActive] = false;
@@ -267,7 +267,7 @@ public Poll_OnCreatePoll() {
 Poll_GetVotes(playerid) {
 
 	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `polls` WHERE `id` = '%d'", arrPolls[pol_iPollID]);
-	mysql_function_query(MainPipeline, szMiscArray, true, "Poll_OnGetVotes", "i", playerid);
+	mysql_tquery(MainPipeline, szMiscArray, true, "Poll_OnGetVotes", "i", playerid);
 }
 
 forward Poll_OnGetVotes(playerid);

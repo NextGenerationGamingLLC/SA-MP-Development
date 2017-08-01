@@ -700,8 +700,8 @@ PointTypeToName(id)
 
 stock SavePoint(point) {
 	new szQuery[2048];
-	format(szQuery, sizeof(szQuery), "UPDATE `dynpoints` SET \
-	`pointname` = '%s', \
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `dynpoints` SET \
+	`pointname` = '%e', \
 	`type` = %d, \
 	`posx` = %f, \
 	`posy` = %f, \
@@ -714,7 +714,7 @@ stock SavePoint(point) {
 	`vw2` = %d, \
 	`int2` = %d, \
 	`boatonly` = %d, \
-	`capturename` = '%s', \
+	`capturename` = '%e', \
 	`capturegroup` = %d, \
 	`ready` = %d, \
 	`timer` = %d, \
@@ -725,7 +725,7 @@ stock SavePoint(point) {
 	`amount3` = %d, \
 	`amount4` = %d, \
 	`locked` = %d WHERE `id` = %d",
-	g_mysql_ReturnEscaped(DynPoints[point][poName], MainPipeline),
+	DynPoints[point][poName],
 	DynPoints[point][poType],
 	DynPoints[point][poPos][0],
 	DynPoints[point][poPos][1],
@@ -738,7 +738,7 @@ stock SavePoint(point) {
 	DynPoints[point][po2VW],
 	DynPoints[point][po2Int],
 	DynPoints[point][poBoat],
-	g_mysql_ReturnEscaped(DynPoints[point][poCaptureName], MainPipeline),
+	DynPoints[point][poCaptureName],
 	DynPoints[point][poCaptureGroup],
 	DynPoints[point][poCapturable],
 	DynPoints[point][poTimer],
@@ -750,7 +750,7 @@ stock SavePoint(point) {
 	DynPoints[point][poAmount][4],
 	DynPoints[point][poLocked],
 	point + 1);
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock UpdatePoint(id)
@@ -779,42 +779,42 @@ stock UpdatePoint(id)
 stock LoadPoints()
 {
 	printf("[Dynamic Points] Loading Dynamic Points from the database, please wait...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `dynpoints`", true, "OnLoadPoints", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `dynpoints`", "OnLoadPoints", "");
 }
 
 forward OnLoadPoints();
 public OnLoadPoints()
 {
-	new i, rows, fields, szField[24];
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows, szField[24];
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		cache_get_field_content(i, "pointname", DynPoints[i][poName], MainPipeline, MAX_PLAYER_NAME);
-		DynPoints[i][poType] = cache_get_field_content_int(i, "type", MainPipeline);
-		DynPoints[i][poID] = cache_get_field_content_int(i, "id", MainPipeline);
-		DynPoints[i][poPos][0] = cache_get_field_content_float(i, "posx", MainPipeline);
-		DynPoints[i][poPos][1] = cache_get_field_content_float(i, "posy", MainPipeline);
-		DynPoints[i][poPos][2] = cache_get_field_content_float(i, "posz", MainPipeline);
-		DynPoints[i][poPos2][0] = cache_get_field_content_float(i, "pos2x", MainPipeline);
-		DynPoints[i][poPos2][1] = cache_get_field_content_float(i, "pos2y", MainPipeline);
-		DynPoints[i][poPos2][2] = cache_get_field_content_float(i, "pos2z", MainPipeline);
-		DynPoints[i][poVW] = cache_get_field_content_int(i, "vw", MainPipeline);
-		DynPoints[i][poInt] = cache_get_field_content_int(i, "int", MainPipeline);
-		DynPoints[i][po2VW] = cache_get_field_content_int(i, "vw2", MainPipeline);
-		DynPoints[i][po2Int] = cache_get_field_content_int(i, "int2", MainPipeline);
-		DynPoints[i][poBoat] = cache_get_field_content_int(i, "boatonly", MainPipeline);
-		cache_get_field_content(i, "capturename", DynPoints[i][poCaptureName], MainPipeline, MAX_PLAYER_NAME);
-		DynPoints[i][poCaptureGroup] = cache_get_field_content_int(i, "capturegroup", MainPipeline);
-		DynPoints[i][poCapturable] = cache_get_field_content_int(i, "ready", MainPipeline);
-		DynPoints[i][poTimer] = cache_get_field_content_int(i, "timer", MainPipeline);
-		DynPoints[i][poAmountHour] = cache_get_field_content_int(i, "amounthour", MainPipeline);
+		cache_get_value_name(i, "pointname", DynPoints[i][poName], MAX_PLAYER_NAME);
+		cache_get_value_name_int(i, "type", DynPoints[i][poType]);
+		cache_get_value_name_int(i, "id", DynPoints[i][poID]);
+		cache_get_value_name_float(i, "posx", DynPoints[i][poPos][0]);
+		cache_get_value_name_float(i, "posy", DynPoints[i][poPos][1]);
+		cache_get_value_name_float(i, "posz", DynPoints[i][poPos][2]);
+		cache_get_value_name_float(i, "pos2x", DynPoints[i][poPos2][0]);
+		cache_get_value_name_float(i, "pos2y", DynPoints[i][poPos2][1]);
+		cache_get_value_name_float(i, "pos2z", DynPoints[i][poPos2][2]);
+		cache_get_value_name_int(i, "vw", DynPoints[i][poVW]);
+		cache_get_value_name_int(i, "int", DynPoints[i][poInt]);
+		cache_get_value_name_int(i, "vw2", DynPoints[i][po2VW]);
+		cache_get_value_name_int(i, "int2", DynPoints[i][po2Int]);
+		cache_get_value_name_int(i, "boatonly", DynPoints[i][poBoat]);
+		cache_get_value_name(i, "capturename", DynPoints[i][poCaptureName], MAX_PLAYER_NAME);
+		cache_get_value_name_int(i, "capturegroup", DynPoints[i][poCaptureGroup]);
+		cache_get_value_name_int(i, "ready", DynPoints[i][poCapturable]);
+		cache_get_value_name_int(i, "timer", DynPoints[i][poTimer]);
+		cache_get_value_name_int(i, "amounthour", DynPoints[i][poAmountHour]);
 		for(new m; m < 5; m++)
 		{
 			format(szField, sizeof(szField), "amount%d", m);
-			DynPoints[i][poAmount][m] = cache_get_field_content_int(i, szField, MainPipeline);
+			cache_get_value_name_int(i, szField, DynPoints[i][poAmount][m]);
 		}
-		DynPoints[i][poLocked] = cache_get_field_content_int(i, "locked", MainPipeline);
+		cache_get_value_name_int(i, "locked", DynPoints[i][poLocked]);
 		// Ensure our non-loaded data has something.
 		DynPoints[i][poTimeLeft] = 0; // 10 minute timer
 		DynPoints[i][poTimeCapLeft] = 0; // 10 second timer

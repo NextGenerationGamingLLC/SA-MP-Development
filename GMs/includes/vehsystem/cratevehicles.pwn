@@ -170,42 +170,42 @@ forward LoadDynamicCrateVehicles();
 public LoadDynamicCrateVehicles()
 {
 	printf("[LoadDynamicCrateVehicles] Loading data from database...");
-    mysql_function_query(MainPipeline, "SELECT * FROM `crate_vehicles`", true, "OnLoadDynamicCrateVehciles", "");
+    mysql_tquery(MainPipeline, "SELECT * FROM `crate_vehicles`", "OnLoadDynamicCrateVehciles", "");
     return 1;
 }
 
 forward OnLoadDynamicCrateVehciles();
 public OnLoadDynamicCrateVehciles() {
 	szMiscArray[0] = 0;
-	new i, rows, fields, sqlid;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows, sqlid;
+	cache_get_row_count(rows);
 	while(i < rows)
 	{
-		sqlid = cache_get_field_content_int(i, "id", MainPipeline);
+		cache_get_value_name_int(i, "id", sqlid);
 		if(i < MAX_CRATE_VEHCILES) {
 			CrateVehicle[i][cvId] = sqlid;
-			CrateVehicle[i][cvModel] = cache_get_field_content_int(i, "vModel", MainPipeline);
-			CrateVehicle[i][cvColor][0] = cache_get_field_content_int(i, "vColor1", MainPipeline);
-			CrateVehicle[i][cvColor][1] = cache_get_field_content_int(i, "vColor2", MainPipeline);
-			CrateVehicle[i][cvGroupID] = cache_get_field_content_int(i, "vGroup", MainPipeline);
-			CrateVehicle[i][cvRank] = cache_get_field_content_int(i, "vRank", MainPipeline);
-			CrateVehicle[i][cvSpawned] = cache_get_field_content_int(i, "vSpawned", MainPipeline);
-			CrateVehicle[i][cvDisabled] = cache_get_field_content_int(i, "vDisabled", MainPipeline);
-			CrateVehicle[i][cvImpound] = cache_get_field_content_int(i, "vImpound", MainPipeline);
-			CrateVehicle[i][cvTickets] = cache_get_field_content_int(i, "vTickets", MainPipeline);
-			CrateVehicle[i][cvMaxHealth] = cache_get_field_content_float(i, "vMaxHealth", MainPipeline);
-			CrateVehicle[i][cvHealth] = cache_get_field_content_float(i, "vHealth", MainPipeline);
-			CrateVehicle[i][cvFuel] = cache_get_field_content_float(i, "vFuel", MainPipeline);
-			CrateVehicle[i][cvType] = cache_get_field_content_int(i, "vType", MainPipeline);
-			CrateVehicle[i][cvPos][0] = cache_get_field_content_float(i, "vPosX", MainPipeline);
-			CrateVehicle[i][cvPos][1] = cache_get_field_content_float(i, "vPosY", MainPipeline);
-			CrateVehicle[i][cvPos][2] = cache_get_field_content_float(i, "vPosZ", MainPipeline);
-			CrateVehicle[i][cvPos][3] = cache_get_field_content_float(i, "vRotZ", MainPipeline);
-			CrateVehicle[i][cvInt] = cache_get_field_content_int(i, "vInt", MainPipeline);
-			CrateVehicle[i][cvVw] = cache_get_field_content_int(i, "vVw", MainPipeline);
-			CrateVehicle[i][cvCrateMax] = cache_get_field_content_int(i, "vCrateMax", MainPipeline);
-			CrateVehicle[i][cvCrate] = cache_get_field_content_int(i, "vCrate", MainPipeline);
-			CrateVehicle[i][cvCrateLoad] = cache_get_field_content_int(i, "FirstDrop", MainPipeline);
+			cache_get_value_name_int(i, "vModel", CrateVehicle[i][cvModel]);
+			cache_get_value_name_int(i, "vColor1", CrateVehicle[i][cvColor][0]);
+			cache_get_value_name_int(i, "vColor2", CrateVehicle[i][cvColor][1]);
+			cache_get_value_name_int(i, "vGroup", CrateVehicle[i][cvGroupID]);
+			cache_get_value_name_int(i, "vRank", CrateVehicle[i][cvRank]);
+			cache_get_value_name_int(i, "vSpawned", CrateVehicle[i][cvSpawned]);
+			cache_get_value_name_int(i, "vDisabled", CrateVehicle[i][cvDisabled]);
+			cache_get_value_name_int(i, "vImpound", CrateVehicle[i][cvImpound]);
+			cache_get_value_name_int(i, "vTickets", CrateVehicle[i][cvTickets]);
+			cache_get_value_name_float(i, "vMaxHealth", CrateVehicle[i][cvMaxHealth]);
+			cache_get_value_name_float(i, "vHealth", CrateVehicle[i][cvHealth]);
+			cache_get_value_name_float(i, "vFuel", CrateVehicle[i][cvFuel]);
+			cache_get_value_name_int(i, "vType", CrateVehicle[i][cvType]);
+			cache_get_value_name_float(i, "vPosX", CrateVehicle[i][cvPos][0]);
+			cache_get_value_name_float(i, "vPosY", CrateVehicle[i][cvPos][1]);
+			cache_get_value_name_float(i, "vPosZ", CrateVehicle[i][cvPos][2]);
+			cache_get_value_name_float(i, "vRotZ", CrateVehicle[i][cvPos][3]);
+			cache_get_value_name_int(i, "vInt", CrateVehicle[i][cvInt]);
+			cache_get_value_name_int(i, "vVw", CrateVehicle[i][cvVw]);
+			cache_get_value_name_int(i, "vCrateMax", CrateVehicle[i][cvCrateMax]);
+			cache_get_value_name_int(i, "vCrate", CrateVehicle[i][cvCrate]);
+			cache_get_value_name_int(i, "FirstDrop", CrateVehicle[i][cvCrateLoad]);
 			if(400 <= CrateVehicle[i][cvModel] < 612) {
 				if(!IsWeaponizedVehicle(CrateVehicle[i][cvModel])) {
 					SpawnCrateVeh(i);
@@ -213,8 +213,8 @@ public OnLoadDynamicCrateVehciles() {
 			}
 			++CrateVehTotal;
 		} else {
-			format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `crate_vehicles` WHERE `id` = %d", sqlid);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `crate_vehicles` WHERE `id` = %d", sqlid);
+			mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 			printf("SQL ID %d exceeds Max Dynamic Crate Vehicles", sqlid);
 		}
 		i++;
@@ -356,9 +356,9 @@ CMD:cvcreate(playerid, params[]) {
 	GetPlayerFacingAngle(playerid, vpos[3]);
 	for(new i = 0; i < MAX_CRATE_VEHCILES; i++) {
 		if(CrateVehicle[i][cvModel] == 0) {
-	        format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `crate_vehicles` (`vModel`, `vColor1`, `vColor2`, `vPosX`, `vPosY`, `vPosZ`, `vRotZ`) VALUES (%d, %d, %d, %0.5f, %0.5f, %0.5f, %0.5f)", iVehicle, iColors[0], iColors[1], vpos[0], vpos[1], vpos[2], vpos[3]);
-			//mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnCrateVehicle", "iiiffffii", playerid, i, iVehicle, vpos[0], vpos[1], vpos[2], vpos[3], iColors[0], iColors[1]);
+	        mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `crate_vehicles` (`vModel`, `vColor1`, `vColor2`, `vPosX`, `vPosY`, `vPosZ`, `vRotZ`) VALUES (%d, %d, %d, %0.5f, %0.5f, %0.5f, %0.5f)", iVehicle, iColors[0], iColors[1], vpos[0], vpos[1], vpos[2], vpos[3]);
+			//mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_tquery(MainPipeline, szMiscArray, "OnCrateVehicle", "iiiffffii", playerid, i, iVehicle, vpos[0], vpos[1], vpos[2], vpos[3], iColors[0], iColors[1]);
 			/*CrateVehicle[i][cvModel] = iVehicle;
 			CrateVehicle[i][cvPos][0] = vpos[0];
 			CrateVehicle[i][cvPos][1] = vpos[1];
@@ -380,7 +380,7 @@ CMD:cvcreate(playerid, params[]) {
 
 forward OnCrateVehicle(playerid, i, veh, Float:pos1, Float:pos2, Float:pos3, Float:pos4, color1, color2);
 public OnCrateVehicle(playerid, i, veh, Float:pos1, Float:pos2, Float:pos3, Float:pos4, color1, color2) {
-	CrateVehicle[i][cvId] = mysql_insert_id(MainPipeline);
+	CrateVehicle[i][cvId] = cache_insert_id();
 	CrateVehicle[i][cvModel] = veh;
 	CrateVehicle[i][cvPos][0] = pos1;
 	CrateVehicle[i][cvPos][1] = pos2;
@@ -758,8 +758,8 @@ stock DeleteCrateVehicle(playerid, veh) {
 	else SendClientMessageEx(playerid, COLOR_YELLOW, "You have deleted the vehicle %s. (Not Owned)", VehicleName[CrateVehicle[veh][cvModel] - 400]), format(szMiscArray, sizeof(szMiscArray), "%s has deleted vehicle %s (Veh id: %d | Owner: N/A)", GetPlayerNameEx(playerid), VehicleName[CrateVehicle[veh][cvModel] - 400], CrateVehicle[veh][cvModel]);
 	Log("logs/cratevehicle.log", szMiscArray);
 
-    format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `crate_vehicles` WHERE `id` = %d", CrateVehicle[veh][cvId]);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+    mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `crate_vehicles` WHERE `id` = %d", CrateVehicle[veh][cvId]);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 	VehDelivering[veh] = 0;
 	CrateVehicle[veh][cvForkObject] = -1;

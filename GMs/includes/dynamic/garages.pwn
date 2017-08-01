@@ -325,8 +325,8 @@ CMD:garageowner(playerid, params[])
 		}
 		else
 		{
-			format(string, sizeof(string), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s'", g_mysql_ReturnEscaped(playername, MainPipeline));
-			mysql_function_query(MainPipeline, string, true, "OnSetGarageOwner", "ii", playerid, garageid);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%e'", playername);
+			mysql_tquery(MainPipeline, string, "OnSetGarageOwner", "ii", playerid, garageid);
 		}
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
@@ -511,33 +511,34 @@ CMD:garagehelp(playerid, params[])
 stock LoadGarages()
 {
 	printf("[LoadGarages] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `garages`", true, "OnLoadGarages", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `garages`", "OnLoadGarages", "");
 }
 
 forward OnLoadGarages();
 public OnLoadGarages()
 {
-	new i, rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows;
+	cache_get_row_count(rows);
+
 	while(i < rows)
 	{
-		GarageInfo[i][gar_SQLId] = cache_get_field_content_int(i, "id", MainPipeline);
-		GarageInfo[i][gar_Owner] = cache_get_field_content_int(i, "Owner", MainPipeline);
-		cache_get_field_content(i, "OwnerName", GarageInfo[i][gar_OwnerName], MainPipeline, 24);
-		GarageInfo[i][gar_ExteriorX] = cache_get_field_content_float(i, "ExteriorX", MainPipeline);
-		GarageInfo[i][gar_ExteriorY] = cache_get_field_content_float(i, "ExteriorY", MainPipeline);
-		GarageInfo[i][gar_ExteriorZ] = cache_get_field_content_float(i, "ExteriorZ", MainPipeline);
-		GarageInfo[i][gar_ExteriorA] = cache_get_field_content_float(i, "ExteriorA", MainPipeline);
-		GarageInfo[i][gar_ExteriorVW] = cache_get_field_content_int(i, "ExteriorVW", MainPipeline);
-		GarageInfo[i][gar_ExteriorInt] = cache_get_field_content_int(i, "ExteriorInt", MainPipeline);
-		GarageInfo[i][gar_CustomExterior] = cache_get_field_content_int(i, "CustomExterior", MainPipeline);
-		GarageInfo[i][gar_InteriorX] = cache_get_field_content_float(i, "InteriorX", MainPipeline);
-		GarageInfo[i][gar_InteriorY] = cache_get_field_content_float(i, "InteriorY", MainPipeline);
-		GarageInfo[i][gar_InteriorZ] = cache_get_field_content_float(i, "InteriorZ", MainPipeline);
-		GarageInfo[i][gar_InteriorA] = cache_get_field_content_float(i, "InteriorA", MainPipeline);
-		GarageInfo[i][gar_InteriorVW] = cache_get_field_content_int(i, "InteriorVW", MainPipeline);
-		cache_get_field_content(i, "Pass", GarageInfo[i][gar_Pass], MainPipeline, 24);
-		GarageInfo[i][gar_Locked] = cache_get_field_content_int(i, "Locked", MainPipeline);
+		cache_get_value_name_int(i, "id", GarageInfo[i][gar_SQLId]);
+		cache_get_value_name_int(i, "Owner", GarageInfo[i][gar_Owner]);
+		cache_get_value_name(i, "OwnerName", GarageInfo[i][gar_OwnerName], 24);
+		cache_get_value_name_float(i, "ExteriorX", GarageInfo[i][gar_ExteriorX]);
+		cache_get_value_name_float(i, "ExteriorY", GarageInfo[i][gar_ExteriorY]);
+		cache_get_value_name_float(i, "ExteriorZ", GarageInfo[i][gar_ExteriorZ]);
+		cache_get_value_name_float(i, "ExteriorA", GarageInfo[i][gar_ExteriorA]);
+		cache_get_value_name_int(i, "ExteriorVW", GarageInfo[i][gar_ExteriorVW]);
+		cache_get_value_name_int(i, "ExteriorInt", GarageInfo[i][gar_ExteriorInt]);
+		cache_get_value_name_int(i, "CustomExterior", GarageInfo[i][gar_CustomExterior]);
+		cache_get_value_name_float(i, "InteriorX", GarageInfo[i][gar_InteriorX]);
+		cache_get_value_name_float(i, "InteriorY", GarageInfo[i][gar_InteriorY]);
+		cache_get_value_name_float(i, "InteriorZ", GarageInfo[i][gar_InteriorZ]);
+		cache_get_value_name_float(i, "InteriorA", GarageInfo[i][gar_InteriorA]);
+		cache_get_value_name_int(i, "InteriorVW", GarageInfo[i][gar_InteriorVW]);
+		cache_get_value_name(i, "Pass", GarageInfo[i][gar_Pass], 24);
+		cache_get_value_name_int(i, "Locked", GarageInfo[i][gar_Locked]);
 		if(GarageInfo[i][gar_ExteriorX] != 0.0) CreateGarage(i);
 		i++;
 	}
@@ -549,9 +550,9 @@ public OnLoadGarages()
 stock SaveGarage(garageid)
 {
 	new string[512];
-	format(string, sizeof(string), "UPDATE `garages` SET \
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `garages` SET \
 		`Owner`=%d, \
-		`OwnerName`='%s', \
+		`OwnerName`='%e', \
 		`ExteriorX`=%f, \
 		`ExteriorY`=%f, \
 		`ExteriorZ`=%f, \
@@ -564,11 +565,11 @@ stock SaveGarage(garageid)
 		`InteriorZ`=%f, \
 		`InteriorA`=%f, \
 		`InteriorVW`=%d, \
-		`Pass`='%s', \
+		`Pass`='%e', \
 		`Locked`=%d \
 		WHERE `id`=%d",
 		GarageInfo[garageid][gar_Owner],
-		g_mysql_ReturnEscaped(GarageInfo[garageid][gar_OwnerName], MainPipeline),
+		GarageInfo[garageid][gar_OwnerName],
 		GarageInfo[garageid][gar_ExteriorX],
 		GarageInfo[garageid][gar_ExteriorY],
 		GarageInfo[garageid][gar_ExteriorZ],
@@ -581,11 +582,11 @@ stock SaveGarage(garageid)
 		GarageInfo[garageid][gar_InteriorZ],
 		GarageInfo[garageid][gar_InteriorA],
 		GarageInfo[garageid][gar_InteriorVW],
-		g_mysql_ReturnEscaped(GarageInfo[garageid][gar_Pass], MainPipeline),
+		GarageInfo[garageid][gar_Pass],
 		GarageInfo[garageid][gar_Locked],
 		garageid
 	);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock CreateGarage(garageid)
@@ -615,14 +616,14 @@ public OnSetGarageOwner(playerid, garageid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		new rows, fields;
+		new rows;
 		new string[128];
-		cache_get_data(rows, fields, MainPipeline);
+		cache_get_row_count(rows);
 
 		if(rows)
 		{
-			GarageInfo[garageid][gar_Owner] = cache_get_field_content_int(0, "id", MainPipeline);
-			cache_get_field_content(0, "Username", GarageInfo[garageid][gar_OwnerName], MainPipeline, MAX_PLAYER_NAME);
+			cache_get_value_name_int(0, "id", GarageInfo[garageid][gar_Owner]);
+			cache_get_value_name(0, "Username", GarageInfo[garageid][gar_OwnerName], MAX_PLAYER_NAME);
 			format(string, sizeof(string), "Successfully set the owner to %s.", GarageInfo[garageid][gar_OwnerName]);
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			CreateGarage(garageid);

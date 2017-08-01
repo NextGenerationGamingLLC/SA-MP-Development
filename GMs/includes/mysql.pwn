@@ -43,7 +43,7 @@ stock SQLUpdateBuild(query[], table[], sqlplayerid)
 		new whereclause[32];
 		format(whereclause, sizeof(whereclause), " WHERE `id`=%d", sqlplayerid);
 		strcat(query, whereclause, 2048);
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 		format(query, 2048, "UPDATE `%s` SET ", table);
 	}
 	else if (strfind(query, "=", true) != -1) strcat(query, ",", 2048);
@@ -52,13 +52,13 @@ stock SQLUpdateBuild(query[], table[], sqlplayerid)
 
 stock SQLUpdateFinish(query[], table[], sqlplayerid)
 {
-	if (strcmp(query, "WHERE id=", false) == 0) mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	if (strcmp(query, "WHERE id=", false) == 0) mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	else
 	{
 		new whereclause[32];
 		format(whereclause, sizeof(whereclause), " WHERE id=%d", sqlplayerid);
 		strcat(query, whereclause, 2048);
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 		format(query, 2048, "UPDATE `%s` SET ", table);
 	}
 	return 1;
@@ -78,7 +78,7 @@ stock SaveString(query[], table[], sqlid, Value[], String[])
 {
 	SQLUpdateBuild(query, table, sqlid);
 	new escapedstring[160], string[160];
-	mysql_real_escape_string(String, escapedstring);
+	mysql_escape_string(String, escapedstring);
 	format(string, sizeof(string), "`%s`='%s'", Value, escapedstring);
 	strcat(query, string, 2048);
 	return 1;
@@ -97,8 +97,8 @@ stock SaveFloat(query[], table[], sqlid, Value[], Float:Number)
 PinLogin(playerid)
 {
     new string[128];
-    format(string, sizeof(string), "SELECT `Pin` FROM `accounts` WHERE `id` = %d", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, string, true, "OnPinCheck", "i", playerid);
+    mysql_format(MainPipeline, string, sizeof(string), "SELECT `Pin` FROM `accounts` WHERE `id` = %d", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, string, "OnPinCheck", "i", playerid);
 	return 1;
 }
 
@@ -129,9 +129,9 @@ stock g_mysql_Init()
 	}
 	fclose(fileHandle);
 
-	mysql_log(E_MYSQL_LOGLEVEL:SQL_DEBUG, E_MYSQL_LOGTYPE:SQL_DEBUGLOG);
+	mysql_log(NONE); // Has to be NONE for some the server will crash (runs out of memory)
 
-	MainPipeline = mysql_connect(SQL_HOST, SQL_USER, SQL_DB, SQL_PASS);
+	MainPipeline = mysql_connect(SQL_HOST, SQL_USER, SQL_PASS, SQL_DB);
 
 	printf("[MySQL] (Main Pipelines) Connecting to %s...", SQL_HOST);
 	if(mysql_errno(MainPipeline) != 0)
@@ -145,7 +145,7 @@ stock g_mysql_Init()
 
 	if(ShopToggle == 1)
 	{
-		ShopPipeline = mysql_connect(SQL_SHOST, SQL_SUSER, SQL_SDB, SQL_SPASS);
+		ShopPipeline = mysql_connect(SQL_SHOST, SQL_SUSER, SQL_SPASS, SQL_SDB);
 
 		printf("[MySQL] (Shop Pipelines) Connecting to %s...", SQL_SHOST);
 		if(mysql_errno(ShopPipeline) != 0)
@@ -177,13 +177,14 @@ stock g_mysql_Exit()
 forward OnQueryFinish(resultid, extraid, handleid);
 public OnQueryFinish(resultid, extraid, handleid)
 {
-    new rows, fields;
+    new rows, fields, value;
     szMiscArray[0] = 0;
 	if(resultid != SENDDATA_THREAD) {
 		if(extraid != INVALID_PLAYER_ID) {
 			if(g_arrQueryHandle{extraid} != -1 && g_arrQueryHandle{extraid} != handleid) return 0;
 		}
-		cache_get_data(rows, fields, MainPipeline);
+		cache_get_row_count(rows);
+		cache_get_field_count(fields);
 	}
 	switch(resultid)
 	{
@@ -197,21 +198,21 @@ public OnQueryFinish(resultid, extraid, handleid)
 			    	for(new z = 0; z < MAX_ITEMS; z++)
 					{
 						format(szField, sizeof(szField), "TotalSold%d", z);
-						cache_get_field_content(i,  szField, szResult, MainPipeline);
+						cache_get_value_name(i, szField, szResult);
                         AmountSold[z] = strval(szResult);
 						//ShopItems[z][sSold] = strval(szResult);
 
 
 						format(szField, sizeof(szField), "AmountMade%d", z);
-						cache_get_field_content(i,  szField, szResult, MainPipeline);
+						cache_get_value_name(i,  szField, szResult);
 						AmountMade[z] = strval(szResult);
 						//ShopItems[z][sMade] = strval(szResult);
 						printf("TotalSold%d: %d | AmountMade%d: %d", z, AmountSold[z], z, AmountMade[z]);
 					}
 					new result[128];
-					cache_get_field_content(i, "TotalSoldMicro", result, MainPipeline);
+					cache_get_value_name(i, "TotalSoldMicro", result);
 					sscanf(result, MicroSpecifier, AmountSoldMicro);
-					cache_get_field_content(i, "AmountMadeMicro", result, MainPipeline);
+					cache_get_value_name(i, "AmountMadeMicro", result);
 					sscanf(result, MicroSpecifier, AmountMadeMicro);
 					for(new m = 0; m < MAX_MICROITEMS; m++)
 					{
@@ -222,8 +223,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 			}
 			else
 			{
-				mysql_function_query(MainPipeline, "INSERT INTO `sales` (`Month`) VALUES (NOW())", false, "OnQueryFinish", "i", SENDDATA_THREAD);
-				mysql_function_query(MainPipeline, "SELECT * FROM `sales` WHERE `Month` > NOW() - INTERVAL 1 MONTH", true, "OnQueryFinish", "iii", LOADSALEDATA_THREAD, INVALID_PLAYER_ID, -1);
+				mysql_tquery(MainPipeline, "INSERT INTO `sales` (`Month`) VALUES (NOW())", "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_tquery(MainPipeline, "SELECT * FROM `sales` WHERE `Month` > NOW() - INTERVAL 1 MONTH", "OnQueryFinish", "iii", LOADSALEDATA_THREAD, INVALID_PLAYER_ID, -1);
 				print("[LOADSALEDATA] Inserted new row into `sales`");
 			}
 	    }
@@ -235,14 +236,14 @@ public OnQueryFinish(resultid, extraid, handleid)
 	        	for(new z = 0; z < MAX_ITEMS; z++)
 				{
 					format(szField, sizeof(szField), "Price%d", z);
-					cache_get_field_content(i,  szField, szResult, MainPipeline);
+					cache_get_value_name(i,  szField, szResult);
 					ShopItems[z][sItemPrice] = strval(szResult);
 					Price[z] = strval(szResult);
 					if(ShopItems[z][sItemPrice] == 0) ShopItems[z][sItemPrice] = 99999999;
 					printf("Price%d: %d", z, ShopItems[z][sItemPrice]);
 				}
 				new result[128];
-				cache_get_field_content(i, "MicroPrices", result, MainPipeline);
+				cache_get_value_name(i, "MicroPrices", result);
 				sscanf(result, MicroSpecifier, MicroItems);
 				for(new m = 0; m < MAX_MICROITEMS; m++)
 				{
@@ -258,32 +259,32 @@ public OnQueryFinish(resultid, extraid, handleid)
    			for(new i;i < rows;i++)
 			{
 			    new szResult[32];
-   				cache_get_field_content(i, "gMOTD", GlobalMOTD, MainPipeline, 128);
-				cache_get_field_content(i, "aMOTD", AdminMOTD, MainPipeline, 128);
-				cache_get_field_content(i, "vMOTD", VIPMOTD, MainPipeline, 128);
-				cache_get_field_content(i, "cMOTD", CAMOTD, MainPipeline, 128);
-				cache_get_field_content(i, "pMOTD", pMOTD, MainPipeline, 128);
-				cache_get_field_content(i, "ShopTechPay", szResult, MainPipeline); ShopTechPay = floatstr(szResult);
-                cache_get_field_content(i, "GiftCode", GiftCode, MainPipeline, 32);
-                cache_get_field_content(i, "GiftCodeBypass", szResult, MainPipeline); GiftCodeBypass = strval(szResult);
-                cache_get_field_content(i, "SecurityCode", SecurityCode, MainPipeline, 32);
-                cache_get_field_content(i, "ShopClosed", szResult, MainPipeline); ShopClosed = strval(szResult);
-                cache_get_field_content(i, "RimMod", szResult, MainPipeline); RimMod = strval(szResult);
-                cache_get_field_content(i, "CarVoucher", szResult, MainPipeline); CarVoucher = strval(szResult);
-				cache_get_field_content(i, "PVIPVoucher", szResult, MainPipeline); PVIPVoucher = strval(szResult);
-				cache_get_field_content(i, "GarageVW", szResult, MainPipeline); GarageVW = strval(szResult);
-				cache_get_field_content(i, "PumpkinStock", szResult, MainPipeline); PumpkinStock = strval(szResult);
-				cache_get_field_content(i, "HalloweenShop", szResult, MainPipeline); HalloweenShop = strval(szResult);
-				cache_get_field_content(i, "PassComplexCheck", szResult, MainPipeline); PassComplexCheck = strval(szResult);
+   				cache_get_value_name(i, "gMOTD", GlobalMOTD);
+				cache_get_value_name(i, "aMOTD", AdminMOTD);
+				cache_get_value_name(i, "vMOTD", VIPMOTD);
+				cache_get_value_name(i, "cMOTD", CAMOTD);
+				cache_get_value_name(i, "pMOTD", pMOTD);
+				cache_get_value_name_float(i, "ShopTechPay", ShopTechPay);
+                cache_get_value_name(i, "GiftCode", GiftCode);
+                cache_get_value_name_int(i, "GiftCodeBypass", GiftCodeBypass);
+                cache_get_value_name(i, "SecurityCode", SecurityCode);
+                cache_get_value_name_int(i, "ShopClosed", ShopClosed);
+                cache_get_value_name_int(i, "RimMod", RimMod);
+                cache_get_value_name_int(i, "CarVoucher", CarVoucher);
+				cache_get_value_name_int(i, "PVIPVoucher", PVIPVoucher);
+				cache_get_value_name_int(i, "GarageVW", GarageVW);
+				cache_get_value_name_int(i, "PumpkinStock", PumpkinStock);
+				cache_get_value_name_int(i, "HalloweenShop", HalloweenShop);
+				cache_get_value_name_int(i, "PassComplexCheck", PassComplexCheck);
 
-				cache_get_field_content(i, "prisonerMOTD", prisonerMOTD[0], MainPipeline, GROUP_MAX_MOTD_LEN);
-				cache_get_field_content(i, "prisonerMOTD2", prisonerMOTD[1], MainPipeline, GROUP_MAX_MOTD_LEN);
-				cache_get_field_content(i, "prisonerMOTD3", prisonerMOTD[2], MainPipeline, GROUP_MAX_MOTD_LEN);
+				cache_get_value_name(i, "prisonerMOTD", prisonerMOTD[0]);
+				cache_get_value_name(i, "prisonerMOTD2", prisonerMOTD[1]);
+				cache_get_value_name(i, "prisonerMOTD3", prisonerMOTD[2]);
 
 				for(new x = 0; x < 7; x++)
 				{
-					format(szResult, sizeof(szResult), "GunPrice%d",x);
-					GunPrices[x] = cache_get_field_content_int(i, szResult, MainPipeline);
+					format(szResult, sizeof(szResult), "GunPrice%d", x);
+					cache_get_value_name_int(i, szResult, GunPrices[x]);
 				}
 
 				CallLocalFunction("LoadInactiveResourceSettings", "i", i);
@@ -298,445 +299,453 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 				for(new row;row < rows;row++)
 				{
-					cache_get_field_content(row, "Username", szField, MainPipeline, MAX_PLAYER_NAME);
+					cache_get_value_name(row, "Username", szField, MAX_PLAYER_NAME);
 
 					if(strcmp(szField, GetPlayerNameExt(extraid), true) != 0)
 					{
 						return 1;
 					}
-					PlayerInfo[extraid][pId] 					= cache_get_field_content_int(row,  "id", MainPipeline);
-					PlayerInfo[extraid][pOnline] 				= cache_get_field_content_int(row,  "Online", MainPipeline);
-					cache_get_field_content(row,  "Email", PlayerInfo[extraid][pEmail], MainPipeline, 128);
-					cache_get_field_content(row,  "IP", PlayerInfo[extraid][pIP], MainPipeline, 16);
-					cache_get_field_content(row,  "SecureIP", PlayerInfo[extraid][pSecureIP], MainPipeline, 16);
-					PlayerInfo[extraid][pConnectHours] 			= cache_get_field_content_int(row,  "ConnectedTime", MainPipeline);
-					cache_get_field_content(row,  "BirthDate", PlayerInfo[extraid][pBirthDate], MainPipeline, 11);
-					PlayerInfo[extraid][pSex] 					= cache_get_field_content_int(row,  "Sex", MainPipeline);
-					PlayerInfo[extraid][pBanned] 				= cache_get_field_content_int(row,  "Band", MainPipeline);
-					PlayerInfo[extraid][pPermaBanned] 			= cache_get_field_content_int(row, "PermBand", MainPipeline);
-					PlayerInfo[extraid][pReg] 					= cache_get_field_content_int(row,  "Registered", MainPipeline);
-					PlayerInfo[extraid][pWarns] 				= cache_get_field_content_int(row,  "Warnings", MainPipeline);
-					PlayerInfo[extraid][pDisabled] 				= cache_get_field_content_int(row,  "Disabled", MainPipeline);
-					PlayerInfo[extraid][pLevel] 				= cache_get_field_content_int(row,  "Level", MainPipeline);
-					PlayerInfo[extraid][pAdmin] 				= cache_get_field_content_int(row,  "AdminLevel",  MainPipeline);
-					PlayerInfo[extraid][pSMod] 					= cache_get_field_content_int(row,  "SeniorModerator", MainPipeline);
-					PlayerInfo[extraid][pDonateRank] 			= cache_get_field_content_int(row,  "DonateRank", MainPipeline);
-					PlayerInfo[extraid][pExp] 					= cache_get_field_content_int(row,  "Respect", MainPipeline);
-					PlayerInfo[extraid][pCash]					= cache_get_field_content_int(row,  "Money", MainPipeline);
-					PlayerInfo[extraid][pAccount] 				= cache_get_field_content_int(row,  "Bank", MainPipeline);
-					PlayerInfo[extraid][pHealth]  				= cache_get_field_content_float(row,  "pHealth", MainPipeline);
-					PlayerInfo[extraid][pArmor]   				= cache_get_field_content_float(row,  "pArmor", MainPipeline);
-					PlayerInfo[extraid][pSHealth]				= cache_get_field_content_float(row,  "pSHealth", MainPipeline);
-					PlayerInfo[extraid][pInt]					= cache_get_field_content_int(row,  "Int", MainPipeline);
-					PlayerInfo[extraid][pVW]					= cache_get_field_content_int(row,  "VirtualWorld", MainPipeline);
-					PlayerInfo[extraid][pModel]					= cache_get_field_content_int(row,  "Model", MainPipeline);
-					PlayerInfo[extraid][pPos_x]					= cache_get_field_content_float(row,  "SPos_x", MainPipeline);
-					PlayerInfo[extraid][pPos_y]					= cache_get_field_content_float(row,  "SPos_y", MainPipeline);
-					PlayerInfo[extraid][pPos_z]					= cache_get_field_content_float(row,  "SPos_z", MainPipeline);
-					PlayerInfo[extraid][pPos_r]					= cache_get_field_content_float(row,  "SPos_r", MainPipeline);
-					PlayerInfo[extraid][pBanAppealer]			= cache_get_field_content_int(row,  "BanAppealer", MainPipeline);
-					PlayerInfo[extraid][pPR]					= cache_get_field_content_int(row,  "PR", MainPipeline);
-					PlayerInfo[extraid][pHR]					= cache_get_field_content_int(row,  "HR", MainPipeline);
-					PlayerInfo[extraid][pAP]					= cache_get_field_content_int(row,  "AP", MainPipeline);
-					PlayerInfo[extraid][pSecurity]				= cache_get_field_content_int(row,  "Security", MainPipeline);
-					PlayerInfo[extraid][pShopTech]				= cache_get_field_content_int(row,  "ShopTech", MainPipeline);
-					PlayerInfo[extraid][pFactionModerator]		= cache_get_field_content_int(row,  "FactionModerator", MainPipeline);
-					PlayerInfo[extraid][pGangModerator]			= cache_get_field_content_int(row,  "GangModerator", MainPipeline);
-					PlayerInfo[extraid][pUndercover]			= cache_get_field_content_int(row,  "Undercover", MainPipeline);
-					PlayerInfo[extraid][pTogReports]			= cache_get_field_content_int(row,  "TogReports", MainPipeline);
-					PlayerInfo[extraid][pRadio]					= cache_get_field_content_int(row,  "Radio", MainPipeline);
-					PlayerInfo[extraid][pRadioFreq]				= cache_get_field_content_int(row,  "RadioFreq", MainPipeline);
-					PlayerInfo[extraid][gPupgrade]				= cache_get_field_content_int(row,  "UpgradePoints", MainPipeline);
-					PlayerInfo[extraid][pOrigin]				= cache_get_field_content_int(row,  "Origin", MainPipeline);
-					PlayerInfo[extraid][pMuted]					= cache_get_field_content_int(row,  "Muted", MainPipeline);
-					PlayerInfo[extraid][pCrimes]				= cache_get_field_content_int(row,  "Crimes", MainPipeline);
-					PlayerInfo[extraid][pAccent]				= cache_get_field_content_int(row,  "Accent", MainPipeline);
-					PlayerInfo[extraid][pCHits]					= cache_get_field_content_int(row,  "CHits", MainPipeline);
-					PlayerInfo[extraid][pFHits]					= cache_get_field_content_int(row,  "FHits", MainPipeline);
-					PlayerInfo[extraid][pArrested]				= cache_get_field_content_int(row,  "Arrested", MainPipeline);
-					PlayerInfo[extraid][pPhoneBook]				= cache_get_field_content_int(row,  "Phonebook", MainPipeline);
-					PlayerInfo[extraid][pLottoNr]				= cache_get_field_content_int(row,  "LottoNr", MainPipeline);
-					PlayerInfo[extraid][pFishes]				= cache_get_field_content_int(row,  "Fishes", MainPipeline);
-					PlayerInfo[extraid][pBiggestFish]			= cache_get_field_content_int(row,  "BiggestFish", MainPipeline);
-					PlayerInfo[extraid][pJob]					= cache_get_field_content_int(row,  "Job", MainPipeline);
-					PlayerInfo[extraid][pJob2]					= cache_get_field_content_int(row,  "Job2", MainPipeline);
-					PlayerInfo[extraid][pJob3]					= cache_get_field_content_int(row,  "Job3", MainPipeline);
-					PlayerInfo[extraid][pPayCheck]				= cache_get_field_content_int(row,  "Paycheck", MainPipeline);
-					PlayerInfo[extraid][pHeadValue]				= cache_get_field_content_int(row,  "HeadValue", MainPipeline);
-					PlayerInfo[extraid][pJailTime]				= cache_get_field_content_int(row,  "JailTime", MainPipeline);
-					PlayerInfo[extraid][pWRestricted]			= cache_get_field_content_int(row,  "WRestricted", MainPipeline);
-					PlayerInfo[extraid][pMats]					= cache_get_field_content_int(row,  "Materials", MainPipeline);
-					PlayerInfo[extraid][pCrates]				= cache_get_field_content_int(row,  "Crates", MainPipeline);
-					PlayerInfo[extraid][pStaffBanned] 			= cache_get_field_content_int(row,  "StaffBanned", MainPipeline);
-					// PlayerInfo[extraid][pPot]					= cache_get_field_content_int(row,  "Pot", MainPipeline);
-					// PlayerInfo[extraid][pCrack]					= cache_get_field_content_int(row,  "Crack", MainPipeline);
-					PlayerInfo[extraid][pNation]				= cache_get_field_content_int(row,  "Nation", MainPipeline);
-					PlayerInfo[extraid][pLeader]				= cache_get_field_content_int(row,  "Leader", MainPipeline);
-					PlayerInfo[extraid][pMember]				= cache_get_field_content_int(row,  "Member", MainPipeline);
-					PlayerInfo[extraid][pDivision]				= cache_get_field_content_int(row,  "Division", MainPipeline);
-					cache_get_field_content(row,  "Badge", PlayerInfo[extraid][pBadge], MainPipeline, 9);
-					PlayerInfo[extraid][pRank]					= cache_get_field_content_int(row,  "Rank", MainPipeline);
-					PlayerInfo[extraid][pDetSkill]				= cache_get_field_content_int(row,  "DetSkill", MainPipeline);
-					PlayerInfo[extraid][pSexSkill]				= cache_get_field_content_int(row,  "SexSkill", MainPipeline);
-					PlayerInfo[extraid][pBoxSkill]				= cache_get_field_content_int(row,  "BoxSkill", MainPipeline);
-					PlayerInfo[extraid][pLawSkill]				= cache_get_field_content_int(row,  "LawSkill", MainPipeline);
-					PlayerInfo[extraid][pMechSkill]				= cache_get_field_content_int(row,  "MechSkill", MainPipeline);
-					PlayerInfo[extraid][pTruckSkill]			= cache_get_field_content_int(row,  "TruckSkill", MainPipeline);
-					PlayerInfo[extraid][pDrugSmuggler]			= cache_get_field_content_int(row,  "DrugSmuggler", MainPipeline);
-					PlayerInfo[extraid][pArmsSkill]				= cache_get_field_content_int(row,  "ArmsSkill", MainPipeline);
-					PlayerInfo[extraid][pFishSkill]				= cache_get_field_content_int(row,  "FishSkill", MainPipeline);
-					PlayerInfo[extraid][pFightStyle]			= cache_get_field_content_int(row,  "FightingStyle", MainPipeline);
-					PlayerInfo[extraid][pPnumber]				= cache_get_field_content_int(row,  "PhoneNr", MainPipeline);
-					PlayerInfo[extraid][pPhousekey]				= cache_get_field_content_int(row,  "Apartment", MainPipeline);
-					PlayerInfo[extraid][pPhousekey2]			= cache_get_field_content_int(row,  "Apartment2", MainPipeline);
-					PlayerInfo[extraid][pPhousekey3]			= cache_get_field_content_int(row,  "Apartment3", MainPipeline);
-					PlayerInfo[extraid][pRenting]				= cache_get_field_content_int(row,  "Renting", MainPipeline);
-					PlayerInfo[extraid][pCarLic]				= cache_get_field_content_int(row,  "CarLic", MainPipeline);
-					PlayerInfo[extraid][pFlyLic]				= cache_get_field_content_int(row,  "FlyLic", MainPipeline);
-					PlayerInfo[extraid][pBoatLic]				= cache_get_field_content_int(row,  "BoatLic", MainPipeline);
-					PlayerInfo[extraid][pFishLic]				= cache_get_field_content_int(row,  "FishLic", MainPipeline);
-					PlayerInfo[extraid][pCheckCash]				= cache_get_field_content_int(row,  "CheckCash", MainPipeline);
-					PlayerInfo[extraid][pChecks]				= cache_get_field_content_int(row,  "Checks", MainPipeline);
-					PlayerInfo[extraid][pGunLic]				= cache_get_field_content_int(row,  "GunLic", MainPipeline);
+					cache_get_value_name_int(row,  "id", PlayerInfo[extraid][pId]);
+					cache_get_value_name_int(row,  "Online", PlayerInfo[extraid][pOnline]);
+					cache_get_value_name(row,  "Email", PlayerInfo[extraid][pEmail]);
+					cache_get_value_name(row,  "IP", PlayerInfo[extraid][pIP]);
+					cache_get_value_name(row,  "SecureIP", PlayerInfo[extraid][pSecureIP]);
+					cache_get_value_name_int(row,  "ConnectedTime", PlayerInfo[extraid][pConnectHours]);
+					cache_get_value_name(row,  "BirthDate", PlayerInfo[extraid][pBirthDate]);
+					cache_get_value_name_int(row,  "Sex", PlayerInfo[extraid][pSex]);
+					cache_get_value_name_int(row,  "Band", PlayerInfo[extraid][pBanned]);
+					cache_get_value_name_int(row, "PermBand", PlayerInfo[extraid][pPermaBanned]);
+					cache_get_value_name_int(row,  "Registered", PlayerInfo[extraid][pReg]);
+					cache_get_value_name_int(row,  "Warnings", PlayerInfo[extraid][pWarns]);
+					cache_get_value_name_int(row,  "Disabled", PlayerInfo[extraid][pDisabled]);
+					cache_get_value_name_int(row,  "Level", PlayerInfo[extraid][pLevel]);
+					cache_get_value_name_int(row,  "AdminLevel", PlayerInfo[extraid][pAdmin]);
+					cache_get_value_name_int(row,  "SeniorModerator", PlayerInfo[extraid][pSMod]);
+					cache_get_value_name_int(row,  "DonateRank", PlayerInfo[extraid][pDonateRank]);
+					cache_get_value_name_int(row,  "Respect", PlayerInfo[extraid][pExp]);
+					cache_get_value_name_int(row,  "Money", PlayerInfo[extraid][pCash]);
+					cache_get_value_name_int(row,  "Bank", PlayerInfo[extraid][pAccount]);
+					cache_get_value_name_float(row,  "pHealth", PlayerInfo[extraid][pHealth]);
+					cache_get_value_name_float(row,  "pArmor", PlayerInfo[extraid][pArmor]);
+					cache_get_value_name_float(row,  "pSHealth", PlayerInfo[extraid][pSHealth]);
+					cache_get_value_name_int(row,  "Int", PlayerInfo[extraid][pInt]);
+					cache_get_value_name_int(row,  "VirtualWorld", PlayerInfo[extraid][pVW]);
+					cache_get_value_name_int(row,  "Model", PlayerInfo[extraid][pModel]);
+					cache_get_value_name_float(row,  "SPos_x", PlayerInfo[extraid][pPos_x]);
+					cache_get_value_name_float(row,  "SPos_y", PlayerInfo[extraid][pPos_y]);
+					cache_get_value_name_float(row,  "SPos_z", PlayerInfo[extraid][pPos_z]);
+					cache_get_value_name_float(row,  "SPos_r", PlayerInfo[extraid][pPos_r]);
+					cache_get_value_name_int(row,  "BanAppealer", PlayerInfo[extraid][pBanAppealer]);
+					cache_get_value_name_int(row,  "PR", PlayerInfo[extraid][pPR]);
+					cache_get_value_name_int(row,  "HR", PlayerInfo[extraid][pHR]);
+					cache_get_value_name_int(row,  "AP", PlayerInfo[extraid][pAP]);
+					cache_get_value_name_int(row,  "Security", PlayerInfo[extraid][pSecurity]);
+					cache_get_value_name_int(row,  "ShopTech", PlayerInfo[extraid][pShopTech]);
+					cache_get_value_name_int(row,  "FactionModerator", PlayerInfo[extraid][pFactionModerator]);
+					cache_get_value_name_int(row,  "GangModerator", PlayerInfo[extraid][pGangModerator]);
+					cache_get_value_name_int(row,  "Undercover", PlayerInfo[extraid][pUndercover]);
+					cache_get_value_name_int(row,  "TogReports", PlayerInfo[extraid][pTogReports]);
+					cache_get_value_name_int(row,  "Radio", PlayerInfo[extraid][pRadio]);
+					cache_get_value_name_int(row,  "RadioFreq", PlayerInfo[extraid][pRadioFreq]);
+					cache_get_value_name_int(row,  "UpgradePoints", PlayerInfo[extraid][gPupgrade]);
+					cache_get_value_name_int(row,  "Origin", PlayerInfo[extraid][pOrigin]);
+					cache_get_value_name_int(row,  "Muted", PlayerInfo[extraid][pMuted]);
+					cache_get_value_name_int(row,  "Crimes", PlayerInfo[extraid][pCrimes]);
+					cache_get_value_name_int(row,  "Accent", PlayerInfo[extraid][pAccent]);
+					cache_get_value_name_int(row,  "CHits", PlayerInfo[extraid][pCHits]);
+					cache_get_value_name_int(row,  "FHits", PlayerInfo[extraid][pFHits]);
+					cache_get_value_name_int(row,  "Arrested", PlayerInfo[extraid][pArrested]);
+					cache_get_value_name_int(row,  "Phonebook", PlayerInfo[extraid][pPhoneBook]);
+					cache_get_value_name_int(row,  "LottoNr", PlayerInfo[extraid][pLottoNr]);
+					cache_get_value_name_int(row,  "Fishes", PlayerInfo[extraid][pFishes]);
+					cache_get_value_name_int(row,  "BiggestFish", PlayerInfo[extraid][pBiggestFish]);
+					cache_get_value_name_int(row,  "Job", PlayerInfo[extraid][pJob]);
+					cache_get_value_name_int(row,  "Job2", PlayerInfo[extraid][pJob2]);
+					cache_get_value_name_int(row,  "Job3", PlayerInfo[extraid][pJob3]);
+					cache_get_value_name_int(row,  "Paycheck", PlayerInfo[extraid][pPayCheck]);
+					cache_get_value_name_int(row,  "HeadValue", PlayerInfo[extraid][pHeadValue]);
+					cache_get_value_name_int(row,  "JailTime", PlayerInfo[extraid][pJailTime]);
+					cache_get_value_name_int(row,  "WRestricted", PlayerInfo[extraid][pWRestricted]);
+					cache_get_value_name_int(row,  "Materials", PlayerInfo[extraid][pMats]);
+					cache_get_value_name_int(row,  "Crates", PlayerInfo[extraid][pCrates]);
+					cache_get_value_name_int(row,  "StaffBanned", PlayerInfo[extraid][pStaffBanned]);
+					// PlayerInfo[extraid][pPot]					= cache_get_value_name_int(row,  "Pot");
+					// PlayerInfo[extraid][pCrack]					= cache_get_value_name_int(row,  "Crack");
+					cache_get_value_name_int(row,  "Nation", PlayerInfo[extraid][pNation]);
+					cache_get_value_name_int(row,  "Leader", PlayerInfo[extraid][pLeader]);
+					cache_get_value_name_int(row,  "Member", PlayerInfo[extraid][pMember]);
+					cache_get_value_name_int(row,  "Division", PlayerInfo[extraid][pDivision]);
+					cache_get_value_name(row,  "Badge", PlayerInfo[extraid][pBadge]);
+					cache_get_value_name_int(row,  "Rank", PlayerInfo[extraid][pRank]);
+					cache_get_value_name_int(row,  "DetSkill", PlayerInfo[extraid][pDetSkill]);
+					cache_get_value_name_int(row,  "SexSkill", PlayerInfo[extraid][pSexSkill]);
+					cache_get_value_name_int(row,  "BoxSkill", PlayerInfo[extraid][pBoxSkill]);
+					cache_get_value_name_int(row,  "LawSkill", PlayerInfo[extraid][pLawSkill]);
+					cache_get_value_name_int(row,  "MechSkill", PlayerInfo[extraid][pMechSkill]);
+					cache_get_value_name_int(row,  "TruckSkill", PlayerInfo[extraid][pTruckSkill]);
+					cache_get_value_name_int(row,  "DrugSmuggler", PlayerInfo[extraid][pDrugSmuggler]);
+					cache_get_value_name_int(row,  "ArmsSkill", PlayerInfo[extraid][pArmsSkill]);
+					cache_get_value_name_int(row,  "FishSkill", PlayerInfo[extraid][pFishSkill]);
+					cache_get_value_name_int(row,  "FightingStyle", PlayerInfo[extraid][pFightStyle]);
+					cache_get_value_name_int(row,  "PhoneNr", PlayerInfo[extraid][pPnumber]);
+					cache_get_value_name_int(row,  "Apartment", PlayerInfo[extraid][pPhousekey]);
+					cache_get_value_name_int(row,  "Apartment2", PlayerInfo[extraid][pPhousekey2]);
+					cache_get_value_name_int(row,  "Apartment3", PlayerInfo[extraid][pPhousekey3]);
+					cache_get_value_name_int(row,  "Renting", PlayerInfo[extraid][pRenting]);
+					cache_get_value_name_int(row,  "CarLic", PlayerInfo[extraid][pCarLic]);
+					cache_get_value_name_int(row,  "FlyLic", PlayerInfo[extraid][pFlyLic]);
+					cache_get_value_name_int(row,  "BoatLic", PlayerInfo[extraid][pBoatLic]);
+					cache_get_value_name_int(row,  "FishLic", PlayerInfo[extraid][pFishLic]);
+					cache_get_value_name_int(row,  "CheckCash", PlayerInfo[extraid][pCheckCash]);
+					cache_get_value_name_int(row,  "Checks", PlayerInfo[extraid][pChecks]);
+					cache_get_value_name_int(row,  "GunLic", PlayerInfo[extraid][pGunLic]);
 
 					for(new i = 0; i < 12; i++)
 					{
 						format(szField, sizeof(szField), "Gun%d", i);
-						PlayerInfo[extraid][pGuns][i] = cache_get_field_content_int(row,  szField, MainPipeline);
+						cache_get_value_name_int(row,  szField, PlayerInfo[extraid][pGuns][i]);
 					}
 
-					PlayerInfo[extraid][pDrugsTime]				= cache_get_field_content_int(row,  "DrugsTime", MainPipeline);
-					PlayerInfo[extraid][pLawyerTime]			= cache_get_field_content_int(row,  "LawyerTime", MainPipeline);
-					PlayerInfo[extraid][pLawyerFreeTime]		= cache_get_field_content_int(row,  "LawyerFreeTime", MainPipeline);
-					PlayerInfo[extraid][pMechTime]				= cache_get_field_content_int(row,  "MechTime", MainPipeline);
-					PlayerInfo[extraid][pSexTime]				= cache_get_field_content_int(row,  "SexTime", MainPipeline);
-					PlayerInfo[extraid][pConnectSeconds]		= cache_get_field_content_int(row,  "PayDay", MainPipeline);
-					PlayerInfo[extraid][pPayDayHad]				= cache_get_field_content_int(row,  "PayDayHad", MainPipeline);
-					PlayerInfo[extraid][pCDPlayer]				= cache_get_field_content_int(row,  "CDPlayer", MainPipeline);
-					PlayerInfo[extraid][pDice]					= cache_get_field_content_int(row,  "Dice", MainPipeline);
-					PlayerInfo[extraid][pSpraycan]				= cache_get_field_content_int(row,  "Spraycan", MainPipeline);
-					PlayerInfo[extraid][pRope]					= cache_get_field_content_int(row,  "Rope", MainPipeline);
-					PlayerInfo[extraid][pRags]					= cache_get_field_content_int(row,  "Rags", MainPipeline);
-					PlayerInfo[extraid][pCigar]					= cache_get_field_content_int(row,  "Cigars", MainPipeline);
-					PlayerInfo[extraid][pSprunk]				= cache_get_field_content_int(row,  "Sprunk", MainPipeline);
-					PlayerInfo[extraid][pBombs]					= cache_get_field_content_int(row,  "Bombs", MainPipeline);
-					PlayerInfo[extraid][pWins]					= cache_get_field_content_int(row,  "Wins", MainPipeline);
-					PlayerInfo[extraid][pLoses]					= cache_get_field_content_int(row,  "Loses", MainPipeline);
-					PlayerInfo[extraid][pTut]					= cache_get_field_content_int(row,  "Tutorial", MainPipeline);
-					PlayerInfo[extraid][pDuty]					= cache_get_field_content_int(row,  "OnDuty", MainPipeline);
-					PlayerInfo[extraid][pHospital]				= cache_get_field_content_int(row,  "Hospital", MainPipeline);
-					PlayerInfo[extraid][pMarriedID]				= cache_get_field_content_int(row,  "MarriedID", MainPipeline);
-					cache_get_field_content(row,  "ContractBy", PlayerInfo[extraid][pContractBy], MainPipeline, MAX_PLAYER_NAME);
-					cache_get_field_content(row,  "ContractDetail", PlayerInfo[extraid][pContractDetail], MainPipeline, 64);
-					PlayerInfo[extraid][pWantedLevel]			= cache_get_field_content_int(row,  "WantedLevel", MainPipeline);
-					PlayerInfo[extraid][pInsurance]				= cache_get_field_content_int(row,  "Insurance", MainPipeline);
-					PlayerInfo[extraid][p911Muted]				= cache_get_field_content_int(row,  "911Muted", MainPipeline);
-					PlayerInfo[extraid][pNMute]					= cache_get_field_content_int(row,  "NewMuted", MainPipeline);
-					PlayerInfo[extraid][pNMuteTotal]			= cache_get_field_content_int(row,  "NewMutedTotal", MainPipeline);
-					PlayerInfo[extraid][pADMute]				= cache_get_field_content_int(row,  "AdMuted", MainPipeline);
-					PlayerInfo[extraid][pADMuteTotal]			= cache_get_field_content_int(row,  "AdMutedTotal", MainPipeline);
-					PlayerInfo[extraid][pHelpMute]				= cache_get_field_content_int(row,  "HelpMute", MainPipeline);
-					PlayerInfo[extraid][pHelper]				= cache_get_field_content_int(row,  "Helper", MainPipeline);
-					PlayerInfo[extraid][pRMuted]				= cache_get_field_content_int(row,  "ReportMuted", MainPipeline);
-					PlayerInfo[extraid][pRMutedTotal]			= cache_get_field_content_int(row,  "ReportMutedTotal", MainPipeline);
-					PlayerInfo[extraid][pRMutedTime]			= cache_get_field_content_int(row,  "ReportMutedTime", MainPipeline);
-					PlayerInfo[extraid][pDMRMuted]				= cache_get_field_content_int(row,  "DMRMuted", MainPipeline);
-					PlayerInfo[extraid][pVMuted]				= cache_get_field_content_int(row,  "VIPMuted", MainPipeline);
-					PlayerInfo[extraid][pVMutedTime]			= cache_get_field_content_int(row,  "VIPMutedTime", MainPipeline);
-					PlayerInfo[extraid][pGiftTime]				= cache_get_field_content_int(row,  "GiftTime", MainPipeline);
-					PlayerInfo[extraid][pDutyHours]				= cache_get_field_content_int(row,  "AdvisorDutyHours", MainPipeline);
-					PlayerInfo[extraid][pAcceptedHelp]			= cache_get_field_content_int(row,  "AcceptedHelp", MainPipeline);
-					PlayerInfo[extraid][pAcceptReport]			= cache_get_field_content_int(row,  "AcceptReport", MainPipeline);
-					PlayerInfo[extraid][pShopTechOrders]		= cache_get_field_content_int(row,  "ShopTechOrders", MainPipeline);
-					PlayerInfo[extraid][pTrashReport]			= cache_get_field_content_int(row,  "TrashReport", MainPipeline);
-					PlayerInfo[extraid][pGangWarn]				= cache_get_field_content_int(row,  "GangWarn", MainPipeline);
-					PlayerInfo[extraid][pCSFBanned]				= cache_get_field_content_int(row,  "CSFBanned", MainPipeline);
-					PlayerInfo[extraid][pVIPInviteDay]			= cache_get_field_content_int(row,  "VIPInviteDay", MainPipeline);
-					PlayerInfo[extraid][pTempVIP]				= cache_get_field_content_int(row,  "TempVIP", MainPipeline);
-					PlayerInfo[extraid][pBuddyInvited]			= cache_get_field_content_int(row,  "BuddyInvite", MainPipeline);
-					PlayerInfo[extraid][pTokens]				= cache_get_field_content_int(row,  "Tokens", MainPipeline);
-					PlayerInfo[extraid][pPaintTokens]			= cache_get_field_content_int(row,  "PTokens", MainPipeline);
-					PlayerInfo[extraid][pTriageTime]			= cache_get_field_content_int(row,  "TriageTime", MainPipeline);
-					cache_get_field_content(row,  "PrisonedBy", PlayerInfo[extraid][pPrisonedBy], MainPipeline, MAX_PLAYER_NAME);
-					cache_get_field_content(row,  "PrisonReason", PlayerInfo[extraid][pPrisonReason], MainPipeline, 128);
-					PlayerInfo[extraid][pTaxiLicense]			= cache_get_field_content_int(row,  "TaxiLicense", MainPipeline);
-					PlayerInfo[extraid][pTicketTime]			= cache_get_field_content_int(row,  "TicketTime", MainPipeline);
-					PlayerInfo[extraid][pScrewdriver]			= cache_get_field_content_int(row,  "Screwdriver", MainPipeline);
-					PlayerInfo[extraid][pSmslog]				= cache_get_field_content_int(row,  "Smslog", MainPipeline);
-					PlayerInfo[extraid][pWristwatch]			= cache_get_field_content_int(row,  "Wristwatch", MainPipeline);
-					PlayerInfo[extraid][pSurveillance]			= cache_get_field_content_int(row,  "Surveillance", MainPipeline);
-					PlayerInfo[extraid][pTire]					= cache_get_field_content_int(row,  "Tire", MainPipeline);
-					PlayerInfo[extraid][pFirstaid]				= cache_get_field_content_int(row,  "Firstaid", MainPipeline);
-					PlayerInfo[extraid][pRccam]					= cache_get_field_content_int(row,  "Rccam", MainPipeline);
-					PlayerInfo[extraid][pReceiver]				= cache_get_field_content_int(row,  "Receiver", MainPipeline);
-					PlayerInfo[extraid][pGPS]					= cache_get_field_content_int(row,  "GPS", MainPipeline);
-					PlayerInfo[extraid][pSweep]					= cache_get_field_content_int(row,  "Sweep", MainPipeline);
-					PlayerInfo[extraid][pSweepLeft]				= cache_get_field_content_int(row,  "SweepLeft", MainPipeline);
-					PlayerInfo[extraid][pBugged]				= cache_get_field_content_int(row,  "Bugged", MainPipeline);
-					PlayerInfo[extraid][pWeedObject]			= cache_get_field_content_int(row,  "pWExists", MainPipeline);
-					PlayerInfo[extraid][pWSeeds]				= cache_get_field_content_int(row,  "pWSeeds", MainPipeline);
-					cache_get_field_content(row,  "Warrants", PlayerInfo[extraid][pWarrant], MainPipeline, 128);
-					PlayerInfo[extraid][pJudgeJailTime]			= cache_get_field_content_int(row,  "JudgeJailTime", MainPipeline);
-					PlayerInfo[extraid][pJudgeJailType]			= cache_get_field_content_int(row,  "JudgeJailType", MainPipeline);
-					PlayerInfo[extraid][pBeingSentenced]		= cache_get_field_content_int(row,  "BeingSentenced", MainPipeline);
-					PlayerInfo[extraid][pProbationTime]			= cache_get_field_content_int(row,  "ProbationTime", MainPipeline);
-					PlayerInfo[extraid][pDMKills]				= cache_get_field_content_int(row,  "DMKills", MainPipeline);
-					PlayerInfo[extraid][pOrder]					= cache_get_field_content_int(row,  "Order", MainPipeline);
-					PlayerInfo[extraid][pOrderConfirmed]		= cache_get_field_content_int(row,  "OrderConfirmed", MainPipeline);
-					PlayerInfo[extraid][pCallsAccepted]			= cache_get_field_content_int(row,  "CallsAccepted", MainPipeline);
-					PlayerInfo[extraid][pPatientsDelivered]		= cache_get_field_content_int(row,  "PatientsDelivered", MainPipeline);
-					PlayerInfo[extraid][pLiveBanned]			= cache_get_field_content_int(row,  "LiveBanned", MainPipeline);
-					PlayerInfo[extraid][pFreezeBank]			= cache_get_field_content_int(row,  "FreezeBank", MainPipeline);
-					PlayerInfo[extraid][pFreezeHouse]			= cache_get_field_content_int(row,  "FreezeHouse", MainPipeline);
-					PlayerInfo[extraid][pFreezeCar]				= cache_get_field_content_int(row,  "FreezeCar", MainPipeline);
-					PlayerInfo[extraid][pFirework]				= cache_get_field_content_int(row,  "Firework", MainPipeline);
-					PlayerInfo[extraid][pBoombox]				= cache_get_field_content_int(row,  "Boombox", MainPipeline);
-					PlayerInfo[extraid][pHydration]				= cache_get_field_content_int(row,  "Hydration", MainPipeline);
-					PlayerInfo[extraid][pSpeedo]				= cache_get_field_content_int(row,  "Speedo", MainPipeline);
-					PlayerInfo[extraid][pDoubleEXP]				= cache_get_field_content_int(row,  "DoubleEXP", MainPipeline);
-					PlayerInfo[extraid][pEXPToken]				= cache_get_field_content_int(row,  "EXPToken", MainPipeline);
-					PlayerInfo[extraid][pRacePlayerLaps]		= cache_get_field_content_int(row,  "RacePlayerLaps", MainPipeline);
-					PlayerInfo[extraid][pRingtone]				= cache_get_field_content_int(row,  "Ringtone", MainPipeline);
-					PlayerInfo[extraid][pWallpaper]				= cache_get_field_content_int(row,  "Wallpaper", MainPipeline);
-					PlayerInfo[extraid][pVIPM]					= cache_get_field_content_int(row,  "VIPM", MainPipeline);
-					PlayerInfo[extraid][pVIPMO]					= cache_get_field_content_int(row,  "VIPMO", MainPipeline);
-					PlayerInfo[extraid][pVIPExpire]				= cache_get_field_content_int(row,  "VIPExpire", MainPipeline);
-					PlayerInfo[extraid][pGVip]					= cache_get_field_content_int(row,  "GVip", MainPipeline);
-					PlayerInfo[extraid][pWatchdog]				= cache_get_field_content_int(row,  "Watchdog", MainPipeline);
-					PlayerInfo[extraid][pVIPSold]				= cache_get_field_content_int(row,  "VIPSold",MainPipeline);
-					PlayerInfo[extraid][pGoldBoxTokens]			= cache_get_field_content_int(row,  "GoldBoxTokens", MainPipeline);
-					PlayerInfo[extraid][pRewardDrawChance]		= cache_get_field_content_int(row,  "DrawChance", MainPipeline);
-					PlayerInfo[extraid][pRewardHours]			= cache_get_field_content_float(row,  "RewardHours", MainPipeline);
-					PlayerInfo[extraid][pRVehRestricted]		= cache_get_field_content_int(row,  "CarsRestricted", MainPipeline);
-					PlayerInfo[extraid][pLastRVehWarn]			= cache_get_field_content_int(row,  "LastCarWarning", MainPipeline);
-					PlayerInfo[extraid][pRVehWarns]				= cache_get_field_content_int(row,  "CarWarns", MainPipeline);
-					PlayerInfo[extraid][pFlagged]				= cache_get_field_content_int(row,  "Flagged", MainPipeline);
-					PlayerInfo[extraid][pPaper]					= cache_get_field_content_int(row,  "Paper", MainPipeline);
-					PlayerInfo[extraid][pMailEnabled]			= cache_get_field_content_int(row,  "MailEnabled", MainPipeline);
-					PlayerInfo[extraid][pMailbox]				= cache_get_field_content_int(row,  "Mailbox", MainPipeline);
-					PlayerInfo[extraid][pBusiness]				= cache_get_field_content_int(row,  "Business", MainPipeline);
-					PlayerInfo[extraid][pBusinessRank]			= cache_get_field_content_int(row,  "BusinessRank", MainPipeline);
-					PlayerInfo[extraid][pTreasureSkill]			= cache_get_field_content_int(row,  "TreasureSkill", MainPipeline);
-					PlayerInfo[extraid][pMetalDetector]			= cache_get_field_content_int(row,  "MetalDetector", MainPipeline);
-					PlayerInfo[extraid][pHelpedBefore]			= cache_get_field_content_int(row,  "HelpedBefore", MainPipeline);
-					PlayerInfo[extraid][pTrickortreat]			= cache_get_field_content_int(row,  "Trickortreat", MainPipeline);
-					PlayerInfo[extraid][pLastCharmReceived]		= cache_get_field_content_int(row,  "LastCharmReceived", MainPipeline);
-					PlayerInfo[extraid][pRHMutes]				= cache_get_field_content_int(row,  "RHMutes", MainPipeline);
-					PlayerInfo[extraid][pRHMuteTime]			= cache_get_field_content_int(row,  "RHMuteTime", MainPipeline);
-					PlayerInfo[extraid][pGiftCode]				= cache_get_field_content_int(row,  "GiftCode", MainPipeline);
-					PlayerInfo[extraid][pTable]					= cache_get_field_content_int(row,  "Table", MainPipeline);
-					PlayerInfo[extraid][pOpiumSeeds]			= cache_get_field_content_int(row,  "OpiumSeeds", MainPipeline);
-					PlayerInfo[extraid][pRawOpium]				= cache_get_field_content_int(row,  "RawOpium", MainPipeline);
-					//PlayerInfo[extraid][pHeroin]				= cache_get_field_content_int(row,  "Heroin", MainPipeline);
-					PlayerInfo[extraid][pSyringes]				= cache_get_field_content_int(row,  "Syringe", MainPipeline);
-					PlayerInfo[extraid][pSkins]					= cache_get_field_content_int(row,  "Skins", MainPipeline);
-					PlayerInfo[extraid][pFitness]				= cache_get_field_content_int(row,  "Fitness", MainPipeline);
-					PlayerInfo[extraid][pForcePasswordChange]	= cache_get_field_content_int(row,  "ForcePasswordChange", MainPipeline);
-					PlayerInfo[extraid][pCredits]				= cache_get_field_content_int(row,  "Credits", MainPipeline);
-					PlayerInfo[extraid][pHealthCare]			= cache_get_field_content_int(row,  "HealthCare", MainPipeline);
-					PlayerInfo[extraid][pTotalCredits]			= cache_get_field_content_int(row,  "TotalCredits", MainPipeline);
-					//PlayerInfo[extraid][pReceivedCredits]		= cache_get_field_content_int(row,  "ReceivedCredits", MainPipeline);
-					PlayerInfo[extraid][pRimMod]				= cache_get_field_content_int(row,  "RimMod", MainPipeline);
-					PlayerInfo[extraid][pHasTazer]				= cache_get_field_content_int(row,  "Tazer",MainPipeline);
-					PlayerInfo[extraid][pHasCuff]				= cache_get_field_content_int(row,  "Cuff", MainPipeline);
-					PlayerInfo[extraid][pCarVoucher]			= cache_get_field_content_int(row,  "CarVoucher", MainPipeline);
-					cache_get_field_content(row,  "ReferredBy", PlayerInfo[extraid][pReferredBy], MainPipeline, MAX_PLAYER_NAME);
-					PlayerInfo[extraid][pPendingRefReward]		= cache_get_field_content_int(row,  "PendingRefReward", MainPipeline);
-					PlayerInfo[extraid][pRefers]				= cache_get_field_content_int(row,  "Refers", MainPipeline);
-					PlayerInfo[extraid][pFamed]					= cache_get_field_content_int(row,  "Famed", MainPipeline);
-					PlayerInfo[extraid][pFMuted]				= cache_get_field_content_int(row,  "FamedMuted", MainPipeline);
-					PlayerInfo[extraid][pDefendTime]			= cache_get_field_content_int(row,  "DefendTime", MainPipeline);
-					PlayerInfo[extraid][pVehicleSlot]			= cache_get_field_content_int(row,  "VehicleSlot", MainPipeline);
-					PlayerInfo[extraid][pPVIPVoucher]			= cache_get_field_content_int(row,  "PVIPVoucher", MainPipeline);
-					PlayerInfo[extraid][pToySlot]				= cache_get_field_content_int(row,  "ToySlot", MainPipeline);
-					PlayerInfo[extraid][pRFLTeam]				= cache_get_field_content_int(row,  "RFLTeam", MainPipeline);
-					PlayerInfo[extraid][pRFLTeamL]				= cache_get_field_content_int(row,  "RFLTeamL", MainPipeline);
-					PlayerInfo[extraid][pVehVoucher]			= cache_get_field_content_int(row,  "VehVoucher", MainPipeline);
-					PlayerInfo[extraid][pSVIPVoucher]			= cache_get_field_content_int(row,  "SVIPVoucher", MainPipeline);
-					PlayerInfo[extraid][pGVIPVoucher]			= cache_get_field_content_int(row,  "GVIPVoucher", MainPipeline);
-					PlayerInfo[extraid][pGiftVoucher]			= cache_get_field_content_int(row,  "GiftVoucher", MainPipeline);
-					PlayerInfo[extraid][pFallIntoFun]			= cache_get_field_content_int(row,  "FallIntoFun", MainPipeline);
-					PlayerInfo[extraid][pHungerVoucher]			= cache_get_field_content_int(row,  "HungerVoucher", MainPipeline);
-					PlayerInfo[extraid][pBoughtCure]			= cache_get_field_content_int(row,  "BoughtCure", MainPipeline);
-					PlayerInfo[extraid][pVials]					= cache_get_field_content_int(row,  "Vials", MainPipeline);
-					PlayerInfo[extraid][pAdvertVoucher]			= cache_get_field_content_int(row,  "AdvertVoucher", MainPipeline);
-					PlayerInfo[extraid][pShopCounter]			= cache_get_field_content_int(row,  "ShopCounter", MainPipeline);
-					PlayerInfo[extraid][pShopNotice]			= cache_get_field_content_int(row,  "ShopNotice", MainPipeline);
-					PlayerInfo[extraid][pSVIPExVoucher]			= cache_get_field_content_int(row,  "SVIPExVoucher", MainPipeline);
-					PlayerInfo[extraid][pGVIPExVoucher]			= cache_get_field_content_int(row,  "GVIPExVoucher", MainPipeline);
-					PlayerInfo[extraid][pVIPSellable]			= cache_get_field_content_int(row,  "VIPSellable", MainPipeline);
-					PlayerInfo[extraid][pReceivedPrize]			= cache_get_field_content_int(row,  "ReceivedPrize", MainPipeline);
-					PlayerInfo[extraid][pVIPSpawn]				= cache_get_field_content_int(row,  "VIPSpawn", MainPipeline);
-					PlayerInfo[extraid][pFreeAdsDay]			= cache_get_field_content_int(row,  "FreeAdsDay", MainPipeline);
-					PlayerInfo[extraid][pFreeAdsLeft]			= cache_get_field_content_int(row,  "FreeAdsLeft", MainPipeline);
-					PlayerInfo[extraid][pBuddyInvites]			= cache_get_field_content_int(row,  "BuddyInvites", MainPipeline);
-					PlayerInfo[extraid][pReceivedBGift]			= cache_get_field_content_int(row,  "ReceivedBGift", MainPipeline);
-					PlayerInfo[extraid][pVIPJob]				= cache_get_field_content_int(row,  "pVIPJob", MainPipeline);
-					PlayerInfo[extraid][pLastBirthday]			= cache_get_field_content_int(row,  "LastBirthday", MainPipeline);
-					PlayerInfo[extraid][pAccountRestricted]		= cache_get_field_content_int(row,  "AccountRestricted", MainPipeline);
-					PlayerInfo[extraid][pWatchlist]				= cache_get_field_content_int(row,  "Watchlist", MainPipeline);
-					PlayerInfo[extraid][pWatchlistTime]			= cache_get_field_content_int(row,  "WatchlistTime", MainPipeline);
-					PlayerInfo[extraid][pBackpack]				= cache_get_field_content_int(row,  "Backpack", MainPipeline);
-					PlayerInfo[extraid][pBEquipped]				= cache_get_field_content_int(row,  "BEquipped", MainPipeline);
-					PlayerInfo[extraid][pBStoredH]				= cache_get_field_content_int(row,  "BStoredH", MainPipeline);
-					PlayerInfo[extraid][pBStoredV]				= cache_get_field_content_int(row,  "BStoredV", MainPipeline);
-					PlayerInfo[extraid][pBugReportTimeout]		= cache_get_field_content_int(row,  "BRTimeout", MainPipeline);
+					cache_get_value_name_int(row,  "DrugsTime", PlayerInfo[extraid][pDrugsTime]);
+					cache_get_value_name_int(row,  "LawyerTime", PlayerInfo[extraid][pLawyerTime]);
+					cache_get_value_name_int(row,  "LawyerFreeTime", PlayerInfo[extraid][pLawyerFreeTime]);
+					cache_get_value_name_int(row,  "MechTime", PlayerInfo[extraid][pMechTime]);
+					cache_get_value_name_int(row,  "SexTime", PlayerInfo[extraid][pSexTime]);
+					cache_get_value_name_int(row,  "PayDay", PlayerInfo[extraid][pConnectSeconds]);
+					cache_get_value_name_int(row,  "PayDayHad", PlayerInfo[extraid][pPayDayHad]);
+					cache_get_value_name_int(row,  "CDPlayer", PlayerInfo[extraid][pCDPlayer]);
+					cache_get_value_name_int(row,  "Dice", PlayerInfo[extraid][pDice]);
+					cache_get_value_name_int(row,  "Spraycan", PlayerInfo[extraid][pSpraycan]);
+					cache_get_value_name_int(row,  "Rope", PlayerInfo[extraid][pRope]);
+					cache_get_value_name_int(row,  "Rags", PlayerInfo[extraid][pRags]);
+					cache_get_value_name_int(row,  "Cigars", PlayerInfo[extraid][pCigar]);
+					cache_get_value_name_int(row,  "Sprunk", PlayerInfo[extraid][pSprunk]);
+					cache_get_value_name_int(row,  "Bombs", PlayerInfo[extraid][pBombs]);
+					cache_get_value_name_int(row,  "Wins", PlayerInfo[extraid][pWins]);
+					cache_get_value_name_int(row,  "Loses", PlayerInfo[extraid][pLoses]);
+					cache_get_value_name_int(row,  "Tutorial", PlayerInfo[extraid][pTut]);
+					cache_get_value_name_int(row,  "OnDuty", PlayerInfo[extraid][pDuty]);
+					cache_get_value_name_int(row,  "Hospital", PlayerInfo[extraid][pHospital]);
+					cache_get_value_name_int(row,  "MarriedID", PlayerInfo[extraid][pMarriedID]);
+					cache_get_value_name(row,  "ContractBy", PlayerInfo[extraid][pContractBy]);
+					cache_get_value_name(row,  "ContractDetail", PlayerInfo[extraid][pContractDetail]);
+					cache_get_value_name_int(row,  "WantedLevel", PlayerInfo[extraid][pWantedLevel]);
+					cache_get_value_name_int(row,  "Insurance", PlayerInfo[extraid][pInsurance]);
+					cache_get_value_name_int(row,  "911Muted", PlayerInfo[extraid][p911Muted]);
+					cache_get_value_name_int(row,  "NewMuted", PlayerInfo[extraid][pNMute]);
+					cache_get_value_name_int(row,  "NewMutedTotal", PlayerInfo[extraid][pNMuteTotal]);
+					cache_get_value_name_int(row,  "AdMuted", PlayerInfo[extraid][pADMute]);
+					cache_get_value_name_int(row,  "AdMutedTotal", PlayerInfo[extraid][pADMuteTotal]);
+					cache_get_value_name_int(row,  "HelpMute", PlayerInfo[extraid][pHelpMute]);
+					cache_get_value_name_int(row,  "Helper", PlayerInfo[extraid][pHelper]);
+					cache_get_value_name_int(row,  "ReportMuted", PlayerInfo[extraid][pRMuted]);
+					cache_get_value_name_int(row,  "ReportMutedTotal", PlayerInfo[extraid][pRMutedTotal]);
+					cache_get_value_name_int(row,  "ReportMutedTime", PlayerInfo[extraid][pRMutedTime]);
+					cache_get_value_name_int(row,  "DMRMuted", PlayerInfo[extraid][pDMRMuted]);
+					cache_get_value_name_int(row,  "VIPMuted", PlayerInfo[extraid][pVMuted]);
+					cache_get_value_name_int(row,  "VIPMutedTime", PlayerInfo[extraid][pVMutedTime]);
+					cache_get_value_name_int(row,  "GiftTime", PlayerInfo[extraid][pGiftTime]);
+					cache_get_value_name_int(row,  "AdvisorDutyHours", PlayerInfo[extraid][pDutyHours]);
+					cache_get_value_name_int(row,  "AcceptedHelp", PlayerInfo[extraid][pAcceptedHelp]);
+					cache_get_value_name_int(row,  "AcceptReport", PlayerInfo[extraid][pAcceptReport]);
+					cache_get_value_name_int(row,  "ShopTechOrders", PlayerInfo[extraid][pShopTechOrders]);
+					cache_get_value_name_int(row,  "TrashReport", PlayerInfo[extraid][pTrashReport]);
+					cache_get_value_name_int(row,  "GangWarn", PlayerInfo[extraid][pGangWarn]);
+					cache_get_value_name_int(row,  "CSFBanned", PlayerInfo[extraid][pCSFBanned]);
+					cache_get_value_name_int(row,  "VIPInviteDay", PlayerInfo[extraid][pVIPInviteDay]);
+					cache_get_value_name_int(row,  "TempVIP", PlayerInfo[extraid][pTempVIP]);
+					cache_get_value_name_int(row,  "BuddyInvite", PlayerInfo[extraid][pBuddyInvited]);
+					cache_get_value_name_int(row,  "Tokens", PlayerInfo[extraid][pTokens]);
+					cache_get_value_name_int(row,  "PTokens", PlayerInfo[extraid][pPaintTokens]);
+					cache_get_value_name_int(row,  "TriageTime", PlayerInfo[extraid][pTriageTime]);
+					cache_get_value_name(row,  "PrisonedBy", PlayerInfo[extraid][pPrisonedBy]);
+					cache_get_value_name(row,  "PrisonReason", PlayerInfo[extraid][pPrisonReason]);
+					cache_get_value_name_int(row,  "TaxiLicense", PlayerInfo[extraid][pTaxiLicense]);
+					cache_get_value_name_int(row,  "TicketTime", PlayerInfo[extraid][pTicketTime]);
+					cache_get_value_name_int(row,  "Screwdriver", PlayerInfo[extraid][pScrewdriver]);
+					cache_get_value_name_int(row,  "Smslog", PlayerInfo[extraid][pSmslog]);
+					cache_get_value_name_int(row,  "Wristwatch", PlayerInfo[extraid][pWristwatch]);
+					cache_get_value_name_int(row,  "Surveillance", PlayerInfo[extraid][pSurveillance]);
+					cache_get_value_name_int(row,  "Tire", PlayerInfo[extraid][pTire]);
+					cache_get_value_name_int(row,  "Firstaid", PlayerInfo[extraid][pFirstaid]);
+					cache_get_value_name_int(row,  "Rccam", PlayerInfo[extraid][pRccam]);
+					cache_get_value_name_int(row,  "Receiver", PlayerInfo[extraid][pReceiver]);
+					cache_get_value_name_int(row,  "GPS", PlayerInfo[extraid][pGPS]);
+					cache_get_value_name_int(row,  "Sweep", PlayerInfo[extraid][pSweep]);
+					cache_get_value_name_int(row,  "SweepLeft", PlayerInfo[extraid][pSweepLeft]);
+					cache_get_value_name_int(row,  "Bugged", PlayerInfo[extraid][pBugged]);
+					cache_get_value_name_int(row,  "pWExists", PlayerInfo[extraid][pWeedObject]);
+					cache_get_value_name_int(row,  "pWSeeds", PlayerInfo[extraid][pWSeeds]);
+					cache_get_value_name(row,  "Warrants", PlayerInfo[extraid][pWarrant]);
+					cache_get_value_name_int(row,  "JudgeJailTime", PlayerInfo[extraid][pJudgeJailTime]);
+					cache_get_value_name_int(row,  "JudgeJailType", PlayerInfo[extraid][pJudgeJailType]);
+					cache_get_value_name_int(row,  "BeingSentenced", PlayerInfo[extraid][pBeingSentenced]);
+					cache_get_value_name_int(row,  "ProbationTime", PlayerInfo[extraid][pProbationTime]);
+					cache_get_value_name_int(row,  "DMKills", PlayerInfo[extraid][pDMKills]);
+					cache_get_value_name_int(row,  "Order", PlayerInfo[extraid][pOrder]);
+					cache_get_value_name_int(row,  "OrderConfirmed", PlayerInfo[extraid][pOrderConfirmed]);
+					cache_get_value_name_int(row,  "CallsAccepted", PlayerInfo[extraid][pCallsAccepted]);
+					cache_get_value_name_int(row,  "PatientsDelivered", PlayerInfo[extraid][pPatientsDelivered]);
+					cache_get_value_name_int(row,  "LiveBanned", PlayerInfo[extraid][pLiveBanned]);
+					cache_get_value_name_int(row,  "FreezeBank", PlayerInfo[extraid][pFreezeBank]);
+					cache_get_value_name_int(row,  "FreezeHouse", PlayerInfo[extraid][pFreezeHouse]);
+					cache_get_value_name_int(row,  "FreezeCar", PlayerInfo[extraid][pFreezeCar]);
+					cache_get_value_name_int(row,  "Firework", PlayerInfo[extraid][pFirework]);
+					cache_get_value_name_int(row,  "Boombox", PlayerInfo[extraid][pBoombox]);
+					cache_get_value_name_int(row,  "Hydration", PlayerInfo[extraid][pHydration]);
+					cache_get_value_name_int(row,  "Speedo", PlayerInfo[extraid][pSpeedo]);
+					cache_get_value_name_int(row,  "DoubleEXP", PlayerInfo[extraid][pDoubleEXP]);
+					cache_get_value_name_int(row,  "EXPToken", PlayerInfo[extraid][pEXPToken]);
+					cache_get_value_name_int(row,  "RacePlayerLaps", PlayerInfo[extraid][pRacePlayerLaps]);
+					cache_get_value_name_int(row,  "Ringtone", PlayerInfo[extraid][pRingtone]);
+					cache_get_value_name_int(row,  "Wallpaper", PlayerInfo[extraid][pWallpaper]);
+					cache_get_value_name_int(row,  "VIPM", PlayerInfo[extraid][pVIPM]);
+					cache_get_value_name_int(row,  "VIPMO", PlayerInfo[extraid][pVIPMO]);
+					cache_get_value_name_int(row,  "VIPExpire", PlayerInfo[extraid][pVIPExpire]);
+					cache_get_value_name_int(row,  "GVip", PlayerInfo[extraid][pGVip]);
+					cache_get_value_name_int(row,  "Watchdog", PlayerInfo[extraid][pWatchdog]);
+					cache_get_value_name_int(row,  "VIPSold", PlayerInfo[extraid][pVIPSold]);
+					cache_get_value_name_int(row,  "GoldBoxTokens", PlayerInfo[extraid][pGoldBoxTokens]);
+					cache_get_value_name_int(row,  "DrawChance", PlayerInfo[extraid][pRewardDrawChance]);
+					cache_get_value_name_float(row,  "RewardHours", PlayerInfo[extraid][pRewardHours]);
+					cache_get_value_name_int(row,  "CarsRestricted", PlayerInfo[extraid][pRVehRestricted]);
+					cache_get_value_name_int(row,  "LastCarWarning", PlayerInfo[extraid][pLastRVehWarn]);
+					cache_get_value_name_int(row,  "CarWarns", PlayerInfo[extraid][pRVehWarns]);
+					cache_get_value_name_int(row,  "Flagged", PlayerInfo[extraid][pFlagged]);
+					cache_get_value_name_int(row,  "Paper", PlayerInfo[extraid][pPaper]);
+					cache_get_value_name_int(row,  "MailEnabled", PlayerInfo[extraid][pMailEnabled]);
+					cache_get_value_name_int(row,  "Mailbox", PlayerInfo[extraid][pMailbox]);
+					cache_get_value_name_int(row,  "Business", PlayerInfo[extraid][pBusiness]);
+					cache_get_value_name_int(row,  "BusinessRank", PlayerInfo[extraid][pBusinessRank]);
+					cache_get_value_name_int(row,  "TreasureSkill", PlayerInfo[extraid][pTreasureSkill]);
+					cache_get_value_name_int(row,  "MetalDetector", PlayerInfo[extraid][pMetalDetector]);
+					cache_get_value_name_int(row,  "HelpedBefore", PlayerInfo[extraid][pHelpedBefore]);
+					cache_get_value_name_int(row,  "Trickortreat", PlayerInfo[extraid][pTrickortreat]);
+					cache_get_value_name_int(row,  "LastCharmReceived", PlayerInfo[extraid][pLastCharmReceived]);
+					cache_get_value_name_int(row,  "RHMutes", PlayerInfo[extraid][pRHMutes]);
+					cache_get_value_name_int(row,  "RHMuteTime", PlayerInfo[extraid][pRHMuteTime]);
+					cache_get_value_name_int(row,  "GiftCode", PlayerInfo[extraid][pGiftCode]);
+					cache_get_value_name_int(row,  "Table", PlayerInfo[extraid][pTable]);
+					cache_get_value_name_int(row,  "OpiumSeeds", PlayerInfo[extraid][pOpiumSeeds]);
+					cache_get_value_name_int(row,  "RawOpium", PlayerInfo[extraid][pRawOpium]);
+					//PlayerInfo[extraid][pHeroin]				= cache_get_value_name_int(row,  "Heroin", value);
+					cache_get_value_name_int(row,  "Syringe", PlayerInfo[extraid][pSyringes]);
+					cache_get_value_name_int(row,  "Skins", PlayerInfo[extraid][pSkins]);
+					cache_get_value_name_int(row,  "Fitness", PlayerInfo[extraid][pFitness]);
+					cache_get_value_name_int(row,  "ForcePasswordChange", PlayerInfo[extraid][pForcePasswordChange]);
+					cache_get_value_name_int(row,  "Credits", PlayerInfo[extraid][pCredits]);
+					cache_get_value_name_int(row,  "HealthCare", PlayerInfo[extraid][pHealthCare]);
+					cache_get_value_name_int(row,  "TotalCredits", PlayerInfo[extraid][pTotalCredits]);
+					//PlayerInfo[extraid][pReceivedCredits]		= cache_get_value_name_int(row,  "ReceivedCredits", value);
+					cache_get_value_name_int(row,  "RimMod", PlayerInfo[extraid][pRimMod]);
+					cache_get_value_name_int(row,  "Tazer", PlayerInfo[extraid][pHasTazer]);
+					cache_get_value_name_int(row,  "Cuff", PlayerInfo[extraid][pHasCuff]);
+					cache_get_value_name_int(row,  "CarVoucher", PlayerInfo[extraid][pCarVoucher]);
+					cache_get_value_name(row,  "ReferredBy", PlayerInfo[extraid][pReferredBy]);
+					cache_get_value_name_int(row,  "PendingRefReward", PlayerInfo[extraid][pPendingRefReward]);
+					cache_get_value_name_int(row,  "Refers", PlayerInfo[extraid][pRefers]);
+					cache_get_value_name_int(row,  "Famed", PlayerInfo[extraid][pFamed]);
+					cache_get_value_name_int(row,  "FamedMuted", PlayerInfo[extraid][pFMuted]);
+					cache_get_value_name_int(row,  "DefendTime", PlayerInfo[extraid][pDefendTime]);
+					cache_get_value_name_int(row,  "VehicleSlot", PlayerInfo[extraid][pVehicleSlot]);
+					cache_get_value_name_int(row,  "PVIPVoucher", PlayerInfo[extraid][pPVIPVoucher]);
+					cache_get_value_name_int(row,  "ToySlot", PlayerInfo[extraid][pToySlot]);
+					cache_get_value_name_int(row,  "RFLTeam", PlayerInfo[extraid][pRFLTeam]);
+					cache_get_value_name_int(row,  "RFLTeamL", PlayerInfo[extraid][pRFLTeamL]);
+					cache_get_value_name_int(row,  "VehVoucher", PlayerInfo[extraid][pVehVoucher]);
+					cache_get_value_name_int(row,  "SVIPVoucher", PlayerInfo[extraid][pSVIPVoucher]);
+					cache_get_value_name_int(row,  "GVIPVoucher", PlayerInfo[extraid][pGVIPVoucher]);
+					cache_get_value_name_int(row,  "GiftVoucher", PlayerInfo[extraid][pGiftVoucher]);
+					cache_get_value_name_int(row,  "FallIntoFun", PlayerInfo[extraid][pFallIntoFun]);
+					cache_get_value_name_int(row,  "HungerVoucher", PlayerInfo[extraid][pHungerVoucher]);
+					cache_get_value_name_int(row,  "BoughtCure", PlayerInfo[extraid][pBoughtCure]);
+					cache_get_value_name_int(row,  "Vials", PlayerInfo[extraid][pVials]);
+					cache_get_value_name_int(row,  "AdvertVoucher", PlayerInfo[extraid][pAdvertVoucher]);
+					cache_get_value_name_int(row,  "ShopCounter", PlayerInfo[extraid][pShopCounter]);
+					cache_get_value_name_int(row,  "ShopNotice", PlayerInfo[extraid][pShopNotice]);
+					cache_get_value_name_int(row,  "SVIPExVoucher", PlayerInfo[extraid][pSVIPExVoucher]);
+					cache_get_value_name_int(row,  "GVIPExVoucher", PlayerInfo[extraid][pGVIPExVoucher]);
+					cache_get_value_name_int(row,  "VIPSellable", PlayerInfo[extraid][pVIPSellable]);
+					cache_get_value_name_int(row,  "ReceivedPrize", PlayerInfo[extraid][pReceivedPrize]);
+					cache_get_value_name_int(row,  "VIPSpawn", PlayerInfo[extraid][pVIPSpawn]);
+					cache_get_value_name_int(row,  "FreeAdsDay", PlayerInfo[extraid][pFreeAdsDay]);
+					cache_get_value_name_int(row,  "FreeAdsLeft", PlayerInfo[extraid][pFreeAdsLeft]);
+					cache_get_value_name_int(row,  "BuddyInvites", PlayerInfo[extraid][pBuddyInvites]);
+					cache_get_value_name_int(row,  "ReceivedBGift", PlayerInfo[extraid][pReceivedBGift]);
+					cache_get_value_name_int(row,  "pVIPJob", PlayerInfo[extraid][pVIPJob]);
+					cache_get_value_name_int(row,  "LastBirthday", PlayerInfo[extraid][pLastBirthday]);
+					cache_get_value_name_int(row,  "AccountRestricted", PlayerInfo[extraid][pAccountRestricted]);
+					cache_get_value_name_int(row,  "Watchlist", PlayerInfo[extraid][pWatchlist]);
+					cache_get_value_name_int(row,  "WatchlistTime", PlayerInfo[extraid][pWatchlistTime]);
+					cache_get_value_name_int(row,  "Backpack", PlayerInfo[extraid][pBackpack]);
+					cache_get_value_name_int(row,  "BEquipped", PlayerInfo[extraid][pBEquipped]);
+					cache_get_value_name_int(row,  "BStoredH", PlayerInfo[extraid][pBStoredH]);
+					cache_get_value_name_int(row,  "BStoredV", PlayerInfo[extraid][pBStoredV]);
+					cache_get_value_name_int(row,  "BRTimeout", PlayerInfo[extraid][pBugReportTimeout]);
+					cache_get_value_name_int(row, "PrisonCredits", PlayerInfo[extraid][pPrisonCredits]);
+					cache_get_value_name_int(row, "PrisonMaterials", PlayerInfo[extraid][pPrisonMaterials]);
+					cache_get_value_name_int(row, "PrisonWineTime", PlayerInfo[extraid][pPrisonWineTime]);
+					cache_get_value_name_int(row, "PrisonCell", PlayerInfo[extraid][pPrisonCell]);
 
-					PlayerInfo[extraid][pPrisonCredits] 		= cache_get_field_content_int(row, "PrisonCredits", MainPipeline);
-					PlayerInfo[extraid][pPrisonMaterials] 		= cache_get_field_content_int(row, "PrisonMaterials", MainPipeline);
-					PlayerInfo[extraid][pPrisonWineTime]		= cache_get_field_content_int(row, "PrisonWineTime", MainPipeline);
-					PlayerInfo[extraid][pPrisonCell] 			= cache_get_field_content_int(row, "PrisonCell", MainPipeline);
+					cache_get_value_name_int(row, "CopKit", value);
+					SetPVarInt(extraid, "MedVestKit", value);
 
-					SetPVarInt(extraid, "MedVestKit", cache_get_field_content_int(row, "CopKit", MainPipeline));
+					cache_get_value_name_int(row, "PrisonSoap", value);
+					SetPVarInt(extraid, "pPrisonSoap", value);
 
-					SetPVarInt(extraid, "pPrisonSoap", cache_get_field_content_int(row, "PrisonSoap", MainPipeline));
-					SetPVarInt(extraid, "pPrisonSugar", cache_get_field_content_int(row, "PrisonSugar", MainPipeline));
-					SetPVarInt(extraid, "pPrisonBread", cache_get_field_content_int(row, "PrisonBread", MainPipeline));
-					SetPVarInt(extraid, "pPrisonShank", cache_get_field_content_int(row, "PrisonShank", MainPipeline));
-					SetPVarInt(extraid, "pPrisonShankOut", cache_get_field_content_int(row, "PrisonShankOut", MainPipeline));
-					SetPVarInt(extraid, "pShankUsages", cache_get_field_content_int(row, "ShankUsages", MainPipeline));
-					SetPVarInt(extraid, "pPrisonWine", cache_get_field_content_int(row, "PrisonWine", MainPipeline));
-					SetPVarInt(extraid, "pPrisonMWine", cache_get_field_content_int(row, "PrisonMWine", MainPipeline));
-					SetPVarInt(extraid, "pPrisonChisel", cache_get_field_content_int(row, "PrisonChisel", MainPipeline));
-					SetPVarInt(extraid, "pPrisonCellChisel", cache_get_field_content_int(row, "PrisonCellChisel", MainPipeline));
-					PlayerInfo[extraid][pFishingSkill]			= cache_get_field_content_int(row,  "FishingSkill", MainPipeline);
-					PlayerInfo[extraid][pFishWeight]			= cache_get_field_content_int(row,  "FishWeight", MainPipeline);
-					PlayerInfo[extraid][pGarbageSkill]			= cache_get_field_content_int(row,  "GarbageSkill", MainPipeline);
-					
+					cache_get_value_name_int(row, "PrisonSugar", value);
+					SetPVarInt(extraid, "pPrisonSugar", value);
+
+					cache_get_value_name_int(row, "PrisonBread", value);
+					SetPVarInt(extraid, "pPrisonBread", value);
+
+					cache_get_value_name_int(row, "PrisonShank", value);
+					SetPVarInt(extraid, "pPrisonShank", value);
+
+					cache_get_value_name_int(row, "PrisonShankOut", value);
+					SetPVarInt(extraid, "pPrisonShankOut", value);
+
+					cache_get_value_name_int(row, "ShankUsages", value);
+					SetPVarInt(extraid, "pShankUsages", value);
+
+					cache_get_value_name_int(row, "PrisonWine", value);
+					SetPVarInt(extraid, "pPrisonWine", value);
+
+					cache_get_value_name_int(row, "PrisonMWine", value);
+					SetPVarInt(extraid, "pPrisonMWine", value);
+
+					cache_get_value_name_int(row, "PrisonChisel", value);
+					SetPVarInt(extraid, "pPrisonChisel", value);
+
+					cache_get_value_name_int(row, "PrisonCellChisel", value);
+					SetPVarInt(extraid, "pPrisonCellChisel", value);
+
+					cache_get_value_name_int(row,  "FishingSkill", PlayerInfo[extraid][pFishingSkill]);
+					cache_get_value_name_int(row,  "FishWeight", PlayerInfo[extraid][pFishWeight]);
+					cache_get_value_name_int(row,  "GarbageSkill", PlayerInfo[extraid][pGarbageSkill]);
 					for(new i = 0; i < 12; i++)	{
 
 						format(szField, sizeof(szField), "BItem%d", i);
-						PlayerInfo[extraid][pBItems][i] = cache_get_field_content_int(row,  szField, MainPipeline);
+						cache_get_value_name_int(row,  szField, PlayerInfo[extraid][pBItems][i]);
 					}
 					for(new i = 0; i < sizeof(Drugs); i++) {
 
 						format(szField, sizeof(szField), "BDrug%d", i);
-						PlayerInfo[extraid][pBDrugs][i] = cache_get_field_content_int(row,  szField, MainPipeline);
+						cache_get_value_name_int(row,  szField, PlayerInfo[extraid][pBDrugs][i]);
 					}
-					PlayerInfo[extraid][pDigCooldown] = cache_get_field_content_int(row,  "pDigCooldown", MainPipeline);
-					PlayerInfo[extraid][pToolBox]				= cache_get_field_content_int(row,  "ToolBox", MainPipeline);
-					PlayerInfo[extraid][pCrowBar]				= cache_get_field_content_int(row,  "CrowBar", MainPipeline);
-					PlayerInfo[extraid][pCarLockPickSkill]		= cache_get_field_content_int(row,  "CarLockPickSkill", MainPipeline);
-					PlayerInfo[extraid][pLockPickVehCount]		= cache_get_field_content_int(row,  "LockPickVehCount", MainPipeline);
-					PlayerInfo[extraid][pLockPickTime]			= cache_get_field_content_int(row,  "LockPickTime", MainPipeline);
-					PlayerInfo[extraid][pSEC]					= cache_get_field_content_int(row,  "SEC", MainPipeline);
-					PlayerInfo[extraid][pBM]					= cache_get_field_content_int(row,  "BM", MainPipeline);
-					PlayerInfo[extraid][pASM]					= cache_get_field_content_int(row,  "ASM", MainPipeline);
-					PlayerInfo[extraid][pIsolated]				= cache_get_field_content_int(row,  "Isolated", MainPipeline);
-					PlayerInfo[extraid][pWantedJailTime]		= cache_get_field_content_int(row,  "WantedJailTime", MainPipeline);
-					PlayerInfo[extraid][pWantedJailFine]		= cache_get_field_content_int(row,  "WantedJailFine", MainPipeline);
-					PlayerInfo[extraid][pNextNameChange] 		= cache_get_field_content_int(row,  "NextNameChange", MainPipeline);
-					cache_get_field_content(row,  "pExamineDesc", PlayerInfo[extraid][pExamineDesc], MainPipeline, 128);
-					cache_get_field_content(row,  "FavStation", PlayerInfo[extraid][pFavStation], MainPipeline, 255);
+					cache_get_value_name_int(row,  "pDigCooldown", PlayerInfo[extraid][pDigCooldown]);
+					cache_get_value_name_int(row,  "ToolBox", PlayerInfo[extraid][pToolBox]);
+					cache_get_value_name_int(row,  "CrowBar", PlayerInfo[extraid][pCrowBar]);
+					cache_get_value_name_int(row,  "CarLockPickSkill", PlayerInfo[extraid][pCarLockPickSkill]);
+					cache_get_value_name_int(row,  "LockPickVehCount", PlayerInfo[extraid][pLockPickVehCount]);
+					cache_get_value_name_int(row,  "LockPickTime", PlayerInfo[extraid][pLockPickTime]);
+					cache_get_value_name_int(row,  "SEC", PlayerInfo[extraid][pSEC]);
+					cache_get_value_name_int(row,  "BM", PlayerInfo[extraid][pBM]);
+					cache_get_value_name_int(row,  "ASM", PlayerInfo[extraid][pASM]);
+					cache_get_value_name_int(row,  "Isolated", PlayerInfo[extraid][pIsolated]);
+					cache_get_value_name_int(row,  "WantedJailTime", PlayerInfo[extraid][pWantedJailTime]);
+					cache_get_value_name_int(row,  "WantedJailFine", PlayerInfo[extraid][pWantedJailFine]);
+					cache_get_value_name_int(row,  "NextNameChange", PlayerInfo[extraid][pNextNameChange]);
+					cache_get_value_name(row,  "pExamineDesc", PlayerInfo[extraid][pExamineDesc]);
+					cache_get_value_name(row,  "FavStation", PlayerInfo[extraid][pFavStation]);
 
 					// Austin's DP System
-					PlayerInfo[extraid][pDedicatedPlayer]		= cache_get_field_content_int(row,  "pDedicatedPlayer", MainPipeline);
-					PlayerInfo[extraid][pDedicatedEnabled]		= cache_get_field_content_int(row,  "pDedicatedEnabled", MainPipeline);
-					PlayerInfo[extraid][pDedicatedMuted]		= cache_get_field_content_int(row,  "pDedicatedMuted", MainPipeline);
-					PlayerInfo[extraid][pDedicatedWarn]			= cache_get_field_content_int(row,  "pDedicatedWarn", MainPipeline);
-
-					cache_get_field_content(row,  "mInventory", szResult, MainPipeline);
+					cache_get_value_name_int(row,  "pDedicatedPlayer", PlayerInfo[extraid][pDedicatedPlayer]);
+					cache_get_value_name_int(row,  "pDedicatedEnabled", PlayerInfo[extraid][pDedicatedEnabled]);
+					cache_get_value_name_int(row,  "pDedicatedMuted", PlayerInfo[extraid][pDedicatedMuted]);
+					cache_get_value_name_int(row,  "pDedicatedWarn", PlayerInfo[extraid][pDedicatedWarn]);
+					cache_get_value_name(row,  "mInventory", szResult);
 					sscanf(szResult, MicroSpecifier, PlayerInfo[extraid][mInventory]);
-					cache_get_field_content(row,  "mPurchaseCounts", szResult, MainPipeline);
+					cache_get_value_name(row,  "mPurchaseCounts", szResult);
 					sscanf(szResult, MicroSpecifier, PlayerInfo[extraid][mPurchaseCount]);
 					new result[256];
-					cache_get_field_content(row,  "mCooldowns", result, MainPipeline);
+					cache_get_value_name(row,  "mCooldowns", result);
 					sscanf(result, MicroSpecifier, PlayerInfo[extraid][mCooldown]);
-					cache_get_field_content(row,  "mBoost", szResult, MainPipeline);
+					cache_get_value_name(row,  "mBoost", szResult);
 					sscanf(szResult, "p<|>e<dd>", PlayerInfo[extraid][mBoost]);
-					cache_get_field_content(row,  "mShopNotice", szResult, MainPipeline);
+					cache_get_value_name(row,  "mShopNotice", szResult);
 					sscanf(szResult, "p<|>dd", PlayerInfo[extraid][mShopCounter], PlayerInfo[extraid][mNotice]);
-					PlayerInfo[extraid][zFuelCan] = cache_get_field_content_int(row,  "zFuelCan", MainPipeline);
-					PlayerInfo[extraid][bTicket] = cache_get_field_content_int(row,  "bTicket", MainPipeline);
+					cache_get_value_name_int(row,  "zFuelCan", PlayerInfo[extraid][zFuelCan]);
+					cache_get_value_name_int(row,  "bTicket", PlayerInfo[extraid][bTicket]);
 
 					// Austin's Punishment Revamp
-					cache_get_field_content(row,  "JailedInfo", szResult, MainPipeline);
+					cache_get_value_name(row,  "JailedInfo", szResult);
 					sscanf(szResult, "p<|>e<ddddd>", PlayerInfo[extraid][pJailedInfo]);
-					cache_get_field_content(row,  "JailedWeapons", szResult, MainPipeline);
+					cache_get_value_name(row,  "JailedWeapons", szResult);
 					sscanf(szResult, "p<|>e<dddddddddddd>", PlayerInfo[extraid][pJailedWeapons]);
 
-					PlayerInfo[extraid][pVIPMod] = cache_get_field_content_int(row,  "pVIPMod", MainPipeline);
-					SetPVarInt(extraid, "EmailConfirmed", cache_get_field_content_int(row, "EmailConfirmed", MainPipeline));
-					PlayerInfo[extraid][pEventTokens] = cache_get_field_content_int(row,  "pEventTokens", MainPipeline);
-					PlayerInfo[extraid][pBailPrice] = cache_get_field_content_int(row,  "pBailPrice", MainPipeline);
-					PlayerInfo[extraid][pLastPoll] = cache_get_field_content_int(row,  "pLastPoll", MainPipeline);
-
-					PlayerInfo[extraid][pVIPGuncount] = cache_get_field_content_int(row, "VIPGunsCount", MainPipeline);
-
-					PlayerInfo[extraid][pGroupToyBone] = cache_get_field_content_int(row, "GroupToyBone", MainPipeline);
-					PlayerInfo[extraid][pGroupToy][0] = cache_get_field_content_float(row, "GroupToy0", MainPipeline);
-					PlayerInfo[extraid][pGroupToy][1] = cache_get_field_content_float(row, "GroupToy1", MainPipeline);
-					PlayerInfo[extraid][pGroupToy][2] = cache_get_field_content_float(row, "GroupToy2", MainPipeline);
-					PlayerInfo[extraid][pGroupToy][3] = cache_get_field_content_float(row, "GroupToy3", MainPipeline);
-					PlayerInfo[extraid][pGroupToy][4] = cache_get_field_content_float(row, "GroupToy4", MainPipeline);
-					PlayerInfo[extraid][pGroupToy][5] = cache_get_field_content_float(row, "GroupToy5", MainPipeline);
-					PlayerInfo[extraid][pGroupToy][6] = cache_get_field_content_float(row, "GroupToy6", MainPipeline);
-					PlayerInfo[extraid][pGroupToy][7] = cache_get_field_content_float(row, "GroupToy7", MainPipeline);
-					PlayerInfo[extraid][pGroupToy][8] = cache_get_field_content_float(row, "GroupToy8", MainPipeline);
-					PlayerInfo[extraid][pDrugs][0] 	  = cache_get_field_content_int(row, "Pot", MainPipeline);
-					PlayerInfo[extraid][pDrugs][1] 	  = cache_get_field_content_int(row, "Crack", MainPipeline);
-					PlayerInfo[extraid][pDrugs][2] 	  = cache_get_field_content_int(row, "Meth", MainPipeline);
-					PlayerInfo[extraid][pDrugs][3] 	  = cache_get_field_content_int(row, "Ecstasy", MainPipeline);
-					PlayerInfo[extraid][pDrugs][4] 	  = cache_get_field_content_int(row, "Heroin", MainPipeline);
-
-					PlayerInfo[extraid][pHitman] = cache_get_field_content_int(row, "Hitman");
-					PlayerInfo[extraid][pHitmanLeader] = cache_get_field_content_int(row, "HitmanLeader");
-					PlayerInfo[extraid][pHitmanBlacklisted] = cache_get_field_content_int(row, "HitmanBlacklisted");
-					cache_get_field_content(row, "BlacklistReason", PlayerInfo[extraid][pBlacklistReason], MainPipeline);
-
-					cache_get_field_content(row, "PollKeyA", PlayerInfo[extraid][pPollKey1], MainPipeline, 128);
-					cache_get_field_content(row, "PollKeyB", PlayerInfo[extraid][pPollKey2], MainPipeline, 128);
-					cache_get_field_content(row, "PollKeyC", PlayerInfo[extraid][pPollKey3], MainPipeline, 128);
-
+					cache_get_value_name_int(row, "pVIPMod", PlayerInfo[extraid][pVIPMod]);
+					cache_get_value_name_int(row, "EmailConfirmed", value);
+					SetPVarInt(extraid, "EmailConfirmed", value);
+					cache_get_value_name_int(row, "pEventTokens", PlayerInfo[extraid][pEventTokens]);
+					cache_get_value_name_int(row, "pBailPrice", PlayerInfo[extraid][pBailPrice]);
+					cache_get_value_name_int(row, "pLastPoll", PlayerInfo[extraid][pLastPoll]);
+					cache_get_value_name_int(row, "VIPGunsCount", PlayerInfo[extraid][pVIPGuncount]);
+					cache_get_value_name_int(row, "GroupToyBone", PlayerInfo[extraid][pGroupToyBone]);
+					cache_get_value_name_float(row, "GroupToy0", PlayerInfo[extraid][pGroupToy][0]);
+					cache_get_value_name_float(row, "GroupToy1", PlayerInfo[extraid][pGroupToy][1]);
+					cache_get_value_name_float(row, "GroupToy2", PlayerInfo[extraid][pGroupToy][2]);
+					cache_get_value_name_float(row, "GroupToy3", PlayerInfo[extraid][pGroupToy][3]);
+					cache_get_value_name_float(row, "GroupToy4", PlayerInfo[extraid][pGroupToy][4]);
+					cache_get_value_name_float(row, "GroupToy5", PlayerInfo[extraid][pGroupToy][5]);
+					cache_get_value_name_float(row, "GroupToy6", PlayerInfo[extraid][pGroupToy][6]);
+					cache_get_value_name_float(row, "GroupToy7", PlayerInfo[extraid][pGroupToy][7]);
+					cache_get_value_name_float(row, "GroupToy8", PlayerInfo[extraid][pGroupToy][8]);
+					cache_get_value_name_int(row, "Pot", PlayerInfo[extraid][pDrugs][0]);
+					cache_get_value_name_int(row, "Crack", PlayerInfo[extraid][pDrugs][1]);
+					cache_get_value_name_int(row, "Meth", PlayerInfo[extraid][pDrugs][2]);
+					cache_get_value_name_int(row, "Ecstasy", PlayerInfo[extraid][pDrugs][3]);
+					cache_get_value_name_int(row, "Heroin", PlayerInfo[extraid][pDrugs][4]);
+					cache_get_value_name_int(row, "Hitman", PlayerInfo[extraid][pHitman]);
+					cache_get_value_name_int(row, "HitmanLeader", PlayerInfo[extraid][pHitmanLeader]);
+					cache_get_value_name_int(row, "HitmanBlacklisted", PlayerInfo[extraid][pHitmanBlacklisted]);
+					cache_get_value_name(row, "BlacklistReason", PlayerInfo[extraid][pBlacklistReason]);
+					cache_get_value_name(row, "PollKeyA", PlayerInfo[extraid][pPollKey1]);
+					cache_get_value_name(row, "PollKeyB", PlayerInfo[extraid][pPollKey2]);
+					cache_get_value_name(row, "PollKeyC", PlayerInfo[extraid][pPollKey3]);
 					if(isnull(PlayerInfo[extraid][pPollKey1])) format(PlayerInfo[extraid][pPollKey1], 12, "Invalid Key");
 					if(isnull(PlayerInfo[extraid][pPollKey2])) format(PlayerInfo[extraid][pPollKey2], 12, "Invalid Key");
 					if(isnull(PlayerInfo[extraid][pPollKey3])) format(PlayerInfo[extraid][pPollKey3], 12, "Invalid Key");
-
-					PlayerInfo[extraid][pFurnitureSlots] = cache_get_field_content_int(row, "FurnitureSlots", MainPipeline);
-
-
-					cache_get_field_content(row,  "DedicatedDaymarker", PlayerInfo[extraid][pDedicatedDaymarker], MainPipeline, 11);
-					cache_get_field_content(row,  "DedicatedTimestamp", PlayerInfo[extraid][pDedicatedTimestamp], MainPipeline, 11);
-					PlayerInfo[extraid][pDedicatedHours] = cache_get_field_content_int(row, "DedicatedHours", MainPipeline);
-
-					PlayerInfo[extraid][pWalkStyle] = cache_get_field_content_int(row, "WalkStyle", MainPipeline);
+					cache_get_value_name_int(row, "FurnitureSlots", PlayerInfo[extraid][pFurnitureSlots]);
+					cache_get_value_name(row,  "DedicatedDaymarker", PlayerInfo[extraid][pDedicatedDaymarker]);
+					cache_get_value_name(row,  "DedicatedTimestamp", PlayerInfo[extraid][pDedicatedTimestamp]);
+					cache_get_value_name_int(row, "DedicatedHours", PlayerInfo[extraid][pDedicatedHours]);
+					cache_get_value_name_int(row, "WalkStyle", PlayerInfo[extraid][pWalkStyle]);
 					if(PlayerInfo[extraid][pWalkStyle]) SetPlayerWalkingStyle(extraid, PlayerInfo[extraid][pWalkStyle]);
 
 					/*for(new i = 0; i < MAX_POLLS; i++)
 					{
 						format(szField, sizeof(szField), "HasVoted%d", i);
-						PlayerInfo[extraid][pGuns][i] = cache_get_field_content_int(row,  szField, MainPipeline);
+						PlayerInfo[extraid][pGuns][i] = cache_get_value_name_int(row,  szField);
 					}*/
 
 					// Jingles' Drug System:
-					//for(new d; d != sizeof(Drugs); ++d) PlayerInfo[extraid][pDrugs][d] = cache_get_field_content_int(row, GetDrugName(d), MainPipeline);
-					//for(new d; d != sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_field_content_int(row, DS_Ingredients_GetSQLName(d), MainPipeline);
+					//for(new d; d != sizeof(Drugs); ++d) PlayerInfo[extraid][pDrugs][d] = cache_get_value_name_int(row, GetDrugName(d));
+					//for(new d; d != sizeof(szIngredients); ++d) PlayerInfo[extraid][p_iIngredient][d] = cache_get_value_name_int(row, DS_Ingredients_GetSQLName(d));
 
 					/*szMiscArray[0] = 0;	
 					for(new d; d != sizeof(Drugs); ++d)
 					{
 						format(szMiscArray, sizeof(szMiscArray), "Prison%s", GetDrugName(d));
-						PlayerInfo[extraid][p_iPrisonDrug][d] = cache_get_field_content_int(row, szMiscArray, MainPipeline);
+						PlayerInfo[extraid][p_iPrisonDrug][d] = cache_get_value_name_int(row, szMiscArray);
 					} old */
 
-					/*cache_get_field_content(row,  "PrisonDrugs", szResult, MainPipeline);
+					/*cache_get_value_name(row,  "PrisonDrugs", szResult);
 					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iPrisonDrug]);*/
 
-					/*cache_get_field_content(row,  "DrugQuality", szResult, MainPipeline);
+					/*cache_get_value_name(row,  "DrugQuality", szResult);
 					sscanf(szResult, "p<|>e<dddddddddddddd>", PlayerInfo[extraid][p_iDrugQuality]);*/
 
 					// Account settings:
-					/*cache_get_field_content(row,  "ToggledChats", szResult, MainPipeline);
+					/*cache_get_value_name(row,  "ToggledChats", szResult);
 					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pToggledChats]);*/
 
 					for(new c = 0; c < MAX_CHATSETS; c++) {
 						format(szMiscArray, sizeof(szMiscArray), "ChatTog%d", c);
-						PlayerInfo[extraid][pToggledChats][c] = cache_get_field_content_int(row, szMiscArray, MainPipeline);
+						cache_get_value_name_int(row, szMiscArray, PlayerInfo[extraid][pToggledChats][c]);
 					}
-					PlayerInfo[extraid][pFlagCredits] = cache_get_field_content_int(row, "FlagCredits", MainPipeline);
-					PlayerInfo[extraid][pFlagClaimed] = cache_get_field_content_int(row, "FlagClaimed", MainPipeline);
 
-					/*cache_get_field_content(row,  "ChatboxSettings", szResult, MainPipeline);
+					/*cache_get_value_name(row,  "ChatboxSettings", szResult);
 					sscanf(szResult, "p<|>e<dddddddddddddddddddd>", PlayerInfo[extraid][pChatbox]);*/
 
 					if(PlayerInfo[extraid][pCredits] > 0)
@@ -804,7 +813,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 			new name[24];
 			for(new i;i < rows;i++)
 			{
-				cache_get_field_content(i, "Username", name, MainPipeline, MAX_PLAYER_NAME);
+				cache_get_value_name(i, "Username", name, MAX_PLAYER_NAME);
 				if(strcmp(name, GetPlayerNameExt(extraid), true) == 0)
 				{
 					HideNoticeGUIFrame(extraid);
@@ -831,18 +840,18 @@ public OnQueryFinish(resultid, extraid, handleid)
 					szBuffer[129],
 					salt[11];
 
-				cache_get_field_content(i, "Username", szResult, MainPipeline, MAX_PLAYER_NAME);
+				cache_get_value_name(i, "Username", szResult, MAX_PLAYER_NAME);
 				if(strcmp(szResult, GetPlayerNameExt(extraid), true) != 0)
 				{
 					//g_mysql_AccountAuthCheck(extraid);
 					return 1;
 				}
-				cache_get_field_content(i, "Key", szResult, MainPipeline, 129);
-				cache_get_field_content(i, "Salt", salt, MainPipeline, 11);
+				cache_get_value_name(i, "Key", szResult, 129);
+				cache_get_value_name(i, "Salt", salt, 11);
 				GetPVarString(extraid, "PassAuth", szBuffer, sizeof(szBuffer));
 				if(!isnull(salt)) strcat(szBuffer, salt);
 				WP_Hash(szPass, sizeof(szPass), szBuffer);
-				/*if(cache_get_field_content_int(i, "Online", MainPipeline)) {
+				/*if(cache_get_value_name_int(i, "Online")) {
 					SendClientMessage(extraid, COLOR_RED, "SERVER: This account has already logged in.");
 					SetTimerEx("KickEx", 1000, 0, "i", extraid);
 					return 1;
@@ -890,26 +899,26 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 					//new szResult[32];
 
-					PlayerToyInfo[extraid][i][ptID] 				= cache_get_field_content_int(i, "id", MainPipeline);
-					PlayerToyInfo[extraid][i][ptModelID] 			= cache_get_field_content_int(i, "modelid", MainPipeline);
+					cache_get_value_name_int(i, "id", PlayerToyInfo[extraid][i][ptID]);
+					cache_get_value_name_int(i, "modelid", PlayerToyInfo[extraid][i][ptModelID]);
 
 					if(PlayerToyInfo[extraid][i][ptModelID] != 0)
 					{
-						PlayerToyInfo[extraid][i][ptBone] 			= cache_get_field_content_int(i, "bone", MainPipeline);
+						cache_get_value_name_int(i, "bone", PlayerToyInfo[extraid][i][ptBone]);
 						if(PlayerToyInfo[extraid][i][ptBone] > 18 || PlayerToyInfo[extraid][i][ptBone] < 1) PlayerToyInfo[extraid][i][ptBone] = 1;
 
-						PlayerToyInfo[extraid][i][ptTradable] 		= cache_get_field_content_int(i, "tradable", MainPipeline);
-						PlayerToyInfo[extraid][i][ptPosX] 			= cache_get_field_content_float(i, "posx", MainPipeline);
-						PlayerToyInfo[extraid][i][ptPosY] 			= cache_get_field_content_float(i, "posy", MainPipeline);
-						PlayerToyInfo[extraid][i][ptPosZ] 			= cache_get_field_content_float(i, "posz", MainPipeline);
-						PlayerToyInfo[extraid][i][ptRotX] 			= cache_get_field_content_float(i, "rotx", MainPipeline);
-						PlayerToyInfo[extraid][i][ptRotY] 			= cache_get_field_content_float(i, "roty", MainPipeline);
-						PlayerToyInfo[extraid][i][ptRotZ] 			= cache_get_field_content_float(i, "rotz", MainPipeline);
-						PlayerToyInfo[extraid][i][ptScaleX] 		= cache_get_field_content_float(i, "scalex", MainPipeline);
-						PlayerToyInfo[extraid][i][ptScaleY] 		= cache_get_field_content_float(i, "scaley", MainPipeline);
-						PlayerToyInfo[extraid][i][ptScaleZ] 		= cache_get_field_content_float(i, "scalez", MainPipeline);
-						PlayerToyInfo[extraid][i][ptSpecial] 		= cache_get_field_content_int(i, "special", MainPipeline);
-						PlayerToyInfo[extraid][i][ptAutoAttach] 	= cache_get_field_content_int(i, "autoattach", MainPipeline);
+						cache_get_value_name_int(i, "tradable", PlayerToyInfo[extraid][i][ptTradable]);
+						cache_get_value_name_float(i, "posx", PlayerToyInfo[extraid][i][ptPosX]);
+						cache_get_value_name_float(i, "posy", PlayerToyInfo[extraid][i][ptPosY]);
+						cache_get_value_name_float(i, "posz", PlayerToyInfo[extraid][i][ptPosZ]);
+						cache_get_value_name_float(i, "rotx", PlayerToyInfo[extraid][i][ptRotX]);
+						cache_get_value_name_float(i, "roty", PlayerToyInfo[extraid][i][ptRotY]);
+						cache_get_value_name_float(i, "rotz", PlayerToyInfo[extraid][i][ptRotZ]);
+						cache_get_value_name_float(i, "scalex", PlayerToyInfo[extraid][i][ptScaleX]);
+						cache_get_value_name_float(i, "scaley", PlayerToyInfo[extraid][i][ptScaleY]);
+						cache_get_value_name_float(i, "scalez", PlayerToyInfo[extraid][i][ptScaleZ]);
+						cache_get_value_name_int(i, "special", PlayerToyInfo[extraid][i][ptSpecial]);
+						cache_get_value_name_int(i, "autoattach", PlayerToyInfo[extraid][i][ptAutoAttach]);
 						
 						if(PlayerToyInfo[extraid][i][ptAutoAttach] == -1 || PlayerToyInfo[extraid][i][ptAutoAttach] == GetPlayerSkin(extraid)) AttachToy(extraid, i, 0);
 
@@ -918,8 +927,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 					}
 					else
 					{
-						format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[extraid][i][ptID]);
-						mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+						mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `toys` WHERE `id` = '%d'", PlayerToyInfo[extraid][i][ptID]);
+						mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 						printf("Deleting Toy ID %d for Player %s (%i)", PlayerToyInfo[extraid][i][ptID], GetPlayerNameEx(extraid), GetPlayerSQLId(extraid));
 					}
 					i++;
@@ -938,61 +947,59 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 				    //new szResult[32];
 
-					PlayerVehicleInfo[extraid][i][pvModelId] 				= cache_get_field_content_int(i,  "pvModelId", MainPipeline);
-					PlayerVehicleInfo[extraid][i][pvSlotId] 				= cache_get_field_content_int(i, "id", MainPipeline);
+					cache_get_value_name_int(i,  "pvModelId", PlayerVehicleInfo[extraid][i][pvModelId]);
+					cache_get_value_name_int(i, "id", PlayerVehicleInfo[extraid][i][pvSlotId]);
 
 					if(PlayerVehicleInfo[extraid][i][pvModelId] != 0)
 					{
-						PlayerVehicleInfo[extraid][i][pvPosX]				= cache_get_field_content_float(i,  "pvPosX", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPosY] 				= cache_get_field_content_float(i,  "pvPosY", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPosZ] 				= cache_get_field_content_float(i,  "pvPosZ", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPosAngle]			= cache_get_field_content_float(i, "pvPosAngle", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvLock] 				= cache_get_field_content_int(i,  "pvLock", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvLocked] 			= cache_get_field_content_int(i,  "pvLocked", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPaintJob] 			= cache_get_field_content_int(i,  "pvPaintJob", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvColor1] 			= cache_get_field_content_int(i,  "pvColor1", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvColor2] 			= cache_get_field_content_int(i,  "pvColor2", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvPrice] 				= cache_get_field_content_int(i,  "pvPrice", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvTicket] 			= cache_get_field_content_int(i,  "pvTicket", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvRestricted] 		= cache_get_field_content_int(i,  "pvRestricted", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvWeapons][0] 		= cache_get_field_content_int(i,  "pvWeapon0", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvWeapons][1] 		= cache_get_field_content_int(i,  "pvWeapon1", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvWeapons][2] 		= cache_get_field_content_int(i,  "pvWeapon2", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvWepUpgrade] 		= cache_get_field_content_int(i,  "pvWepUpgrade", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvFuel] 				= cache_get_field_content_float(i, "pvFuel", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvImpounded]			= cache_get_field_content_int(i,  "pvImpound", MainPipeline);
-						cache_get_field_content(i,  "pvPlate", PlayerVehicleInfo[extraid][i][pvPlate], MainPipeline, 32);
-						PlayerVehicleInfo[extraid][i][pvVW]					=  cache_get_field_content_int(i,  "pvVW", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvInt]				= cache_get_field_content_int(i,  "pvInt", MainPipeline);
+						cache_get_value_name_float(i,  "pvPosX", PlayerVehicleInfo[extraid][i][pvPosX]);
+						cache_get_value_name_float(i,  "pvPosY", PlayerVehicleInfo[extraid][i][pvPosY]);
+						cache_get_value_name_float(i,  "pvPosZ", PlayerVehicleInfo[extraid][i][pvPosZ]);
+						cache_get_value_name_float(i, "pvPosAngle", PlayerVehicleInfo[extraid][i][pvPosAngle]);
+						cache_get_value_name_int(i,  "pvLock", PlayerVehicleInfo[extraid][i][pvLock]);
+						cache_get_value_name_int(i,  "pvLocked", PlayerVehicleInfo[extraid][i][pvLocked]);
+						cache_get_value_name_int(i,  "pvPaintJob", PlayerVehicleInfo[extraid][i][pvPaintJob]);
+						cache_get_value_name_int(i,  "pvColor1", PlayerVehicleInfo[extraid][i][pvColor1]);
+						cache_get_value_name_int(i,  "pvColor2", PlayerVehicleInfo[extraid][i][pvColor2]);
+						cache_get_value_name_int(i,  "pvPrice", PlayerVehicleInfo[extraid][i][pvPrice]);
+						cache_get_value_name_int(i,  "pvTicket", PlayerVehicleInfo[extraid][i][pvTicket]);
+						cache_get_value_name_int(i,  "pvRestricted", PlayerVehicleInfo[extraid][i][pvRestricted]);
+						cache_get_value_name_int(i,  "pvWeapon0", PlayerVehicleInfo[extraid][i][pvWeapons][0]);
+						cache_get_value_name_int(i,  "pvWeapon1", PlayerVehicleInfo[extraid][i][pvWeapons][1]);
+						cache_get_value_name_int(i,  "pvWeapon2", PlayerVehicleInfo[extraid][i][pvWeapons][2]);
+						cache_get_value_name_int(i,  "pvWepUpgrade", PlayerVehicleInfo[extraid][i][pvWepUpgrade]);
+						cache_get_value_name_float(i, "pvFuel", PlayerVehicleInfo[extraid][i][pvFuel]);
+						cache_get_value_name_int(i,  "pvImpound", PlayerVehicleInfo[extraid][i][pvImpounded]);
+						cache_get_value_name(i,  "pvPlate", PlayerVehicleInfo[extraid][i][pvPlate]);
+						cache_get_value_name_int(i,  "pvVW", PlayerVehicleInfo[extraid][i][pvVW]);
+						cache_get_value_name_int(i,  "pvInt", PlayerVehicleInfo[extraid][i][pvInt]);
 						for(new m = 0; m < MAX_MODS; m++)
 						{
 							format(szMiscArray, sizeof(szMiscArray), "pvMod%d", m);
-							PlayerVehicleInfo[extraid][i][pvMods][m] = cache_get_field_content_int(i,  szMiscArray, MainPipeline);
+							cache_get_value_name_int(i,  szMiscArray, PlayerVehicleInfo[extraid][i][pvMods][m]);
 						}
 						/*for(new m = 0; m < sizeof(Drugs); m++)
 						{
-							PlayerVehicleInfo[extraid][i][pvDrugs][m] = cache_get_field_content_int(i,   GetDrugName(m), MainPipeline);
+							PlayerVehicleInfo[extraid][i][pvDrugs][m] = cache_get_value_name_int(i,   GetDrugName(m));
 						}*/
-
-						PlayerVehicleInfo[extraid][i][pvCrashFlag] 			= cache_get_field_content_int(i,  "pvCrashFlag", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashVW] 			= cache_get_field_content_int(i, "pvCrashVW", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashX]				= cache_get_field_content_float(i,  "pvCrashX", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashY] 			= cache_get_field_content_float(i,  "pvCrashY", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashZ] 			= cache_get_field_content_float(i,  "pvCrashZ", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvCrashAngle] 		= cache_get_field_content_float(i,  "pvCrashAngle", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvAlarm] 				= cache_get_field_content_int(i,  "pvAlarm", MainPipeline);
-						cache_get_field_content(i,  "pvLastLockPickedBy", PlayerVehicleInfo[extraid][i][pvLastLockPickedBy], MainPipeline, MAX_PLAYER_NAME);
-
-						PlayerVehicleInfo[extraid][i][pvLocksLeft] 			= cache_get_field_content_int(i,  "pvLocksLeft", MainPipeline);
-						PlayerVehicleInfo[extraid][i][pvHealth] 			= cache_get_field_content_float(i, "pvHealth", MainPipeline);
+						cache_get_value_name_int(i,  "pvCrashFlag", PlayerVehicleInfo[extraid][i][pvCrashFlag]);
+						cache_get_value_name_int(i, "pvCrashVW", PlayerVehicleInfo[extraid][i][pvCrashVW]);
+						cache_get_value_name_float(i,  "pvCrashX", PlayerVehicleInfo[extraid][i][pvCrashX]);
+						cache_get_value_name_float(i,  "pvCrashY", PlayerVehicleInfo[extraid][i][pvCrashY]);
+						cache_get_value_name_float(i,  "pvCrashZ", PlayerVehicleInfo[extraid][i][pvCrashZ]);
+						cache_get_value_name_float(i,  "pvCrashAngle", PlayerVehicleInfo[extraid][i][pvCrashAngle]);
+						cache_get_value_name_int(i,  "pvAlarm", PlayerVehicleInfo[extraid][i][pvAlarm]);
+						cache_get_value_name(i,  "pvLastLockPickedBy", PlayerVehicleInfo[extraid][i][pvLastLockPickedBy]);
+						cache_get_value_name_int(i,  "pvLocksLeft", PlayerVehicleInfo[extraid][i][pvLocksLeft]);
+						cache_get_value_name_float(i, "pvHealth", PlayerVehicleInfo[extraid][i][pvHealth]);
 
 						format(szMiscArray, sizeof(szMiscArray), "[VEHICLELOAD] [User: %s(%i)] [Model: %d] [Vehicle ID: %d]", GetPlayerNameEx(extraid), PlayerInfo[extraid][pId], PlayerVehicleInfo[extraid][i][pvModelId], PlayerVehicleInfo[extraid][i][pvSlotId]);
 						Log("logs/vehicledebug.log", szMiscArray);
 					}
 					else
 					{
-						format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[extraid][i][pvSlotId]);
-						mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, extraid);
+						mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[extraid][i][pvSlotId]);
+						mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, extraid);
 					}
 					i++;
 				}
@@ -1011,19 +1018,19 @@ public OnQueryFinish(resultid, extraid, handleid)
 						new tmpVehModelId, Float:tmpVehArray[4];
 
 						format(szMiscArray, sizeof(szMiscArray), "pv%dModelId", v);
-						tmpVehModelId = cache_get_field_content_int(i, szMiscArray, MainPipeline);
+						cache_get_value_name_int(i, szMiscArray, tmpVehModelId);
 
 						format(szMiscArray, sizeof(szMiscArray), "pv%dPosX", v);
-						tmpVehArray[0] = cache_get_field_content_float(i, szMiscArray, MainPipeline);
+						cache_get_value_name_float(i, szMiscArray, tmpVehArray[0]);
 
 						format(szMiscArray, sizeof(szMiscArray), "pv%dPosY", v);
-						tmpVehArray[1] = cache_get_field_content_float(i, szMiscArray, MainPipeline);
+						cache_get_value_name_float(i, szMiscArray, tmpVehArray[1]);
 
 						format(szMiscArray, sizeof(szMiscArray), "pv%dPosZ", v);
-						tmpVehArray[2] = cache_get_field_content_float(i, szMiscArray, MainPipeline);
+						cache_get_value_name_float(i, szMiscArray, tmpVehArray[2]);
 
 						format(szMiscArray, sizeof(szMiscArray), "pv%dPosAngle", v);
-						tmpVehArray[3] = cache_get_field_content_float(i, szMiscArray, MainPipeline);
+						cache_get_value_name_float(i, szMiscArray, tmpVehArray[3]);
 
 						if(tmpVehModelId >= 400)
 						{
@@ -1050,8 +1057,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 				if(bVehRestore == true) {
 					// person Vehicle Position Restore Granted, Now Purge them from the Table.
-					format(szMiscArray, sizeof(szMiscArray), "DELETE FROM `pvehpositions` WHERE `id`='%d'", PlayerInfo[extraid][pId]);
-					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, extraid);
+					mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "DELETE FROM `pvehpositions` WHERE `id`='%d'", PlayerInfo[extraid][pId]);
+					mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, extraid);
 				}
 
 				OnPlayerLoad(extraid);
@@ -1072,7 +1079,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 		case MAIN_REFERRAL_THREAD:
 		{
 		    new newrows, newfields;
-		    cache_get_data(newrows, newfields, MainPipeline);
+		    cache_get_row_count(newrows);
+			cache_get_field_count(newfields);
 
 		    if(newrows == 0)
 		    {
@@ -1081,14 +1089,15 @@ public OnQueryFinish(resultid, extraid, handleid)
 		        ShowPlayerDialogEx(extraid, DIALOG_REGISTER_REFERRED, DIALOG_STYLE_INPUT, "{FF0000}Error - Invalid Player", "There is no player registered to our server with such name.\nPlease enter the full name of the player who referred you.\nExample: FirstName_LastName", "Enter", "Cancel");
 			}
 			else {
-			    format(szMiscArray, sizeof(szMiscArray), "SELECT `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerInfo[extraid][pReferredBy]);
-				mysql_function_query(MainPipeline, szMiscArray, true, "ReferralSecurity", "i", extraid);
+			    mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `IP` FROM `accounts` WHERE `Username` = '%s'", PlayerInfo[extraid][pReferredBy]);
+				mysql_tquery(MainPipeline, szMiscArray, "ReferralSecurity", "i", extraid);
 			}
 		}
 		case REWARD_REFERRAL_THREAD:
 		{
 			new newrows, newfields;
-			cache_get_data(newrows, newfields, MainPipeline);
+			cache_get_row_count(newrows);
+			cache_get_field_count(newfields);
 
 			if(newrows != 0)
 			{
@@ -1098,7 +1107,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 		case OFFLINE_FAMED_THREAD:
 		{
 		    new newrows, newfields, szQuery[128], string[128], szName[MAX_PLAYER_NAME];
-		    cache_get_data(newrows, newfields, MainPipeline);
+		    cache_get_row_count(newrows);
+			cache_get_field_count(newfields);
 
 		    if(newrows == 0)
 		    {
@@ -1110,8 +1120,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 				GetPVarString(extraid, "Offline_Name", szName, MAX_PLAYER_NAME);
 
-		        format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Famed` = %d WHERE `Username` = '%s'", ilevel, szName);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		        mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Famed` = %d WHERE `Username` = '%s'", ilevel, szName);
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 				format(string, sizeof(string), "AdmCmd: %s has offline set %s to a level %d famed", GetPlayerNameEx(extraid), szName, ilevel);
 				SendFamedMessage(COLOR_LIGHTRED, string);
@@ -1127,7 +1137,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 			new szResult[MAX_PLAYER_NAME];
 			for(new i; i < rows; i++)
 		    {
-				cache_get_field_content(i, "Username", szResult, MainPipeline); SendClientMessageEx(extraid, COLOR_GRAD2, szResult);
+				cache_get_value_name(i, "Username", szResult); SendClientMessageEx(extraid, COLOR_GRAD2, szResult);
 			}
 		}
 		case ADMINWHITELIST_THREAD:
@@ -1136,9 +1146,9 @@ public OnQueryFinish(resultid, extraid, handleid)
 			for(new i;i < rows;i++)
 			{
 				new secureip[16], szResult[32], alevel, wdlevel;
-				cache_get_field_content(i, "AdminLevel", szResult, MainPipeline); alevel = strval(szResult);
-				cache_get_field_content(i, "Watchdog", szResult, MainPipeline); wdlevel = strval(szResult);
-				cache_get_field_content(i, "SecureIP", secureip, MainPipeline, 16);
+				cache_get_value_name(i, "AdminLevel", szResult); alevel = strval(szResult);
+				cache_get_value_name(i, "Watchdog", szResult); wdlevel = strval(szResult);
+				cache_get_value_name(i, "SecureIP", secureip, 16);
 
 				if((alevel > 1 || wdlevel > 2)  && !fexist("NoWhitelist.h"))  // Beta server check ( beta server does not require whitelisting)
 				{
@@ -1187,69 +1197,69 @@ public OnQueryFinish(resultid, extraid, handleid)
 				for(new array = 0; array < 4; array++)
 				{
 					format(arraystring, sizeof(arraystring), "dgMoney%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgMoney][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgMoney][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgRimKit%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgRimKit][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgRimKit][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgFirework%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgFirework][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgFirework][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgGVIP%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgGVIP][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgGVIP][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgSVIP%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgSVIP][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgSVIP][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgGVIPEx%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgGVIPEx][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgGVIPEx][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgSVIPEx%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgSVIPEx][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgSVIPEx][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCarSlot%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCarSlot][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgCarSlot][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgToySlot%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgToySlot][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgToySlot][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgArmor%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgArmor][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgArmor][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgFirstaid%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgFirstaid][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgFirstaid][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgDDFlag%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgDDFlag][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgDDFlag][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgGateFlag%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgGateFlag][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgGateFlag][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCredits%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCredits][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgCredits][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgPriorityAd%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgPriorityAd][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgPriorityAd][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgHealthNArmor%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgHealthNArmor][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgHealthNArmor][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgGiftReset%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgGiftReset][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgGiftReset][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgMaterial%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgMaterial][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgMaterial][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgWarning%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgWarning][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgWarning][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgPot%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgPot][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgPot][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCrack%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCrack][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgCrack][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgPaintballToken%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgPaintballToken][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgPaintballToken][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgVIPToken%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgVIPToken][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgVIPToken][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgRespectPoint%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgRespectPoint][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgRespectPoint][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCarVoucher%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCarVoucher][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgCarVoucher][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgBuddyInvite%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgBuddyInvite][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgBuddyInvite][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgLaser%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgLaser][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgLaser][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgCustomToy%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgCustomToy][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgCustomToy][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgAdmuteReset%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgAdmuteReset][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgAdmuteReset][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgNewbieMuteReset%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgNewbieMuteReset][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgNewbieMuteReset][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgRestrictedCarVoucher%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgRestrictedCarVoucher][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgRestrictedCarVoucher][array] = strval(szResult);
 					format(arraystring, sizeof(arraystring), "dgPlatinumVIPVoucher%d", array);
-					cache_get_field_content(i, arraystring, szResult, MainPipeline); dgVar[dgPlatinumVIPVoucher][array] = strval(szResult);
+					cache_get_value_name(i, arraystring, szResult); dgVar[dgPlatinumVIPVoucher][array] = strval(szResult);
 				}
 				break;
 			}
@@ -1267,12 +1277,12 @@ public OnQueryFinish(resultid, extraid, handleid)
 				{
 					new szResult[32];
 
-					cache_get_field_content(i, "active", szResult, MainPipeline);
+					cache_get_value_name(i, "active", szResult);
 
 					// Is the row active?
 					if(strval(szResult) == 1)
 					{
-						cache_get_field_content(i, "point", szResult, MainPipeline);
+						cache_get_value_name(i, "point", szResult);
 
 						// Add up all the points
 						count = count += strval(szResult);
@@ -1285,7 +1295,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 		case OFFLINE_DEDICATED_THREAD:
 		{
 		    new iRows, iFields, szQuery[128], string[128], szName[MAX_PLAYER_NAME];
-		    cache_get_data(iRows, iFields, MainPipeline);
+		    cache_get_row_count(iRows);
+			cache_get_field_count(iFields);
 
 		    if(iRows)
 		    {
@@ -1294,8 +1305,8 @@ public OnQueryFinish(resultid, extraid, handleid)
 
 				GetPVarString(extraid, "Offline_DName", szName, MAX_PLAYER_NAME);
 
-		        format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `pDedicatedPlayer` = %d WHERE `Username` = '%s'", ilevel, szName);
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		        mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `pDedicatedPlayer` = %d WHERE `Username` = '%s'", ilevel, szName);
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 				format(string, sizeof(string), "AdmCmd: %s has offline set %s to a level %d Dedicated", GetPlayerNameEx(extraid), szName, ilevel);
 				SendDedicatedMessage(COLOR_LIGHTRED, string);
@@ -1316,14 +1327,14 @@ public OnQueryFinish(resultid, extraid, handleid)
 				if(!rows)
 				{
 					new szQuery[128];
-					format(szQuery,sizeof(szQuery),"INSERT INTO `FallIntoFun` SET `player` = %d", PlayerInfo[extraid][pId]);
-					mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_format(MainPipeline, szQuery,sizeof(szQuery),"INSERT INTO `fallintofun` SET `player` = %d", PlayerInfo[extraid][pId]);
+					mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 					return 1;
 				}
 				new szResult[128];
-				cache_get_field_content(0, "FIFHours", szResult, MainPipeline);
+				cache_get_value_name(0, "FIFHours", szResult);
 				FIFInfo[extraid][FIFHours] =  strval(szResult);
-				cache_get_field_content(0, "FIFChances", szResult, MainPipeline);
+				cache_get_value_name(0, "FIFChances", szResult);
 				FIFInfo[extraid][FIFChances] = strval(szResult);
 			}
 		}
@@ -1331,22 +1342,22 @@ public OnQueryFinish(resultid, extraid, handleid)
 	return 1;
 }
 
-public OnQueryError(errorid, error[], callback[], query[], connectionHandle) {
+public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle) {
 
-	printf("[MySQL] Query Error - (ErrorID: %d) (Handle: %d)",  errorid, connectionHandle);
+	printf("[MySQL] Query Error - (ErrorID: %d)",  errorid);
 	print("[MySQL] Check mysql_log.txt to review the query that threw the error.");
 	SQL_Log(query, error);
 
 	if(errorid == 2013 || errorid == 2014 || errorid == 2006 || errorid == 2027 || errorid == 2055)	{
 		print("[MySQL] Connection Error Detected in Threaded Query");
-		//mysql_query(query, resultid, extraid, MainPipeline);
+		//mysql_query(query, resultid, extraid);
 
 		format(szMiscArray, sizeof(szMiscArray), "MYSQL [%d]: %d, %s, in callback: %s.", iErrorID, errorid, error, callback);
 	}
 	else format(szMiscArray, sizeof(szMiscArray), "MYSQL (THREADED) [%d]: %d, %s, in callback: %s.", iErrorID, errorid, error, callback);
-	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szMiscArray);
+	SendDiscordMessage(3, szMiscArray);
 	format(szMiscArray, sizeof(szMiscArray), "     Query: %s", query);
-	IRC_Say(BotID[0], IRC_CHANNEL_SERVERERRORS, szMiscArray);
+	SendDiscordMessage(3, szMiscArray);
 	iErrorID++;
 }
 
@@ -1354,10 +1365,10 @@ public OnQueryError(errorid, error[], callback[], query[], connectionHandle) {
 
 // g_mysql_ReturnEscaped(string unEscapedString)
 // Description: Takes a unescaped string and returns an escaped one.
-stock g_mysql_ReturnEscaped(unEscapedString[], connectionHandle)
+stock g_mysql_ReturnEscaped(unEscapedString[])
 {
 	new EscapedString[256];
-	mysql_real_escape_string(unEscapedString, EscapedString, connectionHandle);
+	mysql_escape_string(unEscapedString, EscapedString);
 	return EscapedString;
 }
 
@@ -1368,8 +1379,8 @@ stock g_mysql_AccountLoginCheck(playerid)
 
 	new string[128];
 
-	format(string, sizeof(string), "SELECT `Username`, `Key`, `Salt`, `Online` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOGIN_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT `Username`, `Key`, `Salt`, `Online` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOGIN_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
 
@@ -1378,8 +1389,8 @@ g_mysql_AccountAuthCheck(playerid)
 {
 	new string[128];
 
-	format(string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", AUTH_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT `Username` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", AUTH_THREAD, playerid, g_arrQueryHandle{playerid});
 
 	// Reset the GUI
 	//SetPlayerJoinCamera(playerid);
@@ -1394,8 +1405,8 @@ g_mysql_AccountAuthCheck(playerid)
 stock g_mysql_AccountOnline(playerid, stateid)
 {
 	new iTimeStamp = gettime();
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Online`=%d, `LastLogin` = NOW() WHERE `id` = %d", stateid, GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Online`=%d, `LastLogin` = NOW() WHERE `id` = %d", stateid, GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	if(PlayerInfo[playerid][pPhousekey] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey]][hOwnerID] == GetPlayerSQLId(playerid))
 		HouseInfo[PlayerInfo[playerid][pPhousekey]][hLastLogin] = iTimeStamp, SaveHouse(PlayerInfo[playerid][pPhousekey]);
 	if(PlayerInfo[playerid][pPhousekey2] != INVALID_HOUSE_ID && HouseInfo[PlayerInfo[playerid][pPhousekey2]][hOwnerID] == GetPlayerSQLId(playerid))
@@ -1412,8 +1423,8 @@ stock g_mysql_AccountOnline(playerid, stateid)
 
 stock g_mysql_AccountOnlineReset()
 {
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Online` = 0 WHERE `Online` = %d", servernumber);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Online` = 0 WHERE `Online` = %d", servernumber);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -1428,16 +1439,16 @@ stock g_mysql_CreateAccount(playerid, accountPassword[])
 	format(string, sizeof(string), "%s%s", accountPassword, salt);
 	WP_Hash(passbuffer, sizeof(passbuffer), string);
 
-	format(string, sizeof(string), "INSERT INTO `accounts` (`RegiDate`, `LastLogin`, `Username`, `Key`, `Salt`) VALUES (NOW(), NOW(), '%s', '%s', '%s')", GetPlayerNameExt(playerid), passbuffer, salt);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "iii", REGISTER_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `accounts` (`RegiDate`, `LastLogin`, `Username`, `Key`, `Salt`) VALUES (NOW(), NOW(), '%s', '%s', '%s')", GetPlayerNameExt(playerid), passbuffer, salt);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", REGISTER_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
 
 stock g_mysql_LoadPVehicles(playerid)
 {
     new string[128];
-	format(string, sizeof(string), "SELECT * FROM `vehicles` WHERE `sqlID` = %d", PlayerInfo[playerid][pId]);
-	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOADPVEHICLE_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `vehicles` WHERE `sqlID` = %d", PlayerInfo[playerid][pId]);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADPVEHICLE_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
 
@@ -1447,8 +1458,8 @@ stock g_mysql_LoadPVehiclePositions(playerid)
 {
 	new string[128];
 
-	format(string, sizeof(string), "SELECT * FROM `pvehpositions` WHERE `id` = %d", PlayerInfo[playerid][pId]);
-	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOADPVEHPOS_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `pvehpositions` WHERE `id` = %d", PlayerInfo[playerid][pId]);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADPVEHPOS_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
 
@@ -1457,8 +1468,8 @@ stock g_mysql_LoadPVehiclePositions(playerid)
 stock g_mysql_LoadPlayerToys(playerid)
 {
 	new szQuery[128];
-	format(szQuery, sizeof(szQuery), "SELECT * FROM `toys` WHERE `player` = %d", PlayerInfo[playerid][pId]);
-	mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", LOADPTOYS_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT * FROM `toys` WHERE `player` = %d", PlayerInfo[playerid][pId]);
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", LOADPTOYS_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
 
@@ -1469,8 +1480,8 @@ stock g_mysql_LoadAccount(playerid)
 	ShowNoticeGUIFrame(playerid, 3);
 
 	new string[164];
-	format(string, sizeof(string), "SELECT * FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
- 	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOADUSERDATA_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
+ 	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADUSERDATA_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
 
@@ -1501,8 +1512,8 @@ GivePlayerCredits(Player, Amount, Shop, option = 0)
 		PlayerInfo[Player][pCredits] -= Amount;
 	}
 
-	format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[Player][pCredits], GetPlayerSQLId(Player));
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[Player][pCredits], GetPlayerSQLId(Player));
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
 	print(szQuery);
 
 	if(Shop == 1)
@@ -1511,8 +1522,8 @@ GivePlayerCredits(Player, Amount, Shop, option = 0)
 		PlayerInfo[Player][pTotalCredits] += Amount;
 	}
 
-	format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `TotalCredits`=%d WHERE `id` = %d", PlayerInfo[Player][pTotalCredits], GetPlayerSQLId(Player));
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `TotalCredits`=%d WHERE `id` = %d", PlayerInfo[Player][pTotalCredits], GetPlayerSQLId(Player));
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
 	print(szQuery);
 }
 
@@ -1525,7 +1536,7 @@ stock g_mysql_SaveToys(playerid, slotid)
 	{
 		//printf("%s (%i) saving toy %i...", GetPlayerNameEx(playerid), playerid, slotid);
 
-		format(szQuery, sizeof(szQuery), "UPDATE `toys` SET `modelid` = '%d', `bone` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', `rotx` = '%f', `roty` = '%f', `rotz` = '%f', `scalex` = '%f', `scaley` = '%f', `scalez` = '%f', `tradable` = '%d', `autoattach` = '%d' WHERE `id` = '%d'",
+		mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `toys` SET `modelid` = '%d', `bone` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', `rotx` = '%f', `roty` = '%f', `rotz` = '%f', `scalex` = '%f', `scaley` = '%f', `scalez` = '%f', `tradable` = '%d', `autoattach` = '%d' WHERE `id` = '%d'",
 		PlayerToyInfo[playerid][slotid][ptModelID],
 		PlayerToyInfo[playerid][slotid][ptBone],
 		PlayerToyInfo[playerid][slotid][ptPosX],
@@ -1541,7 +1552,7 @@ stock g_mysql_SaveToys(playerid, slotid)
 		PlayerToyInfo[playerid][slotid][ptAutoAttach],
 		PlayerToyInfo[playerid][slotid][ptID]);
 
-		mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	}
 }
 
@@ -1568,25 +1579,25 @@ stock g_mysql_NewToy(playerid, slotid)
 	PlayerToyInfo[playerid][slotid][ptSpecial],
 	PlayerToyInfo[playerid][slotid][ptAutoAttach]);
 
-	mysql_function_query(MainPipeline, szQuery, true, "OnQueryCreateToy", "ii", playerid, slotid);
+	mysql_tquery(MainPipeline, szQuery, "OnQueryCreateToy", "ii", playerid, slotid);
 }
 
 // g_mysql_LoadMOTD()
 // Description: Loads the MOTDs from the MySQL Database.
 stock g_mysql_LoadMOTD()
 {
-	mysql_function_query(MainPipeline, "SELECT * FROM `misc`", true, "OnQueryFinish", "iii", LOADMOTDDATA_THREAD, INVALID_PLAYER_ID, -1);
+	mysql_tquery(MainPipeline, "SELECT * FROM `misc`", "OnQueryFinish", "iii", LOADMOTDDATA_THREAD, INVALID_PLAYER_ID, -1);
 }
 
 stock g_mysql_LoadSales()
 {
-	mysql_function_query(MainPipeline, "SELECT * FROM `sales` WHERE `Month` > NOW() - INTERVAL 1 MONTH", true, "OnQueryFinish", "iii", LOADSALEDATA_THREAD, INVALID_PLAYER_ID, -1);
-	//mysql_function_query(MainPipeline, "SELECT `TotalToySales`,`TotalCarSales`,`GoldVIPSales`,`SilverVIPSales`,`BronzeVIPSales` FROM `sales` WHERE `Month` > NOW() - INTERVAL 1 MONTH", true, "OnQueryFinish", "iii", LOADSALEDATA_THREAD, INVALID_PLAYER_ID, -1);
+	mysql_tquery(MainPipeline, "SELECT * FROM `sales` WHERE `Month` > NOW() - INTERVAL 1 MONTH", "OnQueryFinish", "iii", LOADSALEDATA_THREAD, INVALID_PLAYER_ID, -1);
+	//mysql_tquery(MainPipeline, "SELECT `TotalToySales`,`TotalCarSales`,`GoldVIPSales`,`SilverVIPSales`,`BronzeVIPSales` FROM `sales` WHERE `Month` > NOW() - INTERVAL 1 MONTH", true, "OnQueryFinish", "iii", LOADSALEDATA_THREAD, INVALID_PLAYER_ID, -1);
 }
 
 stock g_mysql_LoadPrices()
 {
-    mysql_function_query(MainPipeline, "SELECT * FROM `shopprices`", true, "OnQueryFinish", "iii", LOADSHOPDATA_THREAD, INVALID_PLAYER_ID, -1);
+    mysql_tquery(MainPipeline, "SELECT * FROM `shopprices`", "OnQueryFinish", "iii", LOADSHOPDATA_THREAD, INVALID_PLAYER_ID, -1);
 }
 
 stock g_mysql_SavePrices()
@@ -1603,47 +1614,47 @@ stock g_mysql_SavePrices()
 		format(mString, sizeof(mString), "%s%d", mString, MicroItems[m]);
 		if(m != MAX_MICROITEMS-1) strcat(mString, "|");
 	}
-	format(query, sizeof(query), "%s`MicroPrices` = '%s'", query, mString);
-    mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, sizeof(query), "%s`MicroPrices` = '%s'", query, mString);
+    mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 stock g_mysql_SaveMOTD()
 {
 	new query[1500];
 
-	format(query, sizeof(query), "UPDATE `misc` SET ");
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `misc` SET ");
 
-	format(query, sizeof(query), "%s `gMOTD` = '%s',", query, g_mysql_ReturnEscaped(GlobalMOTD, MainPipeline));
-	format(query, sizeof(query), "%s `aMOTD` = '%s',", query, g_mysql_ReturnEscaped(AdminMOTD, MainPipeline));
-	format(query, sizeof(query), "%s `vMOTD` = '%s',", query, g_mysql_ReturnEscaped(VIPMOTD, MainPipeline));
-	format(query, sizeof(query), "%s `cMOTD` = '%s',", query, g_mysql_ReturnEscaped(CAMOTD, MainPipeline));
-	format(query, sizeof(query), "%s `pMOTD` = '%s',", query, g_mysql_ReturnEscaped(pMOTD, MainPipeline));
-	format(query, sizeof(query), "%s `prisonerMOTD` = '%s',", query, g_mysql_ReturnEscaped(prisonerMOTD[0], MainPipeline));
-	format(query, sizeof(query), "%s `prisonerMOTD2` = '%s',", query, g_mysql_ReturnEscaped(prisonerMOTD[1], MainPipeline));
-	format(query, sizeof(query), "%s `prisonerMOTD3` = '%s',", query, g_mysql_ReturnEscaped(prisonerMOTD[2], MainPipeline));
-	format(query, sizeof(query), "%s `ShopTechPay` = '%.2f',", query, ShopTechPay);
-	format(query, sizeof(query), "%s `GiftCode` = '%s',", query, g_mysql_ReturnEscaped(GiftCode, MainPipeline));
-	format(query, sizeof(query), "%s `GiftCodeBypass` = '%d',", query, GiftCodeBypass);
-	format(query, sizeof(query), "%s `TotalCitizens` = '%d',", query, TotalCitizens);
-	format(query, sizeof(query), "%s `TRCitizens` = '%d',", query, TRCitizens);
-	format(query, sizeof(query), "%s `ShopClosed` = '%d',", query, ShopClosed);
-	format(query, sizeof(query), "%s `RimMod` = '%d',", query, RimMod);
-	format(query, sizeof(query), "%s `CarVoucher` = '%d',", query, CarVoucher);
-	format(query, sizeof(query), "%s `PVIPVoucher` = '%d',", query, PVIPVoucher);
-	format(query, sizeof(query), "%s `GarageVW` = '%d',", query, GarageVW);
-	format(query, sizeof(query), "%s `PumpkinStock` = '%d',", query, PumpkinStock);
-	format(query, sizeof(query), "%s `HalloweenShop` = '%d',", query, HalloweenShop);
-	format(query, sizeof(query), "%s `PassComplexCheck` = '%d',", query, PassComplexCheck);
-	format(query, sizeof(query), "%s `GunPrice0` = '%d',", query, GunPrices[0]);
-	format(query, sizeof(query), "%s `GunPrice1` = '%d',", query, GunPrices[1]);
-	format(query, sizeof(query), "%s `GunPrice2` = '%d',", query, GunPrices[2]);
-	format(query, sizeof(query), "%s `GunPrice3` = '%d',", query, GunPrices[3]);
-	format(query, sizeof(query), "%s `GunPrice4` = '%d',", query, GunPrices[4]);
-	format(query, sizeof(query), "%s `GunPrice5` = '%d'", query, GunPrices[5]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `gMOTD` = '%e',", query, GlobalMOTD);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `aMOTD` = '%e',", query, AdminMOTD);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `vMOTD` = '%e',", query, VIPMOTD);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `cMOTD` = '%e',", query, CAMOTD);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `pMOTD` = '%e',", query, pMOTD);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `prisonerMOTD` = '%e',", query, prisonerMOTD[0]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `prisonerMOTD2` = '%e',", query, prisonerMOTD[1]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `prisonerMOTD3` = '%e',", query, prisonerMOTD[2]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `ShopTechPay` = '%.2f',", query, ShopTechPay);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `GiftCode` = '%e',", query, GiftCode);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `GiftCodeBypass` = '%d',", query, GiftCodeBypass);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `TotalCitizens` = '%d',", query, TotalCitizens);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `TRCitizens` = '%d',", query, TRCitizens);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `ShopClosed` = '%d',", query, ShopClosed);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `RimMod` = '%d',", query, RimMod);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `CarVoucher` = '%d',", query, CarVoucher);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `PVIPVoucher` = '%d',", query, PVIPVoucher);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `GarageVW` = '%d',", query, GarageVW);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `PumpkinStock` = '%d',", query, PumpkinStock);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `HalloweenShop` = '%d',", query, HalloweenShop);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `PassComplexCheck` = '%d',", query, PassComplexCheck);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `GunPrice0` = '%d',", query, GunPrices[0]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `GunPrice1` = '%d',", query, GunPrices[1]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `GunPrice2` = '%d',", query, GunPrices[2]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `GunPrice3` = '%d',", query, GunPrices[3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `GunPrice4` = '%d',", query, GunPrices[4]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `GunPrice5` = '%d'", query, GunPrices[5]);
 	CallLocalFunction("SaveInactiveResourceSettings", "is", sizeof(query), query);
 
 	new qryLength = strlen(query);
 	if(query[qryLength-1] == ',') strdel(query, qryLength-1, qryLength);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 // g_mysql_LoadMOTD()
 // Description: Loads the Crates from the MySQL Database.
@@ -1653,15 +1664,15 @@ stock g_mysql_SaveMOTD()
 	new string[128];
 	SetPVarString(Player, "UnbanIP", Ip);
 	format(string, sizeof(string), "SELECT `ip` FROM `ip_bans` WHERE `ip` = '%s'", Ip);
-	mysql_function_query(MainPipeline, string, true, "AddingBan", "ii", Player, 2);
+	mysql_tquery(MainPipeline, string, true, "AddingBan", "ii", Player, 2);
 	return 1;
 }*/
 
 stock CheckBanEx(playerid)
 {
 	new string[280];
-	format(string, sizeof(string), "SELECT `IP` FROM `ban` WHERE `IP` = '%s' AND `active` = '1'", GetPlayerIpEx(playerid));
-	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", IPBAN_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT `IP` FROM `ban` WHERE `IP` = '%s' AND `active` = '1'", GetPlayerIpEx(playerid));
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", IPBAN_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
 
@@ -1670,8 +1681,8 @@ stock AddBan(Admin, Player, Reason[])
     new string[128];
 	SetPVarInt(Admin, "BanningPlayer", Player);
 	SetPVarString(Admin, "BanningReason", Reason);
-	format(string, sizeof(string), "SELECT `ip` FROM `ip_bans` WHERE `ip` = '%s'", GetPlayerIpEx(Player));
-	mysql_function_query(MainPipeline, string, true, "AddingBan", "ii", Admin, 1);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT `ip` FROM `ip_bans` WHERE `ip` = '%s'", GetPlayerIpEx(Player));
+	mysql_tquery(MainPipeline, string, "AddingBan", "ii", Admin, 1);
 	return 1;
 }
 
@@ -1679,8 +1690,8 @@ stock AddBan(Admin, Player, Reason[])
 stock SystemBan(Player, Reason[])
 {
 	new string[256];
-    format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', 'System')", GetPlayerIpEx(Player), g_mysql_ReturnEscaped(Reason, MainPipeline));
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+    mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%e', 'System')", GetPlayerIpEx(Player), Reason);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -1688,8 +1699,8 @@ stock SystemBan(Player, Reason[])
 stock MySQLBan(userid,ip[],reason[],status,admin[])
 {
 	new string[256];
-    format(string, sizeof(string), "INSERT INTO `bans` (`user_id`, `ip_address`, `reason`, `date_added`, `status`, `admin`) VALUES ('%d','%s','%s', NOW(), '%d','%s')", userid,ip,g_mysql_ReturnEscaped(reason, MainPipeline),status,admin);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+    mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `bans` (`user_id`, `ip_address`, `reason`, `date_added`, `status`, `admin`) VALUES ('%d','%s','%e', NOW(), '%d','%e')", userid, ip, reason, status, admin);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -1701,8 +1712,8 @@ stock AddCrime(cop, suspect, crime[])
 		iAllegiance = arrGroupData[PlayerInfo[cop][pMember]][g_iAllegiance];
 	}
 	else iAllegiance = 1;
-	format(query, sizeof(query), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", GetPlayerSQLId(suspect), g_mysql_ReturnEscaped(GetPlayerNameEx(cop), MainPipeline), g_mysql_ReturnEscaped(crime, MainPipeline), iAllegiance);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d', NOW(), '%e', '%e', '%d')", GetPlayerSQLId(suspect), GetPlayerNameEx(cop), crime, iAllegiance);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	format(query, sizeof(query), "MDC: %s(%d) added crime %s to %s(%d).", GetPlayerNameEx(cop), GetPlayerSQLId(cop), crime, GetPlayerNameEx(suspect), GetPlayerSQLId(suspect));
 	Log("logs/crime.log", query);
 	return 1;
@@ -1714,12 +1725,12 @@ stock ClearCrimes(playerid, clearerid = INVALID_PLAYER_ID)
 	if(clearerid != INVALID_PLAYER_ID && (0 <= PlayerInfo[clearerid][pMember] < MAX_GROUPS))
 	{
 		iAllegiance = arrGroupData[PlayerInfo[clearerid][pMember]][g_iAllegiance];
-		format(query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);
+		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1 AND origin = %d", GetPlayerSQLId(playerid), iAllegiance);
 	}
 	else {
-		format(query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
+		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `mdc` SET `active`= 0 WHERE `id` = %i AND `active` = 1", GetPlayerSQLId(playerid));
 	}
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -1731,8 +1742,8 @@ stock DisplayCrimes(playerid, suspectid)
 		iAllegiance = arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance];
 	}
 	else iAllegiance = 1;
-    format(query, sizeof(query), "SELECT issuer, crime, active FROM `mdc` WHERE `id` = '%d' AND `origin` = '%d' ORDER BY `time` AND `active` DESC LIMIT 12", GetPlayerSQLId(suspectid), iAllegiance);
-    mysql_function_query(MainPipeline, query, true, "MDCQueryFinish", "ii", playerid, suspectid);
+    mysql_format(MainPipeline, query, sizeof(query), "SELECT issuer, crime, active FROM `mdc` WHERE `id` = '%d' AND `origin` = '%d' ORDER BY `time` AND `active` DESC LIMIT 12", GetPlayerSQLId(suspectid), iAllegiance);
+    mysql_tquery(MainPipeline, query, "MDCQueryFinish", "ii", playerid, suspectid);
 	return 1;
 }
 
@@ -1744,46 +1755,46 @@ stock DisplayReports(playerid, suspectid)
 		iAllegiance = arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance];
 	}
 	else iAllegiance = 1;
-    format(query, sizeof(query), "SELECT arrestreports.id, copid, shortreport, datetime, accounts.id, accounts.Username FROM `arrestreports` LEFT JOIN `accounts` ON	arrestreports.copid=accounts.id WHERE arrestreports.suspectid=%d AND arrestreports.origin=%d ORDER BY arrestreports.datetime DESC LIMIT 12", GetPlayerSQLId(suspectid), iAllegiance);
-    mysql_function_query(MainPipeline, query, true, "MDCReportsQueryFinish", "ii", playerid, suspectid);
+    mysql_format(MainPipeline, query, sizeof(query), "SELECT arrestreports.id, copid, shortreport, datetime, accounts.id, accounts.Username FROM `arrestreports` LEFT JOIN `accounts` ON	arrestreports.copid=accounts.id WHERE arrestreports.suspectid=%d AND arrestreports.origin=%d ORDER BY arrestreports.datetime DESC LIMIT 12", GetPlayerSQLId(suspectid), iAllegiance);
+    mysql_tquery(MainPipeline, query, "MDCReportsQueryFinish", "ii", playerid, suspectid);
 	return 1;
 }
 
 stock DisplayReport(playerid, reportid)
 {
     new query[812];
-    format(query, sizeof(query), "SELECT arrestreports.id, copid, shortreport, datetime, accounts.id, accounts.Username FROM `arrestreports` LEFT JOIN `accounts` ON	arrestreports.copid=accounts.id WHERE arrestreports.id=%d ORDER BY arrestreports.datetime DESC LIMIT 12", reportid);
-    mysql_function_query(MainPipeline, query, true, "MDCReportQueryFinish", "ii", playerid, reportid);
+    mysql_format(MainPipeline, query, sizeof(query), "SELECT arrestreports.id, copid, shortreport, datetime, accounts.id, accounts.Username FROM `arrestreports` LEFT JOIN `accounts` ON	arrestreports.copid=accounts.id WHERE arrestreports.id=%d ORDER BY arrestreports.datetime DESC LIMIT 12", reportid);
+    mysql_tquery(MainPipeline, query, "MDCReportQueryFinish", "ii", playerid, reportid);
 	return 1;
 }
 
 stock SetUnreadMailsNotification(playerid)
 {
     new query[128];
-    format(query, sizeof(query), "SELECT COUNT(*) AS Unread_Count FROM letters WHERE Receiver_ID = %d AND `Read` = 0", GetPlayerSQLId(playerid));
-    mysql_function_query(MainPipeline, query, true, "UnreadMailsNotificationQueryFin", "i", playerid);
+    mysql_format(MainPipeline, query, sizeof(query), "SELECT COUNT(*) AS Unread_Count FROM letters WHERE Receiver_ID = %d AND `Read` = 0", GetPlayerSQLId(playerid));
+    mysql_tquery(MainPipeline, query, "UnreadMailsNotificationQueryFin", "i", playerid);
 	return 1;
 }
 
 stock DisplayMails(playerid)
 {
     new query[150];
-    format(query, sizeof(query), "SELECT `Id`, `Message`, `Read` FROM `letters` WHERE `Receiver_Id` = %d AND `Delivery_Min` = 0 ORDER BY `Id` DESC LIMIT 50", GetPlayerSQLId(playerid));
-    mysql_function_query(MainPipeline, query, true, "MailsQueryFinish", "i", playerid);
+    mysql_format(MainPipeline, query, sizeof(query), "SELECT `Id`, `Message`, `Read` FROM `letters` WHERE `Receiver_Id` = %d AND `Delivery_Min` = 0 ORDER BY `Id` DESC LIMIT 50", GetPlayerSQLId(playerid));
+    mysql_tquery(MainPipeline, query, "MailsQueryFinish", "i", playerid);
 }
 
 stock DisplayMailDetails(playerid, letterid)
 {
     new query[256];
-    format(query, sizeof(query), "SELECT `Id`, `Date`, `Sender_Id`, `Read`, `Notify`, `Message`, (SELECT `Username` FROM `accounts` WHERE `id` = letters.Sender_Id) AS `SenderUser` FROM `letters` WHERE id = %d", letterid);
-    mysql_function_query(MainPipeline, query, true, "MailDetailsQueryFinish", "i", playerid);
+    mysql_format(MainPipeline, query, sizeof(query), "SELECT `Id`, `Date`, `Sender_Id`, `Read`, `Notify`, `Message`, (SELECT `Username` FROM `accounts` WHERE `id` = letters.Sender_Id) AS `SenderUser` FROM `letters` WHERE id = %d", letterid);
+    mysql_tquery(MainPipeline, query, "MailDetailsQueryFinish", "i", playerid);
 }
 
 stock CountFlags(playerid)
 {
 	new query[80];
-	format(query, sizeof(query), "SELECT * FROM `flags` WHERE id=%d AND type = 1", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, query, true, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, Flag_Query_Count);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT * FROM `flags` WHERE id=%d AND type = 1", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, query, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, Flag_Query_Count);
 	return 1;
 }
 
@@ -1798,15 +1809,15 @@ stock AddFlag(playerid, adminid, flag[], type = 1)
 		format(admin, sizeof(admin), "Gifted/Script Added");
 	}
 	PlayerInfo[playerid][pFlagged]++;
-	format(query, sizeof(query), "INSERT INTO `flags` (`id` ,`time` ,`issuer` ,`flag`, `type`) VALUES ('%d',NOW(),'%s','%s','%d')", GetPlayerSQLId(playerid), g_mysql_ReturnEscaped(admin, MainPipeline), g_mysql_ReturnEscaped(flag, MainPipeline), type);
-	mysql_function_query(MainPipeline, query, true, "OnAddFlag", "iss", playerid, admin, flag);
+	mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `flags` (`id` ,`time` ,`issuer` ,`flag`, `type`) VALUES ('%d',NOW(),'%e','%e','%d')", GetPlayerSQLId(playerid), admin, flag, type);
+	mysql_tquery(MainPipeline, query, "OnAddFlag", "iss", playerid, admin, flag);
 	return 1;
 }
 
 forward OnAddFlag(target, admin[], flag[]);
 public OnAddFlag(target, admin[], flag[])
 {
-	new string[128], flag_sqlid = mysql_insert_id(MainPipeline);
+	new string[128], flag_sqlid = cache_insert_id();
 	format(string, sizeof(string), "FLAG (%d): %s added flag \"%s\" to %s(%d)", flag_sqlid, admin, flag, GetPlayerNameEx(target), GetPlayerSQLId(target));
 	Log("logs/flags.log", string);
 	return 1;
@@ -1823,8 +1834,8 @@ stock AddOFlag(sqlid, adminid, flag[]) // offline add
 		format(admin, sizeof(admin), "Gifted/Script Added");
 	}
 	GetPVarString(adminid, "OnAddFlag", name, sizeof(name));
-	format(query, sizeof(query), "INSERT INTO `flags` (`id` ,`time` ,`issuer` ,`flag`) VALUES ('%d',NOW(),'%s','%s')", sqlid, g_mysql_ReturnEscaped(admin, MainPipeline), g_mysql_ReturnEscaped(flag, MainPipeline));
-	mysql_function_query(MainPipeline, query, true, "OnAddOFlag", "isss", sqlid, name, admin, flag);
+	mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `flags` (`id` ,`time` ,`issuer` ,`flag`) VALUES ('%d',NOW(),'%e','%e')", sqlid, admin, flag);
+	mysql_tquery(MainPipeline, query, "OnAddOFlag", "isss", sqlid, name, admin, flag);
 	DeletePVar(adminid, "OnAddFlag");
 	return 1;
 }
@@ -1832,7 +1843,7 @@ stock AddOFlag(sqlid, adminid, flag[]) // offline add
 forward OnAddOFlag(psqlid, name[], admin[], flag[]);
 public OnAddOFlag(psqlid, name[], admin[], flag[])
 {
-	new string[128], flag_sqlid = mysql_insert_id(MainPipeline);
+	new string[128], flag_sqlid = cache_insert_id();
 	format(string, sizeof(string), "OFLAG (%d): %s added flag \"%s\" to %s(%d)", flag_sqlid, admin, flag, name, psqlid);
 	Log("logs/flags.log", string);
 	return 1;
@@ -1841,14 +1852,16 @@ public OnAddOFlag(psqlid, name[], admin[], flag[])
 forward OnRequestDeleteFlag(playerid, flagid);
 public OnRequestDeleteFlag(playerid, flagid)
 {
-	new rows, fields, string[256];
+	new rows, fields, value, string[256];
 	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
+	cache_get_field_count(fields);
 	if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
-	if(cache_get_field_content_int(0, "type", MainPipeline) == 2 && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Only Senior Admins+ can remove administrative flags!", "Close", "");
-	cache_get_field_content(0, "flag", FlagText, MainPipeline, 64);
-	cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
-	cache_get_field_content(0, "time", FlagDate, MainPipeline, 24);
+	cache_get_value_name_int(0, "type", value);
+	if(value == 2 && PlayerInfo[playerid][pAdmin] < 4 && PlayerInfo[playerid][pASM] < 1) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Only Senior Admins+ can remove administrative flags!", "Close", "");
+	cache_get_value_name(0, "flag", FlagText, 64);
+	cache_get_value_name(0, "issuer", FlagIssuer, MAX_PLAYER_NAME);
+	cache_get_value_name(0, "time", FlagDate, 24);
 	SetPVarInt(playerid, "Flag_Delete_ID", flagid);
 	SetPVarString(playerid, "FlagText", FlagText);
 	format(string, sizeof(string), "Are you sure you want to delete:\n{FF6347}Flag ID:{BFC0C2} %d\n{FF6347}Flag:{BFC0C2} %s\n{FF6347}Issued by:{BFC0C2} %s\n{FF6347}Date Issued: {BFC0C2}%s", flagid, FlagText, FlagIssuer, FlagDate);
@@ -1861,8 +1874,8 @@ stock DeleteFlag(flagid, adminid)
 	GetPVarString(adminid, "FlagText", flagtext, sizeof(flagtext));
 	format(query, sizeof(query), "FLAG (%d): \"%s\" was deleted by %s.", flagid, flagtext, GetPlayerNameEx(adminid));
 	Log("logs/flags.log", query);
-	format(query, sizeof(query), "DELETE FROM `flags` WHERE `fid` = %i", flagid);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, sizeof(query), "DELETE FROM `flags` WHERE `fid` = %i", flagid);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	DeletePVar(adminid, "Flag_Delete_ID");
 	DeletePVar(adminid, "FlagText");
 	return 1;
@@ -1872,8 +1885,8 @@ stock DisplayFlags(playerid, targetid, type = 1)
 {
 	new query[128];
 	CountFlags(targetid);
-	format(query, sizeof(query), "SELECT fid, flag FROM `flags` WHERE id=%d AND type = %d ORDER BY `time` LIMIT 20", GetPlayerSQLId(targetid), type);
-	mysql_function_query(MainPipeline, query, true, "FlagQueryFinish", "iii", playerid, targetid, Flag_Query_Display);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT fid, flag FROM `flags` WHERE id=%d AND type = %d ORDER BY `time` LIMIT 20", GetPlayerSQLId(targetid), type);
+	mysql_tquery(MainPipeline, query, "FlagQueryFinish", "iii", playerid, targetid, Flag_Query_Display);
 	SetPVarInt(playerid, "viewingflags", targetid);
 	DeletePVar(playerid, "ManageFlagID");
 	return 1;
@@ -1882,8 +1895,8 @@ stock DisplayFlags(playerid, targetid, type = 1)
 stock CountSkins(playerid)
 {
 	new query[80];
-	format(query, sizeof(query), "SELECT NULL FROM `house_closet` WHERE playerid = %d", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, query, true, "SkinQueryFinish", "ii", playerid, Skin_Query_Count);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `house_closet` WHERE playerid = %d", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, query, "SkinQueryFinish", "ii", playerid, Skin_Query_Count);
 	return 1;
 }
 
@@ -1891,16 +1904,16 @@ stock AddSkin(playerid, skinid)
 {
 	new query[300];
 	PlayerInfo[playerid][pSkins]++;
-	format(query, sizeof(query), "INSERT INTO `house_closet` (`id`, `playerid`, `skinid`) VALUES (NULL, '%d', '%d')", GetPlayerSQLId(playerid), skinid);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `house_closet` (`id`, `playerid`, `skinid`) VALUES (NULL, '%d', '%d')", GetPlayerSQLId(playerid), skinid);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
 stock DeleteSkin(skinid)
 {
 	new query[80];
-	format(query, sizeof(query), "DELETE FROM `house_closet` WHERE `id` = %i", skinid);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, sizeof(query), "DELETE FROM `house_closet` WHERE `id` = %i", skinid);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -1908,23 +1921,23 @@ stock DisplaySkins(playerid)
 {
     new query[128];
 	CountSkins(playerid);
-    format(query, sizeof(query), "SELECT `skinid` FROM `house_closet` WHERE playerid = %d ORDER BY `skinid` ASC", GetPlayerSQLId(playerid));
-    mysql_function_query(MainPipeline, query, true, "SkinQueryFinish", "ii", playerid, Skin_Query_Display);
+    mysql_format(MainPipeline, query, sizeof(query), "SELECT `skinid` FROM `house_closet` WHERE playerid = %d ORDER BY `skinid` ASC", GetPlayerSQLId(playerid));
+    mysql_tquery(MainPipeline, query, "SkinQueryFinish", "ii", playerid, Skin_Query_Display);
 	return 1;
 }
 
 stock CountCitizens()
 {
-	mysql_function_query(MainPipeline, "SELECT NULL FROM `accounts` WHERE `Nation` = 1 && `UpdateDate` > NOW() - INTERVAL 1 WEEK",  true, "CitizenQueryFinish", "i", TR_Citizen_Count);
-	mysql_function_query(MainPipeline, "SELECT NULL FROM `accounts` WHERE `UpdateDate` > NOW() - INTERVAL 1 WEEK",  true, "CitizenQueryFinish", "i", Total_Count);
+	mysql_tquery(MainPipeline, "SELECT NULL FROM `accounts` WHERE `Nation` = 1 && `UpdateDate` > NOW() - INTERVAL 1 WEEK", "CitizenQueryFinish", "i", TR_Citizen_Count);
+	mysql_tquery(MainPipeline, "SELECT NULL FROM `accounts` WHERE `UpdateDate` > NOW() - INTERVAL 1 WEEK", "CitizenQueryFinish", "i", Total_Count);
 	return 1;
 }
 
 stock CheckNationQueue(playerid, nation)
 {
 	new query[300];
-	format(query, sizeof(query), "SELECT NULL FROM `nation_queue` WHERE `playerid` = %d AND `status` = 1", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, query, true, "NationQueueQueryFinish", "iii", playerid, nation, CheckQueue);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `nation_queue` WHERE `playerid` = %d AND `status` = 1", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, query, "NationQueueQueryFinish", "iii", playerid, nation, CheckQueue);
 }
 
 stock AddNationQueue(playerid, nation, status)
@@ -1932,20 +1945,20 @@ stock AddNationQueue(playerid, nation, status)
 	new query[300];
 	if(nation == 0)
 	{
-		format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), 0, %d)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), status);
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), 0, %d)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), status);
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	}
 	if(nation == 1)
 	{
 		if(status == 1)
 		{
-			format(query, sizeof(query), "SELECT NULL FROM `nation_queue` WHERE `playerid` = %d AND `nation` = 1", GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, query, true, "NationQueueQueryFinish", "iii", playerid, nation, AddQueue);
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `nation_queue` WHERE `playerid` = %d AND `nation` = 1", GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, query, "NationQueueQueryFinish", "iii", playerid, nation, AddQueue);
 		}
 		else if(status == 2)
 		{
-			format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), 1, %d)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), status);
-			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), 1, %d)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), status);
+			mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 			PlayerInfo[playerid][pNation] = 1;
 		}
 	}
@@ -1955,62 +1968,62 @@ stock AddNationQueue(playerid, nation, status)
 stock UpdateCitizenApp(playerid, nation)
 {
 	new query[300];
-	format(query, sizeof(query), "SELECT NULL FROM `nation_queue` WHERE `playerid` = %d AND `status` = 1", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, query, true, "NationQueueQueryFinish", "iii", playerid, nation, UpdateQueue);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `nation_queue` WHERE `playerid` = %d AND `status` = 1", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, query, "NationQueueQueryFinish", "iii", playerid, nation, UpdateQueue);
 }
 
 stock AddTicket(playerid, number)
 {
 	new query[80];
 	PlayerInfo[playerid][pLottoNr]++;
-	format(query, sizeof(query), "INSERT INTO `lotto` (`id` ,`number`) VALUES ('%d', '%d')", GetPlayerSQLId(playerid), number);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `lotto` (`id` ,`number`) VALUES ('%d', '%d')", GetPlayerSQLId(playerid), number);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
 stock DeleteTickets(playerid)
 {
 	new query[80];
-	format(query, sizeof(query), "DELETE FROM `lotto` WHERE `id` = %i", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, sizeof(query), "DELETE FROM `lotto` WHERE `id` = %i", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
 stock LoadTickets(playerid)
 {
     new query[128];
-    format(query, sizeof(query), "SELECT `tid`, `number` FROM `lotto` WHERE `id` = %d LIMIT 5", GetPlayerSQLId(playerid));
-    mysql_function_query(MainPipeline, query, true, "LoadTicket", "i", playerid);
+    mysql_format(MainPipeline, query, sizeof(query), "SELECT `tid`, `number` FROM `lotto` WHERE `id` = %d LIMIT 5", GetPlayerSQLId(playerid));
+    mysql_tquery(MainPipeline, query, "LoadTicket", "i", playerid);
 	return 1;
 }
 
 stock CountTickets(playerid)
 {
 	new query[80];
-	format(query, sizeof(query), "SELECT * FROM `lotto` WHERE `id` = %i", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, query, true, "CountAmount", "i", playerid);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT * FROM `lotto` WHERE `id` = %i", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, query, "CountAmount", "i", playerid);
 	return 1;
 }
 
 stock LoadTreasureInventory(playerid)
 {
 	new query[175];
-	format(query, sizeof(query), "SELECT `junkmetal`, `newcoin`, `oldcoin`, `brokenwatch`, `oldkey`, `treasure`, `goldwatch`, `silvernugget`, `goldnugget` FROM `jobstuff` WHERE `pId` = %d", GetPlayerSQLId(playerid));
-    mysql_function_query(MainPipeline, query, true, "LoadTreasureInvent", "i", playerid);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT `junkmetal`, `newcoin`, `oldcoin`, `brokenwatch`, `oldkey`, `treasure`, `goldwatch`, `silvernugget`, `goldnugget` FROM `jobstuff` WHERE `pId` = %d", GetPlayerSQLId(playerid));
+    mysql_tquery(MainPipeline, query, "LoadTreasureInvent", "i", playerid);
 	return 1;
 }
 
 stock SaveTreasureInventory(playerid)
 {
     new string[220];
-	format(string, sizeof(string), "UPDATE `jobstuff` SET `junkmetal` = %d, `newcoin` = %d, `oldcoin` = %d, `brokenwatch` = %d, `oldkey` = %d, \
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `jobstuff` SET `junkmetal` = %d, `newcoin` = %d, `oldcoin` = %d, `brokenwatch` = %d, `oldkey` = %d, \
  	`treasure` = %d, `goldwatch` = %d, `silvernugget` = %d, `goldnugget` =%d  WHERE `pId` = %d", GetPVarInt(playerid, "junkmetal"), GetPVarInt(playerid, "newcoin"), GetPVarInt(playerid, "oldcoin"),
  	GetPVarInt(playerid, "brokenwatch"), GetPVarInt(playerid, "oldkey"), GetPVarInt(playerid, "treasure"), GetPVarInt(playerid, "goldwatch"), GetPVarInt(playerid, "silvernugget"), GetPVarInt(playerid, "goldnugget"), GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
-stock SQL_Log(szQuery[], szDesc[] = "none", iExtraID = 0) {
+stock SQL_Log(const szQuery[], const szDesc[] = "none", iExtraID = 0) {
 	new i_dateTime[2][3];
 	gettime(i_dateTime[0][0], i_dateTime[0][1], i_dateTime[0][2]);
 	getdate(i_dateTime[1][0], i_dateTime[1][1], i_dateTime[1][2]);
@@ -2036,20 +2049,20 @@ stock SQL_Log(szQuery[], szDesc[] = "none", iExtraID = 0) {
 stock LoadMailboxes()
 {
 	printf("[LoadMailboxes] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `mailboxes`", true, "OnLoadMailboxes", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `mailboxes`", "OnLoadMailboxes", "");
 }
 
 stock LoadHGBackpacks()
 {
 	printf("[Loading Hunger Games] Loading Hunger Games Backpacks from the database, please wait...");
-	mysql_function_query(MainPipeline,  "SELECT * FROM `hgbackpacks`", true, "OnLoadHGBackpacks", "");
+	mysql_tquery(MainPipeline,  "SELECT * FROM `hgbackpacks`", "OnLoadHGBackpacks", "");
 }
 
 stock SaveMailbox(id)
 {
 	new string[512];
 
-	format(string, sizeof(string), "UPDATE `mailboxes` SET \
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `mailboxes` SET \
 		`VW`=%d, \
 		`Int`=%d, \
 		`Model`=%d, \
@@ -2067,7 +2080,7 @@ stock SaveMailbox(id)
 		id+1
 	); // Array starts from zero, MySQL starts at 1 (this is why we are adding one).
 
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock IsAdminSpawnedVehicle(vehicleid)
@@ -2083,15 +2096,15 @@ stock MySQLUpdateBuild(query[], sqlplayerid)
 {
 	new querylen = strlen(query);
 	if (!query[0]) {
-		format(query, 2048, "UPDATE `accounts` SET ");
+		mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET ");
 	}
 	else if (2048-querylen < 200)
 	{
 		new whereclause[32];
-		format(whereclause, sizeof(whereclause), " WHERE `id`=%d", sqlplayerid);
+		mysql_format(MainPipeline, whereclause, sizeof(whereclause), " WHERE `id`=%d", sqlplayerid);
 		strcat(query, whereclause, 2048);
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-		format(query, 2048, "UPDATE `accounts` SET ");
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET ");
 	}
 	else if (strfind(query, "=", true) != -1) strcat(query, ",", 2048);
 	return 1;
@@ -2099,14 +2112,14 @@ stock MySQLUpdateBuild(query[], sqlplayerid)
 
 stock MySQLUpdateFinish(query[], sqlplayerid)
 {
-	if (strcmp(query, "WHERE id=", false) == 0) mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	if (strcmp(query, "WHERE id=", false) == 0) mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	else
 	{
 		new whereclause[32];
-		format(whereclause, sizeof(whereclause), " WHERE id=%d", sqlplayerid);
+		mysql_format(MainPipeline, whereclause, sizeof(whereclause), " WHERE id=%d", sqlplayerid);
 		strcat(query, whereclause, 2048);
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
-		format(query, 2048, "UPDATE `accounts` SET ");
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET ");
 	}
 	return 1;
 }
@@ -2115,7 +2128,7 @@ stock SavePlayerInteger(query[], sqlid, Value[], Integer)
 {
 	MySQLUpdateBuild(query, sqlid);
 	new updval[64];
-	format(updval, sizeof(updval), "`%s`=%d", Value, Integer);
+	mysql_format(MainPipeline, updval, sizeof(updval), "`%s`=%d", Value, Integer);
 	strcat(query, updval, 2048);
 	return 1;
 }
@@ -2125,8 +2138,8 @@ stock SavePlayerString(query[], sqlid, Value[], String[])
 {
 	MySQLUpdateBuild(query, sqlid);
 	new escapedstring[160], string[160];
-	mysql_real_escape_string(String, escapedstring);
-	format(string, sizeof(string), "`%s`='%s'", Value, escapedstring);
+	mysql_escape_string(String, escapedstring);
+	mysql_format(MainPipeline, string, sizeof(string), "`%s`='%s'", Value, escapedstring);
 	strcat(query, string, 2048);
 	return 1;
 }
@@ -2134,7 +2147,7 @@ stock SavePlayerString(query[], sqlid, Value[], String[])
 stock SavePlayerFloat(query[], sqlid, Value[], Float:Number)
 {
 	new flotostr[32];
-	format(flotostr, sizeof(flotostr), "%0.2f", Number);
+	mysql_format(MainPipeline, flotostr, sizeof(flotostr), "%0.2f", Number);
 	SavePlayerString(query, sqlid, Value, flotostr);
 	return 1;
 }
@@ -2143,10 +2156,10 @@ stock g_mysql_SaveAccount(playerid)
 {
     new query[2048];
 
-	format(query, 2048, "UPDATE `accounts` SET `SPos_x` = '%0.2f', `SPos_y` = '%0.2f', `SPos_z` = '%0.2f', `SPos_r` = '%0.2f' WHERE id = '%d'",PlayerInfo[playerid][pPos_x], PlayerInfo[playerid][pPos_y], PlayerInfo[playerid][pPos_z], PlayerInfo[playerid][pPos_r], GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET `SPos_x` = '%0.2f', `SPos_y` = '%0.2f', `SPos_z` = '%0.2f', `SPos_r` = '%0.2f' WHERE id = '%d'",PlayerInfo[playerid][pPos_x], PlayerInfo[playerid][pPos_y], PlayerInfo[playerid][pPos_z], PlayerInfo[playerid][pPos_r], GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-    format(query, 2048, "UPDATE `accounts` SET ");
+    mysql_format(MainPipeline, query, 2048, "UPDATE `accounts` SET ");
     SavePlayerString(query, GetPlayerSQLId(playerid), "IP", PlayerInfo[playerid][pIP]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "Registered", PlayerInfo[playerid][pReg]);
     SavePlayerInteger(query, GetPlayerSQLId(playerid), "ConnectedTime", PlayerInfo[playerid][pConnectHours]);
@@ -2462,17 +2475,17 @@ stock g_mysql_SaveAccount(playerid)
 	new szForLoop[16];
 	for(new x = 0; x < 12; x++) {
 
-		format(szForLoop, sizeof(szForLoop), "BItem%d", x);
+		mysql_format(MainPipeline, szForLoop, sizeof(szForLoop), "BItem%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBItems][x]);
 	}
 	for(new x = 0; x < sizeof(Drugs); x++) {
 
-		format(szForLoop, sizeof(szForLoop), "BDrug%d", x);
+		mysql_format(MainPipeline, szForLoop, sizeof(szForLoop), "BDrug%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pBDrugs][x]);
 	}
 	for(new x = 0; x < 12; x++) {
 
-		format(szForLoop, sizeof(szForLoop), "Gun%d", x);
+		mysql_format(MainPipeline, szForLoop, sizeof(szForLoop), "Gun%d", x);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szForLoop, PlayerInfo[playerid][pGuns][x]);
 	}
 
@@ -2504,29 +2517,29 @@ stock g_mysql_SaveAccount(playerid)
 	new mistring[64], mpstring[64], mcstring[256];
 	for(new m; m < MAX_MICROITEMS; m++)
 	{
-		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][mInventory][m]);
-		format(mpstring, sizeof(mpstring), "%s%d", mpstring, PlayerInfo[playerid][mPurchaseCount][m]);
-		format(mcstring, sizeof(mcstring), "%s%d", mcstring, PlayerInfo[playerid][mCooldown][m]);
+		mysql_format(MainPipeline, mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][mInventory][m]);
+		mysql_format(MainPipeline, mpstring, sizeof(mpstring), "%s%d", mpstring, PlayerInfo[playerid][mPurchaseCount][m]);
+		mysql_format(MainPipeline, mcstring, sizeof(mcstring), "%s%d", mcstring, PlayerInfo[playerid][mCooldown][m]);
 		if(m != MAX_MICROITEMS-1) strcat(mistring, "|"), strcat(mpstring, "|"), strcat(mcstring, "|");
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "mInventory", mistring);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "mPurchaseCounts", mpstring);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "mCooldowns", mcstring);
-	format(mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mBoost][0], PlayerInfo[playerid][mBoost][1]);
+	mysql_format(MainPipeline, mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mBoost][0], PlayerInfo[playerid][mBoost][1]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "mBoost", mpstring);
-	format(mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mShopCounter], PlayerInfo[playerid][mNotice]);
+	mysql_format(MainPipeline, mpstring, sizeof(mpstring), "%d|%d", PlayerInfo[playerid][mShopCounter], PlayerInfo[playerid][mNotice]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "mShopNotice", mpstring);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "zFuelCan", PlayerInfo[playerid][zFuelCan]);
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "bTicket", PlayerInfo[playerid][bTicket]);
 
 	// Austin's Punishment Revamp
-	format(mistring, 64, "%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedInfo][0], PlayerInfo[playerid][pJailedInfo][1],
+	mysql_format(MainPipeline, mistring, 64, "%d|%d|%d|%d|%d", PlayerInfo[playerid][pJailedInfo][0], PlayerInfo[playerid][pJailedInfo][1],
 		PlayerInfo[playerid][pJailedInfo][2], PlayerInfo[playerid][pJailedInfo][3], PlayerInfo[playerid][pJailedInfo][4]);
 	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedInfo", mistring);
 	mistring[0] = 0;
 	for(new jailX = 0; jailX < 12; jailX++)
 	{
-		format(mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][pJailedWeapons][jailX]);
+		mysql_format(MainPipeline, mistring, sizeof(mistring), "%s%d", mistring, PlayerInfo[playerid][pJailedWeapons][jailX]);
 		if(jailX != 11) strcat(mistring, "|");
 	}
 	SavePlayerString(query, GetPlayerSQLId(playerid), "JailedWeapons", mistring);
@@ -2571,7 +2584,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerString(query, GetPlayerSQLId(playerid), "ToggledChats", szMiscArray);*/
 
 	for(new c = 0; c < MAX_CHATSETS; c++) {
-		format(szMiscArray, sizeof(szMiscArray), "ChatTog%d", c);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "ChatTog%d", c);
 		SavePlayerInteger(query, GetPlayerSQLId(playerid), szMiscArray, PlayerInfo[playerid][pToggledChats][c]);
 	}
 
@@ -2616,8 +2629,7 @@ stock g_mysql_SaveAccount(playerid)
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "DedicatedHours", PlayerInfo[playerid][pDedicatedHours]);
 	
 	SavePlayerInteger(query, GetPlayerSQLId(playerid), "WalkStyle", PlayerInfo[playerid][pWalkStyle]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FlagCredits", PlayerInfo[playerid][pFlagCredits]);
-	SavePlayerInteger(query, GetPlayerSQLId(playerid), "FlagClaimed", PlayerInfo[playerid][pFlagClaimed]);
+
 
 	//for(new d; d < sizeof(Drugs); ++d) SavePlayerInteger(query, GetPlayerSQLId(playerid), GetDrugName(d), PlayerInfo[playerid][pDrugs][d]);
 	//for(new d; d < sizeof(szIngredients); ++d) if(d != 9) SavePlayerInteger(query, GetPlayerSQLId(playerid), DS_Ingredients_GetSQLName(d), PlayerInfo[playerid][p_iIngredient][d]);	
@@ -2636,29 +2648,29 @@ stock g_mysql_SaveAccount(playerid)
 
 stock SaveAuction(auction) {
 	new query[200];
-	format(query, sizeof(query), "UPDATE `auctions` SET");
-	format(query, sizeof(query), "%s `BiddingFor` = '%s', `InProgress` = %d, `Bid` = %d, `Bidder` = %d, `Expires` = %d, `Wining` = '%s', `Increment` = %d", query, g_mysql_ReturnEscaped(Auctions[auction][BiddingFor], MainPipeline), Auctions[auction][InProgress], Auctions[auction][Bid], Auctions[auction][Bidder], Auctions[auction][Expires], g_mysql_ReturnEscaped(Auctions[auction][Wining], MainPipeline), Auctions[auction][Increment]);
-    format(query, sizeof(query), "%s WHERE `id` = %d", query, auction+1);
-    mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `auctions` SET");
+	mysql_format(MainPipeline, query, sizeof(query), "%s `BiddingFor` = '%e', `InProgress` = %d, `Bid` = %d, `Bidder` = %d, `Expires` = %d, `Wining` = '%e', `Increment` = %d", query, Auctions[auction][BiddingFor], Auctions[auction][InProgress], Auctions[auction][Bid], Auctions[auction][Bidder], Auctions[auction][Expires], Auctions[auction][Wining], Auctions[auction][Increment]);
+    mysql_format(MainPipeline, query, sizeof(query), "%s WHERE `id` = %d", query, auction+1);
+    mysql_tquery(MainPipeline, query, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
 }
 
 stock GetLatestKills(playerid, giveplayerid)
 {
 	new query[256];
-	format(query, sizeof(query), "SELECT Killer.Username, Killed.Username, k.* FROM kills k LEFT JOIN accounts Killed ON k.killedid = Killed.id LEFT JOIN accounts Killer ON Killer.id = k.killerid WHERE k.killerid = %d OR k.killedid = %d ORDER BY `date` DESC LIMIT 10", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(giveplayerid));
-	mysql_function_query(MainPipeline, query, true, "OnGetLatestKills", "ii", playerid, giveplayerid);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT Killer.Username, Killed.Username, k.* FROM kills k LEFT JOIN accounts Killed ON k.killedid = Killed.id LEFT JOIN accounts Killer ON Killer.id = k.killerid WHERE k.killerid = %d OR k.killedid = %d ORDER BY `date` DESC LIMIT 10", GetPlayerSQLId(giveplayerid), GetPlayerSQLId(giveplayerid));
+	mysql_tquery(MainPipeline, query, "OnGetLatestKills", "ii", playerid, giveplayerid);
 }
 
 stock GetSMSLog(playerid)
 {
 	new query[256];
-	format(query, sizeof(query), "SELECT `sender`, `sendernumber`, `message`, `date` FROM `sms` WHERE `receiverid` = %d ORDER BY `date` DESC LIMIT 10", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, query, true, "OnGetSMSLog", "i", playerid);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT `sender`, `sendernumber`, `message`, `date` FROM `sms` WHERE `receiverid` = %d ORDER BY `date` DESC LIMIT 10", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, query, "OnGetSMSLog", "i", playerid);
 }
 
 stock LoadAuctions() {
 	printf("[LoadAuctions] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `auctions`", true, "AuctionLoadQuery", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `auctions`", "AuctionLoadQuery", "");
 }
 
 //--------------------------------[ CUSTOM PUBLIC FUNCTIONS ]---------------------------
@@ -2670,7 +2682,8 @@ public OnPhoneNumberCheck(index, extraid)
 	{
 		new string[128];
 		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		cache_get_row_count(rows);
+		cache_get_field_count(fields);
 
 		switch(extraid)
 		{
@@ -2702,8 +2715,8 @@ public OnPhoneNumberCheck(index, extraid)
 					SendClientMessageEx(index, COLOR_GRAD4, string);
 					SendClientMessageEx(index, COLOR_GRAD5, "You can check this any time you wish by typing /stats.");
 					SendClientMessageEx(index, COLOR_WHITE, "HINT: You can now type /cellphonehelp to see your cellphone commands.");
-					format(string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[index][pPnumber], GetPlayerSQLId(index));
-					mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+					mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[index][pPnumber], GetPlayerSQLId(index));
+					mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 					DeletePVar(index, "PhChangerId");
 					DeletePVar(index, "WantedPh");
 					DeletePVar(index, "PhChangeCost");
@@ -2723,8 +2736,8 @@ public OnPhoneNumberCheck(index, extraid)
 					format(string, sizeof(string), "%s by %s", string, GetPlayerNameEx(index));
 					Log("logs/undercover.log", string);
 					SendClientMessageEx(index, COLOR_GRAD1, string);
-					format(string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[index][pPnumber], GetPlayerSQLId(index));
-					mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+					mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[index][pPnumber], GetPlayerSQLId(index));
+					mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 					DeletePVar(index, "PhChangerId");
 					DeletePVar(index, "WantedPh");
 					DeletePVar(index, "PhChangeCost");
@@ -2746,8 +2759,8 @@ public OnPhoneNumberCheck(index, extraid)
 						format(string, sizeof(string), "%s by %s", string, GetPlayerNameEx(GetPVarInt(index, "PhChangerId")));
 						Log("logs/stats.log", string);
 						SendClientMessageEx(GetPVarInt(index, "PhChangerId"), COLOR_GRAD1, string);
-						format(string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[index][pPnumber], GetPlayerSQLId(index));
-						mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+						mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `PhoneNr` = %d WHERE `id` = '%d'", PlayerInfo[index][pPnumber], GetPlayerSQLId(index));
+						mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 						DeletePVar(index, "PhChangerId");
 						DeletePVar(index, "WantedPh");
 						DeletePVar(index, "PhChangeCost");
@@ -2781,7 +2794,8 @@ public AddingBan(index, type)
 	    if(type == 1) // Add Ban
 	    {
     		new rows, fields;
-    		cache_get_data(rows, fields, MainPipeline);
+    		cache_get_row_count(rows);
+			cache_get_field_count(fields);
     		if(rows)
     		{
     		    DeletePVar(index, "BanningPlayer");
@@ -2795,8 +2809,8 @@ public AddingBan(index, type)
     		    	new string[256], reason[64];
     		    	GetPVarString(index, "BanningReason", reason, sizeof(reason));
 
-		    	    format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", GetPlayerIpEx(GetPVarInt(index, "BanningPlayer")), g_mysql_ReturnEscaped(reason, MainPipeline), GetPlayerNameEx(index));
-					mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		    	    mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%e', '%e')", GetPlayerIpEx(GetPVarInt(index, "BanningPlayer")), reason, GetPlayerNameEx(index));
+					mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 					DeletePVar(index, "BanningPlayer");
 		    	    DeletePVar(index, "BanningReason");
@@ -2805,15 +2819,15 @@ public AddingBan(index, type)
 		}
 		else if(type == 2) // Unban IP
 		{
-		    new rows, fields;
-		    cache_get_data(rows, fields, MainPipeline);
+		    new rows;
+		    cache_get_row_count(rows);
 		    if(rows)
 		    {
 		        new string[128], ip[32];
 		        GetPVarString(index, "UnbanIP", ip, sizeof(ip));
 
-		        format(string, sizeof(string), "DELETE FROM `ip_bans` WHERE `ip` = '%s'", ip);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		        mysql_format(MainPipeline, string, sizeof(string), "DELETE FROM `ip_bans` WHERE `ip` = '%s'", ip);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 				DeletePVar(index, "UnbanIP");
 		    }
@@ -2825,8 +2839,8 @@ public AddingBan(index, type)
 		}
 		else if(type == 3) // Ban IP
 		{
-		    new rows, fields;
-		    cache_get_data(rows, fields, MainPipeline);
+		    new rows;
+		    cache_get_row_count(rows);
 		    if(rows)
 		    {
 		        SendClientMessageEx(index, COLOR_GREY, "That IP address is already banned.");
@@ -2836,8 +2850,8 @@ public AddingBan(index, type)
 		    {
 		        new string[256], ip[32];
 		        GetPVarString(index, "BanIP", ip, sizeof(ip));
-		        format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", ip, "/banip", GetPlayerNameEx(index));
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		        mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", ip, "/banip", GetPlayerNameEx(index));
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 		        SendClientMessageEx(index, COLOR_WHITE, "That IP address was successfully banned.");
 				DeletePVar(index, "BanIP");
@@ -2851,8 +2865,8 @@ forward MailsQueryFinish(playerid);
 public MailsQueryFinish(playerid)
 {
 
-    new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new rows;
+	cache_get_row_count(rows);
 
 	if (rows == 0) {
 		ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, " ", "Your mailbox is empty.", "OK", "");
@@ -2862,9 +2876,9 @@ public MailsQueryFinish(playerid)
     new id, string[2000], message[129], tmp[128], read;
 	for(new i; i < rows;i++)
 	{
-    	cache_get_field_content(i, "Id", tmp, MainPipeline);  	id = strval(tmp);
-    	cache_get_field_content(i, "Read", tmp, MainPipeline); read= strval(tmp);
-    	cache_get_field_content(i, "Message", message, MainPipeline, 129);
+    	cache_get_value_name(i, "Id", tmp);  	id = strval(tmp);
+    	cache_get_value_name(i, "Read", tmp); read= strval(tmp);
+    	cache_get_value_name(i, "Message", message, 129);
 		strmid(message,message,0,30);
 		if (strlen(message) > 30) strcat(message,"...");
 		strcat(string, (read) ? ("{BBBBBB}") : ("{FFFFFF}"));
@@ -2882,17 +2896,17 @@ forward MailDetailsQueryFinish(playerid);
 public MailDetailsQueryFinish(playerid)
 {
 	new string[256];
-    new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new rows;
+	cache_get_row_count(rows);
 
 	new senderid, sender[MAX_PLAYER_NAME], message[131], notify, szTmp[128], Date[32], read, id;
-	cache_get_field_content(0, "Id", szTmp, MainPipeline);	    	id = strval(szTmp);
-	cache_get_field_content(0, "Notify", szTmp, MainPipeline);	    notify = strval(szTmp);
-	cache_get_field_content(0, "Sender_Id", szTmp, MainPipeline);	senderid = strval(szTmp);
-	cache_get_field_content(0, "Read", szTmp, MainPipeline);		read = strval(szTmp);
-	cache_get_field_content(0, "Message", message, MainPipeline, 131);
-	cache_get_field_content(0, "SenderUser", sender, MainPipeline, MAX_PLAYER_NAME);
-	cache_get_field_content(0, "Date", Date, MainPipeline, 32);
+	cache_get_value_name(0, "Id", szTmp);	    	id = strval(szTmp);
+	cache_get_value_name(0, "Notify", szTmp);	    notify = strval(szTmp);
+	cache_get_value_name(0, "Sender_Id", szTmp);	senderid = strval(szTmp);
+	cache_get_value_name(0, "Read", szTmp);		read = strval(szTmp);
+	cache_get_value_name(0, "Message", message, 131);
+	cache_get_value_name(0, "SenderUser", sender, MAX_PLAYER_NAME);
+	cache_get_value_name(0, "Date", Date, 32);
 
 	if (strlen(message) > 80) strins(message, "\n", 70);
 
@@ -2910,8 +2924,8 @@ public MailDetailsQueryFinish(playerid)
 		}
 	}
 
-	format(string, sizeof(string), "UPDATE `letters` SET `Read` = 1 WHERE `id` = %d", id);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `letters` SET `Read` = 1 WHERE `id` = %d", id);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 	return 1;
 }
@@ -2921,12 +2935,12 @@ forward MailDeliveryQueryFinish();
 public MailDeliveryQueryFinish()
 {
 
-    new rows, fields, id, tmp[128], i;
-	cache_get_data(rows, fields, MainPipeline);
+    new rows, id, tmp[128], i;
+	cache_get_row_count(rows);
 
 	for(; i < rows;i++)
 	{
-    	cache_get_field_content(i, "Receiver_Id", tmp, MainPipeline);
+    	cache_get_value_name(i, "Receiver_Id", tmp);
     	id = strval(tmp);
 		foreach(new j: Player)
 		{
@@ -2948,12 +2962,9 @@ public MailDeliveryQueryFinish()
 forward MDCQueryFinish(playerid, suspectid);
 public MDCQueryFinish(playerid, suspectid)
 {
-    new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
-    new resultline[1424];
-    new crimes = PlayerInfo[suspectid][pCrimes];
-	new arrests = PlayerInfo[suspectid][pArrested];
-	new nation[14];
+    new rows;
+	cache_get_row_count(rows);
+    new resultline[1424], crimes = PlayerInfo[suspectid][pCrimes], arrests = PlayerInfo[suspectid][pArrested], nation[14];
 
 	switch(PlayerInfo[suspectid][pNation])
 	{
@@ -2966,9 +2977,9 @@ public MDCQueryFinish(playerid, suspectid)
 
 	for(new i; i < rows; i++)
 	{
-		cache_get_field_content(i, "issuer", MDCInfo[i][mdcIssuer], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(i, "crime", MDCInfo[i][mdcCrime], MainPipeline, 64);
-	    MDCInfo[i][mdcActive] = cache_get_field_content_int(i, "active", MainPipeline);
+		cache_get_value_name(i, "issuer", MDCInfo[i][mdcIssuer], MAX_PLAYER_NAME);
+		cache_get_value_name(i, "crime", MDCInfo[i][mdcCrime], 64);
+	    cache_get_value_name_int(i, "active", MDCInfo[i][mdcActive]);
 	    if(MDCInfo[i][mdcActive] == 1)
 	    {
 	        format(resultline, sizeof(resultline),"%s{FF6347}Crime: {FF7D7D}%s \t{FF6347}Charged by:{BFC0C2} %s\n",resultline, MDCInfo[i][mdcCrime], MDCInfo[i][mdcIssuer]);
@@ -2983,15 +2994,15 @@ public MDCQueryFinish(playerid, suspectid)
 forward MDCReportsQueryFinish(playerid, suspectid);
 public MDCReportsQueryFinish(playerid, suspectid)
 {
-    new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new rows;
+	cache_get_row_count(rows);
     new resultline[1424], str[12];
     new copname[MAX_PLAYER_NAME], datetime[64], reportsid;
 	for(new i; i < rows; i++)
 	{
-		cache_get_field_content(i, "id", str, MainPipeline, 12); reportsid = strval(str);
-	    cache_get_field_content(i, "Username", copname, MainPipeline, MAX_PLAYER_NAME);
-	    cache_get_field_content(i, "datetime", datetime, MainPipeline, 64);
+		cache_get_value_name(i, "id", str, 12); reportsid = strval(str);
+	    cache_get_value_name(i, "Username", copname, MAX_PLAYER_NAME);
+	    cache_get_value_name(i, "datetime", datetime, 64);
 	    format(resultline, sizeof(resultline),"%s{FF6347}Report (%d) {FF7D7D}Arrested by: %s on %s\n",resultline, reportsid, copname,datetime);
 	}
 	if(!resultline[0]) format(resultline, sizeof(resultline),"No Arrest Reports on record.",resultline, reportsid, copname,datetime);
@@ -3002,15 +3013,15 @@ public MDCReportsQueryFinish(playerid, suspectid)
 forward MDCReportQueryFinish(playerid, reportid);
 public MDCReportQueryFinish(playerid, reportid)
 {
-    new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new rows;
+	cache_get_row_count(rows);
     new resultline[1424];
     new copname[MAX_PLAYER_NAME], datetime[64], shortreport[200];
 	for(new i; i < rows; i++)
 	{
-	    cache_get_field_content(i, "Username", copname, MainPipeline, MAX_PLAYER_NAME);
-	    cache_get_field_content(i, "datetime", datetime, MainPipeline, 64);
-	    cache_get_field_content(i, "shortreport", shortreport, MainPipeline, 200);
+	    cache_get_value_name(i, "Username", copname, MAX_PLAYER_NAME);
+	    cache_get_value_name(i, "datetime", datetime, 64);
+	    cache_get_value_name(i, "shortreport", shortreport, 200);
 	    format(resultline, sizeof(resultline),"{FF6347}Report #%d\n{FF7D7D}Arrested by: %s on %s\n{FF6347}Report:{BFC0C2} %s\n",reportid, copname,datetime, shortreport);
 	}
 	ShowPlayerDialogEx(playerid, MDC_SHOWCRIMES, DIALOG_STYLE_MSGBOX, "MDC - Arrest Report", resultline, "Back", "");
@@ -3020,8 +3031,8 @@ public MDCReportQueryFinish(playerid, reportid)
 forward FlagQueryFinish(playerid, suspectid, queryid);
 public FlagQueryFinish(playerid, suspectid, queryid)
 {
-    new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new rows, value;
+	cache_get_row_count(rows);
     new resultline[2000];
     new header[64], sResult[64];
     new FlagID, FlagIssuer[MAX_PLAYER_NAME], FlagText[64], FlagDate[24];
@@ -3029,10 +3040,10 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 	{
 		case 0:
 		{
-			cache_get_field_content(0, "fid", sResult, MainPipeline); FlagID = strval(sResult);
-			cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
-			cache_get_field_content(0, "flag", FlagText, MainPipeline, 64);
-			cache_get_field_content(0, "time", FlagDate, MainPipeline, 24);
+			cache_get_value_name(0, "fid", sResult); FlagID = strval(sResult);
+			cache_get_value_name(0, "issuer", FlagIssuer, MAX_PLAYER_NAME);
+			cache_get_value_name(0, "flag", FlagText, 64);
+			cache_get_value_name(0, "time", FlagDate, 24);
 			format(resultline, sizeof(resultline),"{FF6347}FlagID: {BFC0C2}%d\n{FF6347}Flag: {BFC0C2}%s\n{FF6347}Issued by:{BFC0C2} %s \n{FF6347}Date: {BFC0C2}%s", FlagID, FlagText, FlagIssuer, FlagDate);
 			ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_MSGBOX, "Viewing Flag Info", resultline, "Close", "");
 		}
@@ -3042,8 +3053,8 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 			if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, header, "{FF6347}No Flags on this account", "Close", "");
 			for(new i; i < rows; i++)
 			{
-				cache_get_field_content(i, "fid", sResult, MainPipeline); FlagID = strval(sResult);
-				cache_get_field_content(i, "flag", FlagText, MainPipeline, 64);
+				cache_get_value_name(i, "fid", sResult); FlagID = strval(sResult);
+				cache_get_value_name(i, "flag", FlagText, 64);
 				if(strlen(FlagText) > 60) strmid(FlagText, FlagText, 0, 58), format(FlagText, sizeof(FlagText), "%s[...]", FlagText);
 				format(resultline, sizeof(resultline),"%s{FF6347}(ID: %d): {BFC0C2}%s\n", resultline, FlagID, FlagText);
 			}
@@ -3064,7 +3075,7 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 				format(string, sizeof(string), "%s was offline flagged by %s (%s).", name, GetPlayerNameEx(playerid), reason);
 				Log("logs/flags.log", string);
 
-				cache_get_field_content(0, "id", psqlid, MainPipeline);
+				cache_get_value_name(0, "id", psqlid);
 
 				AddOFlag(strval(psqlid), playerid, reason);
 			}
@@ -3080,7 +3091,7 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 		}
 		case 4:
 		{
-			new count = cache_get_field_content_int(0, "aFlagCount", MainPipeline);
+			new count = cache_get_value_name_int(0, "aFlagCount", value);
 			if(count)
 			{
 				new string[128];
@@ -3095,8 +3106,8 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 forward SkinQueryFinish(playerid, queryid);
 public SkinQueryFinish(playerid, queryid)
 {
-    new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new rows;
+	cache_get_row_count(rows);
     new resultline[2000], header[32], sResult[64], skinid;
 	switch(queryid)
 	{
@@ -3108,7 +3119,7 @@ public SkinQueryFinish(playerid, queryid)
 			if(rows == 0) return SendClientMessageEx(playerid, COLOR_GREY, "There are no clothes in this closet!");
 			for(new i; i < rows; i++)
 			{
-			    cache_get_field_content(i, "skinid", sResult, MainPipeline); skinid = strval(sResult);
+			    cache_get_value_name(i, "skinid", sResult); skinid = strval(sResult);
 				format(resultline, sizeof(resultline),"%sSkin ID: %d\n",resultline, skinid);
 			}
 			ShowPlayerDialogEx(playerid, SKIN_LIST, DIALOG_STYLE_LIST, header, resultline, "Select", "Cancel");
@@ -3121,7 +3132,7 @@ public SkinQueryFinish(playerid, queryid)
 		{
 		    for(new i; i < rows; i++)
 			{
-			    cache_get_field_content(i, "skinid", sResult, MainPipeline); skinid = strval(sResult);
+			    cache_get_value_name(i, "skinid", sResult); skinid = strval(sResult);
 				if(i == GetPVarInt(playerid, "closetchoiceid"))
 				{
 					SetPVarInt(playerid, "closetskinid", skinid);
@@ -3138,7 +3149,7 @@ public SkinQueryFinish(playerid, queryid)
 			if(rows == 0) return SendClientMessageEx(playerid, COLOR_GREY, "There are no clothes in this closet!");
 			for(new i; i < rows; i++)
 			{
-			    cache_get_field_content(i, "skinid", sResult, MainPipeline); skinid = strval(sResult);
+			    cache_get_value_name(i, "skinid", sResult); skinid = strval(sResult);
 				format(resultline, sizeof(resultline),"%sSkin ID: %d\n",resultline, skinid);
 			}
 			ShowPlayerDialogEx(playerid, SKIN_DELETE, DIALOG_STYLE_LIST, header, resultline, "Select", "Cancel");
@@ -3147,7 +3158,7 @@ public SkinQueryFinish(playerid, queryid)
 		{
 		    for(new i; i < rows; i++)
 			{
-			    cache_get_field_content(i, "id", sResult, MainPipeline); skinid = strval(sResult);
+			    cache_get_value_name(i, "id", sResult); skinid = strval(sResult);
 				if(i == GetPVarInt(playerid, "closetchoiceid"))
 				{
 					SetPVarInt(playerid, "closetskinid", skinid);
@@ -3163,8 +3174,8 @@ public SkinQueryFinish(playerid, queryid)
 forward CitizenQueryFinish(playerid, queryid);
 public CitizenQueryFinish(playerid, queryid)
 {
-    new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new rows;
+	cache_get_row_count(rows);
 	switch(queryid)
 	{
 	    case TR_Citizen_Count:
@@ -3182,16 +3193,16 @@ public CitizenQueryFinish(playerid, queryid)
 forward NationQueueQueryFinish(playerid, nation, queryid);
 public NationQueueQueryFinish(playerid, nation, queryid)
 {
-    new query[300], resultline[2000], sResult[64], rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new query[300], resultline[2000], sResult[64], rows;
+	cache_get_row_count(rows);
 	switch(queryid)
 	{
 		case CheckQueue:
 	    {
 			if(rows == 0)
 			{
-				format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), %d, 1)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
-				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), %d, 1)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
+				mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 				SendClientMessageEx(playerid, COLOR_GREY, "You have been added to the nation's application queue. The nation's leader can now choose to accept or deny your application.");
 			}
 			else
@@ -3203,8 +3214,8 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 	    {
 			if(rows > 0)
 			{
-				format(query, sizeof(query), "UPDATE `nation_queue` SET `name` = '%s' WHERE `playerid` = %d", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid));
-				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, query, sizeof(query), "UPDATE `nation_queue` SET `name` = '%s' WHERE `playerid` = %d", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid));
+				mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
 		case AppQueue:
@@ -3213,8 +3224,8 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 			if(rows == 0) return SendClientMessageEx(playerid, COLOR_GREY, "There are currently no pending applications.");
 			for(new i; i < rows; i++)
 			{
-				cache_get_field_content(i, "name", sResult, MainPipeline, MAX_PLAYER_NAME);
-				cache_get_field_content(i, "date", sDate, MainPipeline, 32);
+				cache_get_value_name(i, "name", sResult, MAX_PLAYER_NAME);
+				cache_get_value_name(i, "date", sDate, 32);
 				format(resultline, sizeof(resultline), "%s%s -- Date Submitted: %s\n", resultline, sResult, sDate);
 			}
 			ShowPlayerDialogEx(playerid, NATION_APP_LIST, DIALOG_STYLE_LIST, "Nation Applications", resultline, "Select", "Cancel");
@@ -3223,14 +3234,14 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 	    {
 			if(rows == 0)
 			{
-				format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), %d, 2)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
-				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, '%s', NOW(), %d, 2)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
+				mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 				PlayerInfo[playerid][pNation] = 1;
 			}
 			else
 			{
-				format(query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, NOW(), %d, 1)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
-				mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `nation_queue` (`id`, `playerid`, `name`, `date`, `nation`, `status`) VALUES (NULL, %d, NOW(), %d, 1)", GetPlayerSQLId(playerid), GetPlayerNameExt(playerid), nation);
+				mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
 	}
@@ -3240,21 +3251,21 @@ public NationQueueQueryFinish(playerid, nation, queryid)
 forward NationAppFinish(playerid, queryid);
 public NationAppFinish(playerid, queryid)
 {
-    new query[300], string[128], sResult[64], rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new query[300], string[128], sResult[64], rows;
+	cache_get_row_count(rows);
 	switch(queryid)
 	{
 		case AcceptApp:
 	    {
 			for(new i; i < rows; i++)
 			{
-				cache_get_field_content(i, "id", sResult, MainPipeline); new AppID = strval(sResult);
-				cache_get_field_content(i, "playerid", sResult, MainPipeline); new UserID = strval(sResult);
-				cache_get_field_content(i, "name", sResult, MainPipeline, MAX_PLAYER_NAME);
+				cache_get_value_name(i, "id", sResult); new AppID = strval(sResult);
+				cache_get_value_name(i, "playerid", sResult); new UserID = strval(sResult);
+				cache_get_value_name(i, "name", sResult, MAX_PLAYER_NAME);
 				if(GetPVarInt(playerid, "Nation_App_ID") == i)
 				{
-					format(query, sizeof(query), "UPDATE `nation_queue` SET `status` = 2 WHERE `id` = %d", AppID);
-					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_format(MainPipeline, query, sizeof(query), "UPDATE `nation_queue` SET `status` = 2 WHERE `id` = %d", AppID);
+					mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 					new giveplayerid = ReturnUser(sResult);
 					switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
@@ -3268,8 +3279,8 @@ public NationAppFinish(playerid, queryid)
 							}
 							else
 							{
-								format(query, sizeof(query), "UPDATE `accounts` SET `Nation` = 0 WHERE `id` = %d", UserID);
-								mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+								mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Nation` = 0 WHERE `id` = %d", UserID);
+								mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 							}
 							format(string, sizeof(string), "%s has approved %s's application for San Andreas citizenship", GetPlayerNameEx(playerid), sResult);
 						}
@@ -3282,8 +3293,8 @@ public NationAppFinish(playerid, queryid)
 							}
 							else
 							{
-								format(query, sizeof(query), "UPDATE `accounts` SET `Nation` = 1 WHERE `id` = %d", UserID);
-								mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+								mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Nation` = 1 WHERE `id` = %d", UserID);
+								mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 							}
 							format(string, sizeof(string), "%s(%d) has approved %s's(%d) application for New Robada citizenship", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), sResult, UserID);
 						}
@@ -3299,12 +3310,12 @@ public NationAppFinish(playerid, queryid)
 	    {
 			for(new i; i < rows; i++)
 			{
-				cache_get_field_content(i, "id", sResult, MainPipeline, 32); new AppID = strval(sResult);
-				cache_get_field_content(i, "name", sResult, MainPipeline, MAX_PLAYER_NAME);
+				cache_get_value_name(i, "id", sResult, 32); new AppID = strval(sResult);
+				cache_get_value_name(i, "name", sResult, MAX_PLAYER_NAME);
 				if(GetPVarInt(playerid, "Nation_App_ID") == i)
 				{
-					format(query, sizeof(query), "UPDATE `nation_queue` SET `status` = 3 WHERE `id` = %d", AppID);
-					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_format(MainPipeline, query, sizeof(query), "UPDATE `nation_queue` SET `status` = 3 WHERE `id` = %d", AppID);
+					mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 					new giveplayerid = ReturnUser(sResult);
 					switch(arrGroupData[PlayerInfo[playerid][pMember]][g_iAllegiance])
 					{
@@ -3333,8 +3344,8 @@ public NationAppFinish(playerid, queryid)
 forward CountAmount(playerid);
 public CountAmount(playerid)
 {
-    new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new rows;
+	cache_get_row_count(rows);
 	PlayerInfo[playerid][pLottoNr] = rows;
 	return 1;
 }
@@ -3343,7 +3354,7 @@ forward UnreadMailsNotificationQueryFin(playerid);
 public UnreadMailsNotificationQueryFin(playerid)
 {
 	new szResult[8];
-	cache_get_field_content(0, "Unread_Count", szResult, MainPipeline);
+	cache_get_value_name(0, "Unread_Count", szResult);
 	if (strval(szResult) > 0) {
 		SetPVarInt(playerid, "UnreadMails", 1);
 		SendClientMessageEx(playerid, COLOR_YELLOW, "You have unread items in your mailbox.");
@@ -3355,14 +3366,14 @@ public UnreadMailsNotificationQueryFin(playerid)
 forward RecipientLookupFinish(playerid);
 public RecipientLookupFinish(playerid)
 {
-	new rows,fields,szResult[16], admin, undercover, id;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows, szResult[16], admin, undercover, id;
+	cache_get_row_count(rows);
 
 	if (!rows) return ShowPlayerDialogEx(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Recipient", "{FF3333}Error: {FFFFFF}Invalid Recipient - Account does not exist!\n\nPlease type the name of the recipient (online or offline)", "Next", "Cancel");
 
-	cache_get_field_content(0, "AdminLevel", szResult, MainPipeline); admin = strval(szResult);
-	cache_get_field_content(0, "TogReports", szResult, MainPipeline); undercover = strval(szResult);
-	cache_get_field_content(0, "id", szResult, MainPipeline); id = strval(szResult);
+	cache_get_value_name(0, "AdminLevel", szResult); admin = strval(szResult);
+	cache_get_value_name(0, "TogReports", szResult); undercover = strval(szResult);
+	cache_get_value_name(0, "id", szResult); id = strval(szResult);
 
 	if (admin >= 2 && undercover == 0) return ShowPlayerDialogEx(playerid, DIALOG_PORECEIVER, DIALOG_STYLE_INPUT, "Recipient", "{FF3333}Error: {FFFFFF}You can't send a letter to admins!\n\nPlease type the name of the recipient (online or offline)", "Next", "Cancel");
 
@@ -3378,15 +3389,15 @@ public CheckSales(index)
 {
 	if(IsPlayerConnected(index))
 	{
-	    new rows, fields, szDialog[512];
-		cache_get_data(rows, fields, MainPipeline);
+	    new rows, szDialog[512];
+		cache_get_row_count(rows);
 	    if(rows > 0)
 		{
   			for(new i;i < rows;i++)
 			{
 			    new szResult[32], id;
-			    cache_get_field_content(i, "id", szResult, MainPipeline); id = strval(szResult);
-   				cache_get_field_content(i, "Month", szResult, MainPipeline, 25);
+			    cache_get_value_name(i, "id", szResult); id = strval(szResult);
+   				cache_get_value_name(i, "Month", szResult, 25);
    				format(szDialog, sizeof(szDialog), "%s\n%s ", szDialog, szResult);
    				Selected[index][i] = id;
 			}
@@ -3404,19 +3415,19 @@ public CheckSales2(index)
 {
 	if(IsPlayerConnected(index))
 	{
-        new rows, fields, szDialog[3000];
-		cache_get_data(rows, fields, MainPipeline);
+        new rows, szDialog[3000];
+		cache_get_row_count(rows);
 	    if(rows)
 		{
 		    new szResult[32], szField[15], Solds[MAX_ITEMS], Amount[MAX_ITEMS];
 		    for(new z = 0; z < MAX_ITEMS; z++)
 			{
 				format(szField, sizeof(szField), "TotalSold%d", z);
-				cache_get_field_content(0,  szField, szResult, MainPipeline);
+				cache_get_value_name(0,  szField, szResult);
 				Solds[z] = strval(szResult);
 
 				format(szField, sizeof(szField), "AmountMade%d", z);
-				cache_get_field_content(0,  szField, szResult, MainPipeline);
+				cache_get_value_name(0,  szField, szResult);
 				Amount[z] = strval(szResult);
 			}
 
@@ -3487,19 +3498,19 @@ public CheckSales3(index)
 {
 	if(IsPlayerConnected(index))
 	{
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows, value;
+		cache_get_row_count(rows);
 		if(rows)
 		{
 			new szDialog[1024], szField[15], mSolds[MAX_MICROITEMS], mAmount[MAX_MICROITEMS], Total, mTotal;
 			for(new z = 0; z < MAX_ITEMS; z++)
 			{
 				format(szField, sizeof(szField), "AmountMade%d", z);
-				Total += cache_get_field_content_int(0, szField, MainPipeline);
+				Total += cache_get_value_name_int(0, szField, value);
 			}
-			cache_get_field_content(0, "TotalSoldMicro", szDialog, MainPipeline);
+			cache_get_value_name(0, "TotalSoldMicro", szDialog);
 			sscanf(szDialog, MicroSpecifier, mSolds);
-			cache_get_field_content(0, "AmountMadeMicro", szDialog, MainPipeline);
+			cache_get_value_name(0, "AmountMadeMicro", szDialog);
 			sscanf(szDialog, MicroSpecifier, mAmount);
 			szDialog[0] = 0;
 			for(new m; m < MAX_MICROITEMS; m++)
@@ -3522,19 +3533,19 @@ public LoadRentedCar(index)
 {
 	if(IsPlayerConnected(index))
 	{
-	    new rows, fields;
-	    cache_get_data(rows, fields, MainPipeline);
+	    new rows;
+	    cache_get_row_count(rows);
 		if(rows)
 		{
 		    //`sqlid`, `modelid`, `posx`, `posy`, `posz`, `posa`, `spawned`, `hours`
 
             new szResult[32], Info[2], Float: pos[4], string[128];
- 	    	cache_get_field_content(0, "modelid", szResult, MainPipeline); Info[0] = strval(szResult);
-  	    	cache_get_field_content(0, "posx", szResult, MainPipeline); pos[0] = strval(szResult);
-   	    	cache_get_field_content(0, "posy", szResult, MainPipeline); pos[1] = strval(szResult);
-    	    cache_get_field_content(0, "posz", szResult, MainPipeline); pos[2] = strval(szResult);
-    	    cache_get_field_content(0, "posa", szResult, MainPipeline); pos[3] = strval(szResult);
-    	    cache_get_field_content(0, "hours", szResult, MainPipeline); Info[1] = strval(szResult);
+ 	    	cache_get_value_name(0, "modelid", szResult); Info[0] = strval(szResult);
+  	    	cache_get_value_name(0, "posx", szResult); pos[0] = strval(szResult);
+   	    	cache_get_value_name(0, "posy", szResult); pos[1] = strval(szResult);
+    	    cache_get_value_name(0, "posz", szResult); pos[2] = strval(szResult);
+    	    cache_get_value_name(0, "posa", szResult); pos[3] = strval(szResult);
+    	    cache_get_value_name(0, "hours", szResult); Info[1] = strval(szResult);
 
 			SetPVarInt(index, "RentedHours", Info[1]);
 			SetPVarInt(index, "RentedVehicle", CreateVehicle(Info[0],pos[0],pos[1], pos[2], pos[3], random(128), random(128), 2000000));
@@ -3547,8 +3558,8 @@ public LoadRentedCar(index)
 
 forward LoadTicket(playerid);
 public LoadTicket(playerid) {
- 	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+ 	new rows;
+	cache_get_row_count(rows);
 
 	if (rows == 0) {
 		return 1;
@@ -3557,7 +3568,7 @@ public LoadTicket(playerid) {
     new number, result[10];
 	for(new i; i < rows; i++)
 	{
-    	cache_get_field_content(i, "number", result, MainPipeline);
+    	cache_get_value_name(i, "number", result);
     	number = strval(result);
 		LottoNumbers[playerid][i] = number;
 	}
@@ -3567,30 +3578,30 @@ public LoadTicket(playerid) {
 forward LoadTreasureInvent(playerid);
 public LoadTreasureInvent(playerid)
 {
-    new rows, fields, szResult[10];
-	cache_get_data(rows, fields, MainPipeline);
+    new rows, szResult[10];
+	cache_get_row_count(rows);
 
     if(IsPlayerConnected(playerid))
     {
         if(!rows)
         {
             new query[60];
-            format(query, sizeof(query), "INSERT INTO `jobstuff` (`pId`) VALUES ('%d')", GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+            mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `jobstuff` (`pId`) VALUES ('%d')", GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
         }
         else
         {
     		for(new row;row < rows;row++)
 			{
-				cache_get_field_content(row, "junkmetal", szResult, MainPipeline); SetPVarInt(playerid, "JunkMetal", strval(szResult));
-				cache_get_field_content(row, "newcoin", szResult, MainPipeline); SetPVarInt(playerid, "newcoin", strval(szResult));
-				cache_get_field_content(row, "oldcoin", szResult, MainPipeline); SetPVarInt(playerid, "oldcoin", strval(szResult));
-				cache_get_field_content(row, "brokenwatch", szResult, MainPipeline); SetPVarInt(playerid, "brokenwatch", strval(szResult));
-				cache_get_field_content(row, "oldkey", szResult, MainPipeline); SetPVarInt(playerid, "oldkey", strval(szResult));
-				cache_get_field_content(row, "treasure", szResult, MainPipeline); SetPVarInt(playerid, "treasure", strval(szResult));
-				cache_get_field_content(row, "goldwatch", szResult, MainPipeline); SetPVarInt(playerid, "goldwatch", strval(szResult));
-				cache_get_field_content(row, "silvernugget", szResult, MainPipeline); SetPVarInt(playerid, "silvernugget", strval(szResult));
-				cache_get_field_content(row, "goldnugget", szResult, MainPipeline); SetPVarInt(playerid, "goldnugget", strval(szResult));
+				cache_get_value_name(row, "junkmetal", szResult); SetPVarInt(playerid, "JunkMetal", strval(szResult));
+				cache_get_value_name(row, "newcoin", szResult); SetPVarInt(playerid, "newcoin", strval(szResult));
+				cache_get_value_name(row, "oldcoin", szResult); SetPVarInt(playerid, "oldcoin", strval(szResult));
+				cache_get_value_name(row, "brokenwatch", szResult); SetPVarInt(playerid, "brokenwatch", strval(szResult));
+				cache_get_value_name(row, "oldkey", szResult); SetPVarInt(playerid, "oldkey", strval(szResult));
+				cache_get_value_name(row, "treasure", szResult); SetPVarInt(playerid, "treasure", strval(szResult));
+				cache_get_value_name(row, "goldwatch", szResult); SetPVarInt(playerid, "goldwatch", strval(szResult));
+				cache_get_value_name(row, "silvernugget", szResult); SetPVarInt(playerid, "silvernugget", strval(szResult));
+				cache_get_value_name(row, "goldnugget", szResult); SetPVarInt(playerid, "goldnugget", strval(szResult));
 			}
 		}
 	}
@@ -3601,8 +3612,8 @@ forward GetHomeCount(playerid);
 public GetHomeCount(playerid)
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT NULL FROM `houses` WHERE `OwnerID` = %d", GetPlayerSQLId(playerid));
-	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", playerid, 2);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT NULL FROM `houses` WHERE `OwnerID` = %d", GetPlayerSQLId(playerid));
+	return mysql_tquery(MainPipeline, string, "QueryGetCountFinish", "ii", playerid, 2);
 }
 
 forward AddReportToken(playerid);
@@ -3620,8 +3631,8 @@ public AddReportToken(playerid)
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(thour, sizeof(thour), "%02d:00:00", hour);
 
-	format(query, sizeof(query), "SELECT NULL FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
-	mysql_function_query(MainPipeline, query, true, "QueryTokenFinish", "ii", playerid, 1);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
+	mysql_tquery(MainPipeline, query, "QueryTokenFinish", "ii", playerid, 1);
 	return 1;
 }
 
@@ -3640,8 +3651,8 @@ public AddCAReportToken(playerid)
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(thour, sizeof(thour), "%02d:00:00", hour);
 
-	format(query, sizeof(query), "SELECT NULL FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
-	mysql_function_query(MainPipeline, query, true, "QueryTokenFinish", "ii", playerid, 2);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
+	mysql_tquery(MainPipeline, query, "QueryTokenFinish", "ii", playerid, 2);
 	return 1;
 }
 
@@ -3658,8 +3669,8 @@ public AddCallToken(playerid)
 	getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 
-	format(query, sizeof(query), "SELECT NULL FROM `tokens_call` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = %d", GetPlayerSQLId(playerid), tdate, hour);
-	mysql_function_query(MainPipeline, query, true, "QueryTokenFinish", "ii", playerid, 3);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `tokens_call` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = %d", GetPlayerSQLId(playerid), tdate, hour);
+	mysql_tquery(MainPipeline, query, "QueryTokenFinish", "ii", playerid, 3);
 	return 1;
 }
 
@@ -3678,16 +3689,16 @@ public AddWDToken(playerid)
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(thour, sizeof(thour), "%02d:00:00", hour);
 
-	format(query, sizeof(query), "SELECT NULL FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
-	mysql_function_query(MainPipeline, query, true, "QueryTokenFinish", "ii", playerid, 4);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT NULL FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
+	mysql_tquery(MainPipeline, query, "QueryTokenFinish", "ii", playerid, 4);
 	return 1;
 }
 
 forward QueryTokenFinish(playerid, type);
 public QueryTokenFinish(playerid, type)
 {
-    new rows, fields, string[128], i_timestamp[3], tdate[11], thour[9];
-	cache_get_data(rows, fields, MainPipeline);
+    new rows, string[128], i_timestamp[3], tdate[11], thour[9];
+	cache_get_row_count(rows);
 	getdate(i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(tdate, sizeof(tdate), "%d-%02d-%02d", i_timestamp[0], i_timestamp[1], i_timestamp[2]);
 	format(thour, sizeof(thour), "%02d:00:00", hour);
@@ -3698,52 +3709,52 @@ public QueryTokenFinish(playerid, type)
 		{
 			if(rows == 0)
 			{
-				format(string, sizeof(string), "INSERT INTO `tokens_report` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', '%s', 1)", GetPlayerSQLId(playerid), tdate, thour);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `tokens_report` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', '%s', 1)", GetPlayerSQLId(playerid), tdate, thour);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			else
 			{
-				format(string, sizeof(string), "UPDATE `tokens_report` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, string, sizeof(string), "UPDATE `tokens_report` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
 		case 2:
 		{
 			if(rows == 0)
 			{
-				format(string, sizeof(string), "INSERT INTO `tokens_request` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', '%s', 1)", GetPlayerSQLId(playerid), tdate, thour);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `tokens_request` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', '%s', 1)", GetPlayerSQLId(playerid), tdate, thour);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			else
 			{
-				format(string, sizeof(string), "UPDATE `tokens_request` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, string, sizeof(string), "UPDATE `tokens_request` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
 		case 3:
 		{
 			if(rows == 0)
 			{
-				format(string, sizeof(string), "INSERT INTO `tokens_call` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', %d, 1)", GetPlayerSQLId(playerid), tdate, hour);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `tokens_call` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', %d, 1)", GetPlayerSQLId(playerid), tdate, hour);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			else
 			{
-				format(string, sizeof(string), "UPDATE `tokens_call` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = %d", GetPlayerSQLId(playerid), tdate, hour);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, string, sizeof(string), "UPDATE `tokens_call` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = %d", GetPlayerSQLId(playerid), tdate, hour);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
 		case 4:
 		{
 			if(rows == 0)
 			{
-				format(string, sizeof(string), "INSERT INTO `tokens_wd` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', '%s', 1)", GetPlayerSQLId(playerid), tdate, thour);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `tokens_wd` (`id`, `playerid`, `date`, `hour`, `count`) VALUES (NULL, %d, '%s', '%s', 1)", GetPlayerSQLId(playerid), tdate, thour);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			else
 			{
-				format(string, sizeof(string), "UPDATE `tokens_wd` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
-				mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_format(MainPipeline, string, sizeof(string), "UPDATE `tokens_wd` SET `count` = count+1 WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(playerid), tdate, thour);
+				mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
 	}
@@ -3754,55 +3765,55 @@ forward GetReportCount(userid, tdate[]);
 public GetReportCount(userid, tdate[])
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(userid), tdate);
-	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 0);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT SUM(count) FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(userid), tdate);
+	return mysql_tquery(MainPipeline, string, "QueryGetCountFinish", "ii", userid, 0);
 }
 
 forward GetHourReportCount(userid, thour[], tdate[]);
 public GetHourReportCount(userid, thour[], tdate[])
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT `count` FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(userid), tdate, thour);
-	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 1);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT `count` FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(userid), tdate, thour);
+	return mysql_tquery(MainPipeline, string, "QueryGetCountFinish", "ii", userid, 1);
 }
 
 forward GetRequestCount(userid, tdate[]);
 public GetRequestCount(userid, tdate[])
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(userid), tdate);
-	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 0);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT SUM(count) FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(userid), tdate);
+	return mysql_tquery(MainPipeline, string, "QueryGetCountFinish", "ii", userid, 0);
 }
 
 forward GetHourRequestCount(userid, thour[], tdate[]);
 public GetHourRequestCount(userid, thour[], tdate[])
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT `count` FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(userid), tdate, thour);
-	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 1);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT `count` FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(userid), tdate, thour);
+	return mysql_tquery(MainPipeline, string, "QueryGetCountFinish", "ii", userid, 1);
 }
 
 forward GetWDCount(userid, tdate[]);
 public GetWDCount(userid, tdate[])
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(userid), tdate);
-	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 3);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT SUM(count) FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(userid), tdate);
+	return mysql_tquery(MainPipeline, string, "QueryGetCountFinish", "ii", userid, 3);
 }
 
 forward GetWDHourCount(userid, thour[], tdate[]);
 public GetWDHourCount(userid, thour[], tdate[])
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT `count` FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(userid), tdate, thour);
-	return mysql_function_query(MainPipeline, string, true, "QueryGetCountFinish", "ii", userid, 4);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT `count` FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' AND `hour` = '%s'", GetPlayerSQLId(userid), tdate, thour);
+	return mysql_tquery(MainPipeline, string, "QueryGetCountFinish", "ii", userid, 4);
 }
 
 forward QueryGetCountFinish(userid, type);
 public QueryGetCountFinish(userid, type)
 {
-    new rows, fields, sResult[24];
-	cache_get_data(rows, fields, MainPipeline);
+    new rows, sResult[24], value;
+	cache_get_row_count(rows);
 
 	switch(type)
 	{
@@ -3810,7 +3821,7 @@ public QueryGetCountFinish(userid, type)
 		{
 			if(rows > 0)
 			{
-				cache_get_field_content(0, "SUM(count)", sResult, MainPipeline);
+				cache_get_value_name(0, "SUM(count)", sResult);
 				ReportCount[userid] = strval(sResult);
 			}
 			else ReportCount[userid] = 0;
@@ -3819,7 +3830,7 @@ public QueryGetCountFinish(userid, type)
 		{
 			if(rows > 0)
 			{
-				cache_get_field_content(0, "count", sResult, MainPipeline);
+				cache_get_value_name(0, "count", sResult);
 				ReportHourCount[userid] = strval(sResult);
 			}
 			else ReportHourCount[userid] = 0;
@@ -3832,7 +3843,7 @@ public QueryGetCountFinish(userid, type)
 		{
 			if(rows > 0)
 			{
-				cache_get_field_content(0, "SUM(count)", sResult, MainPipeline);
+				cache_get_value_name(0, "SUM(count)", sResult);
 				WDReportCount[userid] = strval(sResult);
 			}
 			else WDReportCount[userid] = 0;
@@ -3841,7 +3852,7 @@ public QueryGetCountFinish(userid, type)
 		{
 			if(rows > 0)
 			{
-				WDReportHourCount[userid] = cache_get_field_content_int(0, "count", MainPipeline);
+				WDReportHourCount[userid] = cache_get_value_name_int(0, "count", value);
 			}
 			else WDReportHourCount[userid] = 0;
 		}
@@ -3851,8 +3862,8 @@ public QueryGetCountFinish(userid, type)
 
 task MailDeliveryTimer[60000 * 5]()
 {
-	mysql_function_query(MainPipeline, "UPDATE `letters` SET `Delivery_Min` = `Delivery_Min` - 1 WHERE `Delivery_Min` > 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
-	mysql_function_query(MainPipeline, "SELECT `Receiver_Id` FROM `letters` WHERE `Delivery_Min` = 1", true, "MailDeliveryQueryFinish", "");
+	mysql_tquery(MainPipeline, "UPDATE `letters` SET `Delivery_Min` = `Delivery_Min` - 1 WHERE `Delivery_Min` > 0", "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, "SELECT `Receiver_Id` FROM `letters` WHERE `Delivery_Min` = 1", "MailDeliveryQueryFinish", "");
 	return 1;
 }
 
@@ -3861,12 +3872,13 @@ public OnLoadMailboxes()
 {
 	new string[512], i;
 	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
+	cache_get_field_count(fields);
 	while(i<rows)
 	{
-	    for(new field;field<fields;field++)
+	    for(new field; field < fields; field++)
 	    {
- 		    cache_get_row(i, field, string, MainPipeline);
+ 		    cache_get_value_index(i, field, string);
 			switch(field)
 			{
 			    case 1: MailBoxes[i][mbVW] = strval(string);
@@ -3889,12 +3901,12 @@ public OnLoadMailboxes()
 forward LoadDynamicGroups();
 public LoadDynamicGroups()
 {
-    mysql_function_query(MainPipeline, "SELECT * FROM `groups`", true, "Group_QueryFinish", "ii", GROUP_QUERY_LOAD, 0);
-	mysql_function_query(MainPipeline, "SELECT * FROM `lockers`", true, "Group_QueryFinish", "ii", GROUP_QUERY_LOCKERS, 0);
-	mysql_function_query(MainPipeline, "SELECT * FROM `jurisdictions`", true, "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
-	mysql_function_query(MainPipeline, "SELECT * FROM `gweaponsnew`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
-	mysql_function_query(MainPipeline, "SELECT * FROM `locker_restrict`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS_RANK, 0);
-	//mysql_function_query(MainPipeline, "SELECT * FROM `gWeapons`", true, "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
+    mysql_tquery(MainPipeline, "SELECT * FROM `groups`", "Group_QueryFinish", "ii", GROUP_QUERY_LOAD, 0);
+	mysql_tquery(MainPipeline, "SELECT * FROM `lockers`", "Group_QueryFinish", "ii", GROUP_QUERY_LOCKERS, 0);
+	mysql_tquery(MainPipeline, "SELECT * FROM `jurisdictions`", "Group_QueryFinish", "ii", GROUP_QUERY_JURISDICTIONS, 0);
+	mysql_tquery(MainPipeline, "SELECT * FROM `gweaponsnew`", "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
+	mysql_tquery(MainPipeline, "SELECT * FROM `locker_restrict`", "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS_RANK, 0);
+	//mysql_tquery(MainPipeline, "SELECT * FROM `gWeapons`", "Group_QueryFinish", "ii", GROUP_QUERY_GWEAPONS, 0);
 	return ;
 }
 
@@ -3921,8 +3933,8 @@ public ParkRentedVehicle(playerid, vehicleid, modelid, Float:X, Float:Y, Float:Z
 		SetVehicleHealth(GetPVarInt(playerid, "RentedVehicle"), health);
 		UpdateVehicleDamageStatus(vehicleid, arrDamage[0], arrDamage[1], arrDamage[2], arrDamage[3]);
 
-		format(string, sizeof(string), "UPDATE `rentedcars` SET `posx` = '%f', `posy` = '%f', `posz` = '%f', `posa` = '%f' WHERE `sqlid` = '%d'", x, y, z, angle, GetPlayerSQLId(playerid));
-        mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		mysql_format(MainPipeline, string, sizeof(string), "UPDATE `rentedcars` SET `posx` = '%f', `posy` = '%f', `posz` = '%f', `posa` = '%f' WHERE `sqlid` = '%d'", x, y, z, angle, GetPlayerSQLId(playerid));
+        mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 		IsPlayerEntering{playerid} = true;
 		PutPlayerInVehicle(playerid, vehicleid, 0);
@@ -3941,7 +3953,7 @@ public ParkRentedVehicle(playerid, vehicleid, modelid, Float:X, Float:Y, Float:Z
 forward OnPlayerChangePass(index);
 public OnPlayerChangePass(index)
 {
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 
 		new szMessage[103];
 
@@ -3952,13 +3964,13 @@ public OnPlayerChangePass(index)
 		format(szMessage, sizeof(szMessage), "%s(%d) (IP: %s) has changed their password.", GetPlayerNameEx(index), GetPlayerSQLId(index), PlayerInfo[index][pIP]);
 		Log("logs/password.log", szMessage);
 		DeletePVar(index, "PassChange");
-		format(szMessage, sizeof(szMessage), "UPDATE `accounts` SET `LastPassChange` = NOW() WHERE `id` = '%i'", PlayerInfo[index][pId]);
-		mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+		mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `accounts` SET `LastPassChange` = NOW() WHERE `id` = '%i'", PlayerInfo[index][pId]);
+		mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 		if(PlayerInfo[index][pForcePasswordChange] == 1)
 		{
 		    PlayerInfo[index][pForcePasswordChange] = 0;
-		    format(szMessage, sizeof(szMessage), "UPDATE `accounts` SET `ForcePasswordChange` = '0' WHERE `id` = '%i'", PlayerInfo[index][pId]);
-			mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+		    mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `accounts` SET `ForcePasswordChange` = '0' WHERE `id` = '%i'", PlayerInfo[index][pId]);
+			mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 		}
 	}
 	else {
@@ -3976,7 +3988,7 @@ public OnChangeUserPassword(index)
 	    new string[128], name[24];
 		GetPVarString(index, "OnChangeUserPassword", name, 24);
 
-		if(mysql_affected_rows(MainPipeline)) {
+		if(cache_affected_rows()) {
 			format(string, sizeof(string), "You have successfully changed %s's pin.", name);
 			SendClientMessageEx(index, COLOR_WHITE, string);
 		}
@@ -3993,7 +4005,7 @@ public OnChangeUserPassword(index)
 		new string[128], name[24];
 		GetPVarString(index, "OnChangeUserPassword", name, 24);
 
-		if(mysql_affected_rows(MainPipeline)) {
+		if(cache_affected_rows()) {
 			format(string, sizeof(string), "You have successfully changed %s's password.", name);
 			SendClientMessageEx(index, COLOR_WHITE, string);
 		}
@@ -4009,14 +4021,14 @@ public OnChangeUserPassword(index)
 forward QueryCheckCountFinish(playerid, giveplayername[], tdate[], type);
 public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 {
-    new string[128], rows, fields, sResult[24], tcount, hhour[9], chour;
-	cache_get_data(rows, fields, MainPipeline);
+    new string[128], rows, sResult[24], tcount, hhour[9], chour;
+	cache_get_row_count(rows);
 
 	switch(type)
 	{
 		case 0:
 		{
-			cache_get_field_content(0, "SUM(count)", sResult, MainPipeline); tcount = strval(sResult);
+			cache_get_value_name(0, "SUM(count)", sResult); tcount = strval(sResult);
 			if(tcount > 0)
 			{
 				format(string, sizeof(string), "%s accepted {%06x}%d {%06x}reports on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
@@ -4035,8 +4047,8 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 				SendClientMessageEx(playerid, COLOR_GRAD1, "By hour:");
 				for(new i; i < rows; i++)
 				{
-					cache_get_field_content(i, "count", sResult, MainPipeline); new hcount = strval(sResult);
-					cache_get_field_content(i, "hour", hhour, MainPipeline, sizeof(hhour));
+					cache_get_value_name(i, "count", sResult); new hcount = strval(sResult);
+					cache_get_value_name(i, "hour", hhour, sizeof(hhour));
 					format(hhour, sizeof(hhour), "%s", str_replace(":00:00", "", hhour));
 					chour = strval(hhour);
 					format(string, sizeof(string), "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
@@ -4046,7 +4058,7 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 		}
 		case 2:
 		{
-			cache_get_field_content(0, "SUM(count)", sResult, MainPipeline); tcount = strval(sResult);
+			cache_get_value_name(0, "SUM(count)", sResult); tcount = strval(sResult);
 			if(tcount > 0)
 			{
 				format(string, sizeof(string), "%s accepted {%06x}%d {%06x}help requests on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
@@ -4065,8 +4077,8 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 				SendClientMessageEx(playerid, COLOR_GRAD1, "By hour:");
 				for(new i; i < rows; i++)
 				{
-					cache_get_field_content(i, "count", sResult, MainPipeline); new hcount = strval(sResult);
-					cache_get_field_content(i, "hour", hhour, MainPipeline, sizeof(hhour));
+					cache_get_value_name(i, "count", sResult); new hcount = strval(sResult);
+					cache_get_value_name(i, "hour", hhour, sizeof(hhour));
 					format(hhour, sizeof(hhour), "%s", str_replace(":00:00", "", hhour));
 					chour = strval(hhour);
 					format(string, sizeof(string), "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
@@ -4076,7 +4088,7 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 		}
 		case 4:
 		{
-			cache_get_field_content(0, "SUM(count)", sResult, MainPipeline); tcount = strval(sResult);
+			cache_get_value_name(0, "SUM(count)", sResult); tcount = strval(sResult);
 			if(tcount > 0)
 			{
 				format(string, sizeof(string), "%s watched {%06x}%d {%06x}people on %s.", giveplayername, COLOR_GREEN >>> 8, tcount, COLOR_WHITE >>> 8, tdate);
@@ -4095,8 +4107,8 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 				SendClientMessageEx(playerid, COLOR_GRAD1, "By hour:");
 				for(new i; i < rows; i++)
 				{
-					cache_get_field_content(i, "count", sResult, MainPipeline); new hcount = strval(sResult);
-					cache_get_field_content(i, "hour", hhour, MainPipeline, sizeof(hhour));
+					cache_get_value_name(i, "count", sResult); new hcount = strval(sResult);
+					cache_get_value_name(i, "hour", hhour, sizeof(hhour));
 					format(hhour, sizeof(hhour), "%s", str_replace(":00:00", "", hhour));
 					chour = strval(hhour);
 					format(string, sizeof(string), "%s: {%06x}%d", ConvertToTwelveHour(chour), COLOR_GREEN >>> 8, hcount);
@@ -4111,8 +4123,8 @@ public QueryCheckCountFinish(playerid, giveplayername[], tdate[], type)
 forward QueryUsernameCheck(playerid, tdate[], type);
 public QueryUsernameCheck(playerid, tdate[], type)
 {
-    new string[128], rows, fields, giveplayerid, sResult[MAX_PLAYER_NAME];
-	cache_get_data(rows, fields, MainPipeline);
+    new string[128], rows, giveplayerid, sResult[MAX_PLAYER_NAME];
+	cache_get_row_count(rows);
 
 	if(rows > 0)
 	{
@@ -4120,30 +4132,30 @@ public QueryUsernameCheck(playerid, tdate[], type)
 		{
 			case 0:
 			{
-				cache_get_field_content(0, "id", sResult, MainPipeline); giveplayerid = strval(sResult);
-				cache_get_field_content(0, "Username", sResult, MainPipeline, sizeof(sResult));
-				format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s'", giveplayerid, tdate);
-				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 0);
-				format(string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", giveplayerid, tdate);
-				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 1);
+				cache_get_value_name(0, "id", sResult); giveplayerid = strval(sResult);
+				cache_get_value_name(0, "Username", sResult, sizeof(sResult));
+				mysql_format(MainPipeline, string, sizeof(string), "SELECT SUM(count) FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s'", giveplayerid, tdate);
+				mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 0);
+				mysql_format(MainPipeline, string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_report` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", giveplayerid, tdate);
+				mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 1);
 			}
 			case 1:
 			{
-				cache_get_field_content(0, "id", sResult, MainPipeline); giveplayerid = strval(sResult);
-				cache_get_field_content(0, "Username", sResult, MainPipeline, sizeof(sResult));
-				format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s'", giveplayerid, tdate);
-				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 2);
-				format(string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", giveplayerid, tdate);
-				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 3);
+				cache_get_value_name(0, "id", sResult); giveplayerid = strval(sResult);
+				cache_get_value_name(0, "Username", sResult, sizeof(sResult));
+				mysql_format(MainPipeline, string, sizeof(string), "SELECT SUM(count) FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s'", giveplayerid, tdate);
+				mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 2);
+				mysql_format(MainPipeline, string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", giveplayerid, tdate);
+				mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 3);
 			}
 			case 2:
 			{
-				cache_get_field_content(0, "id", sResult, MainPipeline); giveplayerid = strval(sResult);
-				cache_get_field_content(0, "Username", sResult, MainPipeline, sizeof(sResult));
-				format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s'", giveplayerid, tdate);
-				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 4);
-				format(string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", giveplayerid, tdate);
-				mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 5);
+				cache_get_value_name(0, "id", sResult); giveplayerid = strval(sResult);
+				cache_get_value_name(0, "Username", sResult, sizeof(sResult));
+				mysql_format(MainPipeline, string, sizeof(string), "SELECT SUM(count) FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s'", giveplayerid, tdate);
+				mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 4);
+				mysql_format(MainPipeline, string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", giveplayerid, tdate);
+				mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, sResult, tdate, 5);
 			}
 		}
 	}
@@ -4160,7 +4172,7 @@ public OnBanPlayer(index)
 
 	if(IsPlayerConnected(index))
 	{
-		if(mysql_affected_rows(MainPipeline)) {
+		if(cache_affected_rows()) {
 			format(string, sizeof(string), "You have successfully banned %s's account.", name);
 			SendClientMessageEx(index, COLOR_WHITE, string);
 
@@ -4185,18 +4197,18 @@ public OnBanIP(index)
 {
 	if(IsPlayerConnected(index))
 	{
-		new rows, fields;
-		new string[256], ip[32], id;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		new string[256], ip[32], id, value;
+		cache_get_row_count(rows);
 		if(rows)
 		{
-			id = cache_get_field_content_int(0, "id", MainPipeline);
-			cache_get_field_content(0, "IP", ip, MainPipeline, 16);
+			id = cache_get_value_name_int(0, "id", value);
+			cache_get_value_name(0, "IP", ip);
 
 			MySQLBan(id, ip, "Offline Banned (/banaccount)", 1, GetPlayerNameEx(index));
 
-			format(string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", ip, "Offline Banned", GetPlayerNameEx(index));
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `ip_bans` (`ip`, `date`, `reason`, `admin`) VALUES ('%s', NOW(), '%s', '%s')", ip, "Offline Banned", GetPlayerNameEx(index));
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 	}
 	return 1;
@@ -4208,7 +4220,7 @@ public OnUnbanPlayer(index)
 	new string[128], name[24];
 	GetPVarString(index, "OnUnbanPlayer", name, 24);
 
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(string, sizeof(string), "You have successfully unbanned %s's account.", name);
 		SendClientMessageEx(index, COLOR_WHITE, string);
 
@@ -4233,14 +4245,14 @@ public OnUnbanIP(index)
 	if(IsPlayerConnected(index))
 	{
 	    new string[128], ip[16];
-        new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+        new rows;
+		cache_get_row_count(rows);
 		if(rows) {
-			cache_get_field_content(0, "IP", ip, MainPipeline, 16);
+			cache_get_value_name(0, "IP", ip, 16);
 			//RemoveBan(index, ip);
 
-			format(string, sizeof(string), "UPDATE `bans` SET `status` = 4, `date_unban` = NOW() WHERE `ip_address` = '%s'", ip);
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_format(MainPipeline, string, sizeof(string), "UPDATE `bans` SET `status` = 4, `date_unban` = NOW() WHERE `ip_address` = '%s'", ip);
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 	}
 	return 1;
@@ -4255,7 +4267,7 @@ public Query_OnExecution(iTargetID) {
 		szMessage[64];
 
 	GetPVarString(iTargetID, "QueryEx_Name", szName, sizeof szName);
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(szMessage, sizeof szMessage, "The query on %s's account was successful.", szName);
 		SendClientMessageEx(iTargetID, COLOR_WHITE, szMessage);
 	}
@@ -4272,7 +4284,7 @@ public OnSetSuspended(index, value)
 	new string[128], name[24];
 	GetPVarString(index, "OnSetSuspended", name, 24);
 
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(string, sizeof(string), "You have successfully %s %s's account.", ((value) ? ("suspended") : ("unsuspended")), name);
 		SendClientMessageEx(index, COLOR_WHITE, string);
 
@@ -4294,7 +4306,7 @@ public OnSetCrime(index)
 	new string[128], name[24];
 	GetPVarString(index, "OfflineSU", name, 24);
 
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(string, sizeof(string), "You have successfully added a crime to %s's account.", name);
 		SendClientMessageEx(index, COLOR_WHITE, string);
 	}
@@ -4312,8 +4324,8 @@ public OnSetMyName(index)
 {
 	if(IsPlayerConnected(index))
 	{
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(!rows)
 		{
 			new string[128], tmpName[24];
@@ -4354,8 +4366,8 @@ public OnSetName(index, extraid)
 	{
 		if(IsPlayerConnected(extraid))
 		{
-		    new rows, fields;
-			cache_get_data(rows, fields, MainPipeline);
+		    new rows;
+			cache_get_row_count(rows);
 			if(rows < 1)
 			{
 				new string[128], tmpName[24], playername[24];
@@ -4425,8 +4437,8 @@ public OnSetName(index, extraid)
 					Log("logs/stats.log", string);
 					if(SetPlayerName(extraid, tmpName) == 1)
 					{
-    					format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", tmpName, playername);
-						mysql_function_query(MainPipeline, string, true, "OnSetNameTwo", "ii", index, extraid);
+    					mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", tmpName, playername);
+						mysql_tquery(MainPipeline, string, "OnSetNameTwo", "ii", index, extraid);
 					}
 					else
 					{
@@ -4458,8 +4470,8 @@ public OnApproveName(index, extraid)
 	if(IsPlayerConnected(extraid))
 	{
 		new string[128];
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows < 1)
 		{
 			new newname[24], oldname[24];
@@ -4530,8 +4542,8 @@ public OnApproveName(index, extraid)
 				{
 					if(SetPlayerName(extraid, newname) == 1)
 					{
-						format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
-						mysql_function_query(MainPipeline, string, true, "OnApproveSetName", "ii", index, extraid);
+						mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+						mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 						format(string, sizeof(string), "%s last name has been changed upon marriage. New Name: \"%s\" (id: %i).", oldname, newname, GetPlayerSQLId(extraid));
 						Log("logs/stats.log", string);
 						SendClientMessageEx(extraid, -1, "Upon a successful marriage your last name has been changed to match your spouse's at your own request.");
@@ -4562,8 +4574,8 @@ public OnApproveName(index, extraid)
 
 					if(SetPlayerName(extraid, newname) == 1)
 					{
-    					format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
-						mysql_function_query(MainPipeline, string, true, "OnApproveSetName", "ii", index, extraid);
+    					mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+						mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 					}
 					else
 					{
@@ -4593,8 +4605,8 @@ public OnApproveName(index, extraid)
 
 					if(SetPlayerName(extraid, newname) == 1)
 					{
-    					format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
-						mysql_function_query(MainPipeline, string, true, "OnApproveSetName", "ii", index, extraid);
+    					mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+						mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 					}
 					else
 					{
@@ -4626,8 +4638,8 @@ public OnApproveName(index, extraid)
 
 						if(SetPlayerName(extraid, newname) == 1)
 						{
-	    					format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
-							mysql_function_query(MainPipeline, string, true, "OnApproveSetName", "ii", index, extraid);
+	    					mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+							mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 						}
 						else
 						{
@@ -4647,8 +4659,8 @@ public OnApproveName(index, extraid)
 					{
 						if(SetPlayerName(extraid, newname) == 1)
 						{
-							format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
-							mysql_function_query(MainPipeline, string, true, "OnApproveSetName", "ii", index, extraid);
+							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+							mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 							PlayerInfo[extraid][pNextNameChange] = gettime()+10368000;
 							format(string, sizeof(string), " Your name has been changed from %s to %s for free.", oldname, newname);
 							SendClientMessageEx(extraid, COLOR_YELLOW, string);
@@ -4683,12 +4695,12 @@ public OnApproveName(index, extraid)
 							printf("Price40: %d", ShopItems[40][sItemPrice]);
 							AmountSold[40]++;
 							AmountMade[40] += ShopItems[40][sItemPrice];
-							format(string, sizeof(string), "UPDATE `sales` SET `TotalSold40` = '%d', `AmountMade40` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[40], AmountMade[40]);
-							mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `sales` SET `TotalSold40` = '%d', `AmountMade40` = '%d' WHERE `Month` > NOW() - INTERVAL 1 MONTH", AmountSold[40], AmountMade[40]);
+							mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 							format(string, sizeof(string), "[Name Change] [User: %s(%i)] [IP: %s] [Credits: %s] [Price: %s]", GetPlayerNameEx(extraid), GetPlayerSQLId(extraid), GetPlayerIpEx(extraid), number_format(PlayerInfo[extraid][pCredits]), number_format(ShopItems[40][sItemPrice]));
 							Log("logs/credits.log", string), print(string);
-							format(string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
-							mysql_function_query(MainPipeline, string, true, "OnApproveSetName", "ii", index, extraid);
+							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+							mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
 
 							format(string, sizeof(string), " Your name has been changed from %s to %s for %s credits.", oldname, newname, number_format(ShopItems[40][sItemPrice]));
 							SendClientMessageEx(extraid, COLOR_CYAN, string);
@@ -4738,7 +4750,7 @@ public OnIPWhitelist(index)
 	new string[128], name[24];
 	GetPVarString(index, "OnIPWhitelist", name, 24);
 
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(string, sizeof(string), "You have successfully whitelisted %s's account.", name);
 		SendClientMessageEx(index, COLOR_WHITE, string);
 		format(string, sizeof(string), "%s has IP Whitelisted %s", GetPlayerNameEx(index), name);
@@ -4759,15 +4771,15 @@ public OnIPCheck(index)
 	if(IsPlayerConnected(index))
 	{
 		new string[128], ip[16], name[24], AdminLvL;
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows)
 		{
-			cache_get_field_content(0, "AdminLevel", ip, MainPipeline, 16); AdminLvL = strval(ip);
-			cache_get_field_content(0, "Username", name, MainPipeline, MAX_PLAYER_NAME);
+			cache_get_value_name(0, "AdminLevel", ip, 16); AdminLvL = strval(ip);
+			cache_get_value_name(0, "Username", name, MAX_PLAYER_NAME);
 			if(AdminLvL <= 1 || (AdminLvL <= PlayerInfo[index][pAdmin] && PlayerInfo[index][pAdmin] >= 1338))
 			{
-				cache_get_field_content(0, "IP", ip, MainPipeline, 16);
+				cache_get_value_name(0, "IP", ip, 16);
 				format(string, sizeof(string), "%s's IP: %s", name, ip);
 				SendClientMessageEx(index, COLOR_WHITE, string);
 				format(string, sizeof(string), "%s has offline IP Checked %s", GetPlayerNameEx(index), name);
@@ -4805,7 +4817,7 @@ public OnFine(index)
 	amount = GetPVarInt(index, "OnFineAmount");
 	GetPVarString(index, "OnFineReason", reason, 64);
 
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(string, sizeof(string), "You have successfully fined %s's account.", name);
 		SendClientMessageEx(index, COLOR_WHITE, string);
 
@@ -4830,7 +4842,7 @@ public OnPrisonAccount(index)
 	GetPVarString(index, "OnPrisonAccount", name, 24);
 	GetPVarString(index, "OnPrisonAccountReason", reason, 64);
 
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(string, sizeof(string), "You have successfully prisoned %s's account.", name);
 		SendClientMessageEx(index, COLOR_WHITE, string);
 
@@ -4854,7 +4866,7 @@ public OnJailAccount(index)
 	GetPVarString(index, "OnJailAccount", name, 24);
 	GetPVarString(index, "OnJailAccountReason", reason, 64);
 
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(string, sizeof(string), "You have successfully jailed %s's account.", name);
 		SendClientMessageEx(index, COLOR_WHITE, string);
 
@@ -4875,18 +4887,18 @@ public OnJailAccount(index)
 forward OnGetLatestKills(playerid, giveplayerid);
 public OnGetLatestKills(playerid, giveplayerid)
 {
-    new string[128], killername[MAX_PLAYER_NAME], killedname[MAX_PLAYER_NAME], kDate[20], weapon[56], rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new string[128], killername[MAX_PLAYER_NAME], killedname[MAX_PLAYER_NAME], kDate[20], weapon[56], rows;
+	cache_get_row_count(rows);
 	if(rows)
 	{
 		for(new i; i < rows; i++)
 		{
-			cache_get_row(i, 0, killername, MainPipeline, MAX_PLAYER_NAME);
-			cache_get_row(i, 1, killedname, MainPipeline, MAX_PLAYER_NAME);
-			cache_get_field_content(i, "killerid", string, MainPipeline); new killer = strval(string);
-			cache_get_field_content(i, "killedid", string, MainPipeline); new killed = strval(string);
-			cache_get_field_content(i, "date", kDate, MainPipeline, sizeof(kDate));
-			cache_get_field_content(i, "weapon", weapon, MainPipeline, sizeof(weapon));
+			cache_get_value_index(i, 0, killername, MAX_PLAYER_NAME);
+			cache_get_value_index(i, 1, killedname, MAX_PLAYER_NAME);
+			cache_get_value_name(i, "killerid", string); new killer = strval(string);
+			cache_get_value_name(i, "killedid", string); new killed = strval(string);
+			cache_get_value_name(i, "date", kDate, sizeof(kDate));
+			cache_get_value_name(i, "weapon", weapon, sizeof(weapon));
 			if(GetPlayerSQLId(giveplayerid) == killer && GetPlayerSQLId(giveplayerid) == killed) format(string, sizeof(string), "[%s] %s killed themselves (%s)", kDate, StripUnderscore(killedname), weapon);
 			else if(GetPlayerSQLId(giveplayerid) == killer && GetPlayerSQLId(giveplayerid) != killed) format(string, sizeof(string), "[%s] %s killed %s with %s", kDate, StripUnderscore(killername), StripUnderscore(killedname), weapon);
 			else if(GetPlayerSQLId(giveplayerid) != killer && GetPlayerSQLId(giveplayerid) == killed) format(string, sizeof(string), "[%s] %s was killed by %s with %s", kDate, StripUnderscore(killedname), StripUnderscore(killername), weapon);
@@ -4902,16 +4914,14 @@ public OnGetOKills(playerid, giveplayername[])
 {
 	if(IsPlayerConnected(playerid))
 	{
-		new string[256], giveplayerid;
-
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new string[256], giveplayerid, rows;
+		cache_get_row_count(rows);
 
 		if(rows)
 		{
-			cache_get_field_content(0, "id", string, MainPipeline); giveplayerid = strval(string);
-			format(string, sizeof(string), "SELECT Killer.Username, Killed.Username, k.* FROM kills k LEFT JOIN accounts Killed ON k.killedid = Killed.id LEFT JOIN accounts Killer ON Killer.id = k.killerid WHERE k.killerid = %d OR k.killedid = %d ORDER BY `date` DESC LIMIT 10", giveplayerid, giveplayerid);
-			mysql_function_query(MainPipeline, string, true, "OnGetLatestOKills", "iis", playerid, giveplayerid, giveplayername);
+			cache_get_value_name(0, "id", string); giveplayerid = strval(string);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT Killer.Username, Killed.Username, k.* FROM kills k LEFT JOIN accounts Killed ON k.killedid = Killed.id LEFT JOIN accounts Killer ON Killer.id = k.killerid WHERE k.killerid = %d OR k.killedid = %d ORDER BY `date` DESC LIMIT 10", giveplayerid, giveplayerid);
+			mysql_tquery(MainPipeline, string, "OnGetLatestOKills", "iis", playerid, giveplayerid, giveplayername);
 		}
 		else return SendClientMessageEx(playerid, COLOR_GREY, "This account does not exist.");
 	}
@@ -4921,8 +4931,8 @@ public OnGetOKills(playerid, giveplayername[])
 forward OnGetLatestOKills(playerid, giveplayerid, giveplayername[]);
 public OnGetLatestOKills(playerid, giveplayerid, giveplayername[])
 {
-    new string[128], killername[MAX_PLAYER_NAME], killedname[MAX_PLAYER_NAME], kDate[20], weapon[56], rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new string[128], killername[MAX_PLAYER_NAME], killedname[MAX_PLAYER_NAME], kDate[20], weapon[56], rows;
+	cache_get_row_count(rows);
 	if(rows)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
@@ -4930,12 +4940,12 @@ public OnGetLatestOKills(playerid, giveplayerid, giveplayername[])
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		for(new i; i < rows; i++)
 		{
-			cache_get_row(i, 0, killername, MainPipeline, MAX_PLAYER_NAME);
-			cache_get_row(i, 1, killedname, MainPipeline, MAX_PLAYER_NAME);
-			cache_get_field_content(i, "killerid", string, MainPipeline); new killer = strval(string);
-			cache_get_field_content(i, "killedid", string, MainPipeline); new killed = strval(string);
-			cache_get_field_content(i, "date", kDate, MainPipeline, sizeof(kDate));
-			cache_get_field_content(i, "weapon", weapon, MainPipeline, sizeof(weapon));
+			cache_get_value_index(i, 0, killername, MAX_PLAYER_NAME);
+			cache_get_value_index(i, 1, killedname, MAX_PLAYER_NAME);
+			cache_get_value_name(i, "killerid", string); new killer = strval(string);
+			cache_get_value_name(i, "killedid", string); new killed = strval(string);
+			cache_get_value_name(i, "date", kDate, sizeof(kDate));
+			cache_get_value_name(i, "weapon", weapon, sizeof(weapon));
 			if(giveplayerid == killer && giveplayerid == killed) format(string, sizeof(string), "[%s] %s killed themselves (%s)", kDate, StripUnderscore(killedname), weapon);
 			else if(giveplayerid == killer && giveplayerid != killed) format(string, sizeof(string), "[%s] %s killed %s with %s", kDate, StripUnderscore(killername), StripUnderscore(killedname), weapon);
 			else if(giveplayerid != killer && giveplayerid == killed) format(string, sizeof(string), "[%s] %s was killed by %s with %s", kDate, StripUnderscore(killedname), StripUnderscore(killername), weapon);
@@ -4950,7 +4960,7 @@ forward OnDMStrikeReset(playerid, giveplayerid);
 public OnDMStrikeReset(playerid, giveplayerid)
 {
 	new string[128];
-	format(string, sizeof(string), "Deleted %d strikes against %s", mysql_affected_rows(MainPipeline), GetPlayerNameEx(giveplayerid));
+	format(string, sizeof(string), "Deleted %d strikes against %s", cache_affected_rows(), GetPlayerNameEx(giveplayerid));
 	SendClientMessage(playerid, COLOR_WHITE, string);
 	return 1;
 }
@@ -4958,16 +4968,16 @@ public OnDMStrikeReset(playerid, giveplayerid)
 forward OnDMRLookup(playerid, giveplayerid);
 public OnDMRLookup(playerid, giveplayerid)
 {
-	new string[128], rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new string[128], rows;
+	cache_get_row_count(rows);
 	format(string, sizeof(string), "Showing the last %d /dmreports by %s", rows, GetPlayerNameEx(giveplayerid));
 	SendClientMessage(playerid, COLOR_WHITE, string);
 	SendClientMessage(playerid, COLOR_WHITE, "| Reported | Time |");
 	for(new i;i < rows;i++)
 	{
  		new szResult[32], name[MAX_PLAYER_NAME], timestamp;
-		cache_get_row(i, 0, szResult, MainPipeline); timestamp = strval(szResult);
-		cache_get_row(i, 1, name, MainPipeline, MAX_PLAYER_NAME);
+		cache_get_value_index(i, 0, szResult); timestamp = strval(szResult);
+		cache_get_value_index(i, 1, name, MAX_PLAYER_NAME);
 		format(string, sizeof(string), "%s - %s", name, date(timestamp, 1));
 		SendClientMessage(playerid, COLOR_WHITE, string);
 	}
@@ -4977,16 +4987,16 @@ public OnDMRLookup(playerid, giveplayerid)
 forward OnDMTokenLookup(playerid, giveplayerid);
 public OnDMTokenLookup(playerid, giveplayerid)
 {
-	new string[128], rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new string[128], rows;
+	cache_get_row_count(rows);
 	format(string, sizeof(string), "Showing the %d active /dmreports on %s", rows, GetPlayerNameEx(giveplayerid));
 	SendClientMessage(playerid, COLOR_WHITE, string);
 	SendClientMessage(playerid, COLOR_WHITE, "| Reporter | Time |");
 	for(new i;i < rows;i++)
 	{
  		new szResult[32], name[MAX_PLAYER_NAME], timestamp;
-		cache_get_row(i, 0, szResult, MainPipeline); timestamp = strval(szResult);
-		cache_get_row(i, 1, name, MainPipeline);
+		cache_get_value_index(i, 0, szResult); timestamp = strval(szResult);
+		cache_get_value_index(i, 1, name);
 		format(string, sizeof(string), "%s - %s", name, date(timestamp, 1));
 		SendClientMessage(playerid, COLOR_WHITE, string);
 	}
@@ -4996,14 +5006,14 @@ public OnDMTokenLookup(playerid, giveplayerid)
 forward OnDMWatchListLookup(playerid);
 public OnDMWatchListLookup(playerid)
 {
-	new string[128], rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new string[128], rows;
+	cache_get_row_count(rows);
 	format(string, sizeof(string), "Showing %d active people to watch", rows);
 	SendClientMessage(playerid, COLOR_WHITE, string);
 	for(new i;i < rows;i++)
 	{
  		new name[MAX_PLAYER_NAME], watchid;
-		cache_get_row(i, 0, name, MainPipeline);
+		cache_get_value_index(i, 0, name);
 		sscanf(name, "u", watchid);
 		format(string, sizeof(string), "(ID: %d) %s", watchid, name);
 		SendClientMessage(playerid, (PlayerInfo[watchid][pJailTime] > 0) ? TEAM_ORANGE_COLOR:COLOR_WHITE, string);
@@ -5014,12 +5024,12 @@ public OnDMWatchListLookup(playerid)
 forward OnDMWatch(playerid);
 public OnDMWatch(playerid)
 {
-	new rows, fields;
-    cache_get_data(rows, fields, MainPipeline);
+	new rows;
+    cache_get_row_count(rows);
     if(rows)
     {
 		new string[128], namesql[MAX_PLAYER_NAME], name[MAX_PLAYER_NAME];
-		cache_get_row(0, 0, namesql, MainPipeline);
+		cache_get_value_index(0, 0, namesql);
 		foreach(new i: Player)
 		{
 			if(!PlayerInfo[i][pJailTime])
@@ -5051,7 +5061,7 @@ public OnWarnPlayer(index)
 	GetPVarString(index, "OnWarnPlayer", name, 24);
 	GetPVarString(index, "OnWarnPlayerReason", reason, 64);
 
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(string, sizeof(string), "You have successfully warned %s's account.", name);
 		SendClientMessageEx(index, COLOR_WHITE, string);
 
@@ -5073,12 +5083,12 @@ public OnPinCheck2(index)
 {
 	if(IsPlayerConnected(index))
 	{
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows)
 		{
 		    new Pin[256];
-   			cache_get_field_content(0, "Pin", Pin, MainPipeline, 256);
+   			cache_get_value_name(0, "Pin", Pin, 256);
    			if(isnull(Pin)) {
    			    ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
    			}
@@ -5136,12 +5146,12 @@ public OnPinCheck(index)
 {
 	if(IsPlayerConnected(index))
 	{
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows)
 		{
 		    new Pin[128];
-   			cache_get_field_content(0, "Pin", Pin, MainPipeline, 128);
+   			cache_get_value_name(0, "Pin", Pin);
    			if(isnull(Pin)) {
    			    ShowPlayerDialogEx(index, DIALOG_CREATEPIN, DIALOG_STYLE_INPUT, "Pin Number", "Create a pin number so you can secure your account credits.", "Create", "Exit");
    			}
@@ -5161,18 +5171,18 @@ public OnPinCheck(index)
 forward OnGetSMSLog(playerid);
 public OnGetSMSLog(playerid)
 {
-    new string[128], message[256], sender[MAX_PLAYER_NAME], sDate[20], rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+    new string[128], message[256], sender[MAX_PLAYER_NAME], sDate[20], rows;
+	cache_get_row_count(rows);
 	if(rows)
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN, "________________________________________________");
 		SendClientMessageEx(playerid, COLOR_YELLOW, "<< Last 10 SMS Received >>");
 		for(new i; i < rows; i++)
 		{
-			cache_get_field_content(i, "sender", sender, MainPipeline, MAX_PLAYER_NAME);
-			cache_get_field_content(i, "sendernumber", string, MainPipeline); new sendernumber = strval(string);
-			cache_get_field_content(i, "message", message, MainPipeline, sizeof(message));
-			cache_get_field_content(i, "date", sDate, MainPipeline, sizeof(sDate));
+			cache_get_value_name(i, "sender", sender, MAX_PLAYER_NAME);
+			cache_get_value_name(i, "sendernumber", string); new sendernumber = strval(string);
+			cache_get_value_name(i, "message", message, sizeof(message));
+			cache_get_value_name(i, "date", sDate, sizeof(sDate));
 			if(sendernumber != 0) format(string, sizeof(string), "[%s] SMS: %s, Sender: %d (( %s ))", sDate, message, sendernumber, sender);
 			else format(string, sizeof(string), "[%s] SMS: %s, Sender: Unknown", sDate, message);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -5192,14 +5202,14 @@ public Group_QueryFinish(iType, iExtraID) {
 	*/
 
 	new
-		iFields,
 		iRows,
 		iIndex,
 		i = 0,
 		szResult[128],
-		number[12];
+		number[12],
+		value;
 
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 
 	switch(iType) {
 		case GROUP_QUERY_JURISDICTIONS:
@@ -5210,14 +5220,14 @@ public Group_QueryFinish(iType, iExtraID) {
   		    }
 			while(iIndex < iRows) {
 
-				cache_get_field_content(iIndex, "GroupID", szResult, MainPipeline, 24);
+				cache_get_value_name(iIndex, "GroupID", szResult, 24);
 				new iGroup = strval(szResult);
 
 				if(arrGroupData[iGroup][g_iJCount] > MAX_GROUP_JURISDICTIONS) arrGroupData[iGroup][g_iJCount] = MAX_GROUP_JURISDICTIONS;
 				if (!(0 <= iGroup < MAX_GROUPS)) break;
-				cache_get_field_content(iIndex, "id", szResult, MainPipeline, 24);
+				cache_get_value_name(iIndex, "id", szResult, 24);
 				arrGroupJurisdictions[iGroup][arrGroupData[iGroup][g_iJCount]][g_iJurisdictionSQLId] = strval(szResult);
-				cache_get_field_content(iIndex, "AreaName", arrGroupJurisdictions[iGroup][arrGroupData[iGroup][g_iJCount]][g_iAreaName], MainPipeline, 64);
+				cache_get_value_name(iIndex, "AreaName", arrGroupJurisdictions[iGroup][arrGroupData[iGroup][g_iJCount]][g_iAreaName], 64);
 				arrGroupData[iGroup][g_iJCount]++;
 				iIndex++;
 			}
@@ -5225,11 +5235,11 @@ public Group_QueryFinish(iType, iExtraID) {
 		case GROUP_QUERY_GWEAPONS: while(iIndex < iRows) {
 
 			if (!(0 <= iIndex < MAX_GROUPS)) break;
-			LockerWep[iIndex][lwGroup] = cache_get_field_content_int(iIndex, "id", MainPipeline);
+			LockerWep[iIndex][lwGroup] = cache_get_value_name_int(iIndex, "id", value);
 
 			for(new w = 0; w < 46; w++) {
 				format(number, sizeof(number), "%d", w+1);
-				LockerWep[iIndex][lwWep][w] = cache_get_field_content_int(iIndex, number, MainPipeline);
+				LockerWep[iIndex][lwWep][w] = cache_get_value_name_int(iIndex, number, value);
 			}
 			iIndex++;
 		}
@@ -5239,37 +5249,37 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			for(new w = 0; w < 16; w++) {
 				format(number, sizeof(number), "%d", w+1);
-				LockerWep[iIndex][lwRank][w] = cache_get_field_content_int(iIndex, number, MainPipeline);
+				LockerWep[iIndex][lwRank][w] = cache_get_value_name_int(iIndex, number, value);
 			}
 			iIndex++;
 		}
 		case GROUP_QUERY_LOCKERS: while(iIndex < iRows) {
 
-			cache_get_field_content(iIndex, "Group_ID", szResult, MainPipeline);
+			cache_get_value_name(iIndex, "Group_ID", szResult);
 			new iGroup = strval(szResult)-1;
 
-			cache_get_field_content(iIndex, "Locker_ID", szResult, MainPipeline);
+			cache_get_value_name(iIndex, "Locker_ID", szResult);
 			new iLocker = strval(szResult)-1;
 
 			if (!(0 <= iGroup < MAX_GROUPS)) break;
 			if (!(0 <= iLocker < MAX_GROUP_LOCKERS)) break;
 
-			cache_get_field_content(iIndex, "Id", szResult, MainPipeline);
+			cache_get_value_name(iIndex, "Id", szResult);
 			arrGroupLockers[iGroup][iLocker][g_iLockerSQLId] = strval(szResult);
 
-			cache_get_field_content(iIndex, "LockerX", szResult, MainPipeline);
+			cache_get_value_name(iIndex, "LockerX", szResult);
 			arrGroupLockers[iGroup][iLocker][g_fLockerPos][0] = floatstr(szResult);
 
-			cache_get_field_content(iIndex, "LockerY", szResult, MainPipeline);
+			cache_get_value_name(iIndex, "LockerY", szResult);
 			arrGroupLockers[iGroup][iLocker][g_fLockerPos][1] = floatstr(szResult);
 
-			cache_get_field_content(iIndex, "LockerZ", szResult, MainPipeline);
+			cache_get_value_name(iIndex, "LockerZ", szResult);
 			arrGroupLockers[iGroup][iLocker][g_fLockerPos][2] = floatstr(szResult);
 
-			cache_get_field_content(iIndex, "LockerVW", szResult, MainPipeline);
+			cache_get_value_name(iIndex, "LockerVW", szResult);
 			arrGroupLockers[iGroup][iLocker][g_iLockerVW] = strval(szResult);
 
-			cache_get_field_content(iIndex, "LockerShare", szResult, MainPipeline);
+			cache_get_value_name(iIndex, "LockerShare", szResult);
 			arrGroupLockers[iGroup][iLocker][g_iLockerShare] = strval(szResult);
 
 			if(arrGroupLockers[iGroup][iLocker][g_fLockerPos][0] != 0.0)
@@ -5277,6 +5287,8 @@ public Group_QueryFinish(iType, iExtraID) {
 				format(szResult, sizeof szResult, "%s Locker\n{1FBDFF}Press ~k~~CONVERSATION_YES~ {FFFF00} to use\n ID: %i", arrGroupData[iGroup][g_szGroupName], arrGroupLockers[iGroup][iLocker]);
 				arrGroupLockers[iGroup][iLocker][g_tLocker3DLabel] = CreateDynamic3DTextLabel(szResult, arrGroupData[iGroup][g_hDutyColour] * 256 + 0xFF, arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 15.0, .testlos = 1, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
 
+				arrGroupLockers[iGroup][iLocker][g_iLockerAreaID] = CreateDynamicSphere(arrGroupLockers[iGroup][iLocker][g_fLockerPos][0], arrGroupLockers[iGroup][iLocker][g_fLockerPos][1], arrGroupLockers[iGroup][iLocker][g_fLockerPos][2], 3.0, .worldid = arrGroupLockers[iGroup][iLocker][g_iLockerVW]);
+				printf("%d", arrGroupLockers[iGroup][iLocker][g_iLockerAreaID]);
 				// Streamer_SetIntData(STREAMER_TYPE_AREA, arrGroupLockers[iGroup][iLocker][g_iLockerAreaID], E_STREAMER_EXTRA_ID, iLocker);
 			}
 			iIndex++;
@@ -5284,198 +5296,88 @@ public Group_QueryFinish(iType, iExtraID) {
 		}
 		case GROUP_QUERY_LOAD: while(iIndex < iRows) {
 			MemberCount(iIndex);
-			cache_get_field_content(iIndex, "Name", arrGroupData[iIndex][g_szGroupName], MainPipeline, GROUP_MAX_NAME_LEN);
-
-			cache_get_field_content(iIndex, "MOTD", gMOTD[iIndex][0], MainPipeline, GROUP_MAX_MOTD_LEN);
-
-			cache_get_field_content(iIndex, "MOTD2", gMOTD[iIndex][1], MainPipeline, GROUP_MAX_MOTD_LEN);
-
-			cache_get_field_content(iIndex, "MOTD3", gMOTD[iIndex][2], MainPipeline, GROUP_MAX_MOTD_LEN);
-
-			cache_get_field_content(iIndex, "Type", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iGroupType] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Allegiance", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iAllegiance] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Bug", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iBugAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Find", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iFindAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "RadioColour", szResult, MainPipeline);
-			arrGroupData[iIndex][g_hRadioColour] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Radio", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iRadioAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "DeptRadio", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iDeptRadioAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "IntRadio", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iIntRadioAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "GovAnnouncement", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iGovAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "TreasuryAccess", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iTreasuryAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "FreeNameChange", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iFreeNameChange] = strval(szResult);
-
-			cache_get_field_content(iIndex, "FreeNameChangeDiv", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iFreeNameChangeDiv] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Budget", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iBudget] = strval(szResult);
-
-			cache_get_field_content(iIndex, "BudgetPayment", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iBudgetPayment] = strval(szResult);
-
-			cache_get_field_content(iIndex, "SpikeStrips", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iSpikeStrips] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Barricades", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iBarricades] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Cones", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iCones] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Flares", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iFlares] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Barrels", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iBarrels] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Ladders", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iLadders] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Tapes", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iTapes] = strval(szResult);
-
-			cache_get_field_content(iIndex, "DutyColour", szResult, MainPipeline);
-			arrGroupData[iIndex][g_hDutyColour] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Stock", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iLockerStock] = strval(szResult);
-
-			cache_get_field_content(iIndex, "CrateX", szResult, MainPipeline);
-			arrGroupData[iIndex][g_fCratePos][0] = floatstr(szResult);
-
-			cache_get_field_content(iIndex, "CrateY", szResult, MainPipeline);
-			arrGroupData[iIndex][g_fCratePos][1] = floatstr(szResult);
-
-			cache_get_field_content(iIndex, "CrateZ", szResult, MainPipeline);
-			arrGroupData[iIndex][g_fCratePos][2] = floatstr(szResult);
-
-			cache_get_field_content(iIndex, "LockerCostType", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iLockerCostType] = strval(szResult);
-
-			cache_get_field_content(iIndex, "CratesOrder", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iCratesOrder] = strval(szResult);
-
-			cache_get_field_content(iIndex, "CrateIsland", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iCrateIsland] = strval(szResult);
-
-			cache_get_field_content(iIndex, "GarageX", szResult, MainPipeline);
-			arrGroupData[iIndex][g_fGaragePos][0] = floatstr(szResult);
-
-			cache_get_field_content(iIndex, "GarageY", szResult, MainPipeline);
-			arrGroupData[iIndex][g_fGaragePos][1] = floatstr(szResult);
-
-			cache_get_field_content(iIndex, "GarageZ", szResult, MainPipeline);
-			arrGroupData[iIndex][g_fGaragePos][2] = floatstr(szResult);
-
-			cache_get_field_content(iIndex, "TackleAccess", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iTackleAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "WheelClamps", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iWheelClamps] = strval(szResult);
-
-			arrGroupData[iIndex][g_iDoCAccess] = cache_get_field_content_int(iIndex, "DoCAccess", MainPipeline);
-
-			cache_get_field_content(iIndex, "MedicAccess", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iMedicAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "DMVAccess", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iDMVAccess] = strval(szResult);
-
-			cache_get_field_content(iIndex, "TempNum", szResult, MainPipeline);
-			arrGroupData[iIndex][gTempNum] = strval(szResult);
-
-			cache_get_field_content(iIndex, "LEOArrest", szResult, MainPipeline);
-			arrGroupData[iIndex][gLEOArrest] = strval(szResult);
-
-			cache_get_field_content(iIndex, "OOCChat", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iOOCChat] = strval(szResult);
-
-			cache_get_field_content(iIndex, "OOCColor", szResult, MainPipeline);
-			arrGroupData[iIndex][g_hOOCColor] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Pot", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iPot] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Crack", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iCrack] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Meth", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iMeth] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Ecstasy", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iEcstasy] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Heroin", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iHeroin] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Syringes", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iSyringes] = strval(szResult);
-
-			cache_get_field_content(iIndex, "Mats", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iMaterials] = strval(szResult);
-
-			cache_get_field_content(iIndex, "TurfCapRank", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iTurfCapRank] = strval(szResult);
-
-			cache_get_field_content(iIndex, "PointCapRank", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iPointCapRank] = strval(szResult);
-
-			arrGroupData[iIndex][g_iWithdrawRank][0] = cache_get_field_content_int(iIndex, "WithdrawRank", MainPipeline);
-
-			arrGroupData[iIndex][g_iWithdrawRank][1] = cache_get_field_content_int(iIndex, "WithdrawRank2", MainPipeline);
-
-			arrGroupData[iIndex][g_iWithdrawRank][2] = cache_get_field_content_int(iIndex, "WithdrawRank3", MainPipeline);
-
-			arrGroupData[iIndex][g_iWithdrawRank][3] = cache_get_field_content_int(iIndex, "WithdrawRank4", MainPipeline);
-
-			arrGroupData[iIndex][g_iWithdrawRank][4] = cache_get_field_content_int(iIndex, "WithdrawRank5", MainPipeline);
-			
-			cache_get_field_content(iIndex, "Tokens", szResult, MainPipeline);
-			arrGroupData[iIndex][g_iTurfTokens] = strval(szResult);
-
-			arrGroupData[iIndex][g_iCrimeType] = cache_get_field_content_int(iIndex, "CrimeType", MainPipeline);
-			arrGroupData[iIndex][g_iGroupToyID] = cache_get_field_content_int(iIndex, "GroupToyID", MainPipeline);
-			arrGroupData[iIndex][g_iTurfTax] = cache_get_field_content(iIndex, "TurfTax", szResult, MainPipeline);
+			cache_get_value_name(iIndex, "Name", arrGroupData[iIndex][g_szGroupName], GROUP_MAX_NAME_LEN);
+			cache_get_value_name(iIndex, "MOTD", gMOTD[iIndex][0], GROUP_MAX_MOTD_LEN);
+			cache_get_value_name(iIndex, "MOTD2", gMOTD[iIndex][1], GROUP_MAX_MOTD_LEN);
+			cache_get_value_name(iIndex, "MOTD3", gMOTD[iIndex][2], GROUP_MAX_MOTD_LEN);
+			cache_get_value_name_int(iIndex, "Type", arrGroupData[iIndex][g_iGroupType]);
+			cache_get_value_name_int(iIndex, "Allegiance", arrGroupData[iIndex][g_iAllegiance]);
+			cache_get_value_name_int(iIndex, "Bug", arrGroupData[iIndex][g_iBugAccess]);
+			cache_get_value_name_int(iIndex, "Find", arrGroupData[iIndex][g_iFindAccess]);
+			cache_get_value_name_int(iIndex, "RadioColour", arrGroupData[iIndex][g_hRadioColour]);
+			cache_get_value_name_int(iIndex, "Radio", arrGroupData[iIndex][g_iRadioAccess]);
+			cache_get_value_name_int(iIndex, "DeptRadio", arrGroupData[iIndex][g_iDeptRadioAccess]);
+			cache_get_value_name_int(iIndex, "IntRadio", arrGroupData[iIndex][g_iIntRadioAccess]);
+			cache_get_value_name_int(iIndex, "GovAnnouncement", arrGroupData[iIndex][g_iGovAccess]);
+			cache_get_value_name_int(iIndex, "TreasuryAccess", arrGroupData[iIndex][g_iTreasuryAccess]);
+			cache_get_value_name_int(iIndex, "FreeNameChange", arrGroupData[iIndex][g_iFreeNameChange]);
+			cache_get_value_name_int(iIndex, "FreeNameChangeDiv", arrGroupData[iIndex][g_iFreeNameChangeDiv]);
+			cache_get_value_name_int(iIndex, "Budget", arrGroupData[iIndex][g_iBudget]);
+			cache_get_value_name_int(iIndex, "BudgetPayment", arrGroupData[iIndex][g_iBudgetPayment]);
+			cache_get_value_name_int(iIndex, "SpikeStrips", arrGroupData[iIndex][g_iSpikeStrips]);
+			cache_get_value_name_int(iIndex, "Barricades", arrGroupData[iIndex][g_iBarricades]);
+			cache_get_value_name_int(iIndex, "Cones", arrGroupData[iIndex][g_iCones]);
+			cache_get_value_name_int(iIndex, "Flares", arrGroupData[iIndex][g_iFlares]);
+			cache_get_value_name_int(iIndex, "Barrels", arrGroupData[iIndex][g_iBarrels]);
+			cache_get_value_name_int(iIndex, "Ladders", arrGroupData[iIndex][g_iLadders]);
+			cache_get_value_name_int(iIndex, "Tapes", arrGroupData[iIndex][g_iTapes]);
+			cache_get_value_name_int(iIndex, "DutyColour", arrGroupData[iIndex][g_hDutyColour]);
+			cache_get_value_name_int(iIndex, "Stock", arrGroupData[iIndex][g_iLockerStock]);
+			cache_get_value_name_float(iIndex, "CrateX", arrGroupData[iIndex][g_fCratePos][0]);
+			cache_get_value_name_float(iIndex, "CrateY", arrGroupData[iIndex][g_fCratePos][1]);
+			cache_get_value_name_float(iIndex, "CrateZ", arrGroupData[iIndex][g_fCratePos][2]);
+			cache_get_value_name_int(iIndex, "LockerCostType", arrGroupData[iIndex][g_iLockerCostType]);
+			cache_get_value_name_int(iIndex, "CratesOrder", arrGroupData[iIndex][g_iCratesOrder]);
+			cache_get_value_name_int(iIndex, "CrateIsland", arrGroupData[iIndex][g_iCrateIsland]);
+			cache_get_value_name_float(iIndex, "GarageX", arrGroupData[iIndex][g_fGaragePos][0]);
+			cache_get_value_name_float(iIndex, "GarageY", arrGroupData[iIndex][g_fGaragePos][1]);
+			cache_get_value_name_float(iIndex, "GarageZ", arrGroupData[iIndex][g_fGaragePos][2]);
+			cache_get_value_name_int(iIndex, "TackleAccess", arrGroupData[iIndex][g_iTackleAccess]);
+			cache_get_value_name_int(iIndex, "WheelClamps", arrGroupData[iIndex][g_iWheelClamps]);
+			cache_get_value_name_int(iIndex, "DoCAccess", arrGroupData[iIndex][g_iDoCAccess]);
+			cache_get_value_name_int(iIndex, "MedicAccess", arrGroupData[iIndex][g_iMedicAccess]);
+			cache_get_value_name_int(iIndex, "DMVAccess", arrGroupData[iIndex][g_iDMVAccess]);
+			cache_get_value_name_int(iIndex, "TempNum", arrGroupData[iIndex][gTempNum]);
+			cache_get_value_name_int(iIndex, "LEOArrest", arrGroupData[iIndex][gLEOArrest]);
+			cache_get_value_name_int(iIndex, "OOCChat", arrGroupData[iIndex][g_iOOCChat]);
+			cache_get_value_name_int(iIndex, "OOCColor", arrGroupData[iIndex][g_hOOCColor]);
+			cache_get_value_name_int(iIndex, "Pot", arrGroupData[iIndex][g_iPot]);
+			cache_get_value_name_int(iIndex, "Crack", arrGroupData[iIndex][g_iCrack]);
+			cache_get_value_name_int(iIndex, "Meth", arrGroupData[iIndex][g_iMeth]);
+			cache_get_value_name_int(iIndex, "Ecstasy", arrGroupData[iIndex][g_iEcstasy]);
+			cache_get_value_name_int(iIndex, "Heroin", arrGroupData[iIndex][g_iHeroin]);
+			cache_get_value_name_int(iIndex, "Syringes", arrGroupData[iIndex][g_iSyringes]);
+			cache_get_value_name_int(iIndex, "Mats", arrGroupData[iIndex][g_iMaterials]);
+			cache_get_value_name_int(iIndex, "TurfCapRank", arrGroupData[iIndex][g_iTurfCapRank]);
+			cache_get_value_name_int(iIndex, "PointCapRank", arrGroupData[iIndex][g_iPointCapRank]);
+			cache_get_value_name_int(iIndex, "WithdrawRank", arrGroupData[iIndex][g_iWithdrawRank][0]);
+			cache_get_value_name_int(iIndex, "WithdrawRank2", arrGroupData[iIndex][g_iWithdrawRank][1]);
+			cache_get_value_name_int(iIndex, "WithdrawRank3", arrGroupData[iIndex][g_iWithdrawRank][2]);
+			cache_get_value_name_int(iIndex, "WithdrawRank4", arrGroupData[iIndex][g_iWithdrawRank][3]);
+			cache_get_value_name_int(iIndex, "WithdrawRank5", arrGroupData[iIndex][g_iWithdrawRank][4]);
+			cache_get_value_name_int(iIndex, "Tokens", arrGroupData[iIndex][g_iTurfTokens]);
+			cache_get_value_name_int(iIndex, "CrimeType", arrGroupData[iIndex][g_iCrimeType]);
+			cache_get_value_name_int(iIndex, "GroupToyID", arrGroupData[iIndex][g_iGroupToyID]);
+			cache_get_value_name(iIndex, "TurfTax", arrGroupData[iIndex][g_iTurfTax]);
 
 			for(i = 0; i < MAX_GROUP_RIVALS; ++i)
 			{
 				format(szResult, sizeof(szResult), "gRival%i", i);
-				arrGroupData[iIndex][g_iRivals][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
+				cache_get_value_name_int(iIndex, szResult, arrGroupData[iIndex][g_iRivals][i]);
 			}
 
 			for(i = 0; i < MAX_GROUP_RANKS; ++i)
 			{
 				format(szResult, sizeof(szResult), "GClothes%i", i);
-				arrGroupData[iIndex][g_iClothes][i] = cache_get_field_content_int(iIndex, szResult, MainPipeline);
+				cache_get_value_name_int(iIndex, szResult, arrGroupData[iIndex][g_iClothes][i]);
 			}
 
 			i = 0;
 			while(i < MAX_GROUP_RANKS) {
 				format(szResult, sizeof szResult, "Rank%i", i);
-				cache_get_field_content(iIndex, szResult, arrGroupRanks[iIndex][i], MainPipeline, GROUP_MAX_RANK_LEN);
+				cache_get_value_name(iIndex, szResult, arrGroupRanks[iIndex][i], GROUP_MAX_RANK_LEN);
 				format(szResult, sizeof szResult, "Rank%iPay", i);
-				cache_get_field_content(iIndex, szResult, szResult, MainPipeline);
+				cache_get_value_name(iIndex, szResult, szResult);
 				arrGroupData[iIndex][g_iPaycheck][i] = strval(szResult);
 				i++;
 			}
@@ -5483,25 +5385,25 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			while(i < MAX_GROUP_DIVS) {
 				format(szResult, sizeof szResult, "Div%i", i + 1);
-				cache_get_field_content(iIndex, szResult, arrGroupDivisions[iIndex][i], MainPipeline, GROUP_MAX_DIV_LEN);
+				cache_get_value_name(iIndex, szResult, arrGroupDivisions[iIndex][i], GROUP_MAX_DIV_LEN);
 				i++;
 			}
 			i = 0;
 
 			while(i < MAX_GROUP_WEAPONS) {
 				format(szResult, sizeof szResult, "Gun%i", i + 1);
-				cache_get_field_content(iIndex, szResult, szResult, MainPipeline);
+				cache_get_value_name(iIndex, szResult, szResult);
 				arrGroupData[iIndex][g_iLockerGuns][i] = strval(szResult);
 				format(szResult, sizeof szResult, "Cost%i", i + 1);
-				cache_get_field_content(iIndex, szResult, szResult, MainPipeline);
+				cache_get_value_name(iIndex, szResult, szResult);
 				arrGroupData[iIndex][g_iLockerCost][i] = strval(szResult);
 				i++;
 			}
 			i = 0;
 
 			// Jingles' Drug System:
-			for(i = 0; i < sizeof(Drugs); ++i) arrGroupData[iIndex][g_iDrugs][i] = cache_get_field_content_int(iIndex, GetDrugName(i), MainPipeline);
-			//for(i = 0; i < sizeof(szIngredients); ++i) arrGroupData[iIndex][g_iIngredients][i] = cache_get_field_content_int(iIndex, DS_Ingredients_GetSQLName(i), MainPipeline);
+			for(i = 0; i < sizeof(Drugs); ++i) cache_get_value_name_int(iIndex, GetDrugName(i), arrGroupData[iIndex][g_iDrugs][i]);
+			//for(i = 0; i < sizeof(szIngredients); ++i) arrGroupData[iIndex][g_iIngredients][i] = cache_get_value_name_int(iIndex, DS_Ingredients_GetSQLName(i));
 			i = 0;
 
 			if (arrGroupData[iIndex][g_szGroupName][0] && arrGroupData[iIndex][g_fCratePos][0] != 0.0)
@@ -5568,7 +5470,7 @@ public Group_QueryFinish(iType, iExtraID) {
 			new string[128];
 			new otherplayer = GetPVarInt(iExtraID, "GroupUnBanningPlayer");
 			new group = GetPVarInt(iExtraID, "GroupUnBanningGroup");
-			if(mysql_affected_rows(MainPipeline))
+			if(cache_affected_rows())
 			{
 				format(string, sizeof(string), "You have group-unbanned %s from group %s (%d).", GetPlayerNameEx(otherplayer), arrGroupData[group][g_szGroupName], group);
 				SendClientMessageEx(iExtraID, COLOR_WHITE, string);
@@ -5587,13 +5489,13 @@ public Group_QueryFinish(iType, iExtraID) {
 		}
 		case GROUP_QUERY_UNCHECK: if(GetPVarType(iExtraID, "Group_Uninv")) {
 			if(iRows) {
-				cache_get_field_content(0, "Member", szResult, MainPipeline, MAX_PLAYER_NAME);
+				cache_get_value_name(0, "Member", szResult, MAX_PLAYER_NAME);
 				if(strval(szResult) == PlayerInfo[iExtraID][pMember]) {
-					cache_get_field_content(0, "Rank", szResult, MainPipeline);
+					cache_get_value_name(0, "Rank", szResult);
 					if(PlayerInfo[iExtraID][pRank] > strval(szResult) || PlayerInfo[iExtraID][pRank] >= Group_GetMaxRank(PlayerInfo[iExtraID][pMember])) {
-						cache_get_field_content(0, "id", szResult, MainPipeline);
-						format(szResult, sizeof szResult, "UPDATE `accounts` SET `Model` = "#NOOB_SKIN", `Member` = "#INVALID_GROUP_ID", `Rank` = "#INVALID_RANK", `Leader` = "#INVALID_GROUP_ID", `Division` = -1 WHERE `id` = %i", strval(szResult));
-						mysql_function_query(MainPipeline, szResult, true, "Group_QueryFinish", "ii", GROUP_QUERY_UNINVITE, iExtraID);
+						cache_get_value_name(0, "id", szResult);
+						mysql_format(MainPipeline, szResult, sizeof szResult, "UPDATE `accounts` SET `Model` = "#NOOB_SKIN", `Member` = "#INVALID_GROUP_ID", `Rank` = "#INVALID_RANK", `Leader` = "#INVALID_GROUP_ID", `Division` = -1 WHERE `id` = %i", strval(szResult));
+						mysql_tquery(MainPipeline, szResult, "Group_QueryFinish", "ii", GROUP_QUERY_UNINVITE, iExtraID);
 					}
 					else SendClientMessage(iExtraID, COLOR_GREY, "You can't do this to a person of equal or higher rank.");
 				}
@@ -5612,7 +5514,7 @@ public Group_QueryFinish(iType, iExtraID) {
 				iGroupID = PlayerInfo[iExtraID][pMember];
 
 			GetPVarString(iExtraID, "Group_Uninv", szName, sizeof szName);
-			if(mysql_affected_rows(MainPipeline)) {
+			if(cache_affected_rows()) {
 
 				i = PlayerInfo[iExtraID][pRank];
 				format(szResult, sizeof szResult, "You have successfully removed %s from your group.", szName);
@@ -5634,12 +5536,10 @@ forward Jurisdiction_RehashFinish(iGroup);
 public Jurisdiction_RehashFinish(iGroup) {
 
 	new
-		iFields,
 		iRows,
 		iIndex,
 		szResult[128];
-
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 
 	while(iIndex < iRows)
 	{
@@ -5648,13 +5548,13 @@ public Jurisdiction_RehashFinish(iGroup) {
 		if(arrGroupData[iGroup][g_iJCount] > MAX_GROUP_JURISDICTIONS) {
 			arrGroupData[iGroup][g_iJCount] = MAX_GROUP_JURISDICTIONS;
 		}
-		cache_get_field_content(iIndex, "GroupID", szResult, MainPipeline, 24);
+		cache_get_value_name(iIndex, "GroupID", szResult, 24);
 		iGroupID = strval(szResult);
 		if(iGroupID == iGroup)
 		{
-			cache_get_field_content(iIndex, "id", szResult, MainPipeline, 64);
+			cache_get_value_name(iIndex, "id", szResult, 64);
 			arrGroupJurisdictions[iGroup][iIndex][g_iJurisdictionSQLId] = strval(szResult);
-			cache_get_field_content(iIndex, "AreaName", arrGroupJurisdictions[iGroup][iIndex][g_iAreaName], MainPipeline, 64);
+			cache_get_value_name(iIndex, "AreaName", arrGroupJurisdictions[iGroup][iIndex][g_iAreaName], 64);
 		}
 		iIndex++;
 	}
@@ -5664,21 +5564,20 @@ forward AuctionLoadQuery();
 public AuctionLoadQuery() {
 
 	new
-		iFields,
 		iRows,
 		iIndex,
 		szResult[128];
 
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 
 	while((iIndex < iRows)) {
-		cache_get_field_content(iIndex, "BiddingFor", Auctions[iIndex][BiddingFor], MainPipeline, 64);
-		cache_get_field_content(iIndex, "InProgress", szResult, MainPipeline); Auctions[iIndex][InProgress] = strval(szResult);
-		cache_get_field_content(iIndex, "Bid", szResult, MainPipeline); Auctions[iIndex][Bid] = strval(szResult);
-		cache_get_field_content(iIndex, "Bidder", szResult, MainPipeline); Auctions[iIndex][Bidder] = strval(szResult);
-		cache_get_field_content(iIndex, "Expires", szResult, MainPipeline); Auctions[iIndex][Expires] = strval(szResult);
-		cache_get_field_content(iIndex, "Wining", Auctions[iIndex][Wining], MainPipeline, MAX_PLAYER_NAME);
-		cache_get_field_content(iIndex, "Increment", szResult, MainPipeline); Auctions[iIndex][Increment] = strval(szResult);
+		cache_get_value_name(iIndex, "BiddingFor", Auctions[iIndex][BiddingFor], 64);
+		cache_get_value_name(iIndex, "InProgress", szResult); Auctions[iIndex][InProgress] = strval(szResult);
+		cache_get_value_name(iIndex, "Bid", szResult); Auctions[iIndex][Bid] = strval(szResult);
+		cache_get_value_name(iIndex, "Bidder", szResult); Auctions[iIndex][Bidder] = strval(szResult);
+		cache_get_value_name(iIndex, "Expires", szResult); Auctions[iIndex][Expires] = strval(szResult);
+		cache_get_value_name(iIndex, "Wining", Auctions[iIndex][Wining], MAX_PLAYER_NAME);
+		cache_get_value_name(iIndex, "Increment", szResult); Auctions[iIndex][Increment] = strval(szResult);
 		if(Auctions[iIndex][InProgress] == 1 && Auctions[iIndex][Expires] != 0)
 		{
 		    Auctions[iIndex][Timer] = SetTimerEx("EndAuction", 60000, true, "i", iIndex);
@@ -5698,14 +5597,14 @@ public ReturnMoney(index)
     		AuctionItem = GetPVarInt(index, "AuctionItem");
 
 		new money[15], money2, string[128];
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows)
 		{
-   			cache_get_field_content(0, "Money", money, MainPipeline); money2 = strval(money);
+   			cache_get_value_name(0, "Money", money); money2 = strval(money);
 
-   			format(string, sizeof(string), "UPDATE `accounts` SET `Money` = %d WHERE `id` = '%d'", money2+Auctions[AuctionItem][Bid], Auctions[AuctionItem][Bidder]);
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+   			mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Money` = %d WHERE `id` = '%d'", money2+Auctions[AuctionItem][Bid], Auctions[AuctionItem][Bidder]);
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 			format(string, sizeof(string), "Amount of $%d (Before: %i | After: %i) has been returned to (id: %i) for being outbid", Auctions[AuctionItem][Bid], money2,Auctions[AuctionItem][Bid]+money2,  Auctions[AuctionItem][Bidder]);
 			Log("logs/auction.log", string);
@@ -5737,12 +5636,12 @@ public ReturnMoney(index)
 forward OnQueryCreateVehicle(playerid, playervehicleid);
 public OnQueryCreateVehicle(playerid, playervehicleid)
 {
-	PlayerVehicleInfo[playerid][playervehicleid][pvSlotId] = mysql_insert_id(MainPipeline);
+	PlayerVehicleInfo[playerid][playervehicleid][pvSlotId] = cache_insert_id();
 	printf("VNumber: %d", PlayerVehicleInfo[playerid][playervehicleid][pvSlotId]);
 
 	new string[128];
-    format(string, sizeof(string), "UPDATE `vehicles` SET `pvModelId` = %d WHERE `id` = %d", PlayerVehicleInfo[playerid][playervehicleid][pvModelId], PlayerVehicleInfo[playerid][playervehicleid][pvSlotId]);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+    mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvModelId` = %d WHERE `id` = %d", PlayerVehicleInfo[playerid][playervehicleid][pvModelId], PlayerVehicleInfo[playerid][playervehicleid][pvSlotId]);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 	g_mysql_SaveVehicle(playerid, playervehicleid);
 }
@@ -5753,8 +5652,8 @@ public CheckAccounts(playerid)
 	if(IsPlayerConnected(playerid))
 	{
 		new szString[128];
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows)
 		{
 		    format(szString, sizeof(szString), "{AA3333}AdmWarning{FFFF00}: Moderator %s has logged into the server with s0beit installed.", GetPlayerNameEx(playerid));
@@ -5768,8 +5667,8 @@ public CheckAccounts(playerid)
 		}
 		else
 		{
-		    format(szString, sizeof(szString), "INSERT INTO `sobeitkicks` (sqlID, Kicks) VALUES (%d, 1) ON DUPLICATE KEY UPDATE Kicks = Kicks + 1", GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, szString, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		    mysql_format(MainPipeline, szString, sizeof(szString), "INSERT INTO `sobeitkicks` (sqlID, Kicks) VALUES (%d, 1) ON DUPLICATE KEY UPDATE Kicks = Kicks + 1", GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, szString, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 		    SendClientMessageEx(playerid, COLOR_RED, "The hacking tool 's0beit' is not allowed on this server, please uninstall it.");
    			format(szString, sizeof(szString), "%s(%d) (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), GetPlayerIpEx(playerid));
@@ -5786,13 +5685,13 @@ public CheckAccounts(playerid)
 forward ReferralSecurity(playerid);
 public ReferralSecurity(playerid)
 {
-    new newrows, newfields, newresult[16], currentIP[16];
+    new newrows, newresult[16], currentIP[16];
 	GetPlayerIp(playerid, currentIP, sizeof(currentIP));
-	cache_get_data(newrows, newfields, MainPipeline);
+	cache_get_row_count(newrows);
 
 	if(newrows > 0)
 	{
- 		cache_get_field_content(0, "IP", newresult, MainPipeline);
+ 		cache_get_value_name(0, "IP", newresult);
 
    		if(!strcmp(newresult, currentIP, true))
 	    {
@@ -5818,12 +5717,12 @@ public ReferralSecurity(playerid)
 forward OnQueryCreateToy(playerid, toyslot);
 public OnQueryCreateToy(playerid, toyslot)
 {
-	PlayerToyInfo[playerid][toyslot][ptID] = mysql_insert_id(MainPipeline);
+	PlayerToyInfo[playerid][toyslot][ptID] = cache_insert_id();
 	printf("Toy ID: %d", PlayerToyInfo[playerid][toyslot][ptID]);
 
 	new szQuery[128];
-	format(szQuery, sizeof(szQuery), "UPDATE `toys` SET `modelid` = '%d' WHERE `id` = '%d'", PlayerToyInfo[playerid][toyslot][ptID], PlayerToyInfo[playerid][toyslot][ptModelID]);
-	mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `toys` SET `modelid` = '%d' WHERE `id` = '%d'", PlayerToyInfo[playerid][toyslot][ptID], PlayerToyInfo[playerid][toyslot][ptModelID]);
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 	g_mysql_SaveToys(playerid, toyslot);
 }
@@ -5831,8 +5730,8 @@ public OnQueryCreateToy(playerid, toyslot)
 forward OnStaffAccountCheck(playerid);
 public OnStaffAccountCheck(playerid)
 {
-	new string[156], rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new string[156], rows;
+	cache_get_row_count(rows);
 	if(rows > 0)
 	{
 		format(string, sizeof(string), "{AA3333}AdmWarning{FFFF00}: %s (ID: %d) was punished and has a staff account associated with their IP address.", GetPlayerNameEx(playerid), playerid);
@@ -5846,30 +5745,30 @@ public OnStaffAccountCheck(playerid)
 stock LoadRelayForLifeTeam(teamid)
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `rflteams` WHERE `id`=%d", teamid);
-	mysql_function_query(MainPipeline, string, true, "OnLoadRFLTeam", "i", mapiconid);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `rflteams` WHERE `id`=%d", teamid);
+	mysql_tquery(MainPipeline, string, "OnLoadRFLTeam", "i", mapiconid);
 }
 
 stock LoadRelayForLifeTeams()
 {
 	printf("[LoadRelayForLifeTeams] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `rflteams`", true, "OnLoadRFLTeams", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `rflteams`", "OnLoadRFLTeams", "");
 }
 
 forward OnLoadRFLTeams();
 public OnLoadRFLTeams()
 {
-	new i, rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows, tmp[128];
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		cache_get_field_content(i, "id", tmp, MainPipeline);  RFLInfo[i][RFLsqlid] = strval(tmp);
-		cache_get_field_content(i, "name", RFLInfo[i][RFLname], MainPipeline);
-		cache_get_field_content(i, "leader", RFLInfo[i][RFLleader], MainPipeline);
-		cache_get_field_content(i, "used", tmp, MainPipeline); RFLInfo[i][RFLused] = strval(tmp);
-		cache_get_field_content(i, "members", tmp, MainPipeline); RFLInfo[i][RFLmembers] = strval(tmp);
-		cache_get_field_content(i, "laps", tmp, MainPipeline); RFLInfo[i][RFLlaps] = strval(tmp);
+		cache_get_value_name(i, "id", tmp);  RFLInfo[i][RFLsqlid] = strval(tmp);
+		cache_get_value_name(i, "name", RFLInfo[i][RFLname]);
+		cache_get_value_name(i, "leader", RFLInfo[i][RFLleader]);
+		cache_get_value_name(i, "used", tmp); RFLInfo[i][RFLused] = strval(tmp);
+		cache_get_value_name(i, "members", tmp); RFLInfo[i][RFLmembers] = strval(tmp);
+		cache_get_value_name(i, "laps", tmp); RFLInfo[i][RFLlaps] = strval(tmp);
 		i++;
 	}
 	if(i > 0) printf("[LoadRelayForLifeTeams] %d teams loaded.", i);
@@ -5880,24 +5779,24 @@ public OnLoadRFLTeams()
 forward OnLoadRFLTeam(index);
 public OnLoadRFLTeam(index)
 {
-	new rows, fields, tmp[128];
-	cache_get_data(rows, fields, MainPipeline);
+	new rows, tmp[128];
+	cache_get_row_count(rows);
 
 	for(new row; row < rows; row++)
 	{
-		cache_get_field_content(row, "id", tmp, MainPipeline);  RFLInfo[index][RFLsqlid] = strval(tmp);
-		cache_get_field_content(row, "name", RFLInfo[index][RFLname], MainPipeline);
-		cache_get_field_content(row, "leader", RFLInfo[index][RFLleader], MainPipeline);
-		cache_get_field_content(row, "used", tmp, MainPipeline); RFLInfo[index][RFLused] = strval(tmp);
-		cache_get_field_content(row, "members", tmp, MainPipeline); RFLInfo[index][RFLmembers] = strval(tmp);
-		cache_get_field_content(row, "laps", tmp, MainPipeline); RFLInfo[index][RFLlaps] = strval(tmp);
+		cache_get_value_name(row, "id", tmp);  RFLInfo[index][RFLsqlid] = strval(tmp);
+		cache_get_value_name(row, "name", RFLInfo[index][RFLname]);
+		cache_get_value_name(row, "leader", RFLInfo[index][RFLleader]);
+		cache_get_value_name(row, "used", tmp); RFLInfo[index][RFLused] = strval(tmp);
+		cache_get_value_name(row, "members", tmp); RFLInfo[index][RFLmembers] = strval(tmp);
+		cache_get_value_name(row, "laps", tmp); RFLInfo[index][RFLlaps] = strval(tmp);
 	}
 }
 
 stock SaveRelayForLifeTeam(teamid)
 {
 	new string[248];
-	format(string, sizeof(string), "UPDATE `rflteams` SET `name`='%s', `leader`='%s', `used`=%d, `members`=%d, `laps`=%d WHERE id=%d",
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `rflteams` SET `name`='%s', `leader`='%s', `used`=%d, `members`=%d, `laps`=%d WHERE id=%d",
 		RFLInfo[teamid][RFLname],
 		RFLInfo[teamid][RFLleader],
 		RFLInfo[teamid][RFLused],
@@ -5905,7 +5804,7 @@ stock SaveRelayForLifeTeam(teamid)
 		RFLInfo[teamid][RFLlaps],
 		RFLInfo[teamid][RFLsqlid]
 	);
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock SaveRelayForLifeTeams()
@@ -5919,15 +5818,15 @@ stock SaveRelayForLifeTeams()
 forward OnRFLPScore(index, id);
 public OnRFLPScore(index, id)
 {
-	new i, rows, fields, string[1500], tmp[7], name[25], leader[25], laps;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows, string[1500], tmp[7], name[25], leader[25], laps;
+	cache_get_row_count(rows);
 	switch(id) {
 		case 1: {
 			while(i < rows)
 			{
-				cache_get_field_content(i, "name", name, MainPipeline);
-				cache_get_field_content(i, "leader", leader, MainPipeline);
-				cache_get_field_content(i, "laps", tmp, MainPipeline); laps = strval(tmp);
+				cache_get_value_name(i, "name", name);
+				cache_get_value_name(i, "leader", leader);
+				cache_get_value_name(i, "laps", tmp); laps = strval(tmp);
 				format(string, sizeof(string), "%s\nTeam: %s | Leader: %s | Laps: %d",string, name, leader, laps);
 				i++;
 			}
@@ -5951,8 +5850,8 @@ public OnRFLPScore(index, id)
 		case 2: {
 			while(i < rows)
 			{
-				cache_get_field_content(i, "Username", name, MainPipeline);
-				cache_get_field_content(i, "RacePlayerLaps", tmp, MainPipeline); laps = strval(tmp);
+				cache_get_value_name(i, "Username", name);
+				cache_get_value_name(i, "RacePlayerLaps", tmp); laps = strval(tmp);
 				format(string, sizeof(string), "%s\n%s | Laps: %d",string, name, laps);
 				i++;
 			}
@@ -5972,7 +5871,7 @@ public OnCheckRFLName(playerid, Player)
 {
 	if(IsPlayerConnected(Player))
 	{
-		if(mysql_affected_rows(MainPipeline))
+		if(cache_affected_rows())
 		{
 			SendClientMessageEx(Player, COLOR_YELLOW, "This team name already exists.");
 			SendClientMessageEx(playerid, COLOR_YELLOW, "This team name already exists.");
@@ -6020,25 +5919,25 @@ stock GetPartnerName(playerid)
 	else
 	{
 		new query[128];
-		format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `id` = %d", PlayerInfo[playerid][pMarriedID]);
-		mysql_function_query(MainPipeline, query, true, "OnGetPartnerName", "i", playerid);
+		mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `id` = %d", PlayerInfo[playerid][pMarriedID]);
+		mysql_tquery(MainPipeline, query, "OnGetPartnerName", "i", playerid);
 	}
 }
 
 forward OnGetPartnerName(playerid);
 public OnGetPartnerName(playerid)
 {
-	new fields, rows, index;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows, index;
+	cache_get_row_count(rows);
 
-	cache_get_field_content(index, "Username", PlayerInfo[playerid][pMarriedName], MainPipeline, MAX_PLAYER_NAME);
+	cache_get_value_name(index, "Username", PlayerInfo[playerid][pMarriedName], MAX_PLAYER_NAME);
 	return 1;
 }
 
 forward OnStaffPrize(playerid);
 public OnStaffPrize(playerid)
 {
-	if(mysql_affected_rows(MainPipeline))
+	if(cache_affected_rows())
 	{
 		new type[32], name[MAX_PLAYER_NAME], amount, string[128];
 		GetPVarString(playerid, "OnSPrizeType", type, 16);
@@ -6064,19 +5963,19 @@ public OnStaffPrize(playerid)
 stock AddNewBackpack(id)
 {
 	new string[1024];
-	format(string, sizeof(string), "INSERT into `hgbackpacks` (type, posx, posy, posz) VALUES ('%d', '%f', '%f', '%f')",
+	mysql_format(MainPipeline, string, sizeof(string), "INSERT into `hgbackpacks` (type, posx, posy, posz) VALUES ('%d', '%f', '%f', '%f')",
 	HungerBackpackInfo[id][hgBackpackType],
 	HungerBackpackInfo[id][hgBackpackPos][0],
 	HungerBackpackInfo[id][hgBackpackPos][1],
 	HungerBackpackInfo[id][hgBackpackPos][2]);
 
-	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock SaveHGBackpack(id)
 {
 	new string[1024];
-	format(string, sizeof(string), "UPDATE `hgbackpacks` SET \
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `hgbackpacks` SET \
 		`type` = %d, \
 		`posx` = %f,\
 		`posy` = %f,\
@@ -6088,22 +5987,22 @@ stock SaveHGBackpack(id)
 		id
 	);
 
-	mysql_function_query(MainPipeline, string, false "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 forward OnLoadHGBackpacks();
 public OnLoadHGBackpacks()
 {
-	new fields, rows, index, result[128], string[128];
-	cache_get_data(rows, fields, MainPipeline);
+	new rows, index, result[128], string[128];
+	cache_get_row_count(rows);
 
 	while((index < rows))
 	{
-		cache_get_field_content(index, "id", result, MainPipeline); HungerBackpackInfo[index][hgBackpackId] = strval(result);
-		cache_get_field_content(index, "type", result, MainPipeline); HungerBackpackInfo[index][hgBackpackType] = strval(result);
-		cache_get_field_content(index, "posx", result, MainPipeline); HungerBackpackInfo[index][hgBackpackPos][0] = floatstr(result);
-		cache_get_field_content(index, "posy", result, MainPipeline); HungerBackpackInfo[index][hgBackpackPos][1] = floatstr(result);
-		cache_get_field_content(index, "posz", result, MainPipeline); HungerBackpackInfo[index][hgBackpackPos][2] = floatstr(result);
+		cache_get_value_name(index, "id", result); HungerBackpackInfo[index][hgBackpackId] = strval(result);
+		cache_get_value_name(index, "type", result); HungerBackpackInfo[index][hgBackpackType] = strval(result);
+		cache_get_value_name(index, "posx", result); HungerBackpackInfo[index][hgBackpackPos][0] = floatstr(result);
+		cache_get_value_name(index, "posy", result); HungerBackpackInfo[index][hgBackpackPos][1] = floatstr(result);
+		cache_get_value_name(index, "posz", result); HungerBackpackInfo[index][hgBackpackPos][2] = floatstr(result);
 
 		HungerBackpackInfo[index][hgActiveEx] = 1;
 
@@ -6124,24 +6023,24 @@ public OnLoadHGBackpacks()
 forward ExecuteShopQueue(playerid, id);
 public ExecuteShopQueue(playerid, id)
 {
-	new rows, fields, index, result[128], string[128], query[128], tmp[8];
+	new rows, index, result[128], string[128], query[128], tmp[8];
 	switch(id)
 	{
 		case 0:
 		{
-			cache_get_data(rows, fields, MainPipeline);
+			cache_get_row_count(rows);
 			if(IsPlayerConnected(playerid))
 			{
 				while(index < rows)
 				{
-					cache_get_field_content(index, "id", result, MainPipeline); tmp[0] = strval(result);
-					cache_get_field_content(index, "GiftVoucher", result, MainPipeline); tmp[1] = strval(result);
-					cache_get_field_content(index, "CarVoucher", result, MainPipeline); tmp[2] = strval(result);
-					cache_get_field_content(index, "VehVoucher", result, MainPipeline); tmp[3] = strval(result);
-					cache_get_field_content(index, "SVIPVoucher", result, MainPipeline); tmp[4] = strval(result);
-					cache_get_field_content(index, "GVIPVoucher", result, MainPipeline); tmp[5] = strval(result);
-					cache_get_field_content(index, "PVIPVoucher", result, MainPipeline); tmp[6] = strval(result);
-					cache_get_field_content(index, "credits_spent", result, MainPipeline); tmp[7] = strval(result);
+					cache_get_value_name(index, "id", result); tmp[0] = strval(result);
+					cache_get_value_name(index, "GiftVoucher", result); tmp[1] = strval(result);
+					cache_get_value_name(index, "CarVoucher", result); tmp[2] = strval(result);
+					cache_get_value_name(index, "VehVoucher", result); tmp[3] = strval(result);
+					cache_get_value_name(index, "SVIPVoucher", result); tmp[4] = strval(result);
+					cache_get_value_name(index, "GVIPVoucher", result); tmp[5] = strval(result);
+					cache_get_value_name(index, "PVIPVoucher", result); tmp[6] = strval(result);
+					cache_get_value_name(index, "credits_spent", result); tmp[7] = strval(result);
 
 					if(tmp[1] > 0)
 					{
@@ -6194,8 +6093,8 @@ public ExecuteShopQueue(playerid, id)
 					GivePlayerCredits(playerid, tmp[7], 1, 1);
 					format(string, sizeof(string), "%s(%d) | Credits: %d - 1", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[7]);
 					Log("logs/shopdebug.log", string);
-					format(query, sizeof(query), "UPDATE `shop_orders` SET `status` = 1 WHERE `id` = %d", tmp[0]);
-					mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_format(MainPipeline, query, sizeof(query), "UPDATE `shop_orders` SET `status` = 1 WHERE `id` = %d", tmp[0]);
+					mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 					format(string, sizeof(string), "%s(%d) | Status set to 1 - 1", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/shopdebug.log", string);
 					OnPlayerStatsUpdate(playerid);
@@ -6205,13 +6104,13 @@ public ExecuteShopQueue(playerid, id)
 		}
 		case 1:
 		{
-			cache_get_data(rows, fields, ShopPipeline);
+			cache_get_row_count(rows);
 			if(IsPlayerConnected(playerid))
 			{
 				while(index < rows)
 				{
-					cache_get_field_content(index, "order_id", result, ShopPipeline); tmp[0] = strval(result);
-					cache_get_field_content(index, "credit_amount", result, ShopPipeline); tmp[1] = strval(result);
+					cache_get_value_name(index, "order_id", result); tmp[0] = strval(result);
+					cache_get_value_name(index, "credit_amount", result); tmp[1] = strval(result);
 
 					GivePlayerCredits(playerid, tmp[1], 1);
 					format(string, sizeof(string), "%s(%d) | Credits: %d - 2", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), tmp[1]);
@@ -6220,8 +6119,8 @@ public ExecuteShopQueue(playerid, id)
 					SendClientMessageEx(playerid, COLOR_WHITE, string);
 					format(string, sizeof(string), "[ID: %d] %s(%d) was automatically issued %s credit(s)", tmp[0], GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), number_format(tmp[1]));
 					Log("logs/shoplog.log", string);
-					format(query, sizeof(query), "UPDATE `order_delivery_status` SET `status` = 1 WHERE `order_id` = %d", tmp[0]);
-					mysql_function_query(ShopPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_format(ShopPipeline, query, sizeof(query), "UPDATE `order_delivery_status` SET `status` = 1 WHERE `order_id` = %d", tmp[0]);
+					mysql_tquery(ShopPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 					format(string, sizeof(string), "%s(%d) | Status set to 1 - 2", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid));
 					Log("logs/shopdebug.log", string);
 					OnPlayerStatsUpdate(playerid);
@@ -6236,8 +6135,8 @@ public ExecuteShopQueue(playerid, id)
 stock CheckAdminWhitelist(playerid)
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT `AdminLevel`, `SecureIP`, `Watchdog` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
-	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", ADMINWHITELIST_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT `AdminLevel`, `SecureIP`, `Watchdog` FROM `accounts` WHERE `Username` = '%s'", GetPlayerNameExt(playerid));
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", ADMINWHITELIST_THREAD, playerid, g_arrQueryHandle{playerid});
 	return true;
 }
 
@@ -6251,14 +6150,14 @@ stock GivePlayerCashEx(playerid, type, amount)
 			case TYPE_BANK:
 			{
 				PlayerInfo[playerid][pAccount] += amount;
-				format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Bank`=%d WHERE `id` = %d", PlayerInfo[playerid][pAccount], GetPlayerSQLId(playerid));
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Bank`=%d WHERE `id` = %d", PlayerInfo[playerid][pAccount], GetPlayerSQLId(playerid));
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			}
 			case TYPE_ONHAND:
 			{
 				PlayerInfo[playerid][pCash] += amount;
-				format(szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Money`=%d WHERE `id` = %d", PlayerInfo[playerid][pCash], GetPlayerSQLId(playerid));
-				mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+				mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `accounts` SET `Money`=%d WHERE `id` = %d", PlayerInfo[playerid][pCash], GetPlayerSQLId(playerid));
+				mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			}
 		}
 	}
@@ -6270,7 +6169,7 @@ stock GivePlayerCashEx(playerid, type, amount)
 stock g_mysql_LoadGiftBox()
 {
 	print("[Dynamic Giftbox] Loading the Dynamic Giftbox...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `giftbox`", true, "OnQueryFinish", "iii", LOADGIFTBOX_THREAD, INVALID_PLAYER_ID, -1);
+	mysql_tquery(MainPipeline, "SELECT * FROM `giftbox`", "OnQueryFinish", "iii", LOADGIFTBOX_THREAD, INVALID_PLAYER_ID, -1);
 }
 
 stock SaveDynamicGiftBox()
@@ -6279,88 +6178,88 @@ stock SaveDynamicGiftBox()
 	for(new i = 0; i < 4; i++)
 	{
 		if(i == 0)
-			format(szMiscArray, sizeof(szMiscArray), "UPDATE `giftbox` SET `dgMoney%d` = '%d',", i, dgVar[dgMoney][i]);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `giftbox` SET `dgMoney%d` = '%d',", i, dgVar[dgMoney][i]);
 		else
-			format(szMiscArray, sizeof(szMiscArray), "%s `dgMoney%d` = '%d',", szMiscArray, i, dgVar[dgMoney][i]);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgMoney%d` = '%d',", szMiscArray, i, dgVar[dgMoney][i]);
 
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgRimKit%d` = '%d',", szMiscArray, i, dgVar[dgRimKit][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgFirework%d` = '%d',", szMiscArray, i, dgVar[dgFirework][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgGVIP%d` = '%d',", szMiscArray, i, dgVar[dgGVIP][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgSVIP%d` = '%d',", szMiscArray, i, dgVar[dgSVIP][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgGVIPEx%d` = '%d',", szMiscArray, i, dgVar[dgGVIPEx][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgSVIPEx%d` = '%d',", szMiscArray, i, dgVar[dgSVIPEx][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgCarSlot%d` = '%d',", szMiscArray, i, dgVar[dgCarSlot][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgToySlot%d` = '%d',", szMiscArray, i, dgVar[dgToySlot][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgArmor%d` = '%d',", szMiscArray, i, dgVar[dgArmor][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgFirstaid%d` = '%d',", szMiscArray, i, dgVar[dgFirstaid][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgDDFlag%d` = '%d',", szMiscArray, i, dgVar[dgDDFlag][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgGateFlag%d` = '%d',", szMiscArray, i, dgVar[dgGateFlag][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgCredits%d` = '%d',", szMiscArray, i, dgVar[dgCredits][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgPriorityAd%d` = '%d',", szMiscArray, i, dgVar[dgPriorityAd][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgHealthNArmor%d` = '%d',", szMiscArray, i, dgVar[dgHealthNArmor][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgGiftReset%d` = '%d',", szMiscArray, i, dgVar[dgGiftReset][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgMaterial%d` = '%d',", szMiscArray, i, dgVar[dgMaterial][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgWarning%d` = '%d',", szMiscArray, i, dgVar[dgWarning][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgPot%d` = '%d',", szMiscArray, i, dgVar[dgPot][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgCrack%d` = '%d',", szMiscArray, i, dgVar[dgCrack][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgPaintballToken%d` = '%d',", szMiscArray, i, dgVar[dgPaintballToken][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgVIPToken%d` = '%d',", szMiscArray, i, dgVar[dgVIPToken][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgRespectPoint%d` = '%d',", szMiscArray, i, dgVar[dgRespectPoint][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgCarVoucher%d` = '%d',", szMiscArray, i, dgVar[dgCarVoucher][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgBuddyInvite%d` = '%d',", szMiscArray, i, dgVar[dgBuddyInvite][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgLaser%d` = '%d',", szMiscArray, i, dgVar[dgLaser][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgCustomToy%d` = '%d',", szMiscArray, i, dgVar[dgCustomToy][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgAdmuteReset%d` = '%d',", szMiscArray, i, dgVar[dgAdmuteReset][i]);
-		format(szMiscArray, sizeof(szMiscArray), "%s `dgNewbieMuteReset%d` = '%d',", szMiscArray, i, dgVar[dgNewbieMuteReset][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgRimKit%d` = '%d',", szMiscArray, i, dgVar[dgRimKit][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgFirework%d` = '%d',", szMiscArray, i, dgVar[dgFirework][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgGVIP%d` = '%d',", szMiscArray, i, dgVar[dgGVIP][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgSVIP%d` = '%d',", szMiscArray, i, dgVar[dgSVIP][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgGVIPEx%d` = '%d',", szMiscArray, i, dgVar[dgGVIPEx][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgSVIPEx%d` = '%d',", szMiscArray, i, dgVar[dgSVIPEx][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgCarSlot%d` = '%d',", szMiscArray, i, dgVar[dgCarSlot][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgToySlot%d` = '%d',", szMiscArray, i, dgVar[dgToySlot][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgArmor%d` = '%d',", szMiscArray, i, dgVar[dgArmor][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgFirstaid%d` = '%d',", szMiscArray, i, dgVar[dgFirstaid][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgDDFlag%d` = '%d',", szMiscArray, i, dgVar[dgDDFlag][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgGateFlag%d` = '%d',", szMiscArray, i, dgVar[dgGateFlag][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgCredits%d` = '%d',", szMiscArray, i, dgVar[dgCredits][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgPriorityAd%d` = '%d',", szMiscArray, i, dgVar[dgPriorityAd][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgHealthNArmor%d` = '%d',", szMiscArray, i, dgVar[dgHealthNArmor][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgGiftReset%d` = '%d',", szMiscArray, i, dgVar[dgGiftReset][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgMaterial%d` = '%d',", szMiscArray, i, dgVar[dgMaterial][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgWarning%d` = '%d',", szMiscArray, i, dgVar[dgWarning][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgPot%d` = '%d',", szMiscArray, i, dgVar[dgPot][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgCrack%d` = '%d',", szMiscArray, i, dgVar[dgCrack][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgPaintballToken%d` = '%d',", szMiscArray, i, dgVar[dgPaintballToken][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgVIPToken%d` = '%d',", szMiscArray, i, dgVar[dgVIPToken][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgRespectPoint%d` = '%d',", szMiscArray, i, dgVar[dgRespectPoint][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgCarVoucher%d` = '%d',", szMiscArray, i, dgVar[dgCarVoucher][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgBuddyInvite%d` = '%d',", szMiscArray, i, dgVar[dgBuddyInvite][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgLaser%d` = '%d',", szMiscArray, i, dgVar[dgLaser][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgCustomToy%d` = '%d',", szMiscArray, i, dgVar[dgCustomToy][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgAdmuteReset%d` = '%d',", szMiscArray, i, dgVar[dgAdmuteReset][i]);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgNewbieMuteReset%d` = '%d',", szMiscArray, i, dgVar[dgNewbieMuteReset][i]);
 
 		if(i == 3)
-			format(szMiscArray, sizeof(szMiscArray), "%s `dgRestrictedCarVoucher%d` = '%d'", szMiscArray, i, dgVar[dgRestrictedCarVoucher][i]);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgRestrictedCarVoucher%d` = '%d'", szMiscArray, i, dgVar[dgRestrictedCarVoucher][i]);
 		else
-			format(szMiscArray, sizeof(szMiscArray), "%s `dgPlatinumVIPVoucher%d` = '%d',", szMiscArray, i, dgVar[dgPlatinumVIPVoucher][i]);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `dgPlatinumVIPVoucher%d` = '%d',", szMiscArray, i, dgVar[dgPlatinumVIPVoucher][i]);
 	}
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnszMiscArrayFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, "OnszMiscArrayFinish", "i", SENDDATA_THREAD);
 }
 
 stock LoadPaintballArenas()
 {
 	new query[64];
 	printf("[LoadPaintballArenas] Loading Paintball Arenas from the database, please wait...");
-	format(query, sizeof(query), "SELECT * FROM `arenas` LIMIT %d", MAX_ARENAS);
-	mysql_function_query(MainPipeline, query, true, "OnLoadPaintballArenas", "");
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT * FROM `arenas` LIMIT %d", MAX_ARENAS);
+	mysql_tquery(MainPipeline, query, "OnLoadPaintballArenas", "");
 }
 
 forward OnLoadPaintballArenas();
 public OnLoadPaintballArenas()
 {
-	new fields, rows, index, result[128];
-	cache_get_data(rows, fields, MainPipeline);
+	new rows, index, result[128];
+	cache_get_row_count(rows);
 
 	while((index < rows))
 	{
-		cache_get_field_content(index, "id", result, MainPipeline); PaintBallArena[index][pbSQLId] = strval(result);
-		cache_get_field_content(index, "name", PaintBallArena[index][pbArenaName], MainPipeline, 64);
-		cache_get_field_content(index, "vw", result, MainPipeline); PaintBallArena[index][pbVirtual] = strval(result);
-		cache_get_field_content(index, "interior", result, MainPipeline); PaintBallArena[index][pbInterior] = strval(result);
-		cache_get_field_content(index, "dm1", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbDeathmatch1][0], PaintBallArena[index][pbDeathmatch1][1], PaintBallArena[index][pbDeathmatch1][2], PaintBallArena[index][pbDeathmatch1][3]);
-		cache_get_field_content(index, "dm2", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbDeathmatch2][0], PaintBallArena[index][pbDeathmatch2][1], PaintBallArena[index][pbDeathmatch2][2], PaintBallArena[index][pbDeathmatch2][3]);
-		cache_get_field_content(index, "dm3", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbDeathmatch3][0], PaintBallArena[index][pbDeathmatch3][1], PaintBallArena[index][pbDeathmatch3][2], PaintBallArena[index][pbDeathmatch3][3]);
-		cache_get_field_content(index, "dm4", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbDeathmatch4][0], PaintBallArena[index][pbDeathmatch4][1], PaintBallArena[index][pbDeathmatch4][2], PaintBallArena[index][pbDeathmatch4][3]);
-		cache_get_field_content(index, "red1", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamRed1][0], PaintBallArena[index][pbTeamRed1][1], PaintBallArena[index][pbTeamRed1][2], PaintBallArena[index][pbTeamRed1][3]);
-		cache_get_field_content(index, "red2", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamRed2][0], PaintBallArena[index][pbTeamRed2][1], PaintBallArena[index][pbTeamRed2][2], PaintBallArena[index][pbTeamRed2][3]);
-		cache_get_field_content(index, "red3", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamRed3][0], PaintBallArena[index][pbTeamRed3][1], PaintBallArena[index][pbTeamRed3][2], PaintBallArena[index][pbTeamRed3][3]);
-		cache_get_field_content(index, "blue1", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamBlue1][0], PaintBallArena[index][pbTeamBlue1][1], PaintBallArena[index][pbTeamBlue1][2], PaintBallArena[index][pbTeamBlue1][3]);
-		cache_get_field_content(index, "blue2", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamBlue2][0], PaintBallArena[index][pbTeamBlue2][1], PaintBallArena[index][pbTeamBlue2][2], PaintBallArena[index][pbTeamBlue2][3]);
-		cache_get_field_content(index, "blue3", result, MainPipeline); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamBlue3][0], PaintBallArena[index][pbTeamBlue3][1], PaintBallArena[index][pbTeamBlue3][2], PaintBallArena[index][pbTeamBlue3][3]);
-		cache_get_field_content(index, "flagred", result, MainPipeline); sscanf(result, "p<|>fff", PaintBallArena[index][pbFlagRedSpawn][0], PaintBallArena[index][pbFlagRedSpawn][1], PaintBallArena[index][pbFlagRedSpawn][2]);
-		cache_get_field_content(index, "flagblue", result, MainPipeline); sscanf(result, "p<|>fff", PaintBallArena[index][pbFlagBlueSpawn][0], PaintBallArena[index][pbFlagBlueSpawn][1], PaintBallArena[index][pbFlagBlueSpawn][2]);
-		cache_get_field_content(index, "hill", result, MainPipeline); sscanf(result, "p<|>fff", PaintBallArena[index][pbHillX], PaintBallArena[index][pbHillY], PaintBallArena[index][pbHillZ]);
-		cache_get_field_content(index, "hillr", result, MainPipeline); PaintBallArena[index][pbHillRadius] = floatstr(result);
-		cache_get_field_content(index, "veh1", result, MainPipeline); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh1Model], PaintBallArena[index][pbVeh1X], PaintBallArena[index][pbVeh1Y], PaintBallArena[index][pbVeh1Z], PaintBallArena[index][pbVeh1A]);
- 		cache_get_field_content(index, "veh2", result, MainPipeline); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh2Model], PaintBallArena[index][pbVeh2X], PaintBallArena[index][pbVeh2Y], PaintBallArena[index][pbVeh2Z], PaintBallArena[index][pbVeh2A]);
-		cache_get_field_content(index, "veh3", result, MainPipeline); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh3Model], PaintBallArena[index][pbVeh3X], PaintBallArena[index][pbVeh3Y], PaintBallArena[index][pbVeh3Z], PaintBallArena[index][pbVeh3A]);
-		cache_get_field_content(index, "veh4", result, MainPipeline); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh4Model], PaintBallArena[index][pbVeh4X], PaintBallArena[index][pbVeh4Y], PaintBallArena[index][pbVeh4Z], PaintBallArena[index][pbVeh4A]);
-		cache_get_field_content(index, "veh5", result, MainPipeline); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh5Model], PaintBallArena[index][pbVeh5X], PaintBallArena[index][pbVeh5Y], PaintBallArena[index][pbVeh5Z], PaintBallArena[index][pbVeh5A]);
-		cache_get_field_content(index, "veh6", result, MainPipeline); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh6Model], PaintBallArena[index][pbVeh6X], PaintBallArena[index][pbVeh6Y], PaintBallArena[index][pbVeh6Z], PaintBallArena[index][pbVeh6A]);
+		cache_get_value_name(index, "id", result); PaintBallArena[index][pbSQLId] = strval(result);
+		cache_get_value_name(index, "name", PaintBallArena[index][pbArenaName], 64);
+		cache_get_value_name(index, "vw", result); PaintBallArena[index][pbVirtual] = strval(result);
+		cache_get_value_name(index, "interior", result); PaintBallArena[index][pbInterior] = strval(result);
+		cache_get_value_name(index, "dm1", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbDeathmatch1][0], PaintBallArena[index][pbDeathmatch1][1], PaintBallArena[index][pbDeathmatch1][2], PaintBallArena[index][pbDeathmatch1][3]);
+		cache_get_value_name(index, "dm2", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbDeathmatch2][0], PaintBallArena[index][pbDeathmatch2][1], PaintBallArena[index][pbDeathmatch2][2], PaintBallArena[index][pbDeathmatch2][3]);
+		cache_get_value_name(index, "dm3", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbDeathmatch3][0], PaintBallArena[index][pbDeathmatch3][1], PaintBallArena[index][pbDeathmatch3][2], PaintBallArena[index][pbDeathmatch3][3]);
+		cache_get_value_name(index, "dm4", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbDeathmatch4][0], PaintBallArena[index][pbDeathmatch4][1], PaintBallArena[index][pbDeathmatch4][2], PaintBallArena[index][pbDeathmatch4][3]);
+		cache_get_value_name(index, "red1", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamRed1][0], PaintBallArena[index][pbTeamRed1][1], PaintBallArena[index][pbTeamRed1][2], PaintBallArena[index][pbTeamRed1][3]);
+		cache_get_value_name(index, "red2", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamRed2][0], PaintBallArena[index][pbTeamRed2][1], PaintBallArena[index][pbTeamRed2][2], PaintBallArena[index][pbTeamRed2][3]);
+		cache_get_value_name(index, "red3", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamRed3][0], PaintBallArena[index][pbTeamRed3][1], PaintBallArena[index][pbTeamRed3][2], PaintBallArena[index][pbTeamRed3][3]);
+		cache_get_value_name(index, "blue1", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamBlue1][0], PaintBallArena[index][pbTeamBlue1][1], PaintBallArena[index][pbTeamBlue1][2], PaintBallArena[index][pbTeamBlue1][3]);
+		cache_get_value_name(index, "blue2", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamBlue2][0], PaintBallArena[index][pbTeamBlue2][1], PaintBallArena[index][pbTeamBlue2][2], PaintBallArena[index][pbTeamBlue2][3]);
+		cache_get_value_name(index, "blue3", result); sscanf(result, "p<|>ffff", PaintBallArena[index][pbTeamBlue3][0], PaintBallArena[index][pbTeamBlue3][1], PaintBallArena[index][pbTeamBlue3][2], PaintBallArena[index][pbTeamBlue3][3]);
+		cache_get_value_name(index, "flagred", result); sscanf(result, "p<|>fff", PaintBallArena[index][pbFlagRedSpawn][0], PaintBallArena[index][pbFlagRedSpawn][1], PaintBallArena[index][pbFlagRedSpawn][2]);
+		cache_get_value_name(index, "flagblue", result); sscanf(result, "p<|>fff", PaintBallArena[index][pbFlagBlueSpawn][0], PaintBallArena[index][pbFlagBlueSpawn][1], PaintBallArena[index][pbFlagBlueSpawn][2]);
+		cache_get_value_name(index, "hill", result); sscanf(result, "p<|>fff", PaintBallArena[index][pbHillX], PaintBallArena[index][pbHillY], PaintBallArena[index][pbHillZ]);
+		cache_get_value_name(index, "hillr", result); PaintBallArena[index][pbHillRadius] = floatstr(result);
+		cache_get_value_name(index, "veh1", result); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh1Model], PaintBallArena[index][pbVeh1X], PaintBallArena[index][pbVeh1Y], PaintBallArena[index][pbVeh1Z], PaintBallArena[index][pbVeh1A]);
+ 		cache_get_value_name(index, "veh2", result); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh2Model], PaintBallArena[index][pbVeh2X], PaintBallArena[index][pbVeh2Y], PaintBallArena[index][pbVeh2Z], PaintBallArena[index][pbVeh2A]);
+		cache_get_value_name(index, "veh3", result); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh3Model], PaintBallArena[index][pbVeh3X], PaintBallArena[index][pbVeh3Y], PaintBallArena[index][pbVeh3Z], PaintBallArena[index][pbVeh3A]);
+		cache_get_value_name(index, "veh4", result); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh4Model], PaintBallArena[index][pbVeh4X], PaintBallArena[index][pbVeh4Y], PaintBallArena[index][pbVeh4Z], PaintBallArena[index][pbVeh4A]);
+		cache_get_value_name(index, "veh5", result); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh5Model], PaintBallArena[index][pbVeh5X], PaintBallArena[index][pbVeh5Y], PaintBallArena[index][pbVeh5Z], PaintBallArena[index][pbVeh5A]);
+		cache_get_value_name(index, "veh6", result); sscanf(result, "p<|>dffff", PaintBallArena[index][pbVeh6Model], PaintBallArena[index][pbVeh6X], PaintBallArena[index][pbVeh6Y], PaintBallArena[index][pbVeh6Z], PaintBallArena[index][pbVeh6A]);
 		index++;
 	}
 	if(index == 0) print("[LoadPaintBallArenas] No Paintball Arenas have been loaded.");
@@ -6371,31 +6270,31 @@ public OnLoadPaintballArenas()
 stock SavePaintballArena(index)
 {
 	new query[2048];
-	format(query, sizeof(query), "UPDATE `arenas` SET `name`='%s',", g_mysql_ReturnEscaped(PaintBallArena[index][pbArenaName], MainPipeline));
-	format(query, sizeof(query), "%s `vw`=%d,",query, PaintBallArena[index][pbVirtual]);
-	format(query, sizeof(query), "%s `interior`=%d,", query, PaintBallArena[index][pbInterior]);
-	format(query, sizeof(query), "%s `dm1`='%f|%f|%f|%f',", query, PaintBallArena[index][pbDeathmatch1][0], PaintBallArena[index][pbDeathmatch1][1], PaintBallArena[index][pbDeathmatch1][2], PaintBallArena[index][pbDeathmatch1][3]);
-	format(query, sizeof(query), "%s `dm2`='%f|%f|%f|%f',", query, PaintBallArena[index][pbDeathmatch2][0], PaintBallArena[index][pbDeathmatch2][1], PaintBallArena[index][pbDeathmatch2][2], PaintBallArena[index][pbDeathmatch2][3]);
-	format(query, sizeof(query), "%s `dm3`='%f|%f|%f|%f',", query, PaintBallArena[index][pbDeathmatch3][0], PaintBallArena[index][pbDeathmatch3][1], PaintBallArena[index][pbDeathmatch3][2], PaintBallArena[index][pbDeathmatch3][3]);
-	format(query, sizeof(query), "%s `dm4`='%f|%f|%f|%f',", query, PaintBallArena[index][pbDeathmatch4][0], PaintBallArena[index][pbDeathmatch4][1], PaintBallArena[index][pbDeathmatch4][2], PaintBallArena[index][pbDeathmatch4][3]);
-	format(query, sizeof(query), "%s `red1`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamRed1][0], PaintBallArena[index][pbTeamRed1][1], PaintBallArena[index][pbTeamRed1][2], PaintBallArena[index][pbTeamRed1][3]);
-	format(query, sizeof(query), "%s `red2`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamRed2][0], PaintBallArena[index][pbTeamRed2][1], PaintBallArena[index][pbTeamRed2][2], PaintBallArena[index][pbTeamRed2][3]);
-	format(query, sizeof(query), "%s `red3`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamRed3][0], PaintBallArena[index][pbTeamRed3][1], PaintBallArena[index][pbTeamRed3][2], PaintBallArena[index][pbTeamRed3][3]);
-	format(query, sizeof(query), "%s `blue1`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamBlue1][0], PaintBallArena[index][pbTeamBlue1][1], PaintBallArena[index][pbTeamBlue1][2], PaintBallArena[index][pbTeamBlue1][3]);
-	format(query, sizeof(query), "%s `blue2`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamBlue2][0], PaintBallArena[index][pbTeamBlue2][1], PaintBallArena[index][pbTeamBlue2][2], PaintBallArena[index][pbTeamBlue2][3]);
-	format(query, sizeof(query), "%s `blue3`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamBlue3][0], PaintBallArena[index][pbTeamBlue3][1], PaintBallArena[index][pbTeamBlue3][2], PaintBallArena[index][pbTeamBlue3][3]);
-	format(query, sizeof(query), "%s `flagred`='%f|%f|%f',", query, PaintBallArena[index][pbFlagRedSpawn][0], PaintBallArena[index][pbFlagRedSpawn][1], PaintBallArena[index][pbFlagRedSpawn][2]);
-	format(query, sizeof(query), "%s `flagblue`='%f|%f|%f',", query, PaintBallArena[index][pbFlagBlueSpawn][0], PaintBallArena[index][pbFlagBlueSpawn][1], PaintBallArena[index][pbFlagBlueSpawn][2]);
-	format(query, sizeof(query), "%s `hill`='%f|%f|%f',", query, PaintBallArena[index][pbHillX], PaintBallArena[index][pbHillY], PaintBallArena[index][pbHillZ]);
-	format(query, sizeof(query), "%s `hillr`=%f,", query, PaintBallArena[index][pbHillRadius]);
-	format(query, sizeof(query), "%s `veh1`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh1Model], PaintBallArena[index][pbVeh1X], PaintBallArena[index][pbVeh1Y], PaintBallArena[index][pbVeh1Z], PaintBallArena[index][pbVeh1A]);
-	format(query, sizeof(query), "%s `veh2`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh2Model], PaintBallArena[index][pbVeh2X], PaintBallArena[index][pbVeh2Y], PaintBallArena[index][pbVeh2Z], PaintBallArena[index][pbVeh2A]);
-	format(query, sizeof(query), "%s `veh3`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh3Model], PaintBallArena[index][pbVeh3X], PaintBallArena[index][pbVeh3Y], PaintBallArena[index][pbVeh3Z], PaintBallArena[index][pbVeh3A]);
-	format(query, sizeof(query), "%s `veh4`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh4Model], PaintBallArena[index][pbVeh4X], PaintBallArena[index][pbVeh4Y], PaintBallArena[index][pbVeh4Z], PaintBallArena[index][pbVeh4A]);
-	format(query, sizeof(query), "%s `veh5`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh5Model], PaintBallArena[index][pbVeh5X], PaintBallArena[index][pbVeh5Y], PaintBallArena[index][pbVeh5Z], PaintBallArena[index][pbVeh5A]);
-	format(query, sizeof(query), "%s `veh6`='%d|%f|%f|%f|%f'", query, PaintBallArena[index][pbVeh6Model], PaintBallArena[index][pbVeh6X], PaintBallArena[index][pbVeh6Y], PaintBallArena[index][pbVeh6Z], PaintBallArena[index][pbVeh6A]);
-	format(query, sizeof(query), "%s WHERE `id` = %d", query, PaintBallArena[index][pbSQLId]);
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `arenas` SET `name`='%e',", PaintBallArena[index][pbArenaName]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `vw`=%d,",query, PaintBallArena[index][pbVirtual]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `interior`=%d,", query, PaintBallArena[index][pbInterior]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `dm1`='%f|%f|%f|%f',", query, PaintBallArena[index][pbDeathmatch1][0], PaintBallArena[index][pbDeathmatch1][1], PaintBallArena[index][pbDeathmatch1][2], PaintBallArena[index][pbDeathmatch1][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `dm2`='%f|%f|%f|%f',", query, PaintBallArena[index][pbDeathmatch2][0], PaintBallArena[index][pbDeathmatch2][1], PaintBallArena[index][pbDeathmatch2][2], PaintBallArena[index][pbDeathmatch2][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `dm3`='%f|%f|%f|%f',", query, PaintBallArena[index][pbDeathmatch3][0], PaintBallArena[index][pbDeathmatch3][1], PaintBallArena[index][pbDeathmatch3][2], PaintBallArena[index][pbDeathmatch3][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `dm4`='%f|%f|%f|%f',", query, PaintBallArena[index][pbDeathmatch4][0], PaintBallArena[index][pbDeathmatch4][1], PaintBallArena[index][pbDeathmatch4][2], PaintBallArena[index][pbDeathmatch4][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `red1`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamRed1][0], PaintBallArena[index][pbTeamRed1][1], PaintBallArena[index][pbTeamRed1][2], PaintBallArena[index][pbTeamRed1][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `red2`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamRed2][0], PaintBallArena[index][pbTeamRed2][1], PaintBallArena[index][pbTeamRed2][2], PaintBallArena[index][pbTeamRed2][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `red3`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamRed3][0], PaintBallArena[index][pbTeamRed3][1], PaintBallArena[index][pbTeamRed3][2], PaintBallArena[index][pbTeamRed3][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `blue1`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamBlue1][0], PaintBallArena[index][pbTeamBlue1][1], PaintBallArena[index][pbTeamBlue1][2], PaintBallArena[index][pbTeamBlue1][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `blue2`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamBlue2][0], PaintBallArena[index][pbTeamBlue2][1], PaintBallArena[index][pbTeamBlue2][2], PaintBallArena[index][pbTeamBlue2][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `blue3`='%f|%f|%f|%f',", query, PaintBallArena[index][pbTeamBlue3][0], PaintBallArena[index][pbTeamBlue3][1], PaintBallArena[index][pbTeamBlue3][2], PaintBallArena[index][pbTeamBlue3][3]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `flagred`='%f|%f|%f',", query, PaintBallArena[index][pbFlagRedSpawn][0], PaintBallArena[index][pbFlagRedSpawn][1], PaintBallArena[index][pbFlagRedSpawn][2]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `flagblue`='%f|%f|%f',", query, PaintBallArena[index][pbFlagBlueSpawn][0], PaintBallArena[index][pbFlagBlueSpawn][1], PaintBallArena[index][pbFlagBlueSpawn][2]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `hill`='%f|%f|%f',", query, PaintBallArena[index][pbHillX], PaintBallArena[index][pbHillY], PaintBallArena[index][pbHillZ]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `hillr`=%f,", query, PaintBallArena[index][pbHillRadius]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `veh1`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh1Model], PaintBallArena[index][pbVeh1X], PaintBallArena[index][pbVeh1Y], PaintBallArena[index][pbVeh1Z], PaintBallArena[index][pbVeh1A]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `veh2`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh2Model], PaintBallArena[index][pbVeh2X], PaintBallArena[index][pbVeh2Y], PaintBallArena[index][pbVeh2Z], PaintBallArena[index][pbVeh2A]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `veh3`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh3Model], PaintBallArena[index][pbVeh3X], PaintBallArena[index][pbVeh3Y], PaintBallArena[index][pbVeh3Z], PaintBallArena[index][pbVeh3A]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `veh4`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh4Model], PaintBallArena[index][pbVeh4X], PaintBallArena[index][pbVeh4Y], PaintBallArena[index][pbVeh4Z], PaintBallArena[index][pbVeh4A]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `veh5`='%d|%f|%f|%f|%f',", query, PaintBallArena[index][pbVeh5Model], PaintBallArena[index][pbVeh5X], PaintBallArena[index][pbVeh5Y], PaintBallArena[index][pbVeh5Z], PaintBallArena[index][pbVeh5A]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s `veh6`='%d|%f|%f|%f|%f'", query, PaintBallArena[index][pbVeh6Model], PaintBallArena[index][pbVeh6X], PaintBallArena[index][pbVeh6Y], PaintBallArena[index][pbVeh6Z], PaintBallArena[index][pbVeh6A]);
+	mysql_format(MainPipeline, query, sizeof(query), "%s WHERE `id` = %d", query, PaintBallArena[index][pbSQLId]);
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock SavePaintballArenas()
@@ -6409,9 +6308,9 @@ stock SavePaintballArenas()
 stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid, manual)
 {
 	new szQuery[512], escapedstring[128];
-	mysql_real_escape_string(reason, escapedstring);
+	mysql_escape_string(reason, escapedstring);
 
-	format(szQuery, sizeof(szQuery), "INSERT INTO `nonrppoints` (sqlid, point, expiration, reason, issuer, active, manual) VALUES ('%d', '%d', '%d', '%s', '%d', '1', '%d')",
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "INSERT INTO `nonrppoints` (sqlid, point, expiration, reason, issuer, active, manual) VALUES ('%d', '%d', '%d', '%s', '%d', '1', '%d')",
 	GetPlayerSQLId(playerid),
 	point,
 	expiration,
@@ -6419,14 +6318,14 @@ stock AddNonRPPoint(playerid, point, expiration, reason[], issuerid, manual)
 	GetPlayerSQLId(issuerid),
 	manual);
 
-	mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock LoadPlayerNonRPPoints(playerid)
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d'", PlayerInfo[playerid][pId]);
-	mysql_function_query(MainPipeline, string, true, "OnQueryFinish", "iii", LOADPNONRPOINTS_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `nonrppoints` WHERE `sqlid` = '%d'", PlayerInfo[playerid][pId]);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "iii", LOADPNONRPOINTS_THREAD, playerid, g_arrQueryHandle{playerid});
 	return true;
 }
 
@@ -6436,7 +6335,7 @@ public OnWDWhitelist(index)
 	new string[128], name[24];
 	GetPVarString(index, "OnWDWhitelist", name, 24);
 
-	if(mysql_affected_rows(MainPipeline)) {
+	if(cache_affected_rows()) {
 		format(string, sizeof(string), "You have successfully whitelisted %s's account.", name);
 		SendClientMessageEx(index, COLOR_WHITE, string);
 		format(string, sizeof(string), "%s has IP Whitelisted %s", GetPlayerNameEx(index), name);
@@ -6454,14 +6353,13 @@ public OnWDWhitelist(index)
 forward FetchWatchlist(index);
 public FetchWatchlist(index)
 {
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
-	#pragma unused fields
+	new rows;
+	cache_get_row_count(rows);
 	for(new i = 0; i < rows; i++)
 	{
 		new szResult[32], points, sqlid;
-		cache_get_field_content(i, "sqlid", szResult, MainPipeline); sqlid = strval(szResult);
-		cache_get_field_content(i, "point", szResult, MainPipeline); points = strval(szResult);
+		cache_get_value_name(i, "sqlid", szResult); sqlid = strval(szResult);
+		cache_get_value_name(i, "point", szResult); points = strval(szResult);
 
 		foreach(new x: Player)
 		{
@@ -6473,21 +6371,20 @@ public FetchWatchlist(index)
 		}
 	}
 
-	mysql_function_query(MainPipeline, "SELECT sqlid, point  FROM `nonrppoints` LEFT JOIN accounts on sqlid = accounts.id WHERE (`active` = '1' AND `manual` = '0') AND accounts.`Online` = 1 ORDER BY `point` DESC LIMIT 15", true, "FetchWatchlist2", "i", index);
+	mysql_tquery(MainPipeline, "SELECT sqlid, point  FROM `nonrppoints` LEFT JOIN accounts on sqlid = accounts.id WHERE (`active` = '1' AND `manual` = '0') AND accounts.`Online` = 1 ORDER BY `point` DESC LIMIT 15", "FetchWatchlist2", "i", index);
 	return true;
 }
 
 forward FetchWatchlist2(index, input[]);
 public FetchWatchlist2(index, input[])
 {
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
-	#pragma unused fields
+	new rows;
+	cache_get_row_count(rows);
 	for(new i = 0; i < rows; i++)
 	{
 		new szResult[32], points, sqlid;
-		cache_get_field_content(i, "sqlid", szResult, MainPipeline); sqlid = strval(szResult);
-		cache_get_field_content(i, "point", szResult, MainPipeline); points = strval(szResult);
+		cache_get_value_name(i, "sqlid", szResult); sqlid = strval(szResult);
+		cache_get_value_name(i, "point", szResult); points = strval(szResult);
 
 		foreach(new x: Player)
 		{
@@ -6510,7 +6407,7 @@ public OnSetVMute(playerid, task)
 	new string[128], tmpName[MAX_PLAYER_NAME];
 	GetPVarString(playerid, "OnSetVMute", tmpName, sizeof(tmpName));
 	DeletePVar(playerid, "OnSetVMute");
-	if(cache_affected_rows(MainPipeline))
+	if(cache_affected_rows())
 	{
 		format(string, sizeof(string), "AdmCmd: %s has offline vip %s %s.", GetPlayerNameEx(playerid), (task==1)?("muted"):("unmuted"), tmpName);
 		Log("logs/mute.log", string);
@@ -6527,8 +6424,8 @@ public OnSetVMute(playerid, task)
 forward CheckClientWatchlist(index);
 public CheckClientWatchlist(index)
 {
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows;
+	cache_get_row_count(rows);
 	if(rows == 0) PlayerInfo[index][pWatchlist] = 0;
 	else PlayerInfo[index][pWatchlist] = 1;
 	return true;
@@ -6537,13 +6434,12 @@ public CheckClientWatchlist(index)
 forward WatchWatchlist(index);
 public WatchWatchlist(index)
 {
-	new rows, fields, result;
-	cache_get_data(rows, fields, MainPipeline);
-	#pragma unused fields
+	new rows, result;
+	cache_get_row_count(rows);
 	for(new i = 0; i < rows; i++)
 	{
 		new szResult[32], sqlid;
-		cache_get_field_content(i, "sqlid", szResult, MainPipeline); sqlid = strval(szResult);
+		cache_get_value_name(i, "sqlid", szResult); sqlid = strval(szResult);
 
 		foreach(new x: Player)
 		{
@@ -6574,13 +6470,13 @@ public WatchWatchlist(index)
 forward CheckTrunkContents(playerid);
 public CheckTrunkContents(playerid)
 {
-	new rows, fields, TrunkWeaps[3];
-	cache_get_data(rows, fields, MainPipeline);
+	new rows, TrunkWeaps[3];
+	cache_get_row_count(rows);
 	if(rows == 0) return 1;
 	new string[189];
-	TrunkWeaps[0] = cache_get_field_content_int(0, "pvWeapon0", MainPipeline);
-	TrunkWeaps[1] = cache_get_field_content_int(0, "pvWeapon1", MainPipeline);
-	TrunkWeaps[2] = cache_get_field_content_int(0, "pvWeapon2", MainPipeline);
+	cache_get_value_name_int(0, "pvWeapon0", TrunkWeaps[0]);
+	cache_get_value_name_int(0, "pvWeapon1", TrunkWeaps[1]);
+	cache_get_value_name_int(0, "pvWeapon2", TrunkWeaps[2]);
 	new
 		i = 0;
 	while (i < 3 && (!TrunkWeaps[i] || PlayerInfo[playerid][pGuns][GetWeaponSlot(TrunkWeaps[i])] ==  TrunkWeaps[i]))
@@ -6592,8 +6488,8 @@ public CheckTrunkContents(playerid)
 		format(string, sizeof(string), "You found a %s.", GetWeaponNameEx(TrunkWeaps[i]));
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 		GivePlayerValidWeapon(playerid, TrunkWeaps[i]);
-		format(string, sizeof(string), "UPDATE `vehicles` SET `pvWeapon%d` = '0' WHERE `id` = '%d' AND `sqlID` = '%d'", i, GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
-		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		mysql_format(MainPipeline, string, sizeof(string), "UPDATE `vehicles` SET `pvWeapon%d` = '0' WHERE `id` = '%d' AND `sqlID` = '%d'", i, GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
+		mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		new ip[MAX_PLAYER_NAME], ownername[MAX_PLAYER_NAME], vehicleid = GetPVarInt(playerid, "LockPickVehicle");
 		GetPlayerIp(playerid, ip, sizeof(ip)), GetPVarString(playerid, "LockPickPlayerName", ownername, sizeof(ownername));
 		format(string, sizeof(string), "[LOCK PICK] %s(%d) (IP:%s) successfully cracked the trunk of a %s(VID:%d SQLId %d Weapon ID: %d) owned by %s(Offline, SQLId:%d)", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), ip, GetVehicleName(vehicleid), vehicleid, GetPVarInt(playerid, "LockPickVehicleSQLId"), TrunkWeaps[i], ownername, GetPVarInt(playerid, "LockPickPlayerSQLId"));
@@ -6605,17 +6501,19 @@ public CheckTrunkContents(playerid)
 forward OnRequestTransferFlag(playerid, flagid, to, from);
 public OnRequestTransferFlag(playerid, flagid, to, from)
 {
-	new rows, fields, string[512];
+	new rows, value, string[512];
 	new FlagText[64], FlagIssuer[MAX_PLAYER_NAME], FlagDate[24];
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
 	if(!rows) return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Flag does not exist!", "Close", "");
-	if(cache_get_field_content_int(0, "type", MainPipeline) == 2)
+	cache_get_value_name_int(0, "type", value);
+	if(value == 2)
 		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", "Administrative flags cannot be transferred!", "Close", "");
-	if(cache_get_field_content_int(0, "id", MainPipeline) != GetPlayerSQLId(from))
+	cache_get_value_name_int(0, "id", value);
+	if(value != GetPlayerSQLId(from))
 		return format(string, sizeof(string), "Flag is not owned by %s!", GetPlayerNameEx(from)), ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "{FF0000}Flag Error:", string, "Close", "");
-	cache_get_field_content(0, "flag", FlagText, MainPipeline);
-	cache_get_field_content(0, "issuer", FlagIssuer, MainPipeline, MAX_PLAYER_NAME);
-	cache_get_field_content(0, "time", FlagDate, MainPipeline);
+	cache_get_value_name(0, "flag", FlagText);
+	cache_get_value_name(0, "issuer", FlagIssuer, MAX_PLAYER_NAME);
+	cache_get_value_name(0, "time", FlagDate);
 	SetPVarInt(playerid, "Flag_Transfer_ID", flagid);
 	SetPVarInt(playerid, "Flag_Transfer_To", to);
 	SetPVarInt(playerid, "Flag_Transfer_From", from);
@@ -6627,15 +6525,15 @@ public OnRequestTransferFlag(playerid, flagid, to, from)
 forward GetShiftInfo(playerid, szMessage[]);
 public GetShiftInfo(playerid, szMessage[])
 {
-	new rows, fields, fieldname[24], szResult[32], string[1288], shift[4], needs, signedup;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows, fieldname[24], szResult[32], string[1288], shift[4], needs, signedup;
+	cache_get_row_count(rows);
 
 	if(rows)
 	{
 		format(fieldname, sizeof(fieldname), "needs_%s", GetWeekday());
-		cache_get_field_content(0, "shift", shift, MainPipeline, sizeof(shift));
-		cache_get_field_content(0, fieldname, szResult, MainPipeline); needs = strval(szResult);
-		cache_get_field_content(0, "ShiftCount", szResult, MainPipeline); signedup = strval(szResult);
+		cache_get_value_name(0, "shift", shift, sizeof(shift));
+		cache_get_value_name(0, fieldname, szResult); needs = strval(szResult);
+		cache_get_value_name(0, "ShiftCount", szResult); signedup = strval(szResult);
 	}
 
 	if(needs - signedup > 0) format(string, sizeof(string), "The current shift is %s. We have {FF0000}%d/%d {FFFFFF}Admins signed up for the shift.", shift, signedup, needs);
@@ -6665,8 +6563,8 @@ public GetShiftInfo(playerid, szMessage[])
 stock g_mysql_LoadFIFInfo(playerid)
 {
 	new szQuery[128];
-	format(szQuery, sizeof(szQuery), "SELECT * FROM `FallIntoFun` WHERE `player` = %d", PlayerInfo[playerid][pId]);
-	mysql_function_query(MainPipeline, szQuery, true, "OnQueryFinish", "iii", LOADFIF_THREAD, playerid, g_arrQueryHandle{playerid});
+	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT * FROM `fallintofun` WHERE `player` = %d", PlayerInfo[playerid][pId]);
+	mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "iii", LOADFIF_THREAD, playerid, g_arrQueryHandle{playerid});
 	return 1;
 }
 
@@ -6675,8 +6573,8 @@ stock g_mysql_SaveFIF(playerid)
 	if(IsPlayerConnected(playerid))
 	{
 		new szQuery[128];
-		format(szQuery, sizeof(szQuery), "UPDATE `FallIntoFun` SET `FIFHours` = %d, `FIFChances` = %d WHERE `player` = %d", FIFInfo[playerid][FIFHours], FIFInfo[playerid][FIFChances], PlayerInfo[playerid][pId]);
-		mysql_function_query(MainPipeline, szQuery, false, "OnSaveFIF", "i", playerid);
+		mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `fallintofun` SET `FIFHours` = %d, `FIFChances` = %d WHERE `player` = %d", FIFInfo[playerid][FIFHours], FIFInfo[playerid][FIFChances], PlayerInfo[playerid][pId]);
+		mysql_tquery(MainPipeline, szQuery, "OnSaveFIF", "i", playerid);
 	}
 }
 
@@ -6690,12 +6588,12 @@ public OnSaveFIF(playerid) {
 
 g_mysql_SaveGroupToy(playerid) {
 
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET\
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET\
 		`GroupToy0` = '%f', `GroupToy1` = '%f', `GroupToy2` = '%f', `GroupToy3` = '%f', `GroupToy4` = '%f', `GroupToy5` = '%f', `GroupToy6` = '%f', \
 		`GroupToy7` = '%f', `GroupToy8` = '%f' WHERE `id` = '%d'", PlayerInfo[playerid][pGroupToy][0], PlayerInfo[playerid][pGroupToy][1],
 		PlayerInfo[playerid][pGroupToy][2], PlayerInfo[playerid][pGroupToy][3], PlayerInfo[playerid][pGroupToy][4],
 		PlayerInfo[playerid][pGroupToy][5], PlayerInfo[playerid][pGroupToy][6], PlayerInfo[playerid][pGroupToy][7],
 		PlayerInfo[playerid][pGroupToy][8], GetPlayerSQLId(playerid));
 
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 }

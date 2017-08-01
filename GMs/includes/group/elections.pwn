@@ -158,23 +158,22 @@ CastVote(playerid, iOptionID) {
 
 	szMiscArray[0] = 0;
 	if(PlayerInfo[playerid][pNation] != 0) return SendClientMessage(playerid, COLOR_GREY, "You're not a San Andreas Citizen.");
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `electionresults` WHERE `ip` = '%s'", PlayerInfo[playerid][pIP]);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnIPVoteCheck", "ii", playerid, iOptionID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `electionresults` WHERE `ip` = '%s'", PlayerInfo[playerid][pIP]);
+	mysql_tquery(MainPipeline, szMiscArray, "OnIPVoteCheck", "ii", playerid, iOptionID);
 	return 1;
 }
 forward OnIPVoteCheck(playerid, iOptionID);
 public OnIPVoteCheck(playerid, iOptionID)
 {
-	new 
-		iRows = cache_get_row_count(MainPipeline);
-
+	new iRows;
+	cache_get_row_count(iRows);
 	szMiscArray[0] = 0;
 
 	if(iRows > 0) {
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You have voted already!");
 	} else {
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `electionresults` WHERE `accountid` = '%d'", PlayerInfo[playerid][pId]);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCastVote", "ii", playerid, iOptionID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `electionresults` WHERE `accountid` = '%d'", PlayerInfo[playerid][pId]);
+	mysql_tquery(MainPipeline, szMiscArray, "OnCastVote", "ii", playerid, iOptionID);
 	}
 	return 1;
 
@@ -182,17 +181,16 @@ public OnIPVoteCheck(playerid, iOptionID)
 forward OnCastVote(playerid, iOptionID);
 public OnCastVote(playerid, iOptionID) {
 
-	new 
-		iRows = cache_get_row_count(MainPipeline);
-
+	new iRows;
+	cache_get_row_count(iRows);
 	szMiscArray[0] = 0;
 
 	if(iRows > 0) {
 		return SendClientMessageEx(playerid, COLOR_WHITE, "You have voted already!");
 	}
 	else {
-		format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `electionresults` (`accountid`, `optionid`, `ip`) VALUES ('%d', '%d', '%s')", PlayerInfo[playerid][pId], iOptionID, PlayerInfo[playerid][pIP]);
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnFinaliseVote", "ii", playerid, iOptionID);
+		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `electionresults` (`accountid`, `optionid`, `ip`) VALUES ('%d', '%d', '%s')", PlayerInfo[playerid][pId], iOptionID, PlayerInfo[playerid][pIP]);
+		mysql_tquery(MainPipeline, szMiscArray, "OnFinaliseVote", "ii", playerid, iOptionID);
 	}
 	return 1;
 }
@@ -207,7 +205,7 @@ public OnFinaliseVote(playerid, iOptionID) {
 CountVotes(playerid) {
 
 	if(GetGVarInt("CandidateCount") == 0) return SendClientMessageEx(playerid, COLOR_RED, "There are no candidates, therefore no count can be made.");
-	else mysql_function_query(MainPipeline, "SELECT `optionid` FROM `electionresults`", true, "OnCountVotes", "i", playerid);
+	else mysql_tquery(MainPipeline, "SELECT `optionid` FROM `electionresults`", "OnCountVotes", "i", playerid);
 	return 1;
 }
 
@@ -217,23 +215,20 @@ public OnCountVotes(playerid) {
 	new 
 		iRows,
 		iCount,
-		iFields,
+		iTemp,
 		szTemp[MAX_PLAYER_NAME],
 		iCandidates = GetGVarInt("CandidateCount");
-
 	szMiscArray[0] = 0;
-
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 
 	while(iCount < iRows) {
-		new iTemp = cache_get_field_content_int(iCount, "optionid", MainPipeline);
+		cache_get_value_name_int(iCount, "optionid", iTemp);
 		SetGVarInt("Results", GetGVarInt("Results", iTemp)+1, iTemp);
-
 		iCount++;
 	}
+
 	SendClientMessageToAll(COLOR_WHITE, "[ELECTION NEWS] Ladies and gentlemen, the elections have concluded and here are the results:");
 	for(new i = 0; i < iCandidates; ++i) {
-		
 		GetGVarString("CandidateName", szTemp, sizeof(szTemp), i);
 		format(szMiscArray, sizeof(szMiscArray), "%s - %d votes.", szTemp, GetGVarInt("Results", i));
 		SendClientMessageToAll(COLOR_WHITE, szMiscArray);

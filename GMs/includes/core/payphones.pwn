@@ -175,33 +175,29 @@ PayPhone_Menu(playerid, i) {
 LoadPayPhones() {
 
 	print("[Pay Phones] Loading pay phones from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `payphones`", true, "OnLoadPayPhones", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `payphones`", "OnLoadPayPhones", "");
 }
 
 forward OnLoadPayPhones();
-public OnLoadPayPhones() {
-		
-	new iRows = cache_get_row_count(MainPipeline);
+public OnLoadPayPhones()
+{
+	new iRows;
+	cache_get_row_count(iRows);
 	if(!iRows) return print("[Pay Phones] No pay phones were found in the database.");
+	new iRow, value, Float:fValue;
 
-	new
-	    iFields,
-	    iRow;
-	   
-	cache_get_data(iRows, iFields, MainPipeline);
-	
 	while(iRow < iRows) {
 
-		arrPayPhoneData[iRow][pp_iNumber] = cache_get_field_content_int(iRow, "number", MainPipeline);
+		cache_get_value_name_int(iRow, "number", arrPayPhoneData[iRow][pp_iNumber]);
 		arrPayPhoneData[iRow][pp_iCallerID] = INVALID_PLAYER_ID;
 
 		ProcessPayPhone(iRow,
-			cache_get_field_content_float(iRow, "posx", MainPipeline),
-			cache_get_field_content_float(iRow, "posy", MainPipeline),
-			cache_get_field_content_float(iRow, "posz", MainPipeline),
-			cache_get_field_content_float(iRow, "rotz", MainPipeline),
-			cache_get_field_content_int(iRow, "vw", MainPipeline),
-			cache_get_field_content_int(iRow, "int", MainPipeline));
+			cache_get_value_name_float(iRow, "posx", fValue),
+			cache_get_value_name_float(iRow, "posy", fValue),
+			cache_get_value_name_float(iRow, "posz", fValue),
+			cache_get_value_name_float(iRow, "rotz", fValue),
+			cache_get_value_name_int(iRow, "vw", value),
+			cache_get_value_name_int(iRow, "int", value));
 	    
 		iRow++;
 	}
@@ -275,7 +271,7 @@ PayPhone_Save(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
 
 	if(!IsValidDynamicArea(arrPayPhoneData[i][pp_iAreaID])) return 1;    
 	    
-	format(szMiscArray, sizeof szMiscArray, "UPDATE `payphones` SET\
+	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `payphones` SET\
 		`number` = %d, \
 		`vw` = %i, \
 	    `int` = %i, \
@@ -291,7 +287,7 @@ PayPhone_Save(i, Float:X, Float:Y, Float:Z, Float:RZ, iVW, iINT) {
 		Z,
 		RZ
 	);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 	return 1;
 }
 
@@ -352,7 +348,7 @@ CMD:createphone(playerid, params[]) {
 			}
 
 			DestroyDynamicObject(arrPayPhoneData[i][pp_iObjectID]);
-      		format(szMiscArray, sizeof(szMiscArray), "UPDATE `payphones` SET `number` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', `rotz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'",
+      		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `payphones` SET `number` = '%d', `posx` = '%f', `posy` = '%f', `posz` = '%f', `rotz` = '%f', `vw` = '%d', `int` = '%d' WHERE `id` = '%d'",
 	    		arrPayPhoneData[i][pp_iNumber],
 	    		fPos[0],
 	    		fPos[1],
@@ -362,7 +358,7 @@ CMD:createphone(playerid, params[]) {
 	    		iINT,
 	    		i+1);
 
-			return mysql_function_query(MainPipeline, szMiscArray, true, "OnCreatePayPhone", "iiffffii", playerid, i, fPos[0], fPos[1], fPos[2], fPos[3], iVW, iINT);
+			return mysql_tquery(MainPipeline, szMiscArray, "OnCreatePayPhone", "iiffffii", playerid, i, fPos[0], fPos[1], fPos[2], fPos[3], iVW, iINT);
 		}
 	}
 	SendClientMessageEx(playerid, COLOR_GRAD1, "There are no more pay phone slots available.");
@@ -382,8 +378,8 @@ CMD:destroyphone(playerid, params[]) {
 	if(!IsValidDynamicArea(arrPayPhoneData[i][pp_iAreaID]))
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "The specified pay phone ID has not been used.");
 	    
-	format(szMiscArray, sizeof szMiscArray, "UPDATE `payphones` SET `number` = '-1', `posx` = '0', `posy` = '0', `posz` = '0', `vw` = '0', `int` = '0' WHERE `id` = %i", i+1);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnDeletePayPhone", "ii", playerid, i);
+	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `payphones` SET `number` = '-1', `posx` = '0', `posy` = '0', `posz` = '0', `vw` = '0', `int` = '0' WHERE `id` = %i", i+1);
+	mysql_tquery(MainPipeline, szMiscArray, "OnDeletePayPhone", "ii", playerid, i);
 	return 1;
 }
 

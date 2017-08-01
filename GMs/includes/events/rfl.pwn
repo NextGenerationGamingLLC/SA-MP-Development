@@ -97,10 +97,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response)
 			{
 				if(listitem == 0) {
-					mysql_function_query(MainPipeline, "SELECT * FROM `rflteams` WHERE `used` > 0 ORDER BY `laps` DESC LIMIT 15;", true, "OnRFLPScore", "ii", playerid, 1);
+					mysql_tquery(MainPipeline, "SELECT * FROM `rflteams` WHERE `used` > 0 ORDER BY `laps` DESC LIMIT 15;", "OnRFLPScore", "ii", playerid, 1);
 				}
 				else if(listitem == 1) {
-					mysql_function_query(MainPipeline, "SELECT `Username`, `RacePlayerLaps` FROM `accounts` WHERE `RacePlayerLaps` > 0 ORDER BY `RacePlayerLaps` DESC LIMIT 25;", true, "OnRFLPScore", "ii", playerid, 2);
+					mysql_tquery(MainPipeline, "SELECT `Username`, `RacePlayerLaps` FROM `accounts` WHERE `RacePlayerLaps` > 0 ORDER BY `RacePlayerLaps` DESC LIMIT 25;", "OnRFLPScore", "ii", playerid, 2);
 				}
 			}
 			return 1;
@@ -122,8 +122,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if(response)
 			{
 				if(temp > 0) {
-					format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `rflteams` WHERE `used` > 0 ORDER BY `laps` DESC LIMIT %d , 15;", temp);
-					mysql_function_query(MainPipeline, szMiscArray, true, "OnRFLPScore", "ii", playerid, 1);
+					mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `rflteams` WHERE `used` > 0 ORDER BY `laps` DESC LIMIT %d , 15;", temp);
+					mysql_tquery(MainPipeline, szMiscArray, "OnRFLPScore", "ii", playerid, 1);
 				}
 			}
 			else
@@ -262,8 +262,8 @@ CMD:leaverflteam(playerid, params[])
 			}
 		}	
 		OnPlayerStatsUpdate(playerid);
-		format(string, sizeof(string), "UPDATE `accounts` SET `RFLTeam` = -1, `RFLTeamL` = -1 WHERE `RFLTeam` = %d", team);
-		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);		
+		mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `RFLTeam` = -1, `RFLTeamL` = -1 WHERE `RFLTeam` = %d", team);
+		mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);		
 	}
 	else
 	{

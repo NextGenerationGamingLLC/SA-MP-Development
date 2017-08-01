@@ -225,17 +225,17 @@ CMD:checkrequestcount(playerid, params[])
 		new giveplayerid = ReturnUser(adminname);
 		if(IsPlayerConnected(giveplayerid))
 		{
-			format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(giveplayerid), tdate);
-			mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, GetPlayerNameEx(giveplayerid), tdate, 2);
-			format(string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", GetPlayerSQLId(giveplayerid), tdate);
-			mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, GetPlayerNameEx(giveplayerid), tdate, 3);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT SUM(count) FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(giveplayerid), tdate);
+			mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, GetPlayerNameEx(giveplayerid), tdate, 2);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_request` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", GetPlayerSQLId(giveplayerid), tdate);
+			mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, GetPlayerNameEx(giveplayerid), tdate, 3);
 		}
 		else
 		{
 			new tmpName[MAX_PLAYER_NAME];
 			mysql_escape_string(adminname, tmpName);
-			format(string, sizeof(string), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s'", tmpName);
-			mysql_function_query(MainPipeline, string, true, "QueryUsernameCheck", "isi", playerid, tdate, 1);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s'", tmpName);
+			mysql_tquery(MainPipeline, string, "QueryUsernameCheck", "isi", playerid, tdate, 1);
 		}
     }
     return 1;

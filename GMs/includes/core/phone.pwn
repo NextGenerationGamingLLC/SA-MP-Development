@@ -239,8 +239,8 @@ CMD:tempnumber(playerid, params[]){
 
 			SetPVarInt(playerid, "oldnum", PlayerInfo[playerid][pPnumber]);
 			SetPVarInt(playerid, "tempnum", num);
-			format(szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",num);
-			mysql_function_query(MainPipeline, szMiscArray, true, "OnPhoneNumberCheck", "ii", playerid, 5);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",num);
+			mysql_tquery(MainPipeline, szMiscArray, "OnPhoneNumberCheck", "ii", playerid, 5);
 		}
 	} else SendClientMessageEx(playerid, COLOR_GREY, "You do not have access to this command.");
 	return 1;
@@ -601,9 +601,9 @@ CMD:sms(playerid, params[])
 						{
 							new query[384], ftext[128];
 							mysql_escape_string(text, ftext);
-							if(PlayerInfo[playerid][pPhonePrivacy] == 1) format(query, sizeof(query), "INSERT INTO `sms` (`id`, `sender`, `senderid`, `sendernumber`, `receiver`, `receiverid`, `receivernumber`, `message`, `date`) VALUES (NULL, '%s', %d, 0, '%s', %d, %d, '%s', NOW())", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), GetPlayerNameExt(i), GetPlayerSQLId(i), phonenumb, ftext);
-							else format(query, sizeof(query), "INSERT INTO `sms` (`id`, `sender`, `senderid`, `sendernumber`, `receiver`, `receiverid`, `receivernumber`, `message`, `date`) VALUES (NULL, '%s', %d, %d, '%s', %d, %d, '%s', NOW())", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPnumber], GetPlayerNameExt(i), GetPlayerSQLId(i), phonenumb, ftext);
-							mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+							if(PlayerInfo[playerid][pPhonePrivacy] == 1) mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `sms` (`id`, `sender`, `senderid`, `sendernumber`, `receiver`, `receiverid`, `receivernumber`, `message`, `date`) VALUES (NULL, '%s', %d, 0, '%s', %d, %d, '%s', NOW())", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), GetPlayerNameExt(i), GetPlayerSQLId(i), phonenumb, ftext);
+							else mysql_format(MainPipeline, query, sizeof(query), "INSERT INTO `sms` (`id`, `sender`, `senderid`, `sendernumber`, `receiver`, `receiverid`, `receivernumber`, `message`, `date`) VALUES (NULL, '%s', %d, %d, '%s', %d, %d, '%s', NOW())", GetPlayerNameExt(playerid), GetPlayerSQLId(playerid), PlayerInfo[playerid][pPnumber], GetPlayerNameExt(i), GetPlayerSQLId(i), phonenumb, ftext);
+							mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 						}
 					}
 
@@ -799,25 +799,22 @@ CMD:hangup(playerid,params[])
 
 FetchContact(iReceiverID, iCallerNumber) {
 
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `contactname` FROM `phone_contacts` WHERE `id` = '%d' AND `contactnr` = '%d' LIMIT 1", GetPlayerSQLId(iReceiverID), iCallerNumber);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnFetchContact", "i", iReceiverID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `contactname` FROM `phone_contacts` WHERE `id` = '%d' AND `contactnr` = '%d' LIMIT 1", GetPlayerSQLId(iReceiverID), iCallerNumber);
+	mysql_tquery(MainPipeline, szMiscArray, "OnFetchContact", "i", iReceiverID);
 }
 
 forward OnFetchContact(iReceiverID);
 public OnFetchContact(iReceiverID) {
 
 	new
-		iRows, 
-		iFields,
+		iRows,
 		szName[MAX_PLAYER_NAME];
 
 	szMiscArray[0] = 0;
-
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 
 	if(!iRows) return 1;
-
-	cache_get_field_content(0, "contactname", szName, MainPipeline);
+	cache_get_value_name(0, "contactname", szName, MAX_PLAYER_NAME);
 	format(szMiscArray, sizeof(szMiscArray), "[CONTACT]: %s", szName);
 	ChatTrafficProcess(iReceiverID, COLOR_GRAD1, szMiscArray, 7);
 	return 1;

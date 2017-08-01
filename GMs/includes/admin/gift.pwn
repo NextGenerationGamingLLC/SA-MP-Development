@@ -3590,7 +3590,7 @@ CMD:setcode(playerid, params[])
 		format(GiftCode, 32, code);
 		GiftCodeBypass = bypass;
         g_mysql_SaveMOTD();
-		mysql_function_query(MainPipeline, "UPDATE `accounts` SET `GiftCode` = 0;", false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, "UPDATE `accounts` SET `GiftCode` = 0;", "OnQueryFinish", "i", SENDDATA_THREAD);
 		foreach(new i : Player)
 		{
 			if(PlayerInfo[i][pGiftCode] == 1)
@@ -3703,7 +3703,7 @@ CMD:dynamicgift(playerid, params[])
 			{
 				SendClientMessageEx(playerid, COLOR_RED, "Due to the Dynamic Giftbox being enabled, you may view the content inside the giftbox.");
 				
-				if(PlayerInfo[playerid][pAdmin] == 1337 || PlayerInfo[playerid][pShopTech] >= 3) 
+				if(PlayerInfo[playerid][pAdmin] == 99999 || PlayerInfo[playerid][pShopTech] >= 3) 
 				{
 					SendClientMessageEx(playerid, COLOR_RED, "Note: You must fill up the giftbox with /dgedit.");
 				}
@@ -3811,7 +3811,7 @@ CMD:getgift(playerid, params[])
 // Dynamic Giftbox
 CMD:dgedit(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
+	if(PlayerInfo[playerid][pAdmin] < 99999 && PlayerInfo[playerid][pShopTech] < 3) return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
 	new string[128], choice[32], type, amount, var;
 	if(strcmp(params, "autoreset", true) == 0)
 	{
@@ -3922,7 +3922,7 @@ CMD:dgedit(playerid, params[])
 
 CMD:viewgiftbox(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] == 1337 || PlayerInfo[playerid][pShopTech] >= 3)
+	if(PlayerInfo[playerid][pAdmin] == 99999 || PlayerInfo[playerid][pShopTech] >= 3)
 	{
 		ShowPlayerDynamicGiftBox(playerid);
 	}
@@ -3933,7 +3933,7 @@ CMD:viewgiftbox(playerid, params[])
 
 CMD:togdynamicgift(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] == 1337 || PlayerInfo[playerid][pShopTech] >= 3)
+	if(PlayerInfo[playerid][pAdmin] == 99999 || PlayerInfo[playerid][pShopTech] >= 3)
 	{
 		if(IsDynamicGiftBoxEnabled == false)
 		{

@@ -792,7 +792,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			  	mysql_escape_string(inputtext, szMiscArray);
                 format(PlayerInfo[playerid][pReferredBy], MAX_PLAYER_NAME, "%s", szMiscArray);
                 mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `Username` FROM `accounts` WHERE `Username` = '%e'", inputtext);
-         		mysql_function_query(MainPipeline, szMiscArray, true, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
+         		mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "iii", MAIN_REFERRAL_THREAD, playerid, g_arrQueryHandle{playerid});
 			}
 			else
 			{

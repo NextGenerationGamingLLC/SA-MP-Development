@@ -283,8 +283,8 @@ CMD:shopcredits(playerid, params[])
 
 		PlayerInfo[player][pCredits] += amount;
 
-		format(szMessage, sizeof(szMessage), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[player][pCredits], GetPlayerSQLId(player));
-		mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, player);
+		mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `accounts` SET `Credits` = %d WHERE `id` = %d", PlayerInfo[player][pCredits], GetPlayerSQLId(player));
+		mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, player);
 		print(szMessage);
 
         SendClientMessageEx(player, COLOR_LIGHTBLUE, "* %s has given you %s credits (New total: %s)", GetPlayerNameEx(playerid), number_format(amount), number_format(PlayerInfo[player][pCredits]));
@@ -383,8 +383,8 @@ CMD:setstpay(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_WHITE, string);
 			return 1;
 		}
-		format(string, sizeof(string), "UPDATE `misc` SET `ShopTechPay` = '%.2f'", ShopTechPay);
-		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_format(MainPipeline, string, sizeof(string), "UPDATE `misc` SET `ShopTechPay` = '%.2f'", ShopTechPay);
+		mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 		format(string, sizeof(string), "Shop Tech Pay set to $%.2f", ShopTechPay);
         SendClientMessageEx(playerid, COLOR_WHITE, string);
@@ -398,7 +398,7 @@ CMD:resetstpay(playerid, params[])
 	{
 	    if(GetPVarInt(playerid, "resetstpay"))
 	    {
-	        mysql_function_query(MainPipeline, "UPDATE `shoptech` SET `total` = 0, dtotal = 0", false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	        mysql_tquery(MainPipeline, "UPDATE `shoptech` SET `total` = 0, dtotal = 0", "OnQueryFinish", "i", SENDDATA_THREAD);
             SendClientMessage(playerid, COLOR_WHITE, "Shop Tech Payments Reset");
 	        DeletePVar(playerid, "resetstpay");
 		}
@@ -440,10 +440,10 @@ CMD:changeuserpin(playerid, params[])
 	SetPVarInt(playerid, "ChangePin", 1);
 
 	new tmpName[24];
-	mysql_escape_string(accountName, tmpName, MainPipeline);
+	mysql_escape_string(accountName, tmpName);
 
-    format(query,sizeof(query),"UPDATE `accounts` SET `Pin`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2",passbuffer,tmpName);
-	mysql_function_query(MainPipeline, query, false, "OnChangeUserPassword", "i", playerid);
+    mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `Pin`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2", passbuffer, tmpName);
+	mysql_tquery(MainPipeline, query, "OnChangeUserPassword", "i", playerid);
 	SetPVarString(playerid, "OnChangeUserPassword", tmpName);
 	return 1;
 }
@@ -471,10 +471,10 @@ CMD:changeuserpassword(playerid, params[])
     Log("logs/password.log", string);
 
 	new tmpName[24];
-	mysql_escape_string(accountName, tmpName, MainPipeline);
+	mysql_escape_string(accountName, tmpName);
 
-    format(query,sizeof(query),"UPDATE `accounts` SET `Key`='%s', `Salt`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2", passbuffer, salt, tmpName);
-	mysql_function_query(MainPipeline, query, false, "OnChangeUserPassword", "i", playerid);
+    mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `Key`='%s', `Salt`='%s' WHERE `Username`='%s' AND `AdminLevel` < 2", passbuffer, salt, tmpName);
+	mysql_tquery(MainPipeline, query, "OnChangeUserPassword", "i", playerid);
 	SetPVarString(playerid, "OnChangeUserPassword", tmpName);
 	return 1;
 }
@@ -621,8 +621,8 @@ CMD:processorder(playerid, params[])
 
 				if(PlayerInfo[giveplayerid][pOrderConfirmed])
 				{
-				    format(string, sizeof(string), "SELECT `id` FROM `orders` WHERE `id` = '%d'", PlayerInfo[giveplayerid][pOrder]);
-					mysql_function_query(MainPipeline, string, true, "OnProcessOrderCheck", "ii", playerid, giveplayerid);
+				    mysql_format(MainPipeline, string, sizeof(string), "SELECT `id` FROM `orders` WHERE `id` = '%d'", PlayerInfo[giveplayerid][pOrder]);
+					mysql_tquery(MainPipeline, string, "OnProcessOrderCheck", "ii", playerid, giveplayerid);
 					SetPVarInt(playerid, "processorder", orderid);
 				}
 				else
@@ -890,7 +890,7 @@ CMD:shopstats(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] < 1338 && PlayerInfo[playerid][pShopTech] != 3)
 	    return 0;
 
-	mysql_function_query(MainPipeline, "SELECT `id`, `Month` FROM `sales`", true, "CheckSales", "i", playerid);
+	mysql_tquery(MainPipeline, "SELECT `id`, `Month` FROM `sales`", "CheckSales", "i", playerid);
 	return 1;
 }
  
@@ -982,8 +982,8 @@ CMD:stoprentacar(playerid, params[])
         SendClientMessageEx(playerid, COLOR_CYAN, "You have stopped renting your vehicle.");
 		DestroyVehicle(GetPVarInt(playerid, "RentedVehicle"));
 
-		format(string, sizeof(string), "DELETE FROM `rentedcars` WHERE `sqlid`= '%d'", GetPlayerSQLId(playerid));
-		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_format(MainPipeline, string, sizeof(string), "DELETE FROM `rentedcars` WHERE `sqlid`= '%d'", GetPlayerSQLId(playerid));
+		mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 
 		DeletePVar(playerid, "RentedHours");
 		DeletePVar(playerid, "RentedVehicle");
@@ -1258,7 +1258,7 @@ CMD:reloadstats(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] < 1338 && PlayerInfo[playerid][pShopTech] != 3)
 	    return 0;
 
-    mysql_function_query(MainPipeline, "SELECT * FROM `sales` WHERE `Month` > NOW() - INTERVAL 1 MONTH", true, "OnQueryFinish", "iii", LOADSALEDATA_THREAD, INVALID_PLAYER_ID, -1);
+    mysql_tquery(MainPipeline, "SELECT * FROM `sales` WHERE `Month` > NOW() - INTERVAL 1 MONTH", "OnQueryFinish", "iii", LOADSALEDATA_THREAD, INVALID_PLAYER_ID, -1);
     SendClientMessageEx(playerid, COLOR_WHITE, "Reloading sale stats.");
 	return 1;
 }
@@ -1446,8 +1446,8 @@ CMD:givecredits(playerid, params[])
 
 	PlayerInfo[Player][pCredits] += Amount;
 
-	format(szMessage, sizeof(szMessage), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[Player][pCredits], GetPlayerSQLId(Player));
-	mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
+	mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[Player][pCredits], GetPlayerSQLId(Player));
+	mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
 	print(szMessage);
 
 	format(szMessage, sizeof(szMessage), "[SETCREDITS] [Amount: %d] [User: %s(%i)] [IP: %s] [Credits: %s] [Admin: %s] [IP: %s]",Amount,GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player), number_format(PlayerInfo[Player][pCredits]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
@@ -1473,8 +1473,8 @@ CMD:setcredits(playerid, params[])
 
 	PlayerInfo[Player][pCredits] = Amount;
 
-	format(szMessage, sizeof(szMessage), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[Player][pCredits], GetPlayerSQLId(Player));
-	mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
+	mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `accounts` SET `Credits`=%d WHERE `id` = %d", PlayerInfo[Player][pCredits], GetPlayerSQLId(Player));
+	mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
 	print(szMessage);
 
 	format(szMessage, sizeof(szMessage), "[SETCREDITS] [Amount: %d] [User: %s(%i)] [IP: %s] [Credits: %s] [Admin: %s] [IP: %s]",Amount,GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player), number_format(PlayerInfo[Player][pCredits]), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
@@ -1500,8 +1500,8 @@ CMD:settotalcredits(playerid, params[])
 
 	PlayerInfo[Player][pTotalCredits] = Amount;
 
-    format(szMessage, sizeof(szMessage), "UPDATE `accounts` SET `TotalCredits`=%d WHERE `id` = %d", PlayerInfo[Player][pTotalCredits], GetPlayerSQLId(Player));
-	mysql_function_query(MainPipeline, szMessage, false, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
+    mysql_format(MainPipeline, szMessage, sizeof(szMessage), "UPDATE `accounts` SET `TotalCredits`=%d WHERE `id` = %d", PlayerInfo[Player][pTotalCredits], GetPlayerSQLId(Player));
+	mysql_tquery(MainPipeline, szMessage, "OnQueryFinish", "ii", SENDDATA_THREAD, Player);
 
 	format(szMessage, sizeof(szMessage), "[SETTOTALCREDITS][Amount: %d] [User: %s(%i)] [IP: %s] [Admin: %s] [IP: %s]",Amount, GetPlayerNameEx(Player), GetPlayerSQLId(Player), GetPlayerIpEx(Player), GetPlayerNameEx(playerid), GetPlayerIpEx(playerid));
 	Log("logs/credits.log", szMessage), print(szMessage);
@@ -1592,8 +1592,9 @@ CMD:editsign(playerid, params[])
 		if(!strcmp(option, "text", true))
 		{
 			if(!(1 <= strlen(desc) <= 64)) return SendClientMessageEx(playerid, COLOR_GREY, "Description text cannot be empty and no longer than 64 characters.");
-			new string[128];
-			format(HouseInfo[h][hSignDesc], 64, "%s", g_mysql_ReturnEscaped(desc, MainPipeline));
+			new string[128], escapeDesc[64];
+			mysql_escape_string(desc, escapeDesc);
+			format(HouseInfo[h][hSignDesc], sizeof(escapeDesc), "%s", escapeDesc);
 			format(string, sizeof(string), "%s has edited house ID: %d sale sign text to %s", GetPlayerNameEx(playerid), h, HouseInfo[h][hSignDesc]);
 			Log("logs/hedit.log", string);
 			SendClientMessageEx(playerid, -1, string);
@@ -1784,41 +1785,41 @@ public OnShopOrder(index)
 	if(IsPlayerConnected(index))
 	{
 	    HideNoticeGUIFrame(index);
-		new rows, fields;
-		cache_get_data(rows, fields, ShopPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows > 0)
 		{
 		    new string[512];
 		    new ipsql[16], ip[16];
 	    	GetPlayerIp(index, ip, sizeof(ip));
-		    cache_get_field_content(0, "ip", ipsql, ShopPipeline);
+		    cache_get_value_name(0, "ip", ipsql);
 		    if(!isnull(ipsql) && strcmp(ipsql, ip, true) == 0)
 			{
-			    new status[2], name[64], quantity[8], delivered[8], product_id[8];
+			    new status, name[64], quantity, delivered, product_id;
 			    for(new i;i<rows;i++)
 			    {
-	   				cache_get_field_content(i, "order_status_id", status, ShopPipeline);
-			    	if(strval(status) == 2)
+	   				cache_get_value_name_int(i, "order_status_id", status);
+			    	if(status == 2)
 				    {
-	    			 	cache_get_field_content(i, "name", name, ShopPipeline);
-			  			cache_get_field_content(i, "quantity", quantity, ShopPipeline);
-			  		    cache_get_field_content(i, "delivered", delivered, ShopPipeline);
-			  			cache_get_field_content(i, "order_product_id", product_id, ShopPipeline);
-				    	if(strval(quantity)-strval(delivered) <= 0)
+	    			 	cache_get_value_name(i, "name", name);
+			  			cache_get_value_name_int(i, "quantity", quantity);
+			  		    cache_get_value_name_int(i, "delivered", delivered);
+			  			cache_get_value_name_int(i, "order_product_id", product_id);
+				    	if(quantity-delivered <= 0)
 					    {
 	        				if(i<rows) format(string, sizeof(string), "%s%s (Delivered)\n", string, name);
 					        else format(string, sizeof(string), "%s%s (Delivered)", string, name);
 						}
 						else
 						{
-		    				if(i<rows) format(string, sizeof(string), "%s%s (%d)\n", string, name, strval(quantity)-strval(delivered));
-					    	else format(string, sizeof(string), "%s%s (%d)", string, name, strval(quantity)-strval(delivered));
+		    				if(i<rows) format(string, sizeof(string), "%s%s (%d)\n", string, name, quantity-delivered);
+					    	else format(string, sizeof(string), "%s%s (%d)", string, name, quantity-delivered);
 						}
 					}
 					else
 					{
 					    new reason[27];
-						switch(strval(status))
+						switch(status)
 						{
 						    case 0: format(reason, sizeof(reason), "{FF0000}No Payment");
 						    case 1: format(reason, sizeof(reason), "{FF0000}Pending");
@@ -1846,7 +1847,7 @@ public OnShopOrder(index)
 			else
 			{
 			    new email[256];
-			    cache_get_field_content(0, "email", email, ShopPipeline);
+			    cache_get_value_name(0, "email", email);
 			    SetPVarString(index, "ShopEmailVerify", email);
 			    ShowPlayerDialogEx(index, DIALOG_SHOPORDEREMAIL, DIALOG_STYLE_INPUT, "Shop Order Error", "We were unable to link your order to your IP,\nfor further verification of your identity please input your shop e-mail address:", "Submit", "Cancel");
 			    return 1;
@@ -1867,36 +1868,36 @@ public OnShopOrderEmailVer(index)
 	if(IsPlayerConnected(index))
 	{
 	    HideNoticeGUIFrame(index);
-		new rows, fields;
-		cache_get_data(rows, fields, ShopPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows > 0)
 		{
 		    new string[512];
-		   	new status[2], name[64], quantity[8], delivered[8], product_id[8];
-		    for(new i;i<rows;i++)
+		   	new status, name[64], quantity, delivered, product_id;
+		    for(new i; i < rows; i++)
 		    {
-			    cache_get_field_content(i, "order_status_id", status, ShopPipeline);
-				if(strval(status) == 2)
+			    cache_get_value_name_int(i, "order_status_id", status);
+				if(status == 2)
 	   			{
-					cache_get_field_content(i, "name", name, ShopPipeline);
-	 				cache_get_field_content(i, "quantity", quantity, ShopPipeline);
-		    		cache_get_field_content(i, "delivered", delivered, ShopPipeline);
-	  				cache_get_field_content(i, "order_product_id", product_id, ShopPipeline);
-		   			if(strval(quantity)-strval(delivered) <= 0)
+					cache_get_value_name(i, "name", name);
+	 				cache_get_value_name_int(i, "quantity", quantity);
+		    		cache_get_value_name_int(i, "delivered", delivered);
+	  				cache_get_value_name_int(i, "order_product_id", product_id);
+		   			if(quantity-delivered <= 0)
 				    {
 	   					if(i<rows) format(string, sizeof(string), "%s%s (Delivered)\n", string, name);
 	       				else format(string, sizeof(string), "%s%s (Delivered)", string, name);
 					}
 					else
 					{
-					    if(i<rows) format(string, sizeof(string), "%s%s (%d)\n", string, name, strval(quantity)-strval(delivered));
-					    else format(string, sizeof(string), "%s%s (%d)", string, name, strval(quantity)-strval(delivered));
+					    if(i<rows) format(string, sizeof(string), "%s%s (%d)\n", string, name, quantity-delivered);
+					    else format(string, sizeof(string), "%s%s (%d)", string, name, quantity-delivered);
 					}
 				}
 				else
 				{
 	    			new reason[27];
-					switch(strval(status))
+					switch(status)
 					{
 	    				case 0: format(reason, sizeof(reason), "{FF0000}No Payment");
 		   				case 1: format(reason, sizeof(reason), "{FF0000}Pending");
@@ -1937,35 +1938,35 @@ public OnShopOrder2(index, extraid)
 	{
 	    HideNoticeGUIFrame(index);
 		new string[256];
-		new rows, fields;
-		cache_get_data(rows, fields, ShopPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows > 0)
 		{
-		    for(new i;i<rows;i++)
+		    for(new i; i < rows; i++)
 		    {
 	  			if(i == extraid)
 		    	{
-	      			new status[2];
-		        	cache_get_field_content(i, "status", status, ShopPipeline);
-			        if(strval(status) == 2)
+	      			new status;
+		        	cache_get_value_name_int(i, "status", status);
+			        if(status == 2)
 		        	{
-			    		new order_id[8], order_product_id[8], product_id[8], name[64], price[8], user[32], quantity[8], delivered[8];
-				    	cache_get_field_content(i, "order_id", order_id, ShopPipeline);
-						cache_get_field_content(i, "order_product_id", order_product_id, ShopPipeline);
-						cache_get_field_content(i, "product_id", product_id, ShopPipeline);
-						cache_get_field_content(i, "name", name, ShopPipeline);
-		  				cache_get_field_content(i, "price", price, ShopPipeline);
-			  			cache_get_field_content(i, "deliveruser", user, ShopPipeline);
-			  			cache_get_field_content(i, "quantity", quantity, ShopPipeline);
-			  			cache_get_field_content(i, "delivered", delivered, ShopPipeline);
+			    		new order_id, order_product_id, product_id, name[64], price, user[32], quantity, delivered;
+				    	cache_get_value_name_int(i, "order_id", order_id);
+						cache_get_value_name_int(i, "order_product_id", order_product_id);
+						cache_get_value_name_int(i, "product_id", product_id);
+						cache_get_value_name(i, "name", name);
+		  				cache_get_value_name_int(i, "price", price);
+			  			cache_get_value_name(i, "deliveruser", user);
+			  			cache_get_value_name_int(i, "quantity", quantity);
+			  			cache_get_value_name_int(i, "delivered", delivered);
 
 						format(string, sizeof(string), "Order ID: %d\nProduct ID: %d\nProduct: %s\nPrice: %s\nName: %s\nQuantity: %d", \
-						strval(order_id), strval(order_product_id), name, price, user, strval(quantity)-strval(delivered));
+						order_id, order_product_id, name, price, user, quantity-delivered);
 
-						SetPVarInt(index, "DShop_order_id", strval(order_id));
-						SetPVarInt(index, "DShop_product_id", strval(product_id));
+						SetPVarInt(index, "DShop_order_id", order_id);
+						SetPVarInt(index, "DShop_product_id", product_id);
 						SetPVarString(index, "DShop_name", name);
-						SetPVarInt(index, "DShop_quantity", strval(quantity)-strval(delivered));
+						SetPVarInt(index, "DShop_quantity", quantity-delivered);
 
 						ShowPlayerDialogEx(index, DIALOG_SHOPDELIVER, DIALOG_STYLE_LIST, "Shop Order Info", string, "Deliver", "Cancel");
 						return 1;
@@ -1973,7 +1974,7 @@ public OnShopOrder2(index, extraid)
 					else
 					{
 						new reason[27];
-						switch(strval(status))
+						switch(status)
 						{
 						    case 0: format(reason, sizeof(reason), "{FF0000}No Payment");
 						    case 1: format(reason, sizeof(reason), "{FF0000}Pending");
@@ -2016,8 +2017,8 @@ public OnProcessOrderCheck(index, extraid)
 		GetPlayerIp(index, playerip, sizeof(playerip));
 		GetPlayerIp(extraid, giveplayerip, sizeof(giveplayerip));
 
-		new rows, fields;
-		cache_get_data(rows, fields, MainPipeline);
+		new rows;
+		cache_get_row_count(rows);
 		if(rows)
 		{
 			SendClientMessageEx(index, COLOR_WHITE, "This order has previously been processed, therefore it did not count toward your pay.");
@@ -2030,18 +2031,18 @@ public OnProcessOrderCheck(index, extraid)
 			Log("logs/shopconfirmedorders.log", string);
 			PlayerInfo[index][pShopTechOrders]++;
 
-			format(string, sizeof(string), "INSERT INTO shoptech (id,total,dtotal) VALUES (%d,1,%f) ON DUPLICATE KEY UPDATE total = total + 1, dtotal = dtotal + %f", GetPlayerSQLId(index), ShopTechPay, ShopTechPay);
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+			mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO shoptech (id,total,dtotal) VALUES (%d,1,%f) ON DUPLICATE KEY UPDATE total = total + 1, dtotal = dtotal + %f", GetPlayerSQLId(index), ShopTechPay, ShopTechPay);
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 
-			format(string, sizeof(string), "INSERT INTO `orders` (`id`) VALUES ('%d')", GetPVarInt(index, "processorder"));
-			mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+			mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `orders` (`id`) VALUES ('%d')", GetPVarInt(index, "processorder"));
+			mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 			
 			/*format(string, sizeof(string), "INSERT INTO betazorder_history (`order_id`, `order_status_id`, `comment`, `date_added`, `notify`) \
 			VALUES ('%d', '5', 'Order Processed (%s) (Status: Complete)', NOW(), '1')", GetPVarInt(index, "processorder"), GetPlayerNameEx(index));
-			mysql_function_query(ShopPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
+			mysql_tquery(ShopPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);
 			
 			format(string, sizeof(string), "UPDATE betazorder SET `order_status_id` = '5' WHERE `order_id` = '%d'", GetPVarInt(index, "processorder"));
-			mysql_function_query(ShopPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);*/
+			mysql_tquery(ShopPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, index);*/
 		}
 		DeletePVar(index, "processorder");
 	}

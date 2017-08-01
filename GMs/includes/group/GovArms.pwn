@@ -32,7 +32,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 		{
 			if(response) switch(listitem)
 			{
-				case 0: return mysql_function_query(MainPipeline, "SELECT * FROM `govgunsales` WHERE 1", true, "GovGuns_OnShowSales", "i", playerid); 
+				case 0: return mysql_tquery(MainPipeline, "SELECT * FROM `govgunsales` WHERE 1", "GovGuns_OnShowSales", "i", playerid); 
 				case 1:
 				{
 					GovGuns_EditPrices(playerid);
@@ -89,8 +89,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				szMiscArray[0] = 0;
 				new wepid = GetPVarInt(playerid, "_GovGun");
 				arrWeaponCosts[wepid] = strval(inputtext);
-				format(szMiscArray, sizeof(szMiscArray), "UPDATE `govgunsales` SET `wepprice` = %d WHERE `wepid` = %d", strval(inputtext), wepid);
-				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `govgunsales` SET `wepprice` = %d WHERE `wepid` = %d", strval(inputtext), wepid);
+				mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 				format(szMiscArray, sizeof(szMiscArray), "You have edited the %s's price to: {FFFFFF}$%s", Weapon_ReturnName(wepid), number_format(arrWeaponCosts[wepid]));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 				DeletePVar(playerid, "_GovGun");
@@ -118,8 +118,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				format(szMiscArray, sizeof(szMiscArray), "You have sold your %s for {FFFFFF}$%s", Weapon_ReturnName(wepid), number_format(arrWeaponCosts[wepid]));
 				SendClientMessageEx(playerid, COLOR_YELLOW, szMiscArray);
 				szMiscArray[0] = 0;
-				format(szMiscArray, sizeof(szMiscArray), "UPDATE `govgunsales` SET `wepsales` = `wepsales` + 1 WHERE `wepid` = %d", wepid);
-				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+				mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `govgunsales` SET `wepsales` = `wepsales` + 1 WHERE `wepid` = %d", wepid);
+				mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 				szMiscArray[0] = 0;
 				format(szMiscArray, sizeof(szMiscArray), "%s sells their %s to the government.", GetPlayerNameEx(playerid), Weapon_ReturnName(wepid));
 				ProxDetector(8.0, playerid, szMiscArray, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE, COLOR_PURPLE);
@@ -191,7 +191,7 @@ GovGuns_MainMenu(playerid)
 
 GovGuns_LoadCosts()
 {
-	mysql_function_query(MainPipeline, "SELECT * FROM `govgunsales` WHERE 1", true, "GovGuns_OnLoadCosts", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `govgunsales` WHERE 1", "GovGuns_OnLoadCosts", "");
 	return 1;
 }
 
@@ -242,10 +242,10 @@ forward GovGuns_OnLoadCosts();
 public GovGuns_OnLoadCosts()
 {
 	new iRows, iCount;
-	iRows = cache_get_row_count();
+	cache_get_row_count(iRows);
 	while(iCount < iRows) 
 	{
-		arrWeaponCosts[iCount] = cache_get_field_content_int(iCount, "wepprice", MainPipeline);
+		cache_get_value_name_int(iCount, "wepprice", arrWeaponCosts[iCount]);
 		iCount++;
 	}
 	printf("[Gov Weapon Prices] Loaded %i Weapons", iCount);
@@ -256,14 +256,15 @@ forward GovGuns_OnShowSales(playerid);
 public GovGuns_OnShowSales(playerid)
 {
 	new iRows, iCount;
-	iRows = cache_get_row_count();
+	cache_get_row_count(iRows);
 	if(!iRows) return SendClientMessageEx(playerid, COLOR_GRAD1, "Something went wrong. Please try again later.");
 	szMiscArray = "Name\tSold\n";
 	while(iCount < iRows) 
 	{
 		if(GovGuns_IsSellingEdit(iCount))
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s%s\t%spc\n", szMiscArray, Weapon_ReturnName(iCount), number_format(cache_get_field_content_int(iCount, "wepsales", MainPipeline)));
+			new value;
+			format(szMiscArray, sizeof(szMiscArray), "%s%s\t%spc\n", szMiscArray, Weapon_ReturnName(iCount), number_format(cache_get_value_name_int(iCount, "wepsales", value)));
 		}
 		iCount++;
 	}

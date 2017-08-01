@@ -597,7 +597,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			SendClientMessage(playerid,COLOR_WHITE, "GPS Location Saved!");
 			new szQuery[256];
 			format(szQuery, sizeof(szQuery), "UPDATE `GPSFavs` SET `Fav%i` = '%s|%f|%f|%f' WHERE `SQLid` = %d", sFav+1, GPSFav[playerid][sFav][FavName], GPSFav[playerid][sFav][FavPos][0],GPSFav[playerid][sFav][FavPos][1],GPSFav[playerid][sFav][FavPos][2], GetPlayerSQLId(playerid)); 
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_tquery(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		}
 		*/
 	}

@@ -48,30 +48,18 @@ stock IsAdminLevel(playerid, level, warning = 1) {
 	return 0;
 }
 
-stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: IRC = true)
+stock ABroadCast(hColor, szMessage[], iLevel, bool: bUndercover = false, bool: Discord = true)
 {
 	foreach(new i: Player) {
 		if(PlayerInfo[i][pAdmin] >= iLevel && (bUndercover || !PlayerInfo[i][pTogReports])) {
 			SendClientMessageEx(i, hColor, szMessage);
 		}
 	}
-	if(!IRC && iLevel <= 2) IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
+	if(!Discord && iLevel <= 2) SendDiscordMessage(0, szMessage);
 	if(strfind(szMessage, "AdmWarning", false) != -1)
 	{
 		StripColorEmbedding(szMessage);
-		IRC_Say(BotID[0], IRC_CHANNEL_ADMWARNINGS, szMessage); // Route AdmWarnings to IRC.
-	}
-	return 1;
-}
-
-stock SMBroadCast(hColor, szMessage[])
-{
-	foreach(new i: Player)
-	{
-		if((PlayerInfo[i][pAdmin] == 1 && PlayerInfo[i][pSMod] > 0) || PlayerInfo[i][pAdmin] == 1)
-		{
-			SendClientMessageEx(i, hColor, szMessage);
-		}
+		SendDiscordMessage(1, szMessage); // Route AdmWarnings to Discord
 	}
 	return 1;
 }
@@ -118,8 +106,8 @@ stock GetAdminRankName(i)
 
 stock StaffAccountCheck(playerid, ip[])
 {
-	format(szMiscArray, sizeof(szMiscArray), "SELECT NULL FROM `accounts` WHERE (`IP` = '%s' OR `SecureIP` = '%s') AND `AdminLevel` > 0", ip, ip);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnStaffAccountCheck", "i", playerid);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT NULL FROM `accounts` WHERE (`IP` = '%s' OR `SecureIP` = '%s') AND `AdminLevel` > 0", ip, ip);
+	mysql_tquery(MainPipeline, szMiscArray, "OnStaffAccountCheck", "i", playerid);
 }
 
 stock GetStaffRank(playerid)
@@ -880,32 +868,6 @@ CMD:prisoners(playerid, params[])
       	}
       	SendClientMessageEx(playerid, COLOR_WHITE, "----------------------------------------");
 	}
-	else if(IsADocGuard(playerid))
-	{
-		new Count;
-
-		SendClientMessageEx(playerid, COLOR_WHITE, "----------------------------------------");
-  		SendClientMessageEx(playerid, COLOR_WHITE, "Name | Arrested By | Time Left | Reason");
-
-  		foreach(new i: Player)
-  		{
-  			if(PlayerInfo[i][pJailTime] >= 1 && strfind(PlayerInfo[i][pPrisonReason], "[IC] DMCF Arrest", true) != -1)
-  			{
-  				if(strlen(PlayerInfo[i][pPrisonReason]) >= 1 && strlen(PlayerInfo[i][pPrisonedBy]) >= 1)
-  				{
-  					Count ++;
-  					format(szMiscArray, sizeof(szMiscArray), "%s (%d) | %s | %s | %s", GetPlayerNameEx(i), i, PlayerInfo[i][pPrisonedBy], TimeConvert(PlayerInfo[i][pJailTime]), PlayerInfo[i][pPrisonReason]);
-  					SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-				}
-				else
-				{
-					format(szMiscArray, sizeof(szMiscArray), "%s (%d) | Unavailable | %s | Unavailable", GetPlayerNameEx(i), i, TimeConvert(PlayerInfo[i][pJailTime]));
-					SendClientMessageEx(playerid, COLOR_GREY, szMiscArray);
-				}
-  			}
-  		}
-  		SendClientMessageEx(playerid, COLOR_WHITE, "----------------------------------------");
-	}
 	return 1;
 }
 
@@ -965,12 +927,12 @@ CMD:mstats(playerid, params[]) {
 	}
 	else {
 	    new stats[256];
-		mysql_stat(stats, MainPipeline);
+		mysql_stat(stats, sizeof(stats), MainPipeline);
 		SendClientMessageEx(playerid, COLOR_GREEN,"___________________________________________________________________________________________________");
 		SendClientMessageEx(playerid, COLOR_GREY, stats);
 		SendClientMessageEx(playerid, COLOR_GREEN,"___________________________________________________________________________________________________");
 		#if defined SHOPAUTOMATED
-		mysql_stat(stats, ShopPipeline);
+		mysql_stat(stats, sizeof(stats), ShopPipeline);
 		SendClientMessageEx(playerid, COLOR_GREEN,"___________________________________________________________________________________________________");
 		SendClientMessageEx(playerid, COLOR_GREY, stats);
 		SendClientMessageEx(playerid, COLOR_GREEN,"___________________________________________________________________________________________________");
@@ -1956,8 +1918,8 @@ CMD:admin(playerid, params[])  {
 				}
 			}
 
-			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-			IRC_Say(BotID[0], IRC_CHANNEL_ADMIN, szMessage);
+			format(szMessage, sizeof(szMessage), "%s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
+			SendDiscordMessage(0, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/a)dmin [admin chat]");
 	}
@@ -1984,8 +1946,8 @@ CMD:headadmin(playerid, params[])  {
 				}
 			}
 
-			format(szMessage, sizeof(szMessage), "[SAMP] %s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
-			IRC_Say(BotID[0], IRC_CHANNEL_HEADADMIN, szMessage);
+			format(szMessage, sizeof(szMessage), "%s %s: %s", GetAdminRankName(PlayerInfo[playerid][pAdmin]), GetPlayerNameEx(playerid), params);
+			SendDiscordMessage(2, szMessage);
 		}
 		else SendClientMessageEx(playerid, COLOR_GREY, "USAGE: (/ha)eadmin [Head admin+ chat]");
 	}
@@ -2291,8 +2253,8 @@ CMD:ounsuspend(playerid, params[])
 
 		mysql_escape_string(params, tmpName);
 		SetPVarString(playerid, "OnSetSuspended", tmpName);
-		format(query,sizeof(query),"UPDATE `accounts` SET `Disabled` = 0 WHERE `Username` = '%s' AND `AdminLevel` < 1338 AND `AdminLevel` > 1", tmpName);
-		mysql_function_query(MainPipeline, query, false, "OnSetSuspended", "ii", playerid, false);
+		mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `Disabled` = 0 WHERE `Username` = '%s' AND `AdminLevel` < 1338 AND `AdminLevel` > 1", tmpName);
+		mysql_tquery(MainPipeline, query, "OnSetSuspended", "ii", playerid, false);
 
 		format(string,sizeof(string),"Attempting to unsuspend %s's account...",tmpName);
 		SendClientMessageEx(playerid,COLOR_YELLOW,string);
@@ -2317,8 +2279,8 @@ CMD:osetrmutes(playerid, params[]) {
 				szQuery[128];
 
 			mysql_escape_string(szPlayerName, szPlayerName);
-			format(szQuery, sizeof szQuery, "UPDATE `accounts` SET `ReportMutedTotal` = %i, `ReportMuted` = 0, `ReportMutedTime` = 0 WHERE `Username` = '%s'", iMuteCount, szPlayerName);
-			mysql_function_query(MainPipeline, szQuery, false, "Query_OnExecution", "ii", playerid);
+			mysql_format(MainPipeline, szQuery, sizeof szQuery, "UPDATE `accounts` SET `ReportMutedTotal` = %i, `ReportMuted` = 0, `ReportMutedTime` = 0 WHERE `Username` = '%s'", iMuteCount, szPlayerName);
+			mysql_tquery(MainPipeline, szQuery, "Query_OnExecution", "ii", playerid);
 			SetPVarString(playerid, "QueryEx_Name", szPlayerName);
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD1, "Mutes cannot be set to less than zero.");
@@ -2390,9 +2352,9 @@ CMD:setmyname(playerid, params[])
 			new tmpName[24];
 			mysql_escape_string(params, tmpName);
 
-			format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", tmpName);
+			mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", tmpName);
 			SetPVarString(playerid, "OnSetMyName", tmpName);
-			mysql_function_query(MainPipeline, query, true, "OnSetMyName", "i", playerid);
+			mysql_tquery(MainPipeline, query, "OnSetMyName", "i", playerid);
 		}
 		else
 		{
@@ -2431,8 +2393,8 @@ CMD:setname(playerid, params[])
 			{
 	   			SetPVarString(playerid, "OnSetName", tmpName);
 
-				format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", tmpName);
-				mysql_function_query(MainPipeline, query, true, "OnSetName", "ii", playerid, giveplayerid);
+				mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `Username`='%s'", tmpName);
+				mysql_tquery(MainPipeline, query, "OnSetName", "ii", playerid, giveplayerid);
 			}
 			else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid characters!");
 		}
@@ -2552,12 +2514,12 @@ CMD:ipwhitelist(playerid, params[])
 		}
 
 		new tmpName[24], tmpIP[16];
-		mysql_escape_string(giveplayer, tmpName, MainPipeline);
-		mysql_escape_string(ip, tmpIP, MainPipeline);
+		mysql_escape_string(giveplayer, tmpName);
+		mysql_escape_string(ip, tmpIP);
 		SetPVarString(playerid, "OnIPWhitelist", tmpName);
 
-		format(query, sizeof(query), "UPDATE `accounts` SET `SecureIP`='%s' WHERE `Username`='%s' AND `AdminLevel` <= %d", tmpIP, tmpName, PlayerInfo[playerid][pAdmin]);
-		mysql_function_query(MainPipeline, query, false, "OnIPWhitelist", "i", playerid);
+		mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `SecureIP`='%s' WHERE `Username`='%s' AND `AdminLevel` <= %d", tmpIP, tmpName, PlayerInfo[playerid][pAdmin]);
+		mysql_tquery(MainPipeline, query, "OnIPWhitelist", "i", playerid);
 
 		format(string, sizeof(string), "Attempting to whitelist %s on %s's account...", tmpIP, tmpName);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -2961,10 +2923,10 @@ CMD:oipcheck(playerid, params[])
 	if(sscanf(params, "s[24]", name)) return SendClientMessageEx(playerid, COLOR_WHITE, "USAGE: /oipcheck [name]");
 
 	new tmpName[24];
-	mysql_escape_string(name, tmpName, MainPipeline);
+	mysql_escape_string(name, tmpName);
 
-	format(query, sizeof(query), "SELECT `AdminLevel`, `Username`, `IP` FROM `accounts` WHERE `Username` = '%s'", tmpName);
-	mysql_function_query(MainPipeline, query, true, "OnIPCheck", "i", playerid);
+	mysql_format(MainPipeline, query, sizeof(query), "SELECT `AdminLevel`, `Username`, `IP` FROM `accounts` WHERE `Username` = '%s'", tmpName);
+	mysql_tquery(MainPipeline, query, "OnIPCheck", "i", playerid);
 	return 1;
 }
 
@@ -3026,8 +2988,8 @@ CMD:ofine(playerid, params[])
 			SetPVarString(playerid, "OnFineReason", reason);
 
 
-			format(query, sizeof(query), "UPDATE `accounts` SET `Money` = `Money` - %d WHERE `PermBand` < 3 AND `Band` = 0 AND `AdminLevel` < 2 AND `Username`='%s'", amount, tmpName);
-			mysql_function_query(MainPipeline, query, false, "OnFine", "i", playerid);
+			mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Money` = `Money` - %d WHERE `PermBand` < 3 AND `Band` = 0 AND `AdminLevel` < 2 AND `Username`='%s'", amount, tmpName);
+			mysql_tquery(MainPipeline, query, "OnFine", "i", playerid);
 
 			format(string, sizeof(string), "Attempting to fine $%s from %s's account...", number_format(amount), tmpName);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -3532,9 +3494,9 @@ CMD:osuspend(playerid, params[])
 		mysql_escape_string(params, tmpName);
 		SetPVarString(playerid, "OnSetSuspended", tmpName);
 
-		format(query,sizeof(query),"UPDATE `accounts` SET `Disabled` = 1, `AdminLevel` = 0, `HR` = 0, `AP` = 0, `Security` = 0, `ShopTech` = 0, `FactionModerator` = 0, `GangModerator` = 0, \
+		mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `Disabled` = 1, `AdminLevel` = 0, `HR` = 0, `AP` = 0, `Security` = 0, `ShopTech` = 0, `FactionModerator` = 0, `GangModerator` = 0, \
 		`Undercover` = 0, `BanAppealer` = 0, `Leader` = 0, `Member` = 0, `SecureIP` = '0.0.0.0', `SeniorModerator` = 0, `BanAppealer` = 0, `ShopTech` = 0 WHERE `Username`= '%s' AND `AdminLevel` < 1338 AND `AdminLevel` > 1", tmpName);
-		mysql_function_query(MainPipeline, query, false, "OnSetSuspended", "ii", playerid, true);
+		mysql_tquery(MainPipeline, query, "OnSetSuspended", "ii", playerid, true);
 
 		format(string, sizeof(string), "Attempting to suspend %s's account.", tmpName);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -3574,8 +3536,8 @@ CMD:prisonaccount(playerid, params[])
 			format(string, sizeof(string), "Attempting to prison %s's account for %d minutes...", tmpName, minutes);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 
-			format(query,sizeof(query),"UPDATE `accounts` SET `PrisonReason` = '%s', `PrisonedBy` = '%s', `JailTime` = %d WHERE `PermBand` < 3 AND `Band` < 1 AND `AdminLevel` < %d AND `Username` = '%s'", tmpPrisonReason, tmpPrisonedBy, minutes*60, PlayerInfo[playerid][pAdmin], tmpName);
-			mysql_function_query(MainPipeline, query, false, "OnPrisonAccount", "i", playerid);
+			mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `PrisonReason` = '%s', `PrisonedBy` = '%s', `JailTime` = %d WHERE `PermBand` < 3 AND `Band` < 1 AND `AdminLevel` < %d AND `Username` = '%s'", tmpPrisonReason, tmpPrisonedBy, minutes*60, PlayerInfo[playerid][pAdmin], tmpName);
+			mysql_tquery(MainPipeline, query, "OnPrisonAccount", "i", playerid);
 		}
 	}
 	return 1;
@@ -3600,8 +3562,8 @@ CMD:jailaccount(playerid, params[])
 		format(string, sizeof(string), "Attempting to jail %s's account for %d minutes...", tmpName, minutes);
 		SendClientMessageEx(playerid, COLOR_YELLOW, string);
 
-		format(query,sizeof(query),"UPDATE `accounts` SET `PrisonReason` = '%s', `PrisonedBy` = '%s', `JailTime` = %d WHERE `PermBand` < 3 AND `Band` < 1 AND `AdminLevel` < %d AND `Username` = '%s'", tmpPrisonReason, tmpPrisonedBy, minutes*60, PlayerInfo[playerid][pAdmin], tmpName);
-		mysql_function_query(MainPipeline, query, false, "OnJailAccount", "i", playerid);
+		mysql_format(MainPipeline, query,sizeof(query),"UPDATE `accounts` SET `PrisonReason` = '%s', `PrisonedBy` = '%s', `JailTime` = %d WHERE `PermBand` < 3 AND `Band` < 1 AND `AdminLevel` < %d AND `Username` = '%s'", tmpPrisonReason, tmpPrisonedBy, minutes*60, PlayerInfo[playerid][pAdmin], tmpName);
+		mysql_tquery(MainPipeline, query, "OnJailAccount", "i", playerid);
 	}
 	return 1;
 }
@@ -3752,8 +3714,8 @@ CMD:setstat(playerid, params[])
 						SetPVarInt(giveplayerid, "CurrentPh", PlayerInfo[giveplayerid][pPnumber]);
 						SetPVarInt(giveplayerid, "PhChangeCost", 50000);
 						SetPVarInt(giveplayerid, "PhChangerId", playerid);
-						format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",amount);
-						mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", giveplayerid, 4);
+						mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",amount);
+						mysql_tquery(MainPipeline, query, "OnPhoneNumberCheck", "ii", giveplayerid, 4);
 						return 1;
 					}
 				}
@@ -4111,8 +4073,8 @@ CMD:setmystat(playerid, params[])
 					SetPVarInt(playerid, "CurrentPh", PlayerInfo[playerid][pPnumber]);
 					SetPVarInt(playerid, "PhChangeCost", 50000);
 					SetPVarInt(playerid, "PhChangerId", playerid);
-					format(query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",amount);
-					mysql_function_query(MainPipeline, query, true, "OnPhoneNumberCheck", "ii", playerid, 4);
+					mysql_format(MainPipeline, query, sizeof(query), "SELECT `Username` FROM `accounts` WHERE `PhoneNr` = '%d'",amount);
+					mysql_tquery(MainPipeline, query, "OnPhoneNumberCheck", "ii", playerid, 4);
 					return 1;
 				}
 			}
@@ -4948,10 +4910,10 @@ CMD:okills(playerid, params[])
 		if(giveplayerid != INVALID_PLAYER_ID) return SendClientMessageEx(playerid, COLOR_GRAD2, "That person is online, use /kills for online players.");
 
 		new tmpName[24];
-		mysql_escape_string(params, tmpName, MainPipeline);
+		mysql_escape_string(params, tmpName);
 
-		format(query, sizeof(query), "SELECT `id` FROM `accounts` WHERE `Username` = '%s'", tmpName);
-		mysql_function_query(MainPipeline, query, true, "OnGetOKills", "is", playerid, tmpName);
+		mysql_format(MainPipeline, query, sizeof(query), "SELECT `id` FROM `accounts` WHERE `Username` = '%s'", tmpName);
+		mysql_tquery(MainPipeline, query, "OnGetOKills", "is", playerid, tmpName);
 	}
 	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command!");
 	return 1;
@@ -5155,8 +5117,8 @@ CMD:owarn(playerid, params[])
 	SetPVarString(playerid, "OnWarnPlayer", tmpName);
 	SetPVarString(playerid, "OnWarnPlayerReason", reason);
 
-	format(query, sizeof(query), "UPDATE `accounts` SET `Warnings`=`Warnings`+1 WHERE `Username`='%s' AND `PermBand` < 3 AND `Band` < 1 AND `AdminLevel` < 2",tmpName);
-	mysql_function_query(MainPipeline, query, false, "OnWarnPlayer", "i", playerid);
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `Warnings`=`Warnings`+1 WHERE `Username`='%s' AND `PermBand` < 3 AND `Band` < 1 AND `AdminLevel` < 2",tmpName);
+	mysql_tquery(MainPipeline, query, "OnWarnPlayer", "i", playerid);
 
 	format(string,sizeof(string),"Attempting to warn %s...", tmpName);
 	SendClientMessageEx(playerid, COLOR_YELLOW, string);
@@ -5617,8 +5579,8 @@ CMD:givesprize(playerid, params[])
 		if(strcmp(choice, "carslot", true) == 0)
 		{
 			mysql_escape_string(PName, tmpName);
-			format(string, sizeof(string), "UPDATE `accounts` SET `VehicleSlot` = `VehicleSlot`+%d WHERE `Username`='%s'",amount, tmpName);
-			mysql_function_query(MainPipeline, string, false, "OnStaffPrize", "i", playerid);
+			mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `VehicleSlot` = `VehicleSlot`+%d WHERE `Username`='%s'",amount, tmpName);
+			mysql_tquery(MainPipeline, string, "OnStaffPrize", "i", playerid);
 			format(string, sizeof(string), "Attempting to give %s %d car slot(s)..", tmpName, amount);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			SetPVarString(playerid, "OnSPrizeType", "Car Slot(s)");
@@ -5628,8 +5590,8 @@ CMD:givesprize(playerid, params[])
 		else if(strcmp(choice, "toyslot", true) == 0)
 		{
 			mysql_escape_string(PName, tmpName);
-			format(string, sizeof(string), "UPDATE `accounts` SET `ToySlot` = `ToySlot`+%d WHERE `Username`='%s'",amount, tmpName);
-			mysql_function_query(MainPipeline, string, false, "OnStaffPrize", "i", playerid);
+			mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `ToySlot` = `ToySlot`+%d WHERE `Username`='%s'",amount, tmpName);
+			mysql_tquery(MainPipeline, string, "OnStaffPrize", "i", playerid);
 			format(string, sizeof(string), "Attempting to give %s %d toy slot(s)..", tmpName, amount);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			SetPVarString(playerid, "OnSPrizeType", "Toy Slot(s)");
@@ -5639,8 +5601,8 @@ CMD:givesprize(playerid, params[])
 		else if(strcmp(choice, "carvoucher", true) == 0)
 		{
 			mysql_escape_string(PName, tmpName);
-			format(string, sizeof(string), "UPDATE `accounts` SET `VehVoucher` = `VehVoucher`+%d WHERE `Username`='%s'",amount, tmpName);
-			mysql_function_query(MainPipeline, string, false, "OnStaffPrize", "i", playerid);
+			mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `VehVoucher` = `VehVoucher`+%d WHERE `Username`='%s'",amount, tmpName);
+			mysql_tquery(MainPipeline, string, "OnStaffPrize", "i", playerid);
 			format(string, sizeof(string), "Attempting to give %s %d car voucher(s)..", tmpName, amount);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			SetPVarString(playerid, "OnSPrizeType", "Car Voucher(s)");
@@ -5650,8 +5612,8 @@ CMD:givesprize(playerid, params[])
 		else if(strcmp(choice, "giftvoucher", true) == 0)
 		{
 			mysql_escape_string(PName, tmpName);
-			format(string, sizeof(string), "UPDATE `accounts` SET `GiftVoucher` = `GiftVoucher`+%d WHERE `Username`='%s'",amount, tmpName);
-			mysql_function_query(MainPipeline, string, false, "OnStaffPrize", "i", playerid);
+			mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `GiftVoucher` = `GiftVoucher`+%d WHERE `Username`='%s'",amount, tmpName);
+			mysql_tquery(MainPipeline, string, "OnStaffPrize", "i", playerid);
 			format(string, sizeof(string), "Attempting to give %s %d gift reset voucher(s)..", tmpName, amount);
 			SendClientMessageEx(playerid, COLOR_YELLOW, string);
 			SetPVarString(playerid, "OnSPrizeType", "Gift Reset Voucher(s)");
@@ -5968,17 +5930,17 @@ CMD:checkwdcount(playerid, params[])
 		new giveplayerid = ReturnUser(adminname);
 		if(IsPlayerConnected(giveplayerid) && PlayerInfo[giveplayerid][pWatchdog] >= 1)
 		{
-			format(string, sizeof(string), "SELECT SUM(count) FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(giveplayerid), tdate);
-			mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, GetPlayerNameEx(giveplayerid), tdate, 4);
-			format(string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", GetPlayerSQLId(giveplayerid), tdate);
-			mysql_function_query(MainPipeline, string, true, "QueryCheckCountFinish", "issi", playerid, GetPlayerNameEx(giveplayerid), tdate, 5);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT SUM(count) FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s'", GetPlayerSQLId(giveplayerid), tdate);
+			mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, GetPlayerNameEx(giveplayerid), tdate, 4);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT `count`, `hour` FROM `tokens_wd` WHERE `playerid` = %d AND `date` = '%s' ORDER BY `hour` ASC", GetPlayerSQLId(giveplayerid), tdate);
+			mysql_tquery(MainPipeline, string, "QueryCheckCountFinish", "issi", playerid, GetPlayerNameEx(giveplayerid), tdate, 5);
 		}
 		else
 		{
 			new tmpName[MAX_PLAYER_NAME];
 			mysql_escape_string(adminname, tmpName);
-			format(string, sizeof(string), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s'", tmpName);
-			mysql_function_query(MainPipeline, string, true, "QueryUsernameCheck", "isi", playerid, tdate, 2);
+			mysql_format(MainPipeline, string, sizeof(string), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s'", tmpName);
+			mysql_tquery(MainPipeline, string, "QueryUsernameCheck", "isi", playerid, tdate, 2);
 		}
     }
     return 1;
@@ -6260,8 +6222,8 @@ CMD:resetpgifts(playerid, params[])
 	foreach(new i: Player) {
 		PlayerInfo[i][pReceivedPrize] = 0;
 	}
-	format(query, sizeof(query), "UPDATE `accounts` SET `ReceivedPrize` = 0 WHERE `ReceivedPrize` != 0");
-	mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, query, sizeof(query), "UPDATE `accounts` SET `ReceivedPrize` = 0 WHERE `ReceivedPrize` != 0");
+	mysql_tquery(MainPipeline, query, "OnQueryFinish", "i", SENDDATA_THREAD);
 	SendClientMessageEx(playerid, COLOR_CYAN, "You have reset everyones received gift they'll be able to get gifts upon login.");
 	format(szMiscArray, sizeof(szMiscArray), "%s has reset everyones received gift to 0. (Login Event Gifts)", GetPlayerNameEx(playerid));
 	Log("logs/admin.log", szMiscArray);

@@ -68,8 +68,8 @@ stock MakeZombie(playerid)
 
     if(IsPlayerConnected(GetPVarInt(playerid, "pZombieBiter")))
 	{
-		format(string, sizeof(string), "INSERT INTO zombiekills (id,num) VALUES (%d,1) ON DUPLICATE KEY UPDATE num = num + 1", GetPlayerSQLId(GetPVarInt(playerid, "pZombieBiter")));
-		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO zombiekills (id,num) VALUES (%d,1) ON DUPLICATE KEY UPDATE num = num + 1", GetPlayerSQLId(GetPVarInt(playerid, "pZombieBiter")));
+		mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		DeletePVar(playerid, "pZombieBiter");
 	}
 
@@ -85,8 +85,8 @@ stock MakeZombie(playerid)
 
  	//SendAudioToRange(70, 100, X, Y, Z, 30); RESCRIPT NEW SOUND
 
- 	format(string, sizeof(string), "INSERT INTO `zombie` (`id`) VALUES ('%d')", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+ 	mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO `zombie` (`id`) VALUES ('%d')", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	return 1;
 }
 
@@ -98,8 +98,8 @@ stock UnZombie(playerid)
    	SetPlayerToTeamColor(playerid);
 	SetHealth(playerid, 100);
 	new string[64];
-	format(string, sizeof(string), "DELETE FROM `zombie` WHERE `id`='%d'", GetPlayerSQLId(playerid));
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	mysql_format(MainPipeline, string, sizeof(string), "DELETE FROM `zombie` WHERE `id`='%d'", GetPlayerSQLId(playerid));
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	return 1;
 }
 #endif
@@ -110,8 +110,8 @@ public OnZombieCheck(playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
- 		new rows, fields;
-   		cache_get_data(rows, fields, MainPipeline);
+ 		new rows;
+   		cache_get_row_count(rows);
 		if(rows)
 		{
 			MakeZombie(playerid);
@@ -233,7 +233,7 @@ CMD:zombieevent(playerid, params[])
 	        //SendAudioToRange(70, 100, 0.0, 0.0, 0.0, 10000); RESCRIPT NEW SOUND
 			SendGroupMessage(GROUP_TYPE_MEDIC, TEAM_MED_COLOR, "Attention FDSA, the zombie event has started, you can now use /curevirus to cure the virus");
 	        SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled zombie mode.");
-	        mysql_function_query(MainPipeline, "DELETE FROM zombie", false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	        mysql_tquery(MainPipeline, "DELETE FROM zombie", "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	    }
 	    else
 	    {
@@ -241,7 +241,7 @@ CMD:zombieevent(playerid, params[])
 			SendRconCommand("unloadfs zombie_mapping");
 	        foreach(new i: Player) SyncMinTime(i);
 			SetWeather(5);
-			mysql_function_query(MainPipeline, "DELETE FROM zombie", false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_tquery(MainPipeline, "DELETE FROM zombie", "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			foreach(Player, i)
 			{
 			    UnZombie(i);
@@ -374,8 +374,8 @@ CMD:bite(playerid, params[])
 					SetPVarInt(i, "pZombieBiter", playerid);
 					SetPVarInt(i, "LastBiteTime", gettime()+15);
 
-					format(szMiscArray, sizeof(szMiscArray),"INSERT INTO `zombiekills` (`id`,`name`,`num`) VALUES ('%d', '%s', 1) ON DUPLICATE KEY UPDATE `num` = `num` + 1", PlayerInfo[playerid][pId], GetPlayerNameEx(playerid));
-					mysql_function_query(MainPipeline, szMiscArray, false, "","");
+					mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray),"INSERT INTO `zombiekills` (`id`,`name`,`num`) VALUES ('%d', '%s', 1) ON DUPLICATE KEY UPDATE `num` = `num` + 1", PlayerInfo[playerid][pId], GetPlayerNameEx(playerid));
+					mysql_tquery(MainPipeline, szMiscArray, "","");
 
 					SetPVarInt(playerid, "LastBiteID", i);
 					SetPlayerToTeamColor(i);
@@ -456,8 +456,8 @@ CMD:curevirus(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_GREY, string);
 		}
 
-  		format(string, sizeof(string), "INSERT INTO zombieheals (id,num) VALUES (%d,1) ON DUPLICATE KEY UPDATE num = num + 1", GetPlayerSQLId(playerid));
-		mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+  		mysql_format(MainPipeline, string, sizeof(string), "INSERT INTO zombieheals (id,num) VALUES (%d,1) ON DUPLICATE KEY UPDATE num = num + 1", GetPlayerSQLId(playerid));
+		mysql_tquery(MainPipeline, string, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 	}
 	return 1;
 }
@@ -741,16 +741,16 @@ ShowZombieScoreBoard(iPlayerID, iScoreType) {
 
 	switch(iScoreType) {
 		case 0: {
-			mysql_function_query(MainPipeline, "SELECT * FROM `humankills` ORDER BY `num` DESC LIMIT 5", true, "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
+			mysql_tquery(MainPipeline, "SELECT * FROM `humankills` ORDER BY `num` DESC LIMIT 5", "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
 		}
 		case 1: {
-			mysql_function_query(MainPipeline, "SELECT * FROM `zombiekills` ORDER BY `num` DESC LIMIT 5", true, "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
+			mysql_tquery(MainPipeline, "SELECT * FROM `zombiekills` ORDER BY `num` DESC LIMIT 5", "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
 		}
 		case 2: {
-			mysql_function_query(MainPipeline, "SELECT * FROM `humansurvivor` ORDER BY `num` DESC LIMIT 5", true, "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
+			mysql_tquery(MainPipeline, "SELECT * FROM `humansurvivor` ORDER BY `num` DESC LIMIT 5", "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
 		}
 		case 3: {
-			mysql_function_query(MainPipeline, "SELECT * FROM `zombiesurvivor` ORDER BY `num` DESC LIMIT 5", true, "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
+			mysql_tquery(MainPipeline, "SELECT * FROM `zombiesurvivor` ORDER BY `num` DESC LIMIT 5", "OnShowZombieScoreBoard", "ii", iPlayerID, iScoreType);
 		}
 	}
 	return 1;
@@ -760,14 +760,12 @@ forward OnShowZombieScoreBoard(iPlayerID, iScoreType);
 public OnShowZombieScoreBoard(iPlayerID, iScoreType) {
 
 	new 
-		iRows, 
-		iFields,
+		iRows,
 		iCount,
+		iNumb,
 		szTempName[MAX_PLAYER_NAME];
-
 	szMiscArray[0] = 0;
-
-	cache_get_data(iRows, iFields, MainPipeline);
+	cache_get_row_count(iRows);
 
 	switch(iScoreType) {
 		case 0: szMiscArray = "Name\tKills";
@@ -778,10 +776,8 @@ public OnShowZombieScoreBoard(iPlayerID, iScoreType) {
 
 	while(iCount < iRows) {
 
-		cache_get_field_content(iCount, "name", szTempName, MainPipeline);
-
-		new iNumb = cache_get_field_content_int(iCount, "num", MainPipeline);
-
+		cache_get_value_name(iCount, "name", szTempName);
+		cache_get_value_name_int(iCount, "num", iNumb);
 		switch(iScoreType) {
 			case 0, 1: format(szMiscArray, sizeof(szMiscArray), "%s\n%s\t%d", szMiscArray, szTempName, iNumb);
 			case 2, 3: format(szMiscArray, sizeof(szMiscArray), "%s\n%s\t%s", szMiscArray, szTempName, ConvertTimeS(iNumb));
@@ -801,8 +797,8 @@ public OnShowZombieScoreBoard(iPlayerID, iScoreType) {
 
 SaveZombieStats(i) {
 	new iSSurvive = GetPVarInt(i, "iSAliveTick");
-	format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `humansurvivor` (`id`,`name`,`num`) VALUES ('%d', '%s', '%d') ON DUPLICATE KEY UPDATE `num` = `num` + '%d'", PlayerInfo[i][pId], GetPlayerNameEx(i), iSSurvive, iSSurvive);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnSaveZombieStats", "ii", i, 0);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `humansurvivor` (`id`,`name`,`num`) VALUES ('%d', '%s', '%d') ON DUPLICATE KEY UPDATE `num` = `num` + '%d'", PlayerInfo[i][pId], GetPlayerNameEx(i), iSSurvive, iSSurvive);
+	mysql_tquery(MainPipeline, szMiscArray, "OnSaveZombieStats", "ii", i, 0);
 }
 
 forward OnSaveZombieStats(iPlayerID, iStage);
@@ -812,8 +808,8 @@ public OnSaveZombieStats(iPlayerID, iStage) {
 			
 		case 0: {
 			new iZSurvive = GetPVarInt(iPlayerID, "iZAliveTick");
-			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `zombiesurvivor` (`id`,`name`,`num`) VALUES ('%d', '%s', '%d') ON DUPLICATE KEY UPDATE `num` = `num` + '%d'", PlayerInfo[iPlayerID][pId], GetPlayerNameEx(iPlayerID), iZSurvive, iZSurvive);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnSaveZombieStats", "ii", iPlayerID, 1);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `zombiesurvivor` (`id`,`name`,`num`) VALUES ('%d', '%s', '%d') ON DUPLICATE KEY UPDATE `num` = `num` + '%d'", PlayerInfo[iPlayerID][pId], GetPlayerNameEx(iPlayerID), iZSurvive, iZSurvive);
+			mysql_tquery(MainPipeline, szMiscArray, "OnSaveZombieStats", "ii", iPlayerID, 1);
 		}
 
 		case 1: {

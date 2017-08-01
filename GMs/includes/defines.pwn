@@ -103,7 +103,7 @@ native IsValidVehicle(vehicleid);
 #define 		MAX_GATES 					(4000)
 #define 		MAX_EVENTPOINTS 			(100)
 #define 		INVALID_HOUSE_ID			(-1)
-#define			MAX_TURFS					(400)
+#define			MAX_TURFS					(200)
 #define			MAX_ARENAS					(15)
 #define			MAX_MAILBOXES				(50)
 #define 		MAX_3DLABELS 				(500)
@@ -1407,8 +1407,8 @@ native IsValidVehicle(vehicleid);
 #define COLOR_OOC 0xE0FFFFAA
 #define COLOR_CYAN 0x40FFFFFF
 #define	COLOR_LIME 0xABFF6600
-#define COLOR_HMARADIO 0x003399cc
-#define COLOR_HMAOOC 0x008BE8FF
+#define COLOR_HMARADIO 0x008BE8FF
+#define COLOR_HMAOOC 0x00FFFFFF
 #define PUBLICRADIO_COLOR 0x6DFB6DFF
 #define TEAM_CYAN 1
 #define TEAM_BLUE 2

@@ -128,9 +128,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				if(GetPVarInt(playerid, "BugStep") == 4) //Submit
 				{
 					new szResult[512];
-					format(szResult, sizeof(szResult), "INSERT INTO `bugs` (`Userid`, `Anoy`, `Type`, `Subject`, `Created`, `LastDate`) \
-					VALUES(%d, %d, 0, '%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP())", GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous"), g_mysql_ReturnEscaped(bug, MainPipeline));
-					mysql_function_query(MainPipeline, szResult, true, "OnBugReport", "i", playerid);
+					mysql_format(MainPipeline, szResult, sizeof(szResult), "INSERT INTO `bugs` (`Userid`, `Anoy`, `Type`, `Subject`, `Created`, `LastDate`) \
+					VALUES(%d, %d, 0, '%e', UNIX_TIMESTAMP(), UNIX_TIMESTAMP())", GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous"), bug);
+					mysql_tquery(MainPipeline, szResult, "OnBugReport", "i", playerid);
 				}
 			}
 		}
@@ -149,8 +149,8 @@ CMD:bugreport(playerid, params[]) {
 	if(gettime() - PlayerInfo[playerid][pBugReportTimeout] < 3600) 
 		return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report - {FF0000}Error", "You can only submit a bug report once every hour!\nAlternatively, you can visit http://cp.ng-gaming.net and post a bug report there.", "Close", "");
 
-	format(szMiscArray, sizeof(szMiscArray), "SELECT * FROM `devcpbans` WHERE `Userid` = %d LIMIT 1", GetPlayerSQLId(playerid));
-	return mysql_function_query(MainPipeline, szMiscArray, true, "CheckBugReportBans", "ii", playerid, 1);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT * FROM `devcpbans` WHERE `Userid` = %d LIMIT 1", GetPlayerSQLId(playerid));
+	return mysql_tquery(MainPipeline, szMiscArray, "CheckBugReportBans", "ii", playerid, 1);
 }
 
 CMD:changes(playerid, params[])
@@ -169,11 +169,11 @@ public OnBugReport(playerid)
 	GetPVarString(playerid, "BugSubject", bug, 40);
 	GetPVarString(playerid, "BugDetail", bugdesc, 128);
 
-	format(szResult, sizeof(szResult), "INSERT INTO `bugcomments` (`Bugid`, `Postid`, `UserId`, `Message`, `Created`) \
-	VALUES(%d, 1, %d, '%s', UNIX_TIMESTAMP())", mysql_insert_id(MainPipeline), GetPVarInt(playerid, "pSQLID"), g_mysql_ReturnEscaped(bugdesc, MainPipeline));
-	mysql_function_query(MainPipeline, szResult, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_format(MainPipeline, szResult, sizeof(szResult), "INSERT INTO `bugcomments` (`Bugid`, `Postid`, `UserId`, `Message`, `Created`) \
+	VALUES(%d, 1, %d, '%e', UNIX_TIMESTAMP())", cache_insert_id(), GetPVarInt(playerid, "pSQLID"), bugdesc);
+	mysql_tquery(MainPipeline, szResult, "OnQueryFinish", "i", SENDDATA_THREAD);
 
-	format(string, sizeof(string), "[BugID: %d] %s(%d) submitted a%sbug (%s)", mysql_insert_id(MainPipeline), GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous") == 1 ? (" anonymous "):(" "), bug);
+	format(string, sizeof(string), "[BugID: %d] %s(%d) submitted a%sbug (%s)", cache_insert_id(), GetPlayerNameEx(playerid), GetPVarInt(playerid, "pSQLID"), GetPVarInt(playerid, "BugAnonymous") == 1 ? (" anonymous "):(" "), bug);
 	Log("logs/bugreport.log", string);
 	ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX , "Bug Report Submitted", 
 	"{FFFFFF}Your bug report has been successfully submitted.\n\
@@ -191,8 +191,8 @@ public OnBugReport(playerid)
 forward CheckBugReportBans(playerid, check);
 public CheckBugReportBans(playerid, check)
 {
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows;
+	cache_get_row_count(rows);
 	if(rows == 0)
 	{
 		ShowBugReportMainMenu(playerid);
@@ -207,17 +207,17 @@ public CheckBugReportBans(playerid, check)
 forward CheckPendingBugReports(playerid);
 public CheckPendingBugReports(playerid)
 {
-	new rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new rows;
+	cache_get_row_count(rows);
 	if(rows == 0) return 1;
 	new string[256], szResult[41];
 	format(string, sizeof(string), "{BFC0C2}You have {4A8BC2}%d{BFC0C2} bug report(s) pending your response.", rows);
 	strcat(string, "\nPlease follow up with the bug reports listed below and provide as many details as you can.\n{4A8BC2}BugID\tBug{BFC0C2}");
 	for(new i = 0; i < rows; i++)
 	{
-		cache_get_field_content(i, "id", szResult, MainPipeline);
+		cache_get_value_name(i, "id", szResult);
 		format(string, sizeof(string), "%s\n%s\t", string, szResult);
-		cache_get_field_content(i, "Subject", szResult, MainPipeline);
+		cache_get_value_name(i, "Subject", szResult);
 		format(string, sizeof(string), "%s%s", string, szResult);
 	}
 	return ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Bug Reports Pending Response - {4A8BC2}http://cp.ng-gaming.net", string, "Close", "");

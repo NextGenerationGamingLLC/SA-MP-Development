@@ -38,32 +38,32 @@
 stock LoadArrestPoint(id)
 {
 	new string[128];
-	format(string, sizeof(string), "SELECT * FROM `arrestpoints` WHERE `id`=%d", id);
-	mysql_function_query(MainPipeline, string, true, "OnLoadArrestPoints", "i", id);
+	mysql_format(MainPipeline, string, sizeof(string), "SELECT * FROM `arrestpoints` WHERE `id`=%d", id);
+	mysql_tquery(MainPipeline, string, "OnLoadArrestPoint", "i", id);
 }
 
 stock LoadArrestPoints()
 {
 	printf("[LoadArrestPoints] Loading data from database...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `arrestpoints`", true, "OnLoadArrestPoints", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `arrestpoints`", "OnLoadArrestPoints", "");
 }
 
 forward OnLoadArrestPoint(index);
 public OnLoadArrestPoint(index)
 {
-	new rows, fields;
+	new rows;
 	szMiscArray[0] = 0;
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
 
 	for(new row; row < rows; row++)
 	{
-		ArrestPoints[index][arrestSQLId] = cache_get_field_content_int(row, "id", MainPipeline);
-		ArrestPoints[index][arrestPosX] = cache_get_field_content_float(row, "PosX", MainPipeline);
-		ArrestPoints[index][arrestPosY] = cache_get_field_content_float(row, "PosY", MainPipeline);
-		ArrestPoints[index][arrestPosZ] = cache_get_field_content_float(row, "PosZ", MainPipeline);
-		ArrestPoints[index][arrestVW] = cache_get_field_content_int(row, "VW", MainPipeline); 
-		ArrestPoints[index][arrestInt] = cache_get_field_content_int(row, "Int", MainPipeline); 
-		ArrestPoints[index][arrestType] = cache_get_field_content_int(row, "Type", MainPipeline); 
+		cache_get_value_name_int(row, "id", ArrestPoints[index][arrestSQLId]);
+		cache_get_value_name_float(row, "PosX", ArrestPoints[index][arrestPosX]);
+		cache_get_value_name_float(row, "PosY", ArrestPoints[index][arrestPosY]);
+		cache_get_value_name_float(row, "PosZ", ArrestPoints[index][arrestPosZ]);
+		cache_get_value_name_int(row, "VW", ArrestPoints[index][arrestVW]); 
+		cache_get_value_name_int(row, "Int", ArrestPoints[index][arrestInt]); 
+		cache_get_value_name_int(row, "Type", ArrestPoints[index][arrestType]); 
 		if(ArrestPoints[index][arrestPosX] != 0)
 		{
 			switch(ArrestPoints[index][arrestType])
@@ -101,13 +101,13 @@ public OnLoadArrestPoint(index)
 forward OnLoadArrestPoints();
 public OnLoadArrestPoints()
 {
-	new i, rows, fields;
+	new i, rows;
 	szMiscArray[0] = 0;
-	cache_get_data(rows, fields, MainPipeline);
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		ArrestPoints[i][arrestSQLId] = cache_get_field_content_int(i, "id", MainPipeline);
+		/*ArrestPoints[i][arrestSQLId] = cache_get_field_content_int(i, "id", MainPipeline);
 		ArrestPoints[i][arrestPosX] = cache_get_field_content_float(i, "PosX", MainPipeline);
 		ArrestPoints[i][arrestPosY] = cache_get_field_content_float(i, "PosY", MainPipeline);
 		ArrestPoints[i][arrestPosZ] = cache_get_field_content_float(i, "PosZ", MainPipeline);
@@ -151,7 +151,8 @@ public OnLoadArrestPoints()
 					ArrestPoints[i][arrestPickupID] = CreateDynamicPickup(1247, 23, ArrestPoints[i][arrestPosX], ArrestPoints[i][arrestPosY], ArrestPoints[i][arrestPosZ], ArrestPoints[i][arrestVW]);
 				}
 			}
-		}
+		}*/
+		LoadArrestPoint(i);
 		i++;
 	}
 }
@@ -159,7 +160,7 @@ public OnLoadArrestPoints()
 stock SaveArrestPoint(id)
 {
 	new string[1024];
-	format(string, sizeof(string), "UPDATE `arrestpoints` SET \
+	mysql_format(MainPipeline, string, sizeof(string), "UPDATE `arrestpoints` SET \
 		`PosX`=%f, \
 		`PosY`=%f, \
 		`PosZ`=%f, \
@@ -191,7 +192,7 @@ stock SaveArrestPoint(id)
 		id
 	);
 
-	mysql_function_query(MainPipeline, string, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, string, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock SaveArrestPoints()

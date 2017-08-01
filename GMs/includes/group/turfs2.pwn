@@ -59,7 +59,7 @@ new PlayerText:TW_PTextDraws[MAX_PLAYERS][6];
 
 task TurfWars_Task[60000 * 30]() { // Every 10 minutes.
 
-	mysql_function_query(MainPipeline, "SELECT `timestamp`, `shutdown` FROM `turfs` WHERE `vulnerable` = '0'", true, "TurfWars_OnTask", "");
+	mysql_tquery(MainPipeline, "SELECT `timestamp`, `shutdown` FROM `turfs` WHERE `vulnerable` = '0'", true, "TurfWars_OnTask", "");
 }
 
 hook OnGameModeInit() {
@@ -206,7 +206,7 @@ public TurfWars_OnTask() {
 				TurfWars_SendGroupMessage(arrTurfWars[iCount][tw_iGroupID], COLOR_GREEN, szMiscArray);
 			}
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `vulnerable` = '1', `shutdown` = '0', `timestamp` = '0' WHERE `id` = '%d'", iCount);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		}
 		TurfWars_SaveTurf(iCount);
 		iCount++;
@@ -221,14 +221,14 @@ TurfWars_SaveAll() {
 TurfWars_SaveTurf(iTurfID) {
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `traffic` = %d, `deaths` = %d, `revenue` = %d, `turfmode` = '%d'  WHERE `id` = '%d'",
 		arrTurfWars[iTurfID][tw_iTraffic], arrTurfWars[iTurfID][tw_iDeaths], arrTurfWars[iTurfID][tw_iRevenue],	Bit_State(arrTurfWarsBits[iTurfID], tw_bTurfMode), iTurfID);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 // gSAZones[i][SAZONE_AREA][0]
 
 TurfWars_LoadData() {
 
-	mysql_function_query(MainPipeline, "SELECT `linkedid`, `groupid`, `vulnerable`, `disabled`, `shutdown`, `health`, `level`, `headquarter`, `traffic`, `deaths`, `revenue`, `turfmode` FROM `turfs`", true, "TurfWars_OnLoadData", "");
+	mysql_tquery(MainPipeline, "SELECT `linkedid`, `groupid`, `vulnerable`, `disabled`, `shutdown`, `health`, `level`, `headquarter`, `traffic`, `deaths`, `revenue`, `turfmode` FROM `turfs`", true, "TurfWars_OnLoadData", "");
 }
 
 forward TurfWars_OnLoadData();
@@ -281,14 +281,14 @@ TurfWars_InitZones() {
 		format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `turfs` (`zonename`, `minx`, `miny`, `maxx`, `maxy`) VALUES ('%s', '%f', '%f', '%f', '%f')",
 			gSAZones[i][SAZONE_NAME], gSAZones[i][SAZONE_AREA][0], gSAZones[i][SAZONE_AREA][1], gSAZones[i][SAZONE_AREA][3], gSAZones[i][SAZONE_AREA][4]);
 
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		*/
 
 		// if(strcmp(gSAZones[i][SAZONE_NAME], gSAZones[i-1][SAZONE_NAME], true)) j++;
 		
 		/*
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `linkedID` = '%d' WHERE `id` = '%d'", j, i + 1);
-		mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+		mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 		*/
 
 		// arrTurfWars[i][tw_iLinkedID] = j;
@@ -714,7 +714,7 @@ TurfWars_FinalizeCapture(iTurfID, bool:bState) {
 
 					format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `vulnerable` = '0', `shutdown` = '1', `timestamp` = '%d' WHERE `id` = '%d'",
 						gettime() + 21600, iTurfID);
-					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 				}
 				else {
 					format(szMiscArray, sizeof(szMiscArray), "[TURF]: You have successfully taken over %s's turf.", arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_szGroupName]);
@@ -729,7 +729,7 @@ TurfWars_FinalizeCapture(iTurfID, bool:bState) {
 				arrTurfWars[iTurfID][tw_iGroupID] = iGroupID;
 				format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `groupid` = '%d', `vulnerable` = '0', `timestamp` = '%d' WHERE `id` = '%d'",
 					iGroupID, gettime() + 21600, iTurfID);
-				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 			if(arrTurfWars[iTurfID][tw_iLevel] > 20) arrTurfWars[iTurfID][tw_iLevel] -= 10;
 		}
@@ -737,7 +737,7 @@ TurfWars_FinalizeCapture(iTurfID, bool:bState) {
 
 			format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `vulnerable` = '0', `timestamp` = '%d' WHERE `id` = '%d'",
 				gettime() + 21600, iTurfID);
-			mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+			mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) {
 				format(szMiscArray, sizeof(szMiscArray), "[TURF]: You have failed to shutdown %s's turf.", arrGroupData[arrTurfWars[iTurfID][tw_iGroupID]][g_szGroupName]);
 				TurfWars_SendGroupMessage(GetGVarInt("TW_Capturer", iTurfID), COLOR_YELLOW, szMiscArray);
@@ -790,7 +790,7 @@ CMD:turfcodes(playerid, params[]) {
 			if(IsPointInDynamicArea(i[b], gSAZones[a][SAZONE_AREA][0] + 1.0, gSAZones[a][SAZONE_AREA][1] + 1.0, gSAZones[a][SAZONE_AREA][2])) {
 				format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `areacode` = '%d' WHERE `linkedid` = '%d'",
 					b, arrTurfWars[a][tw_iLinkedID]);
-				mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+				mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 			}
 		}
 	}
@@ -805,7 +805,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 		case DIALOG_TURFS_AREA: {
 			format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `linkedid`, `groupid`, `timestamp`, `vulnerable`, `shutdown`, `zonename` FROM `turfs` WHERE `areacode` = '%d'", listitem);
-			mysql_function_query(MainPipeline, szMiscArray, true, "TurfWars_FetchData", "ii", playerid, listitem);
+			mysql_tquery(MainPipeline, szMiscArray, true, "TurfWars_FetchData", "ii", playerid, listitem);
 		}
 		case DIALOG_TURFS_UPGRADE: {
 
@@ -827,7 +827,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					TurfWars_SendGroupMessage(PlayerInfo[playerid][pMember], COLOR_GREEN, szMiscArray);
 					SaveGroup(PlayerInfo[playerid][pMember]);
 					format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `health` = '%d', `level` = '%d' WHERE `id` = '%d'", arrTurfWars[iTurfID][tw_iHealth], arrTurfWars[iTurfID][tw_iLevel], iTurfID);
-					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 					Turf_SyncTurf(iTurfID);
 				}
 				else if(iUpgrID == 1) {
@@ -841,7 +841,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					TurfWars_SendGroupMessage(PlayerInfo[playerid][pMember], COLOR_YELLOW, szMiscArray);
 					SaveGroup(PlayerInfo[playerid][pMember]);
 					format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `health` = '%d' WHERE `id` = '%d'", arrTurfWars[iTurfID][tw_iHealth], iTurfID);
-					mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+					mysql_tquery(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
 					Turf_SyncTurf(iTurfID);
 				}
 			}
@@ -1089,11 +1089,11 @@ TurfWars_SetValue(playerid, i, iChoice, iValue) {
 	}
 	if(Bit_State(arrTurfWarsBits[i], tw_bTurfMode)) {
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `%s` = '%d' WHERE `linkedid` = '%d'", szSQL, iValue, arrTurfWars[i][tw_iLinkedID]);
-		mysql_function_query(MainPipeline, szMiscArray, false, "TurfWars_OnQueryFinish" , "ii", playerid, i);
+		mysql_tquery(MainPipeline, szMiscArray, false, "TurfWars_OnQueryFinish" , "ii", playerid, i);
 	}
 	else {
 		format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `%s` = '%d' WHERE `id` = '%d'", szSQL, iValue, i + 1);
-		mysql_function_query(MainPipeline, szMiscArray, false, "TurfWars_OnQueryFinish" , "ii", playerid, i);
+		mysql_tquery(MainPipeline, szMiscArray, false, "TurfWars_OnQueryFinish" , "ii", playerid, i);
 	}
 	return 1;
 }
@@ -1123,7 +1123,7 @@ TurfWars_EditTurf(playerid, i, szChoice[], iValue) {
 		szSQL = "disabled";
 	}
 	format(szMiscArray, sizeof(szMiscArray), "UPDATE `turfs` SET `%s` = '%d' WHERE `linkedid` = '%d'", szSQL, iValue, arrTurfWars[i][tw_iLinkedID]);
-	mysql_function_query(MainPipeline, szMiscArray, false, "TurfWars_OnQueryFinish" , "ii", playerid, i);
+	mysql_tquery(MainPipeline, szMiscArray, false, "TurfWars_OnQueryFinish" , "ii", playerid, i);
 	return 1;
 }
 */

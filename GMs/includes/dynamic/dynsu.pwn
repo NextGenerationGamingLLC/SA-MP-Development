@@ -55,24 +55,25 @@ new arrCrimeData[MAX_CRIMES][eCrimeDatum];
 
 public LoadCrimes()
 {
-	mysql_function_query(MainPipeline, "SELECT * FROM `crimesdata`", true, "OnCrimesLoad", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `crimesdata`", "OnCrimesLoad", "");
 	print("[LoadCrimes] Loading Crimes...");
 }
 
 public OnCrimesLoad()
 {
 	szMiscArray[0] = 0;
-	new rows = cache_get_row_count(MainPipeline);
+	new rows;
+	cache_get_row_count(rows);
 
 	for(new i = 0; i < rows; i++)
 	{
-		arrCrimeData[i][c_iID] = cache_get_field_content_int(i, "id", MainPipeline);
-		arrCrimeData[i][c_iType] = cache_get_field_content_int(i, "type", MainPipeline);
-		arrCrimeData[i][c_iNation] = cache_get_field_content_int(i, "nation", MainPipeline); 
-		cache_get_field_content(i, "name", arrCrimeData[i][c_szName], MainPipeline, 32);
-		arrCrimeData[i][c_iJTime] = cache_get_field_content_int(i, "jailtime", MainPipeline); 
-		arrCrimeData[i][c_iJFine] = cache_get_field_content_int(i, "fine", MainPipeline); 
-		arrCrimeData[i][c_iBail] = cache_get_field_content_int(i, "bail", MainPipeline); 
+		cache_get_value_name_int(i, "id", arrCrimeData[i][c_iID]);
+		cache_get_value_name_int(i, "type", arrCrimeData[i][c_iType]);
+		cache_get_value_name_int(i, "nation", arrCrimeData[i][c_iNation]); 
+		cache_get_value_name(i, "name", arrCrimeData[i][c_szName], 32);
+		cache_get_value_name_int(i, "jailtime", arrCrimeData[i][c_iJTime]); 
+		cache_get_value_name_int(i, "fine", arrCrimeData[i][c_iJFine]); 
+		cache_get_value_name_int(i, "bail", arrCrimeData[i][c_iBail]); 
 	}
 	print("[LoadCrimes] Crime Data Loaded.");
 }
@@ -88,22 +89,22 @@ stock SaveCrimes()
 stock SaveCrime(id)
 {
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `crimesdata` SET  \
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `crimesdata` SET  \
 	`type` = '%i', \
 	`nation` = '%i', \
-	`name` = '%s', \
+	`name` = '%e', \
 	`jailtime` = '%i', \
 	`fine` = '%i', \
 	`bail` = '%i' \
 	WHERE `id` = '%i'",
 	arrCrimeData[id][c_iType],
 	arrCrimeData[id][c_iNation],
-	g_mysql_ReturnEscaped(arrCrimeData[id][c_szName], MainPipeline),
+	arrCrimeData[id][c_szName],
 	arrCrimeData[id][c_iJTime],
 	arrCrimeData[id][c_iJFine],
 	arrCrimeData[id][c_iBail],
 	arrCrimeData[id][c_iID]);
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "i", SENDDATA_THREAD);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "i", SENDDATA_THREAD);
 }
 
 stock ShowCrimesDialog(iPlayerID, iSuspectID = INVALID_PLAYER_ID, iDialogID = DIALOG_SHOW_CRIMES)
@@ -430,8 +431,8 @@ ShowCrimesList(playerid)
 Crime_AddOffline(iPlayerID, szAddCrime[], szPName[], iExtra = 0) {
 
 	szMiscArray[0] = 0;
-	format(szMiscArray, sizeof(szMiscArray), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s' LIMIT 1", szPName);
-	mysql_function_query(MainPipeline, szMiscArray, true, "OnCrimeAddOffline", "dssd", iPlayerID, szAddCrime, szPName, iExtra);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT `id`, `Username` FROM `accounts` WHERE `Username` = '%s' LIMIT 1", szPName);
+	mysql_tquery(MainPipeline, szMiscArray, "OnCrimeAddOffline", "dssd", iPlayerID, szAddCrime, szPName, iExtra);
 	return 1;
 }
 
@@ -442,18 +443,16 @@ public OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra)
 	new
 		iRows,
 		iTempID;
-
-	iRows = cache_get_row_count(MainPipeline);
+	cache_get_row_count(iRows);
 
 	switch(iExtra) {
 		case 0: {
 			
 			if(!iRows) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "That player was not found!");
 
-			iTempID = cache_get_field_content_int(0, "id", MainPipeline);
-
-			format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", iTempID, GetPlayerNameEx(iPlayerID), szAddCrime, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance]);
-			mysql_function_query(MainPipeline, szMiscArray, true, "OnCrimeAddOffline", "dssd", iPlayerID, szAddCrime, szPName, 1);
+			cache_get_value_name_int(0, "id", iTempID);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `mdc` (`id` ,`time` ,`issuer` ,`crime`, `origin`) VALUES ('%d',NOW(),'%s','%s','%d')", iTempID, GetPlayerNameEx(iPlayerID), szAddCrime, arrGroupData[PlayerInfo[iPlayerID][pMember]][g_iAllegiance]);
+			mysql_tquery(MainPipeline, szMiscArray, "OnCrimeAddOffline", "dssd", iPlayerID, szAddCrime, szPName, 1);
 			new PlayerName[MAX_PLAYER_NAME];
 			GetPVarString(iPlayerID, "OfflineSU", PlayerName, MAX_PLAYER_NAME);
 			foreach(new p: Player)
@@ -470,7 +469,7 @@ public OnCrimeAddOffline(iPlayerID, szAddCrime[], szPName[], iExtra)
 
 		case 1: {
 			
-			if(!cache_affected_rows(MainPipeline)) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "There was an issue appending that crime!");
+			if(!cache_affected_rows()) return SendClientMessageEx(iPlayerID, 0xFFFFFF, "There was an issue appending that crime!");
 
 			format(szMiscArray, sizeof(szMiscArray), "Crime Added: %s - %s", szPName, szAddCrime);
 			SendClientMessage(iPlayerID, 0xFFFFFF, szMiscArray);

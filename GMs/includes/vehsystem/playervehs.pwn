@@ -5,44 +5,44 @@ stock g_mysql_SaveVehicle(playerid, slotid)
 	szMiscArray[0] = 0;
 	printf("%s (%i) saving their %s (slot %i) (Model %i)...", GetPlayerNameEx(playerid), playerid, VehicleName[PlayerVehicleInfo[playerid][slotid][pvModelId] - 400], slotid, PlayerVehicleInfo[playerid][slotid][pvModelId]);
 
-	format(szMiscArray, sizeof(szMiscArray), "UPDATE `vehicles` SET");
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvPosX` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPosX]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvPosY` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPosY]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvPosZ` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPosZ]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvPosAngle` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPosAngle]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvLock` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLock]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvLocked` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLocked]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvPaintJob` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPaintJob]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvColor1` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvColor1]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvColor2` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvColor2]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvPrice` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPrice]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvWeapon0` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvWeapons][0]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvWeapon1` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvWeapons][1]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvWeapon2` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvWeapons][2]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvLock` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLock]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvWepUpgrade` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvWepUpgrade]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvFuel` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvFuel]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvImpound` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvImpounded]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvDisabled` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvDisabled]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvPlate` = '%s',", szMiscArray, g_mysql_ReturnEscaped(PlayerVehicleInfo[playerid][slotid][pvPlate], MainPipeline));
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvTicket` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvTicket]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvRestricted` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvRestricted]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvVW` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvVW]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvInt` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvInt]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashFlag` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashFlag]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashVW` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashVW]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashX` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashX]));
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashY` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashY]));
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashZ` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashZ]));
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvCrashAngle` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashAngle]));
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvAlarm` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvAlarm]);
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvLastLockPickedBy` = '%s',", szMiscArray, g_mysql_ReturnEscaped(PlayerVehicleInfo[playerid][slotid][pvLastLockPickedBy], MainPipeline));
-	format(szMiscArray, sizeof(szMiscArray), "%s `pvLocksLeft` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLocksLeft]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `vehicles` SET");
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvPosX` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPosX]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvPosY` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPosY]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvPosZ` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPosZ]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvPosAngle` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPosAngle]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvLock` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLock]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvLocked` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLocked]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvPaintJob` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPaintJob]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvColor1` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvColor1]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvColor2` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvColor2]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvPrice` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPrice]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvWeapon0` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvWeapons][0]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvWeapon1` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvWeapons][1]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvWeapon2` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvWeapons][2]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvLock` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLock]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvWepUpgrade` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvWepUpgrade]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvFuel` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvFuel]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvImpound` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvImpounded]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvDisabled` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvDisabled]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvPlate` = '%e',", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvPlate]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvTicket` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvTicket]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvRestricted` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvRestricted]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvVW` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvVW]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvInt` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvInt]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvCrashFlag` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashFlag]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvCrashVW` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvCrashVW]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvCrashX` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashX]));
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvCrashY` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashY]));
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvCrashZ` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashZ]));
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvCrashAngle` = %0.5f,", szMiscArray, FormatFloat(PlayerVehicleInfo[playerid][slotid][pvCrashAngle]));
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvAlarm` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvAlarm]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvLastLockPickedBy` = '%e',", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLastLockPickedBy]);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvLocksLeft` = %d,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvLocksLeft]);
 	new zyear, zmonth, zday;
 	getdate(zyear, zmonth, zday);
 	if(zombieevent || (zmonth == 10 && zday == 31) || (zmonth == 11 && zday == 1)) format(szMiscArray, sizeof(szMiscArray), "%s `pvHealth` = %0.5f,", szMiscArray, PlayerVehicleInfo[playerid][slotid][pvHealth]);
 	
-	format(szMiscArray, sizeof(szMiscArray), "%s\
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s\
 		`Pot` = %d,\
 		`Crack` = %d,\
 		`Meth` = %d,\
@@ -59,11 +59,11 @@ stock g_mysql_SaveVehicle(playerid, slotid)
 	{
 		if(m == MAX_MODS-1)
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s `pvMod%d` = %d WHERE `id` = '%d'", szMiscArray, m, PlayerVehicleInfo[playerid][slotid][pvMods][m], PlayerVehicleInfo[playerid][slotid][pvSlotId]);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvMod%d` = %d WHERE `id` = '%d'", szMiscArray, m, PlayerVehicleInfo[playerid][slotid][pvMods][m], PlayerVehicleInfo[playerid][slotid][pvSlotId]);
 		}
 		else
 		{
-			format(szMiscArray, sizeof(szMiscArray), "%s `pvMod%d` = %d,", szMiscArray, m, PlayerVehicleInfo[playerid][slotid][pvMods][m]);
+			mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s `pvMod%d` = %d,", szMiscArray, m, PlayerVehicleInfo[playerid][slotid][pvMods][m]);
 		}
 	}
     //print(szMiscArray);
@@ -72,7 +72,7 @@ stock g_mysql_SaveVehicle(playerid, slotid)
 	format(szLog, sizeof(szLog), "[VEHICLESAVE] [User: %s(%i)] [Model: %d] [Vehicle ID: %d]", GetPlayerNameEx(playerid), PlayerInfo[playerid][pId], PlayerVehicleInfo[playerid][slotid][pvModelId], PlayerVehicleInfo[playerid][slotid][pvSlotId]);
 	Log("logs/vehicledebug.log", szLog);
 	
-	mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 }
 
 stock CreatePlayerVehicle(playerid, playervehicleid, modelid, Float: x, Float: y, Float: z, Float: angle, color1, color2, price, VW, Int)
@@ -123,8 +123,8 @@ stock CreatePlayerVehicle(playerid, playervehicleid, modelid, Float: x, Float: y
 		PlayerVehicleInfo[playerid][playervehicleid][pvFuel] = 100.0;
 		//SetVehicleNumberPlate(carcreated, PlayerVehicleInfo[playerid][playervehicleid][pvNumberPlate]);
 
-        format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `vehicles` (`sqlID`) VALUES ('%d')", GetPlayerSQLId(playerid));
-		mysql_function_query(MainPipeline, szMiscArray, true, "OnQueryCreateVehicle", "ii", playerid, playervehicleid);
+        mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `vehicles` (`sqlID`) VALUES ('%d')", GetPlayerSQLId(playerid));
+		mysql_tquery(MainPipeline, szMiscArray, "OnQueryCreateVehicle", "ii", playerid, playervehicleid);
 
 		return carcreated;
 	}
@@ -183,8 +183,8 @@ stock DestroyPlayerVehicle(playerid, playervehicleid)
 		for(new m; m < sizeof(Drugs); ++m) PlayerVehicleInfo[playerid][playervehicleid][pvDrugs][m] = 0;
 
 		new query[60];
-		format(query, sizeof(query), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[playerid][playervehicleid][pvSlotId]);
-		mysql_function_query(MainPipeline, query, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		mysql_format(MainPipeline, query, sizeof(query), "DELETE FROM `vehicles` WHERE `id` = '%d'", PlayerVehicleInfo[playerid][playervehicleid][pvSlotId]);
+		mysql_tquery(MainPipeline, query, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 		PlayerVehicleInfo[playerid][playervehicleid][pvSlotId] = 0;
 
 		//g_mysql_SaveVehicle(playerid, playervehicleid);

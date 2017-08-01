@@ -104,26 +104,26 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger) {
 }
 
 stock LoadCrateOrders() {
-	mysql_function_query(MainPipeline, "SELECT * FROM `crate_orders`", true, "OnLoadCrateOrders", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `crate_orders`", "OnLoadCrateOrders", "");
 }
 
 forward OnLoadCrateOrders();
 public OnLoadCrateOrders()
 {
-	new i, rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows;
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
 		if (!(0 <= i < MAX_GROUPS)) break;
-		CrateOrder[i][coGroup] = cache_get_field_content_int(i, "id", MainPipeline);
-		CrateOrder[i][coFacility] = cache_get_field_content_int(i, "Facility", MainPipeline);
-		CrateOrder[i][coCrates] = cache_get_field_content_int(i, "Crates", MainPipeline);
-		CrateOrder[i][coPerCrate] = cache_get_field_content_int(i, "PerCrate", MainPipeline);
-		cache_get_field_content(i,  "OrderBy", CrateOrder[i][coOrderBy], MainPipeline, MAX_PLAYER_NAME);
-		CrateOrder[i][coDelivered] = cache_get_field_content_int(i, "Delivered", MainPipeline);
-		CrateOrder[i][coStatus] = cache_get_field_content_int(i, "Status", MainPipeline);
-		CrateOrder[i][coTime] = cache_get_field_content_int(i, "Time", MainPipeline);
+		cache_get_value_name_int(i, "id", CrateOrder[i][coGroup]);
+		cache_get_value_name_int(i, "Facility", CrateOrder[i][coFacility]);
+		cache_get_value_name_int(i, "Crates", CrateOrder[i][coCrates]);
+		cache_get_value_name_int(i, "PerCrate", CrateOrder[i][coPerCrate]);
+		cache_get_value_name(i,  "OrderBy", CrateOrder[i][coOrderBy], MAX_PLAYER_NAME);
+		cache_get_value_name_int(i, "Delivered", CrateOrder[i][coDelivered]);
+		cache_get_value_name_int(i, "Status", CrateOrder[i][coStatus]);
+		cache_get_value_name_int(i, "Time", CrateOrder[i][coTime]);
 		i++;
 	}
 	return 1;
@@ -147,41 +147,41 @@ stock SaveOrder(i) {
 stock LoadCrateBoxes()
 {
 	printf("[Dynamic Crate Boxes] Loading Dynamic Crate Boxes from the database, please wait...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `crates`", true, "OnLoadCrateBoxes", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `crates`", "OnLoadCrateBoxes", "");
 }
 
 forward OnLoadCrateBoxes();
 public OnLoadCrateBoxes()
 {
-	new i, rows, fields, number[16];
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows, number[16];
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		CrateBox[i][cbFacility] = cache_get_field_content_int(i, "Facility", MainPipeline);
-		CrateBox[i][cbGroup] = cache_get_field_content_int(i, "Group", MainPipeline);
-		CrateBox[i][cbPos][0] = cache_get_field_content_float(i, "CrateX", MainPipeline);
-		CrateBox[i][cbPos][1] = cache_get_field_content_float(i, "CrateY", MainPipeline);
-		CrateBox[i][cbPos][2] = cache_get_field_content_float(i, "CrateZ", MainPipeline);
-		CrateBox[i][cbInt] = cache_get_field_content_int(i, "Int", MainPipeline);
-		CrateBox[i][cbInVeh] = cache_get_field_content_int(i, "InVehicle", MainPipeline);
-		CrateBox[i][cbOnVeh] = cache_get_field_content_int(i, "OnVehicle", MainPipeline);
-		CrateBox[i][cbVw] = cache_get_field_content_int(i, "VW", MainPipeline);
-		CrateBox[i][cbMats] = cache_get_field_content_int(i, "Materials", MainPipeline);
+		cache_get_value_name_int(i, "Facility", CrateBox[i][cbFacility]);
+		cache_get_value_name_int(i, "Group", CrateBox[i][cbGroup]);
+		cache_get_value_name_float(i, "CrateX", CrateBox[i][cbPos][0]);
+		cache_get_value_name_float(i, "CrateY", CrateBox[i][cbPos][1]);
+		cache_get_value_name_float(i, "CrateZ", CrateBox[i][cbPos][2]);
+		cache_get_value_name_int(i, "Int", CrateBox[i][cbInt]);
+		cache_get_value_name_int(i, "InVehicle", CrateBox[i][cbInVeh]);
+		cache_get_value_name_int(i, "OnVehicle", CrateBox[i][cbOnVeh]);
+		cache_get_value_name_int(i, "VW", CrateBox[i][cbVw]);
+		cache_get_value_name_int(i, "Materials", CrateBox[i][cbMats]);
 		for(new w = 0; w < 16; w++) {
 			format(number, sizeof(number), "Gun%d", w+1);
-			CrateBox[i][cbWep][w] = cache_get_field_content_int(i, number, MainPipeline);
+			cache_get_value_name_int(i, number, CrateBox[i][cbWep][w]);
 			format(number, sizeof(number), "GunAmount%d", w+1);
-			CrateBox[i][cbWepAmount][w] = cache_get_field_content_int(i, number, MainPipeline);
+			cache_get_value_name_int(i, number, CrateBox[i][cbWepAmount][w]);
 		}
-		cache_get_field_content(i,  "PlacedBy", CrateBox[i][cbPlacedBy], MainPipeline, MAX_PLAYER_NAME);
-		CrateBox[i][cbLifespan] = cache_get_field_content_int(i, "Lifespan", MainPipeline);
-		CrateBox[i][cbTransfer] = cache_get_field_content_int(i, "Transfer", MainPipeline);
-		CrateBox[i][cbDoor] = cache_get_field_content_int(i, "DoorID", MainPipeline);
-		CrateBox[i][cbDoorType] = cache_get_field_content_int(i, "DoorType", MainPipeline);
-		CrateBox[i][cbPrice] = cache_get_field_content_int(i, "Price", MainPipeline);
-		CrateBox[i][cbPaid] = cache_get_field_content_int(i, "Paid", MainPipeline);
-		CrateBox[i][cbActive] = cache_get_field_content_int(i, "Active", MainPipeline);
+		cache_get_value_name(i,  "PlacedBy", CrateBox[i][cbPlacedBy], MAX_PLAYER_NAME);
+		cache_get_value_name_int(i, "Lifespan", CrateBox[i][cbLifespan]);
+		cache_get_value_name_int(i, "Transfer", CrateBox[i][cbTransfer]);
+		cache_get_value_name_int(i, "DoorID", CrateBox[i][cbDoor]);
+		cache_get_value_name_int(i, "DoorType", CrateBox[i][cbDoorType]);
+		cache_get_value_name_int(i, "Price", CrateBox[i][cbPrice]);
+		cache_get_value_name_int(i, "Paid", CrateBox[i][cbPaid]);
+		cache_get_value_name_int(i, "Active", CrateBox[i][cbActive]);
 		UpdateCrateBox(i);
 		i++;
 	}
@@ -257,38 +257,38 @@ stock SaveCrate(i) {
 stock LoadCrateFacilities()
 {
 	printf("[Dynamic Crate Facility] Loading Dynamic Crate Facilities from the database, please wait...");
-	mysql_function_query(MainPipeline, "SELECT * FROM `crate_facility`", true, "OnLoadCrateFacilities", "");
+	mysql_tquery(MainPipeline, "SELECT * FROM `crate_facility`", "OnLoadCrateFacilities", "");
 }
 
 forward OnLoadCrateFacilities();
 public OnLoadCrateFacilities()
 {
-	new i, rows, fields;
-	cache_get_data(rows, fields, MainPipeline);
+	new i, rows;
+	cache_get_row_count(rows);
 
 	while(i < rows)
 	{
-		CrateFacility[i][cfId] = cache_get_field_content_int(i, "id", MainPipeline);
-		cache_get_field_content(i, "Name", CrateFacility[i][cfName], MainPipeline, 32);
-		CrateFacility[i][cfGroup] = cache_get_field_content_int(i, "Group", MainPipeline);
-		CrateFacility[i][cfPos][0] = cache_get_field_content_float(i, "Posx", MainPipeline);
-		CrateFacility[i][cfPos][1] = cache_get_field_content_float(i, "Posy", MainPipeline);
-		CrateFacility[i][cfPos][2] = cache_get_field_content_float(i, "Posz", MainPipeline);
-		CrateFacility[i][cfPos][3] = cache_get_field_content_float(i, "Posr", MainPipeline);
-		CrateFacility[i][cfInt] = cache_get_field_content_int(i, "Int", MainPipeline);
-		CrateFacility[i][cfVw] = cache_get_field_content_int(i, "Vw", MainPipeline);
-		CrateFacility[i][cfProdMax] = cache_get_field_content_int(i, "Prodmax", MainPipeline);
-		CrateFacility[i][cfProdPrep] = cache_get_field_content_int(i, "ProdPrep", MainPipeline);
-		CrateFacility[i][cfProdReady] = cache_get_field_content_int(i, "ProdReady", MainPipeline);
-		CrateFacility[i][cfProdTimer] = cache_get_field_content_int(i, "ProdTimer", MainPipeline);
-		CrateFacility[i][cfProdStatus] = cache_get_field_content_int(i, "ProdStatus", MainPipeline);
-		CrateFacility[i][cfProdCost] = cache_get_field_content_int(i, "ProdCost", MainPipeline);
-		CrateFacility[i][cfProdMulti] = cache_get_field_content_int(i, "ProdMulti", MainPipeline);
-		CrateFacility[i][cfRaidTimer] = cache_get_field_content_int(i, "RaidTimer", MainPipeline);
-		CrateFacility[i][cfCooldown] = cache_get_field_content_int(i, "Cooldown", MainPipeline);
-		CrateFacility[i][cfRaidable] = cache_get_field_content_int(i, "Raidable", MainPipeline);
-		CrateFacility[i][cfActive] = cache_get_field_content_int(i, "Active", MainPipeline);
-		CrateFacility[i][cfTimer] = cache_get_field_content_int(i, "Timer", MainPipeline);
+		cache_get_value_name_int(i, "id", CrateFacility[i][cfId]);
+		cache_get_value_name(i, "Name", CrateFacility[i][cfName], 32);
+		cache_get_value_name_int(i, "Group", CrateFacility[i][cfGroup]);
+		cache_get_value_name_float(i, "Posx", CrateFacility[i][cfPos][0]);
+		cache_get_value_name_float(i, "Posy", CrateFacility[i][cfPos][1]);
+		cache_get_value_name_float(i, "Posz", CrateFacility[i][cfPos][2]);
+		cache_get_value_name_float(i, "Posr", CrateFacility[i][cfPos][3]);
+		cache_get_value_name_int(i, "Int", CrateFacility[i][cfInt]);
+		cache_get_value_name_int(i, "Vw", CrateFacility[i][cfVw]);
+		cache_get_value_name_int(i, "Prodmax", CrateFacility[i][cfProdMax]);
+		cache_get_value_name_int(i, "ProdPrep", CrateFacility[i][cfProdPrep]);
+		cache_get_value_name_int(i, "ProdReady", CrateFacility[i][cfProdReady]);
+		cache_get_value_name_int(i, "ProdTimer", CrateFacility[i][cfProdTimer]);
+		cache_get_value_name_int(i, "ProdStatus", CrateFacility[i][cfProdStatus]);
+		cache_get_value_name_int(i, "ProdCost", CrateFacility[i][cfProdCost]);
+		cache_get_value_name_int(i, "ProdMulti", CrateFacility[i][cfProdMulti]);
+		cache_get_value_name_int(i, "RaidTimer", CrateFacility[i][cfRaidTimer]);
+		cache_get_value_name_int(i, "Cooldown", CrateFacility[i][cfCooldown]);
+		cache_get_value_name_int(i, "Raidable", CrateFacility[i][cfRaidable]);
+		cache_get_value_name_int(i, "Active", CrateFacility[i][cfActive]);
+		cache_get_value_name_int(i, "Timer", CrateFacility[i][cfTimer]);
 		UpdateFacility(i);
 		if(CrateFacility[i][cfRaidTimer] > 0) TriggerGates(i);
 		i++;

@@ -18,8 +18,8 @@ ClearCheckpoint(playerid) {
 	if(GetPVarType(playerid, "DeliveringVehicleTime")) {
 		if(GetPVarType(playerid, "LockPickVehicleSQLId")) {
 			new szQuery[128];
-			format(szQuery, sizeof(szQuery), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")], GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
-			mysql_function_query(MainPipeline, szQuery, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+			mysql_format(MainPipeline, szQuery, sizeof(szQuery), "UPDATE `vehicles` SET `pvFuel` = %0.5f WHERE `id` = '%d' AND `sqlID` = '%d'", VehicleFuel[GetPVarInt(playerid, "LockPickVehicle")], GetPVarInt(playerid, "LockPickVehicleSQLId"), GetPVarInt(playerid, "LockPickPlayerSQLId"));
+			mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 			DeletePVar(playerid, "LockPickVehicleSQLId");
 			DeletePVar(playerid, "LockPickPlayerSQLId");
 			DeletePVar(playerid, "LockPickPlayerName");

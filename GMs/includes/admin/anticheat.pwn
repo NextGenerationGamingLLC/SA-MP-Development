@@ -90,12 +90,12 @@ public sobeitCheck(playerid)
 
 	 	if(PlayerInfo[playerid][pSMod] == 1 || PlayerInfo[playerid][pAdmin] == 1)
  		{
- 		    format(szString, sizeof(szString), "SELECT `Username` FROM `accounts` WHERE `AdminLevel` > 1 AND `Disabled` = 0 AND `IP` = '%s'", GetPlayerIpEx(playerid));
- 		    mysql_function_query(MainPipeline, szString, true, "CheckAccounts", "i", playerid);
+ 		    mysql_format(MainPipeline, szString, sizeof(szString), "SELECT `Username` FROM `accounts` WHERE `AdminLevel` > 1 AND `Disabled` = 0 AND `IP` = '%s'", GetPlayerIpEx(playerid));
+ 		    mysql_tquery(MainPipeline, szString, "CheckAccounts", "i", playerid);
        	}
 		else {
-		    format(szString, sizeof(szString), "INSERT INTO `sobeitkicks` (sqlID, Kicks) VALUES (%d, 1) ON DUPLICATE KEY UPDATE Kicks = Kicks + 1", GetPlayerSQLId(playerid));
-			mysql_function_query(MainPipeline, szString, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+		    mysql_format(MainPipeline, szString, sizeof(szString), "INSERT INTO `sobeitkicks` (sqlID, Kicks) VALUES (%d, 1) ON DUPLICATE KEY UPDATE Kicks = Kicks + 1", GetPlayerSQLId(playerid));
+			mysql_tquery(MainPipeline, szString, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 
 			SendClientMessageEx(playerid, COLOR_RED, "The hacking tool 's0beit' is not allowed on this server, please uninstall it.");
    			format(szString, sizeof(szString), "%s(%d) (IP: %s) has logged into the server with s0beit installed.", GetPlayerNameEx(playerid), GetPlayerSQLId(playerid), IP);
@@ -164,28 +164,24 @@ ptask Anti_RapidKill[5000](i)
 forward LoginCheckEx(i);
 public LoginCheckEx(i)
 {
-	new ok = 0, count = 0, Float: pos[3], string[128];
+	new Float: pos[3], string[128];
 	if(gPlayerLogged{i} == 0 && IsPlayerConnected(i))
 	{
+		/* INFORMATION REGARDING COORDS
+			1093.000000 | -2036.000000 | 90.000000 // Start view of beach (Sometimes triggers via delay)
+			0.000000 | 0.000000 | 0.000000 // Default location normally triggered first if above doesn't
+			50.000000 | 50.000000 | 50.000000 // 2-3 timer check your at these coords unsure why you move to all 50.
+		*/
 		GetPlayerPos(i, pos[0], pos[1], pos[2]);
-		for(new x; x < sizeof(JoinCameraPosition); x++)
+		if((pos[0] != 1093.000000 && pos[0] != 0.000000 && pos[0] != 50.000000) && (pos[1] != -2036.000000 && pos[1] != 0.000000 && pos[1] != 50.000000) && (pos[2] != 90.000000 && pos[2] != 0.000000 && pos[2] != 50.000000))
 		{
-			if(pos[0] != JoinCameraPosition[x][0] && pos[1] != JoinCameraPosition[x][1] && pos[2] != JoinCameraPosition[x][2] && (count == 8))
-			{
-				format(string, sizeof(string), "%s(%d) [%s] has moved from the login screen position.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
-				Log("logs/security.log", string);
-				SendClientMessage(i, COLOR_WHITE, "SERVER: You have moved while being in the login screen!");
-				ShowPlayerDialogEx(i, -1, DIALOG_STYLE_MSGBOX, "", "", "", "");
-				SetTimerEx("KickEx", 1000, 0, "i", i);
-				ok = 1;
-			}
-			count++;
+			format(string, sizeof(string), "%s(%d) [%s] has moved from the login screen position.", GetPlayerNameEx(i), GetPlayerSQLId(i), GetPlayerIpEx(i));
+			Log("logs/security.log", string);
+			SendClientMessage(i, COLOR_WHITE, "SERVER: You have moved while being in the login screen!");
+			ShowPlayerDialogEx(i, -1, DIALOG_STYLE_MSGBOX, "", "", "", "");
+			SetTimerEx("KickEx", 1000, 0, "i", i);
 		}
-		
-		if(ok == 0)
-		{
-			SetTimerEx("LoginCheckEx", 5000, 0, "i", i);
-		}
+		SetTimerEx("LoginCheckEx", 5000, 0, "i", i);
 	}
 	return true;
 }

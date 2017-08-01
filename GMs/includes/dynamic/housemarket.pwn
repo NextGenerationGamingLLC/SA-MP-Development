@@ -925,11 +925,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 							{
 								szMiscArray[0] = 0;
 								mysql_escape_string(HouseInfo[HouseMarketTracking[playerid]][hOwnerName], name);
-								format(szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Bank`=`Bank`+%d WHERE `Username`='%s'", HouseInfo[HouseMarketTracking[playerid]][ListingPrice], name);
-								mysql_function_query(MainPipeline, szMiscArray, false, "", "i", playerid);
+								mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `accounts` SET `Bank`=`Bank`+%d WHERE `Username`='%s'", HouseInfo[HouseMarketTracking[playerid]][ListingPrice], name);
+								mysql_tquery(MainPipeline, szMiscArray, "", "i", playerid);
 								format(string, sizeof(string), "I purchased your house (ID: %d) for $%s.", HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
-								format(szMiscArray, sizeof(szMiscArray), "INSERT INTO `letters` (`Sender_Id`, `Receiver_Id`, `Date`, `Message`, `Delivery_Min`, `Notify`) VALUES (%d, %d, NOW(), '%s', 0, 1)", GetPlayerSQLId(playerid), HouseInfo[HouseMarketTracking[playerid]][hOwnerID], g_mysql_ReturnEscaped(string, MainPipeline));
-								mysql_function_query(MainPipeline, szMiscArray, false, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
+								mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "INSERT INTO `letters` (`Sender_Id`, `Receiver_Id`, `Date`, `Message`, `Delivery_Min`, `Notify`) VALUES (%d, %d, NOW(), '%e', 0, 1)", GetPlayerSQLId(playerid), HouseInfo[HouseMarketTracking[playerid]][hOwnerID], string);
+								mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, playerid);
 								
 							}
 							format(string, sizeof(string), "You have purchased house ID %d for $%s.", HouseMarketTracking[playerid], number_format(HouseInfo[HouseMarketTracking[playerid]][ListingPrice]));
