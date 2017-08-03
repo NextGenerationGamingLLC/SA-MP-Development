@@ -1061,8 +1061,16 @@ public OnPlayerLoad(playerid)
 	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT `id`, `Subject` FROM `bugs` WHERE `status` = 6 AND `Userid` = %d", GetPlayerSQLId(playerid));
 	mysql_tquery(MainPipeline, szQuery, "CheckPendingBugReports", "i", playerid);
 	defer CheckVehiclesLeftSpawned(playerid);
+
+
+	//mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT COUNT(*) as aFlagCount FROM `flags` WHERE id=%d AND type = 2", GetPlayerSQLId(playerid));
+	//mysql_tquery(MainPipeline, szQuery, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, 4);
+
 	mysql_format(MainPipeline, szQuery, sizeof(szQuery), "SELECT COUNT(*) as aFlagCount FROM `flags` WHERE id=%d AND type = 2", GetPlayerSQLId(playerid));
-	mysql_tquery(MainPipeline, szQuery, "FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, 4);
+	mysql_tquery(MainPipeline, szQuery,"FlagQueryFinish", "iii", playerid, INVALID_PLAYER_ID, 4);
+
+
+
 
 	if(PlayerInfo[playerid][mPurchaseCount][1] && PlayerInfo[playerid][mCooldown][1]) format(string, sizeof(string), "You currently have a active Job Boost for the %s job for another %d minute(s).", GetJobName(PlayerInfo[playerid][mBoost][0]), PlayerInfo[playerid][mCooldown][1]), SendClientMessageEx(playerid, -1, string);
 	if(PlayerInfo[playerid][mCooldown][4] && PlayerInfo[playerid][mCooldown][4]) format(string, sizeof(string), "You currently have a active Energy Bar for another %d minute(s).", PlayerInfo[playerid][mCooldown][4]), SendClientMessageEx(playerid, -1, string);

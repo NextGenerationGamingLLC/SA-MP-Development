@@ -6356,7 +6356,7 @@ CMD:turnout(playerid, params[])
 MemberCount(groupID)
 {
 	szMiscArray[0] = 0;
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT NULL FROM accounts WHERE Member = %d", groupID);
+	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "SELECT NULL FROM `accounts` WHERE `Member` = %d", groupID);
 	mysql_tquery(MainPipeline, szMiscArray, "OnMemberCount", "i", groupID);
 }
 
@@ -6364,7 +6364,8 @@ forward OnMemberCount(groupID);
 public OnMemberCount(groupID)
 {
 	new rows;
-	arrGroupData[groupID][g_iMemberCount] = cache_get_row_count(rows);
+	cache_get_row_count(rows);
+	arrGroupData[groupID][g_iMemberCount] = rows;
 }
 
 /*

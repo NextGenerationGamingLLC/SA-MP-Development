@@ -1150,7 +1150,7 @@ public OnQueryFinish(resultid, extraid, handleid)
 				cache_get_value_name(i, "Watchdog", szResult); wdlevel = strval(szResult);
 				cache_get_value_name(i, "SecureIP", secureip, 16);
 
-				if((alevel > 1 || wdlevel > 2)  && !fexist("NoWhitelist.h"))  // Beta server check ( beta server does not require whitelisting)
+				if((alevel > 1 || wdlevel > 2)  && betaserver == 0)  // Beta server check ( beta server does not require whitelisting)
 				{
 					if(isnull(secureip) || strcmp(GetPlayerIpEx(extraid), secureip, false, strlen(secureip)) != 0)
 					{
@@ -3091,11 +3091,11 @@ public FlagQueryFinish(playerid, suspectid, queryid)
 		}
 		case 4:
 		{
-			new count = cache_get_value_name_int(0, "aFlagCount", value);
-			if(count)
+			cache_get_value_name_int(0, "aFlagCount", value);
+			if(value)
 			{
 				new string[128];
-				format(string, sizeof(string), "SERVER: %s has logged in with %d outstanding admin flags /aviewflag to view!", GetPlayerNameEx(playerid), count);
+				format(string, sizeof(string), "SERVER: %s has logged in with %d outstanding admin flags /aviewflag to view!", GetPlayerNameEx(playerid), value);
 				ABroadCast(COLOR_LIGHTRED, string, 2);
 			}
 		}

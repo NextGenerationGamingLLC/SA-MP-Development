@@ -50,11 +50,13 @@ Format_PlayerName(playerid) {
 	
 	szMiscArray[0] = 0;
 	
-	new iPos;
+	new iPos, name[MAX_PLAYER_NAME];
 
 	GetPlayerName(playerid, szMiscArray, MAX_PLAYER_NAME);
 	for(new i; i < MAX_PLAYER_NAME; i++) szMiscArray[i] = tolower(szMiscArray[i]);
 	szMiscArray[0] = toupper(szMiscArray[0]);
+	format(name, sizeof(name), "Formatting_%d", playerid);
+	SetPlayerName(playerid, name);
 	while((iPos = strfind(szMiscArray, "_", false, iPos)) != -1) iPos++, szMiscArray[iPos] = toupper(szMiscArray[iPos]);
 	SetPlayerName(playerid, szMiscArray);
 	printf("[PlayerName] Formatted %s to the correct RP-format standards.", szMiscArray);
