@@ -1338,7 +1338,7 @@ new HoldingObjectsShop[][HoldingEnumAll] = {
 {19878, 0, "Skateboard"}
 };
 
-new HoldingObjectsCop[14][HoldingEnumAll] = {
+new HoldingObjectsCop[20][HoldingEnumAll] = { 
 {18642,1000,"Taser1"},
 {19141,2500,"SWATHelmet1"},
 {19142,2500,"SWATArmour1"},
@@ -1352,7 +1352,13 @@ new HoldingObjectsCop[14][HoldingEnumAll] = {
 {19138,1000,"PoliceGlasses1"},
 {19139,1000,"PoliceGlasses2"},
 {19140,1000,"PoliceGlasses3"},
-{19904,1000,"OrangeVest"}
+{19904,1000,"OrangeVest"},
+{19776,1000,"FBICard"},
+{19773,1000,"Holster"},
+{19347,1000,"SheriffBadge"},
+{19942,1000,"Radio"},
+{18641,1000,"Flashlight"},
+{11749,1000,"Handcuffs"}
 };
 
 new HoldingObjectsAll[][HoldingEnumAll] = {
@@ -1685,7 +1691,14 @@ new HoldingObjectsAll[][HoldingEnumAll] = {
 {19558, 0, "Pizza Hat"},
 {19559, 0, "Hiker Backpack"},
 {19773, 0, "Gun Holster"},
-{19878, 0, "Skateboard"}
+{19878, 0, "Skateboard"},
+{19904,1000,"OrangeVest"},
+{19776,1000,"FBICard"},
+{19773,1000,"Holster"},
+{19347,1000,"SheriffBadge"},
+{19942,1000,"Radio"},
+{18641,1000,"Flashlight"},
+{11749,1000,"Handcuffs"}
 };
 
 new HoldingObjects[206][HoldingEnum] = {

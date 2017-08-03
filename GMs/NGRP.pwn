@@ -15,11 +15,12 @@
 
 				Current Developers:
 								*** Director of SA:MP Development:
-								    Connolly
+								    Shane
 
 								**  Development Staff:
 									Miguel (s0nic)
 									Farva
+									Hector
 				Past Developers:
 								*** Director of SA:MP Development:
 									Dom
@@ -36,6 +37,7 @@
 									Mo Cena
 									Calgon
 									Shane
+									Connolly
 
 								** 	Developers:
 									AlexR

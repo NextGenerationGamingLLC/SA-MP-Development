@@ -1025,6 +1025,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 			}
 
+			if (strcmp("Accessories", inputtext) == 0) {
+					return ShowPlayerDialogEx(playerid, BUYTOYSCOP, DIALOG_STYLE_MSGBOX, "Accessories", "Welcome to the law enforcement accessory locker!\n\n(As with regular toys, VIP unlocks more slots.)","Continue", "Cancel");
+			}
 		}
 		case G_LOCKER_EQUIPMENT: if(response)
 		{
@@ -5673,7 +5676,7 @@ CMD:locker(playerid, params[]) {
 
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)) // name-change point in faction lockers for free namechange factions
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nHigh Grade Armour\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nHigh Grade Armour\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAccessories") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
 						}
 						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) {
 							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
