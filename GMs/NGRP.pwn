@@ -36,7 +36,6 @@
 									Donuts
 									Mo Cena
 									Calgon
-									Shane
 									Connolly
 
 								** 	Developers:
@@ -82,7 +81,7 @@
 /*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
-#define SERVER_GM_TEXT "NG:RP v3.0.437"
+#define SERVER_GM_TEXT "NG:RP v3.0.438"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
@@ -345,7 +344,7 @@
 //#include "./includes/events/naturaldisaster.pwn"
 
 // Westen WIP
-#include "./includes/dynamic/dynpolls2.pwn"
+//#include "./includes/dynamic/dynpolls2.pwn"
 
 // Jason WIP
 //#include "./includes/core/interact.pwn"

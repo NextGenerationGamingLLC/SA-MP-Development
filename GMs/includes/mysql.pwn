@@ -5235,11 +5235,13 @@ public Group_QueryFinish(iType, iExtraID) {
 		case GROUP_QUERY_GWEAPONS: while(iIndex < iRows) {
 
 			if (!(0 <= iIndex < MAX_GROUPS)) break;
-			LockerWep[iIndex][lwGroup] = cache_get_value_name_int(iIndex, "id", value);
+			cache_get_value_name_int(iIndex, "id", value);
+			LockerWep[iIndex][lwGroup] = value;
 
 			for(new w = 0; w < 46; w++) {
 				format(number, sizeof(number), "%d", w+1);
-				LockerWep[iIndex][lwWep][w] = cache_get_value_name_int(iIndex, number, value);
+				cache_get_value_name_int(iIndex, number, value);
+				LockerWep[iIndex][lwWep][w] = value;
 			}
 			iIndex++;
 		}
@@ -5249,7 +5251,8 @@ public Group_QueryFinish(iType, iExtraID) {
 
 			for(new w = 0; w < 16; w++) {
 				format(number, sizeof(number), "%d", w+1);
-				LockerWep[iIndex][lwRank][w] = cache_get_value_name_int(iIndex, number, value);
+				cache_get_value_name_int(iIndex, number, value);
+				LockerWep[iIndex][lwRank][w] = value;
 			}
 			iIndex++;
 		}

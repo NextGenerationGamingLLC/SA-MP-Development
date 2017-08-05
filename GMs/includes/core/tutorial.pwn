@@ -406,7 +406,8 @@ ShowTutorialDialog(playerid, stage)
 				\t\t\tBeren\t\tKareemtastic\tSew Sumi\n\
 				\t\t\tRazbit\t\tAlexR\t\tAustin\n\
 				\t\t\tDom\t\tRothschild\tWinterfield\n\
-				\t\t\tJingles\tBehemoth\tWesten\n");
+				\t\t\tJingles\tBehemoth\tWesten\n\
+				\t\t\tConnolly\n");
 			strcat(szMiscArray, "\n\n{FFFFFF}_______________________________________________________________________________________________________________________________________________________");
 			ShowPlayerDialogEx(playerid, DIALOG_TUTORIAL, DIALOG_STYLE_MSGBOX, "NG:RP - Developers", szMiscArray, "Continue", "");
 		}
