@@ -154,65 +154,113 @@ Group_DisbandGroup(iGroupID) {
 	return mysql_tquery(MainPipeline, szQuery, "OnQueryFinish", "ii", SENDDATA_THREAD, iGroupID);
 }
 
-SaveGroup(iGroupID) {
-
-	/*
-		Internally, every group array/subarray starts from zero (divisions, group ids etc)
-		When displaying to the clients or saving to the db, we add 1 to them!
-		The only exception is ranks which already start from zero.
-	*/
-
-	if(!(0 <= iGroupID < MAX_GROUPS)) // Array bounds check. Use it.
-		return 0;
-
+forward SaveGroup(iGroupID);
+public SaveGroup(iGroupID) {
+	if(!(0 <= iGroupID < MAX_GROUPS)) return 1;
 	szMiscArray[0] = 0;
-	new
-		i = 0;
-		//iIndex = 0;
+	new query[2048], i;
+	format(query, 2048, "UPDATE `groups` SET ");
 
-	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "UPDATE `groups` SET \
-		`Type` = %i, `Name` = '%e', `MOTD` = '%e', `MOTD2` = '%e', `MOTD3` = '%e', `Allegiance` = %i, `Bug` = %i, `Find` = %i, \
-		`Radio` = %i, `DeptRadio` = %i, `IntRadio` = %i, `GovAnnouncement` = %i, `TreasuryAccess` = %i, `FreeNameChange` = %i, `FreeNameChangeDiv` = %i, \
-		`DutyColour` = %i, `RadioColour` = %i, ",
-		arrGroupData[iGroupID][g_iGroupType], arrGroupData[iGroupID][g_szGroupName], gMOTD[iGroupID][0], gMOTD[iGroupID][1], gMOTD[iGroupID][2], arrGroupData[iGroupID][g_iAllegiance], arrGroupData[iGroupID][g_iBugAccess], arrGroupData[iGroupID][g_iFindAccess],
-		arrGroupData[iGroupID][g_iRadioAccess], arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupData[iGroupID][g_iGovAccess], arrGroupData[iGroupID][g_iTreasuryAccess], arrGroupData[iGroupID][g_iFreeNameChange], arrGroupData[iGroupID][g_iFreeNameChangeDiv],
-		arrGroupData[iGroupID][g_hDutyColour], arrGroupData[iGroupID][g_hRadioColour]
-	);
-	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s\
-		`Stock` = %i, `CrateX` = '%.2f', `CrateY` = '%.2f', `CrateZ` = '%.2f', \
-		`SpikeStrips` = %i, `Barricades` = %i, `Cones` = %i, `Flares` = %i, `Barrels` = %i, `Ladders` = %i, `Tapes` = %i, \
-		`Budget` = %i, `BudgetPayment` = %i, LockerCostType = %i, `CratesOrder` = '%d', `CrateIsland` = '%d', \
-		`GarageX` = '%.2f', `GarageY` = '%.2f', `GarageZ` = '%.2f', `TackleAccess` = '%d', `WheelClamps` = '%d', `DoCAccess` = '%d', `MedicAccess` = '%d', `DMVAccess` = '%d', ",
-		szMiscArray,
-		arrGroupData[iGroupID][g_iLockerStock], arrGroupData[iGroupID][g_fCratePos][0], arrGroupData[iGroupID][g_fCratePos][1], arrGroupData[iGroupID][g_fCratePos][2],
-		arrGroupData[iGroupID][g_iSpikeStrips], arrGroupData[iGroupID][g_iBarricades], arrGroupData[iGroupID][g_iCones], arrGroupData[iGroupID][g_iFlares], arrGroupData[iGroupID][g_iBarrels], arrGroupData[iGroupID][g_iLadders], arrGroupData[iGroupID][g_iTapes],
-		arrGroupData[iGroupID][g_iBudget], arrGroupData[iGroupID][g_iBudgetPayment], arrGroupData[iGroupID][g_iLockerCostType], arrGroupData[iGroupID][g_iCratesOrder], arrGroupData[iGroupID][g_iCrateIsland],
-		arrGroupData[iGroupID][g_fGaragePos][0], arrGroupData[iGroupID][g_fGaragePos][1], arrGroupData[iGroupID][g_fGaragePos][2], arrGroupData[iGroupID][g_iTackleAccess], arrGroupData[iGroupID][g_iWheelClamps], arrGroupData[iGroupID][g_iDoCAccess], arrGroupData[iGroupID][g_iMedicAccess], arrGroupData[iGroupID][g_iDMVAccess]
-	);
+	//SaveString(query, "groups", iGroupID+1, "CLICKME", CLICKME);
+	//SaveInteger(query, "groups", iGroupID+1, "CLICKME", CLICKME);
+	//SaveFloat(query, "groups", iGroupID+1, "CLICKME", CLICKME);
 
-	mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s\
-		`TempNum` = '%d', `LEOArrest` = '%d', `OOCChat` = '%i', `OOCColor` = '%i', `Pot` = '%i', `Crack` = '%i', `Heroin` = '%i', `Syringes` = '%i', `Ecstasy` = '%i', `Meth` = '%i', `Mats` = '%i', `TurfCapRank` = '%i', `PointCapRank` = '%i', `WithdrawRank` = '%i', `WithdrawRank2` = '%i', `WithdrawRank3` = '%i', `WithdrawRank4` = '%i', `WithdrawRank5` = '%i', `Tokens` = '%i', `CrimeType` = '%i', `GroupToyID` = '%i', `TurfTax` = '%i'",
-		szMiscArray,
-		arrGroupData[iGroupID][gTempNum], arrGroupData[iGroupID][gLEOArrest], arrGroupData[iGroupID][g_iOOCChat], arrGroupData[iGroupID][g_hOOCColor], arrGroupData[iGroupID][g_iDrugs][0], arrGroupData[iGroupID][g_iDrugs][1], arrGroupData[iGroupID][g_iDrugs][4], arrGroupData[iGroupID][g_iSyringes],
-		arrGroupData[iGroupID][g_iDrugs][3], arrGroupData[iGroupID][g_iDrugs][2], arrGroupData[iGroupID][g_iMaterials], arrGroupData[iGroupID][g_iTurfCapRank], arrGroupData[iGroupID][g_iPointCapRank],
-		arrGroupData[iGroupID][g_iWithdrawRank][0], arrGroupData[iGroupID][g_iWithdrawRank][1], arrGroupData[iGroupID][g_iWithdrawRank][2], arrGroupData[iGroupID][g_iWithdrawRank][3], arrGroupData[iGroupID][g_iWithdrawRank][4], arrGroupData[iGroupID][g_iTurfTokens], arrGroupData[iGroupID][g_iCrimeType],
-		arrGroupData[iGroupID][g_iGroupToyID], arrGroupData[iGroupID][g_iTurfTax]
-	);
+	SaveInteger(query, "groups", iGroupID+1, "Type", arrGroupData[iGroupID][g_iGroupType]);
+	SaveString(query, "groups", iGroupID+1, "Name", arrGroupData[iGroupID][g_szGroupName]);
+	SaveString(query, "groups", iGroupID+1, "MOTD", gMOTD[iGroupID][0]);
+	SaveString(query, "groups", iGroupID+1, "MOTD2", gMOTD[iGroupID][1]);
+	SaveString(query, "groups", iGroupID+1, "MOTD3", gMOTD[iGroupID][2]);
+	SaveInteger(query, "groups", iGroupID+1, "Allegiance", arrGroupData[iGroupID][g_iAllegiance]);
+	SaveInteger(query, "groups", iGroupID+1, "Bug", arrGroupData[iGroupID][g_iBugAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "Find", arrGroupData[iGroupID][g_iFindAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "Radio", arrGroupData[iGroupID][g_iRadioAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "DeptRadio", arrGroupData[iGroupID][g_iDeptRadioAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "IntRadio", arrGroupData[iGroupID][g_iIntRadioAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "GovAnnouncement", arrGroupData[iGroupID][g_iGovAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "TreasuryAccess", arrGroupData[iGroupID][g_iTreasuryAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "FreeNameChange", arrGroupData[iGroupID][g_iFreeNameChange]);
+	SaveInteger(query, "groups", iGroupID+1, "FreeNameChangeDiv", arrGroupData[iGroupID][g_iFreeNameChangeDiv]);
+	SaveInteger(query, "groups", iGroupID+1, "DutyColour", arrGroupData[iGroupID][g_hDutyColour]);
+	SaveInteger(query, "groups", iGroupID+1, "RadioColour", arrGroupData[iGroupID][g_hRadioColour]);
+	SaveInteger(query, "groups", iGroupID+1, "Stock", arrGroupData[iGroupID][g_iLockerStock]);
+	SaveFloat(query, "groups", iGroupID+1, "CrateX", arrGroupData[iGroupID][g_fCratePos][0]);
+	SaveFloat(query, "groups", iGroupID+1, "CrateY", arrGroupData[iGroupID][g_fCratePos][1]);
+	SaveFloat(query, "groups", iGroupID+1, "CrateZ", arrGroupData[iGroupID][g_fCratePos][2]);
+	SaveInteger(query, "groups", iGroupID+1, "SpikeStrips", arrGroupData[iGroupID][g_iSpikeStrips]);
+	SaveInteger(query, "groups", iGroupID+1, "Barricades", arrGroupData[iGroupID][g_iBarricades]);
+	SaveInteger(query, "groups", iGroupID+1, "Cones", arrGroupData[iGroupID][g_iCones]);
+	SaveInteger(query, "groups", iGroupID+1, "Flares", arrGroupData[iGroupID][g_iFlares]);
+	SaveInteger(query, "groups", iGroupID+1, "Barrels", arrGroupData[iGroupID][g_iBarrels]);
+	SaveInteger(query, "groups", iGroupID+1, "Ladders", arrGroupData[iGroupID][g_iLadders]);
+	SaveInteger(query, "groups", iGroupID+1, "Tapes", arrGroupData[iGroupID][g_iTapes]);
+	SaveInteger(query, "groups", iGroupID+1, "Budget", arrGroupData[iGroupID][g_iBudget]);
+	SaveInteger(query, "groups", iGroupID+1, "BudgetPayment", arrGroupData[iGroupID][g_iBudgetPayment]);
+	SaveInteger(query, "groups", iGroupID+1, "LockerCostType", arrGroupData[iGroupID][g_iLockerCostType]);
+	SaveInteger(query, "groups", iGroupID+1, "CratesOrder", arrGroupData[iGroupID][g_iCratesOrder]);
+	SaveInteger(query, "groups", iGroupID+1, "CrateIsland", arrGroupData[iGroupID][g_iCrateIsland]);
+	SaveFloat(query, "groups", iGroupID+1, "GarageX", arrGroupData[iGroupID][g_fGaragePos][0]);
+	SaveFloat(query, "groups", iGroupID+1, "GarageY", arrGroupData[iGroupID][g_fGaragePos][1]);
+	SaveFloat(query, "groups", iGroupID+1, "GarageZ", arrGroupData[iGroupID][g_fGaragePos][2]);
+	SaveInteger(query, "groups", iGroupID+1, "TackleAccess", arrGroupData[iGroupID][g_iTackleAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "WheelClamps", arrGroupData[iGroupID][g_iWheelClamps]);
+	SaveInteger(query, "groups", iGroupID+1, "DoCAccess", arrGroupData[iGroupID][g_iDoCAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "MedicAccess", arrGroupData[iGroupID][g_iMedicAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "DMVAccess", arrGroupData[iGroupID][g_iDMVAccess]);
+	SaveInteger(query, "groups", iGroupID+1, "TempNum", arrGroupData[iGroupID][gTempNum]);
+	SaveInteger(query, "groups", iGroupID+1, "LEOArrest", arrGroupData[iGroupID][gLEOArrest]);
+	SaveInteger(query, "groups", iGroupID+1, "OOCChat", arrGroupData[iGroupID][g_iOOCChat]);
+	SaveInteger(query, "groups", iGroupID+1, "OOCColor", arrGroupData[iGroupID][g_hOOCColor]);
+	SaveInteger(query, "groups", iGroupID+1, "Pot", arrGroupData[iGroupID][g_iDrugs][0]);
+	SaveInteger(query, "groups", iGroupID+1, "Crack", arrGroupData[iGroupID][g_iDrugs][1]);
+	SaveInteger(query, "groups", iGroupID+1, "Heroin", arrGroupData[iGroupID][g_iDrugs][4]);
+	SaveInteger(query, "groups", iGroupID+1, "Syringes", arrGroupData[iGroupID][g_iSyringes]);
+	SaveInteger(query, "groups", iGroupID+1, "Ecstasy", arrGroupData[iGroupID][g_iDrugs][3]);
+	SaveInteger(query, "groups", iGroupID+1, "Meth", arrGroupData[iGroupID][g_iDrugs][2]);
+	SaveInteger(query, "groups", iGroupID+1, "Mats", arrGroupData[iGroupID][g_iMaterials]);
+	SaveInteger(query, "groups", iGroupID+1, "TurfCapRank", arrGroupData[iGroupID][g_iTurfCapRank]);
+	SaveInteger(query, "groups", iGroupID+1, "PointCapRank", arrGroupData[iGroupID][g_iPointCapRank]);
+	SaveInteger(query, "groups", iGroupID+1, "WithdrawRank", arrGroupData[iGroupID][g_iWithdrawRank][0]);
+	SaveInteger(query, "groups", iGroupID+1, "WithdrawRank2", arrGroupData[iGroupID][g_iWithdrawRank][1]);
+	SaveInteger(query, "groups", iGroupID+1, "WithdrawRank3", arrGroupData[iGroupID][g_iWithdrawRank][2]);
+	SaveInteger(query, "groups", iGroupID+1, "WithdrawRank4", arrGroupData[iGroupID][g_iWithdrawRank][3]);
+	SaveInteger(query, "groups", iGroupID+1, "WithdrawRank5", arrGroupData[iGroupID][g_iWithdrawRank][4]);
+	SaveInteger(query, "groups", iGroupID+1, "Tokens", arrGroupData[iGroupID][g_iTurfTokens]);
+	SaveInteger(query, "groups", iGroupID+1, "CrimeType", arrGroupData[iGroupID][g_iCrimeType]);
+	SaveInteger(query, "groups", iGroupID+1, "GroupToyID", arrGroupData[iGroupID][g_iGroupToyID]);
+	SaveInteger(query, "groups", iGroupID+1, "TurfTax", arrGroupData[iGroupID][g_iTurfTax]);
 
-	for(i = 0; i != MAX_GROUP_RIVALS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "%s, `gRival%i` = '%d'", szMiscArray, i, arrGroupData[iGroupID][g_iRivals][i]);
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `GClothes%i` = '%i'", szMiscArray, i, arrGroupData[iGroupID][g_iClothes][i]);
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `Rank%i` = '%e'", szMiscArray, i, arrGroupRanks[iGroupID][i]);
-	for(i = 0; i != MAX_GROUP_RANKS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `Rank%iPay` = %i", szMiscArray, i, arrGroupData[iGroupID][g_iPaycheck][i]);
-	for(i = 0; i != MAX_GROUP_DIVS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `Div%i` = '%e'", szMiscArray, i+1, arrGroupDivisions[iGroupID][i]);
-	for(i = 0; i != MAX_GROUP_WEAPONS; ++i) mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s, `Gun%i` = %i, `Cost%i` = %i", szMiscArray, i+1, arrGroupData[iGroupID][g_iLockerGuns][i], i+1, arrGroupData[iGroupID][g_iLockerCost][i]);
-	mysql_format(MainPipeline, szMiscArray, sizeof szMiscArray, "%s WHERE `id` = %i", szMiscArray, iGroupID+1);
-	mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
-
-	for (i = 0; i < MAX_GROUP_LOCKERS; i++)	{
-		mysql_format(MainPipeline, szMiscArray, sizeof(szMiscArray), "UPDATE `lockers` SET `LockerX` = '%.2f', `LockerY` = '%.2f', `LockerZ` = '%.2f', `LockerVW` = %d, `LockerShare` = %d WHERE `Id` = %d", arrGroupLockers[iGroupID][i][g_fLockerPos][0], arrGroupLockers[iGroupID][i][g_fLockerPos][1], arrGroupLockers[iGroupID][i][g_fLockerPos][2], arrGroupLockers[iGroupID][i][g_iLockerVW], arrGroupLockers[iGroupID][i][g_iLockerShare], arrGroupLockers[iGroupID][i][g_iLockerSQLId]);
-		mysql_tquery(MainPipeline, szMiscArray, "OnQueryFinish", "ii", SENDDATA_THREAD, INVALID_PLAYER_ID);
+	for(i = 0; i != MAX_GROUP_RIVALS; ++i) {
+		format(szMiscArray, sizeof(szMiscArray), "gRival%i", i);
+		SaveString(query, "groups", iGroupID+1, szMiscArray, arrGroupData[iGroupID][g_iRivals][i]);
 	}
-
+	for(i = 0; i != MAX_GROUP_RANKS; ++i) {
+		format(szMiscArray, sizeof(szMiscArray), "GClothes%i", i);
+		SaveInteger(query, "groups", iGroupID+1, szMiscArray, arrGroupData[iGroupID][g_iClothes][i]);
+		format(szMiscArray, sizeof(szMiscArray), "Rank%i", i);
+		SaveString(query, "groups", iGroupID+1, szMiscArray, arrGroupRanks[iGroupID][i]);
+		format(szMiscArray, sizeof(szMiscArray), "Rank%iPay", i);
+		SaveInteger(query, "groups", iGroupID+1, szMiscArray, arrGroupData[iGroupID][g_iPaycheck][i]);
+	}
+	for(i = 0; i != MAX_GROUP_DIVS; ++i) {
+		format(szMiscArray, sizeof(szMiscArray), "Div%i", i+1);
+		SaveString(query, "groups", iGroupID+1, szMiscArray, arrGroupDivisions[iGroupID][i]);
+	}
+	for(i = 0; i != MAX_GROUP_WEAPONS; ++i) {
+		format(szMiscArray, sizeof(szMiscArray), "Gun%i", i+1);
+		SaveInteger(query, "groups", iGroupID+1, szMiscArray, arrGroupData[iGroupID][g_iLockerGuns][i]);
+		format(szMiscArray, sizeof(szMiscArray), "Cost%i", i+1);
+		SaveInteger(query, "groups", iGroupID+1, szMiscArray, arrGroupData[iGroupID][g_iLockerCost][i]);
+	}
+	SQLUpdateFinish(query, "groups", iGroupID+1);
+	for (i = 0; i < MAX_GROUP_LOCKERS; i++)	{
+		format(query, 2048, "UPDATE `lockers` SET ");
+		SaveFloat(query, "lockers", arrGroupLockers[iGroupID][i][g_iLockerSQLId], "LockerX", arrGroupLockers[iGroupID][i][g_fLockerPos][0]);
+		SaveFloat(query, "lockers", arrGroupLockers[iGroupID][i][g_iLockerSQLId], "LockerY", arrGroupLockers[iGroupID][i][g_fLockerPos][1]);
+		SaveFloat(query, "lockers", arrGroupLockers[iGroupID][i][g_iLockerSQLId], "LockerZ", arrGroupLockers[iGroupID][i][g_fLockerPos][2]);
+		SaveInteger(query, "lockers", arrGroupLockers[iGroupID][i][g_iLockerSQLId], "LockerVW", arrGroupLockers[iGroupID][i][g_iLockerVW]);
+		SaveInteger(query, "lockers", arrGroupLockers[iGroupID][i][g_iLockerSQLId], "LockerShare", arrGroupLockers[iGroupID][i][g_iLockerShare]);
+		SQLUpdateFinish(query, "lockers", arrGroupLockers[iGroupID][i][g_iLockerSQLId]);
+	}
 	return 1;
 }
 
@@ -1024,7 +1072,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					return ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
 				}
 			}
-
+			
 			if (strcmp("Accessories", inputtext) == 0) {
 					return ShowPlayerDialogEx(playerid, BUYTOYSCOP, DIALOG_STYLE_MSGBOX, "Accessories", "Welcome to the law enforcement accessory locker!\n\n(As with regular toys, VIP unlocks more slots.)","Continue", "Cancel");
 			}
@@ -1212,7 +1260,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					strmid(szTitle, inputtext, 0, strfind(inputtext, ":", true));
 					format(szTitle, sizeof szTitle, "Edit Group %s", szTitle);
 					if(listitem < 10) ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 6), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
-					if(listitem > 10) ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 7), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					if(listitem > 10) ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 8), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
 				case 10: {
 
@@ -1254,7 +1302,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					strmid(szTitle, inputtext, 0, strfind(inputtext, ":", true));
 					format(szTitle, sizeof szTitle, "Edit Group %s", szTitle);
-					ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 7), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
+					ShowPlayerDialogEx(playerid, DIALOG_GROUP_RADIOACC + (listitem - 8), DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 				}
 				case 23: {
 					format(szTitle, sizeof szTitle, "Edit Group Locker Stock {%s}(%s)", Group_NumToDialogHex(arrGroupData[iGroupID][g_hDutyColour]), arrGroupData[iGroupID][g_szGroupName]);
@@ -1566,11 +1614,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iRadioAccess] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iRadioAccess] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iRadioAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked the radio (/r) access from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iRadioAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for radio (/r) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iRadioAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iRadioAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for radio (/r) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iRadioAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iRadioAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1581,11 +1633,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iDeptRadioAccess] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iDeptRadioAccess] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iDeptRadioAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked the dept radio (/dept) access from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default:{
+					arrGroupData[iGroupID][g_iDeptRadioAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for dept radio (/dept) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iDeptRadioAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for dept radio (/dept) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iDeptRadioAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iDeptRadioAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1596,11 +1652,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iIntRadioAccess] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iIntRadioAccess] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iIntRadioAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked the int radio (/int) access from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iIntRadioAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for int radio (/int) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iIntRadioAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for int radio (/int) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iIntRadioAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iIntRadioAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1611,11 +1671,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iBugAccess] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iBugAccess] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iBugAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked the bug (/bug) access from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iBugAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for bug access (/bug) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBugAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBugAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for bug access (/bug) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBugAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBugAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1626,11 +1690,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iFindAccess] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iFindAccess] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iFindAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked find (/hfind) access from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iFindAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for find access (/hfind) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFindAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iFindAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for find access (/hfind) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFindAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iFindAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1641,11 +1709,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iGovAccess] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iGovAccess] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iGovAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked government announcement (/gov) access from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iGovAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for government announcement (/gov) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iGovAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iGovAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for government announcement (/gov) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iGovAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iGovAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1656,11 +1728,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iTreasuryAccess] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iTreasuryAccess] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iTreasuryAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked treasury Access (/setbudget) access from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iTreasuryAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for treasury Access (/setbudget) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iTreasuryAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iTreasuryAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for treasury Access (/setbudget) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iTreasuryAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iTreasuryAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1671,11 +1747,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iFreeNameChange] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iFreeNameChange] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iFreeNameChange] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked free name changes access from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iFreeNameChange] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for free name changes to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFreeNameChange], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iFreeNameChange]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for free name changes to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFreeNameChange], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iFreeNameChange]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1686,11 +1766,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_DIVS: arrGroupData[iGroupID][g_iFreeNameChangeDiv] = INVALID_DIVISION;
-				default: arrGroupData[iGroupID][g_iFreeNameChangeDiv] = listitem;
+				case MAX_GROUP_DIVS: {
+					arrGroupData[iGroupID][g_iFreeNameChangeDiv] = INVALID_DIVISION;
+					format(string, sizeof(string), "%s has revoked the division for free name changes from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iFreeNameChangeDiv] = listitem;
+					format(string, sizeof(string), "%s has set the division for free name changes to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFreeNameChange], arrGroupDivisions[iGroupID][arrGroupData[iGroupID][g_iFreeNameChange]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the division for free name changes to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFreeNameChange], arrGroupDivisions[iGroupID][arrGroupData[iGroupID][g_iFreeNameChange]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1702,11 +1786,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iSpikeStrips] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iSpikeStrips] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iSpikeStrips] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked spikes (/deploy spikes) from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iSpikeStrips] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for spikes (/deploy spikes) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iSpikeStrips], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iSpikeStrips]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for spikes (/deploy spikes) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iSpikeStrips], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iSpikeStrips]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1718,11 +1806,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iBarricades] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iBarricades] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iBarricades] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked cades (/deploy cades) from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iBarricades] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for cades (/deploy cades) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBarricades], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBarricades]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for cades (/deploy cades) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBarricades], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBarricades]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1734,11 +1826,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iCones] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iCones] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iCones] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked cones (/deploy cone) from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iCones] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for cones (/deploy cone) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iCones], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iCones]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for cones (/deploy cone) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iCones], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iCones]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1750,11 +1846,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iFlares] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iFlares] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iFlares] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked flares (/deploy flares) from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iFlares] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for flares (/deploy flares) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFlares], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iFlares]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for flares (/deploy flares) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iFlares], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iFlares]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1766,11 +1866,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iBarrels] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iBarrels] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iBarrels] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked barrels (/deploy barrel) from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iBarrels] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for barrels (/deploy barrel) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBarrels], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBarrels]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for barrels (/deploy barrel) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iBarrels], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iBarrels]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1782,11 +1886,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iLadders] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iLadders] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iLadders] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked ladders (/deploy ladder) from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iLadders] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for ladders (/deploy ladder) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iLadders], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iLadders]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for ladders (/deploy ladder) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iLadders], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iLadders]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1797,11 +1905,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iTapes] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iTapes] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iTapes] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked tapes (/deploy tape) from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iTapes] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for tapes (/deploy tape) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iTapes], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iTapes]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for tapes (/deploy tape) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iTapes], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iTapes]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -1812,11 +1924,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iCrateIsland] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iCrateIsland] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iCrateIsland] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked Crate Island Control from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iCrateIsland] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for Crate Island Control to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iCrateIsland], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iCrateIsland]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for Crate Island Control to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iCrateIsland], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iCrateIsland]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
@@ -2309,11 +2425,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				iGroupID = GetPVarInt(playerid, "Group_EditID");
 
 			if(response) switch(listitem) {
-				case MAX_GROUP_RANKS: arrGroupData[iGroupID][g_iTackleAccess] = INVALID_RANK;
-				default: arrGroupData[iGroupID][g_iTackleAccess] = listitem;
+				case MAX_GROUP_RANKS: {
+					arrGroupData[iGroupID][g_iTackleAccess] = INVALID_RANK;
+					format(string, sizeof(string), "%s has revoked tackle (/tackle) from group %d (%s)", GetPlayerNameEx(playerid), iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
+				default: {
+					arrGroupData[iGroupID][g_iTackleAccess] = listitem;
+					format(string, sizeof(string), "%s has set the minimum rank for tackle (/tackle) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iTackleAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iTackleAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
+				}
 			}
-
-			format(string, sizeof(string), "%s has set the minimum rank for tackle (/tackle) to %d (%s) in group %d (%s)", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_iTackleAccess], arrGroupRanks[iGroupID][arrGroupData[iGroupID][g_iTackleAccess]], iGroupID+1, arrGroupData[iGroupID][g_szGroupName]);
 			Log("logs/editgroup.log", string);
 
 			return Group_DisplayDialog(playerid, iGroupID);
