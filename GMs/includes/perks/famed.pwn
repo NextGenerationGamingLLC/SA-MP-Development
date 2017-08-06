@@ -167,24 +167,6 @@ CMD:fc(playerid, params[]) {
 	return 1;
 }
 
-CMD:togfamed(playerid, params[])
-{
-	if(PlayerInfo[playerid][pFamed] >= 1 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
-	{
-		if(PlayerInfo[playerid][pToggledChats][8]) {
-
-			PlayerInfo[playerid][pToggledChats][8] = 1;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the famed chat.");
-		}
-		else {
-			PlayerInfo[playerid][pToggledChats][8] = 0;
-			SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the famed chat.");
-		}
-	}
-	else return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not a famed member!");
-	return 1;
-}
-
 CMD:fmute(playerid, params[])
 {
 	if(PlayerInfo[playerid][pFamed] >= 4 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)

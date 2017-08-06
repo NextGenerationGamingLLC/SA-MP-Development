@@ -4073,18 +4073,16 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						if (IsAHitman(playerid))
 						{
 							new string[128];
-							new takemoney = PlayerInfo[GoChase[playerid]][pHeadValue];//(PlayerInfo[GoChase[playerid]][pHeadValue] / 4) * 2;
+							new takemoney = PlayerInfo[GoChase[playerid]][pHeadValue];
 							GivePlayerCash(playerid, floatround(takemoney * 0.9));
 							GivePlayerCash(GoChase[playerid], -takemoney);
 							format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d",GetPlayerNameEx(playerid),GetPlayerNameEx(GoChase[playerid]),takemoney);
-							foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, string);
+							foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, string);
 							format(string,sizeof(string),"You have been critically injured by a Hitman and lost $%d!",takemoney);
 							ResetPlayerWeaponsEx(GoChase[playerid]);
 						    // SpawnPlayer(GoChase[playerid]);
 							SendClientMessageEx(GoChase[playerid], COLOR_YELLOW, string);
 
-							format(szMiscArray, sizeof szMiscArray, "You have completed the hit on %s and collected $%s.", GetPlayerNameEx(GoChase[playerid]), number_format(takemoney));
-							SendClientMessage(playerid, COLOR_YELLOW, szMiscArray);
 							PlayerInfo[GoChase[playerid]][pHeadValue] = 0;
 							PlayerInfo[playerid][pCHits] += 1;
 							SetHealth(GoChase[playerid], 0.0);
@@ -4155,9 +4153,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					GivePlayerCash(GetChased[playerid], floatround(takemoney * 0.9));
 					GivePlayerCash(playerid, -takemoney);
 					format(string,sizeof(string),"Hitman %s has fulfilled the contract on %s and collected $%d.",GetPlayerNameEx(GetChased[playerid]),GetPlayerNameEx(playerid),takemoney);
-					foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, string);
-					format(string, sizeof string, "You have completed the hit on %s and collected $%s", GetPlayerNameEx(playerid), number_format(takemoney));
-					SendClientMessage(GetChased[playerid], COLOR_YELLOW, string);
+					foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, string);
 					format(string,sizeof(string),"You have been critically injured by a hitman and lost $%d!",takemoney);
 					ResetPlayerWeaponsEx(playerid);
 					SendClientMessageEx(playerid, COLOR_YELLOW, string);

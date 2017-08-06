@@ -1930,7 +1930,7 @@ CMD:accept(playerid, params[])
 						format(szMessage, sizeof(szMessage), "* You have accepted the contract to kill %s, you will recieve $%d when completed.", GetPlayerNameEx(HitToGet[playerid]), PlayerInfo[HitToGet[playerid]][pHeadValue]);
 						SendClientMessageEx(playerid, COLOR_LIGHTBLUE, szMessage);
 						format(szMessage, sizeof(szMessage), "%s has been assigned to the contract on %s, for $%d.", GetPlayerNameEx(playerid), GetPlayerNameEx(HitToGet[playerid]),  PlayerInfo[HitToGet[playerid]][pHeadValue]);
-						foreach(new i: Player) if(IsAHitmanLeader(i)) SendClientMessage(i, COLOR_YELLOW, szMessage);
+						foreach(new i: Player) if(IsAHitman(i)) SendClientMessage(i, COLOR_YELLOW, szMessage);
 						//SendClientMessage(playerid, COLOR_LIGHTBLUE, "Hit accepted.  Wait 15 seconds for the final go ahead from the Agency.");
 						//SetPVarInt(playerid, "HitCooldown", 15);
 						GoChase[playerid] = HitToGet[playerid];

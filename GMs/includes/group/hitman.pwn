@@ -120,7 +120,7 @@ stock IsAHitman(playerid)
 
 stock IsAHitmanLeader(playerid)
 {
-	if(PlayerInfo[playerid][pHitman] >= 5 && PlayerInfo[playerid][pHitmanLeader] == 1) return 1;
+	if(PlayerInfo[playerid][pHitmanLeader] == 1) return 1;
 	return 0;
 }
 
@@ -168,8 +168,43 @@ stock SaveHitmanSafe()
 }
 
 /****** Commands ******/
+CMD:toghma(playerid, params[])
+{
+	if(!IsAHitman(playerid)) return 0;
+	//if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /toghma [ic or ooc]");
+	if(GetPVarInt(playerid, "DisableHMAChat")) 
+	{
+		DeletePVar(playerid, "DisableHMAChat");
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have enabled the Hitman Agency chats.");
+	}
+	else 
+	{
+		SetPVarInt(playerid, "DisableHMAChat", 1);
+		SendClientMessageEx(playerid, COLOR_WHITE, "You have disabled the Hitman Agency chats.");
+	}
+	return 1;
+}
+CMD:hr(playerid, params[])
+{
+	if(!IsAHitman(playerid)) return 0;
+	else if(GetPVarInt(playerid, "DisableHMAChat")) return SendClientMessageEx(playerid, COLOR_WHITE, "Your Hitman Agency chats are disabled. Please re-enable it using /toghma.");
+	else if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /hr [text]");
 
-// Car bomb added.
+	foreach(new i: Player) if(IsAHitman(i) && !GetPVarInt(playerid, "DisableHMAChat")) SendClientMessageEx(i, COLOR_HMARADIO, "** [IC] %s %s: %s **", GetHitmanRank(playerid), GetPlayerNameEx(playerid), params);
+	return 1;
+}
+
+CMD:hg(playerid, params[])
+{
+	if(!IsAHitman(playerid)) return 0;
+	else if(GetPVarInt(playerid, "DisableHMAChat")) return SendClientMessageEx(playerid, COLOR_WHITE, "Your Hitman Agency chats are disabled. Please re-enable it using /toghma.");
+	else if(isnull(params)) return SendClientMessage(playerid, COLOR_GREY, "USAGE: /hg [text]");
+
+	format(szMiscArray, sizeof szMiscArray,  "** [OOC] %s (%d) %s: %s **", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman], GetPlayerNameEx(playerid), params);
+	foreach(new i: Player) if(IsAHitman(i) && !GetPVarInt(playerid, "DisableHMAChat")) SendClientMessageEx(i, COLOR_HMAOOC, szMiscArray);
+	return 1;
+}
+
 CMD:plantcarbomb(playerid, params[]) {
 	return cmd_pcb(playerid, params);
 }
@@ -416,7 +451,6 @@ CMD:givehit(playerid, params[])
 CMD:ranks(playerid, params[])
 {
 	if ((!IsAHitman(playerid)) && PlayerInfo[playerid][pAdmin] < 4) return SendClientMessageEx(playerid, COLOR_GREY, "You are not a Member of the Hitman Agency!");
-	if(!IsAHitmanLeader(playerid)) return SendClientMessage(playerid, COLOR_GREY, "You cannot use this command.");
 
 	SendClientMessageEx(playerid, COLOR_WHITE, "|__________________ Hitman Agency Online Members __________________|");
 
@@ -754,12 +788,13 @@ CMD:hmahelp(playerid, params[])
 	if(IsAHitman(playerid))
 	{
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /contracts /givemehit /order /profile /hfind /plantbomb /plantcarbomb /pickupbomb /myc4 /hmastats /quithma");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /hr /hg /toghma /ranks /contracts /givemehit /order /profile");
+		SendClientMessageEx(playerid, COLOR_GRAD3, "*** Hitman Agency Commands *** /hfind /setmylevel /tempnum /pb /pcb /pub /myc4 /quithma");
 
 		if(IsAHitmanLeader(playerid))
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Leadership Commands *** /makehitman /removehitman /blacklist /unblacklist /viewblacklist /givehitmanrank");
-			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Leadership Commands *** /oremovehitman /oremovehitmanleader /oblacklist /ounblacklist");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Leadership Commands *** /makehitman /givehitmanrank /(o)removehitman /hmasafe");
+			SendClientMessageEx(playerid, COLOR_GRAD3, "*** Leadership Commands *** /(o)blacklist /(o)unblacklist /viewblacklist");
 		}
 
 		SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
@@ -1479,26 +1514,6 @@ stock SearchingHit(playerid)
     return 0;
 }
 
-CMD:hmastats(playerid, params[])
-{
-	if(!IsAHitman(playerid)) return 0;
-
-	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-	SendClientMessageEx(playerid, COLOR_GRAD3, "Your Hitman Agency statistics:");
-
-	if(!IsAHitmanLeader(playerid)) format(szMiscArray, sizeof szMiscArray, "Rank: %s (%d)", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman]);
-	else format(szMiscArray, sizeof szMiscArray, "Rank: %s (%d) [{FF0000}L{B4B5B7}]", GetHitmanRank(playerid), PlayerInfo[playerid][pHitman]);
-	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-
-	format(szMiscArray, sizeof szMiscArray, "Completed Hits: %s | Failed Hits: %s", number_format(PlayerInfo[playerid][pCHits]), number_format(PlayerInfo[playerid][pFHits]));
-	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-
-	format(szMiscArray, sizeof szMiscArray, "Your C4: %s", number_format(PlayerInfo[playerid][pBombs]));
-
-	SendClientMessage(playerid, COLOR_GRAD1, szMiscArray);
-	SendClientMessageEx(playerid, COLOR_GREEN,"_______________________________________");
-	return 1;
-}
 
 CMD:contracts(playerid, params[])
 {
