@@ -33,7 +33,8 @@ hook OnGameModeInit() {
 	CreateDynamic3DTextLabel("/dplocker\nTo open the Dedicated locker.",COLOR_YELLOW,166.6540, -2001.0413, 3499.6482+0.6,4.0);/// Dedicated Locker
 	
 	//CreateDynamic3DTextLabel("Type /getmats from a boat \nto obtain Materials Packages",COLOR_YELLOW,2102.71,-103.97,2.28+0.5,8.0);// Deliver
-    CreateDynamic3DTextLabel("Type /getpizza from a Pizzaboy \nto get pizzas for delivery!",COLOR_YELLOW,-1713.961425, 1348.545166, 7.180452, 4.0); //getpizza
+    CreateDynamic3DTextLabel("Type /getpizza from a Pizzaboy \nto get pizzas for delivery!",COLOR_YELLOW,-1713.961425, 1348.545166, 7.180452, 4.0); //getpizza Pier 69
+    CreateDynamic3DTextLabel("Type /getpizza from a Pizzaboy \nto get pizzas for delivery!",COLOR_YELLOW,2103.6714,-1785.5222,12.9849, 4.0); //getpizza Idlewood
 	//CreateDynamic3DTextLabel("Type /registerplate to\nchange your license plate.",COLOR_YELLOW,366.54,159.09,1008.38+1,8.0);// Licenses.
     CreateDynamic3DTextLabel("/buyclothes\n To change your skin.",COLOR_YELLOW,208.8970,-100.3289,1005.2578,8.0);
     CreateDynamic3DTextLabel("/buyclothes\n To change your skin.",COLOR_YELLOW,206.5429,-41.2313,1001.8047,8.0);

@@ -602,8 +602,6 @@ CMD:hijackcargo(playerid, params[])
 	return 1;
 }
 
-
-
 CMD:loadshipment(playerid, params[])
 {
 	if(PlayerInfo[playerid][pJob] == 20 || PlayerInfo[playerid][pJob2] == 20 || PlayerInfo[playerid][pJob3] == 20)
@@ -630,6 +628,20 @@ CMD:loadshipment(playerid, params[])
 				if(TruckDeliveringTo[vehicleid] != INVALID_BUSINESS_ID && TruckContents{vehicleid} == 0)
 				{
 				    return SendClientMessageEx(playerid, COLOR_GRAD2, "That vehicle is already loaded.");
+				}
+				if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 440 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 413) // Level Three Vehicle Check
+				{
+					if(PlayerInfo[playerid][pTruckSkill] < 100) 
+					{
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Only level 3 Shipment Contractors may use this vehicle.");
+					}
+				}
+				if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 482) // Level Five Vehicle Check
+				{
+					if(PlayerInfo[playerid][pTruckSkill] < 400)  
+					{
+						return SendClientMessageEx(playerid, COLOR_GRAD2, "Only level 5 Shipment Contractors may use this vehicle.");
+					}
 				}
 	            if(!IsABoat(vehicleid))
 	            {
