@@ -1211,7 +1211,7 @@ public OnPlayerConnect(playerid)
 		getdate(MPYear,MPMonth,MPDay);
 	}
 
-	RemoveVendingMachines(playerid);
+//	RemoveVendingMachines(playerid);
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL, 1);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI, 1);

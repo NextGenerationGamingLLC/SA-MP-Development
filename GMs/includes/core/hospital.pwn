@@ -587,6 +587,7 @@ CMD:kill(playerid, params[]) {
 	return 1;
 }
 
+/*
 RemoveVendingMachines(playerid)
 {
 	// Remove 24/7 machines
@@ -599,6 +600,7 @@ RemoveVendingMachines(playerid)
 	RemoveBuildingForPlayer(playerid, 1977, 0.0, 0.0, 0.0, 6000.0);
 	return 1;
 }
+*/
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 

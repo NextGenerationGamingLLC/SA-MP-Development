@@ -82,7 +82,7 @@
 /*  ---------------- SCRIPT REVISION ----------------- */
 
 // Do not forget to change this everytime you commit - it's mandatory!
-#define SERVER_GM_TEXT "NG:RP v3.0.440"
+#define SERVER_GM_TEXT "NG:RP v3.0.442"
 
 //#define AREA_DEBUG
 //#define TEXTLABEL_DEBUG
@@ -208,6 +208,7 @@
 //#include "./includes/core/tutorial_new.pwn"
 #include "./includes/core/deluxegps.pwn"
 //#include "./includes/core/nametags.pwn"
+#include "./includes/core/vending.pwn"
 
 // #tryinclude "./includes/core/inactive.pwn"
 
