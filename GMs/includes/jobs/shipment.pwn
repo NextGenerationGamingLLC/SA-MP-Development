@@ -391,7 +391,7 @@ stock DisplayOrders(playerid)
 		/*ShowPlayerDialogEx(playerid, DIALOG_NOTHING, DIALOG_STYLE_MSGBOX, "Error", "No jobs available right now. Try again later.", "OK", "");
 		TogglePlayerControllable(playerid, 1);
 		DeletePVar(playerid, "IsFrozen"); */
-		if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 456 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 414 || IsABoat(GetPlayerVehicleID(playerid)))
+		if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 456 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 414 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 413 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 440 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 482 || IsABoat(GetPlayerVehicleID(playerid)))
 		{
 			ShowPlayerDialogEx(playerid,DIALOG_LOADTRUCKOLD,DIALOG_STYLE_LIST,"What do you want to transport?","{00F70C}Legal goods {FFFFFF}(no risk but also no bonuses)\n{FF0606}Illegal goods {FFFFFF}(risk of getting caught but a bonus)","Select","Cancel");
 		}
