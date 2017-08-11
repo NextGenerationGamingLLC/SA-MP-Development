@@ -5803,7 +5803,7 @@ CMD:locker(playerid, params[]) {
 						}
 						else
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nHigh Grade Armour\nPortable Medkit & Vest Kit\nTazer & Cuffs") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nHigh Grade Armour\nPortable Medkit & Vest Kit\nTazer & Cuffs\nAccessories") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
 						ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;
