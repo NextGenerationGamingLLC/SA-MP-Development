@@ -790,6 +790,14 @@ ReturnCrimeGroupType(iType)
 	return szReturn;
 }
 
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+    if(oldstate == PLAYER_STATE_ONFOOT && newstate == PLAYER_STATE_DRIVER)
+    {
+    	GetPlayerName(playerid, VehInfo[GetPlayerVehicleID(playerid)][vLastDriver], MAX_PLAYER_NAME);
+    }
+}
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys) {
 
 	if((newkeys & KEY_YES) && IsPlayerInAnyDynamicArea(playerid)) {
@@ -6190,17 +6198,17 @@ CMD:invite(playerid, params[]) {
 	return 1;
 }
 
-/*
+
 CMD:lastdriver(playerid, params[])
 {
 	new vehid, string[128];
 	if(sscanf(params, "d", vehid)) return SendClientMessageEx(playerid, COLOR_GRAD2, "USAGE: /lastdriver [vehicle id]");
-	if(!VehInfo[GetPlayerVehicleID(playerid)][vLastDriver][0]) format(VehInfo[GetPlayerVehicleID(playerid)][vLastDriver], MAX_PLAYER_NAME, "{AA3333}Unoccupied");
+	if(isnull(VehInfo[vehid][vLastDriver])) format(VehInfo[vehid][vLastDriver], MAX_PLAYER_NAME, "nobody");
 	if(GetVehicleModel(vehid) != 0)
 	{
 		if(PlayerInfo[playerid][pAdmin] > 1)
 		{
-			format(string, sizeof(string), "Vehicle %d's last known driver was %s", vehid, VehInfo[GetPlayerVehicleID(playerid)][vLastDriver]);
+			format(string, sizeof(string), "Vehicle %d's last known driver was {AA3333}%s", vehid, VehInfo[vehid][vLastDriver]);
 			SendClientMessage(playerid, COLOR_YELLOW, string);
 		}
 		else if(PlayerInfo[playerid][pLeader] != INVALID_GROUP_ID)
@@ -6209,7 +6217,7 @@ CMD:lastdriver(playerid, params[])
 			{
 				if(DynVehicleInfo[DynVeh[vehid]][gv_igID] == PlayerInfo[playerid][pLeader])
 				{
-					format(string, sizeof(string), "Vehicle %d's last known driver was %s", vehid, VehInfo[GetPlayerVehicleID(playerid)][vLastDriver]);
+					format(string, sizeof(string), "Vehicle %d's last known driver was {AA3333}%s", vehid, VehInfo[vehid][vLastDriver]);
 					SendClientMessage(playerid, COLOR_YELLOW, string);
 				}
 			}
@@ -6221,7 +6229,7 @@ CMD:lastdriver(playerid, params[])
 	else return SendClientMessageEx(playerid, COLOR_GRAD2, "Invalid Vehicle ID");
 	return 1;
 }
-*/
+
 
 CMD:togbr(playerid, params[])
 {

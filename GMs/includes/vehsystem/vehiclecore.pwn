@@ -1833,7 +1833,6 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	else if(!IsPlayerInRangeOfVehicle(playerid, vehicleid, 7.5) || (LockStatus{vehicleid} >= 1)) { // G-bugging fix
 		ClearAnimationsEx(playerid);
 	}
-
 	return 1;
 }
 
