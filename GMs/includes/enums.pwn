@@ -1290,7 +1290,9 @@ enum pInfo
 	pDedicatedHours,
 	pDedicatedDaymarker[11],
 	pDedicatedTimestamp[11],
-	pWalkStyle
+	pWalkStyle,
+	pFlagCredits,
+	pFlagClaimed
 };
 
 enum pvInfo
