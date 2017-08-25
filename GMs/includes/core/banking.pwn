@@ -391,6 +391,8 @@ PayDay(i) {
 				PlayerInfo[i][pExp]++;
 				PlayerInfo[i][pPayDayHad] = 0;
 			}
+			// Auto Levels
+			if(PlayerInfo[i][pAdmin] < 2) LevelCheck(i);
 			
 			// Zombie Halloween
 			if(month == 10 && day == 30)

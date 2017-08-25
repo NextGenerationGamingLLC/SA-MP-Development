@@ -81,7 +81,6 @@ stock ShowStats(playerid,targetid)
 		if(PlayerInfo[targetid][pMarriedID] == -1) format(PlayerInfo[targetid][pMarriedName], MAX_PLAYER_NAME, "Nobody");
 		new nxtlevel = PlayerInfo[targetid][pLevel]+1;
 		new expamount = nxtlevel*4;
-		new costlevel = nxtlevel*25000;
 		new Float:health, Float:armor;
 		GetHealth(targetid, health);
 		GetArmour(targetid, armor);
@@ -113,7 +112,7 @@ stock ShowStats(playerid,targetid)
 			Dedicated Hours: %s\n\
 			Fitness: %d\n\
 			Upgrade Points: %s\n\
-			Next Level: %s{303030}/{FFFFFF}%s hours ($%s)\n\
+			Next Level: %s{303030}/{FFFFFF}%s hours\n\
 			Nation: %s\n\
 			%s\
 			%s\
@@ -140,7 +139,6 @@ stock ShowStats(playerid,targetid)
 			number_format(PlayerInfo[targetid][gPupgrade]),
 			number_format(PlayerInfo[targetid][pExp]),
 			number_format(expamount),
-			number_format(costlevel),
 			nation,
 			org,
 			biz,

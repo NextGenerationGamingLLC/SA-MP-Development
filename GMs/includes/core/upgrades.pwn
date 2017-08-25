@@ -76,29 +76,32 @@ CMD:resetupgrades(playerid, params[]) {
 	}
 	return 1;
 }
-
-CMD:buylevel(playerid, params[])
+// Auto Levels
+LevelCheck(playerid)
 {
 	if (gPlayerLogged{playerid} != 0)
 	{
 		if(PlayerInfo[playerid][pLevel] >= 0)
 		{
 			new nxtlevel = PlayerInfo[playerid][pLevel]+1;
-			new costlevel = nxtlevel*25000;
 			new expamount = nxtlevel*4;
 
-			if(GetPlayerCash(playerid) < costlevel)
+			if (PlayerInfo[playerid][pExp] < expamount)
 			{
-				new string[128];
-				format(string, sizeof(string), "You don't have enough cash ($%d).",costlevel);
-				SendClientMessageEx(playerid, COLOR_GRAD1, string);
-				return 1;
+				return 0;
 			}
-			else if (PlayerInfo[playerid][pExp] < expamount)
+			else if(PlayerInfo[playerid][pExp] > expamount)
 			{
-				new string[58];
-				format(string, sizeof(string), "You need %d more respect points to buy your next level.", expamount - PlayerInfo[playerid][pExp]);
-				SendClientMessageEx(playerid, COLOR_GRAD1, string);
+				while(PlayerInfo[playerid][pExp] > expamount) 
+				{
+					PlayerInfo[playerid][pLevel]++;
+					PlayerInfo[playerid][pExp] = PlayerInfo[playerid][pExp]-expamount;
+					PlayerInfo[playerid][gPupgrade] = PlayerInfo[playerid][gPupgrade]+2;
+					SetPlayerScore(playerid, PlayerInfo[playerid][pLevel]);
+					nxtlevel = PlayerInfo[playerid][pLevel]+1;
+					expamount = nxtlevel*4;
+				}
+				SendClientMessageEx(playerid, COLOR_WHITE, "You had an excess amount of respect points, hence your level was adjusted to %d.", PlayerInfo[playerid][pLevel]);
 				return 1;
 			}
 			else
@@ -106,12 +109,11 @@ CMD:buylevel(playerid, params[])
 				new string[92];
 				format(string, sizeof(string), "~g~LEVEL UP~n~~w~You Are Now Level %d", nxtlevel);
 				PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
-				GivePlayerCash(playerid, (-costlevel));
 				PlayerInfo[playerid][pLevel]++;
 				PlayerInfo[playerid][pExp] = PlayerInfo[playerid][pExp]-expamount;
 				PlayerInfo[playerid][gPupgrade] = PlayerInfo[playerid][gPupgrade]+2;
 				GameTextForPlayer(playerid, string, 5000, 1);
-				format(string, sizeof(string), "You have bought level %d for $%d, and gained %i upgrade points! /upgrade to use them.", nxtlevel, costlevel, PlayerInfo[playerid][gPupgrade]);
+				format(string, sizeof(string), "You have leveled up to %d, and gained %i upgrade points! /upgrade to use them.", nxtlevel, PlayerInfo[playerid][gPupgrade]);
 				SendClientMessageEx(playerid, COLOR_GRAD1, string);
 				SetPlayerScore(playerid, PlayerInfo[playerid][pLevel]);
 				if(PlayerInfo[playerid][pLevel] == 3)

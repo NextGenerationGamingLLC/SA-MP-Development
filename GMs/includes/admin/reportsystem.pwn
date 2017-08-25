@@ -769,7 +769,7 @@ CMD:ar(playerid, params[])
 		    new newname[MAX_PLAYER_NAME];
 			GetPVarString(Reports[reportid][ReportFrom], "NewNameRequest", newname, MAX_PLAYER_NAME);
 
-			if(GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost") == 2) format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: {FFFFFF}%s credits", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname, number_format(ShopItems[40][sItemPrice]));
+			if(GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost") > 2) format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: ${FFFFFF}%s", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname, number_format(GetPVarInt(Reports[reportid][ReportFrom], "NameChangeCost")));
 			else format(string, sizeof(string), "{00BFFF}Old Name: {FFFFFF}%s\n\n{00BFFF}New Name: {FFFFFF}%s\n\n{00BFFF}Price: {FFFFFF}Free", GetPlayerNameExt(Reports[reportid][ReportFrom]), newname);
 			ShowPlayerDialogEx(playerid, DIALOG_REPORTNAME,DIALOG_STYLE_MSGBOX,"{00BFFF}Name Change Request",string,"Approve","Deny");
 

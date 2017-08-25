@@ -3125,10 +3125,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 				else
 				{
-					if(!IsValidName(inputtext)) {
-						SendClientMessageEx(playerid, COLOR_WHITE, "Name change rejected. Please choose a name in the correct format: Firstname_Lastname.");
-						return 1;
-					}
+					if(!IsValidName(inputtext)) return SendClientMessageEx(playerid, COLOR_WHITE, "Name change rejected. Please choose a name in the correct format: Firstname_Lastname.");
+
+
 					/*new namechangecost;
 					namechangecost = (PlayerInfo[playerid][pLevel]) * 15000;
 
@@ -3152,7 +3151,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						SetPVarInt(playerid, "NameChangeCost", 0);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost, please wait until a General Admin approves it.", playername, inputtext);
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost, please wait until an admin approves it.", playername, inputtext);
 						SendClientMessageEx( playerid, COLOR_YELLOW, String );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
 						return 1;
@@ -3168,7 +3167,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						SetPVarString(playerid, "NewNameRequest", inputtext);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost (Senior Mod), please wait until a General Admin approves it.", playername, inputtext);
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s at no cost (Senior Mod), please wait until an admin approves it.", playername, inputtext);
 						SendClientMessageEx( playerid, COLOR_YELLOW, String );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
 						return 1;
@@ -3182,11 +3181,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						SetPVarInt(playerid, "NameChangeCost", 1);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s for free, please wait until a General Admin approves it.", playername, inputtext);
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s for free, please wait until an admin approves it.", playername, inputtext);
 						SendClientMessageEx( playerid, COLOR_YELLOW, String );
 						SendReportToQue(playerid, "Name Change Request", 2, 4);
 						return 1;
 					}
+					/*
 					if(PlayerInfo[playerid][pCredits] >= ShopItems[40][sItemPrice])
 					{
 						if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
@@ -3201,9 +3201,34 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						SendReportToQue(playerid, "Name Change Request (Credits)", 2, 4);
 						return 1;
 					}
+
 					else
 					{
 						SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have enough credits to purchase this item. Visit shop.ng-gaming.net to purchase credits.");
+					}
+					*/
+					new namechangecost;
+					switch(PlayerInfo[playerid][pLevel])
+					{
+						case 1: namechangecost = 10000;
+						case 2: namechangecost = 15000;
+						case 3: namechangecost = 20000;
+						default: namechangecost = (PlayerInfo[playerid][pLevel]-3)*50000;
+					}
+					if(PlayerInfo[playerid][pCash] >= namechangecost)
+					{
+						if(GetPVarType(playerid, "HasReport")) return SendClientMessageEx(playerid, COLOR_GREY, "You can only have 1 active report at a time. (/cancelreport)");
+						SetPVarInt(playerid, "RequestingNameChange", 1);
+						SetPVarString(playerid, "NewNameRequest", inputtext);
+						SetPVarInt(playerid, "NameChangeCost", namechangecost);
+						SendClientMessageEx(playerid, COLOR_YELLOW, "You have requested a namechange from %s to %s for $%s, please wait until an admin approves it.", GetPlayerNameExt(playerid), inputtext, number_format(namechangecost));
+						SendReportToQue(playerid, "Name Change Request (Cash)", 2, 4);
+						return 1;
+					}
+
+					else
+					{
+						SendClientMessageEx(playerid, COLOR_GRAD2, "You don't have enough money for a name change.");
 					}
 				}
 			}
@@ -3259,7 +3284,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 						SetPVarInt(playerid, "NameChangeCost", 0);
 						new playername[MAX_PLAYER_NAME];
 						GetPlayerName(playerid, playername, sizeof(playername));
-						format( String, sizeof( String ), "You have requested a namechange from %s to %s please wait until a General Admin approves it.", playername, inputtext);
+						format( String, sizeof( String ), "You have requested a namechange from %s to %s please wait until an admin approves it.", playername, inputtext);
 						SendClientMessageEx( playerid, COLOR_YELLOW, String );
 						// format( String, sizeof( String ), "{AA3333}AdmWarning{FFFF00}: %s (ID %d) requested a name change to %s for free (non-RP name) - /approvename %d (accept), or /denyname %d (deny).", playername, playerid, inputtext, playerid, playerid);
 						// ABroadCast( COLOR_YELLOW, String, 3 );

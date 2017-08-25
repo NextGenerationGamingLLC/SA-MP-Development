@@ -71,7 +71,7 @@ CMD:namechanges(playerid, params[])
 	return 1;
 } */
 
-CMD:changename(playerid, params[])
+/*CMD:changename(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[playerid][pSMod] > 0) return ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change","Please enter your new desired name!\n\nNote: Name Changes are free because you are a Senior Moderator.", "Change", "Cancel" );
 	if(!IsAtNameChange(playerid)) return SendClientMessageEx( playerid, COLOR_WHITE, "   You are not in the Name Change Place!" );
@@ -95,6 +95,36 @@ CMD:changename(playerid, params[])
 			ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change", string, "Purchase", "Cancel");
 		}
 		else SetPVarInt(playerid, "OpenShop", 10), PinLogin(playerid);
+	}
+	return 1;
+}*/
+CMD:changename(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] == 1 && PlayerInfo[playerid][pSMod] > 0) return ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Free Name Change","Please enter your new desired name!\n\nNote: Name Changes are free because you are a Senior Moderator.", "Change", "Cancel" );
+	if(!IsAtNameChange(playerid)) return SendClientMessageEx( playerid, COLOR_WHITE, "You are not in the Name Change Place!" );
+	if(!isnull(PlayerInfo[playerid][pWarrant]) || PlayerInfo[playerid][pWarrant] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You cant name change, while warranted.");
+	if(gettime()-GetPVarInt(playerid, "LastNameChange") < 120) return SendClientMessageEx(playerid, COLOR_GRAD2, "You can only request a name change every two minutes.");
+	new iGroupID = PlayerInfo[playerid][pMember];
+	if((0 <= PlayerInfo[playerid][pMember] < MAX_GROUPS) && (PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)))
+	{
+		ShowPlayerDialogEx( playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Free Name Change","Please enter your new desired name!\n\nNote: Name Changes are free for your faction.", "Change", "Cancel" );
+	}
+	else if(gettime() >= PlayerInfo[playerid][pNextNameChange])
+	{
+		ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Free Name Change", "Please enter your new desired name!\n\nNote: Name Changes are free every 120 days.", "Change", "Cancel");
+	}
+	else
+	{
+		new string[128];
+		switch(PlayerInfo[playerid][pLevel])
+		{
+			case 1: string = "10,000";
+			case 2: string = "15,000";
+			case 3: string = "20,000";
+			default: string = number_format((PlayerInfo[playerid][pLevel]-3)*50000);
+		}
+		format(string, sizeof(string), "Please enter your new desired name!\n\nCost of a currnet name change is: $%s\nUse /nextnamechange to see the next free change.", string);	
+		ShowPlayerDialogEx(playerid, DIALOG_NAMECHANGE, DIALOG_STYLE_INPUT, "Name Change", string, "Change", "Cancel");
 	}
 	return 1;
 }

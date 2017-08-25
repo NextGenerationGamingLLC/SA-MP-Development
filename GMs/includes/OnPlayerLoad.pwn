@@ -888,7 +888,8 @@ public OnPlayerLoad(playerid)
 	{
 		PlayerInfo[playerid][pReceivedBGift] = 0;
 	}	
-
+	// Auto Levels
+	if(PlayerInfo[playerid][pAdmin] < 2) LevelCheck(playerid);
 	new
 	iCheckOne = INVALID_HOUSE_ID,
 	iCheckTwo = INVALID_HOUSE_ID,

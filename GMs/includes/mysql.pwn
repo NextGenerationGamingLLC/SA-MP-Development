@@ -4694,6 +4694,7 @@ public OnApproveName(index, extraid)
 					{
 						if(SetPlayerName(extraid, newname) == 1)
 						{
+							/*
 							GivePlayerCredits(extraid, -ShopItems[40][sItemPrice], 1);
 							printf("Price40: %d", ShopItems[40][sItemPrice]);
 							AmountSold[40]++;
@@ -4712,6 +4713,20 @@ public OnApproveName(index, extraid)
 							format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for %s credits.", GetPlayerNameEx(index), oldname, newname, GetPlayerSQLId(extraid), number_format(ShopItems[40][sItemPrice]));
 							Log("logs/stats.log", string);
 							format(string, sizeof(string), "%s has approved %s's name change to %s for %s credits.", GetPlayerNameEx(index), oldname, newname, number_format(ShopItems[40][sItemPrice]));
+							ABroadCast(COLOR_YELLOW, string, 3);
+						*/
+							GivePlayerCash(extraid, -GetPVarInt(extraid, "NameChangeCost"));
+
+							mysql_format(MainPipeline, string, sizeof(string), "UPDATE `accounts` SET `Username`='%s' WHERE `Username`='%s'", newname, oldname);
+							mysql_tquery(MainPipeline, string, "OnApproveSetName", "ii", index, extraid);
+
+							format(string, sizeof(string), " Your name has been changed from %s to %s for $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
+							SendClientMessageEx(extraid, COLOR_CYAN, string);
+							format(string, sizeof(string), " You have changed %s's name to %s for $%s.", oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
+							SendClientMessageEx(index,COLOR_YELLOW,string);
+							format(string, sizeof(string), "%s changed \"%s\"s name to \"%s\" (id: %i) for $%s.", GetPlayerNameEx(index), oldname, newname, GetPlayerSQLId(extraid), number_format(GetPVarInt(extraid, "NameChangeCost")));
+							Log("logs/stats.log", string);
+							format(string, sizeof(string), "%s has approved %s's name change to %s for $%s.", GetPlayerNameEx(index), oldname, newname, number_format(GetPVarInt(extraid, "NameChangeCost")));
 							ABroadCast(COLOR_YELLOW, string, 3);
 						}
 						else
