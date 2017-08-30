@@ -532,7 +532,7 @@ CMD:usekit(playerid, params[]) {
             	SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the Vehicle Trunk.");
             	ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				SetHealth(playerid, 100);
-				SetArmour(playerid, 100);
+				SetArmour(playerid, 150);
             	VehInfo[vehicleid][vCarVestKit] -= 1;
 				return 1;
 		    }

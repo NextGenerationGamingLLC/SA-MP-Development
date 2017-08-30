@@ -1292,7 +1292,8 @@ enum pInfo
 	pDedicatedTimestamp[11],
 	pWalkStyle,
 	pFlagCredits,
-	pFlagClaimed
+	pFlagClaimed,
+	pHorse
 };
 
 enum pvInfo

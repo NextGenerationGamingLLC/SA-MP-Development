@@ -857,13 +857,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 
 					if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0) {
 
-						SetArmour(playerid, 100);
+						SetArmour(playerid, 150);
 						arrGroupData[iGroupID][g_iLockerStock] -= 1;
 						new str[128];
 						format(str, sizeof(str), "%s took a vest out of the %s locker at a cost of 1 HG Material.", GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
 						GroupPayLog(iGroupID, str);
 					}
-					else if(arrGroupData[iGroupID][g_iLockerCostType] != 0) SetArmour(playerid, 100.0);
+					else if(arrGroupData[iGroupID][g_iLockerCostType] != 0) SetArmour(playerid, 150.0);
 					else {
 						SendClientMessageEx(playerid, COLOR_RED, "The locker doesn't have the stock for your armor vest.");
 						SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the STAG and organize a crate delivery.");
@@ -998,7 +998,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 			if (strcmp("First Aid & Kevlar", inputtext) == 0) {
 				if(arrGroupData[iGroupID][g_iLockerStock] > 1 && arrGroupData[iGroupID][g_iLockerCostType] == 0) {
 					GetArmour(playerid, parmor);
-					if(parmor < 100) SetArmour(playerid, 100);
+					if(parmor < 150) SetArmour(playerid, 150);
 					SetHealth(playerid, 100.0);
 					arrGroupData[iGroupID][g_iLockerStock] -= 1;
 					new str[128];
@@ -1008,7 +1008,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 1) {
 					if(arrGroupData[iGroupID][g_iBudget] > 2500) {
 						GetArmour(playerid, parmor);
-						if(parmor < 100) SetArmour(playerid, 100);
+						if(parmor < 150) SetArmour(playerid, 150);
 						SetHealth(playerid, 100.0);
 						arrGroupData[iGroupID][g_iBudget] -= 2500;
 						new str[128];
@@ -1020,7 +1020,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				else if(arrGroupData[iGroupID][g_iLockerCostType] == 2) {
 					if(GetPlayerCash(playerid) > 2500) {
 						GetArmour(playerid, parmor);
-						if(parmor < 100) SetArmour(playerid, 100);
+						if(parmor < 150) SetArmour(playerid, 150);
 						SetHealth(playerid, 100.0);
 						GivePlayerCash(playerid, -2500);
 						new str[128];
@@ -1037,7 +1037,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 				}
 			}
 
-			if(strcmp("High Grade Armour", inputtext) == 0) {
+/*			if(strcmp("High Grade Armour", inputtext) == 0) {
 				if(arrGroupData[iGroupID][g_iLockerStock] > 5) {
 					GetArmour(playerid, parmor);
 					if(parmor > 149) return SendClientMessageEx(playerid, COLOR_RED, "You already have high grade armour equipped!");
@@ -1052,7 +1052,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
 					SendClientMessageEx(playerid, COLOR_GRAD2, "Contact your supervisor or the SAAS and organize a crate delivery.");
 				}
 			}
-
+*/
 			if (strcmp("Materials", inputtext, true, 9) == 0) { // we need to specify the cellmax as else it'll pick up the formatting
 				SetPVarInt(playerid, "GSafe_Opt", 1);
 				return ShowPlayerDialogEx(playerid, DIALOG_GROUP_SACTIONTYPE, DIALOG_STYLE_LIST, "Gang Safe: Material Safe", "Deposit\nWithdraw", "Select", "Back");
@@ -5804,14 +5804,14 @@ CMD:locker(playerid, params[]) {
 
 					    if(PlayerInfo[playerid][pRank] >= arrGroupData[iGroupID][g_iFreeNameChange] && (PlayerInfo[playerid][pDivision] == arrGroupData[iGroupID][g_iFreeNameChangeDiv] || arrGroupData[iGroupID][g_iFreeNameChangeDiv] == INVALID_DIVISION)) // name-change point in faction lockers for free namechange factions
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nHigh Grade Armour\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAccessories") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nName Change\nAccessories") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar\nName Change") : ("")));
 						}
 						else if(arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV) {
 							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar");
 						}
 						else
 						{
-							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nHigh Grade Armour\nPortable Medkit & Vest Kit\nTazer & Cuffs\nAccessories") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
+							format(szDialog, sizeof(szDialog), "Duty\nWeapons\nCrate Transfer\nUniform%s", (arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_LEA) ? ("\nClear Suspect\nFirst Aid & Kevlar\nPortable Medkit & Vest Kit\nTazer & Cuffs\nAccessories") : ((arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_MEDIC || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_NEWS || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_GOV || arrGroupData[iGroupID][g_iGroupType] == GROUP_TYPE_TOWING) ? ("\nPortable Medkit & Vest Kit\nFirst Aid & Kevlar") : ("")));
 						}
 						ShowPlayerDialogEx(playerid, G_LOCKER_MAIN, DIALOG_STYLE_LIST, szTitle, szDialog, "Select", "Cancel");
 						return 1;

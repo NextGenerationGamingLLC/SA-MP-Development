@@ -323,6 +323,7 @@
 #include "./includes/perks/toys.pwn"
 #include "./includes/perks/vipcore.pwn"
 #include "./includes/perks/casino.pwn"
+#include "./includes/perks/horsey.pwn"
 
 //#include "./includes/core/ammo.pwn"
 #include "./includes/core/phone_new.pwn"

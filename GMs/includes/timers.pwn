@@ -96,7 +96,7 @@ timer FinishMedKit[5000](playerid)
 	if(GetPVarInt(playerid, "BackpackMedKit") == 1)
 	{
 		SetHealth(playerid, 100);
-		SetArmour(playerid, 100);
+		SetArmour(playerid, 150);
 		PlayerInfo[playerid][pBItems][5]--;
 		SendClientMessageEx(playerid, COLOR_WHITE, "You have used the Med Kit from the backpack.");
 		new ip[MAX_PLAYER_NAME];
