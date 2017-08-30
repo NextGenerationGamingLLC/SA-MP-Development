@@ -134,7 +134,15 @@ CMD:accept(playerid, params[])
 			PlayerInfo[id][pMats] -= GetPVarInt(playerid, "pSellGunMats");
 			GivePlayerValidWeapon(playerid, GetPVarInt(playerid, "pSellGun"));
 
-			PlayerInfo[id][pArmsSkill] += GetPVarInt(playerid, "pSellGunXP");
+  			if(PlayerInfo[id][pDoubleEXP] > 0)
+			{
+				SendClientMessageEx(id, COLOR_YELLOW, "You have gained 2 skill points instead of 1. You have %d hours left on the Double EXP token.", PlayerInfo[id][pDoubleEXP]);
+   				PlayerInfo[id][pArmsSkill] += (GetPVarInt(playerid, "pSellGunXP")*2);
+			}
+			else
+			{
+  				PlayerInfo[id][pArmsSkill] += GetPVarInt(playerid, "pSellGunXP");
+			}
 
 			format(szMiscArray, sizeof(szMiscArray), "%s crafts a %s from their materials, handing it to %s.", GetPlayerNameEx(id), weapon, GetPlayerNameEx(playerid)); 
 			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
