@@ -49,7 +49,20 @@ CMD:placebet(playerid, params[])
 	if(GetPVarType(playerid, "PlayerCuffed") || GetPVarInt(playerid, "pBagged") >= 1 || GetPVarType(playerid, "IsFrozen") || PlayerInfo[playerid][pHospital] || (PlayerInfo[playerid][pJailTime] > 0 && strfind(PlayerInfo[playerid][pPrisonReason], "[OOC]", true) != -1))
    		return SendClientMessage(playerid, COLOR_GRAD2, "You can't do that at this time!");
 
-	ShowPlayerDialog(playerid, DIALOG_HORSE_RACE, DIALOG_STYLE_TABLIST_HEADERS, "Inside Track Betting",
+	/*ShowPlayerDialog(playerid, DIALOG_HORSE_RACE, DIALOG_STYLE_TABLIST_HEADERS, "Inside Track Betting",
+		"Horse\tBet\tPayout\n\
+		Wong's Wang\t$18000\t$40000\n\
+		Flaps's Ahoy\t$32000\t$70000\n\
+		Beanflicker\t$46000\t$101000\n\
+		Axe Wound\t$55000\t$123000\n\
+		McTagnut & Fries\t$73000\t$161000\n\
+		Love Torpedo\t$150000\t$330000\n\
+		Arthur or Martha\t$425000\t$935000\n\
+		Purple Love\t$875000\t$1900000\n\
+		Billy Sastard\t$10000000\t$22000000",
+		"Select", "Cancel");*/
+
+	Dialog_Show(playerid, PlaceHorseBet, DIALOG_STYLE_TABLIST_HEADERS, "Inside Track Betting",
 		"Horse\tBet\tPayout\n\
 		Wong's Wang\t$18000\t$40000\n\
 		Flaps's Ahoy\t$32000\t$70000\n\
@@ -61,10 +74,211 @@ CMD:placebet(playerid, params[])
 		Purple Love\t$875000\t$1900000\n\
 		Billy Sastard\t$10000000\t$22000000",
 		"Select", "Cancel");
+
+
 	SendClientMessage(playerid, COLOR_GREY, "Welcome to Inside Track Betting!.");
 	return 1;
 }
 
+Dialog:PlaceHorseBet(playerid, response, listitem, inputtext[]) {
+	new string[128];
+	if(!response) return 1;
+
+	switch(listitem) {
+		case 0:
+    	{
+   			if(PlayerInfo[playerid][pCash] >= 18000)			
+     		{
+				if(Businesses[InBusiness(playerid)][bSafeBalance] < 40000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
+				PlayerInfo[playerid][pHorse] = 1;
+				TogglePlayerControllable(playerid, 0);
+				GivePlayerCash(playerid, -18000);
+				format(string, sizeof(string), "%s has bet $18000 on a horse", GetPlayerNameEx(playerid));
+				Log("logs/horse.log", string);
+				Businesses[InBusiness(playerid)][bSafeBalance] += 18000; // Adds the money to the biz
+				SaveBusiness(InBusiness(playerid));
+				SendClientMessage(playerid, COLOR_GREY, "You have placed a bet on Wong's Wang for $18000.");
+				SetTimerEx("HorseTimer", 15000, false, "i", playerid); 
+				PlayerPlaySound(playerid, 3200, 0.0, 0.0, 0.0);
+				format(szMiscArray, sizeof(szMiscArray), "%s places their bet and waits for the race to start", GetPlayerNameEx(playerid)); 
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessage(playerid, COLOR_GREY, "**Announcer** And they're off!.");
+			}
+			else return SendClientMessage(playerid, COLOR_GREY,"You don't have enough money to place the bet.");
+		}
+		case 1:
+    	{
+   			if(PlayerInfo[playerid][pCash] >= 32000)
+     		{
+			if(Businesses[InBusiness(playerid)][bSafeBalance] < 70000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
+			PlayerInfo[playerid][pHorse] = 2;
+			TogglePlayerControllable(playerid, 0);
+			GivePlayerCash(playerid, -32000);
+			format(string, sizeof(string), "%s has bet $32000 on a horse", GetPlayerNameEx(playerid));
+			Log("logs/horse.log", string);
+			Businesses[InBusiness(playerid)][bSafeBalance] += 32000; // Adds the money to the biz
+			SaveBusiness(InBusiness(playerid));
+			SendClientMessage(playerid, COLOR_GREY, "You have placed a bet on Flap's Ahoy for $32000.");
+			SetTimerEx("HorseTimer", 15000, false, "i", playerid); 
+			PlayerPlaySound(playerid, 3200, 0.0, 0.0, 0.0);
+			format(szMiscArray, sizeof(szMiscArray), "%s places their bet and waits for the race to start", GetPlayerNameEx(playerid)); 
+			ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			SendClientMessage(playerid, COLOR_GREY, "**Announcer** And they're off!.");
+			}
+			else return SendClientMessage(playerid, COLOR_GREY,"You don't have enough money to place the bet.");
+		}
+		case 2:
+    	{
+   			if(PlayerInfo[playerid][pCash] >= 46000)
+     		{
+				if(Businesses[InBusiness(playerid)][bSafeBalance] < 101000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
+				PlayerInfo[playerid][pHorse] = 3;
+				TogglePlayerControllable(playerid, 0);
+				GivePlayerCash(playerid, -46000);
+				format(string, sizeof(string), "%s has bet $46000 on a horse", GetPlayerNameEx(playerid));
+				Log("logs/horse.log", string);
+				Businesses[InBusiness(playerid)][bSafeBalance] += 46000; // Adds the money to the biz
+				SaveBusiness(InBusiness(playerid));
+				SendClientMessage(playerid, COLOR_GREY, "You have placed a bet on Beanflicker for $46000.");
+				SetTimerEx("HorseTimer", 15000, false, "i", playerid); 
+				PlayerPlaySound(playerid, 1142, 0.0, 0.0, 0.0);
+				format(szMiscArray, sizeof(szMiscArray), "%s places their bet and waits for the race to start", GetPlayerNameEx(playerid)); 
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessage(playerid, COLOR_GREY, "**Announcer** And they're off!.");
+			}
+			else return SendClientMessage(playerid, COLOR_GREY,"You don't have enough money to place the bet.");
+		}
+		case 3:
+    	{
+   			if(PlayerInfo[playerid][pCash] >= 55000)
+     		{
+     			if(Businesses[InBusiness(playerid)][bSafeBalance] < 123000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
+				PlayerInfo[playerid][pHorse] = 4;
+				TogglePlayerControllable(playerid, 0);
+				GivePlayerCash(playerid, -55000);
+				format(string, sizeof(string), "%s has bet $55000 on a horse", GetPlayerNameEx(playerid));
+				Log("logs/horse.log", string);
+				Businesses[InBusiness(playerid)][bSafeBalance] += 55000; // Adds the money to the biz
+				SaveBusiness(InBusiness(playerid));
+				SendClientMessage(playerid, COLOR_GREY, "You have placed a bet on Axe Wound for $55000.");
+				SetTimerEx("HorseTimer", 15000, false, "i", playerid); 
+				PlayerPlaySound(playerid, 3200, 0.0, 0.0, 0.0);
+				format(szMiscArray, sizeof(szMiscArray), "%s places their bet and waits for the race to start", GetPlayerNameEx(playerid)); 
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessage(playerid, COLOR_GREY, "**Announcer** And they're off!.");
+			}
+			else return SendClientMessage(playerid, COLOR_GREY,"You don't have enough money to place the bet.");
+		}
+		case 4:
+    	{
+   			if(PlayerInfo[playerid][pCash] >= 73000)
+     		{
+				if(Businesses[InBusiness(playerid)][bSafeBalance] < 161000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
+				PlayerInfo[playerid][pHorse] = 5;
+				TogglePlayerControllable(playerid, 0);
+				GivePlayerCash(playerid, -73000);
+				format(string, sizeof(string), "%s has bet $73000 on a horse", GetPlayerNameEx(playerid));
+				Log("logs/horse.log", string);
+				Businesses[InBusiness(playerid)][bSafeBalance] += 73000; // Adds the money to the biz
+				SaveBusiness(InBusiness(playerid));
+				SendClientMessage(playerid, COLOR_GREY, "You have placed a bet on McTagnut & Fries for $73000.");
+				SetTimerEx("HorseTimer", 15000, false, "i", playerid); 
+				PlayerPlaySound(playerid, 1142, 0.0, 0.0, 0.0);
+				format(szMiscArray, sizeof(szMiscArray), "%s places their bet and waits for the race to start", GetPlayerNameEx(playerid)); 
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessage(playerid, COLOR_GREY, "**Announcer** And they're off!.");
+			}
+			else return SendClientMessage(playerid, COLOR_GREY,"You don't have enough money to place the bet.");
+		}
+		case 5:
+    	{
+   			if(PlayerInfo[playerid][pCash] >= 150000)
+     		{
+				if(Businesses[InBusiness(playerid)][bSafeBalance] < 330000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
+				PlayerInfo[playerid][pHorse] = 6;
+				TogglePlayerControllable(playerid, 0);
+				GivePlayerCash(playerid, -150000);
+				format(string, sizeof(string), "%s has bet $150000 on a horse", GetPlayerNameEx(playerid));
+				Log("logs/horse.log", string);
+				Businesses[InBusiness(playerid)][bSafeBalance] += 150000; // Adds the money to the biz
+				SaveBusiness(InBusiness(playerid));
+				SendClientMessage(playerid, COLOR_GREY, "You have placed a bet on Love Torpedo for $150000.");
+				SetTimerEx("HorseTimer", 15000, false, "i", playerid); 
+				PlayerPlaySound(playerid, 3200, 0.0, 0.0, 0.0);
+				format(szMiscArray, sizeof(szMiscArray), "%s places their bet and waits for the race to start", GetPlayerNameEx(playerid)); 
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessage(playerid, COLOR_GREY, "**Announcer** And they're off!.");
+			}
+			else return SendClientMessage(playerid, COLOR_GREY,"You don't have enough money to place the bet.");
+		}
+		case 6:
+    	{
+   			if(PlayerInfo[playerid][pCash] >= 425000)
+     		{
+				if(Businesses[InBusiness(playerid)][bSafeBalance] < 935000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
+				PlayerInfo[playerid][pHorse] = 7;
+				TogglePlayerControllable(playerid, 0);
+				GivePlayerCash(playerid, -425000);
+				format(string, sizeof(string), "%s has bet $425000 on a horse", GetPlayerNameEx(playerid));
+				Log("logs/horse.log", string);
+				Businesses[InBusiness(playerid)][bSafeBalance] += 425000; // Adds the money to the biz
+				SaveBusiness(InBusiness(playerid));
+				SendClientMessage(playerid, COLOR_GREY, "You have placed a bet on Arthur or Martha for $425000.");
+				SetTimerEx("HorseTimer", 15000, false, "i", playerid); 
+				PlayerPlaySound(playerid, 1142, 0.0, 0.0, 0.0);
+				format(szMiscArray, sizeof(szMiscArray), "%s places their bet and waits for the race to start", GetPlayerNameEx(playerid)); 
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessage(playerid, COLOR_GREY, "**Announcer** And they're off!.");
+			}
+			else return SendClientMessage(playerid, COLOR_GREY,"You don't have enough money to place the bet.");
+		}
+		case 7:
+    	{
+   			if(PlayerInfo[playerid][pCash] >= 875000)
+     		{
+				if(Businesses[InBusiness(playerid)][bSafeBalance] < 1900000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
+				PlayerInfo[playerid][pHorse] = 8;
+				TogglePlayerControllable(playerid, 0);
+				GivePlayerCash(playerid, -875000);
+				format(string, sizeof(string), "%s has bet $875000 on a horse", GetPlayerNameEx(playerid));
+				Log("logs/horse.log", string);
+				Businesses[InBusiness(playerid)][bSafeBalance] += 875000; // Adds the money to the biz
+				SaveBusiness(InBusiness(playerid));
+				SendClientMessage(playerid, COLOR_GREY, "You have placed a bet on Purple Love for $875000.");
+				SetTimerEx("HorseTimer", 15000, false, "i", playerid); 
+				PlayerPlaySound(playerid, 3200, 0.0, 0.0, 0.0);
+				format(szMiscArray, sizeof(szMiscArray), "%s places their bet and waits for the race to start", GetPlayerNameEx(playerid)); 
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessage(playerid, COLOR_GREY, "**Announcer** And they're off!.");
+			}
+			else return SendClientMessage(playerid, COLOR_GREY,"You don't have enough money to place the bet.");
+		}
+		case 8:
+    	{
+   			if(PlayerInfo[playerid][pCash] >= 10000000)
+     		{
+				if(Businesses[InBusiness(playerid)][bSafeBalance] < 22000000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
+				PlayerInfo[playerid][pHorse] = 9;
+				TogglePlayerControllable(playerid, 0);
+				GivePlayerCash(playerid, -10000000);
+				format(string, sizeof(string), "%s has bet $100000000 on a horse", GetPlayerNameEx(playerid));
+				Log("logs/horse.log", string);
+				Businesses[InBusiness(playerid)][bSafeBalance] += 10000000; // Adds the money to the biz
+				SaveBusiness(InBusiness(playerid));
+				SendClientMessage(playerid, COLOR_GREY, "You have placed a bet on Billy Sastard for $10000000.");
+				SetTimerEx("HorseTimer", 15000, false, "i", playerid); 
+				PlayerPlaySound(playerid, 3200, 0.0, 0.0, 0.0);
+				format(szMiscArray, sizeof(szMiscArray), "%s places their bet and waits for the race to start", GetPlayerNameEx(playerid)); 
+				ProxDetector(30.0, playerid, szMiscArray, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				SendClientMessage(playerid, COLOR_GREY, "**Announcer** And they're off!.");
+			}
+			else return SendClientMessage(playerid, COLOR_GREY,"You don't have enough money to place the bet.");
+		}
+	}
+	return 1;
+}
+
+/*
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) 
 {
 
@@ -191,7 +405,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                  						if(Businesses[InBusiness(playerid)][bSafeBalance] < 330000) return SendClientMessage(playerid, COLOR_GREY, "The casino doesn't have enough money.");
                  						PlayerInfo[playerid][pHorse] = 6;
                  						TogglePlayerControllable(playerid, 0);
-										GivePlayerCash(playerid, -32000);
+										GivePlayerCash(playerid, -150000);
 										format(string, sizeof(string), "%s has bet $150000 on a horse", GetPlayerNameEx(playerid));
                         				Log("logs/horse.log", string);
 										Businesses[InBusiness(playerid)][bSafeBalance] += 150000; // Adds the money to the biz
@@ -273,7 +487,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		}
 	}
 	return 1;
-}
+}*/
 
 forward HorseTimer(playerid);
 public HorseTimer(playerid)
