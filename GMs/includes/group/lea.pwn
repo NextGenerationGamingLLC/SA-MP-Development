@@ -974,7 +974,7 @@ CMD:vticket(playerid, params[])
 		if(PlayerInfo[playerid][pTicketTime] != 0) return SendClientMessageEx(playerid, COLOR_GRAD2, "You must wait within a minute in order to use this command again!");
 		if(amount > 50000) return SendClientMessageEx(playerid, COLOR_GREY, "The maximum vehicle ticket amount is $50,000.");
 		if(amount < 1) return SendClientMessageEx(playerid, COLOR_GREY, "You can't ticket any vehicle below $1.");
-		new Float: x, Float: y, Float: z, veh = -1;
+		new string[128], Float: x, Float: y, Float: z, veh = -1;
 		GetVehiclePos(vehid, x, y, z);
 		if(IsPlayerInRangeOfPoint(playerid, 5.0, x, y, z)) {
 			foreach(new i: Player) {
@@ -982,6 +982,8 @@ CMD:vticket(playerid, params[])
 					PlayerVehicleInfo[i][veh][pvTicket] += amount;
 					PlayerInfo[playerid][pTicketTime] = 60;
 					SendClientMessageEx(playerid, COLOR_WHITE, "You have issued a $%s ticket on %s's %s.", number_format(amount), GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][veh][pvId]));
+					format(string, sizeof(string), "[VTICKET] Officer %s has ticketed %s's %s (%d) for $%s.", GetPlayerNameEx(playerid), GetPlayerNameEx(i), GetVehicleName(PlayerVehicleInfo[i][veh][pvId]), PlayerVehicleInfo[i][veh][pvSlotId], number_format(amount));
+					GroupLog(PlayerInfo[playerid][pMember], string);
 					break;
 				}
 			}
@@ -991,6 +993,8 @@ CMD:vticket(playerid, params[])
 					CrateVehicle[veh][cvTickets] += amount;
 					PlayerInfo[playerid][pTicketTime] = 60;
 					SendClientMessageEx(playerid, COLOR_WHITE, "You have issued a $%s ticket on the %s.", number_format(amount), VehicleName[CrateVehicle[veh][cvModel] - 400]);
+					format(string, sizeof(string), "[VTICKET] Officer %s has ticketed %s's %s (%d) for $%s.", GetPlayerNameEx(playerid), arrGroupData[CrateVehicle[veh][cvGroupID]][g_szGroupName], VehicleName[CrateVehicle[veh][cvModel] - 400], CrateVehicle[veh][cvId], number_format(amount));
+					GroupLog(PlayerInfo[playerid][pMember], string);
 					SaveCrateVehicle(veh);
 				} else veh = -1;
 			}
@@ -1000,7 +1004,7 @@ CMD:vticket(playerid, params[])
 		}
 		else SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be near such vehicle!");
 	}
-	else SendClientMessageEx(playerid, COLOR_GRAD2, "You need to be near such vehicle!");
+	else SendClientMessageEx(playerid, COLOR_GRAD2, "You are not authorized to use this command.");
     return 1;
 }
 
