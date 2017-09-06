@@ -239,7 +239,7 @@ CMD:funmute(playerid, params[])
 
 CMD:setfamed(playerid, params[])
 {
-    if(PlayerInfo[playerid][pFamed] >= 6 || PlayerInfo[playerid][pAdmin] >= 1337)
+    if(PlayerInfo[playerid][pFamed] >= 6 || PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1)
     {
         new string[128], targetid, level;
 	    if(sscanf(params, "ui", targetid, level)) {
@@ -399,18 +399,17 @@ CMD:famedplate(playerid, params[])
 
 CMD:fmembers(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFamed] >= 1)
+	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFamed] >= 4)
 	{
 		new string[2048];
-		strcat(string, "Famed Members Online:", sizeof(string));
 		foreach(new i: Player) 
 		{
-			if(PlayerInfo[i][pFamed] >= 1 && PlayerInfo[i][pTogReports] == 0)
+			if(PlayerInfo[i][pFamed] >= 1)
 			{
-				format(string, sizeof(string), "%s\n%s Member (%d) %s", string, GetFamedRankName(i), PlayerInfo[i][pFamed], GetPlayerNameEx(i));
+				format(string, sizeof(string), "%s\nLevel %d Famed %s", string, PlayerInfo[i][pFamed], GetPlayerNameEx(i));
 			}	
 		}
-		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Famed Members", string, "Close", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Current Online Famed Members", string, "Close", "");
 	}
 	else
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
