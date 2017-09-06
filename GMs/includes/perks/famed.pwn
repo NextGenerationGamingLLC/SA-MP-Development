@@ -402,15 +402,27 @@ CMD:fmembers(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 4 || PlayerInfo[playerid][pASM] >= 1 || PlayerInfo[playerid][pFamed] >= 1)
 	{
 		new string[2048];
-		strcat(string, "Famed Members Online:", sizeof(string));
+		strcat(string, "Name\tRank", sizeof(string));
 		foreach(new i: Player) 
 		{
 			if(PlayerInfo[i][pFamed] >= 1 && PlayerInfo[i][pTogReports] == 0)
 			{
-				format(string, sizeof(string), "%s\n%s Member (%d) %s", string, GetFamedRankName(i), PlayerInfo[i][pFamed], GetPlayerNameEx(i));
+				new famedrank[64];
+				switch(PlayerInfo[i][pFamed])
+				{
+					case 1: famedrank = "{228B22}Old-School\n";
+					case 2: famedrank = "{FF7F00}Chartered Old-School\n";
+					case 3: famedrank = "{ADFF2F}Famed\n";
+					case 4: famedrank = "{8F00FF}Famed Commissioner\n";
+					case 5: famedrank = "{8F00FF}Famed Moderator\n";
+					case 6: famedrank = "{8F00FF}Famed Vice-Chairman\n";
+					case 7: famedrank = "{8F00FF}Famed Chairman\n";
+					default: famedrank = "Unknown";
+				}
+				format(string, sizeof(string), "%s\n{FFFFFF}%s\t%s", string, GetPlayerNameEx(i), famedrank);
 			}	
 		}
-		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_LIST, "Famed Members", string, "Close", "");
+		ShowPlayerDialogEx(playerid, 0, DIALOG_STYLE_TABLIST_HEADERS, "Online Famed Members", string, "Close", "");
 	}
 	else
 		return SendClientMessageEx(playerid, COLOR_GRAD1, "You're not authorized to use this command!");
