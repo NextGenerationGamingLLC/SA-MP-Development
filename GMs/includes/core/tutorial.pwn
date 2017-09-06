@@ -398,6 +398,7 @@ ShowTutorialDialog(playerid, stage)
 				\t\t\tMiguel\n\
 				\t\t\tFarva\n\
 				\t\t\tHector\n\
+				\t\t\tThomas\n\
 				\t\t{F69500}Past Developers{FFFFFF}:\n\
 				\t\t\tAkatony\tJohn\t\tBrendan\n\
 				\t\t\tBrian\t\tScott\t\tGhoulSlayer\n\
